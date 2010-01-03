@@ -1,14 +1,9 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
 package fi.tnie.db.expr;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-
-import fi.tnie.db.QueryContext;
-import fi.tnie.db.meta.Column;
-import fi.tnie.db.meta.ForeignKey;
-
-public class JoinedTable 
+public class JoinedTable
 	extends AbstractTableReference {
 	
 	private AbstractTableReference left;
@@ -18,59 +13,45 @@ public class JoinedTable
 				
 	public JoinedTable(AbstractTableReference left, AbstractTableReference right,
 			JoinType joinType, JoinCondition joinCondition) {
-		super(left.getContext(), null);
+		super();
 		this.left = left;
 		this.right = right;
 		this.joinType = joinType;
 		this.joinCondition = joinCondition;
 	}
 	
-	protected JoinedTable(QueryContext qc, JoinType joinType) {
-		super(qc, null);
+	protected JoinedTable(JoinType joinType) {
+		super();
 		setJoinType(joinType);
 	}
 
-	@Override
-	public void generate(QueryContext qc, StringBuffer dest) {
-		if (getLeft() == null) {
-			throw new NullPointerException("'left' must not be null");
-		}		
-		
-		if (getRight() == null) {
-			throw new NullPointerException("'right' must not be null");
-		}
-		
-		if (getJoinType() == null) {
-			throw new NullPointerException("'joinType' must not be null");
-		}		
-		if (getJoinCondition() == null) {
-			throw new NullPointerException("'joinCondition' must not be null");
-		}
-		
-		getLeft().generate(qc, dest);		
-		dest.append(" ");		
-		dest.append(getJoinType());
-		dest.append(" JOIN ");
-		getRight().generate(qc, dest);
-		dest.append(" ON (");
-		getJoinCondition().generate(qc, dest);
-		dest.append(") ");		
-	}
+//	@Override
+//	public void generate(SimpleQueryContext qc, StringBuffer dest) {
+//		if (getLeft() == null) {
+//			throw new NullPointerException("'left' must not be null");
+//		}		
+//		
+//		if (getRight() == null) {
+//			throw new NullPointerException("'right' must not be null");
+//		}
+//		
+//		if (getJoinType() == null) {
+//			throw new NullPointerException("'joinType' must not be null");
+//		}		
+//		if (getJoinCondition() == null) {
+//			throw new NullPointerException("'joinCondition' must not be null");
+//		}
+//		
+//		getLeft().generate(qc, dest);		
+//		dest.append(" ");		
+//		dest.append(getJoinType());
+//		dest.append(" JOIN ");
+//		getRight().generate(qc, dest);
+//		dest.append(" ON (");
+//		getJoinCondition().generate(qc, dest);
+//		dest.append(") ");		
+//	}
 
-	@Override
-	public SelectList<QueryExpression> getSelectList() {
-		List<QueryExpression> el = new ArrayList<QueryExpression>();		
-		add(el, left.getSelectList());
-		add(el, right.getSelectList());			
-		return new SelectList<QueryExpression>(el);
-	}
-	
-	private void add(List<QueryExpression> list, QueryExpression item) {
-		if (item != null) {
-			list.add(item);
-		}
-	}
-	
 	protected AbstractTableReference getLeft() {
 		return this.left;
 	}
@@ -102,4 +83,41 @@ public class JoinedTable
 	protected void setJoinCondition(JoinCondition joinCondition) {
 		this.joinCondition = joinCondition;
 	}
+
+	@Override
+	public ElementList<? extends ColumnName> getColumnNameList() {
+		ElementList<ColumnName> names = new ElementList<ColumnName>();
+		
+		copyColumnNameList(getLeft(), names);
+		copyColumnNameList(getRight(), names);
+				
+		return names;
+	}
+	
+	private void copyColumnNameList(AbstractTableReference src, ElementList<ColumnName> dest) {
+		if (src != null) {
+			ElementList<? extends ColumnName> nl = src.getColumnNameList();
+			
+			if (!nl.isEmpty()) {
+				dest.getContent().addAll(nl.getContent());
+			}
+		}
+	}
+
+	@Override
+	public ElementList<SelectListElement> getSelectList() {
+		ElementList<SelectListElement> el = new ElementList<SelectListElement>();
+		
+		copyElementList(getLeft(), el);
+		copyElementList(getRight(), el);
+				
+		return el;
+	}
+	
+	@Override
+	public void traverseContent(VisitContext vc, ElementVisitor v) {
+		getLeft().traverse(vc, v);
+		getJoinType().traverse(vc, v);
+		getRight().traverse(vc, v);
+		getJoinCondition().traverse(vc, v);	}
 }

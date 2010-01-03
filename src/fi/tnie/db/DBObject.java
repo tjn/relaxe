@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
 package fi.tnie.db;
 
 import java.util.Collections;
@@ -27,4 +30,6 @@ public class DBObject<K> {
 		
 		return Collections.unmodifiableMap(values);
 	}
+	
+
 }

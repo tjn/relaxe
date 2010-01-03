@@ -1,16 +1,22 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
 package fi.tnie.db.expr;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import fi.tnie.db.QueryContext;
+import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Table;
 
 public class TableReference extends AbstractTableReference {
 	private Table table;
-
-	public TableReference(QueryContext qc, Table table) {
-		super(qc, null);
+	
+	private ElementList<ColumnName> columnNameList;
+	private ElementList<SelectListElement> selectList;
+	
+	private Name tableName;
+		
+	public TableReference(Table table) {
+		super();
 		
 		if (table == null) {
 			throw new NullPointerException("'table' must not be null");
@@ -20,21 +26,9 @@ public class TableReference extends AbstractTableReference {
 	}
 	
 	@Override
-	public void generate(QueryContext qc, StringBuffer dest) {		
-		Table t = getTable();
-		
-		if (t == null) {
-			throw new NullPointerException("table must not be null");
-		}	
-		
-		String cn = getCorrelationName();					
-		dest.append(" ");			
-		// TODO: specifing qualified name?
-		dest.append(t.getName());
-						
-		dest.append(" ");
-		dest.append(cn);
-		dest.append(" ");
+	public void traverseContent(VisitContext vc, ElementVisitor v) {
+		getTableName().traverse(vc, v);
+		getCorrelationName(v.getContext()).traverse(vc, v);
 	}
 	
 	public Table getTable() {
@@ -42,14 +36,43 @@ public class TableReference extends AbstractTableReference {
 	}
 
 	@Override
-	public SelectList<QueryExpression> getSelectList() {		
-		List<QueryExpression> cl = new ArrayList<QueryExpression>();
-		
-		for (String n : getTable().columns().keySet()) {
-			cl.add(new ColumnExpr(this, n));
+	public ElementList<? extends ColumnName> getColumnNameList() {
+		if (columnNameList == null) {
+			this.columnNameList = new ElementList<ColumnName>();
+			
+			List<ColumnName> nl = this.columnNameList.getContent();
+						
+			for (final Column c : getTable().columns().values()) {
+				nl.add(new TableColumnName(c));
+			}
 		}
-				
-		return new SelectList<QueryExpression>(cl);
+		
+		return columnNameList;
 	}
-	
+
+	@Override
+	public ElementList<SelectListElement> getSelectList() {
+		// TODO: use *?
+		if (selectList == null) {
+			ElementList<SelectListElement> el = new ElementList<SelectListElement>();
+			List<SelectListElement> cl = el.getContent();
+			
+			for (Column c : getTable().columns().values()) {
+				cl.add(new SelectListElement(new TableColumnExpr(this, c)));
+			}
+			
+			this.selectList = el;
+		};
+				
+		return selectList;
+	}
+		
+	public Name getTableName() {
+		if (tableName == null) {
+			tableName = new Name(getTable());			
+		}
+
+		return tableName;
+	}
+		
 }

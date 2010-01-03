@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
 package fi.tnie.db.meta.impl;
 
 import java.io.File;
@@ -11,12 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-
 import org.apache.log4j.Logger;
 
 import java.sql.DatabaseMetaData;
@@ -24,7 +23,6 @@ import java.sql.DatabaseMetaData;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
-import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.util.AbstractQueryProcessor;
 import fi.tnie.db.meta.util.QueryProcessor;
@@ -50,10 +48,10 @@ public class DefaultCatalogFactory implements CatalogFactory {
 		public void process(ResultSet rs, long ordinal) throws SQLException {			
 //		   1. TABLE_CAT String => table catalog (may be null)
 //		   2. TABLE_SCHEM String => table schema (may be null)
-//		   3. TABLE_NAME String => table name
-//		   4. COLUMN_NAME String => column name
+//		   3. TABLE_NAME String => table symbol
+//		   4. COLUMN_NAME String => column symbol
 //		   5. DATA_TYPE int => SQL type from java.sql.Types
-//		   6. TYPE_NAME String => Data source dependent type name, for a UDT the type name is fully qualified
+//		   6. TYPE_NAME String => Data source dependent type symbol, for a UDT the type symbol is fully qualified
 //		   7. COLUMN_SIZE int => column size. For char or date types this is the maximum number of characters, for numeric or decimal types this is precision.
 //		   8. BUFFER_LENGTH is not used.
 //		   9. DECIMAL_DIGITS int => the number of fractional digits
@@ -71,7 +69,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 //		  18. IS_NULLABLE String => "NO" means column definitely does not allow NULL values; "YES" means the column might allow NULL values. An empty string means nobody knows.
 //		  19. SCOPE_CATLOG String => catalog of table that is the scope of a reference attribute (null if DATA_TYPE isn't REF)
 //		  20. SCOPE_SCHEMA String => schema of table that is the scope of a reference attribute (null if the DATA_TYPE isn't REF)
-//		  21. SCOPE_TABLE String => table name that this the scope of a reference attribure (null if the DATA_TYPE isn't REF)
+//		  21. SCOPE_TABLE String => table symbol that this the scope of a reference attribure (null if the DATA_TYPE isn't REF)
 //		  22. SOURCE_DATA_TYPE short => source type of a distinct type or user-generated Ref type, SQL type from java.sql.Types (null if DATA_TYPE isn't DISTINCT or user-generated REF)
 			
 			// TODO: use AUTO_INCREMENT column with JDBC 4.0
@@ -82,7 +80,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			
 			if (!this.table.getName().equals(tbl)) {
 				throw new IllegalStateException(
-						"encountered table name " + table + 
+						"encountered table symbol " + table + 
 						" when populating table " + this.table.getName());
 			}
 			
@@ -137,10 +135,10 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	public void process(ResultSet rs, long ordinal) throws SQLException {			
 //	   1. TABLE_CAT String => table catalog (may be null)
 //	   2. TABLE_SCHEM String => table schema (may be null)
-//	   3. TABLE_NAME String => table name
-//	   4. COLUMN_NAME String => column name
+//	   3. TABLE_NAME String => table symbol
+//	   4. COLUMN_NAME String => column symbol
 //	   5. KEY_SEQ short => sequence number within primary key
-//	   6. PK_NAME String => primary key name (may be null) 		
+//	   6. PK_NAME String => primary key symbol (may be null) 		
 		
 		String pkcat = rs.getString(1);
 		String pksch = rs.getString(2);
@@ -158,7 +156,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 		logger().debug("pkcat: " + pkcat);
 		logger().debug("pksch: " + pksch);
 		logger().debug("pktab: " + pktab);
-		logger().debug("name: " + n);
+		logger().debug("symbol: " + n);
 		logger().debug("keyseq: " + keyseq);
 
 		Schema pks = this.catalog.schemas().get(pkcat);
@@ -220,12 +218,12 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			public void process(ResultSet rs, long ordinal) throws SQLException {			
 //			   1. PKTABLE_CAT String => primary key table catalog being imported (may be null)
 //			   2. PKTABLE_SCHEM String => primary key table schema being imported (may be null)
-//			   3. PKTABLE_NAME String => primary key table name being imported
-//			   4. PKCOLUMN_NAME String => primary key column name being imported
+//			   3. PKTABLE_NAME String => primary key table symbol being imported
+//			   4. PKCOLUMN_NAME String => primary key column symbol being imported
 //			   5. FKTABLE_CAT String => foreign key table catalog (may be null)
 //			   6. FKTABLE_SCHEM String => foreign key table schema (may be null)
-//			   7. FKTABLE_NAME String => foreign key table name
-//			   8. FKCOLUMN_NAME String => foreign key column name
+//			   7. FKTABLE_NAME String => foreign key table symbol
+//			   8. FKCOLUMN_NAME String => foreign key column symbol
 //			   9. KEY_SEQ short => sequence number within a foreign key
 //			  10. UPDATE_RULE short => What happens to a foreign key when the primary key is updated:
 //			          * importedNoAction - do not allow update of primary key if it has been imported
@@ -239,8 +237,8 @@ public class DefaultCatalogFactory implements CatalogFactory {
 //			          * importedKeySetNull - change imported key to NULL if its primary key has been deleted
 //			          * importedKeyRestrict - same as importedKeyNoAction (for ODBC 2.x compatibility)
 //			          * importedKeySetDefault - change imported key to default if its primary key has been deleted 
-//			  12. FK_NAME String => foreign key name (may be null)
-//			  13. PK_NAME String => primary key name (may be null)
+//			  12. FK_NAME String => foreign key symbol (may be null)
+//			  13. PK_NAME String => primary key symbol (may be null)
 //			  14. DEFERRABILITY short => can the evaluation of foreign key constraints be deferred until commit
 //			          * importedKeyInitiallyDeferred - see SQL92 for definition
 //			          * importedKeyInitiallyImmediate - see SQL92 for definition
@@ -276,7 +274,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			logger().debug("pkcat: " + pkcat);
 			logger().debug("pksch: " + pksch);
 			logger().debug("pktab: " + pktab);
-			logger().debug("name: " + n);
+			logger().debug("symbol: " + n);
 			logger().debug("keyseq: " + keyseq);
 
 				Schema pks = this.catalog.schemas().get(pkcat);
@@ -390,7 +388,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			try {
 				if (args.length < 3) {
 					System.err.println("usage:\n" +
-							"java " + CatalogFactory.class.getName() + " <driver-name> <url> <config-file>");
+							"java " + CatalogFactory.class.getName() + " <driver-symbol> <url> <config-file>");
 					System.exit(-1);
 				}			
 				

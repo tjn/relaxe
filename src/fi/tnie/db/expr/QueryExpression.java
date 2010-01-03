@@ -1,7 +1,9 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
 package fi.tnie.db.expr;
 
-import fi.tnie.db.QueryContext;
+public interface QueryExpression
+	extends Expression {
 
-public interface QueryExpression {
-	public void generate(QueryContext qc, StringBuffer dest);
 }

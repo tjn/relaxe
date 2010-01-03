@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
 package fi.tnie.db.expr;
 
 import java.io.File;
@@ -12,12 +15,9 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.QueryContext;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Schema;
-import fi.tnie.db.meta.Table;
 import fi.tnie.db.meta.impl.DefaultCatalogFactory;
 import fi.tnie.db.meta.impl.MySQLCatalogFactory;
 
@@ -35,7 +35,7 @@ public class QueryTest {
 		try {
 			if (args.length < 3) {
 				System.err.println("usage:\n" +
-						"java " + QueryTest.class.getName() + " <driver-name> <url> <config-file>");
+						"java " + QueryTest.class.getName() + " <driver-symbol> <url> <config-file>");
 				System.exit(-1);
 			}			
 			
@@ -103,75 +103,94 @@ public class QueryTest {
 				BaseTable mv = (BaseTable) schema.tables().get("mill_version");
 				BaseTable cv = (BaseTable) schema.tables().get("company_version");
 				
-				QueryContext qc = new QueryContext();
+				logger().debug("create query...");
 				
-				Query qo = null;
+				DefaultSubselect qo = null;
 				
-				qo = new Query(qc);				
+				qo = new DefaultSubselect();
 				
-				qo.setTableRefList(new BaseTableReference(qc, m).asList());
-				logger().info("mill: " + qo.generate(qc));				
-
-				qo.setTableRefList(new BaseTableReference(qc, mv).asList());
-				logger().info("mill-version: " + qo.generate(qc));				
-
+				TableReference mr = new TableReference(m);
 				
-//				System.out.println(m.foreignKeys().toString());				
-//				System.out.println(mv.foreignKeys().toString());
-				
-				ForeignKey fkm = mv.foreignKeys().get("FK_MV_MILL");
-				ForeignKey fkc = mv.foreignKeys().get("FK_MV_COMPANY");
-				
-//				BaseTableReference mvref = new BaseTableReference(qc, mv);				
-//				ForeignKeyJoinedTable jt = mvref.innerJoin("FK_MV_MILL");
-				
-				BaseTableReference mvref = new BaseTableReference(qc, mv);
-				BaseTableReference mref = new BaseTableReference(qc, m);
-				BaseTableReference cvref = new BaseTableReference(qc, cv);
-				
-				ForeignKeyJoinCondition fc = new ForeignKeyJoinCondition(
-						fkm, mvref, mref);
-																															
-				JoinedTable jt = new JoinedTable(mvref, mref, JoinType.INNER, fc);
-				
-				NestedTableReference nt = new NestedTableReference(qc, jt);
-				
-				ForeignKeyJoinCondition fc2 = new ForeignKeyJoinCondition(
-						fkc, mvref, cvref);				
-				
-				jt = new JoinedTable(nt, cvref, JoinType.INNER, fc2);
-				
-//				BaseTableReference mvref = (BaseTableReference) jt.getLeft();											
-//				JoinedTable jt2 = new JoinedTable(qc, );
-																												
-				qo = new Query(qc);				
-				qo.setTableRefList(jt.asList());
-				logger().info("joined: " + qo.generate(qc));
-//				
-//				final BaseTableReference mr = new BaseTableReference(m);
-//				final BaseTableReference mvr = new BaseTableReference(mv);
-				
-//				mvr.getSelectList();
-				
-//				ForeignKey fk = m.foreignKeys().get(null);
-//				fk.getReferencing().
-						
-//				JoinCondition(fk);
-								
-//				mr.innerJoin(mvr, jc)
-				
-//				m.columns().get();
+				Select p = new Select();
 												
-//				JoinCondition jc = new JoinCondition() {					
-//					
-//				};
-//				
-//				JoinedTable jt = mr.innerJoin(mvr, jc);
-//				
-//				qo.setTableRefList(jt.asList());
+				qo.setFrom(new From(mr));
+				qo.setSelect(p);
 				
-//				logger().debug("view catalog...");					
-//				new PrimaryKeyPrinter(null).setCatalog(catalog);					
+				mr.getSelectList().copyTo(p.getSelectList());
+				
+				String qs = qo.generate();
+				
+				logger().debug("qs: " + qs);
+				
+////				mr.getSelectList().
+//				
+//				
+//								
+////				p.getSelectList().add(new SelectListElement());
+//				
+////				qo.setTableRefList(new BaseTableReference(qc, m).asList());
+////				logger().info("mill: " + qo.generate(qc));				
+////
+////				qo.setTableRefList(new BaseTableReference(qc, mv).asList());
+////				logger().info("mill-version: " + qo.generate(qc));				
+//
+//				
+////				System.out.println(m.foreignKeys().toString());				
+////				System.out.println(mv.foreignKeys().toString());
+//				
+//				ForeignKey fkm = mv.foreignKeys().get("FK_MV_MILL");
+//				ForeignKey fkc = mv.foreignKeys().get("FK_MV_COMPANY");
+//				
+////				BaseTableReference mvref = new BaseTableReference(qc, mv);				
+////				ForeignKeyJoinedTable jt = mvref.innerJoin("FK_MV_MILL");
+//				
+//				BaseTableReference mvref = new BaseTableReference(qc, mv);
+//				BaseTableReference mref = new BaseTableReference(qc, m);
+//				BaseTableReference cvref = new BaseTableReference(qc, cv);
+//				
+//				ForeignKeyJoinCondition fc = new ForeignKeyJoinCondition(
+//						fkm, mvref, mref);
+//																															
+//				AbstractTableReference jt = new JoinedTable(mvref, mref, JoinType.INNER, fc);
+//				
+//				NestedTableReference nt = new NestedTableReference(qc, jt);
+//				
+//				ForeignKeyJoinCondition fc2 = new ForeignKeyJoinCondition(
+//						fkc, mvref, cvref);				
+//				
+//				jt = new JoinedTable(nt, cvref, JoinType.INNER, fc2);
+//				
+////				BaseTableReference mvref = (BaseTableReference) jt.getLeft();											
+////				JoinedTable jt2 = new JoinedTable(qc, );
+//																												
+//				qo = new DefaultSubselect(qc);				
+////				qo.setTableRefList(jt.asList());
+//				logger().info("joined: " + qo.generate(qc));
+////				
+////				final BaseTableReference mr = new BaseTableReference(m);
+////				final BaseTableReference mvr = new BaseTableReference(mv);
+//				
+////				mvr.getSelectList();
+//				
+////				ForeignKey fk = m.foreignKeys().get(null);
+////				fk.getReferencing().
+//						
+////				JoinCondition(fk);
+//								
+////				mr.innerJoin(mvr, jc)
+//				
+////				m.columns().get();
+//												
+////				JoinCondition jc = new JoinCondition() {					
+////					
+////				};
+////				
+////				JoinedTable jt = mr.innerJoin(mvr, jc);
+////				
+////				qo.setTableRefList(jt.asList());
+//				
+////				logger().debug("view catalog...");					
+////				new PrimaryKeyPrinter(null).setCatalog(catalog);					
 			}
 			finally {
 				if (c != null) {

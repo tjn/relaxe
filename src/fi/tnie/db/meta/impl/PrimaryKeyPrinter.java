@@ -1,9 +1,11 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
 package fi.tnie.db.meta.impl;
 
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,7 +15,6 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.DataType;
-import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Schema;
 
@@ -65,7 +66,7 @@ public class PrimaryKeyPrinter implements CatalogUI {
 		for (Map.Entry<String, BaseTable> e : s.baseTables().entrySet()) {			
 			logger().info(indent(indent) + e.getValue().getQualifiedName());
 			visited.clear();
-			print((BaseTable) e.getValue(), w, indent + 1, visited);
+			print(e.getValue(), w, indent + 1, visited);
 		}
 	}
 	

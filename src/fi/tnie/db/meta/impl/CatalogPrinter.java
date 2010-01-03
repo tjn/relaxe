@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
 package fi.tnie.db.meta.impl;
 
 import java.io.PrintWriter;
@@ -72,7 +75,7 @@ public class CatalogPrinter implements CatalogUI {
 		for (Map.Entry<String, BaseTable> e : s.baseTables().entrySet()) {			
 			logger().info(indent(indent) + e.getValue().getQualifiedName());
 			visited.clear();
-			print((BaseTable) e.getValue(), w, indent + 1, visited);
+			print(e.getValue(), w, indent + 1, visited);
 		}
 	}
 

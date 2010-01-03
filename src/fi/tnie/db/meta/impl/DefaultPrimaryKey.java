@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
 package fi.tnie.db.meta.impl;
 
 import java.util.ArrayList;
@@ -50,7 +53,7 @@ public class DefaultPrimaryKey
 				this.table = (DefaultMutableBaseTable) c.getParentNode();				
 			}
 			else {				
-				ensureSameTable(c.getParentNode(), (DefaultMutableTable) this.table, 
+				ensureSameTable(c.getParentNode(), this.table, 
 						"all the columns of the multi-column primary key must originate from the same table");
 			}						
 		}

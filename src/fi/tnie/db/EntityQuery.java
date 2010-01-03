@@ -1,172 +1,177 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
 package fi.tnie.db;
 
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import sun.security.action.GetBooleanAction;
-
-import fi.tnie.db.expr.QueryExpression;
+import fi.tnie.db.expr.DefaultSubselect;
+import fi.tnie.db.expr.ElementList;
+import fi.tnie.db.expr.From;
+import fi.tnie.db.expr.Select;
+import fi.tnie.db.expr.SelectListElement;
+import fi.tnie.db.expr.Subselect;
+import fi.tnie.db.expr.TableColumnExpr;
+import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.meta.BaseTable;
-import fi.tnie.db.meta.Table;
+import fi.tnie.db.meta.Column;
 
-public class EntityQuery<K extends Enum<K>, E extends DBEntity<K, E>>
-	implements QueryExpression
-{	
-	private BaseTable table;
-	private List<K> projection;	
-	private Class<K> columnNameType;
+public class EntityQuery<K extends Enum<K>, E extends Entity<K, E>>
+{		
+	private EnumMap<K, Integer> projection;	
+	private EntityFactory<K, E> factory;
+	private TableReference tableRef;
 	
-	private EntityPredicate<K, E> predicate;	 
+	private DefaultSubselect query; 
+							
+	public EntityQuery(EntityFactory<K, E> ef, Set<K> projection) {
+		super();
 		
-	public EntityQuery(BaseTable table, Class<K> columnNameType, List<K> projection) {
-		this(table, columnNameType);
+		this.factory = ef;
+		this.tableRef = new TableReference(ef.getTable());
 		
-		if (projection != null) {
+		Class<K> cnt = ef.getColumnNameType();
+	
+		if (projection == null) {
+			projection = EnumSet.allOf(cnt);
+		}
+		else {
 			if (projection.isEmpty()) {
 				throw new IllegalArgumentException("projection must not be empty");
 			}
-			
-			this.projection = new ArrayList<K>(projection);
+		}	
+		
+		EnumMap<K, Integer> pm = new EnumMap<K, Integer>(cnt);
+		int co = 1;
+		 		
+		for (K k : projection) {
+			pm.put(k, new Integer(co++));
 		}
+		
+		this.projection = pm;
 	}
 	
-	public EntityQuery(BaseTable table, Class<K> columnNameType) {
-		super();
-		this.table = table;
-		this.columnNameType = columnNameType;
+	public EntityQuery(SimpleQueryContext qc, EntityFactory<K, E> ef) {
+		this(ef, false);
 	}
-
-	@Override
-	public void generate(QueryContext qc, StringBuffer dest) {
-//		String tref = qc.start(getTable(), "r");
-//		
-//		try {					
-//			dest.append(" SELECT ");
-//			select(qc, tref, dest);
-//			dest.append(" FROM ");
-//			dest.append(getTable().getName());
-//			
-//			EntityPredicate<K, E> ep = getPredicate();
-//			
-//			if (ep != null) {
-//				dest.append(" WHERE ");
-//				ep.generate(qc, dest);
-//			}
-//			
-//			String g = groupBy(qc);
-//			
-//			if (g != null) {
-//				dest.append(" GROUP BY ");
-//				dest.append(g);
-//			}
-//			
-//			String h = having(qc);
-//			
-//			if (h != null) {
-//				dest.append(" HAVING ");
-//				dest.append(h);
-//			}			
-//			
-//			String o = orderBy(qc);
-//			
-//			if (o != null) {
-//				dest.append(" ORDER BY ");
-//				dest.append(o);
-//			}				
-//			
-//		}
-//		finally {
-//			qc.end(tref);
-//		}
+	
+	public EntityQuery(EntityFactory<K, E> ef, boolean pkOnly) {
+		this(ef, pkOnly ? ef.getPKDefinition() : null);
 	}
-
-	private String orderBy(QueryContext qc) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private String having(QueryContext qc) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private String groupBy(QueryContext qc) {
-		return null;
-	}
-
-	private String where(QueryContext qc) {	
-		return null;
-	}
-
-	private void select(QueryContext qc, String tref, StringBuffer dest) {		
-		List<K> cl = this.getProjection();
-		String prefix = (tref == null) ? null : tref + ".";		
-		dest.append(" ");
-		
-		if (cl == null) {			
-			if (prefix != null) {
-				dest.append(prefix);
+	
+	public DefaultSubselect getQuery() {		
+		if (query == null) {
+			DefaultSubselect q = new DefaultSubselect();		
+			TableReference tref = this.tableRef;
+			q.setFrom(new From(this.tableRef));
+					
+			Select s = new Select();
+			
+			ElementList<SelectListElement> p = s.getSelectList();
+			Map<String, Column> cm = getTable().columns();
+			
+			for (K k : this.projection.keySet()) {
+				Column col = cm.get(k.toString());
+				p.add(new SelectListElement(new TableColumnExpr(tref, col)));
 			}
 			
-			dest.append("*");
-		}
-		else {
-			join(cl, ",", prefix, null, dest);
+			q.setSelect(s);
+			this.query = q;
 		}
 		
-		dest.append(" ");
-	}
-	
-	private String join(Iterable<?> elems, String delim, String prefix, String suffix, StringBuffer dest) {		
-		for (Iterator<?> iter = elems.iterator(); iter.hasNext();) {
-			String e = iter.next().toString();
-	
-			if (prefix != null) {			
-				dest.append(prefix);
-			}
-			
-			dest.append(e);
-			
-			if (prefix != null) {			
-				dest.append(prefix);
-			}			
-			
-			if (delim != null) {
-				if (iter.hasNext()) {
-					dest.append(delim);
-				}
-			}
-		}
-		
-		return null;
-		
-	}
-	
-	
-	private BaseTable getTable() {
-		return table;
-	}
-
-	private void setTable(BaseTable table) {
-		this.table = table;
-	}
-
-	private List<K> getProjection() {
-		return projection;
-	}
-
-	private void setProjection(List<K> projection) {
-		this.projection = projection;
-	}
-
-	public EntityPredicate<K, E> getPredicate() {
-		return predicate;
-	}
-
-	public void setPredicate(EntityPredicate<K, E> predicate) {
-		this.predicate = predicate;
+		return this.query;		
 	}	
+		
+	public BaseTable getTable() {
+		return this.factory.getTable();
+	}
+	
+	public TableReference getTableReference() {
+		return this.tableRef;
+	}
+
+//	public void setPredicate(EntityPredicate<K, E> predicate) {
+//		this.predicate = predicate;
+//	}
+	
+	public EntityQueryResult<K, E> exec(Connection c) 
+		throws SQLException {
+		return exec(0, Integer.MAX_VALUE, c);
+	}
+
+	public EntityQueryResult<K, E> exec(int offset, int pageSize, Connection c) 
+		throws SQLException {
+			
+		Statement st = null;
+		ResultSet rs = null;
+		EntityQueryResult<K, E> qr = null;
+				
+		try {
+			st = c.createStatement();
+										
+			DefaultSubselect qo = getQuery();
+			String qs = qo.generate();
+			
+			rs = st.executeQuery(qs);			
+			List<E> el = new ArrayList<E>();
+			
+			int r;
+			
+			EntityFactory<K, E> ef = this.factory;			
+			EnumMap<K, Integer> keys = this.projection;
+			
+			for(r = 0; rs.next(); r++) {				
+				if (r >= offset && r < offset + pageSize) {
+					E e = ef.newInstance();
+					ef.copy(keys, rs, e);
+					el.add(e);
+				}				
+			}	
+			
+			qr = new EntityQueryResult<K, E>(this, el, r);
+		} 
+		catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			if (rs != null) {
+				rs.close();
+			}
+			
+			if (st != null) {
+				st.close();
+			}
+		}
+		
+		return qr;
+	}
+	
+//	private void copy(Iterable<K> keys, ResultSet rs, E e) 
+//		throws SQLException {
+//
+//		Map<K, Object> m = e.values();
+//		int c = 1;
+//		
+//		for (K k : keys) {
+//			Object o = rs.getObject(c++);
+//			m.put(k, o);			
+//		}
+//	}
+
+	
 }

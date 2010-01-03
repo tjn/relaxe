@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
 package fi.tnie.db.meta.util;
 
 import java.io.BufferedReader;
@@ -32,7 +35,7 @@ public class SourceGenerator {
 		try {
 			if (args.length < 3) {
 				System.err.println("usage:\n" +
-						"java " + SourceGenerator.class.getName() + " <driver-name> <url> <config-file>");
+						"java " + SourceGenerator.class.getName() + " <driver-symbol> <url> <config-file>");
 				System.exit(-1);
 			}			
 			

@@ -1,18 +1,20 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
 package fi.tnie.db.expr;
 
-import fi.tnie.db.QueryContext;
-
-public abstract class JoinCondition implements Predicate {
+public abstract class JoinCondition 
+	extends CompoundElement 
+	implements Predicate {
 	
 	private AbstractTableReference left;
 	private AbstractTableReference right;
-	
-	
-	
-	@Override
-	public void generate(QueryContext qc, StringBuffer dest) {
 		
-	}
+	
+//	@Override
+//	public void generate(SimpleQueryContext qc, StringBuffer dest) {
+//		
+//	}
 
 	public AbstractTableReference getLeft() {
 		return left;
@@ -21,5 +23,5 @@ public abstract class JoinCondition implements Predicate {
 	public AbstractTableReference getRight() {
 		return right;
 	}
-
+		
 }

@@ -1,54 +1,54 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
 package fi.tnie.db.expr;
 
 import fi.tnie.db.QueryContext;
 
-public abstract class AbstractTableReference implements QueryExpression {
-
-//	private String correlationNamePrefix;
-	private QueryContext context;
-	private String correlationName;	
-			
-	public AbstractTableReference(QueryContext context, String correlationNamePrefix) {
-		super();
-		
-		if (context == null) {
-			throw new NullPointerException("'context' must not be null");
-		}
-		
-		this.context = context;
-		this.correlationName = context.name(this, correlationNamePrefix);
+public abstract class AbstractTableReference
+	extends CompoundElement
+	implements TableRefList {
+				
+	public AbstractTableReference() {
+		super();				
 	}
 
-//	public String getCorrelationNamePrefix() {
-//		return correlationNamePrefix;
-//	}
-
-//	public void setCorrelationNamePrefix(String correlationName) {
-//		this.correlationNamePrefix = correlationName;
-//	}
-	
-	public String getCorrelationName() {
-		return this.correlationName;
+	public OrdinaryIdentifier getCorrelationName(QueryContext qctx) {
+		return qctx.correlationName(this);
 	}
 	
-	public JoinedTable innerJoin(AbstractTableReference right, JoinCondition jc) {
+	public AbstractTableReference innerJoin(AbstractTableReference right, JoinCondition jc) {
 		return new JoinedTable(this, right, JoinType.INNER, jc);
 	}
 	
 	
-	public JoinedTable leftJoin(AbstractTableReference right, JoinCondition jc) {
+	public AbstractTableReference leftJoin(AbstractTableReference right, JoinCondition jc) {
 		return new JoinedTable(this, right, JoinType.LEFT, jc);
-	}
+	}	
 	
-	public abstract SelectList<QueryExpression> getSelectList();
+	/**
+	 * List of names of the exposed column names.
+	 * 
+	 * @return
+	 */
+	public abstract ElementList<? extends ColumnName> getColumnNameList();
 	
-	
-	public TableRefList asList()  {
-		return new TableRefList(this);
-	}
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract ElementList<SelectListElement> getSelectList();
 
-	public QueryContext getContext() {
-		return context;
+	protected void copyElementList(AbstractTableReference src, ElementList<SelectListElement> dest) {
+		if (src != null) {
+			src.getSelectList().copyTo(dest);
+		}
 	}
-
+	
+	@Override
+	public void traverse(VisitContext vc, ElementVisitor v) {
+		v.start(vc, this);
+		traverseContent(vc, v);
+		v.end(this);		
+	}
 }

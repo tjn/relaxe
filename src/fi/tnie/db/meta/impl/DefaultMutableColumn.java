@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
 package fi.tnie.db.meta.impl;
 
 import java.util.Collections;
@@ -8,7 +11,6 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.DataType;
 import fi.tnie.db.meta.PrimaryKey;
-import fi.tnie.db.meta.Table;
 
 public class DefaultMutableColumn
 	extends DefaultMutableMetaObject
