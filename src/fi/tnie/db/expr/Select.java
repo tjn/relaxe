@@ -69,4 +69,19 @@ public class Select
 	protected Element getContent() {		
 		return getSelectList();
 	}
+		
+	public ElementList<? extends ColumnName> getColumnNameList() {		
+		ElementList<ColumnName> cl = null;
+		ElementList<SelectListElement> p = getSelectList();
+		
+		if (!p.isEmpty()) {
+			cl = new ElementList<ColumnName>();
+			
+			for (SelectListElement e : p.getContent()) {
+				cl.add(e.getColumnName());
+			}
+		}
+		
+		return cl;
+	}	
 }

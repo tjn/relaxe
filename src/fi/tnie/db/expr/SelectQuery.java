@@ -6,5 +6,7 @@ package fi.tnie.db.expr;
 public abstract class SelectQuery
 	extends Query implements QueryExpression {
 	
-	abstract Select getSelect(); 
+	abstract Select getSelect();
+		
+	
 }

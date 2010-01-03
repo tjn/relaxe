@@ -4,8 +4,7 @@
 package fi.tnie.db.expr;
 
 public interface Subselect
-	extends Element {
+	extends Expression {
 	
 	Select getSelect();
-
 }

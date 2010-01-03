@@ -3,6 +3,8 @@
  */
 package fi.tnie.db.expr;
 
+import fi.tnie.db.QueryContext;
+
 public class JoinedTable
 	extends AbstractTableReference {
 	
@@ -85,7 +87,7 @@ public class JoinedTable
 	}
 
 	@Override
-	public ElementList<? extends ColumnName> getColumnNameList() {
+	public ElementList<? extends ColumnName> getUncorrelatedColumnNameList() {
 		ElementList<ColumnName> names = new ElementList<ColumnName>();
 		
 		copyColumnNameList(getLeft(), names);
@@ -96,7 +98,7 @@ public class JoinedTable
 	
 	private void copyColumnNameList(AbstractTableReference src, ElementList<ColumnName> dest) {
 		if (src != null) {
-			ElementList<? extends ColumnName> nl = src.getColumnNameList();
+			ElementList<? extends ColumnName> nl = src.getUncorrelatedColumnNameList();
 			
 			if (!nl.isEmpty()) {
 				dest.getContent().addAll(nl.getContent());
@@ -104,20 +106,41 @@ public class JoinedTable
 		}
 	}
 
-	@Override
-	public ElementList<SelectListElement> getSelectList() {
-		ElementList<SelectListElement> el = new ElementList<SelectListElement>();
-		
-		copyElementList(getLeft(), el);
-		copyElementList(getRight(), el);
-				
-		return el;
-	}
+//	@Override
+//	public ElementList<SelectListElement> getSelectList() {
+//		ElementList<SelectListElement> el = new ElementList<SelectListElement>();
+//		
+//		copyElementList(getLeft(), el);
+//		copyElementList(getRight(), el);
+//				
+//		return el;
+//	}
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
 		getLeft().traverse(vc, v);
 		getJoinType().traverse(vc, v);
 		getRight().traverse(vc, v);
-		getJoinCondition().traverse(vc, v);	}
+		getJoinCondition().traverse(vc, v);	
+	}
+
+	@Override
+	public void addAll(ElementList<SelectListElement> dest) {		
+		getLeft().addAll(dest);
+		getRight().addAll(dest);
+	}
+	
+	public NestedJoin nest() {
+		return new NestedJoin(this);
+	}
+
+	@Override
+	public ElementList<? extends ColumnName> getColumnNameList() {
+		return getUncorrelatedColumnNameList();
+	}
+
+	@Override
+	public final OrdinaryIdentifier getCorrelationName(QueryContext qctx) {
+		return null;
+	}
 }

@@ -7,7 +7,7 @@ import fi.tnie.db.expr.Keyword;
 import fi.tnie.db.expr.Predicate;
 
 public class AndPredicate
-	extends Operator
+	extends BinaryOperator
 	implements Predicate {
 	
 	public AndPredicate(Predicate left, Predicate right) {

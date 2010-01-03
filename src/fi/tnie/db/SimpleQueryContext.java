@@ -11,6 +11,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.expr.AbstractTableReference;
+import fi.tnie.db.expr.NonJoinedTable;
 import fi.tnie.db.expr.OrdinaryIdentifier;
 
 public class SimpleQueryContext implements QueryContext {
@@ -54,7 +55,7 @@ public class SimpleQueryContext implements QueryContext {
 	/* (non-Javadoc)
 	 * @see fi.tnie.db.QueryContext#correlationName(fi.tnie.db.expr.AbstractTableReference)
 	 */
-	public OrdinaryIdentifier correlationName(AbstractTableReference tref) {
+	public OrdinaryIdentifier correlationName(NonJoinedTable tref) {
 		if (tref == null) {
 			throw new NullPointerException("'tref' must not be null");
 		}

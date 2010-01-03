@@ -9,7 +9,11 @@ public enum Symbol implements Token {
 	DOT("."),
 	COMMA(","),
 	PAREN_RIGHT(")"),
-	PAREN_LEFT("(")
+	PAREN_LEFT("("),
+	LESS_THAN("<"),
+	GREATER_THAN(">"),
+	LESS_OR_EQUAL("<="),
+	GREATER_OR_EQUAL(">="),	
 	;
 	
 	private String token; 

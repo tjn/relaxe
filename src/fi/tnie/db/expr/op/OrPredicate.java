@@ -7,7 +7,7 @@ import fi.tnie.db.expr.Keyword;
 import fi.tnie.db.expr.Predicate;
 
 public class OrPredicate
-	extends Operator
+	extends BinaryOperator
 	implements Predicate {
 	
 	public OrPredicate(Predicate left, Predicate right) {

@@ -12,7 +12,7 @@ public class ElementList<E extends Element>
 	
 	private Symbol delim;
 	private List<E> content;
-		
+			
 	public ElementList(Symbol delim) {
 		super();
 		this.delim = delim;

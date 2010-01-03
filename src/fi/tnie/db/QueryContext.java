@@ -3,11 +3,12 @@
  */
 package fi.tnie.db;
 
-import fi.tnie.db.expr.AbstractTableReference;
+
+import fi.tnie.db.expr.NonJoinedTable;
 import fi.tnie.db.expr.OrdinaryIdentifier;
 
 public interface QueryContext {
 
-	OrdinaryIdentifier correlationName(AbstractTableReference tref);
+	OrdinaryIdentifier correlationName(NonJoinedTable tref);
 
 }

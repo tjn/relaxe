@@ -115,8 +115,11 @@ public class QueryTest {
 												
 				qo.setFrom(new From(mr));
 				qo.setSelect(p);
+								
+				mr.addAll(p.getSelectList());				
+//				p.getSelectList().add(e)
+//				mr.getSelectList().copyTo(p.getSelectList());
 				
-				mr.getSelectList().copyTo(p.getSelectList());
 				
 				String qs = qo.generate();
 				

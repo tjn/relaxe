@@ -8,7 +8,13 @@ public class SelectListElement
 	
 	private ValueExpression expr;
 	private ColumnName newName;
+	private ColumnName name;
 	
+	public SelectListElement(SelectListElement e) {
+		this(e.getValue(), null);
+		this.name = e.getColumnName();
+	}
+			
 	public SelectListElement(ValueExpression expr) {
 		this(expr, null);
 	}
@@ -23,9 +29,22 @@ public class SelectListElement
 		this.expr = expr;
 		
 		if (newName != null) {
-			this.newName = new SimpleColumnName(newName);	
+			this.newName = new ColumnName(newName);	
 		}		
 	}
+	
+	public ColumnName getColumnName() {
+		return 
+			(this.newName != null) ? this.newName : 
+			(this.name != null) ? this.name :
+			null;		
+	}
+	
+	
+	public ValueExpression getValue() {
+		return this.expr;
+	}
+	
 
 //	@Override
 //	public void generate(SimpleQueryContext qc, StringBuffer dest) {
@@ -47,5 +66,6 @@ public class SelectListElement
 			newName.traverse(vc, v);			
 		}	
 	}
+	
 	
 }

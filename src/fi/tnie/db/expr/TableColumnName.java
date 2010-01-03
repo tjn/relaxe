@@ -6,20 +6,19 @@ package fi.tnie.db.expr;
 import fi.tnie.db.meta.Column;
 
 public class TableColumnName
-	extends OrdinaryIdentifier 
-	implements ColumnName {
+	extends ColumnName {
 	
-	private Column column;
+	private Column column;	
 	
 	public TableColumnName(Column column) {
 		super(column.getName());
 		setColumn(column);
 	}
 
-	@Override
-	public String getColumnName() {
-		return getName();
-	}
+//	@Override
+//	public String getColumnName() {
+//		return getName();
+//	}
 
 	@Override
 	public String getTerminalSymbol() {

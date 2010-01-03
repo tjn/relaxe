@@ -5,7 +5,7 @@ package fi.tnie.db.expr;
 
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.expr.SetOperator.Name;
+import fi.tnie.db.expr.SetOperator.Op;
 
 /**
  * Top-level SELECT -statement
@@ -79,6 +79,7 @@ public class DefaultSubselect
 		this.select = select;
 	}
 
+	@Override
 	public Select getSelect() {
 		return select;
 	}
@@ -132,6 +133,7 @@ public class DefaultSubselect
 	}
 
 	
+	@Override
 	public String generate() {
 		StringBuffer dest = new StringBuffer();
 		ElementVisitor v = new QueryGenerator(dest);
@@ -140,26 +142,26 @@ public class DefaultSubselect
 	}
 	
 	public SetOperator unionAll(DefaultSubselect rp) {
-		return new SetOperator(Name.UNION, true, this, rp);
+		return new SetOperator(Op.UNION, true, this, rp);
 	}
 	
 	public SetOperator union(DefaultSubselect rp) {
-		return new SetOperator(Name.UNION, false, this, rp);
+		return new SetOperator(Op.UNION, false, this, rp);
 	}
 	
 	public SetOperator intersect(DefaultSubselect rp) {
-		return new SetOperator(Name.INTERSECT, false, this, rp);
+		return new SetOperator(Op.INTERSECT, false, this, rp);
 	}
 	
 	public SetOperator intersectAll(DefaultSubselect rp) {
-		return new SetOperator(Name.INTERSECT, true, this, rp);
+		return new SetOperator(Op.INTERSECT, true, this, rp);
 	}
 	
 	public SetOperator except(DefaultSubselect rp) {
-		return new SetOperator(Name.EXCEPT, false, this, rp);
+		return new SetOperator(Op.EXCEPT, false, this, rp);
 	}
 	
 	public SetOperator exceptAll(DefaultSubselect rp) {
-		return new SetOperator(Name.EXCEPT, true, this, rp);
+		return new SetOperator(Op.EXCEPT, true, this, rp);
 	}
 }

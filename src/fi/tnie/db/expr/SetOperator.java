@@ -3,44 +3,35 @@
  */
 package fi.tnie.db.expr;
 
+import fi.tnie.db.expr.op.BinaryOperator;
+
 public class SetOperator
-	extends CompoundElement
+	extends BinaryOperator
 	implements Subselect {
 	
-	private Name operator;
+	private Op operator;
 	private Keyword all;
 	private Subselect left;
 	private Subselect right;
 	
-	public enum Name
-		implements Element {
-		UNION,
-		INTERSECT,
-		EXCEPT;
+	public enum Op {
+		UNION(Keyword.UNION),
+		INTERSECT(Keyword.INTERSECT),
+		EXCEPT(Keyword.EXCEPT),
+		;
 		
-		private Keyword operator;
+		private Keyword name;
 		
-		private Name() {
-			this.operator = Keyword.valueOf(this.toString());
-		}
-		
-		@Override
-		public void traverse(VisitContext vc, ElementVisitor v) {
-			vc = v.start(vc, this);
-			this.operator.traverse(vc, v);
-		}
-		
-		@Override
-		public String getTerminalSymbol() {			
-			return null;
+		private Op(Keyword name) {
+			this.name = name;
 		}
 	}
 
-	public SetOperator(Name operator, boolean all, Subselect left, Subselect right) {
-		super();
+	public SetOperator(Op operator, boolean all, Subselect left, Subselect right) {
+		super(operator.name, left, right);
 		
 		if (operator == null) {
-			throw new NullPointerException("'operator' must not be null");
+			throw new NullPointerException("'name' must not be null");
 		}
 		
 		if (left == null) {
@@ -60,7 +51,7 @@ public class SetOperator
 //	@Override
 //	public void generate(SimpleQueryContext qc, StringBuffer dest) {
 //		left.generate(qc, dest);
-//		operator.generate(qc, dest);
+//		name.generate(qc, dest);
 //		
 //		if (isAll()) {
 //			dest.append("ALL ");			
@@ -78,15 +69,20 @@ public class SetOperator
 	}	
 	
 	@Override
-	public void traverseContent(VisitContext vc, ElementVisitor v) {
+	public void traverse(VisitContext vc, ElementVisitor v) {
+		
+		v.start(vc, this);
+				
 		left.traverse(vc, v);
-		operator.traverse(vc, v);
+		operator.name.traverse(vc, v);
 		
 		if (this.all != null) {
 			this.all.traverse(vc, v);						
 		}
 		
 		right.traverse(vc, v);
+		
+		v.end(this);
 	}
 		
 	@Override

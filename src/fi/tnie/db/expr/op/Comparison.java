@@ -3,45 +3,31 @@
  */
 package fi.tnie.db.expr.op;
 
-import fi.tnie.db.expr.Element;
-import fi.tnie.db.expr.ElementVisitor;
 import fi.tnie.db.expr.Predicate;
+import fi.tnie.db.expr.Symbol;
 import fi.tnie.db.expr.ValueExpression;
-import fi.tnie.db.expr.VisitContext;
 
 public class Comparison
-	extends Operator
+	extends BinaryOperator
 	implements Predicate {
 		
-	public enum Op
-		implements Element {
-		EQ("="),
-		LE("<"),
-		GE(">"),
-		LT("<="),
-		GT(">="),
+	public enum Op {
+		EQ(Symbol.EQUALS),
+		LE(Symbol.LESS_OR_EQUAL),
+		GE(Symbol.GREATER_OR_EQUAL),
+		LT(Symbol.LESS_THAN),
+		GT(Symbol.GREATER_THAN),
 		;
 				
-		private String symbol;
+		private Symbol symbol;
 		
-		private Op(String symbol) {
+		private Op(Symbol symbol) {
 			this.symbol = symbol;			
-		}
-		
-		@Override
-		public String getTerminalSymbol() {
-			return this.symbol;
-		}
-
-		@Override
-		public void traverse(VisitContext vc, ElementVisitor v) {
-			v.start(vc, this);
 		}
 	}
 	
 	private Comparison(Op op, ValueExpression a, ValueExpression b) {
-		super(op, a, b);
-		// TODO: check types
+		super(op.symbol, a, b);	
 	}	
 	
 	public static Comparison eq(ValueExpression a, ValueExpression b) {

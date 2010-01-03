@@ -3,13 +3,13 @@
  */
 package fi.tnie.db.expr.op;
 
-import fi.tnie.db.expr.Element;
+import fi.tnie.db.expr.Token;
 import fi.tnie.db.expr.ValueExpression;
 
 public class ValueOperator
-	extends Operator {
+	extends BinaryOperator {
 
-	public ValueOperator(Element symbol, ValueExpression left, ValueExpression right) {
+	public ValueOperator(Token symbol, ValueExpression left, ValueExpression right) {
 		super(symbol, left, right);	
 	}
 }

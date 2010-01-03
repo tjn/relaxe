@@ -7,11 +7,12 @@ import java.util.List;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Table;
 
-public class TableReference extends AbstractTableReference {
+public class TableReference 
+	extends NonJoinedTable {
 	private Table table;
 	
 	private ElementList<ColumnName> columnNameList;
-	private ElementList<SelectListElement> selectList;
+//	private ElementList<SelectListElement> selectList;
 	
 	private Name tableName;
 		
@@ -27,8 +28,7 @@ public class TableReference extends AbstractTableReference {
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
-		getTableName().traverse(vc, v);
-		getCorrelationName(v.getContext()).traverse(vc, v);
+		getTableName().traverse(vc, v);		
 	}
 	
 	public Table getTable() {
@@ -36,7 +36,7 @@ public class TableReference extends AbstractTableReference {
 	}
 
 	@Override
-	public ElementList<? extends ColumnName> getColumnNameList() {
+	public ElementList<? extends ColumnName> getUncorrelatedColumnNameList() {
 		if (columnNameList == null) {
 			this.columnNameList = new ElementList<ColumnName>();
 			
@@ -49,23 +49,6 @@ public class TableReference extends AbstractTableReference {
 		
 		return columnNameList;
 	}
-
-	@Override
-	public ElementList<SelectListElement> getSelectList() {
-		// TODO: use *?
-		if (selectList == null) {
-			ElementList<SelectListElement> el = new ElementList<SelectListElement>();
-			List<SelectListElement> cl = el.getContent();
-			
-			for (Column c : getTable().columns().values()) {
-				cl.add(new SelectListElement(new TableColumnExpr(this, c)));
-			}
-			
-			this.selectList = el;
-		};
-				
-		return selectList;
-	}
 		
 	public Name getTableName() {
 		if (tableName == null) {
@@ -73,6 +56,14 @@ public class TableReference extends AbstractTableReference {
 		}
 
 		return tableName;
+	}
+
+	@Override
+	public void addAll(ElementList<SelectListElement> dest) {
+		for (Column	c : getTable().columns().values()) {
+			dest.add(new SelectListElement(
+				new TableColumnExpr(this, c)));
+		}
 	}
 		
 }

@@ -4,9 +4,10 @@
 package fi.tnie.db.expr;
 
 public class NestedTableReference
-	extends AbstractTableReference {
+	extends NonJoinedTable {
 
 	private SelectQuery query;
+			
 			
 	public NestedTableReference(SelectQuery query) {
 		super();
@@ -26,40 +27,37 @@ public class NestedTableReference
 	}
 
 	@Override
-	public ElementList<? extends ColumnName> getColumnNameList() {
-		
-//		getQuery().getSelect().getSelectList().		
-//		return query.getColumnNameList();
-		// TODO:
-		return null;
+	public ElementList<? extends ColumnName> getUncorrelatedColumnNameList() {
+		return getQuery().getSelect().getColumnNameList();
 	}
 
-	@Override
-	public ElementList<SelectListElement> getSelectList() {
-//		TODO: wild-card:
-//		getCorrelationName().*
-		
-		// this is incorrect:
-//		should use getCorrelationName().* or 
-//		qualify column names of the query with new correlation symbol
-		
-		return getQuery().getSelect().getSelectList();
-	}
+//	@Override
+//	public ElementList<SelectListElement> getSelectList() {
+////		TODO: wild-card:
+////		getCorrelationName().*
+//		
+//		// this is incorrect:
+////		should use getCorrelationName().* or 
+////		qualify column names of the query with new correlation symbol
+//		
+//		return getQuery().getSelect().getSelectList();
+//	}
 	
 	
 	@Override
-	public void traverse(VisitContext vc, ElementVisitor v) {
-		v.start(vc, this);
-		
-		Identifier cn = getCorrelationName(v.getContext());
-		
+	protected void traverseContent(VisitContext vc, ElementVisitor v) {
 		Symbol.PAREN_LEFT.traverse(vc, v);
 		this.getQuery().traverse(vc, v);
 		Symbol.PAREN_RIGHT.traverse(vc, v);
-		Keyword.AS.traverse(vc, v);
-		cn.traverse(vc, v);
-		
-		v.end(this);
 	}
+
+	@Override
+	public void addAll(ElementList<SelectListElement> dest) {				
+		for (final SelectListElement e : getQuery().getSelect().getSelectList().getContent()) {						
+			dest.add(new SelectListElement(e));
+		}				
+	}
+
+	
 	
 }

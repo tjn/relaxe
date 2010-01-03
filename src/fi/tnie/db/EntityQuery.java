@@ -20,7 +20,6 @@ import fi.tnie.db.expr.ElementList;
 import fi.tnie.db.expr.From;
 import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.SelectListElement;
-import fi.tnie.db.expr.Subselect;
 import fi.tnie.db.expr.TableColumnExpr;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.meta.BaseTable;

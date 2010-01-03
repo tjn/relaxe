@@ -7,15 +7,21 @@ public abstract class ColumnExpr
 	extends CompoundElement implements ValueExpression {
 
 	private AbstractTableReference table;	
+	private ColumnName columnName;
 
-	public ColumnExpr(AbstractTableReference table) {
+	public ColumnExpr(AbstractTableReference table, ColumnName columnName) {
 		super();
 		this.table = table;		
+		this.columnName = columnName;
 	}
 
 	public AbstractTableReference getTable() {
 		return this.table;
 	}
 	
-	public abstract String getName();
+	public ColumnName getColumnName() {
+		return columnName;
+	}
+	
+//	public abstract String getName();
 }
