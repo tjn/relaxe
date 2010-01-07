@@ -34,7 +34,6 @@ public class ForeignKeyJoinCondition
 		getCondition().traverse(vc, v);
 	}
 
-
 	private Predicate getCondition() {
 		if (this.condition == null) {
 			Predicate jp = null;

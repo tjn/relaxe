@@ -12,7 +12,6 @@ public class TableReference
 	private Table table;
 	
 	private ElementList<ColumnName> columnNameList;
-//	private ElementList<SelectListElement> selectList;
 	
 	private Name tableName;
 		
@@ -29,6 +28,7 @@ public class TableReference
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
 		getTableName().traverse(vc, v);		
+		getCorrelationClause().traverse(vc, v);
 	}
 	
 	public Table getTable() {
@@ -61,9 +61,13 @@ public class TableReference
 	@Override
 	public void addAll(ElementList<SelectListElement> dest) {
 		for (Column	c : getTable().columns().values()) {
-			dest.add(new SelectListElement(
+			dest.add(new ValueElement(
 				new TableColumnExpr(this, c)));
 		}
 	}
-		
+	
+	@Override
+	public int getColumnCount() {		
+		return getTable().columns().size();
+	}
 }

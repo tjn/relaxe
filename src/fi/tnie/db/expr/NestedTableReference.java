@@ -3,11 +3,13 @@
  */
 package fi.tnie.db.expr;
 
+import java.util.List;
+
+
 public class NestedTableReference
 	extends NonJoinedTable {
 
-	private SelectQuery query;
-			
+	private SelectQuery query;			
 			
 	public NestedTableReference(SelectQuery query) {
 		super();
@@ -32,7 +34,7 @@ public class NestedTableReference
 	}
 
 //	@Override
-//	public ElementList<SelectListElement> getSelectList() {
+//	public ElementList<ValueElement> getSelectList() {
 ////		TODO: wild-card:
 ////		getCorrelationName().*
 //		
@@ -42,21 +44,26 @@ public class NestedTableReference
 //		
 //		return getQuery().getSelect().getSelectList();
 //	}
-	
-	
+		
 	@Override
 	protected void traverseContent(VisitContext vc, ElementVisitor v) {
 		Symbol.PAREN_LEFT.traverse(vc, v);
 		this.getQuery().traverse(vc, v);
 		Symbol.PAREN_RIGHT.traverse(vc, v);
+		getCorrelationClause().traverse(vc, v);
 	}
 
 	@Override
-	public void addAll(ElementList<SelectListElement> dest) {				
-		for (final SelectListElement e : getQuery().getSelect().getSelectList().getContent()) {						
-			dest.add(new SelectListElement(e));
-		}				
+	public void addAll(ElementList<SelectListElement> dest) {
+		getQuery().getSelect().getSelectList().copyTo(dest);
 	}
+
+	@Override
+	public int getColumnCount() {
+		return getQuery().getSelect().getColumnCount();
+	}
+
+
 
 	
 	

@@ -34,6 +34,9 @@ public class FullSelect
 		return getSubselect().getSelect();
 	}
 	
+	
+	
+	
 	@Override
 	protected void traverseContent(VisitContext vc, ElementVisitor v) {
 		getSubselect().traverse(vc, v);
@@ -43,11 +46,5 @@ public class FullSelect
 		if (o != null) {
 			o.traverse(vc, v);		
 		}				
-	}
-
-	@Override
-	public String generate() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

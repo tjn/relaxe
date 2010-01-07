@@ -30,9 +30,6 @@ public class NestedSelect
 
 	@Override
 	public Select getSelect() {
-		
-		
-		
 		return this.inner.getSelect();
 	}
 }

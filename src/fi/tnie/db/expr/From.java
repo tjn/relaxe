@@ -35,4 +35,6 @@ public class From extends AbstractClause {
 	protected Element getContent() {		
 		return getTableReferenceList();
 	}
+	
+	
 }

@@ -10,7 +10,7 @@ public class Select
 	private boolean distinct;	
 	
 	public Select() {
-		super(Keyword.SELECT);		
+		super(Keyword.SELECT);
 	}
 
 //	@Override
@@ -24,6 +24,7 @@ public class Select
 //		getSelectList().generate(qc, dest);
 //		dest.append(" ");
 //	}
+	
 
 	public ElementList<SelectListElement> getSelectList() {
 		if (selectList == null) {
@@ -41,19 +42,38 @@ public class Select
 		return distinct;
 	}
 	
-	public SelectListElement add(ValueExpression expr) {
+	public SelectListElement add(SelectListElement e) {
+		if (e == null) {
+			throw new NullPointerException("'e' must not be null");
+		}
+		
+		getSelectList().add(e);
+		return e;
+	}
+	
+	public ValueElement add(ValueExpression expr) {
 		return add(expr, null);
 	}
 	
-	public SelectListElement add(ValueExpression expr, String newName) {
+	public ValueElement add(ValueExpression expr, String newName) {
 		if (expr == null) {
 			throw new NullPointerException("'expr' must not be null");
 		}
 		
-		SelectListElement e = new SelectListElement(expr, newName);
+		ValueElement e = new ValueElement(expr, newName);
 		getSelectList().add(e);
 		return e;
-	}	
+	}
+		
+	public int getColumnCount() {
+		int cc = 0;
+		
+		for (SelectListElement e : getSelectList().getContent()) {
+			cc += e.getColumnNames().size();
+		}
+		
+		return cc;
+	}
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
@@ -78,7 +98,7 @@ public class Select
 			cl = new ElementList<ColumnName>();
 			
 			for (SelectListElement e : p.getContent()) {
-				cl.add(e.getColumnName());
+				cl.getContent().addAll(e.getColumnNames());				
 			}
 		}
 		

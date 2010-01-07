@@ -20,6 +20,7 @@ import fi.tnie.db.expr.ElementList;
 import fi.tnie.db.expr.From;
 import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.SelectListElement;
+import fi.tnie.db.expr.ValueElement;
 import fi.tnie.db.expr.TableColumnExpr;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.meta.BaseTable;
@@ -81,7 +82,7 @@ public class EntityQuery<K extends Enum<K>, E extends Entity<K, E>>
 			
 			for (K k : this.projection.keySet()) {
 				Column col = cm.get(k.toString());
-				p.add(new SelectListElement(new TableColumnExpr(tref, col)));
+				p.add(new ValueElement(new TableColumnExpr(tref, col)));
 			}
 			
 			q.setSelect(s);

@@ -4,6 +4,7 @@
 package fi.tnie.db.expr;
 
 import fi.tnie.db.QueryContext;
+import fi.tnie.db.meta.ForeignKey;
 
 public class JoinedTable
 	extends AbstractTableReference {
@@ -12,6 +13,32 @@ public class JoinedTable
 	private AbstractTableReference right;
 	private JoinType joinType;
 	private JoinCondition joinCondition;
+	
+	private SelectListElement all;
+	
+	public JoinedTable(ForeignKey fk) {
+		this(fk, JoinType.INNER);
+	}
+	
+	public JoinedTable(ForeignKey fk, JoinType joinType) {
+		this(fk, joinType, false);				
+	}
+	
+	public JoinedTable(ForeignKey fk, JoinType joinType, boolean invert) {
+		this(joinType);
+		
+		if (invert) {
+			this.left = new TableReference(fk.getReferenced());
+			this.right = new TableReference(fk.getReferencing());
+		}
+		else {
+			this.left = new TableReference(fk.getReferencing());
+			this.right = new TableReference(fk.getReferenced());
+			
+		}
+		this.joinType = joinType;
+		this.joinCondition = new ForeignKeyJoinCondition(fk, this.left, this.right);
+	}
 				
 	public JoinedTable(AbstractTableReference left, AbstractTableReference right,
 			JoinType joinType, JoinCondition joinCondition) {
@@ -54,11 +81,11 @@ public class JoinedTable
 //		dest.append(") ");		
 //	}
 
-	protected AbstractTableReference getLeft() {
+	public AbstractTableReference getLeft() {
 		return this.left;
 	}
 	
-	protected AbstractTableReference getRight() {
+	public AbstractTableReference getRight() {
 		return this.right;
 	}
 
@@ -107,8 +134,8 @@ public class JoinedTable
 	}
 
 //	@Override
-//	public ElementList<SelectListElement> getSelectList() {
-//		ElementList<SelectListElement> el = new ElementList<SelectListElement>();
+//	public ElementList<ValueElement> getSelectList() {
+//		ElementList<ValueElement> el = new ElementList<ValueElement>();
 //		
 //		copyElementList(getLeft(), el);
 //		copyElementList(getRight(), el);
@@ -120,7 +147,8 @@ public class JoinedTable
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
 		getLeft().traverse(vc, v);
 		getJoinType().traverse(vc, v);
-		getRight().traverse(vc, v);
+		getRight().traverse(vc, v);		
+		Keyword.ON.traverse(vc, v);
 		getJoinCondition().traverse(vc, v);	
 	}
 
@@ -129,6 +157,8 @@ public class JoinedTable
 		getLeft().addAll(dest);
 		getRight().addAll(dest);
 	}
+	
+	
 	
 	public NestedJoin nest() {
 		return new NestedJoin(this);
@@ -142,5 +172,27 @@ public class JoinedTable
 	@Override
 	public final OrdinaryIdentifier getCorrelationName(QueryContext qctx) {
 		return null;
+	}
+	
+	@Override
+	public int getColumnCount() {
+		int lc = getLeft().getColumnCount();
+		int rc = getRight().getColumnCount();
+				
+		return lc + rc;
+	}
+
+	@Override
+	public SelectListElement getAllColumns() {		 
+		if (all == null) {
+			all = new AllColumns() {
+				@Override
+				protected TableRefList getTableRefs() {				
+					return JoinedTable.this;
+				};			
+			};			
+		}
+			
+		return all;
 	}
 }

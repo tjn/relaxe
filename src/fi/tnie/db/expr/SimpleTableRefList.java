@@ -5,7 +5,7 @@ package fi.tnie.db.expr;
 
 public class SimpleTableRefList 
 	extends ElementList<AbstractTableReference>
-	implements Element
+	implements Element, TableRefList
 {
 	public SimpleTableRefList() {
 		super();
@@ -14,5 +14,17 @@ public class SimpleTableRefList
 	public SimpleTableRefList(AbstractTableReference tref) {
 		this();
 		getContent().add(tref);
-	}	
+	}
+
+	@Override
+	public int getCount() {
+		return getContent().size();
+	}
+	
+	@Override
+	public AbstractTableReference getItem(int i) {		
+		return getContent().get(i);
+	}
+	
+	
 }

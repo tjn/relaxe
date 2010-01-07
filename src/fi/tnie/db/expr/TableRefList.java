@@ -4,7 +4,8 @@
 package fi.tnie.db.expr;
 
 public interface TableRefList
-	extends Element {
-
+	extends Element	{
 	
+	public int getCount();
+	public AbstractTableReference getItem(int i);
 }

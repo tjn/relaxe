@@ -22,6 +22,8 @@ public class DefaultSubselect
 	private GroupBy groupBy;
 	private Having having;
 	
+	private SelectListElement all = null;
+	
 	public DefaultSubselect() {
 	}
 				
@@ -163,5 +165,22 @@ public class DefaultSubselect
 	
 	public SetOperator exceptAll(DefaultSubselect rp) {
 		return new SetOperator(Op.EXCEPT, true, this, rp);
+	}
+	
+	public void selectAll() {		 	
+		getSelect().getSelectList().set(getAll());
+	}
+	
+	private SelectListElement getAll() {
+		if (all == null) {
+			all = new AllColumns() {
+				@Override
+				protected TableRefList getTableRefs() {
+					return getFrom().getTableReferenceList();				
+				}			
+			};			
+		}
+
+		return all;
 	}
 }

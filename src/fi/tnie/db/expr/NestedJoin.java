@@ -39,4 +39,14 @@ public class NestedJoin
 	public final OrdinaryIdentifier getCorrelationName(QueryContext qctx) {		
 		return null;
 	}
+
+	@Override
+	public int getColumnCount() {
+		return this.content.getColumnCount();
+	}
+
+	@Override
+	public SelectListElement getAllColumns() {
+		return this.content.getAllColumns();
+	}
 }

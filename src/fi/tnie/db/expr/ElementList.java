@@ -21,6 +21,8 @@ public class ElementList<E extends Element>
 	public ElementList() {
 		this(Symbol.COMMA);
 	}
+	
+	
 
 //	@Override
 //	public void generate(SimpleQueryContext qc, StringBuffer dest) {
@@ -60,6 +62,16 @@ public class ElementList<E extends Element>
 
 	public boolean add(E e) {
 		return getContent().add(e);
+	}
+	
+	
+	public void set(E e) {
+		if (e == null) {
+			throw new NullPointerException("'e' must not be null");
+		}
+		
+		getContent().clear();
+		add(e);
 	}
 	
 	public boolean isEmpty() {

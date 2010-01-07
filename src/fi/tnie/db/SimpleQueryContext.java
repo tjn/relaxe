@@ -3,6 +3,7 @@
  */
 package fi.tnie.db;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,26 +12,43 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.expr.AbstractTableReference;
+import fi.tnie.db.expr.Element;
+import fi.tnie.db.expr.Expression;
+import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.NonJoinedTable;
 import fi.tnie.db.expr.OrdinaryIdentifier;
+import fi.tnie.db.expr.ValueElement;
 
 public class SimpleQueryContext implements QueryContext {
 
 	private int count = 0;	
-	private Map<AbstractTableReference, OrdinaryIdentifier> nameMap;
 	private Set<String> names;
+	
+	private Map<NonJoinedTable, OrdinaryIdentifier> nameMap;		
+	private Map<ValueElement, Identifier> columnNameMap;	
+	private Map<NonJoinedTable, String> correlationNamePrefixMap;
+	
 	
 	private static Logger logger = Logger.getLogger(SimpleQueryContext.class);
 	
 	public SimpleQueryContext() {
-		super();
+		this(null);
 	}
 	
-	private String unique(String n) {
-		if (n == null) {
-			n = "R";
-		}
-		
+	public SimpleQueryContext(Map<NonJoinedTable, String> correlationNamePrefixMap) {
+		super();
+		this.correlationNamePrefixMap = correlationNamePrefixMap;
+	}
+	
+//	private String uniqueTableRef(String n) {
+//		return unique((n == null) ? "R" : n);
+//	}
+	
+	private String tableRefPrefix(String p) {
+		return (p == null) ? "R" : p;
+	}
+	
+	private String unique(String n) {		
 		StringBuffer nb = null;
 		Set<String> nm = getNames();
 		
@@ -63,11 +81,8 @@ public class SimpleQueryContext implements QueryContext {
 		OrdinaryIdentifier cn = getNameMap().get(tref);
 		
 		if (cn == null) {
-			String prefix = null; // TODO: derive from table name:
-			String n = unique(prefix);
-			cn = new OrdinaryIdentifier(n);			
-			getNames().add(n);
-			getNameMap().put(tref, cn);			
+			cn = register(tableRefPrefix(getPrefix(tref)));
+			getNameMap().put(tref, cn);											
 //			logger().debug("added symbol for: " + tref + ": " + n);
 //			logger().debug("all names: " + getNames());
 //			logger().debug("symbol-map: " + getNameMap());
@@ -79,69 +94,49 @@ public class SimpleQueryContext implements QueryContext {
 		return cn;
 	}
 	
-//	public String start(AbstractTableReference tref) {
-//		return start(tref, tref.getCorrelationNamePrefix());
-//	}
+	@Override	
+	public Identifier generateColumnName(ValueElement	e) {
+		if (e == null) {
+			throw new NullPointerException("'e' must not be null");
+		}
+		
+		Identifier cn = getColumnNameMap().get(e);
+		
+		if (cn == null) {			
+			cn = register("C");
+			getColumnNameMap().put(e, cn);
+			
+//			cn = new OrdinaryIdentifier(n);			
+//			getNames().add(n);
+//			getColumnNameMap().put(e, cn);			
+//			logger().debug("added symbol for: " + tref + ": " + n);
+//			logger().debug("all names: " + getNames());
+//			logger().debug("symbol-map: " + getNameMap());
+		}
+		else {
+			logger().debug("column name for: " + e + ": " + cn);
+		}
+		
+		return cn;
+	}	
 	
-//	public String start(AbstractTableReference tref, String cn) {
-//		if (tref == null) {
-//			throw new NullPointerException("'tref' must not be null");
-//		}
-//		
-//		if (cn == null) {
-//			cn = "r";
-//		}
-//		
-//		String k = unique(cn);
-////		getNameMap().put(k, tref);		
-////		getNameMap().put(tref, k);
-//		add(tref, k);
-//		
-//		return k;		
-//	}
 	
-//	private void add(AbstractTableReference tref, String cn) {
-//		getNameMap().put(tref, cn);
-//		getNames().add(cn);
-//	}
-//	
-//	private String remove(AbstractTableReference tref) {
-//		String cn = getNameMap().remove(tref);
-//		getNames().remove(cn);
-//		return cn;
-//	}	
-	
-//	public void end(AbstractTableReference tref) {
-//		
-////		AbstractTableReference removed = getNameMap().remove(tref);
-////		
-////		if (removed == null) {
-////			throw new IllegalStateException("popping table " + tref + " which does not exist");
-////		}
-//		
-//		String removed = remove(tref);
-//		
-//		if (removed == null) {
-//			throw new IllegalStateException("popping table-ref " + tref + " which does not exist");
-//		}
-//	}
-
-//	private Map<String, AbstractTableReference> getNameMap() {
-//		if (refNameMap == null) {
-//			refNameMap = new LinkedHashMap<String, AbstractTableReference>();			
-//		}
-//		
-//		return refNameMap;
-//	}
-	
-	private Map<AbstractTableReference, OrdinaryIdentifier> getNameMap() {
+	private Map<NonJoinedTable, OrdinaryIdentifier> getNameMap() {
 		if (nameMap == null) {
-			nameMap = new LinkedHashMap<AbstractTableReference, OrdinaryIdentifier>();			
+			nameMap = new LinkedHashMap<NonJoinedTable, OrdinaryIdentifier>();			
 		}
 		
 		return nameMap;
 	}
 
+	private Map<ValueElement, Identifier> getColumnNameMap() {
+		if (columnNameMap == null) {
+			columnNameMap = new LinkedHashMap<ValueElement, Identifier>();			
+		}
+		
+		return columnNameMap;
+	}
+	
 	private Set<String> getNames() {
 		if (names == null) {
 			names = new HashSet<String>();			
@@ -153,4 +148,24 @@ public class SimpleQueryContext implements QueryContext {
 	public static Logger logger() {
 		return SimpleQueryContext.logger;
 	}
+
+	public Map<NonJoinedTable, String> getCorrelationNamePrefixMap() {
+		if (correlationNamePrefixMap == null) {
+			correlationNamePrefixMap = new HashMap<NonJoinedTable, String>();			
+		}
+
+		return correlationNamePrefixMap;
+	}
+	
+	public String getPrefix(NonJoinedTable tref) {
+		Map<NonJoinedTable, String> pm = this.correlationNamePrefixMap;		
+		return (pm == null) ? null : pm.get(tref);
+	}
+	
+	private OrdinaryIdentifier register(String prefix) {
+		String n = unique(prefix);
+		OrdinaryIdentifier cn = new OrdinaryIdentifier(n);		
+		getNames().add(n);
+		return cn;
+	}	
 }

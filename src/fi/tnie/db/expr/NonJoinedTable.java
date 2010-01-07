@@ -4,14 +4,15 @@
 package fi.tnie.db.expr;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 import fi.tnie.db.QueryContext;
 
 public abstract class NonJoinedTable
 	extends AbstractTableReference {
 	
 	private CorrelationClause correlationClause;
+	private SelectListElement all;
 
 	@Override
 	public OrdinaryIdentifier getCorrelationName(QueryContext qctx) {
@@ -25,19 +26,19 @@ public abstract class NonJoinedTable
 			return getUncorrelatedColumnNameList();
 		}
 		
-		// TODO:
-		
-		return null;		
+		return getCorrelationClause().getNames(); 		
 	}
 
 	public class CorrelationClause
 		extends CompoundElement
 		implements Clause {
-				
+		
+		private ElementList<ColumnName> names;
+		
 		/**
 		 * 
 		 */		
-		private Map<SelectListElement, ColumnName> columnNameMap;
+		private Map<ColumnName, ColumnName> columnNameMap;
 			
 		private CorrelationClause() {
 			super();
@@ -54,42 +55,81 @@ public abstract class NonJoinedTable
 		@Override
 		public void traverse(VisitContext vc, ElementVisitor v) {
 			v.start(vc, this);
-			getCorrelationName(v.getContext());
 			
-			Map<SelectListElement, ColumnName> nm = this.columnNameMap;
+			traverseContent(vc, v);
 			
-			if ((nm != null) && (!nm.isEmpty())) {				
-												
+			Identifier cn = getCorrelationName(v.getContext());
+			cn.traverse(vc, v);
+
+			
+			if (altersColumnNames()) {
+				Symbol.PAREN_LEFT.traverse(vc, v);
+				getNames().traverse(vc, v);
+				Symbol.PAREN_RIGHT.traverse(vc, v);
 			}
 			
 			v.end(this);
 		}
+		
+		
+		private ElementList<ColumnName> getNames() {
+			if (!altersColumnNames()) {
+				return null;				
+			}
+			
+			if (names == null) {
+				names = new ElementList<ColumnName>();
+			}
+			else {
+				names.getContent().clear();
+			}
+			
+			ElementList<SelectListElement> elems = new ElementList<SelectListElement>();				
+			addAll(elems);
+			
+			List<ColumnName> nl = this.names.getContent();			
+			
+			for (SelectListElement e : elems.getContent()) {
+				for (ColumnName n : e.getColumnNames()) {
+					nl.add(getColumnName(n));
+				}
+			}			
+
+			return names;
+		}		
 	
-		public Map<SelectListElement, ColumnName> getColumnNameMap() {
+		public Map<ColumnName, ColumnName> getColumnNameMap() {
 			if (columnNameMap == null) {
-				columnNameMap = new HashMap<SelectListElement, ColumnName>();				
+				columnNameMap = new HashMap<ColumnName, ColumnName>();				
 			}
 	
 			return columnNameMap;
 		}
 		
-		private ColumnName getColumnName(SelectListElement e) {
-			ColumnName cn = getColumnNameMap().get(e);
-			
-			if (cn == null) {
-				cn = e.getColumnName();
-			}
-			
-			return cn;
+		private ColumnName getColumnName(ColumnName n) {
+			ColumnName cn = getColumnNameMap().get(n);			
+			return (cn == null) ? n : cn;
 		}
 	}
 
-	public Element getCorrelationClause() {
+	public CorrelationClause getCorrelationClause() {
 		if (correlationClause == null) {
 			correlationClause = new CorrelationClause();			
 		}
 
 		return correlationClause;		
 	}
+	
+	@Override	
+	protected abstract void traverseContent(VisitContext vc, ElementVisitor v);
 
+	@Override
+	public SelectListElement getAllColumns() {
+		if (all == null) {
+			all = new TableColumns(this);
+		}
+			
+		return all;
+	}
+	
 }

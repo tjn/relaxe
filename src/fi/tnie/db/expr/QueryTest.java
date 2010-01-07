@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.impl.DefaultCatalogFactory;
 import fi.tnie.db.meta.impl.MySQLCatalogFactory;
@@ -35,7 +36,7 @@ public class QueryTest {
 		try {
 			if (args.length < 3) {
 				System.err.println("usage:\n" +
-						"java " + QueryTest.class.getName() + " <driver-symbol> <url> <config-file>");
+						"java " + QueryTest.class.getName() + " <driver-class> <url> <config-file>");
 				System.exit(-1);
 			}			
 			
@@ -109,27 +110,38 @@ public class QueryTest {
 				
 				qo = new DefaultSubselect();
 				
-				TableReference mr = new TableReference(m);
-				
-				Select p = new Select();
-												
+				TableReference mr = new TableReference(m);				
+				Select p = new Select();												
 				qo.setFrom(new From(mr));
 				qo.setSelect(p);
 								
 				mr.addAll(p.getSelectList());				
 //				p.getSelectList().add(e)
 //				mr.getSelectList().copyTo(p.getSelectList());
+																
+				logger().debug("qs 1: " + qo.generate());
 				
+				qo.selectAll();
+				logger().debug("qs*: " + qo.generate());
+								
+				qo.getSelect().getSelectList().set(new TableColumns(mr));
+				logger().debug("qs r.*: " + qo.generate());							
 				
-				String qs = qo.generate();
+				ForeignKey fkm = mv.foreignKeys().get("FK_MV_MILL");				
+				JoinedTable jt = new JoinedTable(fkm);
 				
-				logger().debug("qs: " + qs);
+				qo.getSelect().getSelectList().getContent().clear();
+				qo.getSelect().add(jt.getLeft().getAllColumns());
+				qo.getSelect().add(jt.getRight().getAllColumns());
+				qo.setFrom(new From(jt));
+				
+				logger().debug("qs join: " + qo.generate());
 				
 ////				mr.getSelectList().
 //				
 //				
 //								
-////				p.getSelectList().add(new SelectListElement());
+////				p.getSelectList().add(new ValueElement());
 //				
 ////				qo.setTableRefList(new BaseTableReference(qc, m).asList());
 ////				logger().info("mill: " + qo.generate(qc));				

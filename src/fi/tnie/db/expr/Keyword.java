@@ -29,6 +29,7 @@ public enum Keyword implements Token {
 	OUTER,	
 	FULL,
 	JOIN,
+	ON,
 	ALL,
 	DISTINCT,
 	AS,

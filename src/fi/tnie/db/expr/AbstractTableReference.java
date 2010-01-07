@@ -11,14 +11,10 @@ public abstract class AbstractTableReference
 	implements TableRefList {
 								
 	public AbstractTableReference() {
-		super();				
+		super();
 	}
 	
 	public abstract OrdinaryIdentifier getCorrelationName(QueryContext qctx);
-
-//	public OrdinaryIdentifier getCorrelationName(QueryContext qctx) {
-//		return qctx.correlationName(this);
-//	}
 	
 	public AbstractTableReference innerJoin(AbstractTableReference right, JoinCondition jc) {
 		return new JoinedTable(this, right, JoinType.INNER, jc);
@@ -34,29 +30,27 @@ public abstract class AbstractTableReference
 	 * @return
 	 */
 	protected abstract ElementList<? extends ColumnName> getUncorrelatedColumnNameList();
-	
-	
+		
 	/**
 	 * List of (possibly) correlated column names.
 	 * 
 	 * @return
 	 */	
 	public abstract ElementList<? extends ColumnName> getColumnNameList();
-	
-	
-
-	
+		
 //	/**
 //	 * 
 //	 * @return
 //	 */
-//	public abstract ElementList<SelectListElement> getSelectList();
+//	public abstract ElementList<ValueElement> getSelectList();
 
-//	protected void copyElementList(AbstractTableReference src, ElementList<SelectListElement> dest) {
+//	protected void copyElementList(AbstractTableReference src, ElementList<ValueElement> dest) {
 //		if (src != null) {
 //			src.getSelectList().copyTo(dest);
 //		}
 //	}
+	
+	public abstract int getColumnCount();
 	
 	public abstract void addAll(ElementList<SelectListElement> dest);
 
@@ -66,8 +60,20 @@ public abstract class AbstractTableReference
 		traverseContent(vc, v);
 		v.end(this);		
 	}
-	
 
-	
-	
+	@Override
+	public final int getCount() {
+		return 1;
+	}
+
+	@Override
+	public AbstractTableReference getItem(int i) {		
+		if (i == 0) {
+			return this;
+		}
+		
+		throw new IndexOutOfBoundsException("expected 0, actual: " + i);		
+	}	
+
+	public abstract SelectListElement getAllColumns();
 }
