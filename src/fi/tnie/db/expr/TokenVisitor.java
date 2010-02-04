@@ -75,7 +75,7 @@ public class TokenVisitor implements ElementVisitor {
 	}
 
 	@Override
-	public VisitContext start(VisitContext vc, Name e) {
+	public VisitContext start(VisitContext vc, SchemaElementName e) {
 		return null;
 	}
 
@@ -119,6 +119,11 @@ public class TokenVisitor implements ElementVisitor {
 
 	@Override
 	public VisitContext start(VisitContext vc, ValueExpression e) {
+		return null;
+	}
+
+	@Override
+	public VisitContext start(VisitContext vc, Name e) {
 		return null;
 	}
 }

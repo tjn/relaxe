@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 
+
 /**
  * Represents scalar-valued select-list-element.
  *  
@@ -22,15 +23,19 @@ public class ValueElement
 	private ColumnName name;
 	
 	public ValueElement(ValueElement e) {
-		this(e.getValue(), null);
-		this.name = e.getColumnName();
+		this(e.getValue(), e.getColumnName());
 	}
 			
 	public ValueElement(ValueExpression expr) {
-		this(expr, null);
+		this(expr, (ColumnName) null);
 	}
 
-	public ValueElement(ValueExpression expr, final String newName) {
+	public ValueElement(ValueExpression expr, final String newName)
+		throws IllegalIdentifierException {		
+		this(expr, new ColumnName(newName));		
+	}
+	
+	public ValueElement(ValueExpression expr, final ColumnName newName) {		
 		super();
 		
 		if (expr == null) {
@@ -40,7 +45,7 @@ public class ValueElement
 		this.expr = expr;
 		
 		if (newName != null) {
-			this.newName = new ColumnName(newName);	
+			this.newName = newName;	
 		}		
 	}
 	
@@ -82,7 +87,7 @@ public class ValueElement
 	}
 
 	@Override
-	public List<ColumnName> getColumnNames() {				
+	public List<? extends ColumnName> getColumnNames() {				
 		return Collections.singletonList(getColumnName());
 	}
 

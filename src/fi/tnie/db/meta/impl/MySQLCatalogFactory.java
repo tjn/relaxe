@@ -11,7 +11,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.Environment;
+import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.util.StringListReader;
 
 public class MySQLCatalogFactory extends DefaultCatalogFactory {
@@ -34,8 +37,8 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
 		throws SQLException {
 		
 		logger().debug("enter");
-						
-		DefaultMutableCatalog catalog = new DefaultMutableCatalog();
+										
+		DefaultMutableCatalog catalog = new DefaultMutableCatalog(this);
 		
 		{
 			ResultSet schemas = meta.getCatalogs();
@@ -46,16 +49,16 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
 			
 			for (String n : names) {
 				if (this.schema == null || n.equalsIgnoreCase(this.schema)) {				
-					logger().debug("processing schema: " + n);				
-					DefaultMutableSchema s = createSchema(n, meta);
-					catalog.add(s);
-					logger().debug("schema: " + s.getQualifiedName());
+					logger().debug("processing schema: " + n);
+					Identifier sch = catalog.getEnvironment().createIdentifier(n);
+					DefaultMutableSchema s = createSchema(catalog, sch, meta);
+					logger().debug("schema: " + s.getUnqualifiedName());
 					populateSchema(s, meta);
 				}
 			}
 		}
 		
-		logger().debug("catalog:schemas: " + catalog.schemas().size());
+		logger().debug("catalog:schemas: " + catalog.schemas().keySet().size());
 		
 		logger().debug("creating pk's");		
 		populatePrimaryKeys(catalog, meta);		
@@ -90,12 +93,12 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
 //	}
 
 	@Override
-	protected String getCatalogPattern(DefaultMutableSchema s) {		
+	protected String getCatalogPattern(Schema s) {		
 		return super.getSchemaPattern(s);
 	}
 	
 	@Override
-	protected String getSchemaPattern(DefaultMutableSchema s) {
+	protected String getSchemaPattern(Schema s) {
 		return null;		
 	}
 }

@@ -492,19 +492,6 @@ public class SourceGenerator {
 	}
 	
 	
-	public abstract class Query {		
-	}
 
-	public abstract class FullQuery {		
-	}
-	
-	public abstract class Subquery {		
-	}
-
-	public abstract class CorrelatedSubquery {
-		private Query parent;
-	}
-
-	
 	
 }

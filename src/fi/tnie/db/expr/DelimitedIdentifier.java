@@ -3,29 +3,25 @@
  */
 package fi.tnie.db.expr;
 
+
 public class DelimitedIdentifier
-	extends SimpleElement implements Identifier {
+	extends AbstractIdentifier {
 	
-	private String name;
-
-	public DelimitedIdentifier(String name) {
-		super();
+	private String token;
 		
-		if (name == null) {
-			throw new NullPointerException("'name' must not be null");
-		}
-		
-		if (name.length() == 0) {
-			throw new NullPointerException("'name' must not be empty");
-		}		
-		
-		String qm = "\""; 
-		name.replace(qm, qm + qm);		
-		this.name = qm + name + qm;
+	public DelimitedIdentifier(String name) 
+		throws IllegalIdentifierException {
+		super(name);
 	}
+	
+	
+	public String getToken() {
+		if (token == null) {			
+			String qm = "\""; 					
+			this.token = qm + getName().replace(qm, qm + qm) + qm;
+		}
 
-	public String getName() {
-		return name;
+		return token;
 	}	
 
 	@Override
@@ -35,7 +31,7 @@ public class DelimitedIdentifier
 
 	@Override
 	public String getTerminalSymbol() {		
-		return getName();
+		return getToken();
 	}
 
 	@Override
@@ -43,4 +39,18 @@ public class DelimitedIdentifier
 		v.start(vc, this);
 		v.end(this);
 	}
+	
+//	else {
+//		this.ordinary = isValidOrdinary(token, null);
+//		
+//		if (this.ordinary) {
+//			this.token = token;
+//		}
+//		else {
+//			String qm = "\""; 
+//			token.replace(qm, qm + qm);		
+//			this.token = qm + token + qm;				
+//		}
+//	}		
+
 }

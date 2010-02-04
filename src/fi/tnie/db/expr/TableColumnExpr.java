@@ -3,6 +3,9 @@
  */
 package fi.tnie.db.expr;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.meta.Column;
@@ -13,43 +16,23 @@ public class TableColumnExpr
 
 	private static Logger logger = Logger.getLogger(TableColumnExpr.class);
 	
-//	private Column column;
-	private TableColumnName columnName;
+	private Column column;
 		
 	public TableColumnExpr(AbstractTableReference table, Column column) {
-		super(table, new TableColumnName(column));
+		super(table, column.getColumnName());
 		
 		if (column == null) {
 			throw new NullPointerException("'column' must not be null");
 		}
 		
-		this.columnName = (TableColumnName) getColumnName();
+		this.column = column;
 	}
 	
-//	public TableColumnExpr(TableReference r, String name) {
-//		super(r);
-//		
-//		Table t = r.getTable();				
-//		Column c = t.columns().get(name);
-//		
-//		if (c == null) {
-//			throw new IllegalArgumentException("no column '" + name + "' " +
-//					"in table: " + t.getQualifiedName());			
-//		}
-//				
-//		this.columnName = new TableColumnName(c);
-//	}
-
 	@Override
 	public int getType() {				
 		return getColumn().getDataType().getDataType();
 	}
 
-//	@Override
-//	public String getName() {
-//		return getColumn().getName();
-//	}
-	
 	@Override
 	protected void traverseContent(VisitContext vc, ElementVisitor v) {
 		AbstractTableReference tref = getTable();
@@ -63,17 +46,26 @@ public class TableColumnExpr
 				Symbol.DOT.traverse(vc, v);
 			}
 		}
-		
-		this.columnName.traverse(vc, v);
-//		new TableColumnName(this.column).traverse(vc, v);
+				
+		getColumnName().traverse(vc, v);
 	}
 	
 	
 	public Column getColumn() {		
-		return columnName.getColumn();
+		return this.column;
 	}
 	
 	public static Logger logger() {
 		return TableColumnExpr.logger;
+	}
+
+	@Override
+	public int getColumnCount() {
+		return 1;
+	}
+
+	@Override
+	public List<? extends ColumnName> getColumnNames() {		
+		return Collections.singletonList(getColumnName());
 	}
 }

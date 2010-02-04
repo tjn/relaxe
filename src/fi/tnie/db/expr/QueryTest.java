@@ -98,7 +98,10 @@ public class QueryTest {
 				logger().debug("populating meta-data...");
 				Catalog catalog = cf.create(meta, null);
 				
-				String sch = "millnew_20091023";				
+				logger().debug("catalog: " + catalog);
+				
+				String sch = "millnew_20091023";			
+				
 				Schema schema = catalog.schemas().get(sch);
 				BaseTable m = (BaseTable) schema.tables().get("mill");				
 				BaseTable mv = (BaseTable) schema.tables().get("mill_version");
@@ -213,7 +216,7 @@ public class QueryTest {
 				}					
 			}			
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
 			logger().error(e.getMessage(), e);
 		}
 	}

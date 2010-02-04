@@ -3,41 +3,14 @@
  */
 package fi.tnie.db.expr;
 
+
 public class OrdinaryIdentifier
-	extends SimpleElement
-	implements Identifier
+	extends AbstractIdentifier
 {
-	private String name;
-
-	public OrdinaryIdentifier(String name) {
-		super();
-		
-		if (name == null) {
-			throw new NullPointerException("'name' must not be null");
-		}
-		
-		if (name.length() == 0) {
-			throw new NullPointerException("'name' must not be empty");
-		}
-		
-		name = name.trim().toUpperCase();
-		
-		String p = "[A-Z][A-Z0-9_]*";
-		
-		if (!name.matches(p)) {
-			throw new IllegalArgumentException("name '" + name + "' doesn't match the pattern: " + p); 
-		}
-	
-		if (Keyword.isKeyword(name)) {
-			throw new IllegalArgumentException("name '" + name + "' is identical to the keyword");
-		}
-		
-		this.name = name;
-	}
-
-	@Override
-	public String getTerminalSymbol() {
-		return getName();
+	public OrdinaryIdentifier(String name) 
+		throws IllegalIdentifierException {
+		super(name);
+		validateOrdinary(name);
 	}
 
 	@Override
@@ -45,10 +18,6 @@ public class OrdinaryIdentifier
 		return true;
 	}
 
-	public String getName() {
-		return this.name;
-	}
-	
 	@Override
 	public String toString() {		
 		return "[" + getName() + ": " + super.toString() + "]";
@@ -59,4 +28,38 @@ public class OrdinaryIdentifier
 		v.start(vc, this);
 		v.end(this);		
 	}
+	
+	public static void validateOrdinary(String token) 
+		throws IllegalIdentifierException {
+		StringBuffer details = new StringBuffer();
+		
+		if (!isValidOrdinary(token, details)) {
+			throw new IllegalIdentifierException(details.toString());
+		}
+	}	
+	
+	public static boolean isValidOrdinary(String token) {
+		return isValidOrdinary(token, null);
+	}
+	
+	private static boolean isValidOrdinary(String token, StringBuffer details) {		
+		String p = "[A-Za-z][A-Za-z0-9_]*";
+		
+		if (!token.matches(p)) {
+			return fail("token '" + token + "' doesn't match the pattern: " + p, details); 
+		}
+	
+		if (Keyword.isKeyword(token.toUpperCase())) {
+			return fail(
+					"token '" + token + "' is identical to the keyword and " +
+					"can not be used as a ordinary identifier", details);
+		}	
+		
+		return true;
+	}
+
+	@Override
+	public String getTerminalSymbol() {
+		return getName();
+	}	
 }

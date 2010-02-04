@@ -5,30 +5,20 @@ package fi.tnie.db;
 
 import java.sql.Connection;
 import java.util.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.expr.Assignment;
-import fi.tnie.db.expr.ColumnName;
-import fi.tnie.db.expr.ElementList;
 import fi.tnie.db.expr.ElementVisitor;
-import fi.tnie.db.expr.InsertQuery;
 import fi.tnie.db.expr.Parameter;
 import fi.tnie.db.expr.TableColumnExpr;
 import fi.tnie.db.expr.TableReference;
-import fi.tnie.db.expr.UpdateQuery;
 import fi.tnie.db.expr.ValueParameter;
 import fi.tnie.db.expr.Predicate;
-import fi.tnie.db.expr.TableColumnName;
 import fi.tnie.db.expr.ValueExpression;
-import fi.tnie.db.expr.ValueRow;
 import fi.tnie.db.expr.VisitContext;
 import fi.tnie.db.expr.op.AndPredicate;
 import fi.tnie.db.expr.op.Comparison;
@@ -36,22 +26,22 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.PrimaryKey;
 
-public abstract class Entity<K extends Enum<K>, E extends Entity<K, E>> 
-	extends DBObject<K> {
+public abstract class Entity<A extends Enum<A>, E extends Entity<A, E>> 
+{
 
 	private Date deleted;
-	private Map<K, ?> loadedAs = null;
-		
-	private EnumMap<K, Parameter> parameterMap;
+	
+	private Map<A, ?> loadedAs = null;		
+	private EnumMap<A, Parameter> parameterMap;
 			
-	public abstract EntityFactory<K, E> getFactory();
+	public abstract EntityFactory<A, E> getFactory();
 	
 	private static Logger logger = Logger.getLogger(Entity.class);
-
-	@Override
-	protected Map<K, Object> createValueMap() {				
-		return new EnumMap<K, Object>(getFactory().getColumnNameType());
+	
+	protected Map<A, Object> createValueMap() {				
+		return new EnumMap<A, Object>(getFactory().getColumnNameType());
 	}
+			
 
 	void markDeleted() {
 		this.deleted = new Date();
@@ -87,91 +77,91 @@ public abstract class Entity<K extends Enum<K>, E extends Entity<K, E>>
 	private void insert(Connection c) 
 		throws SQLException {		
 		 
-		ValueRow newRow = new ValueRow();
-		BaseTable t = getFactory().getTable();
-		Map<String, Column> cm = t.columns();		
-		ElementList<ColumnName> names = new ElementList<ColumnName>(); 
-				
-		for (Map.Entry<K, ?> e : values().entrySet()) {			
-			K k = e.getKey();			
-			Column col = cm.get(k.toString());
-			names.add(new TableColumnName(col));
-			ValueParameter p = new ValueParameter(col, e.getValue());
-			newRow.add(p);
-		}
-				
-		InsertQuery q = new InsertQuery(t, names, newRow);				
-		String qs = q.generate();
-		
-		final PreparedStatement ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);
-						
-		q.traverse(null, new ParameterAssignment(ps));
-				
-		int ins = ps.executeUpdate();
-		
-		logger().debug("inserted: " + ins);
-		
-		ResultSet rs = ps.getGeneratedKeys();
-		
-		try {
-			EntityFactory<K, E> ef = getFactory();			
-			EnumMap<K, Integer> keys = ef.keys(rs.getMetaData());					
-			
-			if (rs.next()) {
-				ef.copy(keys, rs, this);				
-			}
-		}
-		finally {
-			rs.close();
-		}
+//		ValueRow newRow = new ValueRow();
+//		BaseTable t = getFactory().getTable();
+//		Map<String, Column> cm = t.columns();		
+//		ElementList<ColumnName> names = new ElementList<ColumnName>(); 
+//				
+//		for (Map.Entry<A, ?> e : values().entrySet()) {			
+//			A k = e.getKey();			
+//			Column col = cm.get(k.toString());
+//			names.add(new TableColumnName(col));
+//			ValueParameter p = new ValueParameter(col, e.getValue());
+//			newRow.add(p);
+//		}
+//				
+//		InsertQuery q = new InsertQuery(t, names, newRow);				
+//		String qs = q.generate();
+//		
+//		final PreparedStatement ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);
+//						
+//		q.traverse(null, new ParameterAssignment(ps));
+//				
+//		int ins = ps.executeUpdate();
+//		
+//		logger().debug("inserted: " + ins);
+//		
+//		ResultSet rs = ps.getGeneratedKeys();
+//		
+//		try {
+//			EntityFactory<A, E> ef = getFactory();			
+//			EnumMap<A, Integer> keys = ef.keys(rs.getMetaData());					
+//			
+//			if (rs.next()) {
+//				ef.copy(keys, rs, this);				
+//			}
+//		}
+//		finally {
+//			rs.close();
+//		}
 	}
 	
 	
 	private void update(Connection c) 
 		throws SQLException {
 
-		EntityFactory<K, E> ef = getFactory();
-		
-		BaseTable t = ef.getTable();
-		Map<String, Column> cm = t.columns();		
-		ElementList<Assignment> assignments = new ElementList<Assignment>(); 
-				
-		for (Map.Entry<K, ?> e : values().entrySet()) {			
-			K k = e.getKey();			
-			Column col = getFactory().getColumn(k);
-			ValueParameter p = new ValueParameter(col, e.getValue());
-			assignments.add(new Assignment(new TableColumnName(col), p));						
-		}
-				
-		// reload:
-		E snapshot = ef.reload(this, c);
-		
-		if (snapshot == null) {
-			// TODO: return diff: 
-			throw new IllegalStateException("object was deleted");
-		}
-						
-		UpdateQuery q = new UpdateQuery(t, assignments);				
-		String qs = q.generate();
-		
-		final PreparedStatement ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);						
-		q.traverse(null, new ParameterAssignment(ps));				
-		int ins = ps.executeUpdate();
-		
-		logger().debug("updated: " + ins);
-		
-		ResultSet rs = ps.getGeneratedKeys();
-		
-		try {						
-			EnumMap<K, Integer> keys = ef.keys(rs.getMetaData());					
-			
-			if (rs.next()) {
-				ef.copy(keys, rs, this);				
-			}
-		}
-		finally {
-			rs.close();
-		}
+//		EntityFactory<A, E> ef = getFactory();
+//		
+//		BaseTable t = ef.getTable();
+//		Map<String, Column> cm = t.columns();		
+//		ElementList<Assignment> assignments = new ElementList<Assignment>(); 
+//				
+//		for (Map.Entry<A, ?> e : values().entrySet()) {			
+//			A k = e.getKey();			
+//			Column col = getFactory().getColumn(k);
+//			ValueParameter p = new ValueParameter(col, e.getValue());
+//			assignments.add(new Assignment(new TableColumnName(col), p));						
+//		}
+//				
+//		// reload:
+//		E snapshot = ef.reload(this, c);
+//		
+//		if (snapshot == null) {
+//			// TODO: return diff: 
+//			throw new IllegalStateException("object was deleted");
+//		}
+//						
+//		UpdateQuery q = new UpdateQuery(t, assignments);				
+//		String qs = q.generate();
+//		
+//		final PreparedStatement ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);						
+//		q.traverse(null, new ParameterAssignment(ps));				
+//		int ins = ps.executeUpdate();
+//		
+//		logger().debug("updated: " + ins);
+//		
+//		ResultSet rs = ps.getGeneratedKeys();
+//		
+//		try {						
+//			EnumMap<A, Integer> keys = ef.keys(rs.getMetaData());					
+//			
+//			if (rs.next()) {
+//				ef.copy(keys, rs, this);				
+//			}
+//		}
+//		finally {
+//			rs.close();
+//		}
 	}
 	
 	public boolean isNew() {
@@ -179,13 +169,13 @@ public abstract class Entity<K extends Enum<K>, E extends Entity<K, E>>
 	}
 			
 	
-	protected Map<K, ?> getPrimaryKey() {		
-		Map<K, ?> vm = values();
-		Class<K> kt = getFactory().getColumnNameType();
-		EnumMap<K, Object> pk = new EnumMap<K, Object>(kt);
-		Set<K> keys = getFactory().getPKDefinition();
+	protected Map<A, ?> getPrimaryKey() {		
+		Map<A, ?> vm = values();
+		Class<A> kt = getFactory().getColumnNameType();
+		EnumMap<A, Object> pk = new EnumMap<A, Object>(kt);
+		Set<A> keys = getFactory().getPKDefinition();
 		
-		for (K k : keys) {
+		for (A k : keys) {
 			Object value = vm.get(k);
 			
 			if (value == null) {
@@ -198,6 +188,12 @@ public abstract class Entity<K extends Enum<K>, E extends Entity<K, E>>
 		return pk;
 	}		
 	
+	private Map<A, ?> values() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 	/**
 	 * Returns true, if and only if every component of the primary key
 	 * is either set or known to be in auto-increment column.
@@ -207,13 +203,13 @@ public abstract class Entity<K extends Enum<K>, E extends Entity<K, E>>
 	
 	protected boolean isInsertable() {
 		PrimaryKey pk = getPKDefinition();		
-		Map<K, Object> vm = values();
+		Map<A, ?> vm = values();
 		
 		for (Column c : pk.columns()) {
 			Boolean ai = c.isAutoIncrement();		
 						
 			if (ai != null && ai.booleanValue() == false) {				
-				K key = getKey(c.getName());				
+				A key = getKey(c.getColumnName().getName());				
 				Object value = vm.get(key);
 				
 				if (value == null) {
@@ -225,8 +221,8 @@ public abstract class Entity<K extends Enum<K>, E extends Entity<K, E>>
 		return true;
 	}
 	
-	public K getKey(String n)  {
-		Class<K> kt = getFactory().getColumnNameType();				
+	public A getKey(String n)  {
+		Class<A> kt = getFactory().getColumnNameType();				
 		return Enum.valueOf(kt, n);
 	}
 	
@@ -255,20 +251,20 @@ public abstract class Entity<K extends Enum<K>, E extends Entity<K, E>>
 	}
 	
 	public void markLoaded() {		
-		this.loadedAs = new EnumMap<K, Object>(values());		 		
+		this.loadedAs = new EnumMap<A, Object>(values());		 		
 	}
 	
-	public Predicate eq(K k, ValueExpression expr) {				
+	public Predicate eq(A k, ValueExpression expr) {				
 		return Comparison.eq(getParameter(k), expr);
 	}
 		
-	public Predicate loadedAs(EntityQuery<K, E> q) {
+	public Predicate loadedAs(EntityQuery<A, E> q) {
 		Predicate p = null;		
 		
-		EntityFactory<K, E> ef = getFactory();
+		EntityFactory<A, E> ef = getFactory();
 		TableReference tref = q.getTableReference();
 				
-		for (K k : ef.getPKDefinition()) {
+		for (A k : ef.getPKDefinition()) {
 			Column c = ef.getColumn(k);
 			Object v = loadedAs.get(k);			
 						
@@ -290,12 +286,12 @@ public abstract class Entity<K extends Enum<K>, E extends Entity<K, E>>
 	 * @return
 	 */
 	
-	public Parameter getParameter(final K key) {
+	public Parameter getParameter(final A key) {
 		if (key == null) {
 			throw new NullPointerException("'key' must not be null");
 		}
 		
-		EnumMap<K, Parameter> pm = getParameterMap();
+		EnumMap<A, Parameter> pm = getParameterMap();
 		Parameter p = pm.get(key);
 		
 		if (p == null) {
@@ -320,9 +316,9 @@ public abstract class Entity<K extends Enum<K>, E extends Entity<K, E>>
 	
 	
 	
-	private EnumMap<K, Parameter> getParameterMap() {
+	private EnumMap<A, Parameter> getParameterMap() {
 		if (parameterMap == null) {
-			parameterMap = new EnumMap<K, Parameter>(getFactory().getColumnNameType());			
+			parameterMap = new EnumMap<A, Parameter>(getFactory().getColumnNameType());			
 		}
 
 		return parameterMap;
@@ -334,7 +330,7 @@ public abstract class Entity<K extends Enum<K>, E extends Entity<K, E>>
 	
 	
 	public void diff(E another) {
-		
+	
 		
 	}				
 	

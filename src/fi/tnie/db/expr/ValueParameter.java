@@ -3,19 +3,24 @@
  */
 package fi.tnie.db.expr;
 
+import java.util.Collections;
+import java.util.List;
+
 import fi.tnie.db.meta.Column;
 
 public class ValueParameter extends Parameter {
 	private Object value;
 	
-	public ValueParameter(Column column, Object value) {		
-		this(column.getName(), column.getDataType().getDataType(), value);
-	}
-
-	public ValueParameter(String name, int type, Object value) {
-		super(name, type);
+	public ValueParameter(Column column, Object value) {
+		super(column);
+//		this(column.getName(), column.getDataType().getDataType(), value);
 		this.value = value;
 	}
+
+//	public ValueParameter(String name, int type, Object value) {
+//		super(name, type);
+//		this.value = value;
+//	}
 
 	@Override
 	public Object getValue() {
@@ -30,5 +35,20 @@ public class ValueParameter extends Parameter {
 	public void traverse(VisitContext vc, ElementVisitor v) {
 		v.start(vc, this);
 		v.end(this);
+	}
+
+	@Override
+	public ColumnName getColumnName() {
+		return null;
+	}
+
+	@Override
+	public int getColumnCount() {
+		return 1;
+	}
+
+	@Override
+	public List<? extends ColumnName> getColumnNames() {
+		return Collections.singletonList(null);
 	}
 }

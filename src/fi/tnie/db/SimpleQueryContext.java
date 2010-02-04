@@ -11,9 +11,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.expr.AbstractTableReference;
-import fi.tnie.db.expr.Element;
-import fi.tnie.db.expr.Expression;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.NonJoinedTable;
 import fi.tnie.db.expr.OrdinaryIdentifier;

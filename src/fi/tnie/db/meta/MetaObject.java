@@ -3,7 +3,9 @@
  */
 package fi.tnie.db.meta;
 
+import fi.tnie.db.expr.Identifier;
+
 public interface MetaObject {
-	public String getName();
+	public Identifier getUnqualifiedName();
 	
 }

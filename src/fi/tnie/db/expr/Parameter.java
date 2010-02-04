@@ -3,6 +3,9 @@
  */
 package fi.tnie.db.expr;
 
+import java.util.Collections;
+import java.util.List;
+
 import fi.tnie.db.meta.Column;
 
 public abstract class Parameter
@@ -10,16 +13,12 @@ public abstract class Parameter
 	implements ValueExpression, Token {
 	
 	private String name;
-	private int type;
+	private int type;	
+	private ColumnName columnName;
 		
 	public Parameter(Column column) {
-		this(column.getName(), column.getDataType().getDataType());
-	}
-
-	public Parameter(String name, int type) {
-		super();
-		this.name = name;
-		this.type = type;	
+		this.columnName = column.getColumnName();
+		this.type = column.getDataType().getDataType();
 	}
 
 	@Override
@@ -42,4 +41,27 @@ public abstract class Parameter
 	public String getTerminalSymbol() {		
 		return "?";
 	}
+
+	@Override
+	public ColumnName getColumnName() {
+		return this.columnName;
+	}
+
+	@Override
+	public int getColumnCount() {
+			return 1;
+	}
+
+	@Override
+	public List<? extends ColumnName> getColumnNames() {
+		return Collections.singletonList(this.columnName);
+	}
+	
+	@Override
+	public void traverse(VisitContext vc, ElementVisitor v) {
+		v.start(vc, this);
+		v.end(this);
+	}
+	
+	
 }

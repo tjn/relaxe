@@ -19,15 +19,17 @@ public interface ElementVisitor {
 	VisitContext start(VisitContext vc, Predicate e);
 	VisitContext start(VisitContext vc, Keyword e);
 	VisitContext start(VisitContext vc, AbstractTableReference e);
-	VisitContext start(VisitContext vc, JoinType e);	
+	VisitContext start(VisitContext vc, JoinType e);
+	VisitContext start(VisitContext vc, Name e);
 	VisitContext start(VisitContext vc, TableColumnExpr e);
 	VisitContext start(VisitContext vc, Symbol e);
-	VisitContext start(VisitContext vc, Name e);
+	VisitContext start(VisitContext vc, SchemaElementName e);
 	VisitContext start(VisitContext vc, Parameter e);
 	VisitContext start(VisitContext vc, Token e);
 	VisitContext start(VisitContext vc, Identifier e);
 	VisitContext start(VisitContext vc, Assignment e);
 	VisitContext start(VisitContext vc, ValueExpression e);
+	
 	
 	void end(Element e);
 }

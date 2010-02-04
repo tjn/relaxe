@@ -3,17 +3,21 @@
  */
 package fi.tnie.db.meta;
 
-import java.util.Map;
+import java.util.List;
+import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.meta.impl.ColumnMap;
 
 public interface Table
-	extends MetaElement {
+	extends SchemaElement {
 	
 	String BASE_TABLE = "TABLE";
 	
-	String getName();
 	String getTableType();
 	
-	Map<String, Column> columns();
+	ColumnMap columnMap();
+	
+	Column getColumn(Identifier cn);	
+	List<? extends Column> columns();
 
 	boolean isBaseTable();
 }

@@ -18,6 +18,9 @@ public interface Token
 	 */	
 	boolean isOrdinary();
 	
+	/**
+	 * Terminal symbol for the token must always be non-null. 
+	 */
 	
 	@Override
 	public String getTerminalSymbol();

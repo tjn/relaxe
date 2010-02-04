@@ -7,14 +7,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import fi.tnie.db.expr.ColumnName;
+import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.DataType;
+import fi.tnie.db.meta.MetaObject;
 import fi.tnie.db.meta.PrimaryKey;
 
 public class DefaultMutableColumn
-	extends DefaultMutableMetaObject
-	implements Column, Node<DefaultMutableTable>
+	implements Column, MetaObject
 {	
 	private DefaultMutableTable table;
 	
@@ -24,29 +26,23 @@ public class DefaultMutableColumn
 	private String isNullable;
 	private String autoIncrement;
 		
-	private DataTypeImpl dataType;
-	
-	private Set<DefaultForeignKey> references;
-	
-	private NodeManager<DefaultMutableColumn, DefaultMutableTable> parentNodeManager;
-
+	private DataTypeImpl dataType;	
+	private Set<DefaultForeignKey> references;	
+	private ColumnName columnName;	
+	private int ordinalPosition;
+		
 	public DefaultMutableColumn() {
 		super();
 	}
 	
-	public DefaultMutableColumn(String n, DataTypeImpl type) {
-		super(n);		
-		setDataTypeImpl(type);
-	}
-
-	public DefaultMutableColumn(DefaultMutableTable t, String n, DataTypeImpl type) {
-		this(n, type);
-		setTable(t);		
-	}
-
-	@Override
-	public DefaultMutableMetaObject getParent() {
-		return getTable();
+	public DefaultMutableColumn(DefaultMutableTable t, Identifier name, DataTypeImpl type) {
+		if (t == null || name == null || type == null) {
+			throw new NullPointerException();
+		}
+		
+		this.columnName = new ColumnName(name);
+		this.table = t;
+		t.add(this);
 	}
 
 	public int getNullable() {
@@ -93,38 +89,10 @@ public class DefaultMutableColumn
 		return dataType;
 	}
 
-	private void setDataTypeImpl(DataTypeImpl dataType) {
-		this.dataType = dataType;
-	}
-	
-	public void detach() {
-		this.table = null;
-	}
-	
-	public void attach(DefaultMutableTable newTable) {
-		this.table = newTable;
-	}
 
 	public DefaultMutableTable getTable() {
 		return table;
 	}
-
-	public void setTable(DefaultMutableTable newTable) {		
-		getParentNodeManager().setParent(this, newTable);
-		this.table = newTable;
-	}
-
-	@Override
-	public DefaultMutableTable getParentNode() {
-		return this.table;
-	}
-
-	@Override
-	public NodeManager<DefaultMutableColumn, DefaultMutableTable> getParentNodeManager() {
-		DefaultMutableTable p = getTable();
-		return (p == null) ? parentNodeManager : p.getNodeManager();
-	}
-
 	
 	public boolean add(DefaultForeignKey n) {		
 		return getReferences().add(n);
@@ -183,6 +151,37 @@ public class DefaultMutableColumn
 		// we just have an idea:
 		return null;
 	}
-	
-	
+
+//	@Override
+//	public ColumnName getColumnName() {
+//		if (columnName == null) {
+//			columnName = new ColumnName(getName(), true);			
+//		}
+//
+//		return columnName;
+//	}
+//
+//	@Override
+//	public int ordinal() {
+//		// TODO Auto-generated method stub
+//		return 0;
+//	}
+
+	@Override
+	public Identifier getUnqualifiedName() {
+		return getColumnName();
+	}
+
+	@Override
+	public ColumnName getColumnName() {
+		return this.columnName;
+	}
+
+	public int getOrdinalPosition() {
+		return ordinalPosition;
+	}
+
+	public void setOrdinalPosition(int ordinalPosition) {
+		this.ordinalPosition = ordinalPosition;
+	}
 }

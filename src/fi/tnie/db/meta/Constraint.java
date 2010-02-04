@@ -4,7 +4,14 @@
 package fi.tnie.db.meta;
 
 
-public interface Constraint
-	extends MetaElement {
 
+public interface Constraint
+	extends SchemaElement {
+	
+	enum Type {
+		FOREIGN_KEY,
+		PRIMARY_KEY
+	}
+	
+	Type getType();
 }

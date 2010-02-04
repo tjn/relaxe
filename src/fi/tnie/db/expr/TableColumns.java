@@ -37,7 +37,7 @@ public class TableColumns
 		OrdinaryIdentifier cn = tableRef.getCorrelationName(v.getContext());				
 		cn.traverse(vc, v);
 		Symbol.DOT.traverse(vc, v);
-		Symbol.ALL_COLUMNS.traverse(vc, v);
+		Symbol.ASTERISK.traverse(vc, v);
 		
 		v.end(this);
 	}

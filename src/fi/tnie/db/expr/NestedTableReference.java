@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.expr;
 
-import java.util.List;
-
 
 public class NestedTableReference
 	extends NonJoinedTable {

@@ -91,7 +91,7 @@ public class DefaultEntityFactory<K extends Enum<K>, E extends Entity<K, E>>
 
 	@Override
 	public Column getColumn(K k) {
-		return getTable().columns().get(k.toString());
+		return getTable().columnMap().get(k.toString());
 	}
 
 	@Override
@@ -119,16 +119,16 @@ public class DefaultEntityFactory<K extends Enum<K>, E extends Entity<K, E>>
 		return Collections.unmodifiableSet(pkDefinition);
 	}
 	
-	public void copy(EnumMap<K, Integer> keys, ResultSet rs, Entity<K, E> dest) 
-		throws SQLException {
-		
-		Map<K, Object> m = dest.values();
-					
-		for (Map.Entry<K, Integer> e : keys.entrySet()) {						
-			Object o = rs.getObject(e.getValue().intValue());
-			m.put(e.getKey(), o);
-		}
-	}
+//	public void copy(EnumMap<K, Integer> keys, ResultSet rs, Entity<K, E> dest) 
+//		throws SQLException {
+//		
+//		Map<K, Object> m = dest.values();
+//					
+//		for (Map.Entry<K, Integer> e : keys.entrySet()) {						
+//			Object o = rs.getObject(e.getValue().intValue());
+//			m.put(e.getKey(), o);
+//		}
+//	}
 		
 	public EnumMap<K, Integer> keys(ResultSetMetaData rs) 
 		throws SQLException {
@@ -144,8 +144,14 @@ public class DefaultEntityFactory<K extends Enum<K>, E extends Entity<K, E>>
 		
 		return keys;
 	}
-	
-	
+
+	@Override
+	public void copy(EnumMap<K, Integer> keys, ResultSet src, Entity<K, E> dest)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 }

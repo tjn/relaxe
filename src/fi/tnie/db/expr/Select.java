@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.expr;
 
+
 public class Select
 	extends AbstractClause {
 	
@@ -52,10 +53,10 @@ public class Select
 	}
 	
 	public ValueElement add(ValueExpression expr) {
-		return add(expr, null);
+		return add(expr, (ColumnName) null);
 	}
 	
-	public ValueElement add(ValueExpression expr, String newName) {
+	public ValueElement add(ValueExpression expr, ColumnName newName) {
 		if (expr == null) {
 			throw new NullPointerException("'expr' must not be null");
 		}
@@ -63,6 +64,17 @@ public class Select
 		ValueElement e = new ValueElement(expr, newName);
 		getSelectList().add(e);
 		return e;
+	}	
+	
+	public ValueElement add(ValueExpression expr, String newName) 
+		throws IllegalIdentifierException {
+		ColumnName n = null;
+		
+		if (newName != null) {
+			n = ColumnName.create(newName);
+		}
+		
+		return add(expr, n);		
 	}
 		
 	public int getColumnCount() {

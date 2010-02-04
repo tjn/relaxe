@@ -6,7 +6,6 @@ package fi.tnie.db.meta.impl;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -36,20 +35,19 @@ public class CatalogPrinter implements CatalogUI {
 	}
 
 	private void print(BaseTable b, PrintWriter w, int indent, Set<String> visited) {
+			
 		
-		for (Map.Entry<String, ForeignKey> e : b.foreignKeys().entrySet()) {
-			ForeignKey fk = e.getValue();
+		for (ForeignKey fk : b.foreignKeys().values()) {
 			String n = fk.getReferenced().getQualifiedName();
 			
 			if (!visited.contains(n)) {
 				visited.add(n);
 				
-				logger().info(indent(indent) + e.getKey());			
+				logger().info(indent(indent) + fk.getUnqualifiedName().getName());			
 				
 				if (fk.getReferenced() == null) {
 					throw new NullPointerException(fk.getName() + ": 'fk.getReferenced()' must not be null");
-				}
-				
+				}				
 				
 				if (fk.getReferenced() == b) {
 					logger().info(indent(indent + 1) + "<self>");
@@ -63,19 +61,19 @@ public class CatalogPrinter implements CatalogUI {
 	}
 
 	private void print(Catalog c, PrintWriter w, int indent) {		
-		for (Map.Entry<String, Schema> e : c.schemas().entrySet()) {			
-			logger().info(e.getKey());
-			print((DefaultMutableSchema) e.getValue(), w, indent + 1);			
+		for (Schema s : c.schemas().values()) {			
+			logger().info(s.getUnqualifiedName().getName());
+			print((DefaultMutableSchema) s, w, indent + 1);			
 		}
 	}
 
 	private void print(DefaultMutableSchema s, PrintWriter w, int indent) {
 		Set<String> visited = new HashSet<String>();
 		
-		for (Map.Entry<String, BaseTable> e : s.baseTables().entrySet()) {			
-			logger().info(indent(indent) + e.getValue().getQualifiedName());
+		for (BaseTable t : s.baseTables().values()) {			
+			logger().info(indent(indent) + t.getQualifiedName());
 			visited.clear();
-			print(e.getValue(), w, indent + 1, visited);
+			print(t, w, indent + 1, visited);
 		}
 	}
 

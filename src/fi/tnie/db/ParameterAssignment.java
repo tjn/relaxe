@@ -36,8 +36,7 @@ public class ParameterAssignment extends ElementVisitorAdapter {
 	@Override
 	public VisitContext start(VisitContext vc, Parameter p) {								
 		try {
-			logger().debug(ordinal + " [" + p.getName() + "] => " + p.getValue());
-			
+			logger().debug(ordinal + " [" + p.getName() + "] => " + p.getValue());			
 			preparedStatement.setObject(ordinal, p.getValue(), p.getType());
 			ordinal++;
 		} 

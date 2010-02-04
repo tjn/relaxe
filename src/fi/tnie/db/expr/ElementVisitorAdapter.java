@@ -83,7 +83,7 @@ public class ElementVisitorAdapter implements ElementVisitor {
 	}
 
 	@Override
-	public VisitContext start(VisitContext vc, Name e) {
+	public VisitContext start(VisitContext vc, SchemaElementName e) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -133,6 +133,12 @@ public class ElementVisitorAdapter implements ElementVisitor {
 
 	@Override
 	public VisitContext start(VisitContext vc, Identifier e) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public VisitContext start(VisitContext vc, Name e) {
 		// TODO Auto-generated method stub
 		return null;
 	}

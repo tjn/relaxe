@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import fi.tnie.db.expr.DefaultSubselect;
@@ -25,6 +24,7 @@ import fi.tnie.db.expr.TableColumnExpr;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.impl.ColumnMap;
 
 public class EntityQuery<K extends Enum<K>, E extends Entity<K, E>>
 {		
@@ -78,7 +78,7 @@ public class EntityQuery<K extends Enum<K>, E extends Entity<K, E>>
 			Select s = new Select();
 			
 			ElementList<SelectListElement> p = s.getSelectList();
-			Map<String, Column> cm = getTable().columns();
+			ColumnMap cm = getTable().columnMap();
 			
 			for (K k : this.projection.keySet()) {
 				Column col = cm.get(k.toString());
@@ -118,6 +118,7 @@ public class EntityQuery<K extends Enum<K>, E extends Entity<K, E>>
 				
 		try {
 			st = c.createStatement();
+						
 										
 			DefaultSubselect qo = getQuery();
 			String qs = qo.generate();

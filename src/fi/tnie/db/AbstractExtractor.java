@@ -5,19 +5,19 @@ package fi.tnie.db;
 
 public abstract class AbstractExtractor implements Extractor {
 
-	private int column;	
+	private int ordinal;	
 
-	public AbstractExtractor(int column) {
+	public AbstractExtractor(int ordinal) {
 		super();
 		
-		if (column < 1) {
+		if (ordinal < 1) {
 			throw new IllegalArgumentException();
 		}
 		
-		this.column = column;
+		this.ordinal = ordinal;
 	}
 	
-	public int getColumn() {
-		return column;
+	public int getOrdinal() {
+		return ordinal;
 	}	
 }

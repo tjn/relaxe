@@ -3,10 +3,13 @@
  */
 package fi.tnie.db.meta;
 
+import fi.tnie.db.expr.ColumnName;
+
 public interface Column 
 	extends MetaObject {
 
 	DataType getDataType();	
 	boolean isPrimaryKeyColumn();
-	Boolean isAutoIncrement();
+	Boolean isAutoIncrement();	
+	public ColumnName getColumnName(); 
 }

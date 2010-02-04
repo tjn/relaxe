@@ -3,9 +3,9 @@
  */
 package fi.tnie.db;
 
-public class Person extends Entity<Person.ColumnName, Person> {
+public class Person extends Entity<Person.Attribute, Person> {
 		
-	public enum ColumnName {
+	public enum Attribute {
 		ID,
 		FIRST_NAME,
 		LAST_NAME,
@@ -14,12 +14,12 @@ public class Person extends Entity<Person.ColumnName, Person> {
 		;
 	}	
 	
-	private static EntityFactory<ColumnName, Person> factory; 
+	private static EntityFactory<Attribute, Person> factory; 
 		
 	@Override
-	public EntityFactory<ColumnName, Person> getFactory() {
+	public EntityFactory<Attribute, Person> getFactory() {
 		if (factory == null) {
-			factory = new DefaultEntityFactory<ColumnName, Person>() {
+			factory = new DefaultEntityFactory<Attribute, Person>() {
 				@Override
 				public Person newInstance() {			
 					return new Person();

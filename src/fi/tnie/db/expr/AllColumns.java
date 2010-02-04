@@ -8,7 +8,7 @@ import java.util.List;
 
 public abstract class AllColumns implements SelectListElement, Token {
 
-	private Symbol symbol = Symbol.ALL_COLUMNS;	
+	private Symbol allColumns = Symbol.ASTERISK;	
 	
 	public AllColumns() {
 		super();
@@ -36,20 +36,22 @@ public abstract class AllColumns implements SelectListElement, Token {
 		
 		return nl;
 	}
+	
+
 
 	@Override
 	public String getTerminalSymbol() {
-		return symbol.getTerminalSymbol();
+		return allColumns.getTerminalSymbol();
 	}
 
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {
-		symbol.traverse(vc, v);
+		allColumns.traverse(vc, v);
 	}
 
 	@Override
 	public boolean isOrdinary() {
-		return this.symbol.isOrdinary();
+		return this.allColumns.isOrdinary();
 	}
 
 	@Override

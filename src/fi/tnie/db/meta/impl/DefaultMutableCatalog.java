@@ -3,60 +3,101 @@
  */
 package fi.tnie.db.meta.impl;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+import fi.tnie.db.Environment;
+import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.Schema;
+import fi.tnie.db.meta.SchemaMap;
 
-public class DefaultMutableCatalog extends DefaultMutableMetaObject 
-	implements Catalog, NodeContainer<DefaultMutableSchema> {
+public class DefaultMutableCatalog
+	implements Catalog {
 	
-	private String name; 
+	private Identifier name;	
+//	private Comparator<Identifier> identifierComp;
+	private Environment environment;
+
+	private DefaultSchemaMap schemaMap;
 	
-	
-	public DefaultMutableCatalog() {
+	public DefaultMutableCatalog(Environment environment) {
 		super();
+		this.environment = environment;
+	}
+	
+	public DefaultMutableCatalog(Environment environment, String name) {
+		this(environment, environment.createIdentifier(name));
 	}
 
-	public DefaultMutableCatalog(String name) {
-		this();
+	public DefaultMutableCatalog(Environment environment, Identifier name) {
+		super();
+		
+		if (environment == null) {
+			throw new NullPointerException("'environment' must not be null");
+		}
+		
+		this.environment = environment;
+		
+		if (name == null) {
+			throw new NullPointerException("'name' must not be null");
+		}		
+		
 		this.name = name;
 	}
 
-	private NodeManager<DefaultMutableSchema, DefaultMutableCatalog> nodeManager = 
-		new NodeManager<DefaultMutableSchema, DefaultMutableCatalog>();	 
-	
-	@Override
-	public DefaultMutableMetaObject getParent() {
-		return null;
+//	@Override
+//	public Map<String, Schema> schemas() {
+//		if (nodeManager.nodes().isEmpty()) {
+//			return Collections.emptyMap();
+//		}
+//		
+//		return new LinkedHashMap<String, Schema>(nodeManager.nodes());
+//	}
+			
+	public boolean addSchema(DefaultMutableSchema newSchema) {		
+		return getSchemaMap().add(newSchema);		
 	}
 
-	@Override
-	public Map<String, Schema> schemas() {
-		if (nodeManager.nodes().isEmpty()) {
-			return Collections.emptyMap();
+
+
+	private DefaultSchemaMap getSchemaMap() {
+		if (schemaMap == null) {
+			schemaMap = new DefaultSchemaMap(this);			
 		}
-		
-		return new LinkedHashMap<String, Schema>(nodeManager.nodes());
-	}
-		
-	public boolean add(DefaultMutableSchema t) {
-		return nodeManager.add(this, t);				
-	}
-	
-	public boolean remove(DefaultMutableSchema schema) {
-		return nodeManager.remove(schema);
-	}
 
-	public NodeManager<DefaultMutableSchema, DefaultMutableCatalog> getNodeManager() {
-		return nodeManager;
+		return schemaMap;
+	}	
+	
+//	protected <E> TreeMap<Identifier, E> createIdentifierMap() {
+//		return new TreeMap<Identifier, E>(identifierComparator());	
+//	}
+
+	@Override
+	public Identifier getUnqualifiedName() {		
+		return this.name;
 	}
 
 	@Override
-	public String getName() {
-		return name;
+	public SchemaMap schemas() {
+		return getSchemaMap();
 	}
+
+	private static class DefaultSchemaMap
+		extends DefaultElementMap<DefaultMutableSchema> 
+		implements SchemaMap {
+
+		public DefaultSchemaMap(Catalog catalog) {
+			super(catalog);
+		}		
+	}
+
+	@Override
+	public Identifier getName() {
+		return this.name;
+	}
+
+	@Override
+	public Environment getEnvironment() {
+		return this.environment;
+	}
+	
+	
 	
 }

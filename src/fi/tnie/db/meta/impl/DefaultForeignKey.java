@@ -8,12 +8,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 
 public class DefaultForeignKey
-	extends ConstraintImpl
+	extends DefaultConstraint
 	implements ForeignKey {
 
 	private Map<DefaultMutableColumn, DefaultMutableColumn> columnMap;
@@ -35,20 +36,16 @@ public class DefaultForeignKey
 			this.referenced = referenced;
 		}		
 	}
-	
-	public DefaultForeignKey() {
-		super();
-	}
 
-	public DefaultForeignKey(DefaultMutableSchema schema, String name, DefaultMutableColumn referencing, DefaultMutableColumn referenced) {
+	public DefaultForeignKey(DefaultMutableSchema schema, Identifier name, DefaultMutableColumn referencing, DefaultMutableColumn referenced) {		
 		this(schema, name, Collections.singletonList(new DefaultForeignKey.Pair(referencing, referenced)));		
 	}
 	
-	DefaultForeignKey(DefaultMutableSchema schema, String name) {
+	DefaultForeignKey(DefaultMutableSchema schema, Identifier name) {
 		super(schema, name);
 	}
 
-	public DefaultForeignKey(DefaultMutableSchema schema, String name, List<DefaultForeignKey.Pair> mapping) {
+	public DefaultForeignKey(DefaultMutableSchema schema, Identifier name, List<DefaultForeignKey.Pair> mapping) {
 		this(schema, name);
 		setColumnMap(mapping);
 	}
@@ -95,11 +92,6 @@ public class DefaultForeignKey
 				new LinkedHashMap<Column, Column>(this.columnMap);   
 	}	
 	
-//	private  boolean inSameTable(ColumnImpl a, ColumnImpl b) {
-//		return (a.getTable() == b.getTable());
-//	}
-
-
 	@Override
 	public BaseTable getReferenced() {
 		return getReferencedTable();
@@ -152,6 +144,10 @@ public class DefaultForeignKey
 	public String toString() {	
 		return "FK: " + getQualifiedName();
 	}
-	
+
+	@Override
+	public Type getType() {
+		return Type.FOREIGN_KEY;
+	}	
 	
 }

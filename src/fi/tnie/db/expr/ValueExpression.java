@@ -3,6 +3,18 @@
  */
 package fi.tnie.db.expr;
 
-public interface ValueExpression extends Expression {
-	int getType();	
+public interface ValueExpression 
+	extends Expression, SelectListElement {
+	/**
+	 * SQL Type of the expression
+	 * @return
+	 */
+	int getType();
+	
+	/**
+	 * Explicit, unambiguous column name of the expression, if available.
+	 *  
+	 * @return
+	 */
+	ColumnName getColumnName();
 }

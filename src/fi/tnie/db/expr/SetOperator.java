@@ -54,7 +54,7 @@ public class SetOperator
 //		name.generate(qc, dest);
 //		
 //		if (isAll()) {
-//			dest.append("ALL_COLUMNS ");			
+//			dest.append("ASTERISK ");			
 //		}
 //		
 //		right.generate(qc, dest);

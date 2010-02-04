@@ -13,7 +13,7 @@ public class InsertQuery
 	private ElementList<ValueRow> values;	
 	private ElementList<ColumnName> columnNameList;
 	
-	private Name tableName;
+	private SchemaElementName tableName;
 	
 	public int getTargetColumnCount() {
 		if (columnNameList == null) {
@@ -85,11 +85,11 @@ public class InsertQuery
 		return dest.toString();
 	}
 
-	private Name getTableName() {
+	private SchemaElementName getTableName() {
 		if (tableName == null) {
-			this.tableName = new Name(getTarget());			
+			tableName = new SchemaElementName(this.target);
 		}
-		
+
 		return tableName;
 	}	
 }

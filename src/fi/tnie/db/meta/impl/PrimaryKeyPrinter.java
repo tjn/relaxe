@@ -6,7 +6,6 @@ package fi.tnie.db.meta.impl;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -47,26 +46,26 @@ public class PrimaryKeyPrinter implements CatalogUI {
 		}
 		else {
 			for (Column c : pk.columns()) {
-				DataType t = c.getDataType();								
-				print(c.getName() + " [" + t.getTypeName() + "(" + t.getSize() + ")]", w, indent);						
+				DataType t = c.getDataType();				
+				print(c.getColumnName() + " [" + t.getTypeName() + "(" + t.getSize() + ")]", w, indent);						
 			}
 		}
 	}
 
 	private void print(Catalog c, PrintWriter w, int indent) {		
-		for (Map.Entry<String, Schema> e : c.schemas().entrySet()) {			
-			logger().info(e.getKey());
-			print((DefaultMutableSchema) e.getValue(), w, indent + 1);			
+		for (Schema s : c.schemas().values()) {			
+			logger().info(s.getUnqualifiedName());
+			print((DefaultMutableSchema) s, w, indent + 1);			
 		}
 	}
 
 	private void print(DefaultMutableSchema s, PrintWriter w, int indent) {
 		Set<String> visited = new HashSet<String>();
 		
-		for (Map.Entry<String, BaseTable> e : s.baseTables().entrySet()) {			
-			logger().info(indent(indent) + e.getValue().getQualifiedName());
+		for (BaseTable t : s.baseTables().values()) {			
+			logger().info(indent(indent) + t.getQualifiedName());
 			visited.clear();
-			print(e.getValue(), w, indent + 1, visited);
+			print(t, w, indent + 1, visited);
 		}
 	}
 	

@@ -93,7 +93,7 @@ public abstract class NonJoinedTable
 				for (ColumnName n : e.getColumnNames()) {
 					nl.add(getColumnName(n));
 				}
-			}			
+			}
 
 			return names;
 		}		

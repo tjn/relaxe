@@ -5,7 +5,5 @@ package fi.tnie.db.expr;
 
 public interface Identifier
 	extends Token {
-	
-	String getName();	
-		
+	String getName();
 }

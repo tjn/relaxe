@@ -3,27 +3,24 @@
  */
 package fi.tnie.db.meta.impl;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
+import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
+import fi.tnie.db.meta.SchemaElementMap;
 
 public class DefaultMutableBaseTable extends DefaultMutableTable 
 	implements BaseTable {
-		
-	private Map<String, ForeignKey> foreignKeys;	
-	private Map<String, ForeignKey> referencingKeys;
-			
-//	private Map<String, Column> primaryKeyColumns;
+	
+	private DefaultSchemaElementMap<ForeignKey> foreignKeys;
+	private DefaultSchemaElementMap<ForeignKey> referencingKeys;
 	
 	private DefaultPrimaryKey primaryKey;	
 	
-	public DefaultMutableBaseTable(DefaultMutableSchema s, String name) {
+	public DefaultMutableBaseTable(DefaultMutableSchema s, Identifier name) {
 		super(s, name);	
 	}
+	
 
 	void add(DefaultForeignKey k) {
 		if (k.getReferencing() != this) {
@@ -31,25 +28,17 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 					"Can not add a foreign key from the other table: " + k.getReferencing());
 		}
 		
-		if (k.getName() == null) {
-			throw new NullPointerException("'k.getName()' must not be null");
-		}
-		
-		getForeignKeys().put(k.getName(), k);
+		getForeignKeys().add(k);
 	}
 	
 	
 	void ref(DefaultForeignKey k) {
 		if (k.getReferenced() != this) {
 			throw new IllegalArgumentException(
-					"Can not add a foreign key from the other table: " + k.getReferenced());
-		}
+					"Can not add a reference from the foreign key referencing to the other table: " + k.getReferenced());
+		}	
 		
-		if (k.getName() == null) {
-			throw new NullPointerException("'k.getName()' must not be null");
-		}
-		
-		getReferencingKeys().put(k.getName(), k);
+		getReferencingKeys().add(k);
 	}
 	
 	void setPrimaryKey(DefaultPrimaryKey pk) {
@@ -70,60 +59,34 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 	public PrimaryKey getPrimaryKey() {
 		return this.primaryKey;
 	}
-	
-	 
-	
-//	void addPrimaryKeyColumn(DefaultMutableColumn c) {
-//		if (c.getParentNode() != this) {
-//			throw new IllegalArgumentException(
-//					"Can not add a primary key column from the other table: " + c.getParentNode());
-//		}
-//		
-//		if (c.getName() == null) {
-//			throw new NullPointerException("'c.getName()' must not be null");
-//		}
-//		
-//		getPrimaryKeyColumns().put(c.getName(), c);
-//	}
-	
-	
-	
-	
-	
-	
-	@Override
-	public Map<String, ForeignKey> references() {
-		if (referencingKeys == null) {
-			return Collections.emptyMap();
-		}
-		
-		return Collections.unmodifiableMap(referencingKeys);
-	}
 
-	private Map<String, ForeignKey> getForeignKeys() {
+	
+
+
+	private DefaultSchemaElementMap<ForeignKey> getForeignKeys() {
 		if (foreignKeys == null) {
-			foreignKeys = new HashMap<String, ForeignKey>();			
+			foreignKeys = createElementMap();
 		}
 
 		return foreignKeys;
 	}
 
-	private Map<String, ForeignKey> getReferencingKeys() {
+	private DefaultSchemaElementMap<ForeignKey> getReferencingKeys() {
 		if (referencingKeys == null) {
-			referencingKeys = new HashMap<String, ForeignKey>();						
+			referencingKeys = createElementMap();						
 		}
 
 		return referencingKeys;
 	}
 
-	@Override
-	public Map<String, ForeignKey> foreignKeys() {
-		if (foreignKeys == null) {
-			return Collections.emptyMap();
-		}
-		
-		return Collections.unmodifiableMap(foreignKeys);
-	}
+//	@Override
+//	public Map<String, ForeignKey> foreignKeys() {
+//		if (foreignKeys == null) {
+//			return Collections.emptyMap();
+//		}
+//		
+//		return Collections.unmodifiableMap(foreignKeys);
+//	}
 
 	@Override
 	public String getTableType() {
@@ -140,6 +103,16 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 		return "base table " + getQualifiedName() + "@" + System.identityHashCode(this);
 	}
 
+	@Override
+	public SchemaElementMap<ForeignKey> foreignKeys() {
+		return this.foreignKeys;
+	}
+
+	@Override
+	public SchemaElementMap<ForeignKey> references() {
+		return this.referencingKeys;
+	}
+	
 //	private Map<String, Column> getPrimaryKeyColumns() {
 //		if (primaryKeyColumns == null) {
 //			primaryKeyColumns = new LinkedHashMap<String, Column>();			

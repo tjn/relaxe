@@ -13,7 +13,7 @@ public class TableReference
 	
 	private ElementList<ColumnName> columnNameList;
 	
-	private Name tableName;
+	private SchemaElementName tableName;
 		
 	public TableReference(Table table) {
 		super();
@@ -41,18 +41,19 @@ public class TableReference
 			this.columnNameList = new ElementList<ColumnName>();
 			
 			List<ColumnName> nl = this.columnNameList.getContent();
-						
-			for (final Column c : getTable().columns().values()) {
-				nl.add(new TableColumnName(c));
+			
+			for (final Column c : getTable().columns()) {
+				nl.add(c.getColumnName());
 			}
 		}
 		
 		return columnNameList;
 	}
 		
-	public Name getTableName() {
+	public SchemaElementName getTableName()
+		throws IllegalIdentifierException {
 		if (tableName == null) {
-			tableName = new Name(getTable());			
+			tableName = new SchemaElementName(getTable());			
 		}
 
 		return tableName;
@@ -60,9 +61,8 @@ public class TableReference
 
 	@Override
 	public void addAll(ElementList<SelectListElement> dest) {
-		for (Column	c : getTable().columns().values()) {
-			dest.add(new ValueElement(
-				new TableColumnExpr(this, c)));
+		for (Column	c : getTable().columns()) {
+			dest.add(new TableColumnExpr(this, c));
 		}
 	}
 	

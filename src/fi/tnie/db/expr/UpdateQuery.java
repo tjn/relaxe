@@ -22,9 +22,8 @@ public class UpdateQuery
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
 		Keyword.UPDATE.traverse(vc, v);		
 		getTarget().traverse(vc, v);		
-		Keyword.SET.traverse(vc, v);		
-		assignmentClause.traverse(vc, v);		
-						
+		Keyword.SET.traverse(vc, v);
+		assignmentClause.traverse(vc, v);
 		traverseNonEmpty(getWhere().getSearchCondition(), vc, v);
 	}
 
