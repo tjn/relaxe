@@ -3,9 +3,9 @@
  */
 package fi.tnie.db;
 
-public interface Row<C extends Enum<C>> {
+public interface Row {
 	
-  public abstract Object get(C column);
+  public abstract Object get(int ordinal);  
   abstract RowMetaData getMetaData();
   
 }

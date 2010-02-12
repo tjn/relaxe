@@ -33,7 +33,7 @@ import fi.tnie.db.meta.impl.ColumnMap;
  * @param <R>
  */
 
-public class RowQuery<C extends Enum<C>, R extends Row<C>>
+public class RowQuery<R extends Row>
 {		
 	private EnumMap<C, Integer> projection;	
 	private RowFactory<C, R> factory;

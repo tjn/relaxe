@@ -6,34 +6,50 @@
  */
 package fi.tnie.db;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import fi.tnie.db.expr.ColumnExpr;
+import fi.tnie.db.expr.TableColumnExpr;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.expr.ValueExpression;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Table;
 
-public abstract class BaseTableRowMetaData<C extends Enum<C>>
+public abstract class BaseTableRowMetaData<C extends Enum<C> & Identifiable>
 	implements RowMetaData {
 	 
-	private BaseTable table;	
-	private TableReference source;
+	private BaseTable baseTable;	
+	private TableReference source;	
+	private EnumSet<C> pkDefinition = null;
 	
-	private EnumSet<C> pkDefinition = null; 
+	private BaseTableRowFactory<C, BaseTableRow<C>> factory;
+	
+	private List<C> columnList;
+	
+	private EnumMap<C, TableColumnExpr> exprMap;
+	
+	public BaseTableRowMetaData(TableReference tref, BaseTableRowFactory<C, BaseTableRow<C>> factory) {
+		this(null, tref, factory);		
+	}
 		
-	public BaseTableRowMetaData(EnumSet<C> columns, TableReference tref) {
+	public BaseTableRowMetaData(EnumSet<C> columns, TableReference tref, BaseTableRowFactory<C, BaseTableRow<C>> factory) {
 		super();
 				
 		if (tref == null) {
 			throw new NullPointerException("'tref' must not be null");
 		}
 		
-		this.source = tref;
+		if (factory == null) {
+			throw new NullPointerException("'factory' must not be null");
+		}
+		
+		this.source = tref;				
+		this.factory = factory;
 		
 		Class<C> cnt = getColumnNameType();
 		
@@ -44,16 +60,16 @@ public abstract class BaseTableRowMetaData<C extends Enum<C>>
 		Table table = this.source.getTable();
 		
 		if (table == null) {
-			throw new NullPointerException("'table' must not be null");
+			throw new NullPointerException("'baseTable' must not be null");
 		}
 		
 		if (!table.isBaseTable()) {
-			throw new IllegalArgumentException("table must be a base table: " + table.getName()); 
+			throw new IllegalArgumentException("baseTable must be a base baseTable: " + table.getName()); 
 		}
 		
-		this.table = (BaseTable) table;
-		
-		List<? extends Column> pkcols = this.table.getPrimaryKey().columns();
+		this.baseTable = (BaseTable) table;	
+								
+		List<? extends Column> pkcols = this.baseTable.getPrimaryKey().columns();
 		EnumSet<C> pk = EnumSet.noneOf(cnt); 
 		
 		for (Column c : pkcols) {
@@ -65,33 +81,51 @@ public abstract class BaseTableRowMetaData<C extends Enum<C>>
 			throw new IllegalArgumentException("columns must contain all the primary-key columns");
 		}
 		
+		this.columnList = new ArrayList<C>(columns);				
 		this.pkDefinition = pk;
-		
-//		this.columns = columns;
 	}
 	
 	@Override
 	public int getColumnCount() {
-//		return this.columns.size();
-		return 0;
+		return this.columnList.size();
 	}
 
 	@Override
-	public ValueExpression getColumnExpr(int column) {		
-		return null;
+	public ValueExpression getColumnExpr(int ordinal) {
+		return getTableColumnExpr(ordinal);
 	}
 	
-	public ColumnExpr getColumnExpr(C column) {
-		return null;
+	
+	public TableColumnExpr getTableColumnExpr(int ordinal) {						
+		C column = this.columnList.get(ordinal - 1);
+		
+		if (exprMap == null) {
+			exprMap = new EnumMap<C, TableColumnExpr>(getColumnNameType());
+		}
+		
+		TableColumnExpr e = exprMap.get(column);
+		
+		if (e == null) {
+			Column c = baseTable.getColumn(column.identifier());			
+			e = new TableColumnExpr(source, c);	
+			exprMap.put(column, e);
+		}		
+		
+		return e;
 	}
 	
 	public abstract Class<C> getColumnNameType();
 
 	public BaseTable getTable() {
-		return table;
+		return baseTable;
 	}
 
 	public Set<C> getPKDefinition() {
 		return Collections.unmodifiableSet(pkDefinition);
-	}	
+	}
+
+	public BaseTableRowFactory<C, BaseTableRow<C>> getFactory() {
+		return factory;
+	}
+	
 }

@@ -10,7 +10,6 @@ public class Key
 	extends DefaultMutableMetaObject {
 	
 	private DefaultMutableTable table;
-	
 
 	@Override
 	public DefaultMutableMetaObject getParent() {

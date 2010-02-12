@@ -5,8 +5,8 @@ package fi.tnie.db.expr;
 
 import fi.tnie.db.meta.Table;
 
-public class InsertQuery
-	extends CompoundElement {
+public class InsertStatement
+	extends Statement {
 
 	private Table target;
 	
@@ -14,6 +14,8 @@ public class InsertQuery
 	private ElementList<ColumnName> columnNameList;
 	
 	private SchemaElementName tableName;
+	
+	
 	
 	public int getTargetColumnCount() {
 		if (columnNameList == null) {
@@ -23,8 +25,8 @@ public class InsertQuery
 		return columnNameList.getContent().size();
 	}
 			
-	public InsertQuery(Table target, ElementList<ColumnName> columnNameList, ValueRow valueRow) {
-		super();
+	public InsertStatement(Table target, ElementList<ColumnName> columnNameList, ValueRow valueRow) {
+		super(Name.INSERT);
 		this.target = target;
 				
 		if (columnNameList != null) {
@@ -78,6 +80,7 @@ public class InsertQuery
 		getValues().add(r);
 	}
 	
+	@Override
 	public String generate() {
 		StringBuffer dest = new StringBuffer();
 		ElementVisitor v = new QueryGenerator(dest);
@@ -91,5 +94,5 @@ public class InsertQuery
 		}
 
 		return tableName;
-	}	
+	}
 }

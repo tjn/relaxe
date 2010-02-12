@@ -264,13 +264,13 @@ public class SourceGenerator {
 	
 	//
 	
-	private static void processAdHoc(PreparedStatement ps, String query, QueryProcessor qp) 
+	private static void processAdHoc(PreparedStatement ps, QueryProcessor qp) 
 		throws SQLException {
 
 //		ResultSetMetaData m = ps.getMetaData();			
 //		int cc = (m == null) ? 0 : m.getColumnCount();
 
-		qp.prepare(query);
+		qp.prepare();
 		
 		try {
 			boolean moreResults = ps.execute();

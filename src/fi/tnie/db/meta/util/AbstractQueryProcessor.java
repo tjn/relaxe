@@ -22,7 +22,7 @@ public abstract class AbstractQueryProcessor implements QueryProcessor {
 	}
 
 	@Override
-	public void prepare(String statement) throws SQLException {
+	public void prepare() throws SQLException {
 	}
 
 	@Override

@@ -15,19 +15,6 @@ public class PersonTable {
 	public PersonTable() {		
 	}
 	
-	void insert(Row<Column> row, Connection c) {
-			
-		
-	}
-	
-	void update(Row<Column> row) {
-		
-		
-	}
-	
-	void delete(Row<Column> row) {
-		
-	}
 	
 	
 	

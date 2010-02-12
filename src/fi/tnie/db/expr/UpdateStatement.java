@@ -5,15 +5,15 @@ package fi.tnie.db.expr;
 
 import fi.tnie.db.meta.Table;
 
-public class UpdateQuery
-	extends CompoundElement {
+public class UpdateStatement
+	extends Statement {
 
 	private TableReference target;			
 	private ElementList<Assignment> assignmentClause;
 	private Where where;
 				
-	public UpdateQuery(Table target, ElementList<Assignment> assignmentClause) {
-		super();		
+	public UpdateStatement(Table target, ElementList<Assignment> assignmentClause) {
+		super(Name.UPDATE);		
 		this.target = new TableReference(target);
 		this.assignmentClause = assignmentClause;
 	}	
@@ -31,6 +31,7 @@ public class UpdateQuery
 		return target;
 	}	
 	
+	@Override
 	public String generate() {
 		StringBuffer dest = new StringBuffer();
 		ElementVisitor v = new QueryGenerator(dest);
@@ -52,5 +53,10 @@ public class UpdateQuery
 		}
 
 		return where;
+	}
+
+	@Override
+	public Name getName() {
+		return Name.UPDATE;
 	}
 }

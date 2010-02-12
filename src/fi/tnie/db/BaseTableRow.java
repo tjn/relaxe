@@ -15,13 +15,15 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
+
 import fi.tnie.db.expr.Assignment;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.ElementList;
-import fi.tnie.db.expr.InsertQuery;
+import fi.tnie.db.expr.InsertStatement;
 import fi.tnie.db.expr.Parameter;
 import fi.tnie.db.expr.Predicate;
-import fi.tnie.db.expr.UpdateQuery;
+import fi.tnie.db.expr.UpdateStatement;
 import fi.tnie.db.expr.ValueExpression;
 import fi.tnie.db.expr.ValueParameter;
 import fi.tnie.db.expr.ValueRow;
@@ -32,18 +34,16 @@ import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.impl.ColumnMap;
 
-public class BaseTableRow<C extends Enum<C>> 
-	implements Row<C> {
+public class BaseTableRow<C extends Enum<C> & Identifiable> 
+	implements Row {
 	
 	private BaseTableRowMetaData<C> meta;	
 	private EnumMap<C, Object> values;	
 	private EnumMap<C, Parameter> parameterMap;
-	
-	
-	
+			
 	private static Logger logger = Logger.getLogger(BaseTableRow.class);
 	 
-	public BaseTableRow(BaseTableRowMetaData<C> meta) {
+	public BaseTableRow(BaseTableRowFactory<C, BaseTableRow<C>> source, BaseTableRowMetaData<C> meta) {
 		super();
 		
 		if (meta == null) {
@@ -55,7 +55,7 @@ public class BaseTableRow<C extends Enum<C>>
 		if (cc < 1) {			
 			throw new IllegalArgumentException("column count must be >= 1, was " + cc); 
 		}
-		
+			
 		this.meta = meta;
 //		this.values = new Object[cc];		
 		this.values = new EnumMap<C, Object>(meta.getColumnNameType());
@@ -64,7 +64,7 @@ public class BaseTableRow<C extends Enum<C>>
 	public void insert(Connection c) 
 		throws SQLException {		
 	 
-		InsertQuery q = createInsertQuery();		
+		InsertStatement q = createInsertQuery();		
 		String qs = q.generate();		
 		final PreparedStatement ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);					
 		q.traverse(null, new ParameterAssignment(ps));
@@ -92,7 +92,7 @@ public class BaseTableRow<C extends Enum<C>>
 
 	
 	
-	public InsertQuery createInsertQuery() {
+	public InsertStatement createInsertQuery() {
 
 		ValueRow newRow = new ValueRow();
 		
@@ -102,13 +102,13 @@ public class BaseTableRow<C extends Enum<C>>
 				
 		for (Map.Entry<C, ?> e : values.entrySet()) {			
 			C column = e.getKey();			
-			Column col = cm.get(column.toString());
+			Column col = cm.get(column.identifier());
 			names.add(col.getColumnName());
 			ValueParameter p = new ValueParameter(col, e.getValue());
 			newRow.add(p);
 		}
 				
-		return new InsertQuery(t, names, newRow);						
+		return new InsertStatement(t, names, newRow);						
 		
 	}
 
@@ -126,7 +126,7 @@ public class BaseTableRow<C extends Enum<C>>
 			throw new IllegalStateException("object was deleted");
 		}		
 						
-		UpdateQuery q = createUpdateQuery();				
+		UpdateStatement q = createUpdateQuery();				
 		String qs = q.generate();
 		
 		final PreparedStatement ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);						
@@ -152,10 +152,10 @@ public class BaseTableRow<C extends Enum<C>>
 		}
 	}
 
-
-	private BaseTableRow<C> reload(Connection c, RowFactory<C, BaseTableRow<C>> rf, Predicate pkp) 
+	private BaseTableRow<C> reload(Connection c, Predicate pkp) 
 		throws SQLException {
 		
+		BaseTableRowFactory<C, BaseTableRow<C>> rf = getBaseTableRowMetaData().getFactory(); 
 		RowQuery<C, BaseTableRow<C>> q = new RowQuery<C, BaseTableRow<C>>(rf);
 		q.getQuery().getWhere().setSearchCondition(pkp);
 		
@@ -346,9 +346,8 @@ public Parameter getParameter(final C column) {
 	public BaseTableRowMetaData<C> getBaseTableRowMetaData() {
 		return this.meta;
 	}
-	
-	@Override
-	public Object get(C column) {
+		
+	public Object get(C column) {		
 		return values.get(column);
 	}
 	
@@ -381,7 +380,7 @@ public Parameter getParameter(final C column) {
 	}
 
 	
-	public UpdateQuery createUpdateQuery() {
+	public UpdateStatement createUpdateQuery() {
 		BaseTable table = getTable();
 		ColumnMap cm = table.columnMap();
 		
@@ -394,10 +393,14 @@ public Parameter getParameter(final C column) {
 			assignments.add(new Assignment(col.getColumnName(), p));
 		}
 									
-		UpdateQuery q = new UpdateQuery(table, assignments);				
+		UpdateStatement q = new UpdateStatement(table, assignments);				
 		return q;		
 	}
-	
-	
+
+	@Override
+	public Object get(int ordinal) {
+		// getMetaData().get
+		return null;
+	}
 	
 }

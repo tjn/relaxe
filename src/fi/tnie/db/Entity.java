@@ -90,7 +90,7 @@ public abstract class Entity<A extends Enum<A>, E extends Entity<A, E>>
 //			newRow.add(p);
 //		}
 //				
-//		InsertQuery q = new InsertQuery(t, names, newRow);				
+//		InsertStatement q = new InsertStatement(t, names, newRow);				
 //		String qs = q.generate();
 //		
 //		final PreparedStatement ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);
@@ -141,7 +141,7 @@ public abstract class Entity<A extends Enum<A>, E extends Entity<A, E>>
 //			throw new IllegalStateException("object was deleted");
 //		}
 //						
-//		UpdateQuery q = new UpdateQuery(t, assignments);				
+//		UpdateStatement q = new UpdateStatement(t, assignments);				
 //		String qs = q.generate();
 //		
 //		final PreparedStatement ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);						

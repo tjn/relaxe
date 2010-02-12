@@ -19,7 +19,7 @@ public class SimpleQueryProcessor implements QueryProcessor {
 	private int rows;
 	private String columnDelimiter;
 	
-	public SimpleQueryProcessor(PrintWriter out) {
+	public SimpleQueryProcessor(PrintWriter out, String statement) {
 		this(out, ";");
 	}
 	
@@ -58,9 +58,8 @@ public class SimpleQueryProcessor implements QueryProcessor {
 	}
 
 	@Override
-	public void prepare(String statement) {
-		this.preparedAt = System.currentTimeMillis();
-		this.statement = statement;
+	public void prepare() {
+		this.preparedAt = System.currentTimeMillis();		
 	}
 
 	@Override

@@ -1,0 +1,100 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
+package fi.tnie.db.expr;
+
+public abstract class Statement
+	extends CompoundElement {
+	
+		
+	enum Type {
+		/**
+		 * CREATE/ALTER/DROP/TRUNCATE/COMMENT/RENAME -statement 
+		 */			  
+		DATA_DEFINITION_LANGUAGE,
+		/**
+		 * SELECT/
+		 */
+		DATA_MANIPULATION_LANGUAGE,
+		
+		/**
+		 * GRANT/REVOKE
+		 */
+		DATA_CONTROL_LANGUAGE,
+		/**
+		 * COMMIT/SAVEPOINT/ROLLBACK/SET TRANSACTION 
+		 */
+		TRANSACTION_CONTROL	
+	}
+		
+	public static final Type DDL = Type.DATA_DEFINITION_LANGUAGE;	
+	public static final Type DML = Type.DATA_MANIPULATION_LANGUAGE;	
+	public static final Type DCL = Type.DATA_CONTROL_LANGUAGE;	
+	public static final Type TCL = Type.TRANSACTION_CONTROL;
+	
+	public enum Name {
+//	DDL:
+		CREATE(DDL),
+		ALTER(DDL), 
+		DROP(DDL),
+		TRUNCATE(DDL),
+		COMMENT(DDL),
+		RENAME(DDL),		
+
+//	DML:
+		SELECT(DML),
+		INSERT(DML), 
+		UPDATE(DML),
+		DELETE(DML),
+		CALL(DML),
+		EXPLAIN_PLAN(DML),
+		
+//	DCL:
+		GRANT(DCL),
+		REVOKE(DCL),
+
+//	TCL:
+		COMMIT(TCL),
+		SAVEPOINT(TCL),
+		ROLLBACK(TCL),
+		SET_TRANSACTION(TCL)
+		;
+		
+		private Type type;
+				
+		private Name(Type t) {
+			this.type = t;
+		}
+		
+		private Type getType() {
+			return this.type;
+		}
+	}	
+	
+	public String generate() {
+		StringBuffer dest = new StringBuffer();
+		ElementVisitor v = new QueryGenerator(dest);
+		traverse(null, v);		
+		return dest.toString();		
+	}	
+	
+	private Name name;
+	
+	protected Statement(Name name) {
+		super();
+		
+		if (name == null) {
+			throw new NullPointerException("'name' must not be null");
+		}
+		
+		this.name = name;
+	}
+
+	public Name getName() {
+		return this.name;
+	}
+	
+	public Type getType() {
+		return getName().getType();
+	}
+}

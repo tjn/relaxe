@@ -3,6 +3,6 @@
  */
 package fi.tnie.db;
 
-public interface TableRow {
-	void set(int ordinal, Object value);	
+public interface InstantiationContext {
+
 }

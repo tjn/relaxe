@@ -4,7 +4,7 @@
 package fi.tnie.db.expr;
 
 public class NestedSelect
-	extends SelectQuery
+	extends SelectQuery	
 	implements Subselect {
 	
 	private SelectQuery inner;

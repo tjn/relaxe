@@ -3,7 +3,15 @@
  */
 package fi.tnie.db.expr;
 
-public interface QueryExpression
-	extends Expression {
+/**
+ * Top-level SELECT -statement
+ * @author Administrator
+ */
 
+public abstract class QueryExpression 	
+	extends Statement {
+	
+	protected QueryExpression() {
+		super(Name.SELECT);
+	}	
 }
