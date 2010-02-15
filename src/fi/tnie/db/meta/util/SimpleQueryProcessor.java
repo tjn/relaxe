@@ -19,9 +19,10 @@ public class SimpleQueryProcessor implements QueryProcessor {
 	private int rows;
 	private String columnDelimiter;
 	
-	public SimpleQueryProcessor(PrintWriter out, String statement) {
+	public SimpleQueryProcessor(PrintWriter out) {
 		this(out, ";");
 	}
+	
 	
 	public SimpleQueryProcessor(PrintWriter out, String cd) {
 		super();

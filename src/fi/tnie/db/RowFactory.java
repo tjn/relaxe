@@ -3,17 +3,15 @@
  */
 package fi.tnie.db;
 
+import fi.tnie.db.expr.SelectQuery;
+
 
 public interface RowFactory<R extends Row> {	
-
-//	Table getSource();
-//	
 	R newInstance(InstantiationContext ic) 
 		throws InstantiationException, IllegalAccessException;
 
-//	RowQuery<C, R> createRowQuery();
-//	Class<C> getColumnNameType();	
-//	Column getColumn(C c);	
-//	Set<C> getPKDefinition();
+	public InstantiationContext prepare(SelectQuery query);
+	void finish(InstantiationContext ic);
+	
 	
 }

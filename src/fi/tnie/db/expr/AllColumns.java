@@ -6,7 +6,8 @@ package fi.tnie.db.expr;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AllColumns implements SelectListElement, Token {
+public abstract class AllColumns 
+	implements SelectListElement, Token {
 
 	private Symbol allColumns = Symbol.ASTERISK;	
 	
@@ -70,5 +71,35 @@ public abstract class AllColumns implements SelectListElement, Token {
 		return cc;
 	}
 	
+	
+	
+	@Override
+	public ValueExpression getColumnExpr(final int column) {
+		int c = 0;	
+		ValueExpression e = null;
+		
+		int index = column - 1;
+		
+		if (index < 0 || index >= getColumnCount()) {
+			throw new IndexOutOfBoundsException("column=" + column);
+		}
+		
+		TableRefList refs = getTableRefs();				
+		int rc = refs.getCount();
+		
+		for (int i = 0; i < rc; i++) {
+			AbstractTableReference tref = refs.getItem(i);
+			c += tref.getColumnCount();
+			
+			if (column <= c) {
+				int pos = c - column;				
+				e = tref.getAllColumns().getColumnExpr(pos);
+				break;
+			}
+		}
+		
+		return e;	
+	}
+
 	protected abstract TableRefList getTableRefs();
 }

@@ -31,6 +31,7 @@ import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
+import fi.tnie.db.meta.impl.mysql.MySQLCatalogFactory;
 import fi.tnie.db.meta.util.AbstractQueryProcessor;
 import fi.tnie.db.meta.util.QueryProcessor;
 import fi.tnie.db.meta.util.StringListReader;

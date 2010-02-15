@@ -42,7 +42,7 @@ public class StatementExecutor {
 				ps = c.prepareCall(qs);
 			}
 			else {
-				ps = c.prepareStatement(qs, PreparedStatement.RETURN_GENERATED_KEYS);
+				ps = c.prepareStatement(qs, java.sql.Statement.RETURN_GENERATED_KEYS);
 			}
 									
 			if (s.getName().equals(Name.SELECT)) {
@@ -56,7 +56,7 @@ public class StatementExecutor {
 				}								
 			}
 			else {
-				int updated = ps.executeUpdate(qs, PreparedStatement.RETURN_GENERATED_KEYS);
+				int updated = ps.executeUpdate(qs, java.sql.Statement.RETURN_GENERATED_KEYS);
 				
 				qp.updated(updated);
 				

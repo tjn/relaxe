@@ -12,15 +12,12 @@ import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.meta.CatalogFactory;
 
-public class DefaultEnvironment implements Environment {
+public abstract class DefaultEnvironment implements Environment {
 
 	private Comparator<Identifier> identifierComp;
 	
 	@Override
-	public CatalogFactory catalogFactory() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public abstract CatalogFactory catalogFactory();
 
 	@Override
 	public Identifier createIdentifier(String name)
@@ -40,5 +37,4 @@ public class DefaultEnvironment implements Environment {
 	protected Comparator<Identifier> createIdentifierComparator() {
 		return new FoldingComparator();
 	}
-
 }

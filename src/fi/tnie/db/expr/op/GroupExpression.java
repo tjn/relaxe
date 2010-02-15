@@ -40,5 +40,15 @@ public class GroupExpression
 	@Override
 	public List<? extends ColumnName> getColumnNames() {
 		return getContent().getColumnNames();
-	}	
+	}
+	
+	
+	@Override
+	public ValueExpression getColumnExpr(int column) {
+		if (column != 1) {
+			throw new IndexOutOfBoundsException(Integer.toString(column));
+		}
+	
+		return this;
+	}
 }

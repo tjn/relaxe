@@ -51,4 +51,14 @@ public class ValueParameter extends Parameter {
 	public List<? extends ColumnName> getColumnNames() {
 		return Collections.singletonList(null);
 	}
+	
+	@Override
+	public ValueExpression getColumnExpr(int column) {	
+		if (column != 1) {
+			throw new IndexOutOfBoundsException(Integer.toString(column));
+		}
+		
+		return this;
+	}
+	
 }

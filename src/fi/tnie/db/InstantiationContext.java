@@ -3,6 +3,9 @@
  */
 package fi.tnie.db;
 
-public interface InstantiationContext {
+import fi.tnie.db.expr.SelectQuery;
 
+public interface InstantiationContext {
+	
+	public SelectQuery getQueryExpression();
 }

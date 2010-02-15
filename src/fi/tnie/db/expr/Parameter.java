@@ -62,6 +62,16 @@ public abstract class Parameter
 		v.start(vc, this);
 		v.end(this);
 	}
+
+	@Override
+	public ValueExpression getColumnExpr(int column) {
+		if (column != 1) {
+			throw new IndexOutOfBoundsException(Integer.toString(column));
+		}
+		
+		return this;
+	}
+	
 	
 	
 }

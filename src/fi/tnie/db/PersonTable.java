@@ -3,8 +3,6 @@
  */
 package fi.tnie.db;
 
-import java.sql.Connection;
-
 public class PersonTable {
 
 	public enum Column {

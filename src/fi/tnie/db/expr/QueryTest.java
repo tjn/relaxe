@@ -20,7 +20,7 @@ import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.impl.DefaultCatalogFactory;
-import fi.tnie.db.meta.impl.MySQLCatalogFactory;
+import fi.tnie.db.meta.impl.mysql.MySQLCatalogFactory;
 
 public class QueryTest {
 

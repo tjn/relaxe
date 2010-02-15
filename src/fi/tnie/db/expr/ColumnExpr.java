@@ -4,7 +4,8 @@
 package fi.tnie.db.expr;
 
 public abstract class ColumnExpr 
-	extends CompoundElement implements ValueExpression {
+	extends CompoundElement 
+	implements ValueExpression {
 
 	private AbstractTableReference table;	
 	private ColumnName columnName;
@@ -22,6 +23,18 @@ public abstract class ColumnExpr
 	public ColumnName getColumnName() {
 		return columnName;
 	}
-	
-//	public abstract String getName();
+
+	@Override
+	public int getColumnCount() {	
+		return 1;
+	}
+
+	@Override
+	public ValueExpression getColumnExpr(int column) {
+		if (column != 1) {
+			throw new IndexOutOfBoundsException(Integer.toString(column));
+		}
+
+		return this;
+	}	
 }

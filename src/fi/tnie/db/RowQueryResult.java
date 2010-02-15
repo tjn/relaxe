@@ -7,13 +7,13 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class RowQueryResult<C extends Enum<C>, E extends Row<C>> {		
+public class RowQueryResult<R extends Row> {		
 
-	private List<E> content;
-	private RowQuery<C, E> source;
+	private List<R> content;
+	private RowQuery<R> source;
 	private int available;
 	
-	public RowQueryResult(RowQuery<C, E> source, List<E> content, int available) {		
+	public RowQueryResult(RowQuery<R> source, List<R> content, int available) {		
 		super();
 		
 		if (source == null) {
@@ -25,7 +25,7 @@ public class RowQueryResult<C extends Enum<C>, E extends Row<C>> {
 		this.available = available;
 	}
 
-	public List<E> getContent() {
+	public List<R> getContent() {
 		if (content == null) {
 			return Collections.emptyList();
 		}
@@ -33,7 +33,7 @@ public class RowQueryResult<C extends Enum<C>, E extends Row<C>> {
 		return Collections.unmodifiableList(this.content);
 	}
 
-	public RowQuery<C, E> getSource() {
+	public RowQuery<R> getSource() {
 		return source;
 	}
 
@@ -41,7 +41,7 @@ public class RowQueryResult<C extends Enum<C>, E extends Row<C>> {
 		return available;
 	}
 
-	public E first() {
+	public R first() {
 		return (available > 0) ? this.content.get(0) : null;
 	}
 

@@ -3,28 +3,19 @@
  */
 package fi.tnie.db;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.Set;
-
+import java.util.List;
+import fi.tnie.db.expr.SelectListElement;
+import fi.tnie.db.expr.SelectQuery;
 import fi.tnie.db.meta.BaseTable;
-import fi.tnie.db.meta.Column;
-import fi.tnie.db.meta.PrimaryKey;
-import fi.tnie.db.meta.Table;
 
-public class DefaultRowFactory<C extends Enum<C>, R extends Row<C>> 
-	implements RowFactory<C, R> {
+public class DefaultRowFactory<C extends Enum<C>, R extends Row> 
+	implements RowFactory<R> {
 	
-	private BaseTable table;
 	private Class<C> columnNameType;	
 	private Class<R> productType;
-	
-	private EnumSet<C> pkDefinition;
 	
 	public DefaultRowFactory() {
 		super();	
@@ -45,76 +36,45 @@ public class DefaultRowFactory<C extends Enum<C>, R extends Row<C>>
 			throw new NullPointerException("'productType' must not be null");
 		}
 				
-		this.table = table;
+//		this.table = table;
 		this.columnNameType = columnNameType;
 		this.productType = productType;		
 	}
 	
-	
-
-	@Override
-	public BaseTable getTable() {		
-		return this.table;
-	}		
-
-	@Override
-	public RowQuery<C, R> createRowQuery() {
-		return new RowQuery<C, R>(this);
-	}
-
-	public R newInstance() 
-		throws InstantiationException, IllegalAccessException {
-		return this.productType.newInstance();
-	}
-
 	public Class<C> getColumnNameType() {
 		return this.columnNameType;
 	}
 
+
 //	@Override
-//	public R reload(Row<C> pk, Connection c) throws SQLException {
-//		Map<C, ?> m = pk.getPrimaryKey();
-//		
-//		if (m == null) {
-//			throw new NullPointerException("no primary key null");
-//		}
-//				
-//		RowQuery<C, R> eq = createEntityQuery();		
-//		Predicate p = pk.loadedAs(eq);
-//				
-//		eq.getQuery().getWhere().setSearchCondition(p);		
-//		return eq.exec(c).first();
+//	public Column getColumn(C k) {
+//		return getTable().columnMap().get(k.toString());
 //	}
-
-	@Override
-	public Column getColumn(C k) {
-		return getTable().columnMap().get(k.toString());
-	}
-
-	@Override
-	public Set<C> getPKDefinition() {
-		if (pkDefinition == null) {
-			PrimaryKey pk = getTable().getPrimaryKey();
-			
-			if (pk == null) {
-				throw new IllegalStateException("No primary key in table: " + getTable().getQualifiedName());
-			}					
-			
-			EnumSet<C> ks = EnumSet.allOf(columnNameType);
-			
-			for (C k : ks) {				
-				Column c = getColumn(k);
-				
-				if (!c.isPrimaryKeyColumn()) {
-					ks.remove(k);
-				}
-			}
-			
-			this.pkDefinition = ks;
-		}
-		
-		return Collections.unmodifiableSet(pkDefinition);
-	}
+//
+//	@Override
+//	public Set<C> getPKDefinition() {
+//		if (pkDefinition == null) {
+//			PrimaryKey pk = getTable().getPrimaryKey();
+//			
+//			if (pk == null) {
+//				throw new IllegalStateException("No primary key in table: " + getTable().getQualifiedName());
+//			}					
+//			
+//			EnumSet<C> ks = EnumSet.allOf(columnNameType);
+//			
+//			for (C k : ks) {				
+//				Column c = getColumn(k);
+//				
+//				if (!c.isPrimaryKeyColumn()) {
+//					ks.remove(k);
+//				}
+//			}
+//			
+//			this.pkDefinition = ks;
+//		}
+//		
+//		return Collections.unmodifiableSet(pkDefinition);
+//	}
 	
 //	public void copy(EnumMap<C, Integer> keys, ResultSet rs, BaseTableRow<C> dest) 
 //		throws SQLException {
@@ -142,32 +102,60 @@ public class DefaultRowFactory<C extends Enum<C>, R extends Row<C>>
 		return keys;
 	}
 
+//	@Override
+//	public EnumMap<C, Integer> columns(ResultSetMetaData rs) throws SQLException {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public void copy(EnumMap<C, Integer> keys, ResultSet src, Row<C> dest)
+//			throws SQLException {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public Table getSource() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public R reload(Row<C> pk, Connection c) throws SQLException {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+
 	@Override
-	public EnumMap<C, Integer> columns(ResultSetMetaData rs) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+	public R newInstance(InstantiationContext ic)
+			throws InstantiationException, IllegalAccessException {
+		
+		
+		
+		return this.productType.newInstance();
 	}
 
 	@Override
-	public void copy(EnumMap<C, Integer> keys, ResultSet src, Row<C> dest)
-			throws SQLException {
+	public void finish(InstantiationContext ic) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public Table getSource() {
-		// TODO Auto-generated method stub
-		return null;
+	public InstantiationContext prepare(SelectQuery query) {
+		
+		List<SelectListElement> content = query.getSelect().getSelectList().getContent();
+		
+		query.getSelect().getSelectList();
+		
+		for (SelectListElement e : content) {
+			// e.getColumnNames();
+		}
+		
+		
+		
+		return null;		
 	}
-
-	@Override
-	public R reload(Row<C> pk, Connection c) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	
-
 
 }

@@ -30,12 +30,12 @@ public class FullSelect
 	}
 	
 	@Override
-	Select getSelect() {		
+	public Select getSelect() {		
 		return getSubselect().getSelect();
 	}
 	
 	
-	
+		
 	
 	@Override
 	protected void traverseContent(VisitContext vc, ElementVisitor v) {

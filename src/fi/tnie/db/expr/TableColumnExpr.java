@@ -59,13 +59,10 @@ public class TableColumnExpr
 		return TableColumnExpr.logger;
 	}
 
-	@Override
-	public int getColumnCount() {
-		return 1;
-	}
 
 	@Override
 	public List<? extends ColumnName> getColumnNames() {		
 		return Collections.singletonList(getColumnName());
 	}
+
 }

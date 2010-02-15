@@ -8,7 +8,7 @@ import java.util.List;
 public interface SelectListElement
 	extends Element {
 
-	/**
+	/** 
 	 * Would something like: 
 	 * <code>Attribute getColumnName(int column)</code>  
 	 * or
@@ -16,7 +16,11 @@ public interface SelectListElement
 	 * be better? 
 	 * @return
 	 */	
-	List<? extends ColumnName> getColumnNames();	
+	List<? extends ColumnName> getColumnNames();
+	
+	ValueExpression getColumnExpr(int column);
+	
+	
 
 	/** Gets the column count.
 	 * <code>getColumnCount() = getColumnNames().size()</code> is always true

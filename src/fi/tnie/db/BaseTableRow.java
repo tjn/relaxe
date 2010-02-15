@@ -6,7 +6,6 @@ package fi.tnie.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.EnumMap;
@@ -14,8 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-
-import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
 import fi.tnie.db.expr.Assignment;
 import fi.tnie.db.expr.ColumnName;
@@ -31,7 +28,6 @@ import fi.tnie.db.expr.op.AndPredicate;
 import fi.tnie.db.expr.op.Comparison;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
-import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.impl.ColumnMap;
 
 public class BaseTableRow<C extends Enum<C> & Identifiable> 
@@ -112,56 +108,57 @@ public class BaseTableRow<C extends Enum<C> & Identifiable>
 		
 	}
 
-	private void update(Connection c, RowFactory<C, BaseTableRow<C>> rf) 
+	private void update(Connection c, BaseTableRowFactory<C, BaseTableRow<C>> rf) 
 		throws SQLException {
 	
-		// reload:
-				
-		Predicate pkp = createPKPredicate();
-									
-		BaseTableRow<C> snapshot = reload(c, rf, pkp);
-		
-		if (snapshot == null) {
-			// TODO: return diff: 
-			throw new IllegalStateException("object was deleted");
-		}		
-						
-		UpdateStatement q = createUpdateQuery();				
-		String qs = q.generate();
-		
-		final PreparedStatement ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);						
-		q.traverse(null, new ParameterAssignment(ps));				
-		int ins = ps.executeUpdate();
-		
-		logger().debug("updated: " + ins);
-		
-		ResultSet rs = ps.getGeneratedKeys();
-		
-		try {			
-//			EnumMap<K, Integer> keys = ef.columns(rs.getMetaData());					
-//			
-			if (rs.next()) {
-				
-				
-				copyFrom(rs);
-//				ef.copy(keys, rs, this);				
-			}
-		}
-		finally {
-			rs.close();
-		}
+//		// reload:
+//				
+//		Predicate pkp = createPKPredicate();
+//									
+//		BaseTableRow<C> snapshot = reload(c, rf, pkp);
+//		
+//		if (snapshot == null) {
+//			// TODO: return diff: 
+//			throw new IllegalStateException("object was deleted");
+//		}		
+//						
+//		UpdateStatement q = createUpdateQuery();				
+//		String qs = q.generate();
+//		
+//		final PreparedStatement ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);						
+//		q.traverse(null, new ParameterAssignment(ps));				
+//		int ins = ps.executeUpdate();
+//		
+//		logger().debug("updated: " + ins);
+//		
+//		ResultSet rs = ps.getGeneratedKeys();
+//		
+//		try {			
+////			EnumMap<K, Integer> keys = ef.columns(rs.getMetaData());					
+////			
+//			if (rs.next()) {
+//				
+//				
+//				copyFrom(rs);
+////				ef.copy(keys, rs, this);				
+//			}
+//		}
+//		finally {
+//			rs.close();
+//		}
 	}
 
 	private BaseTableRow<C> reload(Connection c, Predicate pkp) 
 		throws SQLException {
 		
-		BaseTableRowFactory<C, BaseTableRow<C>> rf = getBaseTableRowMetaData().getFactory(); 
-		RowQuery<C, BaseTableRow<C>> q = new RowQuery<C, BaseTableRow<C>>(rf);
-		q.getQuery().getWhere().setSearchCondition(pkp);
-		
-		BaseTableRow<C> reloaded = q.exec(c).first();
-		
-		return reloaded;
+//		BaseTableRowFactory<C, BaseTableRow<C>> rf = getBaseTableRowMetaData().getFactory(); 
+//		TableRowQuery<C, BaseTableRow<C>> q = new RowQuery<C, BaseTableRow<C>>(rf);
+//		q.getQuery().getWhere().setSearchCondition(pkp);
+//		
+//		BaseTableRow<C> reloaded = q.exec(c).first();
+//		
+//		return reloaded;
+		return null;
 	}
 
 	private Predicate createPKPredicate() {		
@@ -180,18 +177,6 @@ public class BaseTableRow<C extends Enum<C> & Identifiable>
 		return p;
 	}
 
-	private void copyFrom(ResultSet rs) 
-		throws SQLException {
-		ResultSetMetaData md = rs.getMetaData();
-		
-//		Enum.valueOf(, "");
-		
-	}
-
-//	public boolean isNew() {
-//		return (this.loadedAs == null); 
-//	}
-		
 
 	protected Map<C, ?> getPrimaryKey() {
 		

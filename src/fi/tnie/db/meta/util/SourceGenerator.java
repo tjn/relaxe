@@ -225,7 +225,7 @@ public class SourceGenerator {
 			
 			PreparedStatement ps = c.prepareStatement(s);
 						
-			processAdHoc(ps, s, qp);
+			processAdHoc(ps, qp);
 			
 //			ResultSetMetaData m = ps.getMetaData();			
 //			int cc = (m == null) ? 0 : m.getColumnCount();
@@ -455,7 +455,7 @@ public class SourceGenerator {
 		extends SimpleQueryProcessor {
 
 		public TableNameProcessor(PrintWriter out) {
-			super(out);
+			super(out, "\t");
 		}
 
 		private List<String> names = new ArrayList<String>(); 
