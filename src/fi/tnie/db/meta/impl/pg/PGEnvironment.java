@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.meta.impl.pg;
 
+import java.sql.DatabaseMetaData;
 import java.util.Comparator;
 
 import fi.tnie.db.FoldingComparator;
@@ -13,6 +14,11 @@ import fi.tnie.db.meta.impl.DefaultEnvironment;
 
 public class PGEnvironment
 	extends DefaultEnvironment {
+
+	public PGEnvironment(DatabaseMetaData metaData) {
+		
+	
+	}
 
 	@Override
 	public CatalogFactory catalogFactory() {	
