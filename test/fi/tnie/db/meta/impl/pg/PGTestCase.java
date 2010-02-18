@@ -12,13 +12,14 @@ import java.util.List;
 import fi.tnie.db.meta.impl.common.JDBCTestCase;
 import fi.tnie.util.io.Pipe;
 
-public class PGTestCase
+public abstract class PGTestCase
 	extends JDBCTestCase {
 	
 	public PGTestCase() {
 		super("org.postgresql.Driver", "tester", "password", "dbmeta_test");	
 	}
 
+	@Override
 	public String getDatabaseURL() {
 		return "jdbc:postgresql:" + getDatabase();
 	}
@@ -39,6 +40,7 @@ public class PGTestCase
 	}
 
 	
+	@Override
 	public void restore()
 		throws IOException, InterruptedException {
 		List<String> args = new ArrayList<String>();
@@ -90,10 +92,7 @@ public class PGTestCase
 		}
 	}	
 	
-	public void testRestore() 
-		throws Exception {
-		restore();
-	}
+
 	
 	
 	

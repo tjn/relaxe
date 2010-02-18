@@ -124,7 +124,7 @@ public abstract class JDBCTestCase
 			// TODO: 
 			// it should be enough for all referenced columns to be
 			// part of the same candidate key (not necessarily a primary key),
-			// but we have no represnetation for candidate key at the moment 
+			// but we have no representation for candidate key at the moment 
 			assertTrue(p.getValue().isPrimaryKeyColumn());
 		}
 	}

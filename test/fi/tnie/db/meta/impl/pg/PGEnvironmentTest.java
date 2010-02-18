@@ -15,6 +15,7 @@ import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
+import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Constraint;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
@@ -216,6 +217,41 @@ public class PGEnvironmentTest
 				testPrimaryKey(pk);
 			}
 		}
+	}
+	
+	public void testColumns() throws Exception {
+		BaseTable t = getCountryTable();
+		
+		assertNotNull(t.columnMap());
+		assertNotNull(t.columns());
+		
+		assertTrue(t.columnMap().keySet().size() > 1);
+		assertTrue(t.columns().size() > 1);
+		
+		PrimaryKey pk = t.getPrimaryKey();
+//		pk.getColumn(name)
+					
+		for (Column c : t.columns()) {
+//			System.err.println(c.getUnqualifiedName() + ": " + c.getClass());
+			assertNotNull(c);			
+			assertNotNull(c.getColumnName());
+			assertNotNull(c.getDataType());
+			assertNotNull(c.getDataType().getTypeName());			
+			assertNotNull(c.getUnqualifiedName());
+						
+		}
+	}
+	
+	
+	private BaseTable getCountryTable() 
+		throws SQLException {
+		SchemaMap sm = getCatalog().schemas();
+		assertNotNull(sm);				
+		Schema pub = sm.get(SCHEMA_PUBLIC);
+		assertNotNull(sm);
+		BaseTable t = pub.baseTables().get(TABLE_COUNTRY);
+		assertNotNull(t);
+		return t;
 	}
 	
 	private Identifier id(String name) 
