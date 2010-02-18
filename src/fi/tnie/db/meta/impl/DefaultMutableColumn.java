@@ -39,9 +39,17 @@ public class DefaultMutableColumn
 		if (t == null || name == null || type == null) {
 			throw new NullPointerException();
 		}
-		
+						
 		this.columnName = new ColumnName(name);
 		this.table = t;
+		
+		try {
+			this.dataType = (DataTypeImpl) type.clone();
+		} 
+		catch (CloneNotSupportedException e) {		
+			throw new IllegalArgumentException("type was not cloneable: " + e);
+		}
+		
 		t.add(this);
 	}
 

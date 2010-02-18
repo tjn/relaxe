@@ -6,7 +6,7 @@ package fi.tnie.db.meta.impl;
 import fi.tnie.db.meta.DataType;
 
 public class DataTypeImpl 
-	implements DataType {
+	implements DataType, Cloneable {
 
 	private int dataType;	
 	private String typeName;
@@ -62,12 +62,12 @@ public class DataTypeImpl
 	//		return getSchema();
 	//	}
 	
-		/* (non-Javadoc)
-		 * @see fi.tnie.db.meta.impl.DataType#getCharOctetLength()
-		 */
-		public int getCharOctetLength() {
-			return charOctetLength;
-		}
+	/* (non-Javadoc)
+	 * @see fi.tnie.db.meta.impl.DataType#getCharOctetLength()
+	 */
+	public int getCharOctetLength() {
+		return charOctetLength;
+	}
 
 	public int getDecimalDigits() {
 		return decimalDigits;
@@ -118,5 +118,11 @@ public class DataTypeImpl
 ////		DataType		
 ////		return new DataType();		
 //	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {	
+		DataTypeImpl copy = (DataTypeImpl) super.clone();				
+		return copy;
+	}
 
 }
