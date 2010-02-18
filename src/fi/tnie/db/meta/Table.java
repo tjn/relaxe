@@ -11,14 +11,12 @@ import fi.tnie.db.meta.impl.ColumnMap;
 public interface Table
 	extends SchemaElement {
 	
-	String BASE_TABLE = "TABLE";
-	
+	String BASE_TABLE = "TABLE";	
 	String getTableType();
 	
 	ColumnMap columnMap();
 		
 	Column getColumn(Identifier cn);	
 	List<? extends Column> columns();
-
 	boolean isBaseTable();
 }

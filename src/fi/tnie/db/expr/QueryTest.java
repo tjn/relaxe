@@ -21,8 +21,6 @@ import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Schema;
-import fi.tnie.db.meta.impl.DefaultCatalogFactory;
-import fi.tnie.db.meta.impl.mysql.MySQLCatalogFactory;
 import fi.tnie.db.meta.impl.mysql.MySQLEnvironment;
 import fi.tnie.util.io.IOHelper;
 

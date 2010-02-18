@@ -4,7 +4,6 @@
 package fi.tnie.db;
 
 import fi.tnie.db.meta.BaseTable;
-import fi.tnie.db.meta.Catalog;
 
 public class PersonTable
 	extends DefaultRowFactory<PersonTable.Column, MutableRow> {

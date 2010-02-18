@@ -4,8 +4,6 @@
 package fi.tnie.db.meta.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -14,8 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -23,21 +19,15 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
-import com.sun.media.sound.HsbParser;
-
 import java.sql.DatabaseMetaData;
 
 import fi.tnie.db.Environment;
-import fi.tnie.db.FoldingComparator;
-import fi.tnie.db.expr.AbstractIdentifier;
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
-import fi.tnie.db.meta.impl.mysql.MySQLCatalogFactory;
 import fi.tnie.db.meta.impl.mysql.MySQLEnvironment;
 import fi.tnie.db.meta.util.AbstractQueryProcessor;
 import fi.tnie.db.meta.util.IdentifierReader;
@@ -50,7 +40,6 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	private static Logger logger = Logger.getLogger(DefaultCatalogFactory.class);
 	private static final int TABLE_NAME_COLUMN = 3;
 
-//	private Comparator<Identifier> identifierComp;
 	private Environment environment;
 		
 	public DefaultCatalogFactory(Environment environment) {

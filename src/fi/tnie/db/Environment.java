@@ -5,8 +5,6 @@ package fi.tnie.db;
 
 import java.util.Comparator;
 
-import javax.naming.LinkException;
-
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.meta.CatalogFactory;
