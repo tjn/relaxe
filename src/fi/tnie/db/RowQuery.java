@@ -19,21 +19,17 @@ import fi.tnie.db.expr.SelectQuery;
  * @param <R>
  */
 
-public class RowQuery<R extends Row>
+public class RowQuery<R extends Row, I extends InstantiationContext<R>>
 {	
 	private SelectQuery query;
-	private RowFactory<R> factory;
+	private RowFactory<R, I> factory;
 								
-	public RowQuery(SelectQuery q, RowFactory<R> rf) {
+	public RowQuery(SelectQuery q, RowFactory<R, I> rf) {
 		super();
 		
 		this.query = q;
 		this.factory = rf;
-			
-//		this.tableRef = new TableReference();
-		
 	}
-	
 	
 //	public RowQuery(RowFactory<C, R> ef, boolean pkOnly) {
 //		this(ef, pkOnly ? ef.getPKDefinition() : null);
@@ -84,11 +80,8 @@ public class RowQuery<R extends Row>
 				
 		try {
 			st = c.createStatement();
-										
-//			DefaultSubselect qo = getQuery();
 			
-			SelectQuery qo = getQuery(); 
-						
+			SelectQuery qo = getQuery();
 			String qs = qo.generate();
 											
 			rs = st.executeQuery(qs);			
@@ -96,23 +89,18 @@ public class RowQuery<R extends Row>
 			
 			int r;
 			
-			RowFactory<R> rf = getFactory();			
-//			EnumMap<C, Integer> keys = this.projection;
+			RowFactory<R, I> rf = getFactory();		
 						
-			InstantiationContext ic = rf.prepare(getQuery());
-			
-			for(r = 0; rs.next(); r++) {
-				
+			I ictx = rf.prepare(getQuery());
+									
+			for(r = 0; rs.next(); r++) {				
 				if (r >= offset && r < offset + pageSize) {
-					R row = rf.newInstance(ic);
-					
-										
-					// ef.copy(keys, rs, e);
+					R row = rf.newInstance(ictx, rs);
 					rows.add(row);
 				}				
 			}	
 			
-			rf.finish(ic);
+			rf.finish(ictx);
 			
 			qr = new RowQueryResult<R>(this, rows, r);
 		} 
@@ -140,23 +128,9 @@ public class RowQuery<R extends Row>
 	}
 
 
-	protected RowFactory<R> getFactory() {
+	protected RowFactory<R, I> getFactory() {
 		return factory;
 	}
-	
-//	private void copy(Iterable<K> keys, ResultSet rs, E e) 
-//		throws SQLException {
-//
-//		Map<K, Object> m = e.values();
-//		int c = 1;
-//		
-//		for (K k : keys) {
-//			Object o = rs.getObject(c++);
-//			m.put(k, o);			
-//		}
-//	}
 
-	
-	
 	
 }

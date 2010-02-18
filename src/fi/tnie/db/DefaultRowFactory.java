@@ -3,16 +3,15 @@
  */
 package fi.tnie.db;
 
+import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.EnumMap;
-import java.util.List;
-import fi.tnie.db.expr.SelectListElement;
 import fi.tnie.db.expr.SelectQuery;
 import fi.tnie.db.meta.BaseTable;
 
-public class DefaultRowFactory<C extends Enum<C>, R extends Row> 
-	implements RowFactory<R> {
+public class DefaultRowFactory<C extends Enum<C>, R extends MutableRow> 
+	implements RowFactory<R, InstantiationContext<R>> {
 	
 	private Class<C> columnNameType;	
 	private Class<R> productType;
@@ -36,7 +35,6 @@ public class DefaultRowFactory<C extends Enum<C>, R extends Row>
 			throw new NullPointerException("'productType' must not be null");
 		}
 				
-//		this.table = table;
 		this.columnNameType = columnNameType;
 		this.productType = productType;		
 	}
@@ -101,61 +99,59 @@ public class DefaultRowFactory<C extends Enum<C>, R extends Row>
 		
 		return keys;
 	}
+	
+	public class InstContext
+		implements InstantiationContext<R> {
 
-//	@Override
-//	public EnumMap<C, Integer> columns(ResultSetMetaData rs) throws SQLException {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public void copy(EnumMap<C, Integer> keys, ResultSet src, Row<C> dest)
-//			throws SQLException {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public Table getSource() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public R reload(Row<C> pk, Connection c) throws SQLException {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-	@Override
-	public R newInstance(InstantiationContext ic)
-			throws InstantiationException, IllegalAccessException {
+		private SelectQuery query = null;
 		
-		
-		
-		return this.productType.newInstance();
+		protected InstContext(SelectQuery query) {
+			super();
+			
+			if (query == null) {
+				throw new NullPointerException("'query' must not be null");
+			}
+			
+			this.query = query;
+		}
+	
+		@Override
+		public SelectQuery getQueryExpression() {
+			return query;
+		}	
 	}
 
+
 	@Override
-	public void finish(InstantiationContext ic) {
+	public void finish(InstantiationContext<R> ictx) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public InstantiationContext prepare(SelectQuery query) {
+	public R newInstance(InstantiationContext<R> ictx, ResultSet rs)
+			throws InstantiationException, IllegalAccessException, SQLException {
+		R result = newInstance(ictx);
 		
-		List<SelectListElement> content = query.getSelect().getSelectList().getContent();
+		int cc = rs.getMetaData().getColumnCount();
 		
-		query.getSelect().getSelectList();
+		for (int c = 1; c <= cc; c++) {
+			result.set(c, rs.getObject(c));			
+		}				
 		
-		for (SelectListElement e : content) {
-			// e.getColumnNames();
-		}
-		
-		
-		
-		return null;		
+		return result;
 	}
+
+	@Override
+	public R newInstance(InstantiationContext<R> ictx)
+			throws InstantiationException, IllegalAccessException {
+		return this.productType.newInstance();
+	}
+
+	@Override
+	public InstantiationContext<R> prepare(SelectQuery query) {
+		return new InstContext(query);
+	}
+	
 
 }

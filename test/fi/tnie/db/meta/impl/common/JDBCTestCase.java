@@ -5,6 +5,13 @@ package fi.tnie.db.meta.impl.common;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.meta.PrimaryKey;
 
 import junit.framework.TestCase;
 
@@ -17,6 +24,8 @@ public abstract class JDBCTestCase
 	private String passwd;
 	private String database;
 	private String driverClass;
+	
+	private static Logger logger = Logger.getLogger(JDBCTestCase.class);
 	
 	protected JDBCTestCase(String driverClass) {
 		this(driverClass, "tester", "password", "dbmeta_test");	
@@ -56,6 +65,7 @@ public abstract class JDBCTestCase
 		
 		String url = getDatabaseURL();
 		this.connection = DriverManager.getConnection(url, getUserid(), getPasswd());
+		logger().debug("connection resreved");
 	}
 
 	@Override
@@ -63,6 +73,7 @@ public abstract class JDBCTestCase
 		if (this.connection != null) {
 			this.connection.close();
 			this.connection = null;
+			logger().debug("connection closed");
 		}		
 	}
 
@@ -90,4 +101,36 @@ public abstract class JDBCTestCase
 		fail(e + " was not thrown");
 	}
 
+	protected void testPrimaryKey(PrimaryKey pk) {
+		assertNotNull(pk);
+		assertNotNull(pk.getTable());				
+		assertNotNull(pk.columns());
+		assertFalse(pk.columns().isEmpty());
+	}
+
+	protected void testForeignKey(ForeignKey fk) {
+		assertNotNull(fk);
+		assertNotNull(fk.getReferenced());
+		assertNotNull(fk.getReferencing());
+		assertFalse(fk.columns().isEmpty());
+		
+		for (Map.Entry<Column, Column> p : fk.columns().entrySet()) {					
+			assertNotNull(p.getKey());
+			assertNotNull(p.getValue());
+			
+			assertNotNull(fk.getReferencing().columnMap().get(p.getKey().getUnqualifiedName()));
+			assertNotNull(fk.getReferenced().columnMap().get(p.getValue().getUnqualifiedName()));
+								
+			// TODO: 
+			// it should be enough for all referenced columns to be
+			// part of the same candidate key (not necessarily a primary key),
+			// but we have no represnetation for candidate key at the moment 
+			assertTrue(p.getValue().isPrimaryKeyColumn());
+		}
+	}
+
+	
+	public static Logger logger() {
+		return JDBCTestCase.logger;
+	}
 }

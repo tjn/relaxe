@@ -25,12 +25,12 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
 	
 	private String schema;	
 		
-	public MySQLCatalogFactory() {
-		super();	
+	public MySQLCatalogFactory(MySQLEnvironment env) {
+		super(env);	
 	}
 
-	public MySQLCatalogFactory(String schema) {
-		this();
+	public MySQLCatalogFactory(MySQLEnvironment env, String schema) {
+		this(env);
 		this.schema = schema;
 	}
 	
@@ -39,8 +39,8 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
 		throws SQLException {
 		
 		logger().debug("enter");
-										
-		DefaultMutableCatalog catalog = new DefaultMutableCatalog(this);
+														
+		DefaultMutableCatalog catalog = new DefaultMutableCatalog(getEnvironment());
 		
 		{
 			ResultSet schemas = meta.getCatalogs();
@@ -102,5 +102,10 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
 	@Override
 	protected String getSchemaPattern(Schema s) {
 		return null;		
+	}
+	
+	@Override
+	protected Schema getSchema(DefaultMutableCatalog catalog, String sch, String cat) {		
+		return catalog.schemas().get(sch);
 	}
 }

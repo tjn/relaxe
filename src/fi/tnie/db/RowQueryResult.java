@@ -10,10 +10,10 @@ import java.util.List;
 public class RowQueryResult<R extends Row> {		
 
 	private List<R> content;
-	private RowQuery<R> source;
+	private RowQuery<R, ?> source;
 	private int available;
 	
-	public RowQueryResult(RowQuery<R> source, List<R> content, int available) {		
+	public RowQueryResult(RowQuery<R, ?> source, List<R> content, int available) {		
 		super();
 		
 		if (source == null) {
@@ -33,7 +33,7 @@ public class RowQueryResult<R extends Row> {
 		return Collections.unmodifiableList(this.content);
 	}
 
-	public RowQuery<R> getSource() {
+	public RowQuery<R, ?> getSource() {
 		return source;
 	}
 

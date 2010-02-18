@@ -22,7 +22,7 @@ public class PGEnvironment
 
 	@Override
 	public CatalogFactory catalogFactory() {	
-		return new DefaultCatalogFactory();
+		return new DefaultCatalogFactory(this);
 	}
 
 	@Override

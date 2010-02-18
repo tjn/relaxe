@@ -179,7 +179,7 @@ public class DefaultMutableSchema
 		if (baseTables == null) {		
 			baseTables = new DefaultSchemaElementMap<DefaultMutableBaseTable>(getCatalog());
 		
-			for (Table t : baseTables.values()) {
+			for (Table t : tables().values()) {
 				if (t.isBaseTable()) {
 					baseTables.add((DefaultMutableBaseTable) t);
 				}

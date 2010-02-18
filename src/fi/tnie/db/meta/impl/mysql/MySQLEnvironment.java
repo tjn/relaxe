@@ -3,6 +3,15 @@
  */
 package fi.tnie.db.meta.impl.mysql;
 
-public class MySQLEnvironment {
+import fi.tnie.db.meta.CatalogFactory;
+import fi.tnie.db.meta.impl.DefaultEnvironment;
+
+public class MySQLEnvironment
+	extends DefaultEnvironment {
+
+	@Override
+	public CatalogFactory catalogFactory() {
+		return new MySQLCatalogFactory(this);
+	}
 
 }

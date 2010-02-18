@@ -39,7 +39,7 @@ public class BaseTableRow<C extends Enum<C> & Identifiable>
 			
 	private static Logger logger = Logger.getLogger(BaseTableRow.class);
 	 
-	public BaseTableRow(BaseTableRowFactory<C, BaseTableRow<C>> source, BaseTableRowMetaData<C> meta) {
+	public BaseTableRow(BaseTableRowFactory<C, BaseTableRow<C>, ?> source, BaseTableRowMetaData<C> meta) {
 		super();
 		
 		if (meta == null) {
@@ -108,7 +108,7 @@ public class BaseTableRow<C extends Enum<C> & Identifiable>
 		
 	}
 
-	private void update(Connection c, BaseTableRowFactory<C, BaseTableRow<C>> rf) 
+	private void update(Connection c, BaseTableRowFactory<C, BaseTableRow<C>, ?> rf) 
 		throws SQLException {
 	
 //		// reload:
