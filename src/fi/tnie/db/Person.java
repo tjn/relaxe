@@ -3,7 +3,8 @@
  */
 package fi.tnie.db;
 
-public class Person extends Entity<Person.Attribute, Person> {
+public class Person 
+	extends Entity<Person.Attribute, Person> {
 		
 	public enum Attribute {
 		ID,

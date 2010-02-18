@@ -27,17 +27,17 @@ public abstract class BaseTableRowMetaData<C extends Enum<C> & Identifiable>
 	private TableReference source;	
 	private EnumSet<C> pkDefinition = null;
 	
-	private BaseTableRowFactory<C, BaseTableRow<C>> factory;
+	private BaseTableRowFactory<C, BaseTableRow<C>, ?> factory;
 	
 	private List<C> columnList;
 	
 	private EnumMap<C, TableColumnExpr> exprMap;
 	
-	public BaseTableRowMetaData(TableReference tref, BaseTableRowFactory<C, BaseTableRow<C>> factory) {
+	public BaseTableRowMetaData(TableReference tref, BaseTableRowFactory<C, BaseTableRow<C>, ?> factory) {
 		this(null, tref, factory);		
 	}
 		
-	public BaseTableRowMetaData(EnumSet<C> columns, TableReference tref, BaseTableRowFactory<C, BaseTableRow<C>> factory) {
+	public BaseTableRowMetaData(EnumSet<C> columns, TableReference tref, BaseTableRowFactory<C, BaseTableRow<C>, ?> factory) {
 		super();
 				
 		if (tref == null) {
@@ -124,7 +124,7 @@ public abstract class BaseTableRowMetaData<C extends Enum<C> & Identifiable>
 		return Collections.unmodifiableSet(pkDefinition);
 	}
 
-	public BaseTableRowFactory<C, BaseTableRow<C>> getFactory() {
+	public BaseTableRowFactory<C, BaseTableRow<C>, ?> getFactory() {
 		return factory;
 	}
 	

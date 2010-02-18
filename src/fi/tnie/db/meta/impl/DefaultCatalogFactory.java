@@ -15,9 +15,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.apache.log4j.Logger;
+
+import com.sun.media.sound.HsbParser;
 
 import java.sql.DatabaseMetaData;
 
@@ -32,16 +38,30 @@ import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
 import fi.tnie.db.meta.impl.mysql.MySQLCatalogFactory;
+import fi.tnie.db.meta.impl.mysql.MySQLEnvironment;
 import fi.tnie.db.meta.util.AbstractQueryProcessor;
+import fi.tnie.db.meta.util.IdentifierReader;
 import fi.tnie.db.meta.util.QueryProcessor;
 import fi.tnie.db.meta.util.StringListReader;
+import fi.tnie.util.io.IOHelper;
 
-public class DefaultCatalogFactory implements CatalogFactory, Environment {
+public class DefaultCatalogFactory implements CatalogFactory {
 
 	private static Logger logger = Logger.getLogger(DefaultCatalogFactory.class);
 	private static final int TABLE_NAME_COLUMN = 3;
 
-	private Comparator<Identifier> identifierComp;
+//	private Comparator<Identifier> identifierComp;
+	private Environment environment;
+		
+	public DefaultCatalogFactory(Environment environment) {
+		super();
+		
+		if (environment == null) {
+			throw new NullPointerException("'environment' must not be null");
+		}
+		
+		this.environment = environment;
+	}
 
 	class ColumnReader extends AbstractQueryProcessor {
 		private DefaultMutableBaseTable table;
@@ -109,14 +129,13 @@ public class DefaultCatalogFactory implements CatalogFactory, Environment {
 
 			String name = rs.getString(4);
 
-			logger().debug("column: " + cat + "." + tbl + "." + name);
+//			logger().debug("column: " + cat + "." + tbl + "." + name);
 
 			short type = rs.getShort(5);
 			String typeName = rs.getString(6);
 
-			DataTypeImpl dataType = new DataTypeImpl(type, typeName);
-			Identifier n = table.getSchema().getCatalog().getEnvironment()
-					.createIdentifier(name);
+			DataTypeImpl dataType = new DataTypeImpl(type, typeName);			
+			Identifier n = getEnvironment().createIdentifier(name);
 
 			DefaultMutableColumn col = new DefaultMutableColumn(this.table, n,
 					dataType);
@@ -174,14 +193,17 @@ public class DefaultCatalogFactory implements CatalogFactory, Environment {
 				this.currentPK = n;
 			}
 
-			logger().debug("pkcat: " + pkcat);
-			logger().debug("pksch: " + pksch);
-			logger().debug("pktab: " + pktab);
-			logger().debug("symbol: " + n);
-			logger().debug("keyseq: " + keyseq);
+//			logger().debug("pkcat: " + pkcat);
+//			logger().debug("pksch: " + pksch);
+//			logger().debug("pktab: " + pktab);
+//			logger().debug("symbol: " + n);
+//			logger().debug("keyseq: " + keyseq);
 
 			// TODO: this only work in MySQL
-			Schema pks = this.catalog.schemas().get(pkcat);
+//			Schema pks = this.catalog.schemas().get(pkcat);
+			Schema pks = getSchema(catalog, pksch, pkcat);
+			
+						
 			// logger().debug("pksch: " + pksch);
 			// logger().debug("pks: " + pks);
 			// logger().debug("pktab: " + pktab);
@@ -310,26 +332,29 @@ public class DefaultCatalogFactory implements CatalogFactory, Environment {
 				fk.setDeferrability(def);
 			}
 
-			logger().debug("pkcat: " + pkcat);
-			logger().debug("pksch: " + pksch);
-			logger().debug("pktab: " + pktab);
-			logger().debug("symbol: " + n);
-			logger().debug("keyseq: " + keyseq);
+//			logger().debug("pkcat: " + pkcat);
+//			logger().debug("pksch: " + pksch);
+//			logger().debug("pktab: " + pktab);
+//			logger().debug("symbol: " + n);
+//			logger().debug("keyseq: " + keyseq);
 
 			// Schema pks = this.catalog.schemas().get(pkca);
 
 			// TODO: fix, this only works in MySQL
-			Schema pks = this.catalog.schemas().get(pkcat);
-
+//			Schema pks = this.catalog.schemas().get(pkcat);
+			Schema pks = getSchema(catalog, pksch, pkcat);
+			
 			// logger().debug("pksch: " + pksch);
 			// logger().debug("pks: " + pks);
 			// logger().debug("pktab: " + pktab);
 
 			BaseTable pkt = (BaseTable) pks.tables().get(pktab);
+			
+			
 
 			DefaultMutableColumn pkc = (DefaultMutableColumn) pkt.getColumn(
 			// catalog.create(pkcol)
-					createIdentifier(pkcol));
+					getEnvironment().createIdentifier(pkcol));
 
 			if (pks == null) {
 				throw new NullPointerException("'pks' must not be null");
@@ -362,11 +387,75 @@ public class DefaultCatalogFactory implements CatalogFactory, Environment {
 		}
 	}
 
+	
+	/**
+	 * TODO: need a way to read schemas without catalog 
+	 */
 	@Override
 	public Catalog create(DatabaseMetaData meta, String catalogName)
 			throws SQLException {
-
-		return null;
+				
+//		logger().debug("enter");
+		ResultSet rs = meta.getCatalogs();		
+				
+		try  {			
+			Set<Identifier> names = new TreeSet<Identifier>(getEnvironment().identifierComparator());					
+			rs = process(rs, new IdentifierReader(names, getEnvironment()), true);
+			
+			logger().debug("catalogs: " + names);
+			
+			if (catalogName != null)  {
+				Identifier key = getEnvironment().createIdentifier(catalogName);
+				
+				if (!names.contains(key)) {
+					throw new IllegalArgumentException("no such catalog: " + catalogName + "; available: " + names);
+				}				
+			}
+			
+			DefaultMutableCatalog catalog = new DefaultMutableCatalog(getEnvironment(), catalogName);
+			
+			rs = meta.getSchemas();
+			
+			while(rs.next()) {
+				String sch = rs.getString(1);
+//				String cat = rs.getString(2);				
+				Identifier sn = getEnvironment().createIdentifier(sch);
+				DefaultMutableSchema s = createSchema(catalog, sn, meta);				
+				populateSchema(s, meta);
+			}
+			
+			
+//			names.get
+										
+//			logger().debug("schemas: " + names.size());
+//					
+//				for (Ide n : names) {
+//					logger().debug("processing schema: " + n);
+//					Identifier sch = catalog.getEnvironment().createIdentifier(n);
+//					DefaultMutableSchema s = createSchema(catalog, sch, meta);
+//					logger().debug("schema: " + s.getUnqualifiedName());
+//					populateSchema(s, meta);
+//						}
+//					}
+//				}
+				
+				logger().debug("catalog:schemas: " + catalog.schemas().keySet().size());
+				
+				logger().debug("creating pk's");		
+				populatePrimaryKeys(catalog, meta);		
+				
+				logger().debug("creating fk's");		
+				populateForeignKeys(catalog, meta);
+						
+				logger().debug("exit");
+				return catalog;
+				
+			}
+			finally {
+				if (rs != null) {
+					rs.close();
+				}
+			}
 	}
 
 	protected void close(ResultSet rs) {
@@ -397,7 +486,8 @@ public class DefaultCatalogFactory implements CatalogFactory, Environment {
 
 		try {
 			process(rs, qp);
-		} finally {
+		} 
+		finally {
 			if (close) {
 				close(rs);
 				rs = null;
@@ -407,20 +497,6 @@ public class DefaultCatalogFactory implements CatalogFactory, Environment {
 		return rs;
 	}
 
-	public Properties load(String path) throws IOException {
-		FileInputStream in = null;
-
-		try {
-			in = new FileInputStream(path);
-			Properties p = new Properties();
-			p.load(in);
-			return p;
-		} finally {
-			if (in != null) {
-				in.close();
-			}
-		}
-	}
 
 	public static void main(String[] args) {
 		try {
@@ -458,10 +534,12 @@ public class DefaultCatalogFactory implements CatalogFactory, Environment {
 			}
 
 			// DefaultCatalogFactory cf = new DefaultCatalogFactory();
-			DefaultCatalogFactory cf = new MySQLCatalogFactory();
+//			DefaultCatalogFactory cf = new MySQLCatalogFactory();
+			Environment env = new MySQLEnvironment();			
+			CatalogFactory cf = env.catalogFactory();
 
 			logger().debug("loading config: " + new File(cfg).getAbsolutePath());
-			Properties info = cf.load(cfg);
+			Properties info = IOHelper.load(cfg);
 			logger().debug("config loaded.");
 
 			logger().debug("connecting to: " + url);
@@ -585,7 +663,7 @@ public class DefaultCatalogFactory implements CatalogFactory, Environment {
 	private DefaultMutableBaseTable createBaseTable(DefaultMutableSchema s,
 			String n, DatabaseMetaData meta) {
 		// return new DefaultMutableBaseTable(s, s.getCatalog().create(n));
-		return new DefaultMutableBaseTable(s, createIdentifier(n));
+		return new DefaultMutableBaseTable(s, getEnvironment().createIdentifier(n));
 	}
 
 	protected void populatePrimaryKeys(DefaultMutableCatalog c,
@@ -652,23 +730,32 @@ public class DefaultCatalogFactory implements CatalogFactory, Environment {
 		return (s == null) ? null : s.getUnqualifiedName().getName();
 	}
 
-	@Override
-	public CatalogFactory catalogFactory() {
-		return this;
+//	@Override
+//	public CatalogFactory catalogFactory() {
+//		return this;
+//	}
+
+	public Environment getEnvironment() {
+		return environment;
 	}
 
-	@Override
-	public Identifier createIdentifier(String name)
-			throws IllegalIdentifierException {
-		return AbstractIdentifier.create(name);
-	}
+//	@Override
+//	public Identifier createIdentifier(String name)
+//			throws IllegalIdentifierException {
+//		return AbstractIdentifier.create(name);
+//	}
 
-	@Override
-	public Comparator<Identifier> identifierComparator() {
-		if (this.identifierComp == null) {
-			this.identifierComp = new FoldingComparator();
-		}
-		
-		return identifierComp;
+//	@Override
+//	public Comparator<Identifier> identifierComparator() {
+//		if (this.identifierComp == null) {
+//			this.identifierComp = new FoldingComparator();
+//		}
+//		
+//		return identifierComp;
+//	}
+	
+	protected Schema getSchema(DefaultMutableCatalog catalog, String sch, String cat) {
+		return catalog.schemas().get(sch);
 	}
+	
 }

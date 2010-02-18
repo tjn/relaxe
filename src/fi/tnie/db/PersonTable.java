@@ -3,16 +3,25 @@
  */
 package fi.tnie.db;
 
-public class PersonTable {
+import fi.tnie.db.meta.BaseTable;
+import fi.tnie.db.meta.Catalog;
 
+public class PersonTable
+	extends DefaultRowFactory<PersonTable.Column, MutableRow> {
+	
 	public enum Column {
 		NAME,
 		DATE_OF_BIRTH	
-	};
-	
-	public PersonTable() {		
 	}
-	
+
+//	protected PersonTable(Catalog catalog) {
+//		this(catalog.schemas().get("public"), PersonTable.Column.class, Person.class);		
+//	}
+
+	private PersonTable(BaseTable table, Class<Column> columnNameType,
+			Class<MutableRow> productType) {
+		super(table, columnNameType, productType);	
+	};
 	
 	
 	

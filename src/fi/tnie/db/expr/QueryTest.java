@@ -15,12 +15,16 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.Environment;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.impl.DefaultCatalogFactory;
 import fi.tnie.db.meta.impl.mysql.MySQLCatalogFactory;
+import fi.tnie.db.meta.impl.mysql.MySQLEnvironment;
+import fi.tnie.util.io.IOHelper;
 
 public class QueryTest {
 
@@ -67,10 +71,12 @@ public class QueryTest {
 			}
 			
 //			DefaultCatalogFactory cf = new DefaultCatalogFactory();
-			DefaultCatalogFactory cf = new MySQLCatalogFactory("millnew_20091023");
+			Environment env = new MySQLEnvironment(); 
+//			DefaultCatalogFactory cf = new MySQLCatalogFactory("millnew_20091023");
+			CatalogFactory cf = env.catalogFactory();
 			
 			logger().debug("loading config: " + new File(cfg).getAbsolutePath());					
-			Properties info = cf.load(cfg);
+			Properties info = IOHelper.load(cfg);
 			logger().debug("config loaded.");
 											
 			logger().debug("connecting to: " + url);
