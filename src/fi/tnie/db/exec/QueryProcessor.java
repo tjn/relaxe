@@ -1,30 +1,31 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.meta.util;
+package fi.tnie.db.exec;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
+import fi.tnie.db.QueryException;
+
 public interface QueryProcessor {
 
-	public void prepare() 
-		throws SQLException;
+	public void prepare();
 		
 	public void updated(int updateCount) 
 		throws SQLException;
 	
 	public void process(ResultSet rs, long ordinal) 
-		throws SQLException;
+		throws QueryException, SQLException;
 	
 	public void abort(Throwable e);
 	
 	public void startQuery(ResultSetMetaData m) 
-		throws SQLException;
+		throws QueryException, SQLException;
 	
 	public void endQuery()
-		throws SQLException;
+		throws QueryException;
 
 	public void finish();
 }

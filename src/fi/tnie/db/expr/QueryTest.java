@@ -15,10 +15,10 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.Environment;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
+import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.impl.mysql.MySQLEnvironment;
@@ -113,9 +113,9 @@ public class QueryTest {
 				
 				logger().debug("create query...");
 				
-				DefaultSubselect qo = null;
+				DefaultTableExpression qo = null;
 				
-				qo = new DefaultSubselect();
+				qo = new DefaultTableExpression();
 				
 				TableReference mr = new TableReference(m);				
 				Select p = new Select();												

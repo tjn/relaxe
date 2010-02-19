@@ -7,12 +7,12 @@ import fi.tnie.db.expr.op.BinaryOperator;
 
 public class SetOperator
 	extends BinaryOperator
-	implements Subselect {
+	implements TableExpression {
 	
 	private Op operator;
 	private Keyword all;
-	private Subselect left;
-	private Subselect right;
+	private TableExpression left;
+	private TableExpression right;
 	
 	public enum Op {
 		UNION(Keyword.UNION),
@@ -27,7 +27,7 @@ public class SetOperator
 		}
 	}
 
-	public SetOperator(Op operator, boolean all, Subselect left, Subselect right) {
+	public SetOperator(Op operator, boolean all, TableExpression left, TableExpression right) {
 		super(operator.name, left, right);
 		
 		if (operator == null) {

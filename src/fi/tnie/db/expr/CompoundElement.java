@@ -32,4 +32,11 @@ public abstract class CompoundElement implements Element {
 			v.end(this);
 		}
 	}
+		
+	public String generate() {
+		StringBuffer dest = new StringBuffer();
+		ElementVisitor v = new QueryGenerator(dest);
+		traverse(null, v);		
+		return dest.toString();			
+	}
 }

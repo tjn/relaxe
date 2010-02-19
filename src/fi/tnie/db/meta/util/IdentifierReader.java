@@ -7,9 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
-import fi.tnie.db.Environment;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
+import fi.tnie.db.meta.Environment;
 
 public class IdentifierReader extends AbstractQueryProcessor {
 		

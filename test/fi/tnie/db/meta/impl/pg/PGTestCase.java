@@ -6,15 +6,30 @@ package fi.tnie.db.meta.impl.pg;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.tnie.db.QueryException;
+import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.expr.IllegalIdentifierException;
+import fi.tnie.db.meta.BaseTable;
+import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.CatalogFactory;
+import fi.tnie.db.meta.Schema;
+import fi.tnie.db.meta.SchemaMap;
 import fi.tnie.db.meta.impl.common.JDBCTestCase;
 import fi.tnie.util.io.Pipe;
 
 public abstract class PGTestCase
 	extends JDBCTestCase {
 	
+	private Catalog catalog = null;
+	public static final String SCHEMA_PUBLIC = "public";
+	public static final String TABLE_CONTINENT = "continent";
+	public static final String TABLE_COUNTRY = "country";
+
 	public PGTestCase() {
 		super("org.postgresql.Driver", "tester", "password", "dbmeta_test");	
 	}
@@ -90,6 +105,53 @@ public abstract class PGTestCase
 		if (exit != 0) {
 			throw new RuntimeException("restore failed");
 		}
+	}
+
+	protected PGEnvironment newEnv() {
+		return new PGEnvironment();
+	}
+
+	protected Catalog getCatalog() 
+		throws QueryException, SQLException {
+	
+		if (catalog == null) {
+			PGEnvironment env = newEnv();
+			CatalogFactory cf = env.catalogFactory();
+			
+			assertNotNull(cf);		
+			Connection c = getConnection();
+			
+			catalog = cf.create(c.getMetaData(), getDatabase());
+			assertNotNull(catalog);
+			
+		}
+		return catalog;
+	}
+
+	protected BaseTable getContinentTable() 
+		throws QueryException, SQLException {
+		return getWellKnownBaseTable(SCHEMA_PUBLIC, TABLE_CONTINENT);
+	}
+
+	protected BaseTable getCountryTable() 
+		throws QueryException, SQLException {
+		return getWellKnownBaseTable(SCHEMA_PUBLIC, TABLE_COUNTRY);
+	}
+
+	protected BaseTable getWellKnownBaseTable(String schema, String table) 
+		throws QueryException, SQLException {
+		SchemaMap sm = getCatalog().schemas();
+		assertNotNull(sm);				
+		Schema pub = sm.get(schema);
+		assertNotNull(sm);
+		BaseTable t = pub.baseTables().get(table);
+		assertNotNull(t);		
+		return t;
+	}
+
+	protected Identifier id(String name) 
+		throws IllegalIdentifierException, NullPointerException, QueryException, SQLException {
+		return getCatalog().getEnvironment().createIdentifier(name);
 	}	
 	
 

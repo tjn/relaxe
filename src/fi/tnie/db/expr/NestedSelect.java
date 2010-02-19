@@ -4,12 +4,12 @@
 package fi.tnie.db.expr;
 
 public class NestedSelect
-	extends SelectQuery	
-	implements Subselect {
+	extends QueryExpression	
+	implements TableExpression {
 	
-	private SelectQuery inner;
+	private QueryExpression inner;
 
-	public NestedSelect(SelectQuery inner) {
+	public NestedSelect(QueryExpression inner) {
 		super();
 		
 		if (inner == null) {
@@ -30,6 +30,16 @@ public class NestedSelect
 
 	@Override
 	public Select getSelect() {
-		return this.inner.getSelect();
+		return this.getTableExpr().getSelect();
+	}
+
+	@Override
+	public OrderBy getOrderBy() {
+		return null;
+	}
+
+	@Override
+	public TableExpression getTableExpr() {
+		return this.inner.getTableExpr();
 	}
 }

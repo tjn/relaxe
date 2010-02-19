@@ -17,7 +17,8 @@ public class DefaultForeignKey
 	extends DefaultConstraint
 	implements ForeignKey {
 
-	private Map<DefaultMutableColumn, DefaultMutableColumn> columnMap;
+	private LinkedHashMap<DefaultMutableColumn, DefaultMutableColumn> columnMap;
+	private Map<Column, Column> columnMapView;
 		
 	private DefaultMutableBaseTable referencingTable;
 	private DefaultMutableBaseTable referencedTable;
@@ -84,13 +85,14 @@ public class DefaultForeignKey
 			cm.put(p.referencing, p.referenced);						
 			p.referenced.add(this);
 		}
+		
+		this.columnMapView = Collections.unmodifiableMap(new LinkedHashMap<Column, Column>(cm));
 	}
 	
 	public Map<Column, Column> columns() {
-		return (this.columnMap == null) ? 
-				null : 
-				new LinkedHashMap<Column, Column>(this.columnMap);   
-	}	
+		return (columnMap == null) ? null : this.columnMapView;						
+	}
+	
 	
 	@Override
 	public BaseTable getReferenced() {
@@ -149,5 +151,6 @@ public class DefaultForeignKey
 	public Type getType() {
 		return Type.FOREIGN_KEY;
 	}	
-	
+
+
 }

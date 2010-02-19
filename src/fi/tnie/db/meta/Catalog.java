@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.meta;
 
-import fi.tnie.db.Environment;
 import fi.tnie.db.expr.Identifier;
 
 

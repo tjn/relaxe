@@ -23,23 +23,38 @@ public class DefaultPrimaryKey
 		return this.table;
 	}
 		
-	public DefaultPrimaryKey(DefaultMutableBaseTable table, Identifier name, List<DefaultMutableColumn> columnList) {
+	public DefaultPrimaryKey(DefaultMutableBaseTable table, Identifier name) {
 		super(table.getMutableSchema(), name);
+		
 		this.table = table;
 		
-		if (columnList == null) {
-			throw new NullPointerException("columnMap must not be null");
-		}
+//		if (columnList == null) {
+//			throw new NullPointerException("columnList must not be null");
+//		}
+//	
+//		if (columnList.isEmpty()) {
+//			throw new IllegalArgumentException("columnList must not be empty");
+//		}
+//				
+//		for (DefaultMutableColumn c : columnList) {
+//			getColumnMap().add(c);
+//		}
+		
+		table.setPrimaryKey(this);
+	}
 	
-		if (columnList.isEmpty()) {
-			throw new IllegalArgumentException("columnMap must not be empty");
+	public void setColumnList(List<DefaultMutableColumn> columnList) {		
+		if (columnList == null) {
+			throw new NullPointerException("columnList must not be null");
 		}
-				
+		
+		if (columnList.isEmpty()) {
+			throw new IllegalArgumentException("columnList must not be empty");
+		}
+		
 		for (DefaultMutableColumn c : columnList) {
 			getColumnMap().add(c);
 		}
-		
-		table.setPrimaryKey(this);
 	}
 	
 	
@@ -76,12 +91,6 @@ public class DefaultPrimaryKey
 		return Collections.unmodifiableList(
 				getColumnMap().getColumnList());		
 	}
-//	
-//	private void ensureSameTable(DefaultMutableTable a, DefaultMutableTable b, String msg) {
-//		if (a != b) {
-//			throw new IllegalArgumentException(msg);
-//		}		
-//	}
 
 	@Override
 	public Type getType() {

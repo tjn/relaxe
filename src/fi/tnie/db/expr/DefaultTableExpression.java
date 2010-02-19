@@ -8,13 +8,13 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.expr.SetOperator.Op;
 
 /**
- * Top-level SELECT -statement
+ * Table expression implementation
  * @author Administrator
  */
 
-public class DefaultSubselect
-	extends SelectQuery
-	implements Subselect {
+public class DefaultTableExpression
+	extends QueryExpression
+	implements TableExpression {
 
 	private Select select;
 	private From from;
@@ -24,10 +24,10 @@ public class DefaultSubselect
 	
 	private SelectListElement all = null;
 	
-	public DefaultSubselect() {
+	public DefaultTableExpression() {
 	}
 				
-	private static Logger logger = Logger.getLogger(DefaultSubselect.class);
+	private static Logger logger = Logger.getLogger(DefaultTableExpression.class);
 	
 //	public String generate(SimpleQueryContext ctx) {
 //		StringBuffer dest = new StringBuffer();		
@@ -74,7 +74,7 @@ public class DefaultSubselect
 		}
 	}
 	public static Logger logger() {
-		return DefaultSubselect.logger;
+		return DefaultTableExpression.logger;
 	}
 
 	public void setSelect(Select select) {
@@ -143,27 +143,27 @@ public class DefaultSubselect
 		return dest.toString();
 	}
 	
-	public SetOperator unionAll(DefaultSubselect rp) {
+	public SetOperator unionAll(DefaultTableExpression rp) {
 		return new SetOperator(Op.UNION, true, this, rp);
 	}
 	
-	public SetOperator union(DefaultSubselect rp) {
+	public SetOperator union(DefaultTableExpression rp) {
 		return new SetOperator(Op.UNION, false, this, rp);
 	}
 	
-	public SetOperator intersect(DefaultSubselect rp) {
+	public SetOperator intersect(DefaultTableExpression rp) {
 		return new SetOperator(Op.INTERSECT, false, this, rp);
 	}
 	
-	public SetOperator intersectAll(DefaultSubselect rp) {
+	public SetOperator intersectAll(DefaultTableExpression rp) {
 		return new SetOperator(Op.INTERSECT, true, this, rp);
 	}
 	
-	public SetOperator except(DefaultSubselect rp) {
+	public SetOperator except(DefaultTableExpression rp) {
 		return new SetOperator(Op.EXCEPT, false, this, rp);
 	}
 	
-	public SetOperator exceptAll(DefaultSubselect rp) {
+	public SetOperator exceptAll(DefaultTableExpression rp) {
 		return new SetOperator(Op.EXCEPT, true, this, rp);
 	}
 	
@@ -182,5 +182,15 @@ public class DefaultSubselect
 		}
 
 		return all;
+	}
+	
+	@Override
+	public OrderBy getOrderBy() {	
+		return null;
+	}
+	
+	@Override
+	public TableExpression getTableExpr() {
+		return this;
 	}
 }

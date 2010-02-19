@@ -27,8 +27,8 @@ public class NestedTableReference
 	}
 
 	@Override
-	public ElementList<? extends ColumnName> getUncorrelatedColumnNameList() {
-		return getQuery().getSelect().getColumnNameList();
+	public ElementList<? extends ColumnName> getUncorrelatedColumnNameList() {	
+		return getQuery().getTableExpr().getSelect().getColumnNameList();
 	}
 
 //	@Override
@@ -53,12 +53,12 @@ public class NestedTableReference
 
 	@Override
 	public void addAll(ElementList<SelectListElement> dest) {
-		getQuery().getSelect().getSelectList().copyTo(dest);
+		getQuery().getTableExpr().getSelect().getSelectList().copyTo(dest);
 	}
 
 	@Override
 	public int getColumnCount() {
-		return getQuery().getSelect().getColumnCount();
+		return getQuery().getTableExpr().getSelect().getColumnCount();
 	}
 
 

@@ -41,7 +41,7 @@ public class DefaultElementMap<E extends MetaObject>
 	
 	public E get(String name)
 		throws IllegalIdentifierException {
-		return get(this.catalog.getEnvironment().createIdentifier(name));
+		return get(catalog.getEnvironment().createIdentifier(name));
 	}	
 	
 	public boolean add(E value) {

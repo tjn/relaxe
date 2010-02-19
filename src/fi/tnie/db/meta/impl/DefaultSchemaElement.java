@@ -5,8 +5,11 @@ package fi.tnie.db.meta.impl;
 
 import java.util.Comparator;
 
+import fi.tnie.db.expr.ElementVisitor;
 import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.expr.QueryGenerator;
 import fi.tnie.db.expr.SchemaElementName;
+import fi.tnie.db.expr.VisitContext;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaElement;
 
@@ -40,7 +43,7 @@ public class DefaultSchemaElement
 
 	@Override
 	public String getQualifiedName() {
-		return null;
+		return getName().generate();	
 	}
 
 	@Override

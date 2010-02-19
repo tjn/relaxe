@@ -21,17 +21,19 @@ import org.apache.log4j.Logger;
 
 import java.sql.DatabaseMetaData;
 
-import fi.tnie.db.Environment;
+import fi.tnie.db.QueryException;
+import fi.tnie.db.exec.QueryProcessor;
+import fi.tnie.db.exec.QueryProcessorAdapter;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
+import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
 import fi.tnie.db.meta.impl.mysql.MySQLEnvironment;
 import fi.tnie.db.meta.util.AbstractQueryProcessor;
 import fi.tnie.db.meta.util.IdentifierReader;
-import fi.tnie.db.meta.util.QueryProcessor;
 import fi.tnie.db.meta.util.StringListReader;
 import fi.tnie.util.io.IOHelper;
 
@@ -52,7 +54,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 		this.environment = environment;
 	}
 
-	class ColumnReader extends AbstractQueryProcessor {
+	class ColumnReader extends QueryProcessorAdapter {
 		private DefaultMutableBaseTable table;
 
 		public ColumnReader(DefaultMutableBaseTable table) {
@@ -143,7 +145,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	}
 
 	class PrimaryKeyReader extends AbstractQueryProcessor {
-		private DefaultMutableBaseTable referencedTable;
+		private DefaultMutableBaseTable table;
 		private DefaultMutableCatalog catalog;
 
 		private List<DefaultMutableColumn> columns;
@@ -152,12 +154,13 @@ public class DefaultCatalogFactory implements CatalogFactory {
 
 		public PrimaryKeyReader(DefaultMutableBaseTable table) {
 			super();
-			this.referencedTable = table;
+			this.table = table;
 			this.catalog = table.getMutableSchema().getMutableCatalog();
 		}
 
 		@Override
-		public void endQuery() throws SQLException {
+		public void endQuery() {
+			logger().debug("endQuery - enter");			
 			pushCompleted();
 		}
 
@@ -175,18 +178,21 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			String pktab = rs.getString(3);
 			String pkcol = rs.getString(4);
 			int keyseq = rs.getInt(5);
-			String n = rs.getString(6);
+			String pkname = rs.getString(6);
 
 			if (keyseq == 1) {
 				pushCompleted();
-				this.currentPK = n;
+//				this.currentPK = pkname;
+				Identifier pkid = catalog.getEnvironment().createIdentifier(pkname);				
+				this.result = new DefaultPrimaryKey(table, pkid);				
 			}
 
-//			logger().debug("pkcat: " + pkcat);
-//			logger().debug("pksch: " + pksch);
-//			logger().debug("pktab: " + pktab);
-//			logger().debug("symbol: " + n);
-//			logger().debug("keyseq: " + keyseq);
+			logger().debug("pkcat: " + pkcat);
+			logger().debug("pksch: " + pksch);
+			logger().debug("pktab: " + pktab);			
+			logger().debug("pkcol: " + pkcol);
+			logger().debug("keyseq: " + keyseq);
+			logger().debug("symbol: " + pkname);
 
 			// TODO: this only work in MySQL
 //			Schema pks = this.catalog.schemas().get(pkcat);
@@ -197,43 +203,46 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			// logger().debug("pks: " + pks);
 			// logger().debug("pktab: " + pktab);
 
-			BaseTable pkt = (BaseTable) pks.tables().get(pktab);
+			BaseTable pkt = pks.baseTables().get(pktab);
 			DefaultMutableColumn pkc = pkt.columnMap().get(pkcol);
 
 			if (pkc == null) {
 				throw new NullPointerException("'pkc' must not be null");
 			}
-
-			getColumns().add(pkc);
+			
+			getColumnList().add(pkc);
 		}
 
 		private void pushCompleted() {
+			logger().debug("pushCompleted - enter: " + result);
+			
 			if (this.result != null) {
-				if (!getColumns().isEmpty()) {
-					// Identifier sch = catalog.create(this.currentPK);
-					Identifier sch = catalog.getEnvironment().createIdentifier(currentPK);
-					this.result = new DefaultPrimaryKey(referencedTable, sch,
-							getColumns());
-				}
-
-				getColumns().clear();
+				logger().debug("pushCompleted - cols: " + getColumnList());
+				
+				if (!getColumnList().isEmpty()) {					
+					this.result.setColumnList(getColumnList());					
+					logger().debug("created pk: " + this.result);
+					getColumnList().clear();
+				}				
 			}
 		}
 
-		private List<DefaultMutableColumn> getColumns() {
+		private List<DefaultMutableColumn> getColumnList() {
 			if (columns == null) {
 				columns = new ArrayList<DefaultMutableColumn>(1);
 			}
 
 			return columns;
 		}
+		
+		
 	}
 
 	class ForeignKeyReader extends AbstractQueryProcessor {
 		private DefaultMutableBaseTable referencingTable;
 		private DefaultMutableCatalog catalog;
 
-		private List<DefaultForeignKey.Pair> columns;
+		private List<DefaultForeignKey.Pair> columnPairList;
 
 		private DefaultForeignKey result = null;
 
@@ -244,7 +253,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 		}
 
 		@Override
-		public void endQuery() throws SQLException {
+		public void endQuery() {
 			push();
 		}
 
@@ -297,7 +306,11 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			String pktab = rs.getString(3);
 			String pkcol = rs.getString(4);
 
+			String fkcat = rs.getString(5);			
+			String fksch = rs.getString(6);			
+			String fktab = rs.getString(7);
 			String fkcol = rs.getString(8);
+			
 			int keyseq = rs.getInt(9);
 
 			int ur = rs.getInt(10);
@@ -321,58 +334,63 @@ public class DefaultCatalogFactory implements CatalogFactory {
 				fk.setDeferrability(def);
 			}
 
-//			logger().debug("pkcat: " + pkcat);
-//			logger().debug("pksch: " + pksch);
-//			logger().debug("pktab: " + pktab);
-//			logger().debug("symbol: " + n);
+			logger().debug("fkname: " + n);
 //			logger().debug("keyseq: " + keyseq);
 
 			// Schema pks = this.catalog.schemas().get(pkca);
 
-			// TODO: fix, this only works in MySQL
-//			Schema pks = this.catalog.schemas().get(pkcat);
 			Schema pks = getSchema(catalog, pksch, pkcat);
 			
-			// logger().debug("pksch: " + pksch);
-			// logger().debug("pks: " + pks);
-			// logger().debug("pktab: " + pktab);
+			logger().debug("pksch: " + pksch);			
+			logger().debug("pktab: " + pktab);
+			logger().debug("pkcol: " + pkcol);
+			logger().debug("pkcol: " + pkcol);
 
 			BaseTable pkt = (BaseTable) pks.tables().get(pktab);
 			
-			
+			DefaultMutableColumn pkc = (DefaultMutableColumn) pkt.columnMap().get(pkcol);
 
-			DefaultMutableColumn pkc = (DefaultMutableColumn) pkt.getColumn(
-			// catalog.create(pkcol)
-					getEnvironment().createIdentifier(pkcol));
-
-			if (pks == null) {
-				throw new NullPointerException("'pks' must not be null");
+			if (pkc == null) {
+				throw new NullPointerException("'pkc' must not be null");
 			}
 
 			// System.out.println("fk: " + fkcol);
-
-			DefaultMutableColumn fkc = referencingTable.getColumnMap().get(fkcol);
+			
+			// TODO: handle base-tables in different catalogs
+			
+			if (fkcat != null && pkcat != null) {
+				if (!fkcat.equals(pkcat)) {
+					throw new RuntimeException(
+							"we currently can not handle the case where " +
+							"the catalog (" + fkcat + ") of the column referenced by foreign key " +
+							"is different from the catalog (" + pkcat + ") of the referencing column");
+				}
+			}						
+			
+			Schema fks = pks.getCatalog().schemas().get(fksch);
+			BaseTable referencedTable = fks.baseTables().get(fktab);
+			DefaultMutableColumn fkc = referencedTable.columnMap().get(fkcol);
 
 			if (fkc == null) {
 				throw new NullPointerException("'fkc' must not be null");
 			}
 
-			getColumns().add(new DefaultForeignKey.Pair(fkc, pkc));
+			getColumnPairList().add(new DefaultForeignKey.Pair(fkc, pkc));
 		}
 
 		private void push() {
 			if (this.result != null) {
-				this.result.setColumnMap(getColumns());
-				getColumns().clear();
+				this.result.setColumnMap(getColumnPairList());
+				getColumnPairList().clear();
 			}
 		}
 
-		private List<DefaultForeignKey.Pair> getColumns() {
-			if (columns == null) {
-				columns = new ArrayList<DefaultForeignKey.Pair>(1);
+		private List<DefaultForeignKey.Pair> getColumnPairList() {
+			if (columnPairList == null) {
+				columnPairList = new ArrayList<DefaultForeignKey.Pair>(1);
 			}
 
-			return columns;
+			return columnPairList;
 		}
 	}
 
@@ -382,7 +400,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	 */
 	@Override
 	public Catalog create(DatabaseMetaData meta, String catalogName)
-			throws SQLException {
+			throws QueryException, SQLException {
 				
 //		logger().debug("enter");
 		ResultSet rs = meta.getCatalogs();		
@@ -457,21 +475,23 @@ public class DefaultCatalogFactory implements CatalogFactory {
 		}
 	}
 
-	protected void process(ResultSet rs, QueryProcessor qp) throws SQLException {
+	protected void process(ResultSet rs, QueryProcessor qp) throws QueryException, SQLException {
 
-		long ordinal = 1;
+		long ordinal = 0;
 
 		qp.startQuery(rs.getMetaData());
 
 		while (rs.next()) {
-			qp.process(rs, ordinal++);
+			qp.process(rs, ++ordinal);
 		}
+		
+		logger().debug("rows processed: " + ordinal);
 
 		qp.endQuery();
 	}
 
 	protected ResultSet process(ResultSet rs, QueryProcessor qp, boolean close)
-			throws SQLException {
+			throws QueryException, SQLException {
 
 		try {
 			process(rs, qp);
@@ -602,7 +622,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	}
 
 	protected void populateSchema(DefaultMutableSchema s, DatabaseMetaData meta)
-			throws SQLException {
+			throws QueryException, SQLException {
 		logger().debug("populate schema: " + s.getUnqualifiedName());
 		// table-pop
 		List<String> names = new ArrayList<String>();
@@ -634,7 +654,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	}
 
 	private void populateTable(DefaultMutableBaseTable t, DatabaseMetaData meta)
-			throws SQLException {
+			throws QueryException, SQLException {
 
 		logger().debug("populate table: " + t.getName());
 
@@ -656,27 +676,25 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	}
 
 	protected void populatePrimaryKeys(DefaultMutableCatalog c,
-			DatabaseMetaData meta) throws SQLException {
+			DatabaseMetaData meta) throws QueryException, SQLException {
 
 		for (Schema s : c.schemas().values()) {
 			String cp = getCatalogPattern(s);
 			String sp = getSchemaPattern(s);
-
-			for (Table t : s.tables().values()) {
-				logger().debug(
-						"query imported keys for: " + t.getQualifiedName() + " / "
-								+ s.getUnqualifiedName());
-				if (t.isBaseTable()) {
-					ResultSet rs = meta.getPrimaryKeys(cp, sp, t.getUnqualifiedName()
-							.getName());
-					process(rs, new PrimaryKeyReader((DefaultMutableBaseTable) t), true);
-				}
+			
+			for (BaseTable t : s.baseTables().values()) {
+				String n = t.getUnqualifiedName().getName();
+				
+				logger().debug("query primary keys for: " +
+						"cat=" + cp + ", sp=" + sp + ", n=" + n);
+				ResultSet rs = meta.getPrimaryKeys(cp, sp, n);
+				process(rs, new PrimaryKeyReader((DefaultMutableBaseTable) t), true);
 			}
 		}
 	}
 
 	protected void populateForeignKeys(DefaultMutableCatalog c,
-			DatabaseMetaData meta) throws SQLException {
+			DatabaseMetaData meta) throws QueryException, SQLException {
 
 		for (Schema s : c.schemas().values()) {
 			// DefaultMutableSchema ms = (DefaultMutableSchema) s;
@@ -727,6 +745,10 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	public Environment getEnvironment() {
 		return environment;
 	}
+	
+	protected Identifier id(String name) {
+		return getEnvironment().createIdentifier(name);		
+	}
 
 //	@Override
 //	public Identifier createIdentifier(String name)
@@ -745,6 +767,11 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	
 	protected Schema getSchema(DefaultMutableCatalog catalog, String sch, String cat) {
 		return catalog.schemas().get(sch);
+	}
+
+	@Override
+	public Catalog create(Connection c) throws QueryException, SQLException {
+		return create(c.getMetaData(), c.getCatalog());
 	}
 	
 }

@@ -113,12 +113,12 @@ public class DefaultMutableSchema
 //		return Collections.unmodifiableSet(getConstraintMap().keySet());
 //	}
 	
-	public boolean add(DefaultPrimaryKey pk) {
+	boolean add(DefaultPrimaryKey pk) {
 		getConstraintMap().add(pk);
 		return getPrimaryKeys().add(pk);
 	}
 	
-	public boolean add(DefaultForeignKey fk) {
+	boolean add(DefaultForeignKey fk) {
 		getConstraintMap().add(fk);
 		return getForeignKeys().add(fk);
 	}

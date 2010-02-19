@@ -3,8 +3,8 @@
  */
 package fi.tnie.db.expr;
 
-public interface Subselect
+public interface TableExpression
 	extends Expression {
 	
-	Select getSelect();
+	Select getSelect();	
 }

@@ -3,8 +3,6 @@
  */
 package fi.tnie.db;
 
-import fi.tnie.db.expr.Identifier;
-
-public interface Identifiable {
-	Identifier identifier();
+public interface Identifiable {	
+	String identifier();
 }

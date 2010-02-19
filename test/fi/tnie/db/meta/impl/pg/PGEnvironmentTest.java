@@ -27,23 +27,11 @@ import fi.tnie.db.meta.Table;
 public class PGEnvironmentTest 
 	extends PGTestCase {
 	
-	public static final String SCHEMA_PUBLIC = "public";
-	public static final String TABLE_COUNTRY = "country";
-	public static final String TABLE_CONTINENT = "continent";
-
-	private Catalog catalog = null;
-	
 	@Override
 	public void restore() throws IOException, InterruptedException {
 		// no need to restore
 	}
 	
-	private PGEnvironment newEnv() 
-		throws SQLException {		
-		Connection c = getConnection();		
-		return new PGEnvironment(c.getMetaData());
-	}
-
 	public void testCreateIdentifier() 
 		throws Exception {
 
@@ -125,7 +113,7 @@ public class PGEnvironmentTest
 		SchemaMap sm = catalog.schemas();
 		assertNotNull(sm);
 				
-		Schema sp = sm.get("public");
+		Schema sp = sm.get(SCHEMA_PUBLIC);
 		
 		SchemaElementMap<? extends Table> tables = sp.tables();		
 		assertNotNull(tables);
@@ -146,47 +134,9 @@ public class PGEnvironmentTest
 			}
 		}
 		
-		
-		{
-			Table country = tables.get(TABLE_COUNTRY);
-			assertNotNull(country);
-			
-			Table continent = tables.get(TABLE_CONTINENT);
-			assertNotNull(continent);
-		}
-		
 		assertTrue(!baseTables.keySet().isEmpty());
-		
-		BaseTable country = baseTables.get(TABLE_COUNTRY);
-		BaseTable continent = baseTables.get(TABLE_CONTINENT);
-		
-		assertNotNull(country);
-		ForeignKey fk = country.foreignKeys().get("fk_ctry_continent");
-		assertNotNull(fk);		
-		assertNotNull(fk.getReferenced());
-		assertNotNull(fk.getReferencing());
-		
-		assertSame(continent, fk.getReferenced());
-		assertSame(country, fk.getReferencing());		
 	}
 	
-	private Catalog getCatalog() 
-		throws SQLException {
-
-		if (catalog == null) {
-			PGEnvironment env = newEnv();
-			CatalogFactory cf = env.catalogFactory();
-			
-			assertNotNull(cf);		
-			Connection c = getConnection();
-			
-			catalog = cf.create(c.getMetaData(), getDatabase());
-			assertNotNull(catalog);
-			
-		}
-		return catalog;
-	}
-
 	public void testForeignKeys() throws Exception {		
 		SchemaMap sm = getCatalog().schemas();
 		assertNotNull(sm);		
@@ -201,7 +151,7 @@ public class PGEnvironmentTest
 			}
 		}
 	}
-
+	
 	public void testPrimaryKeys() throws Exception {		
 		SchemaMap sm = getCatalog().schemas();
 		assertNotNull(sm);
@@ -243,22 +193,6 @@ public class PGEnvironmentTest
 	}
 	
 	
-	private BaseTable getCountryTable() 
-		throws SQLException {
-		SchemaMap sm = getCatalog().schemas();
-		assertNotNull(sm);				
-		Schema pub = sm.get(SCHEMA_PUBLIC);
-		assertNotNull(sm);
-		BaseTable t = pub.baseTables().get(TABLE_COUNTRY);
-		assertNotNull(t);
-		return t;
-	}
-	
-	private Identifier id(String name) 
-		throws IllegalIdentifierException, NullPointerException, SQLException {
-		return getCatalog().getEnvironment().createIdentifier(name);
-	}
-	
 	public void testConstraints() throws Exception {
 				
 		SchemaMap sm = getCatalog().schemas();
@@ -289,5 +223,52 @@ public class PGEnvironmentTest
 		}
 		
 		
+	}
+
+	protected void testBaseTable(BaseTable t) {
+				
+		assertNotNull(t);
+		assertNotNull(t.getName());		
+		assertNotNull(t.getName().getUnqualifiedName());				
+		assertNotNull(t.getQualifiedName());
+				
+		assertFalse(t.getQualifiedName().trim().equals(""));
+		logger().warn("table: " + t.getQualifiedName());
+		
+		assertNotNull(t.getUnqualifiedName());		
+		assertNotNull(t.getUnqualifiedName().getName());
+		assertTrue(t.getQualifiedName().contains(t.getUnqualifiedName().getName()));
+				
+		assertNotNull(t.getSchema());
+				
+		PrimaryKey pk = t.getPrimaryKey();	
+		
+		if (pk == null) {
+			logger().warn("no primary key in table: " + t.getQualifiedName());
+		}
+		else {
+			testPrimaryKey(pk);
+			assertNotNull(pk.getTable());
+			assertSame(pk.getTable(), t);			
+		}
+				
+		SchemaElementMap<ForeignKey> fks = t.foreignKeys();
+		assertNotNull(fks);
+		assertNotNull(fks.values());
+		
+		for (ForeignKey fk : fks.values()) {
+			testForeignKey(fk);
+		}
+	}
+
+	public void testBaseTables() throws Exception {		
+		SchemaMap sm = getCatalog().schemas();
+		assertNotNull(sm);
+		
+		for (Schema s : sm.values()) {			
+			for (BaseTable t : s.baseTables().values()) {				
+				testBaseTable(t);				
+			}
+		}
 	}
 }

@@ -19,190 +19,57 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
+
 import org.apache.log4j.Logger;
 
-public class SourceGenerator {
+import fi.tnie.db.DefaultEntityFactory;
+import fi.tnie.db.AbstractEntity;
+import fi.tnie.db.EntityFactory;
+import fi.tnie.db.Person;
+import fi.tnie.db.QueryException;
+import fi.tnie.db.Person.Attribute;
+import fi.tnie.db.expr.AbstractIdentifier;
+import fi.tnie.db.expr.ColumnName;
+import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.meta.BaseTable;
+import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.CatalogFactory;
+import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.meta.Schema;
+import fi.tnie.db.meta.impl.pg.PGEnvironment;
+import fi.tnie.util.io.IOHelper;
+
+
+public class SourceGenerator
+	extends Tool {
 	
 	private static Logger logger = Logger.getLogger(SourceGenerator.class);
-
+		
+	public static final String KEY_PACKAGE = "package";
+	public static final String KEY_SOURCE_ROOT_DIR = "root-dir";
+	
 
 	public static void main(String[] args) {
 		
 		try {
-			if (args.length < 3) {
-				System.err.println("usage:\n" +
-						"java " + SourceGenerator.class.getName() + " <driver-symbol> <url> <config-file>");
-				System.exit(-1);
-			}			
-			
-			String driverName = args[0];
-			String url = args[1];
-			String cfg = args[2];
-						
-			PrintWriter out = new PrintWriter(System.out);
-						
-			logger().debug("loading " + driverName);
-			Class<?> driverClass = Class.forName(driverName);
-			logger().debug("driver loaded.");
-			
-			Driver selected = null;
-			
-			List<Driver> loaded = Collections.list(DriverManager.getDrivers());
-			
-			for(Driver d : loaded) {
-				if (d.getClass().equals(driverClass)) {
-					selected = d;
-					break;
-				}				
-			}
-			
-			if (!selected.acceptsURL(url)) {
-				throw new IllegalArgumentException(
-						"driver " + selected.getClass() + " does not accept URL: " + url);
-			}
-			
-			logger().debug("loading config: " + new File(cfg).getAbsolutePath());					
-			Properties info = load(cfg);
-			logger().debug("config loaded.");
-											
-			logger().debug("connecting to: " + url);
-			
-			Connection c = selected.connect(url, info);
-			
-			logger().debug("connected.");
-			
-			if (c == null) {
-				throw new IllegalArgumentException("can not create connection to " + url);
-			}
-			
-			try {
-//				if (c != null) {
-//					// test connection only
-//					return; 
-//				}
-				
-				try {				
-					ResultSet rs = null;
-					DatabaseMetaData meta = c.getMetaData();								
-					QueryProcessor qp = new SimpleQueryProcessor(out, "\t");
-					
-//					meta.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern)
-//					QueryProcessor qp = new SimpleQueryProcessor(out, "\t");
-					
-					out.println("\nTABLES\n");
-					rs = meta.getTables(null, null, "%", null);
-					process(rs, qp, true);
-					
-					out.println("\nIMPORTED KEYS\n");
-					rs = meta.getImportedKeys("millnew_20091023", null, "mill");
-					process(rs, qp, true);
-
-//					out.println("TABLE TYPES");
-//					rs = meta.getTableTypes();
-//					process(rs, qp, true);
-					
-										
-					
-//					TableNameProcessor np = new TableNameProcessor(out);
-					
-//					out.println("BASE TABLE");
-//					String[] types = { "TABLE" };
-//					rs = meta.getTables(null, null, "%", types);
-//					process(rs, np, true);
-//					
-//					List<String> names = np.getNameList();
-//					
-//					for (String n : names) {
-//						process(n, meta, out);
-//					}
-
-//					meta.getTables(null, null, null, null);					
-//					meta.getTables(null, null, null, null);
-					
-//					logger().debug("executing transaction...");
-//					executeAll(statements, c, qp);
-//					logger().debug("committing...");
-//					c.commit();
-//					logger().debug("committed.");
-				}
-				catch (SQLException e) {
-					logger().error(e.getMessage(), e);
-					out.println("SQL-state: " + e.getSQLState());
-					out.println("error-code: " + e.getErrorCode());
-					out.println("message: " + e.getMessage());
-					out.println(e.getMessage());
-					c.rollback();
-				}
-				catch (Throwable e) {
-					logger().error(e.getMessage(), e);
-					out.println(e.getMessage());
-					out.println("rolling back...");
-					c.rollback();
-				}
-				
-				out.flush();
-			}			
-			finally { 
-				logger().debug("closing connection...");
-				c.close();				
-				logger().debug("connection closed");				
-			}		
-		}
+			new SourceGenerator().run(args);			
+		}			
 		catch (Exception e) {
 			logger().error(e.getMessage(), e);
 		}
 	}
+		
 	
-	private static void process(String n, DatabaseMetaData meta, PrintWriter out) 
-		throws SQLException {
-		out.println("TABLE: " + n);		
-		
-		String[] tokens = n.split("_");
-		StringBuffer nb = new StringBuffer();
-		
-		for (String t : tokens) {
-			t = t.toLowerCase();
-						
-			if (knownAbbr(t) || (t.length() <= 2 && (!knownProposition(t)))) {
-				nb.append(t.toUpperCase());
-			}
-			else {	
-				t = t.toLowerCase();
-				nb.append(t.substring(0, 1).toUpperCase());
-				
-				if (t.length() > 1) {
-					nb.append(t.substring(1));
-				}				
-			}
-		}
-		
-		out.println(nb.toString());
-		
-//		QueryProcessor sp = new SimpleQueryProcessor(out, "\t");
-//		
-//		{
-//			ResultSet pk = meta.getPrimaryKeys(null, null, n);
-//			out.print("PK");
-//			process(pk, sp, true);			
-//		}
-//
-//		{
-//			ResultSet ik = meta.getImportedKeys(null, null, n);			
-//			out.print("IMPORTED");
-//			process(ik, sp, true);			
-//		}
-//
-//		{
-//			ResultSet fk = meta.getExportedKeys(null, null, n);			
-//			out.print("EXPORTED");
-//			process(fk, sp, true);			
-//		}
-	}
-
 	private static boolean knownAbbr(String t) {
 		return t.equals("url") || t.equals("http") || t.equals("xml");
 	}
@@ -213,285 +80,256 @@ public class SourceGenerator {
 			t.equals("at") || t.equals("for");
 	}
 
-	private static void executeAll(List<String> statements, Connection c, QueryProcessor qp) 
-		throws Throwable {
-		
-		if (qp == null) {
-			throw new NullPointerException();
-		}
-
-		for (String s : statements) {
-			logger().debug("statement: (" + s + ")");
-			
-			PreparedStatement ps = c.prepareStatement(s);
-						
-			processAdHoc(ps, qp);
-			
-//			ResultSetMetaData m = ps.getMetaData();			
-//			int cc = (m == null) ? 0 : m.getColumnCount();
-//			
-//			
-//			try {			
-//				qp.prepare(s, cc);
-//								
-//				if (cc == 0) {
-//					int count = ps.executeUpdate();
-//					qp.updated(count);
-//				}
-//				else {
-//					ResultSet rs = ps.executeQuery();
-//					long ordinal = 1;
-//					
-//					qp.startQuery(m);
-//					
-//					while (rs.next()) {
-//						qp.process(rs, ordinal++);
-//					}
-//					
-//					qp.endQuery();
-//				}
-//			}
-//			catch (Throwable e) {				
-//				qp.abort(e);
-//				throw e;
-//			}
-//			finally {			
-//				qp.finish();
-//			}
-		}
-	}
-	
-	
-	//
-	
-	private static void processAdHoc(PreparedStatement ps, QueryProcessor qp) 
-		throws SQLException {
-
-//		ResultSetMetaData m = ps.getMetaData();			
-//		int cc = (m == null) ? 0 : m.getColumnCount();
-
-		qp.prepare();
-		
-		try {
-			boolean moreResults = ps.execute();
-			boolean countProcessed = false;
-																	
-			do {
-				countProcessed = false;
-				
-				if (moreResults) {
-					ResultSet rs = null;
-					try {
-						rs = ps.getResultSet();					
-						process(rs, qp);
-					}
-					finally {
-						close(rs);
-					}
-				}
-				else {
-					int count = ps.getUpdateCount();
-					
-					if (count != -1) {
-						qp.updated(count);
-						countProcessed = true;
-					}
-				}
-				
-				moreResults = ps.getMoreResults();				
-			} while (moreResults || countProcessed);			
-		}
-		catch (Throwable e) {
-			logger().error(e.getMessage(), e);
-			qp.abort(e);
-		}
-		finally {
-			qp.finish();
-		}
-	}
-	
-	
-	private static void close(ResultSet rs) {
-		try {
-			if (rs != null) {
-				rs.close();
-			}
-		}
-		catch (SQLException e) {
-			logger().warn(e.getMessage(), e);
-		}
-	}
-	
-	private static void process(ResultSet rs, QueryProcessor qp, boolean close) 
-		throws SQLException {
-		try {
-			process(rs, qp);
-		}
-		finally {
-			if (close) {
-				close(rs);
-			}
-		}		
-	}
-	
-
-	private static void process(ResultSet rs, QueryProcessor qp)
-		throws SQLException {
-
-		long ordinal = 1;
-		
-		qp.startQuery(rs.getMetaData());
-		
-		while (rs.next()) {
-			qp.process(rs, ordinal++);
-		}
-		
-		qp.endQuery();
-	}
-
-
-	private static Properties load(String path) 
-		throws IOException {
-		FileInputStream in = null;
-		
-		try {
-			in = new FileInputStream(path);			
-			Properties p = new Properties();
-			p.load(in);
-			return p;
-		}
-		finally {
-			if (in != null) {				
-				in.close();
-			}
-		}
-	}
-
-	private static void copy(String path, Writer w) 
-		throws IOException {
-		Reader r = null;
-		
-		try {
-			r = new BufferedReader(r = new FileReader(path));
-			char[] buf = new char[8192];
-			int read = 0;
-			
-			while((read = r.read(buf)) != -1) {
-				w.write(buf, 0, read);
-			}			
-		}
-		finally {
-			if (r != null) {
-				r.close();
-			}
-		}
-	}
-
-	
-	private static List<String> statements(String sql) {
-//		String sep = System.getProperty("line.separator");		
-//		String qp = Pattern.quote(sep);		
-//		logger().debug("quoted pattern: " + qp);
-		
-//		String p = "(\\n+|\\c+|\\r+)";
-		String p = "(\\n+|\\r+)";
-		String[] lines = sql.split(p);
-		List<String> statements = new LinkedList<String>();
-		
-		StringBuffer qb = null;
-		
-//		logger().debug("lines: " + lines.length); 
-		for (String line : lines) {			
-			String n = line.trim();
-			
-//			logger().debug ("line {" + n + "}");
-			
-			if (n.equals("") || n.startsWith("--")) {
-//				ignore
-				continue;
-			}
-			
-
-			
-			if (n.equals(";") || n.equals(";;")) {
-				if (qb != null) {
-					String q = qb.toString();
-					
-					if (!q.trim().equals("")) {
-						statements.add(q);
-					}
-					
-					qb = null;
-				}
-				if (n.equals(";;")) {
-					break;
-				}
-				else {
-					continue;
-				}
-			}		
-						
-			qb = (qb == null) ? new StringBuffer() : qb;			
-			qb.append(n);
-			qb.append(" ");			
-		}
-		
-		if (qb != null) {
-			String q = qb.toString();
-			
-			if (!q.trim().equals("")) {
-				statements.add(q);
-			}
-		}
-				
-		return statements;
-	}
-	
 	public static Logger logger() {
 		return SourceGenerator.logger;
 	}
 	
-	private static class TableNameProcessor
-		extends SimpleQueryProcessor {
-
-		public TableNameProcessor(PrintWriter out) {
-			super(out, "\t");
-		}
-
-		private List<String> names = new ArrayList<String>(); 
+	@Override
+	public void run(Connection c, Properties config) 
+		throws QueryException, IOException {
 		
-		@Override
-		public void process(ResultSet rs, long ordinal) throws SQLException {
-//			String schema = rs.getString("TABLE_SCHEM");
-			String table = rs.getString("TABLE_NAME");
-			names.add(table);			
+		try {
+			String pkg = config.getProperty("package");
+			
+			String r = config.getProperty("root-dir");
+			File root = (r == null) ? new File(".") : new File(r);
+							
+			if (!root.isDirectory()) {
+				throw new IllegalArgumentException("No root directory: " + root.getAbsolutePath());
+			}		
+					
+			PGEnvironment env = new PGEnvironment();
+			CatalogFactory cf = env.catalogFactory();
+			DatabaseMetaData meta = c.getMetaData();
+			Catalog catalog = cf.create(meta, c.getCatalog());
+			
+			for (Schema s : catalog.schemas().values()) {
+				process(s, root, pkg);
+			}			
 		}
-
-		protected List<String> getNameList() {
-			return names;
-		}			
+		catch (SQLException e) {
+			throw new QueryException(e.getMessage(), e);
+		}
+		
 	}
 
-	
-	private static class TableProcessor
-		extends SimpleQueryProcessor {
+	private void process(Schema s, final File root, final String rpkg) 
+		throws IOException {
 		
-		private DatabaseMetaData meta;
+		String name = s.getUnqualifiedName().getName().toLowerCase();
 		
-		public TableProcessor(PrintWriter rs, String cd, DatabaseMetaData meta) {
-			super(rs, cd);
-			this.meta = meta;
+		if (name.equals("public")) {
+			name = "pub";
 		}
+		
+		String pkg = (rpkg == null) ? name : rpkg + "." + name;
+		final File pd = packageDir(root, pkg);
+				
+		
+		for (BaseTable t : s.baseTables().values()) {
+			String n = t.getName().getUnqualifiedName().getName();
+			final String etype = translate(n);
+			
+			CharSequence source = generate(t, pkg, etype);
+			
+												
+			IOHelper.write(source, getSourceFile(pd, etype));			
+		}						
+	}
 
-
-		@Override
-		public void process(ResultSet rs, long ordinal) throws SQLException {
-			String schema = rs.getString("TABLE_SCHEM");
-			String table = rs.getString("TABLE_NAME");
+	private CharSequence generate(BaseTable t, String pkg, String uname) {
+		StringBuffer content = new StringBuffer();
+		
+		if (pkg != null) {			
+			content.append("package ");			
+			content.append(pkg);
+			content.append(";\n\n");
 		}
+		
+		content.append("import fi.tnie.db.Entity;\n");
+		content.append("import fi.tnie.db.EntityFactory;\n");
+		content.append("import fi.tnie.db.DefaultEntityFactory;\n");
+		content.append("import fi.tnie.db.meta.Column;\n");
+						
+		content.append("\n\n");
+		
+		content.append("public class ");
+		content.append(uname);		
+		content.append("\n"); 
+		indent(1, content);
+		content.append("extends ");
+		content.append("Entity<");
+		content.append(getAttributeType(uname));
+		content.append(", ");
+		content.append(uname);
+		content.append(">");						
+		content.append(" ");
+		content.append("{");
+		content.append("\n\n");
+		
+		members(t, uname, content);		
+		
+		content.append("\n}\n");
+				
+		return content;
 	}
 	
+	private void members(BaseTable t, String etype, StringBuffer content) {
+		
+		attrs(t, content);
+		content.append("\n\n");		
+		factory(etype, content);
+		content.append("\n\n");
+		
+	}
+
+
+	private void factory(String uname, StringBuffer content) {
+		String ivfact = "factory";
+		
+		String atype = getAttributeType();
+		
+		content.append("private static EntityFactory<" + atype + ", " + uname + "> " + ivfact + ";\n\n");		
+		
+		content.append("@Override\n");		
+		
+		content.append(
+		"public EntityFactory<" + atype + ", " + uname + "> getFactory() {\n" +
+		"  if (factory == null) {\n" +
+		"    factory = new DefaultEntityFactory<" + atype + ", " + uname + ">() {\n" +
+		"      @Override\n" +
+		"      public " + uname + " newInstance() {\n" +
+		"        return new " + uname + "();\n" +
+		"      }\n" +
+		"    };\n" +
+		"  }\n\n" +
+		"  return factory;\n" +
+		"}\n\n");
+			
+		
+	}
+
+
+	private void attrs(BaseTable t, StringBuffer content) {								
+		content.append("public enum ");
+		content.append(getAttributeType());
+		content.append(" {\n");
+						 
+		Set<Identifier> fkcols = foreignKeyColumns(t);
+				
+		for (Column c : t.columns()) {		
+			// only non-fk-columns are included in attributes.
+			// fk-columns  are not intended to be set individually,
+			// but atomically with 'ref -method
+			if (!fkcols.contains(c.getColumnName())) {
+				content.append(attr(c));			
+				content.append(",\n");				
+			}			
+		}
+		
+		content.append("}\n");
+	}
+	
+	private Set<Identifier> foreignKeyColumns(BaseTable t) {
+		Comparator<Identifier> icmp = t.getSchema().getCatalog().getEnvironment().identifierComparator();
+		Set<Identifier> cs = new TreeSet<Identifier>(icmp);
+		
+		logger().debug("table: " + t.getQualifiedName());
+				
+		for (ForeignKey fk : t.foreignKeys().values()) {
+			for (Column c : fk.columns().keySet()) {
+				cs.add(c.getUnqualifiedName());
+			}			
+		}
+		
+		return cs;
+	}
+
+
+	private String attr(Column c) {
+		ColumnName n = c.getColumnName();
+		
+		String attr = n.getName().toUpperCase();		
+		
+		if (!n.isOrdinary()) {
+			attr = attr.replace(' ', '_');
+		}
+		
+		return attr;
+	}
+
+	private void indent(int indentLevel, StringBuffer dest) {
+		String indent = "  ";
+		
+		for (int level = 0; level < indentLevel; level++) {
+			dest.append(indent);			
+		}
+	}
+
+
+	private File getSourceFile(File pd, String etype) {		
+		return new File(pd, etype + ".java");
+	}
+
+
+	private String translate(String n) {
+		String[] tokens = n.split("_");
+		
+		StringBuffer buf = new StringBuffer();
+		
+		for (int i = 0; i < tokens.length; i++) {
+			capitalize(tokens[i], buf);			
+		}
+		
+		return buf.toString();
+	}
+	
+	private void capitalize(String t, StringBuffer dest) {		
+		dest.append(Character.toUpperCase(t.charAt(0)));
+		
+		if (t.length() > 1) {
+			dest.append(t.substring(1).toLowerCase());
+		}		
+	}
+
+
+	private File packageDir(File root, String pkg) 
+		throws IOException {
+		if (pkg == null) {
+			return root;
+		}
+						
+		String[] elems = pkg.split(Pattern.quote("."));
+		
+		StringBuffer path = new StringBuffer(elems[0]); 
+		
+		for (int i = 1; i < elems.length; i++) {
+			path.append(File.separatorChar);	
+			path.append(elems[i]);
+		}
+		
+		File pd = new File(root, path.toString());
+		
+		pd.mkdirs();
+		
+		if (!pd.isDirectory()) {
+			throw new IOException("unable to create directory: " + pd.getPath());			
+		}
+			
+		return pd;
+	}
 	
 
+	private String qualifiedName(String pkg, String uname) {
+		return pkg == null || pkg.equals("") ? uname : pkg + "." + uname;
+	}
+	
+	public String getAttributeType(String uname) {
+		return uname + "." + getAttributeType();
+	}
+	
+	public String getAttributeType() {
+		return "Attribute";		
+	}
 	
 }

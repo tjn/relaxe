@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.QueryException;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Schema;
@@ -36,7 +37,7 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
 	
 	@Override
 	public Catalog create(DatabaseMetaData meta, String catalogName)
-		throws SQLException {
+		throws QueryException, SQLException {
 		
 		logger().debug("enter");
 														

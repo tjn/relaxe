@@ -10,9 +10,9 @@ import java.sql.PreparedStatement;
 
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.exec.QueryProcessor;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.Statement.Name;
-import fi.tnie.db.meta.util.QueryProcessor;
 
 public class StatementExecutor {
 

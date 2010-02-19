@@ -15,7 +15,7 @@ import fi.tnie.db.meta.impl.DefaultEnvironment;
 public class PGEnvironment
 	extends DefaultEnvironment {
 
-	public PGEnvironment(DatabaseMetaData metaData) {
+	public PGEnvironment() {
 		
 	
 	}

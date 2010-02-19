@@ -14,4 +14,8 @@ public abstract class QueryExpression
 	protected QueryExpression() {
 		super(Name.SELECT);
 	}	
+	
+	public abstract TableExpression getTableExpr();
+	public abstract OrderBy getOrderBy();
+//	public abstract Select getSelect();
 }

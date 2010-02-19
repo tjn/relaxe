@@ -118,6 +118,11 @@ public abstract class JDBCTestCase
 			assertNotNull(p.getKey());
 			assertNotNull(p.getValue());
 			
+			assertNotSame(p.getKey(), p.getValue());
+			
+			logger().debug("ref'ing: " + p.getKey().getUnqualifiedName().getName());
+			logger().debug("ref'ed: " + p.getValue().getUnqualifiedName().getName());
+			
 			assertNotNull(fk.getReferencing().columnMap().get(p.getKey().getUnqualifiedName()));
 			assertNotNull(fk.getReferenced().columnMap().get(p.getValue().getUnqualifiedName()));
 								
@@ -125,7 +130,7 @@ public abstract class JDBCTestCase
 			// it should be enough for all referenced columns to be
 			// part of the same candidate key (not necessarily a primary key),
 			// but we have no representation for candidate key at the moment 
-			assertTrue(p.getValue().isPrimaryKeyColumn());
+//			assertTrue(p.getValue().isPrimaryKeyColumn());
 		}
 	}
 
@@ -134,3 +139,4 @@ public abstract class JDBCTestCase
 		return JDBCTestCase.logger;
 	}
 }
+

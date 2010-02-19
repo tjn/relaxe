@@ -3,12 +3,12 @@
  */
 package fi.tnie.db.expr.op;
 
-import fi.tnie.db.expr.Subselect;
+import fi.tnie.db.expr.TableExpression;
 
 public class GroupedRelation
-	extends Parenthesis<Subselect> {
+	extends Parenthesis<TableExpression> {
 
-	public GroupedRelation(Subselect expression) {
+	public GroupedRelation(TableExpression expression) {
 		super(expression);
 	}
 }

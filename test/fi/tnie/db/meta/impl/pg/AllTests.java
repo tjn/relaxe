@@ -12,7 +12,8 @@ public class AllTests {
 		TestSuite suite = new TestSuite("Test for fi.tnie.db.meta.impl.pg");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(PGEnvironmentTest.class);
-		suite.addTestSuite(PGTestCase.class);
+		suite.addTestSuite(PGRestoreTest.class);
+		suite.addTestSuite(PGWellKnownTableTest.class);
 		//$JUnit-END$
 		return suite;
 	}

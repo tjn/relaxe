@@ -7,7 +7,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.EnumMap;
-import fi.tnie.db.expr.SelectQuery;
+
+import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.meta.BaseTable;
 
 public class DefaultRowFactory<C extends Enum<C>, R extends MutableRow> 
@@ -103,9 +104,9 @@ public class DefaultRowFactory<C extends Enum<C>, R extends MutableRow>
 	public class InstContext
 		implements InstantiationContext<R> {
 
-		private SelectQuery query = null;
+		private QueryExpression query = null;
 		
-		protected InstContext(SelectQuery query) {
+		protected InstContext(QueryExpression query) {
 			super();
 			
 			if (query == null) {
@@ -116,17 +117,12 @@ public class DefaultRowFactory<C extends Enum<C>, R extends MutableRow>
 		}
 	
 		@Override
-		public SelectQuery getQueryExpression() {
+		public QueryExpression getQueryExpression() {
 			return query;
 		}	
 	}
 
 
-	@Override
-	public void finish(InstantiationContext<R> ictx) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public R newInstance(InstantiationContext<R> ictx, ResultSet rs)
@@ -149,8 +145,13 @@ public class DefaultRowFactory<C extends Enum<C>, R extends MutableRow>
 	}
 
 	@Override
-	public InstantiationContext<R> prepare(SelectQuery query) {
+	public InstantiationContext<R> prepare(QueryExpression query) {
 		return new InstContext(query);
+	}
+
+	@Override
+	public void finish(InstantiationContext<R> ictx) {
+		
 	}
 	
 

@@ -6,7 +6,8 @@ package fi.tnie.db.meta;
 public interface BaseTable
 	extends Table {
 
-	SchemaElementMap<ForeignKey> references();
+	SchemaElementMap<ForeignKey> references();	
+	
 	SchemaElementMap<ForeignKey> foreignKeys();	
 	
 	PrimaryKey getPrimaryKey();	

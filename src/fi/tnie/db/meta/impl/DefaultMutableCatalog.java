@@ -3,9 +3,9 @@
  */
 package fi.tnie.db.meta.impl;
 
-import fi.tnie.db.Environment;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.SchemaMap;
 
 public class DefaultMutableCatalog

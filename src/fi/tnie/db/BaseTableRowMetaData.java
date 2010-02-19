@@ -105,11 +105,11 @@ public abstract class BaseTableRowMetaData<C extends Enum<C> & Identifiable>
 		
 		TableColumnExpr e = exprMap.get(column);
 		
-		if (e == null) {
-			Column c = baseTable.getColumn(column.identifier());			
-			e = new TableColumnExpr(source, c);	
-			exprMap.put(column, e);
-		}		
+//		if (e == null) {
+//			Column c = baseTable.getColumn(column.identifier());			
+//			e = new TableColumnExpr(source, c);	
+//			exprMap.put(column, e);
+//		}		
 		
 		return e;
 	}

@@ -8,7 +8,7 @@ package fi.tnie.db.expr;
 
 import org.apache.log4j.Logger;
 
-class QueryGenerator
+public class QueryGenerator
 	extends TokenVisitor {
 	
 	private static Logger logger = Logger.getLogger(QueryGenerator.class);
@@ -16,7 +16,7 @@ class QueryGenerator
 	private StringBuffer buffer = null;	
 	private Token previous;
 			
-	QueryGenerator(StringBuffer buffer) {
+	public QueryGenerator(StringBuffer buffer) {
 		super();		
 		this.buffer = buffer;
 	}

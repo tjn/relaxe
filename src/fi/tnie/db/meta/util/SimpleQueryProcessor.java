@@ -8,6 +8,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
+import fi.tnie.db.QueryException;
+import fi.tnie.db.exec.QueryProcessor;
+
 
 public class SimpleQueryProcessor implements QueryProcessor {
 
@@ -64,7 +67,7 @@ public class SimpleQueryProcessor implements QueryProcessor {
 	}
 
 	@Override
-	public void process(ResultSet rs, long ordinal) throws SQLException {
+	public void process(ResultSet rs, long ordinal) throws QueryException, SQLException {
 		this.rows++;
 						
 		StringBuffer buf = new StringBuffer();

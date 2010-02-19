@@ -9,8 +9,8 @@ import fi.tnie.db.meta.Table;
 
 public class TableReference 
 	extends NonJoinedTable {
-	private Table table;
 	
+	private Table table;	
 	private ElementList<ColumnName> columnNameList;
 	
 	private SchemaElementName tableName;

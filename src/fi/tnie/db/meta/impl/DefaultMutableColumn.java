@@ -192,4 +192,9 @@ public class DefaultMutableColumn
 	public void setOrdinalPosition(int ordinalPosition) {
 		this.ordinalPosition = ordinalPosition;
 	}
+	
+	@Override
+	public String toString() {		
+		return getTable().getQualifiedName() + "." + getColumnName().getName();
+	}
 }

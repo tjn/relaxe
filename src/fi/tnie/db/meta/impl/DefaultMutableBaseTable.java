@@ -13,9 +13,10 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 	implements BaseTable {
 	
 	private DefaultSchemaElementMap<ForeignKey> foreignKeys;
-	private DefaultSchemaElementMap<ForeignKey> referencingKeys;
-	
+	private DefaultSchemaElementMap<ForeignKey> referencingKeys;	
 	private DefaultPrimaryKey primaryKey;	
+	
+	private static EmptyForeignKeyMap emptyForeignKeyMap = new EmptyForeignKeyMap();
 	
 	public DefaultMutableBaseTable(DefaultMutableSchema s, Identifier name) {
 		super(s, name);	
@@ -29,6 +30,7 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 		}
 		
 		getForeignKeys().add(k);
+		getMutableSchema().add(k);
 	}
 	
 	
@@ -53,7 +55,8 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 			}
 		}
 		
-		this.primaryKey = pk;		
+		this.primaryKey = pk;
+		getMutableSchema().add(pk);
 	}	
 	
 	public PrimaryKey getPrimaryKey() {
@@ -105,7 +108,7 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 
 	@Override
 	public SchemaElementMap<ForeignKey> foreignKeys() {
-		return this.foreignKeys;
+		return (foreignKeys == null) ? DefaultMutableBaseTable.emptyForeignKeyMap : foreignKeys;
 	}
 
 	@Override
