@@ -12,9 +12,10 @@ public abstract class AbstractEntityMetaData<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable,
 	Q extends Enum<Q> & Identifiable,
-	M extends AbstractEntityMetaData<A, R, Q, M>
+	E extends Entity<A, R, E>,
+	M extends AbstractEntityMetaData<A, R, Q, E, M>
 > 
-	implements EntityMetaData<A, R, Q>
+	implements EntityMetaData<A, R, Q, E>
 {
 	public abstract Class<A> getAttributeNameType();
 	public abstract Class<R> getRelationshipNameType();	

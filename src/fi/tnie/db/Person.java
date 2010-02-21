@@ -39,7 +39,7 @@ public class Person
 		}		
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) {		
 		Person p = new Person();
 		p.set(Reference.ADDRESS_ID, null);
 		p.set(Attribute.DATE_OF_BIRTH, null);

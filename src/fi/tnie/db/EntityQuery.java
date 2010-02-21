@@ -38,17 +38,17 @@ public class EntityQuery<
 	E extends Entity<A, R>
 	>
 {		
-//	private EnumMap<A, Integer> projection;	
-	private EntityFactory<A, R, E> factory;
+//	private EnumMap<A, Integer> projection;
 	private EntityMetaData<A, R, ?> meta;
+	private EntityFactory<A, R, ?> factory;
 	
 //	private TableReference tableRef;	
 	private DefaultTableExpression query;
 									
-	public EntityQuery(EntityMetaData<A, R, ?> meta, EntityFactory<A, R, E> factory) {
+	public EntityQuery(EntityMetaData<A, R, ?> meta) {
 		super();				
 		this.meta = meta;
-		this.factory = factory;
+		this.factory = meta.getFactory();
 	}	
 	
 	public DefaultTableExpression getQuery() {		
@@ -132,10 +132,14 @@ public class EntityQuery<
 			DefaultTableExpression qo = getQuery();
 			String qs = qo.generate();
 									
-			List<E> el = new ArrayList<E>();
+			final QueryProcessor ep = getQueryProcessor(el);
 			
-			final QueryProcessor qp = getQueryProcessor(qf);			
+			if (qf != null) {
+				qf.setInner(ep);				
+			}
 			
+			final QueryProcessor qp = (qf == null) ? ep : qf;
+						
 			qp.prepare();
 			
 			long ordinal = 0;
@@ -172,21 +176,15 @@ public class EntityQuery<
 		return qr;
 	}
 
-	private QueryProcessor getQueryProcessor(QueryFilter qf) {
-		QueryProcessor qp = new EntityQueryProcessor(getQuery());
-		
-		if (qf != null) {
-			qf.setInner(qp);		
-		}
-		
-		return (qf != null) ? qf : qp; 
+	private EntityQueryProcessor getQueryProcessor() {
+		return new EntityQueryProcessor(getQuery());		
 	}
 
-	public void setFactory(EntityFactory<A, R, E> factory) {
+	public void setFactory(EntityFactory<A, R, ?> factory) {
 		this.factory = factory;
 	}
 
-	public EntityFactory<A, R, E> getFactory() {
+	public EntityFactory<A, R, ?> getFactory() {
 		return factory;
 	}
 	
@@ -200,7 +198,7 @@ public class EntityQuery<
 			this.extractor = extractor;
 		}
 
-		public void set(E dest) {
+		public void set(Entity<A, R> dest) {
 			dest.set(this.attribute, extractor.last());			
 		}		
 	}
@@ -262,7 +260,9 @@ public class EntityQuery<
 			
 			Extractor[] xa = new Extractor[cl.size()];
 			List<AttributeExtractor> awl = new ArrayList<AttributeExtractor>();
-									
+			
+			
+			
 									
 			for (ColumnName n : qo.getSelect().getColumnNameList().getContent()) {
 				colno++;
@@ -298,23 +298,13 @@ public class EntityQuery<
 			
 			this.extractors = xa;
 			this.attributeWriterList = awl;
-			this.attrs = awl.size();
-			
-		}
-
-		@Override
-		public void endQuery() {						
-		}
-
-		@Override
-		public void prepare() {
-			// TODO Auto-generated method stub			
+			this.attrs = awl.size();			
 		}
 
 		@Override
 		public void process(ResultSet rs, long ordinal) throws QueryException {
 			try {
-				E e = getFactory().newInstance();
+				Entity<A, R> e = getFactory().newInstance();
 				
 				for (int i = 0; i < this.extractors.length; i++) {
 					this.extractors[i].extract(rs);				

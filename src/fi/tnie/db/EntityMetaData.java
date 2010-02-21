@@ -12,7 +12,8 @@ import fi.tnie.db.meta.ForeignKey;
 public interface EntityMetaData<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable,
-	Q extends Enum<Q> & Identifiable
+	Q extends Enum<Q> & Identifiable,
+	E extends Entity<A, R, E>
 > {
 
 	Class<A> getAttributeNameType();
@@ -21,7 +22,7 @@ public interface EntityMetaData<
 	
 	BaseTable getBaseTable();
 	
-//	Enum<?> getEntityType();
+	EntityFactory<A, R, E> getFactory();
 	
 	/**
 	 * Unmodifiable set containing the names of the attibutes which are applicable to entities this object describes.   

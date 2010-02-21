@@ -14,15 +14,14 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 
-public class DefaultEntityMetaData<
+public abstract class DefaultEntityMetaData<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable, 
-	Q extends Enum<Q> & Identifiable
+	Q extends Enum<Q> & Identifiable,
+	E extends Entity<A, R, E>
 >
-extends AbstractEntityMetaData<A, R, Q, DefaultEntityMetaData<A,R,Q>>
-{
-//	private Enum<?> entityType;
-	
+extends AbstractEntityMetaData<A, R, Q, DefaultEntityMetaData<A,R,Q,E>>
+{	
 	private Class<A> attributeType;
 	private Class<R> referenceType;
 	private Class<Q> queryType;
@@ -99,7 +98,7 @@ extends AbstractEntityMetaData<A, R, Q, DefaultEntityMetaData<A,R,Q>>
 		return this.baseTable;
 	}
 
-	@Override
+	@Override	
 	public Column getColumn(A a) {		
 		return this.attributeMap.get(a);
 	}
@@ -126,13 +125,9 @@ extends AbstractEntityMetaData<A, R, Q, DefaultEntityMetaData<A,R,Q>>
 		return this.referenceType;
 	}
 
-//	@Override
-//	public Enum<?> getEntityType() {
-//		return this.entityType;
-//	}
-
 	@Override
 	public ForeignKey getForeignKey(R r) {
 		return this.referenceMap.get(r);
 	}
+	
 }

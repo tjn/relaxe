@@ -10,7 +10,7 @@ public abstract class AbstractEntity<
 	Q extends Enum<Q> & Identifiable,
 	E extends AbstractEntity<A, R, Q, E>
 > 
-	implements Entity<A, R>
+	implements Entity<A, R, E>
 {	
 	 
 	

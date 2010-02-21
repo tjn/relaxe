@@ -66,10 +66,10 @@ public class DefaultEntityFactory<
 
 	public E newInstance() 
 		throws InstantiationException, IllegalAccessException {
-		return this.productType.newInstance();
+		E e = this.productType.newInstance();
+		e.setMetaData(this.meta);
+		return e;
 	}
-	
-	
 
 //	public Class<A> getColumnNameType() {
 //		return this.columnNameType;
