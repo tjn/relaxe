@@ -13,16 +13,20 @@ public interface EntityMetaData<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable,
 	Q extends Enum<Q> & Identifiable,
-	E extends Entity<A, R, E>
+	E extends Entity<A, R, ? extends E>
 > {
 
 	Class<A> getAttributeNameType();
 	Class<R> getRelationshipNameType();	
 	Class<Q> getQueryNameType();
 	
+	/**
+	 * Returns the base table this meta-data is bound to.
+	 * @return
+	 */
 	BaseTable getBaseTable();
 	
-	EntityFactory<A, R, E> getFactory();
+	EntityFactory<A, R, Q, E> getFactory();
 	
 	/**
 	 * Unmodifiable set containing the names of the attibutes which are applicable to entities this object describes.   
@@ -42,7 +46,8 @@ public interface EntityMetaData<
 	ForeignKey getForeignKey(R r);
 	
 	Set<A> getPKDefinition();
+
 	
-	
-	
+	void bind(BaseTable table)
+		throws EntityException;
 }

@@ -8,7 +8,7 @@ public abstract class AbstractEntity<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable,
 	Q extends Enum<Q> & Identifiable,
-	E extends AbstractEntity<A, R, Q, E>
+	E extends Entity<A, R, ? extends E>
 > 
 	implements Entity<A, R, E>
 {	
@@ -246,7 +246,7 @@ public abstract class AbstractEntity<
 //		return Comparison.eq(getParameter(k), expr);
 //	}
 //		
-//	public Predicate loadedAs(EntityQuery<A, E> q) {
+//	public Predicate loadedAs(DefaultEntityQuery<A, E> q) {
 //		Predicate p = null;		
 //		
 //		EntityFactory<A, E> ef = getFactory();

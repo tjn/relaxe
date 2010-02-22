@@ -71,6 +71,7 @@ public abstract class Statement
 		}
 	}	
 	
+	@Override
 	public String generate() {
 		StringBuffer dest = new StringBuffer();
 		ElementVisitor v = new QueryGenerator(dest);

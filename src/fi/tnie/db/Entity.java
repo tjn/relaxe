@@ -6,7 +6,7 @@ package fi.tnie.db;
 public interface Entity<
 	A extends Enum<A> & Identifiable,
 	R extends Enum<R> & Identifiable,
-	E extends Entity<A, R, E>
+	E extends Entity<A, R, ? extends E>
 > {		
 	
 	/**
@@ -39,7 +39,7 @@ public interface Entity<
 	void set(R r, Entity<?, ?, ?> ref);
 	
 	/**
-	 * Returns the meta-data object which describes the structure of this.
+	 * Returns the meta-data object which describes the structure of this object.
 	 * @return
 	 */	
 	EntityMetaData<A, R, ?, E> getMetaData();

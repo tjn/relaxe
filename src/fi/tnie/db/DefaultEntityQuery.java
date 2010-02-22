@@ -32,20 +32,19 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 
-public class EntityQuery<
+public class DefaultEntityQuery<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable,
-	E extends Entity<A, R>
+	Q extends Enum<Q> & Identifiable,
+	E extends Entity<A, R, E>
 	>
 {		
 //	private EnumMap<A, Integer> projection;
-	private EntityMetaData<A, R, ?> meta;
-	private EntityFactory<A, R, ?> factory;
-	
-//	private TableReference tableRef;	
+	private EntityMetaData<A, R, Q, E> meta;
+	private EntityFactory<A, R, Q, E> factory;
 	private DefaultTableExpression query;
 									
-	public EntityQuery(EntityMetaData<A, R, ?> meta) {
+	public DefaultEntityQuery(EntityMetaData<A, R, Q, E> meta) {
 		super();				
 		this.meta = meta;
 		this.factory = meta.getFactory();
@@ -99,12 +98,12 @@ public class EntityQuery<
 //		this.predicate = predicate;
 //	}
 	
-	public EntityQueryResult<A, R, E> exec(Connection c) 
+	public DefaultEntityQueryResult<A, R, E> exec(Connection c) 
 		throws QueryException {
 		return exec(null, c);
 	}
 	
-	public EntityQueryResult<A, R, E> exec(long offset, Long limit, Connection c) 
+	public DefaultEntityQueryResult<A, R, E> exec(long offset, Long limit, Connection c) 
 		throws QueryException {
 		QueryFilter qf = null;	
 	
@@ -119,12 +118,12 @@ public class EntityQuery<
 		return exec(qf, c);
 	}
 
-	public EntityQueryResult<A, R, E> exec(QueryFilter qf, Connection c) 
+	public DefaultEntityQueryResult<A, R, E> exec(QueryFilter qf, Connection c) 
 		throws QueryException {
 			
 		Statement st = null;
 		ResultSet rs = null;
-		EntityQueryResult<A, R, E> qr = null;
+		DefaultEntityQueryResult<A, R, E> qr = null;
 				
 		try {
 			st = c.createStatement();						
@@ -132,7 +131,7 @@ public class EntityQuery<
 			DefaultTableExpression qo = getQuery();
 			String qs = qo.generate();
 									
-			final QueryProcessor ep = getQueryProcessor(el);
+			final EntityQueryProcessor ep = getQueryProcessor();
 			
 			if (qf != null) {
 				qf.setInner(ep);				
@@ -161,8 +160,10 @@ public class EntityQuery<
 			finally {				
 				qp.finish();								
 			}
-						
-			qr = new EntityQueryResult<A, R, E>(this, el, ordinal);
+			
+			List<E> el = ep.getContent();
+												
+			qr = new DefaultEntityQueryResult<A, R, E>(this, el, ordinal);
 		} 
 		catch (Throwable e) {
 			e.printStackTrace();
@@ -180,11 +181,11 @@ public class EntityQuery<
 		return new EntityQueryProcessor(getQuery());		
 	}
 
-	public void setFactory(EntityFactory<A, R, ?> factory) {
+	public void setFactory(EntityFactory<A, R, Q, E> factory) {
 		this.factory = factory;
 	}
 
-	public EntityFactory<A, R, ?> getFactory() {
+	public EntityFactory<A, R, Q, E> getFactory() {
 		return factory;
 	}
 	
@@ -198,7 +199,7 @@ public class EntityQuery<
 			this.extractor = extractor;
 		}
 
-		public void set(Entity<A, R> dest) {
+		public void set(Entity<A, R, E> dest) {
 			dest.set(this.attribute, extractor.last());			
 		}		
 	}
@@ -250,6 +251,7 @@ public class EntityQuery<
 		private Extractor[] extractors = null;
 		private List<AttributeExtractor> attributeWriterList;
 		private int attrs;
+		private List<E> content;
 								
 		public EntityQueryProcessor(DefaultTableExpression qo) {
 			int colno = 0;
@@ -260,9 +262,6 @@ public class EntityQuery<
 			
 			Extractor[] xa = new Extractor[cl.size()];
 			List<AttributeExtractor> awl = new ArrayList<AttributeExtractor>();
-			
-			
-			
 									
 			for (ColumnName n : qo.getSelect().getColumnNameList().getContent()) {
 				colno++;
@@ -301,10 +300,20 @@ public class EntityQuery<
 			this.attrs = awl.size();			
 		}
 
+		public List<E> getContent() {
+			if (content == null) {
+				content = new ArrayList<E>();				
+			}
+
+			return content;
+		}
+
 		@Override
 		public void process(ResultSet rs, long ordinal) throws QueryException {
 			try {
-				Entity<A, R> e = getFactory().newInstance();
+				
+				EntityFactory<A, R, Q, E> ef = getFactory();
+				Entity<A, R, E> e = ef.newInstance(meta);
 				
 				for (int i = 0; i < this.extractors.length; i++) {
 					this.extractors[i].extract(rs);				

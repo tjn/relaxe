@@ -3,10 +3,13 @@
  */
 package fi.tnie.db;
 
-
 public class Person 
 	extends DefaultEntity<Person.Attribute, Person.Reference, Person.Query, Person> {
 			
+	protected Person(EntityMetaData<Attribute, Reference, Query, Person> meta) {
+		super(meta);
+	}
+
 	public enum Attribute implements Identifiable {
 		ID,
 		FIRST_NAME,
@@ -40,9 +43,10 @@ public class Person
 	}
 	
 	public static void main(String[] args) {		
-		Person p = new Person();
-		p.set(Reference.ADDRESS_ID, null);
-		p.set(Attribute.DATE_OF_BIRTH, null);
+		
+//		Person p = new Person(new DefaultEntityMetaData<Attribute, Reference, Query, Person>);		
+//		p.set(Reference.ADDRESS_ID, null);
+//		p.set(Attribute.DATE_OF_BIRTH, null);
 // 		p.setValue(Attribute.FIRST_NAME, new Att);
 	}
 	

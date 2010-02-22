@@ -3,27 +3,17 @@
  */
 package fi.tnie.db.meta.util;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -31,13 +21,11 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.DefaultEntityFactory;
-import fi.tnie.db.AbstractEntity;
-import fi.tnie.db.EntityFactory;
-import fi.tnie.db.Person;
+import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.QueryException;
-import fi.tnie.db.Person.Attribute;
-import fi.tnie.db.expr.AbstractIdentifier;
+import fi.tnie.db.TableMapper;
+import fi.tnie.db.TableMapper.Part;
+import fi.tnie.db.TableMapper.Type;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.BaseTable;
@@ -49,19 +37,16 @@ import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.impl.pg.PGEnvironment;
 import fi.tnie.util.io.IOHelper;
 
-
 public class SourceGenerator
 	extends Tool {
 	
-	private static Logger logger = Logger.getLogger(SourceGenerator.class);
-		
+	private static Logger logger = Logger.getLogger(SourceGenerator.class);		
 	public static final String KEY_PACKAGE = "package";
 	public static final String KEY_SOURCE_ROOT_DIR = "root-dir";
 	
-
 	public static void main(String[] args) {
 		
-		try {
+		try {						
 			new SourceGenerator().run(args);			
 		}			
 		catch (Exception e) {
@@ -97,6 +82,8 @@ public class SourceGenerator
 			if (!root.isDirectory()) {
 				throw new IllegalArgumentException("No root directory: " + root.getAbsolutePath());
 			}		
+			
+			TableMapper tm = new DefaultTableMapper(pkg); 
 					
 			PGEnvironment env = new PGEnvironment();
 			CatalogFactory cf = env.catalogFactory();
@@ -104,7 +91,7 @@ public class SourceGenerator
 			Catalog catalog = cf.create(meta, c.getCatalog());
 			
 			for (Schema s : catalog.schemas().values()) {
-				process(s, root, pkg);
+				process(s, root, tm);
 			}			
 		}
 		catch (SQLException e) {
@@ -113,122 +100,280 @@ public class SourceGenerator
 		
 	}
 
-	private void process(Schema s, final File root, final String rpkg) 
+	private void process(Schema s, final File root, final TableMapper tm) 
 		throws IOException {
 		
-		String name = s.getUnqualifiedName().getName().toLowerCase();
-		
-		if (name.equals("public")) {
-			name = "pub";
-		}
-		
-		String pkg = (rpkg == null) ? name : rpkg + "." + name;
-		final File pd = packageDir(root, pkg);
-				
-		
 		for (BaseTable t : s.baseTables().values()) {
-			String n = t.getName().getUnqualifiedName().getName();
-			final String etype = translate(n);
+			Map<Part, Type> types = tm.entityMetaDataType(t);
 			
-			CharSequence source = generate(t, pkg, etype);
+			TableMapper.Type intf = types.get(TableMapper.Part.INTERFACE);
 			
-												
-			IOHelper.write(source, getSourceFile(pd, etype));			
+			if (intf != null) {
+				CharSequence source = generateInterface(t, intf);
+				write(root, intf, source);
+			}						
+			
+			TableMapper.Type impl = types.get(TableMapper.Part.IMPLEMENTATION);
+			
+			if (impl != null) {
+				CharSequence source = generateImplementation(t, types);
+				write(root, impl, source);	
+			}
 		}						
+	}	
+	
+	
+	private void write(File root, TableMapper.Type type, CharSequence source) 
+		throws IOException {
+		File pd = packageDir(root, type.getPackageName());				
+		IOHelper.write(source, getSourceFile(pd, type.getUnqualifiedName()));
+		
 	}
 
-	private CharSequence generate(BaseTable t, String pkg, String uname) {
-		StringBuffer content = new StringBuffer();
+	public CharSequence generateInterface(BaseTable t, TableMapper.Type mt) {
+				
+		
+		StringWriter sw = new StringWriter();
+		PrintWriter p = new PrintWriter(sw);
+		
+		String pkg = mt.getPackageName();
 		
 		if (pkg != null) {			
-			content.append("package ");			
-			content.append(pkg);
-			content.append(";\n\n");
+			p.print("package ");			
+			p.print(pkg);
+			p.println(";");
 		}
 		
-		content.append("import fi.tnie.db.Entity;\n");
-		content.append("import fi.tnie.db.EntityFactory;\n");
-		content.append("import fi.tnie.db.DefaultEntityFactory;\n");
-		content.append("import fi.tnie.db.meta.Column;\n");
+		p.println("import fi.tnie.db.Entity;");
+		p.println("import fi.tnie.db.Identifiable;");
 						
-		content.append("\n\n");
+		p.println();
+		p.println();
 		
-		content.append("public class ");
-		content.append(uname);		
-		content.append("\n"); 
-		indent(1, content);
-		content.append("extends ");
-		content.append("Entity<");
-		content.append(getAttributeType(uname));
-		content.append(", ");
-		content.append(uname);
-		content.append(">");						
-		content.append(" ");
-		content.append("{");
-		content.append("\n\n");
+		final String uname = mt.getUnqualifiedName();
 		
-		members(t, uname, content);		
+		p.print("public interface ");
+		p.println(uname);		
+		p.print("\textends Entity<");		
+		p.print(getAttributeType(uname));
+		p.print(", ");
+		p.print(getReferenceType(uname));
+		p.print(", ");
+//		p.print(getQueryType(uname)); // not yet
+//		p.print(", ");
+		p.print(uname);
+		p.println(">");
+		p.println("{");
+		p.println();
 		
-		content.append("\n}\n");
-				
-		return content;
+		p.print(interfaceMembers(t, uname));		
+		
+		p.println("\n}\n");				
+		p.close();
+		
+		logger().debug("interface: " + sw);
+		
+		return sw.toString();
 	}
 	
-	private void members(BaseTable t, String etype, StringBuffer content) {
+	public CharSequence generateImplementation(BaseTable t, Map<Part, Type> types) {
+		StringWriter sw = new StringWriter();
+		PrintWriter w = new PrintWriter(sw);
+				
+		Type ifp = types.get(Part.INTERFACE);
+		Type imp = types.get(Part.IMPLEMENTATION);	
+		
+		String intf = null;
+		
+		if (ifp != null) {
+			intf = ifp.getQualifiedName();	
+		}
+		
+		String ctype = (intf == null) ? imp.getUnqualifiedName() : intf;
+		
+		String pkg = imp.getPackageName();
+		
+		if (pkg != null) {			
+			w.print("package ");
+			w.print(pkg);
+			w.println(";");
+			w.println();
+		}
+	
+		w.println("import fi.tnie.db.DefaultEntity;");
+		w.println("import fi.tnie.db.DefaultEntityMetaData;");
+		w.println("import fi.tnie.db.EntityException;");
+		w.println("import fi.tnie.db.EntityFactory;");
+		w.println("import fi.tnie.db.EntityMetaData;");
+										
+		w.println();
+		w.println();
+						
+		w.print("public class ");
+		w.println(imp.getUnqualifiedName());		
+		w.print("\textends DefaultEntity<");
+		w.print(getAttributeType(ctype));
+		w.print(",");
+		w.print(getReferenceType(ctype));
+		w.print(",");
+		w.print(getQueryType(ctype));
+		w.print(",");
+		w.print(ctype);		
+		w.println(">");
+		
+		if (intf != null) {		
+			w.print("\timplements ");
+			w.println(intf);
+		}
+		
+		w.println("{");		
+		w.print(implMembers(t, types));
+		w.print("\n}\n");
+		w.close();
+				
+		return sw.toString();
+	}
+
+	
+	private String interfaceMembers(BaseTable t, String etype) {
+		
+		StringBuffer content = new StringBuffer();
 		
 		attrs(t, content);
-		content.append("\n\n");		
-		factory(etype, content);
 		content.append("\n\n");
 		
+		refs(t, content);
+		content.append("\n\n");		
+
+		queries(t, content);
+		content.append("\n\n");		
+
+//		factory(etype, content);
+//		content.append("\n\n");
+		
+		logger().debug("members: " + content);
+		
+		return content.toString();
 	}
 
-
-	private void factory(String uname, StringBuffer content) {
-		String ivfact = "factory";
+	private String implMembers(BaseTable t, Map<Part, Type> parts) {
 		
-		String atype = getAttributeType();
+		StringWriter sw = new StringWriter();
+		PrintWriter w = new PrintWriter(sw);
 		
-		content.append("private static EntityFactory<" + atype + ", " + uname + "> " + ivfact + ";\n\n");		
+		final Type ctype = getContainerType(parts);
+		final String cn = getContainerTypeName(parts);
 		
-		content.append("@Override\n");		
+		String at = getAttributeType(ctype.getUnqualifiedName());
+		String rt = getReferenceType(ctype.getUnqualifiedName());
+		String qt = getQueryType(ctype.getUnqualifiedName());
 		
-		content.append(
-		"public EntityFactory<" + atype + ", " + uname + "> getFactory() {\n" +
-		"  if (factory == null) {\n" +
-		"    factory = new DefaultEntityFactory<" + atype + ", " + uname + ">() {\n" +
-		"      @Override\n" +
-		"      public " + uname + " newInstance() {\n" +
-		"        return new " + uname + "();\n" +
-		"      }\n" +
-		"    };\n" +
-		"  }\n\n" +
-		"  return factory;\n" +
-		"}\n\n");
-			
+		String imp = parts.get(Part.IMPLEMENTATION).getUnqualifiedName();
+						
+		w.println("public static class " + ctype.getUnqualifiedName() + "MetaData");
+		w.println("	extends DefaultEntityMetaData");
+		w.println("	<");
+		w.println("		" + at + ", ");
+		w.println("		" + rt + ", ");
+		w.println("		" + qt + ", ");
+		w.println("		" + cn + "> {");
+		w.println("");
+		w.println("	public " + ctype.getUnqualifiedName() + "MetaData() {");
+		w.println("		super(" + at + ".class, " + rt + ".class,	" + qt + ".class);");
+		w.println("	}");
+		w.println("");
+		w.println("	@Override");
+		w.println("	public EntityFactory<" + at + ", " + rt + ", " + qt + ", " + cn + "> getFactory() {			");
+		w.println("		return new EntityFactory<" + at + ", " + rt + ", " + qt + ", " + cn + ">() {");
+		w.println("			@Override");
+		w.println("			public " + cn + " newInstance(");
+		w.println("					EntityMetaData<" + at + ", " + rt + ", " + qt + ", " + cn + "> meta)");
+		w.println("						throws EntityException {");
+		w.println("					return new " + imp + "(meta);");
+		w.println("				}		");
+		w.println("		};");
+		w.println("	}");
+		w.println("}");
+		w.println("");
+		w.println("public " + imp + "(EntityMetaData<" + at + ", " + rt + ", " + qt + ", " + cn + "> meta) {");
+		w.println("	super(meta);		");
+		w.println("}");		
 		
+		w.close();
+		
+		return sw.toString();
 	}
+
+//	private void factory(String uname, StringBuffer content) {
+////		String ivfact = "factory";
+////		
+////		String atype = getAttributeType();
+////		
+////		content.append("private static EntityFactory<" + atype + ", " + uname + "> " + ivfact + ";\n\n");		
+////		
+////		content.append("@Override\n");		
+////		
+////		content.append(
+////		"public EntityFactory<" + atype + ", " + uname + "> getFactory() {\n" +
+////		"  if (factory == null) {\n" +
+////		"    factory = new DefaultEntityFactory<" + atype + ", " + uname + ">() {\n" +
+////		"      @Override\n" +
+////		"      public " + uname + " newInstance() {\n" +
+////		"        return new " + uname + "();\n" +
+////		"      }\n" +
+////		"    };\n" +
+////		"  }\n\n" +
+////		"  return factory;\n" +
+////		"}\n\n");
+////			
+////		
+//	}
 
 
 	private void attrs(BaseTable t, StringBuffer content) {								
-		content.append("public enum ");
-		content.append(getAttributeType());
-		content.append(" {\n");
-						 
+//		content.append("public enum ");
+//		content.append(getAttributeType());
+//		content.append(" {\n");
+				
+		List<String> elements = new ArrayList<String>();
+		
 		Set<Identifier> fkcols = foreignKeyColumns(t);
 				
 		for (Column c : t.columns()) {		
 			// only non-fk-columns are included in attributes.
 			// fk-columns  are not intended to be set individually,
-			// but atomically with 'ref -method
+			// but atomically with ref -method
 			if (!fkcols.contains(c.getColumnName())) {
-				content.append(attr(c));			
-				content.append(",\n");				
+				elements.add(attr(c));
 			}			
 		}
 		
-		content.append("}\n");
+		content.append(enumMember(getAttributeType(), elements));		
 	}
+	
+	private void refs(BaseTable t, StringBuffer content) {								
+		List<String> elements = new ArrayList<String>();	
+			
+		for (ForeignKey fk : t.foreignKeys().values()) {		
+			elements.add(fk.getUnqualifiedName().getName());
+		}
+		
+		content.append(enumMember(getReferenceType(), elements));		
+	}
+	
+	
+	private void queries(BaseTable t, StringBuffer content) {								
+		List<String> elements = new ArrayList<String>();	
+			
+		// TODO:
+//		for (ForeignKey fk : t.foreignKeys().values()) {		
+//			elements.add(fk.getUnqualifiedName().getName());
+//		}
+		
+		content.append(enumMember(getQueryType(), elements));		
+	}
+	
+	
 	
 	private Set<Identifier> foreignKeyColumns(BaseTable t) {
 		Comparator<Identifier> icmp = t.getSchema().getCatalog().getEnvironment().identifierComparator();
@@ -266,32 +411,9 @@ public class SourceGenerator
 		}
 	}
 
-
 	private File getSourceFile(File pd, String etype) {		
 		return new File(pd, etype + ".java");
 	}
-
-
-	private String translate(String n) {
-		String[] tokens = n.split("_");
-		
-		StringBuffer buf = new StringBuffer();
-		
-		for (int i = 0; i < tokens.length; i++) {
-			capitalize(tokens[i], buf);			
-		}
-		
-		return buf.toString();
-	}
-	
-	private void capitalize(String t, StringBuffer dest) {		
-		dest.append(Character.toUpperCase(t.charAt(0)));
-		
-		if (t.length() > 1) {
-			dest.append(t.substring(1).toLowerCase());
-		}		
-	}
-
 
 	private File packageDir(File root, String pkg) 
 		throws IOException {
@@ -318,18 +440,88 @@ public class SourceGenerator
 			
 		return pd;
 	}
-	
 
-	private String qualifiedName(String pkg, String uname) {
-		return pkg == null || pkg.equals("") ? uname : pkg + "." + uname;
-	}
+//	private String qualifiedName(String pkg, String uname) {
+//		return pkg == null || pkg.equals("") ? uname : pkg + "." + uname;
+//	}
 	
 	public String getAttributeType(String uname) {
 		return uname + "." + getAttributeType();
 	}
 	
+	public String getReferenceType(String uname) {
+		return uname + "." + getReferenceType();
+	}
+	
+	public String getQueryType(String uname) {
+		return uname + "." + getQueryType();
+	}
+	
 	public String getAttributeType() {
 		return "Attribute";		
 	}
+	
+	public String getReferenceType() {
+		return "Reference";		
+	}
+
+	
+	public String getQueryType() {
+		return "Query";		
+	}
+	
+	
+	private String enumMember(String uname, Iterable<?> elements) {
+
+		StringWriter sw = new StringWriter();
+		PrintWriter w = new PrintWriter(sw);
+						
+		w.print("public enum ");
+		w.print(uname);
+		w.print(" implements Identifiable ");		
+		w.println(" {");
+		
+		for (Object e : elements) {
+			w.print("\t");
+			w.print(e.toString());
+			w.println(",");
+		}		
+		
+		w.println(";");
+		w.println();
+		w.println("\t@Override");
+		w.println("\tpublic String identifier() {");		
+		w.println("\t\treturn name();");
+		w.println("\t}");
+				
+		w.println("}");		
+		w.println();
+		w.close();
+		
+		return sw.toString();
+	}
+
+
+	private String getContainerTypeName(Map<Part, Type> types) {
+		Type ifp = types.get(Part.INTERFACE);
+		Type imp = types.get(Part.IMPLEMENTATION);	
+		
+		String intf = null;
+		
+		if (ifp != null) {
+			intf = ifp.getQualifiedName();	
+		}
+		
+		return (intf == null) ? imp.getUnqualifiedName() : intf;		
+	}
+	
+	private Type getContainerType(Map<Part, Type> types) {
+		Type intf = types.get(Part.INTERFACE);
+		Type impl = types.get(Part.IMPLEMENTATION);	
+	
+		return (intf == null) ? impl : intf;		
+	}
+	 
+	
 	
 }

@@ -348,7 +348,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 
 			BaseTable pkt = (BaseTable) pks.tables().get(pktab);
 			
-			DefaultMutableColumn pkc = (DefaultMutableColumn) pkt.columnMap().get(pkcol);
+			DefaultMutableColumn pkc = pkt.columnMap().get(pkcol);
 
 			if (pkc == null) {
 				throw new NullPointerException("'pkc' must not be null");

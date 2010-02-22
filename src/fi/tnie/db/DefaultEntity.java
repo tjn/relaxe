@@ -9,22 +9,19 @@ public abstract class DefaultEntity<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable,
 	Q extends Enum<Q> & Identifiable,
-	E extends DefaultEntity<A, R, Q, E>
+	E extends Entity<A, R, ? extends E>
 >
 	extends AbstractEntity<A, R, Q, E> {
 		
 	private EntityMetaData<A, R, Q, E> meta;	
 	private EnumMap<A, Object> values;
-	private EnumMap<R, Entity<?, ?, ?>> refs;
-
-	@Override
-	public EntityMetaData<A, R, Q, E> getMetaData() {
-		return meta;
-	}
+	private EntityMap<R, Entity<?, ?, ?>> refs;
 	
-	public void setMetaData(EntityMetaData<A, R, Q, E> meta) {
+	protected DefaultEntity(EntityMetaData<A, R, Q, E> meta) {
+		super();
 		this.meta = meta;
 	}
+
 	public Object get(A a) {
 		return attrs().get(a);		
 	};
@@ -40,22 +37,33 @@ public abstract class DefaultEntity<
 		return values;
 	}
 	
-	private EnumMap<R, Entity<?, ?, ?>> refs() {
+//	private EnumMap<R, Entity<?, ?, ?>> refs() {
+//		if (refs == null) {
+//			refs = new EnumMap<R, Entity<?,?,?>>(getMetaData().getRelationshipNameType()); 
+//		}
+//		
+//		return refs;
+//	}
+
+	private EntityMap<R, Entity<?,?,?>> refs() {
 		if (refs == null) {
-			refs = new EnumMap<R, Entity<?,?,?>>(getMetaData().getRelationshipNameType()); 
+			refs = new EntityMap<R, Entity<?,?,?>>(getMetaData().getRelationshipNameType()); 
 		}
 		
 		return refs;
 	}
-	
+
 	public void set(R r, fi.tnie.db.Entity<?,?,?> ref) {
 		refs().put(r, ref);
 	}
 	
-	public fi.tnie.db.Entity<?,?,?> get(R r) {
+	public Entity<?,?,?> get(R r) {
 		return refs().get(r);
 	}
-	
-	
+
+	@Override
+	public EntityMetaData<A, R, ?, E> getMetaData() {
+		return this.meta;
+	}
 	
 }

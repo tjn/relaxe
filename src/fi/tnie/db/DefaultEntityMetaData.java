@@ -20,7 +20,7 @@ public abstract class DefaultEntityMetaData<
 	Q extends Enum<Q> & Identifiable,
 	E extends Entity<A, R, E>
 >
-extends AbstractEntityMetaData<A, R, Q, DefaultEntityMetaData<A,R,Q,E>>
+	extends AbstractEntityMetaData<A, R, Q, E>
 {	
 	private Class<A> attributeType;
 	private Class<R> referenceType;
@@ -36,17 +36,20 @@ extends AbstractEntityMetaData<A, R, Q, DefaultEntityMetaData<A,R,Q,E>>
 	private EnumSet<R> references;	
 	private EnumMap<R, ForeignKey> referenceMap;
 	
-	public DefaultEntityMetaData(Class<A> atype, Class<R> rtype, Class<Q> qtype, BaseTable table) {
+	protected DefaultEntityMetaData(Class<A> atype, Class<R> rtype, Class<Q> qtype) {
 		this.attributeType = atype;
 		this.referenceType = rtype;
 		this.queryType = qtype;
+	}
+	
+	@Override
+	public void bind(BaseTable table) {
 		this.baseTable = table;
-		
-//		this.entityType = entityType;
-		
-		populateAttributes(atype, table);
-		populateReferences(rtype, table);				
-	}	
+		populateAttributes(this.attributeType, table);
+		populateReferences(this.referenceType, table);
+	}
+	
+
 	
 	private void populateAttributes(Class<A> atype, BaseTable table) {
 		this.attributes = EnumSet.allOf(atype);		

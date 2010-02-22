@@ -7,17 +7,17 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class EntityQueryResult<
+public class DefaultEntityQueryResult<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable,
-	E extends Entity<A, R>
+	E extends Entity<A, R, E>
 > {		
 
 	private List<E> content;
-	private EntityQuery<A, R, E> source;
+	private DefaultEntityQuery<A, R, ?, E> source;
 	private long available;
 	
-	public EntityQueryResult(EntityQuery<A, R, E> source, List<E> content, long available) {		
+	public DefaultEntityQueryResult(DefaultEntityQuery<A, R, ?, E> source, List<E> content, long available) {		
 		super();
 		
 		if (source == null) {
@@ -37,7 +37,7 @@ public class EntityQueryResult<
 		return Collections.unmodifiableList(this.content);
 	}
 
-	public EntityQuery<A, R, E> getSource() {
+	public DefaultEntityQuery<A, R, ?, E> getSource() {
 		return source;
 	}
 
