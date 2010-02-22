@@ -54,7 +54,8 @@ public abstract class DefaultEntityMetaData<
 	private void populateAttributes(Class<A> atype, BaseTable table) {
 		this.attributes = EnumSet.allOf(atype);		
 		this.attributeMap = new EnumMap<A, Column>(atype);		
-		this.columnMap = new HashMap<Column, A>();
+		this.columnMap = new HashMap<Column, A>();		
+		this.pkdef = new EnumMap<A, Column>(atype);
 		
 		EnumSet<A> pka = EnumSet.noneOf(atype);
 		
@@ -78,8 +79,14 @@ public abstract class DefaultEntityMetaData<
 		this.referenceMap = new EnumMap<R, ForeignKey>(rtype);
 		
 		for (R r : this.references) {			
-			ForeignKey fk = table.foreignKeys().get(r.identifier());			
-			this.referenceMap.put(r, fk);						
+			ForeignKey fk = table.foreignKeys().get(r.identifier());
+			
+			if (fk == null) {
+				throw new NullPointerException("no such foreign key: " + r.identifier());
+			}
+			else {
+				this.referenceMap.put(r, fk);
+			}
 		}		
 	}
 	

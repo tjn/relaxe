@@ -362,10 +362,40 @@ public class SourceGenerator
 		List<String> elements = new ArrayList<String>();	
 			
 		for (ForeignKey fk : t.foreignKeys().values()) {		
-			elements.add(fk.getUnqualifiedName().getName());
+			elements.add(format(fk));
 		}
 		
 		content.append(enumMember(getReferenceType(), elements));		
+	}	
+	
+	private String format(ForeignKey fk) {		
+		final String kn = fk.getUnqualifiedName().getName();
+		String t = fk.getReferencing().getUnqualifiedName().getName().toUpperCase();
+		
+		String p = "^(FK_)?(" + Pattern.quote(t) + "_)";
+		
+		logger().debug("input {" + kn.toUpperCase() + "}");
+		logger().debug("p {" + p + "}");
+		
+		String n = kn.toUpperCase().replaceFirst(p, "");
+		
+		String expr;
+		
+		if (n.equals(kn)) {
+			expr = n;
+		}
+		else {
+			StringBuffer buf = new StringBuffer(n);
+			buf.append("(");
+			buf.append('"');
+			buf.append(kn);
+			buf.append('"');
+			buf.append(")");
+			
+			expr = buf.toString();
+		}
+		
+		return expr;
 	}
 	
 	
@@ -477,8 +507,7 @@ public class SourceGenerator
 		return "Query";		
 	}
 	
-	
-	private String enumMember(String uname, Iterable<?> elements) {
+	private <E> String enumMember(String uname, Iterable<E> elements) {
 
 		StringWriter sw = new StringWriter();
 		PrintWriter w = new PrintWriter(sw);
@@ -496,9 +525,19 @@ public class SourceGenerator
 		
 		w.println(";");
 		w.println();
+				 		
+		w.println("\tprivate String identifier;");
+		w.println();
+		w.println("\t" +  uname + "() {}");
+		w.println();
+		w.println("\t" + uname + "(String identifier) {");
+		w.println("\tthis.identifier = identifier;");
+		w.println("\t}");
+		w.println();
+						
 		w.println("\t@Override");
 		w.println("\tpublic String identifier() {");		
-		w.println("\t\treturn name();");
+		w.println("\t\treturn (identifier == null) ? name() : identifier;");
 		w.println("\t}");
 				
 		w.println("}");		
@@ -528,4 +567,7 @@ public class SourceGenerator
 	
 		return (intf == null) ? impl : intf;		
 	}
+	
+	
+	
 }

@@ -21,8 +21,10 @@ public interface EntityMetaData<
 	Class<Q> getQueryNameType();
 	
 	/**
-	 * Returns the base table this meta-data is bound to.
-	 * @return
+	 * Returns the base table this meta-data is bound to or <code>null</code> 
+	 * if this meta-data instance is not bound to any table.
+	 *  
+	 * @return  The base table
 	 */
 	BaseTable getBaseTable();
 	

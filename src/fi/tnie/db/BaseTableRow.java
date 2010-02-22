@@ -73,7 +73,7 @@ public class BaseTableRow<C extends Enum<C> & Identifiable>
 		
 		try {
 									
-			// TODO: read genereted keys:									
+			// TODO: read generated keys:									
 //			RowFactory<K, E> ef = getFactory();
 //			EnumMap<K, Integer> keys = ef.columns(rs.getMetaData());					
 //			
