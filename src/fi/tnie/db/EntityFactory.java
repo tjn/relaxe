@@ -9,6 +9,6 @@ public interface EntityFactory<
 	Q extends Enum<Q> & Identifiable,
 	E extends Entity<A, R, ? extends E>	
 > {			
-	E newInstance(EntityMetaData<A, R, Q, E> meta) 
+	E newInstance() 
 		throws EntityException;
 }

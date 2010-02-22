@@ -313,7 +313,7 @@ public class DefaultEntityQuery<
 			try {
 				
 				EntityFactory<A, R, Q, E> ef = getFactory();
-				Entity<A, R, E> e = ef.newInstance(meta);
+				Entity<A, R, E> e = ef.newInstance();
 				
 				for (int i = 0; i < this.extractors.length; i++) {
 					this.extractors[i].extract(rs);				

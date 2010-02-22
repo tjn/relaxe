@@ -13,13 +13,12 @@ public abstract class DefaultEntity<
 >
 	extends AbstractEntity<A, R, Q, E> {
 		
-	private EntityMetaData<A, R, Q, E> meta;	
+//	private EntityMetaData<A, R, Q, E> meta;	
 	private EnumMap<A, Object> values;
 	private EntityMap<R, Entity<?, ?, ?>> refs;
 	
-	protected DefaultEntity(EntityMetaData<A, R, Q, E> meta) {
-		super();
-		this.meta = meta;
+	protected DefaultEntity() {
+		super();		
 	}
 
 	public Object get(A a) {
@@ -59,11 +58,6 @@ public abstract class DefaultEntity<
 	
 	public Entity<?,?,?> get(R r) {
 		return refs().get(r);
-	}
-
-	@Override
-	public EntityMetaData<A, R, ?, E> getMetaData() {
-		return this.meta;
 	}
 	
 }

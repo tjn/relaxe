@@ -204,8 +204,7 @@ public class SourceGenerator
 		w.println("import fi.tnie.db.DefaultEntityMetaData;");
 		w.println("import fi.tnie.db.EntityException;");
 		w.println("import fi.tnie.db.EntityFactory;");
-		w.println("import fi.tnie.db.EntityMetaData;");
-										
+												
 		w.println();
 		w.println();
 						
@@ -269,8 +268,10 @@ public class SourceGenerator
 		String qt = getQueryType(ctype.getUnqualifiedName());
 		
 		String imp = parts.get(Part.IMPLEMENTATION).getUnqualifiedName();
+		
+		String metaDataType = ctype.getUnqualifiedName() + "MetaData";
 						
-		w.println("public static class " + ctype.getUnqualifiedName() + "MetaData");
+		w.println("public static class " + metaDataType);
 		w.println("	extends DefaultEntityMetaData");
 		w.println("	<");
 		w.println("		" + at + ", ");
@@ -278,7 +279,10 @@ public class SourceGenerator
 		w.println("		" + qt + ", ");
 		w.println("		" + cn + "> {");
 		w.println("");
-		w.println("	public " + ctype.getUnqualifiedName() + "MetaData() {");
+		
+		w.println("	private static " + metaDataType + " instance = new " + metaDataType + "();");
+		
+		w.println("	public " + metaDataType + "() {");
 		w.println("		super(" + at + ".class, " + rt + ".class,	" + qt + ".class);");
 		w.println("	}");
 		w.println("");
@@ -286,19 +290,22 @@ public class SourceGenerator
 		w.println("	public EntityFactory<" + at + ", " + rt + ", " + qt + ", " + cn + "> getFactory() {			");
 		w.println("		return new EntityFactory<" + at + ", " + rt + ", " + qt + ", " + cn + ">() {");
 		w.println("			@Override");
-		w.println("			public " + cn + " newInstance(");
-		w.println("					EntityMetaData<" + at + ", " + rt + ", " + qt + ", " + cn + "> meta)");
+		w.println("			public " + cn + " newInstance()");
 		w.println("						throws EntityException {");
-		w.println("					return new " + imp + "(meta);");
+		w.println("					return new " + imp + "();");
 		w.println("				}		");
 		w.println("		};");
 		w.println("	}");
 		w.println("}");
 		w.println("");
-		w.println("public " + imp + "(EntityMetaData<" + at + ", " + rt + ", " + qt + ", " + cn + "> meta) {");
-		w.println("	super(meta);		");
-		w.println("}");		
-		
+		w.println("public " + imp + "() {");		
+		w.println("}");
+		w.println("");
+		w.println("	@Override		");
+		w.println("	public " + metaDataType + " getMetaData() {		");
+		w.println("		return " + metaDataType + ".instance;");
+		w.println("	}");		
+				
 		w.close();
 		
 		return sw.toString();
@@ -521,7 +528,4 @@ public class SourceGenerator
 	
 		return (intf == null) ? impl : intf;		
 	}
-	 
-	
-	
 }
