@@ -5,6 +5,7 @@ package fi.tnie.db.meta.impl.common;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -71,6 +72,12 @@ public abstract class JDBCTestCase
 	@Override
 	protected void tearDown() throws Exception {
 		if (this.connection != null) {
+			try { 
+				this.connection.rollback();
+			}
+			catch (SQLException e) {
+				logger().debug("error in rollback: " + e.getMessage());
+			}
 			this.connection.close();
 			this.connection = null;
 			logger().debug("connection closed");

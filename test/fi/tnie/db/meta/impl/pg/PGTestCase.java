@@ -121,6 +121,8 @@ public abstract class PGTestCase
 			assertNotNull(cf);		
 			Connection c = getConnection();
 			
+			assertNotNull(c);
+			
 			catalog = cf.create(c.getMetaData(), getDatabase());
 			assertNotNull(catalog);
 			
