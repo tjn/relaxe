@@ -3,6 +3,12 @@
  */
 package fi.tnie.db;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import fi.tnie.db.expr.InsertStatement;
+import fi.tnie.db.meta.Column;
+
 public interface Entity<
 	A extends Enum<A> & Identifiable,
 	R extends Enum<R> & Identifiable,
@@ -15,6 +21,13 @@ public interface Entity<
 	 * @return
 	 */
 	Object get(A a);
+	
+	/**
+	 * Returns a value of the attribute <code>a</code>  
+	 * @param r
+	 * @return
+	 */
+	Object get(Column a);
 	
 	/**
 	 * Set the value of the attribute <code>a</code>
@@ -43,4 +56,8 @@ public interface Entity<
 	 * @return
 	 */	
 	EntityMetaData<A, R, ?, E> getMetaData();
+	
+	void insert(Connection c)
+		throws SQLException;
+	InsertStatement createInsertQuery();
 }
