@@ -56,7 +56,7 @@ public class InsertStatement
 			Symbol.PAREN_RIGHT.traverse(vc, v);
 		}
 		
-		Keyword.VALUES.traverse(vc, v);
+		Keyword.VALUES.traverse(vc, v);		
 		getValues().traverse(vc, v);
 	}
 
