@@ -114,8 +114,12 @@ public abstract class DefaultEntityMetaData<
 	}
 	
 	@Override
-	public A getAttribute(Column c) {		
-		return this.columnMap.get(c);
+	public A getAttribute(Column column) {
+		if (column == null) {
+			throw new NullPointerException("'column' must not be null");
+		}
+		
+		return this.columnMap.get(column);
 	}	
 
 	@Override
