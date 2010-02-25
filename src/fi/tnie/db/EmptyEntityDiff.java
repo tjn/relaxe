@@ -6,7 +6,7 @@ package fi.tnie.db;
 import java.util.Collections;
 import java.util.Map;
 
-public class EmptyDiff<
+public class EmptyEntityDiff<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable,	
 	Q extends Enum<Q> & Identifiable,
@@ -14,7 +14,7 @@ public class EmptyDiff<
 >
 	extends AbstractEntityDiff<A, R, Q, E>
 {
-	protected EmptyDiff(E original) {
+	protected EmptyEntityDiff(E original) {
 		super(original, original);
 	}
 

@@ -16,7 +16,7 @@ public class MultipleEntityQueryResult<
 
 	private List<E> content;
 			
-	public MultipleEntityQueryResult(DefaultEntityQuery<A, R, Q, E> source, List<E> content, long available) {		
+	public MultipleEntityQueryResult(EntityQuery<A, R, Q, E> source, List<E> content, long available) {		
 		super(source, available);
 		
 		if (content == null) {

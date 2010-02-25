@@ -15,5 +15,5 @@ public interface EntityQueryResult<
 	long getAvailable();
 	List<E> getContent();
 	boolean isEmpty();
-	DefaultEntityQuery<A, R, Q, E> getSource();
+	EntityQuery<A, R, Q, E> getSource();
 }

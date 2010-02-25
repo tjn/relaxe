@@ -16,7 +16,7 @@ public class EmptyEntityQueryResult<
 		
 	private List<E> content;
 	
-	public EmptyEntityQueryResult(DefaultEntityQuery<A, R, Q, E> source, long available) {		
+	public EmptyEntityQueryResult(EntityQuery<A, R, Q, E> source, long available) {		
 		super(source, available);		
 		this.content = Collections.emptyList();
 	}

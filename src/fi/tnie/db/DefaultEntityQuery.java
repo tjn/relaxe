@@ -40,7 +40,7 @@ public class DefaultEntityQuery<
 	R extends Enum<R> & Identifiable,
 	Q extends Enum<Q> & Identifiable,
 	E extends Entity<A, R, Q, ? extends E>
-	>
+	> implements EntityQuery<A, R, Q, E>
 {		
 	private EntityMetaData<A, R, Q, E> meta;
 	private EntityFactory<A, R, Q, E> factory;
@@ -90,11 +90,17 @@ public class DefaultEntityQuery<
 		return this.query;		
 	}	
 	
+	/* (non-Javadoc)
+	 * @see fi.tnie.db.EntityQuery#exec(java.sql.Connection)
+	 */
 	public EntityQueryResult<A, R, Q, E> exec(Connection c) 
 		throws EntityQueryException {
 		return exec(null, c);
 	}
 	
+	/* (non-Javadoc)
+	 * @see fi.tnie.db.EntityQuery#exec(long, java.lang.Long, java.sql.Connection)
+	 */
 	public EntityQueryResult<A, R, Q, E> exec(long offset, Long limit, Connection c) 
 		throws EntityQueryException {
 		QueryFilter qf = null;	
@@ -110,6 +116,9 @@ public class DefaultEntityQuery<
 		return exec(qf, c);
 	}
 
+	/* (non-Javadoc)
+	 * @see fi.tnie.db.EntityQuery#exec(fi.tnie.db.exec.QueryFilter, java.sql.Connection)
+	 */
 	public EntityQueryResult<A, R, Q, E> exec(QueryFilter qf, Connection c) 
 		throws EntityQueryException {
 			
@@ -238,10 +247,10 @@ public class DefaultEntityQuery<
 		private int attrs;
 		private List<E> content;
 		private E first;
-		private DefaultEntityQuery<A, R, Q, E> source;
+		private EntityQuery<A, R, Q, E> source;
 		private boolean completed;
 								
-		public EntityQueryProcessor(DefaultEntityQuery<A, R, Q, E> source, DefaultTableExpression qo) {
+		public EntityQueryProcessor(EntityQuery<A, R, Q, E> source, DefaultTableExpression qo) {
 			int colno = 0;			
 			this.source = source;
 			this.completed = false;
@@ -304,7 +313,7 @@ public class DefaultEntityQuery<
 		}
 
 		private EntityQueryResult<A, R, Q, E> getQueryResult(
-				DefaultEntityQuery<A, R, Q, E> source, long available) {
+				EntityQuery<A, R, Q, E> source, long available) {
 			
 			if (!this.completed) {
 				return null;

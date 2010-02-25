@@ -472,7 +472,7 @@ public abstract class DefaultEntity<
 		final E self = self();
 				
 		if (this == another || another == null) {
-			return new EmptyDiff<A, R, Q, E>(self);
+			return new EmptyEntityDiff<A, R, Q, E>(self);
 		}
 		
 		return new EntitySnapshotDiff<A, R, Q, E>(self, another);

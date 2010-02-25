@@ -18,7 +18,7 @@ public class SingleEntityQueryResult<
 	private E result;
 	
 	
-	public SingleEntityQueryResult(DefaultEntityQuery<A, R, Q, E> source, E result, long available) {		
+	public SingleEntityQueryResult(EntityQuery<A, R, Q, E> source, E result, long available) {		
 		super(source, available);
 		
 		if (result == null) {

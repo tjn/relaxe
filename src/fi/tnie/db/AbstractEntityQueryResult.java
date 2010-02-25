@@ -10,10 +10,10 @@ public abstract class AbstractEntityQueryResult <
 	E extends Entity<A, R, Q, ? extends E>>
 	implements EntityQueryResult<A, R, Q, E>
 {
-	private DefaultEntityQuery<A, R, Q, E> source; 
+	private EntityQuery<A, R, Q, E> source; 
 	private long available;
 	
-	protected AbstractEntityQueryResult(DefaultEntityQuery<A, R, Q, E> source, long available) {		
+	protected AbstractEntityQueryResult(EntityQuery<A, R, Q, E> source, long available) {		
 		if (source == null) {
 			throw new NullPointerException("'source' must not be null");
 		}
@@ -23,7 +23,7 @@ public abstract class AbstractEntityQueryResult <
 	}
 	
 	@Override
-	public DefaultEntityQuery<A, R, Q, E> getSource() {		
+	public EntityQuery<A, R, Q, E> getSource() {		
 		return this.source;
 	}
 	
