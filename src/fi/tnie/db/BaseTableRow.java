@@ -14,13 +14,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.expr.Assignment;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.ElementList;
 import fi.tnie.db.expr.InsertStatement;
 import fi.tnie.db.expr.Parameter;
 import fi.tnie.db.expr.Predicate;
-import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.expr.UpdateStatement;
 import fi.tnie.db.expr.ValueExpression;
 import fi.tnie.db.expr.ValueParameter;

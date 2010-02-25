@@ -6,6 +6,7 @@ package fi.tnie.db;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
@@ -89,13 +90,13 @@ public class DefaultEntityQuery<
 		return this.query;		
 	}	
 	
-	public DefaultEntityQueryResult<A, R, Q, E> exec(Connection c) 
-		throws QueryException {
+	public EntityQueryResult<A, R, Q, E> exec(Connection c) 
+		throws EntityQueryException {
 		return exec(null, c);
 	}
 	
-	public DefaultEntityQueryResult<A, R, Q, E> exec(long offset, Long limit, Connection c) 
-		throws QueryException {
+	public EntityQueryResult<A, R, Q, E> exec(long offset, Long limit, Connection c) 
+		throws EntityQueryException {
 		QueryFilter qf = null;	
 	
 		if (limit != null) {
@@ -109,20 +110,19 @@ public class DefaultEntityQuery<
 		return exec(qf, c);
 	}
 
-	public DefaultEntityQueryResult<A, R, Q, E> exec(QueryFilter qf, Connection c) 
-		throws QueryException {
+	public EntityQueryResult<A, R, Q, E> exec(QueryFilter qf, Connection c) 
+		throws EntityQueryException {
 			
 		Statement st = null;
 		ResultSet rs = null;
-		DefaultEntityQueryResult<A, R, Q, E> qr = null;
+		EntityQueryResult<A, R, Q, E> qr = null;
 				
 		try {
 			st = c.createStatement();						
 			
 			DefaultTableExpression qo = getQuery();
-			String qs = qo.generate();
-									
-			final EntityQueryProcessor ep = getQueryProcessor();
+			String qs = qo.generate();									
+			final EntityQueryProcessor ep = new EntityQueryProcessor(this, qo);
 			
 			if (qf != null) {
 				qf.setInner(ep);				
@@ -152,13 +152,11 @@ public class DefaultEntityQuery<
 				qp.finish();								
 			}
 			
-			List<E> el = ep.getContent();
-												
-			qr = new DefaultEntityQueryResult<A, R, Q, E>(this, el, ordinal);
+			qr = ep.getQueryResult(this, ordinal);
 		} 
 		catch (Throwable e) {
 			logger().error(e.getMessage(), e);
-			throw new QueryException(e.getMessage(), e);
+			throw new EntityQueryException(e.getMessage(), e);
 		}
 		finally {			
 			rs = QueryHelper.doClose(rs);
@@ -166,10 +164,6 @@ public class DefaultEntityQuery<
 		}
 		
 		return qr;
-	}
-
-	private EntityQueryProcessor getQueryProcessor() {
-		return new EntityQueryProcessor(getQuery());		
 	}
 
 	public void setFactory(EntityFactory<A, R, Q, E> factory) {
@@ -243,9 +237,14 @@ public class DefaultEntityQuery<
 		private List<AttributeExtractor> attributeWriterList;
 		private int attrs;
 		private List<E> content;
+		private E first;
+		private DefaultEntityQuery<A, R, Q, E> source;
+		private boolean completed;
 								
-		public EntityQueryProcessor(DefaultTableExpression qo) {
-			int colno = 0;
+		public EntityQueryProcessor(DefaultEntityQuery<A, R, Q, E> source, DefaultTableExpression qo) {
+			int colno = 0;			
+			this.source = source;
+			this.completed = false;
 									
 			BaseTable table = meta.getBaseTable();
 			
@@ -290,19 +289,41 @@ public class DefaultEntityQuery<
 			this.attributeWriterList = awl;
 			this.attrs = awl.size();			
 		}
+		
+		@Override
+		public void startQuery(ResultSetMetaData m) throws QueryException,
+				SQLException {			
+			this.first = null;
+			this.content = null;
+			this.completed = false;
+		}
+		
+		@Override
+		public void endQuery() throws QueryException {
+			this.completed = true;
+		}
 
-		public List<E> getContent() {
-			if (content == null) {
-				content = new ArrayList<E>();				
+		private EntityQueryResult<A, R, Q, E> getQueryResult(
+				DefaultEntityQuery<A, R, Q, E> source, long available) {
+			
+			if (!this.completed) {
+				return null;
 			}
 
-			return content;
+			if (this.first == null) {
+				return new EmptyEntityQueryResult<A, R, Q, E>(this.source, available);
+			}
+			
+			if (this.content == null) {
+				return new SingleEntityQueryResult<A, R, Q, E>(this.source, this.first, available);
+			}
+			
+			return new MultipleEntityQueryResult<A, R, Q, E>(this.source, this.content, available);
 		}
 
 		@Override
 		public void process(ResultSet rs, long ordinal) throws QueryException {
 			try {
-
 				EntityFactory<A, R, Q, E> ef = getFactory();				
 				E e = ef.newInstance();
 				
@@ -313,15 +334,30 @@ public class DefaultEntityQuery<
 				for (int i = 0; i < attrs; i++) {
 					AttributeExtractor ax = this.attributeWriterList.get(i);
 					ax.set(e);
-				}	
+				}
+				
+				if (this.first == null) {
+					this.first = e;
+				}
+				else {
+					if (this.content == null) {
+						this.content = new ArrayList<E>();
+						this.content.add(this.first);
+					}
+					
+					this.content.add(e);
+				}
 			}
 			catch (Throwable e) {
 				throw new QueryException(e.getMessage(), e);
-			}			
+			}
 		}
 	}
 	
 	private static Logger logger() {
 		return DefaultEntityQuery.logger;
 	}
+	
+	
+	
 }

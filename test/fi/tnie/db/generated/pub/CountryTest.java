@@ -64,21 +64,18 @@ public class CountryTest extends PGTestCase {
 			fi2.insert(c);
 			assertThrown(SQLException.class);
 		}
-		catch (SQLException se) {
+		catch (EntityException ee) {
+			SQLException se = (SQLException) ee.getCause();			
 			// "23502" An insert or update value is null, but the column cannot contain null values.
 			logger().info(se.getMessage());						
 			assertEquals("23502", se.getSQLState());			
 		}
 		
 		c.rollback();
-				
+		
 		fi.set(Country.Attribute.NAME, "Suomi");
 		fi.set(Country.Reference.CONTINENT, a);
 		fi.update(c);		
 		c.commit();
-		
-		
 	}
-
-
 }

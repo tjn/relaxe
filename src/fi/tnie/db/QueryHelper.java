@@ -3,6 +3,7 @@
  */
 package fi.tnie.db;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,7 +14,12 @@ public class QueryHelper {
 	
 	public static Statement doClose(Statement st) {
 		instance.close(st);
-		return st;
+		return null;
+	}
+	
+	public static PreparedStatement doClose(PreparedStatement ps) {
+		instance.close(ps);
+		return null;
 	}
 
 	public static ResultSet doClose(ResultSet rs) {

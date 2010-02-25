@@ -4,7 +4,7 @@
 package fi.tnie.db;
 
 import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.Map;
 
 import fi.tnie.db.expr.DeleteStatement;
 import fi.tnie.db.expr.InsertStatement;
@@ -25,10 +25,21 @@ public interface Entity<
 	 */
 	Object get(A a);
 	
-	/**
-	 * Returns a value of the attribute corresponding the column <code>c</code>  
-	 * @param c
-	 * @return
+	/***
+	 * Returns the value of the corresponding column.
+	 * 
+	 * If the <code>column</code> directy corresponds an attribute, the value of that attribute is returned.  
+	 * Otherwise, the foreign keys the <code>column</code> is a part of are searched to find an entity reference.
+	 * 
+	 * If there is no referenced entity, <code>null</code> is returned.
+	 * 
+	 * If the entity reference <code>ref</code> (referenced by foreign key <code>F</code>) is found, 
+	 * <code>column</code> is mapped to the corresponding column <code>fkcol</code> 
+	 * in referenced table and result of the expression <code>ref.get(fkcol)</code> is returned.
+	 *       
+	 * @param column
+	 * @return Scalar value or <code>null</code>, if the value is not set
+	 * @throws NullPointerException If <code>c</code> is <code>null</code>.	 
 	 */
 	Object get(Column c);
 	
@@ -54,6 +65,8 @@ public interface Entity<
 	 */
 	void set(R r, Entity<?,?,?,?> ref);
 	
+	Map<Column, Object> getPrimaryKey();
+	
 	/**
 	 * Returns the meta-data object which describes the structure of this object.
 	 * @return
@@ -61,17 +74,19 @@ public interface Entity<
 	EntityMetaData<A, R, Q, E> getMetaData();
 	
 	void insert(Connection c)
-		throws SQLException, EntityException;
+		throws EntityException;
 
 	void update(Connection c)
-		throws SQLException, EntityException;
+		throws EntityException;
 
 	void delete(Connection c)
-		throws SQLException, EntityException;
+		throws EntityException;
 	
-	InsertStatement createInsert();
+	InsertStatement createInsertStatement()
+		throws EntityException;	
 	UpdateStatement createUpdateStatement()
 		throws EntityException;
 	DeleteStatement createDeleteStatement() 
 		throws EntityException;
+	
 }

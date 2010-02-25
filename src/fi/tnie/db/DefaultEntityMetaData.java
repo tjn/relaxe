@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,11 +31,12 @@ public abstract class DefaultEntityMetaData<
 	private EnumSet<A> attributes;
 	private EnumMap<A, Column> attributeMap;
 	private Map<Column, A> columnMap;
-	private EnumMap<A, Column> pkdef;
-	private Set<A> pkattrs;
+//	private Set<A> pkattrs;
+	private Set<Column> pkcols;
 	
 	private EnumSet<R> references;	
 	private EnumMap<R, ForeignKey> referenceMap;
+	private Map<Column, Set<R>> columnReferenceMap;
 	
 	protected DefaultEntityMetaData(Class<A> atype, Class<R> rtype, Class<Q> qtype) {
 		this.attributeType = atype;
@@ -47,17 +49,16 @@ public abstract class DefaultEntityMetaData<
 		this.baseTable = table;
 		populateAttributes(this.attributeType, table);
 		populateReferences(this.referenceType, table);
-	}
-	
-
+	}	
 	
 	private void populateAttributes(Class<A> atype, BaseTable table) {
 		this.attributes = EnumSet.allOf(atype);		
 		this.attributeMap = new EnumMap<A, Column>(atype);		
 		this.columnMap = new HashMap<Column, A>();		
-		this.pkdef = new EnumMap<A, Column>(atype);
 		
-		EnumSet<A> pka = EnumSet.noneOf(atype);
+//		EnumSet<A> pka = EnumSet.noneOf(atype);
+		
+		Set<Column> pkc = new HashSet<Column>();
 		
 		for (A a : this.attributes) {			
 			Column c = table.columnMap().get(a.identifier());
@@ -66,17 +67,20 @@ public abstract class DefaultEntityMetaData<
 			this.columnMap.put(c, a);
 			
 			if (c.isPrimaryKeyColumn()) {
-				this.pkdef.put(a, c);
-				pka.add(a);
+				pkc.add(c);
+//				pka.add(a);
 			}
 		}
-						
-		this.pkattrs = Collections.unmodifiableSet(pka);
+		
+		this.pkcols = Collections.unmodifiableSet(pkc);						
+//		this.pkattrs = Collections.unmodifiableSet(pka);
 	}
 	
 	private void populateReferences(Class<R> rtype, BaseTable table) {
 		this.references = EnumSet.allOf(rtype);				
 		this.referenceMap = new EnumMap<R, ForeignKey>(rtype);
+		
+		Map<Column, Set<R>> rm = new HashMap<Column, Set<R>>();
 		
 		for (R r : this.references) {			
 			ForeignKey fk = table.foreignKeys().get(r.identifier());
@@ -85,9 +89,42 @@ public abstract class DefaultEntityMetaData<
 				throw new NullPointerException("no such foreign key: " + r.identifier());
 			}
 			else {
-				this.referenceMap.put(r, fk);
+				this.referenceMap.put(r, fk);				
+				populateColumnReferenceMap(fk, r, rm);				
 			}
-		}		
+		}
+		
+		// Ensure all the column-sets are unmodifiable after the call.
+		// Column-sets which are size of 1 are expected to be created by
+		// Collections.singleton and therefore unmodifiable.
+		for (Map.Entry<Column, Set<R>> e : rm.entrySet()) {
+			Set<R> cs = e.getValue();
+			
+			if (cs.size() > 1) {
+				e.setValue(Collections.unmodifiableSet(cs));
+			}
+		}
+		
+		this.columnReferenceMap = rm;
+	}
+
+	private void populateColumnReferenceMap(ForeignKey fk, R r, Map<Column, Set<R>> dest) {
+		for (Column fkcol : fk.columns().keySet()) {
+			Set<R> rs = dest.get(fkcol);
+			
+			if (rs == null) {
+				rs = Collections.singleton(r);
+				dest.put(fkcol, rs);						
+			}
+			else {
+				if (rs.size() == 1) {
+					rs = new HashSet<R>(rs);
+					dest.put(fkcol, rs);
+				}
+				
+				rs.add(r);
+			}
+		}
 	}
 	
 	public Set<A> attributes() {
@@ -123,10 +160,8 @@ public abstract class DefaultEntityMetaData<
 	}	
 
 	@Override
-	public Set<A> getPKDefinition() {
-//		we can return this.pkattrs as is, because it is 
-//		guaranteed to be unmodifiable here		 
-		return this.pkattrs;
+	public Set<Column> getPKDefinition() {
+		return this.pkcols;
 	}
 
 	@Override
@@ -144,4 +179,8 @@ public abstract class DefaultEntityMetaData<
 		return this.referenceMap.get(r);
 	}
 	
+	@Override
+	public Set<R> getReferences(Column c) {
+		return this.columnReferenceMap.get(c);
+	}
 }

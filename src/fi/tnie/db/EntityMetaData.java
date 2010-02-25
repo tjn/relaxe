@@ -43,13 +43,18 @@ public interface EntityMetaData<
 	Set<R> relationships();
 	
 	Column getColumn(A a);
-	A getAttribute(Column c);
-	
-	ForeignKey getForeignKey(R r);
-	
-	Set<A> getPKDefinition();
-
+	A getAttribute(Column c);	
+	ForeignKey getForeignKey(R r);		
+	Set<Column> getPKDefinition();
 	
 	void bind(BaseTable table)
 		throws EntityException;
+		
+	/**
+	 * Returns a set of the references the column <code>c</code> is part of.
+	 *   
+	 * @param c
+	 * @return
+	 */	
+	Set<R> getReferences(Column c);
 }

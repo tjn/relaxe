@@ -305,6 +305,12 @@ public class SourceGenerator
 		w.println("	public " + metaDataType + " getMetaData() {		");
 		w.println("		return " + metaDataType + ".instance;");
 		w.println("	}");		
+		
+		w.println("");
+		w.println("	@Override		");
+		w.println("	public " + ctype.getUnqualifiedName() + " self() {		");
+		w.println("		return this;");
+		w.println("	}");		
 				
 		w.close();
 		

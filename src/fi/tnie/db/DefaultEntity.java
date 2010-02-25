@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +37,27 @@ import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.impl.ColumnMap;
 
+/**
+ *	TODO: 
+		This does not handle well enough the case
+		of overlapping foreign-keys:
+		If the foreign key A "contains" another foreign key B (
+		the set of columns in a foreign key A contains
+		the columns of another foreign key B as a proper subset),
+		we could assume the table <code>T</code> <code>A</code> references also contains
+		a foreign key <code>C</code> which also references table <code>T</code>.
+
+		Proper implementation would set conflicting references to <code>null</code>.
+ 
+ * @author Administrator
+ *
+ * @param <A>
+ * @param <R>
+ * @param <Q>
+ * @param <E>
+ */
+
+
 public abstract class DefaultEntity<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable,
@@ -47,6 +69,8 @@ public abstract class DefaultEntity<
 	private EnumMap<A, Object> values;
 	private ReferenceMap<R, Entity<?,?,?,?>> refs;
 	
+	private EntityQueryResult<A, R, Q, ?> result;
+		
 	private static Logger logger = Logger.getLogger(DefaultEntity.class);
 	
 	protected DefaultEntity() {
@@ -60,28 +84,52 @@ public abstract class DefaultEntity<
 		
 		return attrs().get(a);		
 	};
-	
-	/**
-	 * Returns a value of the attribute correpponding the column <code>c</code>  
-	 * @param r
-	 * @return
-	 */
-	public Object get(Column c) {
-		if (c == null) {
+
+	public Object get(Column column)
+		throws NullPointerException {
+		if (column == null) {
 			throw new NullPointerException("'c' must not be null");
 		}
 		
-		A a = getMetaData().getAttribute(c);
+		EntityMetaData<A, R, Q, E> m = getMetaData();
 		
-		if (a == null) {
-			throw new IllegalArgumentException("no attribute corresponding the column: " + c);
+		A a = m.getAttribute(column);
+		
+		if (a != null) {
+			return get(a);			
 		}
 		
-		return get(a);		
+		// column may be part of multiple
+		// overlapping foreign-keys:				
+		Set<R> rs = m.getReferences(column);
+		
+		if (rs == null) {
+			return null;
+		}
+	
+		Entity<?, ?, ?, ?> ref = null;
+		R r = null;
+		
+		for (R ri : rs) {
+			ref = this.get(r);
+			
+			if (ref != null) {				
+				r = ri;
+				break;
+			}
+		}
+				
+		if (ref == null) {			
+			return null;
+		}
+		
+		ForeignKey fk = m.getForeignKey(r);
+		Column fkcol = fk.columns().get(column);		
+		return ref.get(fkcol);
 	};
 	
 	public void set(A a, Object value) {
-		attrs().put(a, value);
+		attrs().put(a, value);		
 	}
 	
 	private EnumMap<A, Object> attrs() {
@@ -99,14 +147,13 @@ public abstract class DefaultEntity<
 		return refs;
 	}
 
-	public void set(R r, fi.tnie.db.Entity<?,?,?,?> ref) {
+	public void set(R r, fi.tnie.db.Entity<?,?,?,?> ref) {	
 		refs().put(r, ref);
 	}
 	
 	public Entity<?,?,?,?> get(R r) {
 		return refs().get(r);
-	}
-	
+	}	
 
 	// TODO EntityDiff<E> & MergeStrategy ms  
 	public void store() {			
@@ -114,35 +161,28 @@ public abstract class DefaultEntity<
 	}
 	
 	public void insert(Connection c) 
-		throws SQLException, EntityException {
-		 
-		TableReference tref = createTableRef();
+		throws EntityException {
+		InsertStatement q = createInsertStatement();
+		String qs = q.generate();
 		
-		Predicate pkp = getPKPredicate(tref);
+		PreparedStatement ps = null;
+		ResultSet rs = null;		 
 		
-		if (pkp != null) {
-			new Query(getMetaData());
-		}
- 
-		InsertStatement q = createInsert();		
-		
-		String qs = q.generate();		
-		
-		logger().debug("JDBC-driver :" + c.getMetaData().getDriverName());
-		logger().debug("JDBC-driver-maj:" + c.getMetaData().getDriverMajorVersion());
-		logger().debug("JDBC-driver-min:" + c.getMetaData().getDriverMinorVersion());
-		logger().debug("JDBC-support-get-gen:" + c.getMetaData().supportsGetGeneratedKeys());
-		
-		final PreparedStatement ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);
-		q.traverse(null, new ParameterAssignment(ps));
-		
-		logger().debug("q: " + qs);
-		int ins = ps.executeUpdate();	
-		logger().debug("inserted: " + ins);
-		
-		ResultSet rs = ps.getGeneratedKeys();
-		
-		try {
+		try {		
+			logger().debug("JDBC-driver :" + c.getMetaData().getDriverName());
+			logger().debug("JDBC-driver-maj:" + c.getMetaData().getDriverMajorVersion());
+			logger().debug("JDBC-driver-min:" + c.getMetaData().getDriverMinorVersion());
+			logger().debug("JDBC-support-get-gen:" + c.getMetaData().supportsGetGeneratedKeys());
+			
+			ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);
+			q.traverse(null, new ParameterAssignment(ps));
+			
+			logger().debug("q: " + qs);
+			int ins = ps.executeUpdate();	
+			logger().debug("inserted: " + ins);
+			
+			rs = ps.getGeneratedKeys();
+			
 //			logger().debug(buf.toString());
 			
 			if (rs.next()) {
@@ -183,16 +223,21 @@ public abstract class DefaultEntity<
 //					buf.append(col);
 //					buf.append("\t");
 				}
+			}
 				
 //				logger().debug(buf.toString());				
-			}
+		}
+		catch (SQLException e) {
+			logger().error(e.getMessage(), e);
+			throw new EntityException(e.getMessage(), e);
 		}
 		finally {
 			rs = QueryHelper.doClose(rs);			
+			ps = QueryHelper.doClose(ps);
 		}
 	}	
 
-	public InsertStatement createInsert() {	
+	public InsertStatement createInsertStatement() {	
 		ValueRow newRow = new ValueRow();
 		 
 		final EntityMetaData<A, R, ?, E> meta = getMetaData();				
@@ -292,33 +337,81 @@ public abstract class DefaultEntity<
 		return new DeleteStatement(tref, p);
 	}
 	
+	public void merge(Connection c) 
+		throws EntityException {		
+		TableReference tref = createTableRef();		
+		Predicate pkp = getPKPredicate(tref);
+		
+		if (pkp == null) {
+			throw new EntityException("no primary key available");
+		}
+		
+		Query pq = new Query(getMetaData());		
+		E stored = pq.exec(c).first();
+		
+		if (stored == null) {
+			//
+			insert(c);
+		}
+		else {			
+		}		
+	}
+	
+	
+	
 	@Override
 	public void update(Connection c) 
-		throws SQLException, EntityException {
+		throws EntityException {
+		
+		TableReference tref = createTableRef();		
+		Predicate pkp = getPKPredicate(tref);
+		
+		if (pkp == null) {
+			throw new EntityException("no primary key available");
+		}
+		
 		UpdateStatement q = createUpdateStatement();
 		
 		if (q != null) {
-			String qs = q.generate();
-			logger().debug("qs: " + qs);		
-			final PreparedStatement ps = c.prepareStatement(qs);				
-			q.traverse(null, new ParameterAssignment(ps));		
-			int ins = ps.executeUpdate();
-			logger().debug("updated: " + ins);
+			PreparedStatement ps = null;
+			
+			try {			
+				String qs = q.generate();
+				logger().debug("qs: " + qs);		
+				ps = c.prepareStatement(qs);				
+				q.traverse(null, new ParameterAssignment(ps));		
+				int ins = ps.executeUpdate();
+				logger().debug("updated: " + ins);
+			}
+			catch (SQLException e) {
+				logger().error(e.getMessage(), e);
+				throw new EntityException(e.getMessage(), e);
+			}
+			finally {
+				ps = QueryHelper.doClose(ps);
+			}
 		}
 	}	
 
 	
 	@Override
-	public void delete(Connection c) throws SQLException, EntityException {
+	public void delete(Connection c) 
+		throws EntityException {
 		DeleteStatement ds = createDeleteStatement();
 		
 		if (ds != null) {
-			String qs = ds.generate();				
-			logger().debug("qs: " + qs);		
-			final PreparedStatement ps = c.prepareStatement(qs);				
-			ds.traverse(null, new ParameterAssignment(ps));		
-			int deleted = ps.executeUpdate();
-			logger().debug("deleted: " + deleted);						 
+			try {
+				String qs = ds.generate();				
+				logger().debug("qs: " + qs);		
+				final PreparedStatement ps = c.prepareStatement(qs);				
+				ds.traverse(null, new ParameterAssignment(ps));		
+				int deleted = ps.executeUpdate();
+				logger().debug("deleted: " + deleted);
+			}
+			catch (SQLException e) {
+				logger().error(e.getMessage(), e);
+				throw new EntityException(e.getMessage(), e);
+			}
 		}
 	}
 	
@@ -328,17 +421,22 @@ public abstract class DefaultEntity<
 		
 	private Predicate getPKPredicate(TableReference tref) 
 		throws EntityException {
-		EntityMetaData<A, R, ?, E> meta = getMetaData();
-		Set<A> pka = meta.getPKDefinition();
 		
-		if (pka.isEmpty()) {
+		if (tref == null) {
+			throw new NullPointerException();
+		}
+		
+		EntityMetaData<A, R, Q, E> meta = getMetaData();
+		Set<Column> pkcols = meta.getPKDefinition();
+				
+		if (pkcols.isEmpty()) {
 			throw new EntityException("no pk-attributes available");			
-		}		
+		}					
 		
 		Predicate p = null;
 		
-		for (A a : pka) {
-			Object o = get(a);
+		for (Column col : pkcols) {
+			Object o = get(col);
 			
 			// to successfully create a pk predicate 
 			// every component must be set: 			
@@ -346,17 +444,12 @@ public abstract class DefaultEntity<
 				return null;
 			}
 			
-			if (tref == null) {
-				tref = new TableReference(getMetaData().getBaseTable());
-			}
-			
-			Column col = meta.getColumn(a);
 			ColumnExpr ce = new TableColumnExpr(tref, col);
 			ValueParameter param = new ValueParameter(col, o);
 			p = AndPredicate.newAnd(p, eq(ce, param));
 		}
 		
-		return p;				
+		return p;
 	}
 	
 	private Eq eq(ValueExpression a, ValueExpression b) {
@@ -365,8 +458,7 @@ public abstract class DefaultEntity<
 	
 	private TableReference createTableRef() {
 		return new TableReference(getMetaData().getBaseTable());
-	}
-	
+	}	
 	
 	private class Query
 		extends DefaultEntityQuery<A, R, Q, E>
@@ -374,5 +466,42 @@ public abstract class DefaultEntity<
 		public Query(EntityMetaData<A, R, Q, E> meta) {
 			super(meta);
 		}		
+	}
+	
+	public EntityDiff<A, R, Q, E> diff(E another) {
+		final E self = self();
+				
+		if (this == another || another == null) {
+			return new EmptyDiff<A, R, Q, E>(self);
+		}
+		
+		return new EntitySnapshotDiff<A, R, Q, E>(self, another);
+	}
+
+	/**
+	 * Returns a type-safe self-reference. Implementation must return <code>this</code>.
+	 *  
+	 * @return
+	 */
+	protected abstract E self();
+	
+	public Map<Column, Object> getPrimaryKey() {
+		Map<Column, Object> pk = new HashMap<Column, Object>(); 
+		
+		for (Column pkcol : getMetaData().getPKDefinition()) {
+			Object v = get(pkcol);
+			
+			if (v == null) {
+				return null;
+			}
+			
+			pk.put(pkcol, v);
+		}
+		
+		return pk;
+	}	
+	
+	void markLoaded(EntityQueryResult<A, R, Q, ?> result) {
+		this.result = result;
 	}
 }

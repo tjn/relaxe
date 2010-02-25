@@ -3,17 +3,11 @@
  */
 package fi.tnie.db.expr;
 
-import fi.tnie.db.meta.Table;
-
 public class DeleteStatement
 	extends Statement {
 
 	private TableReference target;			
 	private Where where;
-				
-//	public DeleteStatement(Table target) {
-//		this(target, null);
-//	}
 	
 	public DeleteStatement(TableReference tref, Predicate p) {
 		super(Name.DELETE);		
