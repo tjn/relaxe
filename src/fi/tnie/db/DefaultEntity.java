@@ -47,7 +47,7 @@ import fi.tnie.db.meta.impl.ColumnMap;
 		we could assume the table <code>T</code> <code>A</code> references also contains
 		a foreign key <code>C</code> which also references table <code>T</code>.
 
-		Proper implementation would set conflicting references to <code>null</code>.
+		Proper implementation should probably set conflicting references to <code>null</code>.
  
  * @author Administrator
  *

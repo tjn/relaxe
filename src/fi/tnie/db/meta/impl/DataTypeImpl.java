@@ -103,21 +103,6 @@ public class DataTypeImpl
 		this.size = size;
 	}
 		
-//	@Override
-//	public Schema getSchema() {
-//		return this.schema;
-//	}
-
-//	@Override
-//	public DefaultMutableMetaObject getParent() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-	
-//	public static DataType varchar(int size) {		
-////		DataType		
-////		return new DataType();		
-//	}
 	
 	@Override
 	protected Object clone() throws CloneNotSupportedException {	

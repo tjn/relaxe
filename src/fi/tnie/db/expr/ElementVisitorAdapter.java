@@ -12,85 +12,71 @@ public class ElementVisitorAdapter implements ElementVisitor {
 	
 	@Override
 	public VisitContext start(VisitContext vc, Element e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, Select e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, From e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, Where e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, Having e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, OrderBy e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, Predicate e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, Keyword e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, AbstractTableReference e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, JoinType e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, TableColumnExpr e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, Symbol e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, SchemaElementName e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, Parameter e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -109,37 +95,31 @@ public class ElementVisitorAdapter implements ElementVisitor {
 
 	@Override
 	public VisitContext start(VisitContext vc, GroupBy e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, Token e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, Assignment e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, ValueExpression e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, Identifier e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public VisitContext start(VisitContext vc, Name e) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

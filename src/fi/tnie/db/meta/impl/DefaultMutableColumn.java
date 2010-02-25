@@ -156,24 +156,9 @@ public class DefaultMutableColumn
 //			getDataTypeImpl().
 		}
 		
-		// we just have an idea:
+		// we just have no idea:
 		return null;
 	}
-
-//	@Override
-//	public ColumnName getColumnName() {
-//		if (columnName == null) {
-//			columnName = new ColumnName(getName(), true);			
-//		}
-//
-//		return columnName;
-//	}
-//
-//	@Override
-//	public int ordinal() {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
 
 	@Override
 	public Identifier getUnqualifiedName() {

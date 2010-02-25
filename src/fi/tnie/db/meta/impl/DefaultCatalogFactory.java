@@ -150,8 +150,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 
 		private List<DefaultMutableColumn> columns;
 		private DefaultPrimaryKey result = null;
-		private String currentPK = null;
-
+		
 		public PrimaryKeyReader(DefaultMutableBaseTable table) {
 			super();
 			this.table = table;
@@ -194,10 +193,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			logger().debug("keyseq: " + keyseq);
 			logger().debug("symbol: " + pkname);
 
-			// TODO: this only work in MySQL
-//			Schema pks = this.catalog.schemas().get(pkcat);
 			Schema pks = getSchema(catalog, pksch, pkcat);
-			
 						
 			// logger().debug("pksch: " + pksch);
 			// logger().debug("pks: " + pks);
@@ -353,9 +349,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			if (pkc == null) {
 				throw new NullPointerException("'pkc' must not be null");
 			}
-
-			// System.out.println("fk: " + fkcol);
-			
+						
 			// TODO: handle base-tables in different catalogs
 			
 			if (fkcat != null && pkcat != null) {
@@ -365,7 +359,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 							"the catalog (" + fkcat + ") of the column referenced by foreign key " +
 							"is different from the catalog (" + pkcat + ") of the referencing column");
 				}
-			}						
+			}				
 			
 			Schema fks = pks.getCatalog().schemas().get(fksch);
 			BaseTable referencedTable = fks.baseTables().get(fktab);

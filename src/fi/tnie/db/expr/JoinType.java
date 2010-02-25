@@ -19,11 +19,6 @@ public enum JoinType
 		this.keyword = keyword;
 	}
 
-//	@Override
-//	public void generate(SimpleQueryContext qc, StringBuffer dest) {
-//		// TODO Auto-generated method stub		
-//	}
-
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {
 		vc = v.start(vc, this);

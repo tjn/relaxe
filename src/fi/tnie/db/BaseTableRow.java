@@ -107,58 +107,6 @@ public class BaseTableRow<C extends Enum<C> & Identifiable>
 		
 	}
 
-	private void update(Connection c, BaseTableRowFactory<C, BaseTableRow<C>, ?> rf) 
-		throws SQLException {
-	
-//		// reload:
-//				
-//		Predicate pkp = createPKPredicate();
-//									
-//		BaseTableRow<C> snapshot = reload(c, rf, pkp);
-//		
-//		if (snapshot == null) {
-//			// TODO: return diff: 
-//			throw new IllegalStateException("object was deleted");
-//		}		
-//						
-//		UpdateStatement q = createUpdateQuery();				
-//		String qs = q.generate();
-//		
-//		final PreparedStatement ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);						
-//		q.traverse(null, new ParameterAssignment(ps));				
-//		int ins = ps.executeUpdate();
-//		
-//		logger().debug("updated: " + ins);
-//		
-//		ResultSet rs = ps.getGeneratedKeys();
-//		
-//		try {			
-////			EnumMap<K, Integer> keys = ef.columns(rs.getMetaData());					
-////			
-//			if (rs.next()) {
-//				
-//				
-//				copyFrom(rs);
-////				ef.copy(keys, rs, this);				
-//			}
-//		}
-//		finally {
-//			rs.close();
-//		}
-	}
-
-	private BaseTableRow<C> reload(Connection c, Predicate pkp) 
-		throws SQLException {
-		
-//		BaseTableRowFactory<C, BaseTableRow<C>> rf = getBaseTableRowMetaData().getFactory(); 
-//		TableRowQuery<C, BaseTableRow<C>> q = new RowQuery<C, BaseTableRow<C>>(rf);
-//		q.getQuery().getWhere().setSearchCondition(pkp);
-//		
-//		BaseTableRow<C> reloaded = q.exec(c).first();
-//		
-//		return reloaded;
-		return null;
-	}
 
 	private Predicate createPKPredicate() {		
 		Map<C, ?> pk = getPrimaryKey();
@@ -230,12 +178,11 @@ public class BaseTableRow<C extends Enum<C> & Identifiable>
 //}
 
 
-protected void saved() {
-	// TODO Auto-generated method stub		
-}
+	protected void saved() {
+	}
 
-protected void saving() {		
-}		
+	protected void saving() {		
+	}		
 
 //private PrimaryKey getPKDefinition() {
 //	BaseTable t = getTable();

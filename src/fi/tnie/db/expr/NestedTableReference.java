@@ -30,18 +30,6 @@ public class NestedTableReference
 	public ElementList<? extends ColumnName> getUncorrelatedColumnNameList() {	
 		return getQuery().getTableExpr().getSelect().getColumnNameList();
 	}
-
-//	@Override
-//	public ElementList<ValueElement> getSelectList() {
-////		TODO: wild-card:
-////		getCorrelationName().*
-//		
-//		// this is incorrect:
-////		should use getCorrelationName().* or 
-////		qualify column names of the query with new correlation symbol
-//		
-//		return getQuery().getSelect().getSelectList();
-//	}
 		
 	@Override
 	protected void traverseContent(VisitContext vc, ElementVisitor v) {
