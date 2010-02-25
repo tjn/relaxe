@@ -20,6 +20,7 @@ import fi.tnie.db.expr.ElementList;
 import fi.tnie.db.expr.InsertStatement;
 import fi.tnie.db.expr.Parameter;
 import fi.tnie.db.expr.Predicate;
+import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.expr.UpdateStatement;
 import fi.tnie.db.expr.ValueExpression;
 import fi.tnie.db.expr.ValueParameter;
@@ -366,20 +367,24 @@ public Parameter getParameter(final C column) {
 
 	
 	public UpdateStatement createUpdateQuery() {
-		BaseTable table = getTable();
-		ColumnMap cm = table.columnMap();
-		
-		ElementList<Assignment> assignments = new ElementList<Assignment>(); 
 				
-		for (Map.Entry<C, ?> e : values.entrySet()) {			
-			C column = e.getKey();			
-			Column col = cm.get(column.toString());
-			ValueParameter p = new ValueParameter(col, e.getValue());
-			assignments.add(new Assignment(col.getColumnName(), p));
-		}
-									
-		UpdateStatement q = new UpdateStatement(table, assignments);				
-		return q;		
+//		BaseTable table = getTable();
+//		TableReference tref = new TableReference(table);
+//		ColumnMap cm = table.columnMap();		
+//		
+//		ElementList<Assignment> assignments = new ElementList<Assignment>(); 
+//				
+//		for (Map.Entry<C, ?> e : values.entrySet()) {			
+//			C column = e.getKey();			
+//			Column col = cm.get(column.toString());
+//			ValueParameter p = new ValueParameter(col, e.getValue());
+//			assignments.add(new Assignment(col.getColumnName(), p));
+//		}
+//									
+//		UpdateStatement q = new UpdateStatement(tref, assignments, tref);				
+//		return q;
+		
+		return null;
 	}
 
 	@Override

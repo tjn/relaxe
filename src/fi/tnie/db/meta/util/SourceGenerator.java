@@ -159,8 +159,8 @@ public class SourceGenerator
 		p.print(", ");
 		p.print(getReferenceType(uname));
 		p.print(", ");
-//		p.print(getQueryType(uname)); // not yet
-//		p.print(", ");
+		p.print(getQueryType(uname));
+		p.print(", ");
 		p.print(uname);
 		p.println(">");
 		p.println("{");

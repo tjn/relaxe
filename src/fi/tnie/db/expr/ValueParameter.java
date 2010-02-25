@@ -38,11 +38,6 @@ public class ValueParameter extends Parameter {
 	}
 
 	@Override
-	public ColumnName getColumnName() {
-		return null;
-	}
-
-	@Override
 	public int getColumnCount() {
 		return 1;
 	}

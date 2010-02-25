@@ -30,10 +30,11 @@ public class QueryProcessorAdapter
 
 	@Override
 	public void process(ResultSet rs, long ordinal) throws QueryException, SQLException {
+				
 	}
 
 	@Override
-	public void startQuery(ResultSetMetaData m) throws QueryException, SQLException {
+	public void startQuery(ResultSetMetaData m) throws QueryException, SQLException {				
 	}
 
 	@Override

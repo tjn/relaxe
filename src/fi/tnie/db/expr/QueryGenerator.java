@@ -48,7 +48,7 @@ public class QueryGenerator
 			}
 		}
 		
-		logger().debug("token: " + next);
+//		logger().debug("token: " + next);
 		
 		String ts = next.getTerminalSymbol();
 		

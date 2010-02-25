@@ -6,13 +6,16 @@ package fi.tnie.db;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import fi.tnie.db.expr.DeleteStatement;
 import fi.tnie.db.expr.InsertStatement;
+import fi.tnie.db.expr.UpdateStatement;
 import fi.tnie.db.meta.Column;
 
 public interface Entity<
 	A extends Enum<A> & Identifiable,
 	R extends Enum<R> & Identifiable,
-	E extends Entity<A, R, ? extends E>
+	Q extends Enum<Q> & Identifiable,
+	E extends Entity<A, R, Q, ? extends E>
 > {		
 	
 	/**
@@ -23,11 +26,11 @@ public interface Entity<
 	Object get(A a);
 	
 	/**
-	 * Returns a value of the attribute <code>a</code>  
-	 * @param r
+	 * Returns a value of the attribute corresponding the column <code>c</code>  
+	 * @param c
 	 * @return
 	 */
-	Object get(Column a);
+	Object get(Column c);
 	
 	/**
 	 * Set the value of the attribute <code>a</code>
@@ -42,22 +45,33 @@ public interface Entity<
 	 * @param r
 	 * @return
 	 */
-	Entity<?, ?, ?> get(R r);
+	Entity<?,?,?,?> get(R r);
 	
 	/**
 	 * Sets an entity to which this entity refers by relationship <code>r</code>
 	 * @param r
 	 * @param ref
 	 */
-	void set(R r, Entity<?, ?, ?> ref);
+	void set(R r, Entity<?,?,?,?> ref);
 	
 	/**
 	 * Returns the meta-data object which describes the structure of this object.
 	 * @return
 	 */	
-	EntityMetaData<A, R, ?, E> getMetaData();
+	EntityMetaData<A, R, Q, E> getMetaData();
 	
 	void insert(Connection c)
-		throws SQLException;
-	InsertStatement createInsertQuery();
+		throws SQLException, EntityException;
+
+	void update(Connection c)
+		throws SQLException, EntityException;
+
+	void delete(Connection c)
+		throws SQLException, EntityException;
+	
+	InsertStatement createInsert();
+	UpdateStatement createUpdateStatement()
+		throws EntityException;
+	DeleteStatement createDeleteStatement() 
+		throws EntityException;
 }

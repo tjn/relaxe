@@ -15,8 +15,6 @@ public class InsertStatement
 	
 	private SchemaElementName tableName;
 	
-	
-	
 	public int getTargetColumnCount() {
 		if (columnNameList == null) {
 			return getTarget().columns().size();
@@ -27,21 +25,23 @@ public class InsertStatement
 			
 	public InsertStatement(Table target, ElementList<ColumnName> columnNameList, ValueRow valueRow) {
 		super(Name.INSERT);
-		this.target = target;
-				
-		if (columnNameList != null) {
-			this.columnNameList = new ElementList<ColumnName>();
-			columnNameList.copyTo(this.columnNameList);
+		
+		if (target == null) {
+			throw new NullPointerException("'target' must not be null");
 		}
+		
+		if (columnNameList == null) {
+			throw new NullPointerException("'columnNameList' must not be null");
+		}
+		
+		this.target = target;
+		this.columnNameList = new ElementList<ColumnName>();
+		columnNameList.copyTo(this.columnNameList);
 		
 		if (valueRow != null) {
 			getValues().add(valueRow);			
 		}
-	}	
-	
-//	public void traverse(ElementVisitor v) {
-//		traverse(null, v);
-//	}
+	}
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {		
@@ -64,9 +64,9 @@ public class InsertStatement
 		return target;
 	}
 
-	public void setTarget(Table target) {
-		this.target = target;
-	}
+//	private void setTarget(Table target) {
+//		this.target = target;
+//	}
 	
 	public ElementList<ValueRow> getValues() {
 		if (values == null) {
@@ -79,15 +79,7 @@ public class InsertStatement
 	void add(ValueRow r) {
 		getValues().add(r);
 	}
-	
-	@Override
-	public String generate() {
-		StringBuffer dest = new StringBuffer();
-		ElementVisitor v = new QueryGenerator(dest);
-		traverse(null, v);		
-		return dest.toString();
-	}
-
+		
 	private SchemaElementName getTableName() {
 		if (tableName == null) {
 			tableName = new SchemaElementName(this.target);

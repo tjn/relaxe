@@ -22,36 +22,6 @@ public class ElementList<E extends Element>
 		this(Symbol.COMMA);
 	}
 	
-	
-
-//	@Override
-//	public void generate(SimpleQueryContext qc, StringBuffer dest) {
-//		List<? extends E> el = getContent();
-//		
-//		if (el == null) {
-//			throw new NullPointerException("element-list must not be null");
-//		}
-//		
-//		if (el.isEmpty()) {
-//			throw new IllegalArgumentException("element-list must not be empty");
-//		}		
-//		
-//		dest.append(" ");
-//		
-//		for(Iterator<? extends E> ei = el.iterator(); ei.hasNext();) {
-//			Element e = ei.next();
-//			e.generate(qc, dest);
-//						
-//			if (delim != null) {
-//				if (ei.hasNext()) {
-//					dest.append(delim);
-//				}
-//			}
-//		}
-//		
-//		dest.append(" ");
-//	}
-
 	public List<E> getContent() {
 		if (content == null) {
 			content = new ArrayList<E>();			
@@ -63,8 +33,7 @@ public class ElementList<E extends Element>
 	public boolean add(E e) {
 		return getContent().add(e);
 	}
-	
-	
+		
 	public void set(E e) {
 		if (e == null) {
 			throw new NullPointerException("'e' must not be null");

@@ -9,7 +9,9 @@ public class EntityException
 	protected EntityException() {
 		super();
 	}
-
+	protected EntityException(String msg) {
+		super(msg);
+	}
 	protected EntityException(String message, Throwable cause) {
 		super(message, cause);	
 	}	

@@ -7,7 +7,7 @@ public abstract class AbstractEntityMetaData<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable,
 	Q extends Enum<Q> & Identifiable,
-	E extends Entity<A, R, E>
+	E extends Entity<A, R, Q, E>
 > 
 	implements EntityMetaData<A, R, Q, E>
 {

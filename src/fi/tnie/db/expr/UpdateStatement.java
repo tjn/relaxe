@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.expr;
 
-import fi.tnie.db.meta.Table;
-
 public class UpdateStatement
 	extends Statement {
 
@@ -12,10 +10,23 @@ public class UpdateStatement
 	private ElementList<Assignment> assignmentClause;
 	private Where where;
 				
-	public UpdateStatement(Table target, ElementList<Assignment> assignmentClause) {
-		super(Name.UPDATE);		
-		this.target = new TableReference(target);
+	public UpdateStatement(TableReference tref, ElementList<Assignment> assignmentClause, Predicate p) {
+		super(Name.UPDATE);
+		
+		if (tref == null) {
+			throw new NullPointerException("'tref' must not be null");
+		}
+		
+		if (assignmentClause == null) {
+			throw new NullPointerException("'assignmentClause' must not be null");
+		}		
+		
+		this.target = tref;
 		this.assignmentClause = assignmentClause;
+		
+		if (p != null) {
+			getWhere().setSearchCondition(p);
+		}
 	}	
 	
 	@Override
@@ -23,22 +34,19 @@ public class UpdateStatement
 		Keyword.UPDATE.traverse(vc, v);		
 		getTarget().traverse(vc, v);		
 		Keyword.SET.traverse(vc, v);
-		assignmentClause.traverse(vc, v);
-		traverseNonEmpty(getWhere().getSearchCondition(), vc, v);
+		this.assignmentClause.traverse(vc, v);
+		
+		final Where w = this.where;
+				
+		if (w != null && w.getContent() != null) {
+			w.traverse(vc, v);
+		}
 	}
 
 	public TableReference getTarget() {
 		return target;
 	}	
 	
-	@Override
-	public String generate() {
-		StringBuffer dest = new StringBuffer();
-		ElementVisitor v = new QueryGenerator(dest);
-		traverse(null, v);		
-		return dest.toString();
-	}
-
 	public ElementList<Assignment> getAssignmentList() {
 		if (assignmentClause == null) {
 			assignmentClause = new ElementList<Assignment>();			
@@ -46,17 +54,13 @@ public class UpdateStatement
 
 		return assignmentClause;
 	}
+
 	
 	public Where getWhere() {
-		if (where == null) {
-			where = new Where();			
+		if (this.where == null) {
+			this.where = new Where();			
 		}
 
-		return where;
-	}
-
-	@Override
-	public Name getName() {
-		return Name.UPDATE;
+		return this.where;
 	}
 }

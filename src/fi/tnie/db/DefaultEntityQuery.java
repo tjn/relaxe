@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import fi.tnie.db.exec.QueryFilter;
 import fi.tnie.db.exec.QueryOffsetProcessor;
 import fi.tnie.db.exec.QueryProcessor;
@@ -36,13 +38,14 @@ public class DefaultEntityQuery<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable,
 	Q extends Enum<Q> & Identifiable,
-	E extends Entity<A, R, E>
+	E extends Entity<A, R, Q, ? extends E>
 	>
 {		
-//	private EnumMap<A, Integer> projection;
 	private EntityMetaData<A, R, Q, E> meta;
 	private EntityFactory<A, R, Q, E> factory;
 	private DefaultTableExpression query;
+	
+	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class);
 									
 	public DefaultEntityQuery(EntityMetaData<A, R, Q, E> meta) {
 		super();				
@@ -85,25 +88,13 @@ public class DefaultEntityQuery<
 		
 		return this.query;		
 	}	
-		
-//	public BaseTable getTable() {
-//		return this.factory.getTable();
-//	}
 	
-//	public TableReference getTableReference() {
-//		return this.tableRef;
-//	}
-
-//	public void setPredicate(EntityPredicate<K, E> predicate) {
-//		this.predicate = predicate;
-//	}
-	
-	public DefaultEntityQueryResult<A, R, E> exec(Connection c) 
+	public DefaultEntityQueryResult<A, R, Q, E> exec(Connection c) 
 		throws QueryException {
 		return exec(null, c);
 	}
 	
-	public DefaultEntityQueryResult<A, R, E> exec(long offset, Long limit, Connection c) 
+	public DefaultEntityQueryResult<A, R, Q, E> exec(long offset, Long limit, Connection c) 
 		throws QueryException {
 		QueryFilter qf = null;	
 	
@@ -118,12 +109,12 @@ public class DefaultEntityQuery<
 		return exec(qf, c);
 	}
 
-	public DefaultEntityQueryResult<A, R, E> exec(QueryFilter qf, Connection c) 
+	public DefaultEntityQueryResult<A, R, Q, E> exec(QueryFilter qf, Connection c) 
 		throws QueryException {
 			
 		Statement st = null;
 		ResultSet rs = null;
-		DefaultEntityQueryResult<A, R, E> qr = null;
+		DefaultEntityQueryResult<A, R, Q, E> qr = null;
 				
 		try {
 			st = c.createStatement();						
@@ -163,10 +154,10 @@ public class DefaultEntityQuery<
 			
 			List<E> el = ep.getContent();
 												
-			qr = new DefaultEntityQueryResult<A, R, E>(this, el, ordinal);
+			qr = new DefaultEntityQueryResult<A, R, Q, E>(this, el, ordinal);
 		} 
 		catch (Throwable e) {
-			e.printStackTrace();
+			logger().error(e.getMessage(), e);
 			throw new QueryException(e.getMessage(), e);
 		}
 		finally {			
@@ -199,7 +190,7 @@ public class DefaultEntityQuery<
 			this.extractor = extractor;
 		}
 
-		public void set(Entity<A, R, E> dest) {
+		public void set(E dest) {
 			dest.set(this.attribute, extractor.last());			
 		}		
 	}
@@ -311,9 +302,9 @@ public class DefaultEntityQuery<
 		@Override
 		public void process(ResultSet rs, long ordinal) throws QueryException {
 			try {
-				
-				EntityFactory<A, R, Q, E> ef = getFactory();
-				Entity<A, R, E> e = ef.newInstance();
+
+				EntityFactory<A, R, Q, E> ef = getFactory();				
+				E e = ef.newInstance();
 				
 				for (int i = 0; i < this.extractors.length; i++) {
 					this.extractors[i].extract(rs);				
@@ -328,5 +319,9 @@ public class DefaultEntityQuery<
 				throw new QueryException(e.getMessage(), e);
 			}			
 		}
+	}
+	
+	private static Logger logger() {
+		return DefaultEntityQuery.logger;
 	}
 }

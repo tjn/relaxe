@@ -10,7 +10,8 @@ import java.util.List;
 public class DefaultEntityQueryResult<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable,
-	E extends Entity<A, R, E>
+	Q extends Enum<Q> & Identifiable,
+	E extends Entity<A, R, Q, ? extends E>
 > {		
 
 	private List<E> content;

@@ -37,6 +37,7 @@ public enum Keyword implements Token {
 	INTO,
 	VALUES,
 	UPDATE,
+	DELETE,
 	SET, 
 	NULL, 
 	DEFAULT	

@@ -53,8 +53,10 @@ public class Where extends AbstractClause {
 		return getSearchCondition();
 	}
 	
-	@Override
-	public void traverse(VisitContext vc, ElementVisitor v) {				
-		traverseNonEmpty(getSearchCondition(), vc, v);
-	}
+//	@Override
+//	public void traverse(VisitContext vc, ElementVisitor v) {
+//		
+//		
+//		traverseNonEmpty(getSearchCondition(), vc, v);
+//	}
 }

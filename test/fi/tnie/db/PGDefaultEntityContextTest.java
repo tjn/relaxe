@@ -16,7 +16,8 @@ public class PGDefaultEntityContextTest extends PGTestCase {
 		Catalog catalog = getCatalog();
 		
 		TableMapper tm = new DefaultTableMapper("fi.tnie.db.generated");		
-		final DefaultEntityContext ec = new DefaultEntityContext(catalog, tm);
+		final DefaultEntityContext ec = new DefaultEntityContext(catalog);
+		ec.bindAll(tm);
 								
 		testBaseTable(getContinentTable(), ec);
 		testBaseTable(getCountryTable(), ec);
@@ -37,7 +38,7 @@ public class PGDefaultEntityContextTest extends PGTestCase {
 		logger().debug("relationships: " + md.relationships());
 				
 		assertNotNull(md.getFactory());						
-		Entity<?, ?, ?> e = md.getFactory().newInstance();
+		Entity<?,?,?,?> e = md.getFactory().newInstance();
 		assertNotNull(e);
 		assertNotNull(e.getMetaData());		
 		assertSame(md, e.getMetaData());

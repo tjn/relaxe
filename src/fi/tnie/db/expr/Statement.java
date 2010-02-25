@@ -98,4 +98,6 @@ public abstract class Statement
 	public Type getType() {
 		return getName().getType();
 	}
+	
+
 }

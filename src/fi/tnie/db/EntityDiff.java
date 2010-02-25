@@ -6,7 +6,8 @@ package fi.tnie.db;
 public interface EntityDiff<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable,	
-	E extends Entity<A, R, ? extends E>>
+	Q extends Enum<Q> & Identifiable,
+	E extends Entity<A, R, Q, ? extends E>>
 {
 	
 	

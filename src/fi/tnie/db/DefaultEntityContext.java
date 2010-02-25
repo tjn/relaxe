@@ -22,10 +22,22 @@ public class DefaultEntityContext
 	
 	private static Logger logger = Logger.getLogger(DefaultEntityContext.class);
 		
-	public DefaultEntityContext(Catalog catalog, final TableMapper tm) {
+	public DefaultEntityContext(Catalog catalog) {
 		super();
 		this.catalog = catalog;
-				
+	}
+	
+	public DefaultEntityContext(Catalog catalog, final TableMapper tm) {
+		super();
+		bindAll(tm);
+	}
+	
+	public void bindAll(final TableMapper tm) {
+		
+		if (metaMap != null) {
+			metaMap.clear();
+		}
+		
 		CatalogTraversal ct = new CatalogTraversal() {
 			@Override
 			public boolean visitBaseTable(BaseTable t) {
@@ -39,7 +51,7 @@ public class DefaultEntityContext
 			}			
 		};
 		
-		ct.traverse(catalog);
+		ct.traverse(catalog);	
 	}
 
 	protected void bind(BaseTable t, TableMapper tm)
@@ -68,7 +80,7 @@ public class DefaultEntityContext
 				Class<?> m = Class.forName(impl.getQualifiedName());
 				
 //				this is ugly, isn't it:
-				Entity<?, ?, ?> prototype = (Entity<?, ?, ?>) m.newInstance();								
+				Entity<?,?,?,?> prototype = (Entity<?,?,?,?>) m.newInstance();								
 				meta = prototype.getMetaData();			
 				meta.bind(t);			
 				register(meta);

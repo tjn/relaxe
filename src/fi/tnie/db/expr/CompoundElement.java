@@ -24,8 +24,7 @@ public abstract class CompoundElement implements Element {
 	protected void traverseContent(VisitContext vc, ElementVisitor v) {		
 	}
 	
-	protected void traverseNonEmpty(Element e, VisitContext vc, ElementVisitor v) {
-		
+	protected void traverseNonEmpty(Element e, VisitContext vc, ElementVisitor v) {		
 		if (e != null) {
 			v.start(vc, this);
 			e.traverse(vc, v);
