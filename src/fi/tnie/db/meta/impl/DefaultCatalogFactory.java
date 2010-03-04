@@ -22,12 +22,14 @@ import org.apache.log4j.Logger;
 import java.sql.DatabaseMetaData;
 
 import fi.tnie.db.QueryException;
+import fi.tnie.db.QueryHelper;
 import fi.tnie.db.exec.QueryProcessor;
 import fi.tnie.db.exec.QueryProcessorAdapter;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
+import fi.tnie.db.meta.CatalogMap;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
@@ -200,10 +202,11 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			// logger().debug("pktab: " + pktab);
 
 			BaseTable pkt = pks.baseTables().get(pktab);
+									
 			DefaultMutableColumn pkc = pkt.columnMap().get(pkcol);
 
 			if (pkc == null) {
-				throw new NullPointerException("'pkc' must not be null");
+				throw new NullPointerException("'pkc' must not be null: " + pkcol);
 			}
 			
 			getColumnList().add(pkc);
@@ -387,79 +390,112 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			return columnPairList;
 		}
 	}
-
 	
-	/**
-	 * TODO: need a way to read schemas without catalog 
-	 */
-	@Override
-	public Catalog create(DatabaseMetaData meta, String catalogName)
+	public CatalogMap createAll(Connection c) 
+		throws QueryException, SQLException {
+		return create(c, true);
+	}
+	
+	public Catalog create(Connection c) 
+		throws QueryException, SQLException {		
+		CatalogMap cm = create(c, false);		
+		Catalog catalog = cm.get(c.getCatalog());
+		return catalog;
+	}
+		
+	private CatalogMap create(Connection c, boolean all)
 			throws QueryException, SQLException {
-				
-//		logger().debug("enter");
-		ResultSet rs = meta.getCatalogs();		
-				
-		try  {			
-			Set<Identifier> names = new TreeSet<Identifier>(getEnvironment().identifierComparator());					
-			rs = process(rs, new IdentifierReader(names, getEnvironment()), true);
-			
-			logger().debug("catalogs: " + names);
-			
-			if (catalogName != null)  {
-				Identifier key = getEnvironment().createIdentifier(catalogName);
-				
-				if (!names.contains(key)) {
-					throw new IllegalArgumentException("no such catalog: " + catalogName + "; available: " + names);
-				}				
-			}
-			
-			DefaultMutableCatalog catalog = new DefaultMutableCatalog(getEnvironment(), catalogName);
-			
-			rs = meta.getSchemas();
-			
-			while(rs.next()) {
-				String sch = rs.getString(1);
-//				String cat = rs.getString(2);				
-				Identifier sn = getEnvironment().createIdentifier(sch);
-				DefaultMutableSchema s = createSchema(catalog, sn, meta);				
-				populateSchema(s, meta);
-			}
-			
-			
-//			names.get
-										
-//			logger().debug("schemas: " + names.size());
-//					
-//				for (Ide n : names) {
-//					logger().debug("processing schema: " + n);
-//					Identifier sch = catalog.getEnvironment().createIdentifier(n);
-//					DefaultMutableSchema s = createSchema(catalog, sch, meta);
-//					logger().debug("schema: " + s.getUnqualifiedName());
-//					populateSchema(s, meta);
-//						}
-//					}
-//				}
-				
-				logger().debug("catalog:schemas: " + catalog.schemas().keySet().size());
-				
-				logger().debug("creating pk's");		
-				populatePrimaryKeys(catalog, meta);		
-				
-				logger().debug("creating fk's");		
-				populateForeignKeys(catalog, meta);
 						
-				logger().debug("exit");
-				return catalog;
+		final Environment env = getEnvironment();
+		
+//		logger().debug("enter");
+								
+		DatabaseMetaData meta = c.getMetaData();		
+						
+		try  {			
+			prepare(meta);
+			
+			DefaultCatalogMap cm = new DefaultCatalogMap(env);
+						
+			if (!all) {
+				String current = c.getCatalog();
+				Identifier cn = (current == null) ? null : env.createIdentifier(current);				
+				cm.add(new DefaultMutableCatalog(env, cn));
+			}
+			else {
+				Set<Identifier> names = new TreeSet<Identifier>(env.identifierComparator());
+				ResultSet cats = meta.getCatalogs();
+				cats = process(cats, new IdentifierReader(names, env), true);			
+				logger().debug("catalogs: " + names);
 				
+				for (Identifier cn : names) {
+					DefaultMutableCatalog cat = new DefaultMutableCatalog(env, cn);
+					cm.add(cat);
+				}							
 			}
-			finally {
-				if (rs != null) {
-					rs.close();
-				}
-			}
+			
+			createSchemas(meta, cm);			
+			populateTables(meta, cm);
+				
+//				logger().debug("catalog:schemas: " + catalog.schemas().keySet().size());
+				
+			logger().debug("creating pk's");		
+			populatePrimaryKeys(cm, meta);		
+			
+			logger().debug("creating fk's");		
+			populateForeignKeys(cm, meta);
+			
+			logger().debug("exit");
+			
+			return cm;				
+		}
+		finally {		
+			finish();
+		}
 	}
 
-	protected void close(ResultSet rs) {
+	protected void finish() {		
+	}
+
+	protected void prepare(DatabaseMetaData m) 
+		throws SQLException {		
+	}
+
+	protected void createSchemas(DatabaseMetaData meta, DefaultCatalogMap cm) throws SQLException {
+		ResultSet schemas = null;
+		
+//		dumpResultSet(meta.getSchemas());
+		
+		meta.getConnection();
+		
+		try {
+			schemas = meta.getSchemas();
+			
+			while(schemas.next()) {
+				String sch = getSchemaNameFromSchemas(meta, schemas);				
+				String cat = getCatalogNameFromSchemas(meta, schemas);				
+				getSchema(cm, cat, sch);
+			}
+		}
+		finally {
+			schemas = QueryHelper.doClose(schemas);
+		}
+	}
+
+	private void dumpResultSet(ResultSet schemas) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected String getCatalogNameFromSchemas(DatabaseMetaData meta, ResultSet schemas) throws SQLException {		
+		return schemas.getString(2);
+	}
+
+	protected String getSchemaNameFromSchemas(DatabaseMetaData meta, ResultSet schemas) throws SQLException {						
+		return schemas.getString(1);
+	}
+
+	protected void close(ResultSet rs) {		
 		try {
 			if (rs != null) {
 				rs.close();
@@ -547,7 +583,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 
 			logger().debug("connecting to: " + url);
 
-			Connection c = null;
+			Connection c = null;					
 
 			try {
 				c = selected.connect(url, info);
@@ -639,6 +675,77 @@ public class DefaultCatalogFactory implements CatalogFactory {
 		}
 	}
 
+	protected void populateTables(DatabaseMetaData meta, DefaultCatalogMap cm)
+		throws QueryException, SQLException {
+//		logger().debug("populate schema: " + s.getUnqualifiedName());
+		
+		// table-pop
+//		List<String> names = new ArrayList<String>();
+		
+		String[] types = { "TABLE" };
+	
+		ResultSet tables = meta.getTables(null, null, "%", types);
+		
+		try {				
+			while(tables.next()) {
+				String cat = getCatalogNameFromTables(meta, tables);
+				String sch = getSchemaNameFromTables(meta, tables);
+				String tbl = tables.getString(3);
+				
+				DefaultMutableSchema schema = getSchema(cm, cat, sch);
+				DefaultMutableBaseTable t = createBaseTable(schema, tbl, meta);
+				populateTable(t, meta);
+			}
+		}
+		finally {
+			tables = QueryHelper.doClose(tables);
+		}
+		
+		
+//		ResultSet tables = getTablesForSchema(meta, s);
+		
+//		tables = process(tables, new StringListReader(names, TABLE_NAME_COLUMN),
+//				true);
+//	
+//		// logger().debug("tables: " + names.size());
+//		
+//		for (String n : names) {
+//			// logger().debug("table: " + n);
+//			
+//			
+//			
+//			DefaultMutableBaseTable t = createBaseTable(s, n, meta);
+//			// logger().debug("schema, " + t.getSchema());
+//			// boolean added = s.add(t);
+//			// logger().debug("tables: " + s.tables().size());
+//			populateTable(t, meta);
+//		}
+	}
+
+	protected String getSchemaNameFromTables(DatabaseMetaData meta, ResultSet tables) throws SQLException {
+		return tables.getString(2);
+	}
+
+	protected String getCatalogNameFromTables(DatabaseMetaData meta, ResultSet tables) throws SQLException {
+		return tables.getString(1);		
+	}
+	
+	protected String getReferencedTableCatalogName(DatabaseMetaData meta, ResultSet fkcols) throws SQLException {		
+		return fkcols.getString(5);
+	}
+	
+	protected String getReferencedTableSchemaName(DatabaseMetaData meta, ResultSet fkcols) throws SQLException {		
+		return fkcols.getString(6);
+	}
+	
+	protected String getSchemaNameFromPrimaryKeys(DatabaseMetaData meta, ResultSet pkcols) throws SQLException {
+		return pkcols.getString(2);		
+	}
+	
+	protected String getSchemaNameFromImportedKeys(DatabaseMetaData meta, ResultSet fkcols) throws SQLException {
+		return fkcols.getString(2);		
+	}		
+	
 	protected ResultSet getTablesForSchema(DatabaseMetaData meta,
 			DefaultMutableSchema ms) throws SQLException {
 		String[] types = { "TABLE" };
@@ -652,9 +759,6 @@ public class DefaultCatalogFactory implements CatalogFactory {
 
 		logger().debug("populate table: " + t.getName());
 
-		Schema s = t.getSchema();
-		Catalog c = s.getCatalog();
-
 		{
 			// ResultSet rs = meta.getColumns(c.getName(), s.getName(), t.getName(),
 			// "%");
@@ -662,47 +766,51 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			process(rs, new ColumnReader(t), true);
 		}
 	}
-
 	private DefaultMutableBaseTable createBaseTable(DefaultMutableSchema s,
+
 			String n, DatabaseMetaData meta) {
 		// return new DefaultMutableBaseTable(s, s.getCatalog().create(n));
 		return new DefaultMutableBaseTable(s, getEnvironment().createIdentifier(n));
 	}
 
-	protected void populatePrimaryKeys(DefaultMutableCatalog c,
+	protected void populatePrimaryKeys(DefaultCatalogMap cm,
 			DatabaseMetaData meta) throws QueryException, SQLException {
-
-		for (Schema s : c.schemas().values()) {
-			String cp = getCatalogPattern(s);
-			String sp = getSchemaPattern(s);
-			
-			for (BaseTable t : s.baseTables().values()) {
-				String n = t.getUnqualifiedName().getName();
+					
+		for (DefaultMutableCatalog c : cm.values()) {
+			for (Schema s : c.schemas().values()) {
+				String cp = getCatalogPattern(s);
+				String sp = getSchemaPattern(s);
 				
-				logger().debug("query primary keys for: " +
-						"cat=" + cp + ", sp=" + sp + ", n=" + n);
-				ResultSet rs = meta.getPrimaryKeys(cp, sp, n);
-				process(rs, new PrimaryKeyReader((DefaultMutableBaseTable) t), true);
+				for (BaseTable t : s.baseTables().values()) {
+					String n = t.getUnqualifiedName().getName();
+					
+					logger().debug("query primary keys for: " +
+							"cat=" + cp + ", sp=" + sp + ", n=" + n);
+					ResultSet rs = meta.getPrimaryKeys(cp, sp, n);
+					process(rs, new PrimaryKeyReader((DefaultMutableBaseTable) t), true);
+				}
 			}
 		}
 	}
 
-	protected void populateForeignKeys(DefaultMutableCatalog c,
+	protected void populateForeignKeys(DefaultCatalogMap cm,
 			DatabaseMetaData meta) throws QueryException, SQLException {
 
-		for (Schema s : c.schemas().values()) {
-			// DefaultMutableSchema ms = (DefaultMutableSchema) s;
-			String cp = getCatalogPattern(s);
-			String sp = getSchemaPattern(s);
-
-			for (Table t : s.tables().values()) {
-				if (t.isBaseTable()) {
-					logger().debug(
-							"query imported keys for: " + t.getQualifiedName() + " / "
-									+ s.getUnqualifiedName());
-					ResultSet rs = meta.getImportedKeys(cp, sp, t.getUnqualifiedName()
-							.getName());
-					process(rs, new ForeignKeyReader((DefaultMutableBaseTable) t), true);
+		for (DefaultMutableCatalog c : cm.values()) {
+			for (Schema s : c.schemas().values()) {
+				// DefaultMutableSchema ms = (DefaultMutableSchema) s;
+				String cp = getCatalogPattern(s);
+				String sp = getSchemaPattern(s);
+	
+				for (Table t : s.tables().values()) {
+					if (t.isBaseTable()) {
+						logger().debug(
+								"query imported keys for: " + t.getQualifiedName() + " / "
+										+ s.getUnqualifiedName());
+						ResultSet rs = meta.getImportedKeys(cp, sp, t.getUnqualifiedName()
+								.getName());
+						process(rs, new ForeignKeyReader((DefaultMutableBaseTable) t), true);
+					}
 				}
 			}
 		}
@@ -724,11 +832,13 @@ public class DefaultCatalogFactory implements CatalogFactory {
 
 	protected String getCatalogPattern(Schema s) {
 		Catalog c = (s == null) ? null : s.getCatalog();
-		return (c == null) ? null : c.getName().getName();
+		Identifier cn = (c == null) ? null : c.getName();
+		return (cn == null) ? null : cn.getName();
 	}
 
 	protected String getSchemaPattern(Schema s) {
-		return (s == null) ? null : s.getUnqualifiedName().getName();
+		Identifier sn = (s == null) ? null : s.getUnqualifiedName();		
+		return (sn == null) ? null : sn.getName();
 	}
 
 //	@Override
@@ -762,10 +872,35 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	protected Schema getSchema(DefaultMutableCatalog catalog, String sch, String cat) {
 		return catalog.schemas().get(sch);
 	}
-
-	@Override
-	public Catalog create(Connection c) throws QueryException, SQLException {
-		return create(c.getMetaData(), c.getCatalog());
+	
+	
+	protected DefaultMutableSchema getSchema(DefaultCatalogMap cm, String cat, String sch) {
+		Environment env = getEnvironment();
+		
+		final Identifier cn = env.createIdentifier(cat);		
+		DefaultMutableCatalog c = cm.get(cn);
+		
+		if (c == null) {
+			c = new DefaultMutableCatalog(getEnvironment(), cn);
+			cm.add(c);
+		}
+		
+		final Identifier sn = env.createIdentifier(sch);
+		DefaultMutableSchema s = c.getSchemaMap().get(sn);
+		
+		if (s == null) {
+			s = new DefaultMutableSchema(c, sn);
+		}
+		
+		return s;
 	}
+
+//	@Override
+//	public Catalog create(Connection c) throws QueryException, SQLException {
+//		return create(c.getMetaData(), c.getCatalog());
+//	}
+	
+	
+
 	
 }

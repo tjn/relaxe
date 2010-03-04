@@ -30,7 +30,7 @@ public interface Environment {
 	 * @throws NullPointerException if <code>name</code> is null
 	 */
 	Identifier createIdentifier(String name)
-		throws IllegalIdentifierException, NullPointerException;
+		throws IllegalIdentifierException;
 	
 	
 	/** Creates a factory to build entire catalog in this environment. 

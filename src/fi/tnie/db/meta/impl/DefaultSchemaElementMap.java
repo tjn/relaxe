@@ -6,7 +6,7 @@
  */
 package fi.tnie.db.meta.impl;
 
-import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.SchemaElement;
 import fi.tnie.db.meta.SchemaElementMap;
 
@@ -14,7 +14,7 @@ class DefaultSchemaElementMap<E extends SchemaElement>
 	extends DefaultElementMap<E>
 	implements SchemaElementMap<E> {
 	
-	public DefaultSchemaElementMap(Catalog catalog) {
-		super(catalog);
+	public DefaultSchemaElementMap(Environment env) {
+		super(env);
 	}	
 }

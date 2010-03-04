@@ -7,14 +7,15 @@ import java.util.List;
 
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.Table;
 
 public abstract class DefaultMutableTable
 	extends DefaultSchemaElement
 	implements Table {
 	
-	private ColumnMap columnMap;	
-		
+	private ColumnMap columnMap;
+			
 	DefaultMutableTable(DefaultMutableSchema s, Identifier name) {
 		super(s, name);		
 		s.add(this);
@@ -50,6 +51,6 @@ public abstract class DefaultMutableTable
 	@Override
 	public List<? extends Column> columns() {	
 		return getColumnMap().getColumnList();
-	}
+	}	
 	
 }

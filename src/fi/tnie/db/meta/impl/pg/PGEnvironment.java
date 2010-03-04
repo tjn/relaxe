@@ -21,7 +21,7 @@ public class PGEnvironment
 
 	@Override
 	public CatalogFactory catalogFactory() {	
-		return new DefaultCatalogFactory(this);
+		return new PGCatalogFactory(this);
 	}
 
 	@Override
@@ -33,4 +33,6 @@ public class PGEnvironment
 			}			
 		};
 	}
+	
+	
 }

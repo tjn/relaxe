@@ -39,4 +39,33 @@ public abstract class AbstractQueryProcessor implements QueryProcessor {
 	@Override
 	public void updated(int updateCount) throws SQLException {
 	}
+	
+	
+	public void apply(ResultSet rs) 
+		throws QueryException, SQLException {
+	
+		prepare();
+		
+		long ordinal = 0;
+											
+		try {							
+			startQuery(rs.getMetaData());
+						
+			while(rs.next()) {
+				process(rs, ++ordinal);
+			}
+			
+	
+			endQuery();
+		}
+		catch (SQLException e) {
+			abort(e);
+			throw e;
+		}
+		finally {				
+			finish();								
+		}
+	}
+	
+	
 }

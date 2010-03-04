@@ -15,6 +15,7 @@ import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
+import fi.tnie.db.meta.CatalogMap;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Constraint;
 import fi.tnie.db.meta.ForeignKey;
@@ -61,14 +62,8 @@ public class PGEnvironmentTest
 		catch (IllegalIdentifierException e) {
 //			OK, expected
 		}
-		
-		try {
-			env.createIdentifier(null);
-			assertThrown(NullPointerException.class);
-		}
-		catch (NullPointerException e) {
-//			OK, expected
-		}		
+				
+		assertNull(env.createIdentifier(null));
 		
 		Identifier id = env.createIdentifier("1A");
 		assertFalse(id + " is not not valid as an ordinary", id.isOrdinary());
@@ -107,7 +102,15 @@ public class PGEnvironmentTest
 		assertNotNull(cf);		
 		Connection c = getConnection();
 		
-		Catalog catalog = cf.create(c.getMetaData(), getDatabase());
+		{
+			Catalog catalog = cf.create(c);						
+			assertNotNull(catalog);
+		}
+		
+		CatalogMap cm = cf.createAll(c);
+		assertNotNull(cm);
+		
+		Catalog catalog = cm.get(c.getCatalog());						
 		assertNotNull(catalog);
 		
 		SchemaMap sm = catalog.schemas();

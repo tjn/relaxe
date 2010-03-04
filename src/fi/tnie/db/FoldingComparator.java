@@ -15,17 +15,21 @@ import fi.tnie.db.expr.Identifier;
 
 public class FoldingComparator
 	implements Comparator<Identifier> {
+		
+	private NullComparator<String> nc = new NullComparator<String>() {
+		@Override
+		public int compareNotNull(String o1, String o2) {			
+			return o1.compareTo(o2);
+		}
+	};
+
+	public FoldingComparator() {
+		super();
+	}
 
 	@Override
-	public int compare(Identifier o1, Identifier o2) {
-		if (o1 == null || o2 == null) {
-			throw new NullPointerException();
-		}
-		
-		String n1 = name(o1);
-		String n2 = name(o2);
-		
-		return n1.compareTo(n2);
+	public int compare(Identifier o1, Identifier o2) {				
+		return nc.compare(name(o1), name(o2));
 	}
 	
 	protected String fold(String ordinaryIdentifier) {
@@ -33,6 +37,10 @@ public class FoldingComparator
 	}
 	
 	private String name(Identifier ident) {
+		if (ident == null) {
+			return null;
+		}
+		
 		String n = ident.getName();
 		return ident.isOrdinary() ? fold(n) : n; 
 	}

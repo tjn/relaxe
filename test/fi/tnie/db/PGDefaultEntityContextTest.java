@@ -5,9 +5,7 @@ package fi.tnie.db;
 
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.impl.pg.PGTestCase;
-import fi.tnie.db.meta.util.CatalogTraversal;
 
 public class PGDefaultEntityContextTest extends PGTestCase {
 	

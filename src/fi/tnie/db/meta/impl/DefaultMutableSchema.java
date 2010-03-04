@@ -125,8 +125,7 @@ public class DefaultMutableSchema
 
 	private DefaultSchemaElementMap<DefaultConstraint> getConstraintMap() {
 		if (constraintMap == null) {
-			constraintMap = new DefaultSchemaElementMap<DefaultConstraint>(
-					getCatalog());
+			constraintMap = createSchemaElementMap();
 		}
 
 		return constraintMap;
@@ -151,7 +150,7 @@ public class DefaultMutableSchema
 
 	private DefaultSchemaElementMap<DefaultMutableTable> getTables() {
 		if (tables == null) {
-			tables = new DefaultSchemaElementMap<DefaultMutableTable>(getCatalog());			
+			tables = createSchemaElementMap();			
 		}
 
 		return tables;
@@ -159,7 +158,7 @@ public class DefaultMutableSchema
 
 	private DefaultSchemaElementMap<DefaultPrimaryKey> getPrimaryKeys() {
 		if (primaryKeys == null) {
-			primaryKeys = new DefaultSchemaElementMap<DefaultPrimaryKey>(getCatalog());	
+			primaryKeys = createSchemaElementMap();	
 		}
 
 		return primaryKeys;
@@ -167,17 +166,21 @@ public class DefaultMutableSchema
 
 	private DefaultSchemaElementMap<DefaultForeignKey> getForeignKeys() {
 		if (foreignKeys == null) {
-			foreignKeys = new DefaultSchemaElementMap<DefaultForeignKey>(getCatalog());
-			
+			foreignKeys = createSchemaElementMap();			
 		}
 
 		return foreignKeys;
+	}
+
+	protected <E extends DefaultSchemaElement> DefaultSchemaElementMap<E> createSchemaElementMap() {
+		return new DefaultSchemaElementMap<E>(
+				getCatalog().getEnvironment());
 	}
 	
 
 	public SchemaElementMap<? extends BaseTable> baseTables() {		
 		if (baseTables == null) {		
-			baseTables = new DefaultSchemaElementMap<DefaultMutableBaseTable>(getCatalog());
+			baseTables = createSchemaElementMap();					
 		
 			for (Table t : tables().values()) {
 				if (t.isBaseTable()) {
@@ -193,7 +196,7 @@ public class DefaultMutableSchema
 	public SchemaElementMap<? extends Constraint> constraints() {
 		return getConstraintMap();
 	}
-//	
+//	new 
 //	
 //	private class ConstraintMap<C extends Constraint>
 //		extends UnionMap<C>

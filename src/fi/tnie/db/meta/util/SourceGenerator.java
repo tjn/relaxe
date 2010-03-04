@@ -31,6 +31,7 @@ import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
+import fi.tnie.db.meta.CatalogMap;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Schema;
@@ -87,12 +88,19 @@ public class SourceGenerator
 					
 			PGEnvironment env = new PGEnvironment();
 			CatalogFactory cf = env.catalogFactory();
-			DatabaseMetaData meta = c.getMetaData();
-			Catalog catalog = cf.create(meta, c.getCatalog());
+//			DatabaseMetaData meta = c.getMetaData();
 			
-			for (Schema s : catalog.schemas().values()) {
-				process(s, root, tm);
-			}			
+			CatalogMap cm = cf.createAll(c);
+			
+//			Catalog catalog = cf.create(meta, c.getCatalog());
+									
+			for (Catalog cat : cm.values()) {
+				for (Schema s : cat.schemas().values()) {
+					process(s, root, tm);
+				}				
+			}
+			
+
 		}
 		catch (SQLException e) {
 			throw new QueryException(e.getMessage(), e);

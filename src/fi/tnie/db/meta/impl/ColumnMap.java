@@ -15,7 +15,7 @@ public class ColumnMap
 	private List<DefaultMutableColumn> columnList;
 	
 	public ColumnMap(DefaultMutableTable table) {
-		super(table.getSchema().getCatalog());
+		super(table.getEnvironment());
 		this.table = table;
 	}
 	

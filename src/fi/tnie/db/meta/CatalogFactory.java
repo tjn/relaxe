@@ -4,17 +4,16 @@
 package fi.tnie.db.meta;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import fi.tnie.db.QueryException;
 
 public interface CatalogFactory {
 
-	Catalog create(DatabaseMetaData meta, String catalog)
+	public Catalog create(Connection c)
 		throws QueryException, SQLException;
 	
-	Catalog create(Connection c)
+	CatalogMap createAll(Connection c)
 		throws QueryException, SQLException;
 	
 }

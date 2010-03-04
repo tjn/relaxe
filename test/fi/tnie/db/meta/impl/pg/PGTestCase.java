@@ -123,7 +123,7 @@ public abstract class PGTestCase
 			
 			assertNotNull(c);
 			
-			catalog = cf.create(c.getMetaData(), getDatabase());
+			this.catalog = cf.create(c);
 			assertNotNull(catalog);
 			
 		}
