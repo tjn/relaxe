@@ -17,6 +17,7 @@ import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
+import fi.tnie.db.meta.CatalogMap;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaMap;
 import fi.tnie.db.meta.impl.common.JDBCTestCase;
@@ -123,7 +124,10 @@ public abstract class PGTestCase
 			
 			assertNotNull(c);
 			
-			catalog = cf.create(c.getMetaData(), getDatabase());
+			CatalogMap cm = cf.create(c);
+			assertNotNull(cm);
+			
+			this.catalog = cm.get(c.getCatalog());						
 			assertNotNull(catalog);
 			
 		}

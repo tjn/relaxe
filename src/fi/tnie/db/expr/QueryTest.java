@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
+import fi.tnie.db.meta.CatalogMap;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Schema;
@@ -100,7 +101,10 @@ public class QueryTest {
 			
 				
 				logger().debug("populating meta-data...");
-				Catalog catalog = cf.create(meta, null);
+//				Catalog catalog = cf.create(meta, null);
+				CatalogMap cm = cf.create(c);
+				
+				Catalog catalog = cm.get(c.getCatalog());
 				
 				logger().debug("catalog: " + catalog);
 				

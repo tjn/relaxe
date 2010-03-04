@@ -7,6 +7,7 @@ import java.util.Comparator;
 
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.SchemaElementName;
+import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaElement;
 
@@ -58,11 +59,15 @@ public class DefaultSchemaElement
 	}
 	
 	protected <E extends SchemaElement> DefaultSchemaElementMap<E> createElementMap() {		
-		return new DefaultSchemaElementMap<E>(getSchema().getCatalog());		
+		return new DefaultSchemaElementMap<E>(getSchema().getCatalog().getEnvironment());		
 	}
 	
 	protected Comparator<Identifier> identifierComparator() {
-		return getSchema().getCatalog().getEnvironment().identifierComparator();
+		return getEnvironment().identifierComparator();
+	}
+	
+	protected Environment getEnvironment() {
+		return getSchema().getCatalog().getEnvironment();
 	}
 	
 	

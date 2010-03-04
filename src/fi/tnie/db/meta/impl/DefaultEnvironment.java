@@ -22,7 +22,7 @@ public abstract class DefaultEnvironment implements Environment {
 	@Override
 	public Identifier createIdentifier(String name)
 			throws IllegalIdentifierException {
-		return AbstractIdentifier.create(name);
+		return (name == null) ? null : AbstractIdentifier.create(name);
 	}
 
 	@Override

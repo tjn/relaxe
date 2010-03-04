@@ -68,6 +68,7 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 
 	private DefaultSchemaElementMap<ForeignKey> getForeignKeys() {
 		if (foreignKeys == null) {
+						
 			foreignKeys = createElementMap();
 		}
 

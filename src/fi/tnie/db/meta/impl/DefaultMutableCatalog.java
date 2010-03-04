@@ -23,7 +23,10 @@ public class DefaultMutableCatalog
 	}
 	
 	public DefaultMutableCatalog(Environment environment, String name) {
-		this(environment, environment.createIdentifier(name));
+		this(environment, 
+				(name == null) ?
+				 null :
+				 environment.createIdentifier(name));
 	}
 
 	public DefaultMutableCatalog(Environment environment, Identifier name) {
@@ -34,11 +37,6 @@ public class DefaultMutableCatalog
 		}
 		
 		this.environment = environment;
-		
-		if (name == null) {
-			throw new NullPointerException("'name' must not be null");
-		}		
-		
 		this.name = name;
 	}
 
@@ -57,7 +55,7 @@ public class DefaultMutableCatalog
 
 
 
-	private DefaultSchemaMap getSchemaMap() {
+	DefaultSchemaMap getSchemaMap() {
 		if (schemaMap == null) {
 			schemaMap = new DefaultSchemaMap(this);			
 		}
@@ -79,12 +77,12 @@ public class DefaultMutableCatalog
 		return getSchemaMap();
 	}
 
-	private static class DefaultSchemaMap
+	static class DefaultSchemaMap
 		extends DefaultElementMap<DefaultMutableSchema> 
 		implements SchemaMap {
 
 		public DefaultSchemaMap(Catalog catalog) {
-			super(catalog);
+			super(catalog.getEnvironment());
 		}		
 	}
 

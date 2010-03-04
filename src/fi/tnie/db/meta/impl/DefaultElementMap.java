@@ -10,21 +10,21 @@ import java.util.TreeMap;
 
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
-import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.MetaObject;
 
 public class DefaultElementMap<E extends MetaObject>
 {
 	private TreeMap<Identifier, E> content = null;
-	private Catalog catalog;
+	private Environment environment;
 
-	public DefaultElementMap(Catalog catalog) {
-		if (catalog == null) {
-			throw new NullPointerException("'catalog' must not be null");
+	public DefaultElementMap(Environment environment) {
+		if (environment == null) {
+			throw new NullPointerException("'environment' must not be null");
 		}
 		
-		this.catalog = catalog;		
-		this.content = new TreeMap<Identifier, E>(catalog.getEnvironment().identifierComparator());				
+		this.environment = environment;		
+		this.content = new TreeMap<Identifier, E>(environment.identifierComparator());				
 	}
 	
 	public Set<Identifier> keySet() {
@@ -40,8 +40,10 @@ public class DefaultElementMap<E extends MetaObject>
 	}
 	
 	public E get(String name)
-		throws IllegalIdentifierException {
-		return get(catalog.getEnvironment().createIdentifier(name));
+		throws IllegalIdentifierException {		
+		Identifier key = (name == null) ?
+				null : this.environment.createIdentifier(name);		
+		return get(key);
 	}	
 	
 	public boolean add(E value) {

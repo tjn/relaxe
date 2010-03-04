@@ -35,43 +35,69 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
 		this.schema = schema;
 	}
 	
+	
 	@Override
-	public Catalog create(DatabaseMetaData meta, String catalogName)
-		throws QueryException, SQLException {
-		
-		logger().debug("enter");
-														
-		DefaultMutableCatalog catalog = new DefaultMutableCatalog(getEnvironment());
-		
-		{
-			ResultSet schemas = meta.getCatalogs();
-			List<String> names = new ArrayList<String>();					
-			schemas = process(schemas, new StringListReader(names), true);
-			
-			logger().debug("schemas: " + names.size());
-			
-			for (String n : names) {
-				if (this.schema == null || n.equalsIgnoreCase(this.schema)) {				
-					logger().debug("processing schema: " + n);
-					Identifier sch = catalog.getEnvironment().createIdentifier(n);
-					DefaultMutableSchema s = createSchema(catalog, sch, meta);
-					logger().debug("schema: " + s.getUnqualifiedName());
-					populateSchema(s, meta);
-				}
-			}
-		}
-		
-		logger().debug("catalog:schemas: " + catalog.schemas().keySet().size());
-		
-		logger().debug("creating pk's");		
-		populatePrimaryKeys(catalog, meta);		
-		
-		logger().debug("creating fk's");		
-		populateForeignKeys(catalog, meta);
-				
-		logger().debug("exit");
-		return catalog;
+	protected String getCatalogNameFromSchemas(ResultSet schemas)
+			throws SQLException {		
+		return null;
 	}
+	
+	@Override
+	protected String getSchemaNameFromSchemas(ResultSet rs) throws SQLException {
+		return rs.getString(2);
+	}
+	
+	
+	@Override
+	protected String getCatalogNameFromTables(ResultSet tables) throws SQLException {
+		return null;
+	}
+	
+	@Override
+	protected String getSchemaNameFromTables(ResultSet tables)
+			throws SQLException {		
+		return tables.getString(1);
+	}
+	
+	
+	
+//	@Override
+//	public Catalog create(DatabaseMetaData meta, String catalogName)
+//		throws QueryException, SQLException {
+//		
+//		logger().debug("enter");
+//														
+//		DefaultMutableCatalog catalog = new DefaultMutableCatalog(getEnvironment());
+//		
+//		{
+//			ResultSet schemas = meta.getCatalogs();
+//			List<String> names = new ArrayList<String>();					
+//			schemas = process(schemas, new StringListReader(names), true);
+//			
+//			logger().debug("schemas: " + names.size());
+//			
+//			for (String n : names) {
+//				if (this.schema == null || n.equalsIgnoreCase(this.schema)) {				
+//					logger().debug("processing schema: " + n);
+//					Identifier sch = catalog.getEnvironment().createIdentifier(n);
+//					DefaultMutableSchema s = createSchema(catalog, sch, meta);
+//					logger().debug("schema: " + s.getUnqualifiedName());
+//					populateSchema(s, meta);
+//				}
+//			}
+//		}
+//		
+//		logger().debug("catalog:schemas: " + catalog.schemas().keySet().size());
+//		
+//		logger().debug("creating pk's");		
+//		populatePrimaryKeys(catalog, meta);		
+//		
+//		logger().debug("creating fk's");		
+//		populateForeignKeys(catalog, meta);
+//				
+//		logger().debug("exit");
+//		return catalog;
+//	}
 
 	
 	public static Logger logger() {
