@@ -8,6 +8,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import fi.tnie.db.QueryException;
+import fi.tnie.db.QueryHelper;
 import fi.tnie.db.exec.QueryProcessor;
 
 public abstract class AbstractQueryProcessor implements QueryProcessor {
@@ -40,8 +41,12 @@ public abstract class AbstractQueryProcessor implements QueryProcessor {
 	public void updated(int updateCount) throws SQLException {
 	}
 	
-	
 	public void apply(ResultSet rs) 
+		throws QueryException, SQLException {
+		apply(rs, true);
+	}
+	
+	public void apply(ResultSet rs, boolean close) 
 		throws QueryException, SQLException {
 	
 		prepare();
@@ -62,7 +67,11 @@ public abstract class AbstractQueryProcessor implements QueryProcessor {
 			abort(e);
 			throw e;
 		}
-		finally {				
+		finally {
+			if (close) {
+				QueryHelper.doClose(rs);
+			}
+			
 			finish();								
 		}
 	}

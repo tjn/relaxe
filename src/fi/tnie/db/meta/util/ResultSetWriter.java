@@ -93,10 +93,10 @@ public class ResultSetWriter
 	}
 	
 	public void header(String s) {
-		out.println("-----------------------------------------");
-		out.print("-- ");
-		out.println(s);
-		out.println("-----------------------------------------");
+//		out.println("-----------------------------------------");
+//		out.print("\"-- ");
+		out.println("\"" + s + "\"");
+//		out.println("-----------------------------------------");
 	}
 	
 	
