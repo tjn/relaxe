@@ -3,10 +3,15 @@
  */
 package fi.tnie.db;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Types;
 import java.util.EnumMap;
 import java.util.Map;
 
 import fi.tnie.db.meta.BaseTable;
+import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.Table;
 
 public class DefaultTableMapper
 	implements TableMapper {
@@ -79,7 +84,48 @@ public class DefaultTableMapper
 		setRootPackage(rootPackage);
 	}
 
-	
-	
+    @Override
+    public Class<?> getAttributeType(Table table, Column c) {
+        int type = c.getDataType().getDataType();
+        
+        boolean nn = c.isDefinitelyNotNullable();
 
-}
+        Class<?> jtype = null;
+                        
+        switch (type) {
+            case Types.CHAR:
+            case Types.VARCHAR:
+            case Types.LONGNVARCHAR:
+                jtype = String.class; 
+                break;                 
+            case Types.INTEGER:            
+                jtype = nn ? Integer.TYPE : Integer.class;
+                break;
+            case Types.TINYINT:            
+                jtype = nn ? Short.TYPE : Short.class;
+                break;
+            case Types.BIGINT:
+                jtype = BigInteger.class;        
+            case Types.BIT:
+                jtype = nn ? Boolean.TYPE : Boolean.class;            
+            case Types.REAL:
+                jtype = nn ? Float.TYPE : Float.class;
+                break;
+            case Types.FLOAT:                
+            case Types.DOUBLE:
+                jtype = nn ? Double.TYPE : Double.class;
+                break;                
+            case Types.NUMERIC:
+                jtype = BigDecimal.class;
+                break;
+            default:
+                jtype = Object.class;
+                break;
+        }
+                
+        return jtype;
+    }
+   }
+
+
+    

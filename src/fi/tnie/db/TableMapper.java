@@ -6,6 +6,8 @@ package fi.tnie.db;
 import java.util.Map;
 
 import fi.tnie.db.meta.BaseTable;
+import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.Table;
 
 public interface TableMapper {
 	
@@ -49,5 +51,7 @@ public interface TableMapper {
 	}
 		
 	Map<Part, Type> entityMetaDataType(BaseTable table);
+	
+	Class<?> getAttributeType(Table table, Column c);
 			
 }

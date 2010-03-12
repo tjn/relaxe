@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.meta.impl;
 
+import java.sql.DatabaseMetaData;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,10 +21,9 @@ public class DefaultMutableColumn
 {	
 	private DefaultMutableTable table;
 	
-	private int nullable;
+	private boolean definitelyNotNullable;
 	private String remarks;
 	private String columnDefault;
-	private String isNullable;
 	private String autoIncrement;
 		
 	private DataTypeImpl dataType;	
@@ -53,12 +53,12 @@ public class DefaultMutableColumn
 		t.add(this);
 	}
 
-	public int getNullable() {
-		return nullable;
-	}
+//	public Boolean getNullable() {
+//		return nullable;
+//	}
 
-	public void setNullable(int nullable) {
-		this.nullable = nullable;
+	public void setNullable(int nullability) {
+	    this.definitelyNotNullable = (nullability == DatabaseMetaData.columnNoNulls);
 	}
 
 	public String getRemarks() {
@@ -75,14 +75,6 @@ public class DefaultMutableColumn
 
 	public void setColumnDefault(String columnDefault) {
 		this.columnDefault = columnDefault;
-	}
-
-	public String getIsNullable() {
-		return isNullable;
-	}
-
-	public void setIsNullable(String isNullable) {
-		this.isNullable = isNullable;
 	}
 
 	public String getAutoIncrement() {
@@ -182,4 +174,15 @@ public class DefaultMutableColumn
 	public String toString() {		
 		return getTable().getQualifiedName() + "." + getColumnName().getName();
 	}
+
+    public boolean isDefinitelyNotNullable() {
+        return definitelyNotNullable;
+    }
+	
+//	@Override
+//	public Boolean isNullable() {	 
+//	    return this.nullable;
+//	}
+	
+	
 }

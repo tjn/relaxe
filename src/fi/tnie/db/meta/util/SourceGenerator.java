@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -44,6 +44,8 @@ public class SourceGenerator
 	private static Logger logger = Logger.getLogger(SourceGenerator.class);		
 	public static final String KEY_PACKAGE = "package";
 	public static final String KEY_SOURCE_ROOT_DIR = "root-dir";
+		
+	private Map<Class<?>, Class<?>> wrapperMap;
 	
 	public static void main(String[] args) {
 		
@@ -117,14 +119,14 @@ public class SourceGenerator
 			TableMapper.Type intf = types.get(TableMapper.Part.INTERFACE);
 			
 			if (intf != null) {
-				CharSequence source = generateInterface(t, intf);
+				CharSequence source = generateInterface(t, intf, tm);
 				write(root, intf, source);
 			}						
 			
 			TableMapper.Type impl = types.get(TableMapper.Part.IMPLEMENTATION);
 			
 			if (impl != null) {
-				CharSequence source = generateImplementation(t, types);
+				CharSequence source = generateImplementation(t, types, tm);
 				write(root, impl, source);	
 			}
 		}						
@@ -138,7 +140,7 @@ public class SourceGenerator
 		
 	}
 
-	public CharSequence generateInterface(BaseTable t, TableMapper.Type mt) {
+	public CharSequence generateInterface(BaseTable t, TableMapper.Type mt, TableMapper tm) {
 				
 		
 		StringWriter sw = new StringWriter();
@@ -152,7 +154,7 @@ public class SourceGenerator
 			p.println(";");
 		}
 		
-		p.println("import fi.tnie.db.Entity;");
+		p.println("import fi.tnie.db.PersistentEntity;");
 		p.println("import fi.tnie.db.Identifiable;");
 						
 		p.println();
@@ -162,7 +164,7 @@ public class SourceGenerator
 		
 		p.print("public interface ");
 		p.println(uname);		
-		p.print("\textends Entity<");		
+		p.print("\textends PersistentEntity<");		
 		p.print(getAttributeType(uname));
 		p.print(", ");
 		p.print(getReferenceType(uname));
@@ -174,7 +176,7 @@ public class SourceGenerator
 		p.println("{");
 		p.println();
 		
-		p.print(interfaceMembers(t, uname));		
+		p.print(interfaceMembers(t, uname, tm));		
 		
 		p.println("\n}\n");				
 		p.close();
@@ -184,7 +186,7 @@ public class SourceGenerator
 		return sw.toString();
 	}
 	
-	public CharSequence generateImplementation(BaseTable t, Map<Part, Type> types) {
+	public CharSequence generateImplementation(BaseTable t, Map<Part, Type> types, TableMapper tm) {
 		StringWriter sw = new StringWriter();
 		PrintWriter w = new PrintWriter(sw);
 				
@@ -208,7 +210,7 @@ public class SourceGenerator
 			w.println();
 		}
 	
-		w.println("import fi.tnie.db.DefaultEntity;");
+		w.println("import fi.tnie.db.DefaultPersistentEntity;");
 		w.println("import fi.tnie.db.DefaultEntityMetaData;");
 		w.println("import fi.tnie.db.EntityException;");
 		w.println("import fi.tnie.db.EntityFactory;");
@@ -218,7 +220,7 @@ public class SourceGenerator
 						
 		w.print("public class ");
 		w.println(imp.getUnqualifiedName());		
-		w.print("\textends DefaultEntity<");
+		w.print("\textends DefaultPersistentEntity<");
 		w.print(getAttributeType(ctype));
 		w.print(",");
 		w.print(getReferenceType(ctype));
@@ -234,7 +236,7 @@ public class SourceGenerator
 		}
 		
 		w.println("{");		
-		w.print(implMembers(t, types));
+		w.print(implMembers(t, types, tm));
 		w.print("\n}\n");
 		w.close();
 				
@@ -242,7 +244,7 @@ public class SourceGenerator
 	}
 
 	
-	private String interfaceMembers(BaseTable t, String etype) {
+	private String interfaceMembers(BaseTable t, String etype, TableMapper tm) {
 		
 		StringBuffer content = new StringBuffer();
 		
@@ -260,10 +262,170 @@ public class SourceGenerator
 		
 		logger().debug("members: " + content);
 		
+		// getter & setter prototypes:
+        accessors(t, content, tm, false);
+        content.append("\n\n");    
+		
+		
+		
 		return content.toString();
 	}
 
-	private String implMembers(BaseTable t, Map<Part, Type> parts) {
+	private void accessors(BaseTable t, StringBuffer content, TableMapper tm, boolean impl) {
+        Set<Identifier> fkcols = foreignKeyColumns(t);
+                
+        for (Column c : t.columns()) {      
+            // only non-fk-columns are included in attributes.
+            // fk-columns  are not intended to be set individually,
+            // but atomically with ref -methods
+            if (!fkcols.contains(c.getColumnName())) {
+                Class<?> jt = tm.getAttributeType(t, c);
+                
+                if (jt != null) {                    
+                    String code = formatAccessors(c, jt, impl);
+                    content.append(code);
+                }
+            }           
+        }
+    }
+
+    private String formatAccessors(Column c, Class<?> attributeType, boolean impl) {        
+        final String attributeName = attr(c);        
+        final String type = attributeType.getName();
+        
+        StringBuffer nb = new StringBuffer();
+        final String n = name(c.getColumnName().getName());
+                
+        a(nb, "public ");
+        a(nb, type);
+        a(nb, " get");
+        a(nb, n);
+        a(nb, "()");
+        
+        
+        if (!impl) {
+            a(nb, ";", 1);
+        }
+        else {        
+            // getter implementation
+            a(nb, " {", 1);
+            
+            if (!attributeType.isPrimitive()) {
+                a(nb, "return ");
+                // call super & cast:
+                expr(nb, attributeType, attributeName);            
+                a(nb, ";", 1);            
+            }
+            else {
+                Class<?> wt = wrapper(attributeType);            
+                a(nb, wt.getName());
+                
+                a(nb, " o = ");
+                // call super & cast:
+                expr(nb, attributeType, attributeName);            
+                a(nb, ";", 2);
+                            
+                a(nb, "return (o == null) ? ");
+                
+                // default value:
+                if (attributeType.equals(Boolean.TYPE)) {
+                    a(nb, " false ");
+                }
+                else {
+                    // TODO: should we try to parse DB default here?
+                    a(nb, " 0 ");
+                }         
+                
+                a(nb, " : ");
+                a(nb, "o.intValue()");   
+                a(nb, ";", 1);
+            }
+                                    
+            a(nb, "}", 2);
+        }
+        
+        
+        
+        a(nb, "public void set");        
+        a(nb, n);
+        a(nb, "(");
+        a(nb, type);
+        a(nb, " ");
+        a(nb, "newValue)");
+        
+        if (!impl) {
+            a(nb, ";", 1);
+        }
+        else {
+            a(nb, " {", 1);
+            a(nb, "set(");
+            a(nb, getAttributeType());
+            a(nb, ".");
+            a(nb, attributeName);
+            a(nb, ", ");
+                
+            if (!attributeType.isPrimitive()) {                
+                a(nb, "newValue");
+            }
+            else {
+                Class<?> wt = wrapper(attributeType);            
+                a(nb, wt.getName());
+                a(nb, ".valueOf(");
+                a(nb, "newValue");
+                a(nb, ")");
+            }        
+            a(nb, ");", 1);        
+            a(nb, "}", 2);
+        }
+        
+        return nb.toString();
+    }
+        
+    private void expr(StringBuffer sb, Class<?> attributeType, String attributeName) {        
+        Class<?> castTo = attributeType.isPrimitive() ? 
+                wrapper(attributeType) : 
+                attributeType;
+        
+        sb.append("(");
+        sb.append(castTo.getName());
+        sb.append(") super.get(");            
+        sb.append(getAttributeType());
+        sb.append(".");
+        sb.append(attributeName);            
+        sb.append(")");        
+    }
+
+
+    private String name(String name) {
+        int len = name.length();
+        StringBuffer nb = new StringBuffer(len);
+        boolean upper = true;        
+        
+        for (int i = 0; i < len; i++) {
+            char c = name.charAt(i);
+            
+            if (c == '_') {
+                upper = true;
+                continue;
+            }
+            else {
+                upper = (i == 0);
+            }
+            
+            nb.append(upper ? Character.toUpperCase(c) : Character.toLowerCase(c));
+        }
+        
+        return nb.toString();
+    }
+
+
+    private String capitalize(String s) {
+        
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
+
+
+    private String implMembers(BaseTable t, Map<Part, Type> parts, TableMapper tm) {
 		
 		StringWriter sw = new StringWriter();
 		PrintWriter w = new PrintWriter(sw);
@@ -318,7 +480,13 @@ public class SourceGenerator
 		w.println("	@Override		");
 		w.println("	public " + ctype.getUnqualifiedName() + " self() {		");
 		w.println("		return this;");
-		w.println("	}");		
+		w.println("	}");
+		
+		
+	      // getter & setter prototypes:
+		StringBuffer content = new StringBuffer();
+        accessors(t, content, tm, true);            
+        w.println(content);
 				
 		w.close();
 		
@@ -581,7 +749,49 @@ public class SourceGenerator
 	
 		return (intf == null) ? impl : intf;		
 	}
+
 	
+	private Class<?> wrapper(Class<?> primitiveType) {
+	    if (primitiveType == null) {
+            throw new NullPointerException();
+        }
+	    
+	    if (!primitiveType.isPrimitive()) {
+	        throw new IllegalArgumentException("primitive type expected");
+	    }
+	    
+	    return getWrapperMap().get(primitiveType);
+	}
+
 	
+	public Map<Class<?>, Class<?>> getWrapperMap() {
+        if (this.wrapperMap == null) {
+            Map<Class<?>, Class<?>> wm = this.wrapperMap = new HashMap<Class<?>, Class<?>>();
+            
+            wm.put(Boolean.TYPE, Boolean.class);
+            wm.put(Byte.TYPE, Byte.class);
+            wm.put(Character.TYPE, Character.class);
+            wm.put(Double.TYPE, Double.class);
+            wm.put(Float.TYPE, Float.class);            
+            wm.put(Integer.TYPE, Integer.class);
+            wm.put(Long.TYPE, Long.class);
+            wm.put(Short.TYPE, Short.class);
+        }
+        
+        return this.wrapperMap;
+    }
 	
+	private void a(StringBuffer dest, String s) {
+	    a(dest, s, 0);
+	}
+			
+	private void a(StringBuffer dest, String s, int eols) {
+	    dest.append(s);
+	    
+	    String sep = System.getProperty("line.separator");
+	    
+	    for (int i = 0; i < eols; i++) {
+            dest.append(sep);
+        }
+	}
 }

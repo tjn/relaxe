@@ -7,8 +7,14 @@ import fi.tnie.db.expr.ColumnName;
 
 public interface Column 
 	extends MetaObject {
-
-	DataType getDataType();	
+    
+	DataType getDataType();
+	
+	/** 
+	 * 
+	 * @return
+	 */
+	boolean isDefinitelyNotNullable();
 	boolean isPrimaryKeyColumn();
 	Boolean isAutoIncrement();	
 	public ColumnName getColumnName(); 

@@ -3,7 +3,6 @@
  */
 package fi.tnie.db;
 
-import java.sql.Connection;
 import java.util.Map;
 
 import fi.tnie.db.expr.DeleteStatement;
@@ -72,15 +71,6 @@ public interface Entity<
 	 * @return
 	 */	
 	EntityMetaData<A, R, Q, E> getMetaData();
-	
-	void insert(Connection c)
-		throws EntityException;
-
-	void update(Connection c)
-		throws EntityException;
-
-	void delete(Connection c)
-		throws EntityException;
 	
 	InsertStatement createInsertStatement()
 		throws EntityException;	

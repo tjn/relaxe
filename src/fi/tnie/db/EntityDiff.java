@@ -6,6 +6,17 @@ package fi.tnie.db;
 
 import java.util.Map;
 
+/**
+ * Represents the difference between two entities. 
+ * 
+ * @author Administrator
+ *
+ * @param <A>
+ * @param <R>
+ * @param <Q>
+ * @param <E>
+ */
+
 public interface EntityDiff<
 	A extends Enum<A> & Identifiable, 
 	R extends Enum<R> & Identifiable,	
