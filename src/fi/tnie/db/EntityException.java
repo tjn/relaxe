@@ -6,13 +6,13 @@ package fi.tnie.db;
 public class EntityException
 	extends Exception {
 
-	protected EntityException() {
+	public EntityException() {
 		super();
 	}
-	protected EntityException(String msg) {
+	public EntityException(String msg) {
 		super(msg);
 	}
-	protected EntityException(String message, Throwable cause) {
+	public EntityException(String message, Throwable cause) {
 		super(message, cause);	
 	}	
 }

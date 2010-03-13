@@ -1,0 +1,9 @@
+package {{package-name}};
+
+{{imports}}
+
+public abstract class {{table-hook-class}}
+    extends {{table-hook-base-class}}    
+{
+} 
+

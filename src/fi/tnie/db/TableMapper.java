@@ -3,55 +3,28 @@
  */
 package fi.tnie.db;
 
+import java.io.File;
 import java.util.Map;
 
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
+import fi.tnie.db.source.JavaType;
 
 public interface TableMapper {
 	
-	class Type {
-		private String packageName; 
-		private String unqualifiedName;
-		private String qualifiedName;
-				
-		public Type(String packageName, String unqualifiedName) {
-			super();
-			this.packageName = packageName;									
-			this.unqualifiedName = unqualifiedName;
-			
-			if (this.packageName == null) {
-				this.qualifiedName = this.unqualifiedName;
-			}
-			else {
-				StringBuffer buf = new StringBuffer(this.packageName);
-				buf.append(".");
-				buf.append(unqualifiedName);
-				this.qualifiedName = buf.toString();
-			}
-		}
-		
-		public String getPackageName() {
-			return this.packageName;
-		}
-		
-		public String getUnqualifiedName() {			
-			return this.unqualifiedName;
-		}	
-		
-		public String getQualifiedName() {
-			return this.qualifiedName;
-		}
-	}
-	
 	enum Part {
 		INTERFACE,
-		IMPLEMENTATION
+		ABSTRACT,		
+		HOOK,
+		IMPLEMENTATION,
+		METADATA
 	}
-		
-	Map<Part, Type> entityMetaDataType(BaseTable table);
 	
+	File getSourceDir(BaseTable table, Part part);		
+	JavaType entityType(BaseTable table, Part part);	
 	Class<?> getAttributeType(Table table, Column c);
-			
+	
+	JavaType factoryType(Schema schema, Part part);			
 }

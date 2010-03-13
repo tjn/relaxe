@@ -9,10 +9,10 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.TableMapper.Part;
-import fi.tnie.db.TableMapper.Type;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.util.CatalogTraversal;
+import fi.tnie.db.source.JavaType;
 
 public class DefaultEntityContext
 	implements EntityContext {
@@ -23,17 +23,28 @@ public class DefaultEntityContext
 	private static Logger logger = Logger.getLogger(DefaultEntityContext.class);
 		
 	public DefaultEntityContext(Catalog catalog) {
-		super();
-		this.catalog = catalog;
+		this(catalog, null);		
 	}
 	
 	public DefaultEntityContext(Catalog catalog, final TableMapper tm) {
 		super();
-		bindAll(tm);
+		
+		if (catalog == null) {
+            throw new NullPointerException("'catalog' must not be null");
+        }
+		
+		this.catalog = catalog;
+		
+		if (tm != null) {		
+		    bindAll(tm);
+		}
 	}
 	
 	public void bindAll(final TableMapper tm) {
-		
+	    if (tm == null) {
+	        throw new NullPointerException();
+	    }
+	    
 		if (metaMap != null) {
 			metaMap.clear();
 		}
@@ -59,9 +70,9 @@ public class DefaultEntityContext
 		
 		logger().error("binding table: " + t);
 		
-		Map<Part, Type> types = tm.entityMetaDataType(t);
+//		Map<Part, JavaType> types = tm.entityType(table, part)t);
 		
-		TableMapper.Type mt = types.get(Part.INTERFACE);
+		JavaType mt = tm.entityType(t, Part.INTERFACE);
 		
 		if (mt == null) {
 			logger().error("no interface type for " + t);
@@ -74,7 +85,7 @@ public class DefaultEntityContext
 			}
 
 			try {
-				TableMapper.Type impl = types.get(Part.IMPLEMENTATION);
+				JavaType impl = tm.entityType(t, Part.IMPLEMENTATION);
 				// impl.getQualifiedName() + "MetaData";
 																
 				Class<?> m = Class.forName(impl.getQualifiedName());
@@ -82,7 +93,8 @@ public class DefaultEntityContext
 //				this is ugly, isn't it:
 				Entity<?,?,?,?> prototype = (Entity<?,?,?,?>) m.newInstance();								
 				meta = prototype.getMetaData();			
-				meta.bind(t);			
+				meta.bind(t);
+				
 				register(meta);
 				
 			}
@@ -122,5 +134,6 @@ public class DefaultEntityContext
 	
 	public static Logger logger() {
 		return DefaultEntityContext.logger;
-	}	
+	}
+
 }

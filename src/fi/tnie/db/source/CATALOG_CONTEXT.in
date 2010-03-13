@@ -1,0 +1,26 @@
+package {{package-name}};
+
+import fi.tnie.db.DefaultEntityContext;
+import fi.tnie.db.EntityException;
+import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.DefaultTableMapper;
+import fi.tnie.db.TableMapper;
+
+{{imports}}
+
+public class {{catalog-context}}
+    extends DefaultEntityContext {
+    
+    public {{catalog-context}}(Catalog catalog, TableMapper tm) 
+        throws EntityException {
+        super(catalog, tm);        
+    }
+    
+    public {{catalog-context}}(Catalog catalog) 
+        throws EntityException {
+        super(catalog, new DefaultTableMapper("{{package-name}}"));        
+    } 
+    
+        
+{{factory-method-list}}
+}

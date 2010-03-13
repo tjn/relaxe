@@ -1,0 +1,18 @@
+package {{package-name}};
+
+import fi.tnie.db.DefaultPersistentEntity;
+{{imports}}
+
+public abstract class {{table-abstract-class}}
+    extends DefaultPersistentEntity<
+        {{table-interface}}.Attribute,
+        {{table-interface}}.Reference,
+        {{table-interface}}.Query,
+        {{table-interface}}
+    >
+    implements {{table-interface}}
+{
+
+    
+} 
+

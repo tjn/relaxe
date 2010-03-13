@@ -6,7 +6,7 @@ package fi.tnie.db.expr;
 public interface ValueExpression 
 	extends Expression, SelectListElement {
 	/**
-	 * SQL Type of the expression
+	 * SQL JavaType of the expression
 	 * @return
 	 */
 	int getType();

@@ -7,6 +7,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Properties;
 
@@ -41,6 +45,40 @@ public class IOHelper {
 		
 		w.close();
 	}
+
+    public String read(InputStream in, String encoding, int initialCapacity) 
+        throws IOException {
+        if (in == null) {
+            throw new NullPointerException();
+        }
+        InputStreamReader r = null;
+        StringBuilder dest = new StringBuilder(initialCapacity); 
+        
+        try {
+            r = new InputStreamReader(in, encoding);           
+            
+            int c;
+            
+            while((c = r.read()) != -1) {
+                dest.append((char) c);
+            }
+        }
+        finally {
+            close(r);
+        }
+        
+        return dest.toString();
+    }
+
+    protected void close(Reader r) {
+        if (r != null) {
+            try {
+                r.close();
+            } 
+            catch (IOException e) {
+            }
+        }        
+    }
 	
 	
 }

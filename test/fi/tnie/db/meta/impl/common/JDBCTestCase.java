@@ -281,7 +281,7 @@ public abstract class JDBCTestCase
 		rw.header("Schemas");
 		rw.apply(meta.getSchemas());		
 		
-		rw.header("Type Info");
+		rw.header("JavaType Info");
 		rw.apply(meta.getTypeInfo());
 
 		rw.header("Table Types");

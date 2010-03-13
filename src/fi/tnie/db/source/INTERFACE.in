@@ -1,0 +1,20 @@
+package {{package-name}};
+
+import fi.tnie.db.PersistentEntity;
+import fi.tnie.db.Identifiable;
+
+public interface {{table-interface}}
+    extends PersistentEntity<
+        {{table-interface}}.Attribute,
+        {{table-interface}}.Reference,
+        {{table-interface}}.Query,
+        {{table-interface}}
+    > {
+        
+    {{attribute-name-type}}    
+    {{reference-name-type}}    
+    {{query-name-type}}
+    
+    {{abstract-accessor-list}}
+} 
+
