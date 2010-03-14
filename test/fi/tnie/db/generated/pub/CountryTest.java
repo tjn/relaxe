@@ -3,19 +3,12 @@
  */
 package fi.tnie.db.generated.pub;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import fi.tnie.db.DefaultEntityContext;
 import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.EntityContext;
-import fi.tnie.db.EntityException;
-import fi.tnie.db.QueryException;
 import fi.tnie.db.TableMapper;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.impl.pg.PGTestCase;
-import fi.tnie.db.myapp.pub.Continent;
-import fi.tnie.db.myapp.pub.Country;
 
 public class CountryTest extends PGTestCase {
 

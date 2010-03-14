@@ -22,9 +22,6 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-
-import sun.misc.JavaUtilJarAccess;
-
 import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.QueryException;
 import fi.tnie.db.TableMapper;
@@ -34,7 +31,6 @@ import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
-import fi.tnie.db.meta.CatalogMap;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Schema;

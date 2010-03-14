@@ -7,7 +7,6 @@ import java.util.List;
 
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.Column;
-import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.Table;
 
 public abstract class DefaultMutableTable

@@ -6,8 +6,6 @@ package fi.tnie.db.meta.impl.pg;
 public class PGRestoreTest
 	extends PGTestCase {
 	
-	
-	
 	@Override
 	protected void setUp() throws Exception {	
 	}
@@ -17,6 +15,12 @@ public class PGRestoreTest
 		restore();
 	}
 	
+    public void testRestoreDropped() 
+        throws Exception {
+        
+        dropDatabaseIfExists();
+        restore();
+    }	
 	
 	@Override
 	protected void tearDown() throws Exception {

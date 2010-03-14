@@ -20,7 +20,8 @@ public class NullFilterComparator<T>
 		this.inner = inner;		
 	}
 			
-	public int compareNotNull(T o1, T o2) {
+	@Override
+    public int compareNotNull(T o1, T o2) {
 		return this.inner.compare(o1, o2);		
 	};
 }

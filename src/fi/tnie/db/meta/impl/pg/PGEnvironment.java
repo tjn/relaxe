@@ -8,7 +8,6 @@ import java.util.Comparator;
 import fi.tnie.db.FoldingComparator;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.CatalogFactory;
-import fi.tnie.db.meta.impl.DefaultCatalogFactory;
 import fi.tnie.db.meta.impl.DefaultEnvironment;
 
 public class PGEnvironment

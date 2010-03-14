@@ -4,8 +4,6 @@
 package fi.tnie.db;
 
 import java.io.File;
-import java.util.Map;
-
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Schema;

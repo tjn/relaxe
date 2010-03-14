@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.source;
 
-import java.util.List;
-
 /**
  * @author Administrator
  *
