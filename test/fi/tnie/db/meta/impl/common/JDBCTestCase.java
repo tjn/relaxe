@@ -3,12 +3,14 @@
  */
 package fi.tnie.db.meta.impl.common;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -19,6 +21,8 @@ import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.util.ResultSetWriter;
 import fi.tnie.db.meta.util.StringListReader;
+import fi.tnie.util.io.Launcher;
+import fi.tnie.util.io.RunResult;
 
 import junit.framework.TestCase;
 
@@ -36,6 +40,11 @@ public abstract class JDBCTestCase
 	
 	protected JDBCTestCase(String driverClass) {
 		this(driverClass, "tester", "password", "dbmeta_test");	
+	}
+	
+	protected RunResult exec(List<String> args) 
+	    throws IOException, InterruptedException {
+	    return Launcher.exec(args);
 	}
 	
 	protected JDBCTestCase(String driverClass, String userid, String passwd, String database) {
