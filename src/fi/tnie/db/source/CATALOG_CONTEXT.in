@@ -8,19 +8,18 @@ import fi.tnie.db.TableMapper;
 
 {{imports}}
 
-public class {{catalog-context}}
+public class {{catalog-context-class}}
     extends DefaultEntityContext {
     
-    public {{catalog-context}}(Catalog catalog, TableMapper tm) 
+    public {{catalog-context-class}}(Catalog catalog, TableMapper tm) 
         throws EntityException {
         super(catalog, tm);        
     }
     
-    public {{catalog-context}}(Catalog catalog) 
+    public {{catalog-context-class}}(Catalog catalog) 
         throws EntityException {
         super(catalog, new DefaultTableMapper("{{package-name}}"));        
-    } 
-    
+    }
         
 {{factory-method-list}}
 }
