@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.meta.impl.mysql;
 
+import fi.tnie.db.expr.ddl.ColumnDefinition;
 import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.impl.DefaultEnvironment;
 
@@ -13,5 +14,12 @@ public class MySQLEnvironment
 	public CatalogFactory catalogFactory() {
 		return new MySQLCatalogFactory(this);
 	}
+
+    @Override
+    public ColumnDefinition serialColumnDefinition(String columnName,
+            boolean big) {
+        // TODO add support (subclass ColumnDefinition to put AUTO_INCREMENT in the right spot) 
+        return null;
+    }
 
 }

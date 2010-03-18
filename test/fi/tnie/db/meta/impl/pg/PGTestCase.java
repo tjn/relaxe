@@ -184,7 +184,7 @@ public abstract class PGTestCase
 
 //        Sample format of the expected output:
 //        List of databases
-//        Name     |  Owner   | Encoding 
+//        SQLTypeName     |  Owner   | Encoding 
 //        -------------+----------+----------
 //         dbmeta_test | tester   | UTF8
 //         postgres    | postgres | WIN1252

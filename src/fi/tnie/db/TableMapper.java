@@ -19,10 +19,9 @@ public interface TableMapper {
 		IMPLEMENTATION,
 		METADATA
 	}
-	
-	File getSourceDir(BaseTable table, Part part);		
+				
 	JavaType entityType(BaseTable table, Part part);	
-	Class<?> getAttributeType(Table table, Column c);
-	
-	JavaType factoryType(Schema schema, Part part);			
+	Class<?> getAttributeType(Table table, Column c);	
+	JavaType factoryType(Schema schema, Part part);	
+	JavaType catalogContextType();
 }

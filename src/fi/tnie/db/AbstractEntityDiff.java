@@ -38,7 +38,7 @@ public abstract class AbstractEntityDiff<
 	}
 	
 	@Override
-	public EntityDiff.Change change() {		
+	public Change change() {		
 		if (original == null && modified == null) {
 			return null;			
 		}	

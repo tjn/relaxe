@@ -10,6 +10,7 @@ import java.sql.Types;
 import java.util.EnumMap;
 import java.util.Map;
 
+import fi.tnie.db.TableMapper.Part;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
@@ -19,39 +20,54 @@ import fi.tnie.db.source.JavaType;
 
 public class DefaultTableMapper
 	implements TableMapper {
-	
-	private String rootPackage;
-//	private File defaultSourceDir;
-	
-	private EnumMap<Part, File> sourceDirMap;
-			
-//	private EnumMap<Part, JavaType> entityTypeMap;
-	
-	
-	
+	    
+	private String rootPackage;		
 			
 	private Map<Part, JavaType> createEntityTypeMap(BaseTable table) {	    		
-		String p = getPackageName(table.getSchema());		
+		String pkg = getPackageName(table.getSchema());		
 		String u = getSimpleName(table);
-				
-//		final JavaType pe = new JavaType(PersistentEntity.class);				
-//		final JavaType intf = new JavaType(p, u);		
-//		final JavaType base = new JavaType(DefaultPersistentEntity.class);
-								
-//		final JavaType at = new JavaType(p, "Abstract" + u, base, intf);		
-//		final JavaType hook = new JavaType(p, "My" + u, at, null);						
-//		final JavaType impl = new JavaType(p, u + "Impl", hook, null);
 	
 		EnumMap<Part, JavaType> types = new EnumMap<Part, JavaType>(Part.class);
 		
-		types.put(Part.INTERFACE, new JavaType(p, u));
-		types.put(Part.ABSTRACT, new JavaType(p, "Abstract" + u));
-		types.put(Part.HOOK, new JavaType(p, "Default" + u));
-		types.put(Part.IMPLEMENTATION, new JavaType(p + ".impl", u + "Impl"));
+		for (Part p : Part.values()) {
+		    types.put(p, map(table, p, pkg, u));
+        }
+		
+//		types.put(Part.INTERFACE, new JavaType(p, u));
+//		types.put(Part.ABSTRACT, new JavaType(p, "Abstract" + u));
+//		types.put(Part.HOOK, new JavaType(p, "Default" + u));
+//		types.put(Part.IMPLEMENTATION, new JavaType(p + ".impl", u + "Impl"));
 		
 		return types;
 	}
+	
+	protected JavaType map(BaseTable t, Part p, String rootPackage, String name) {	    
+	    String pp = getPackageName(t, p, rootPackage);
+	    String n = getClassName(t, p, name);	    
+	    return (pp == null || n == null) ? null : new JavaType(pp, n);
+	}
 
+    protected String getPackageName(BaseTable t, Part p, String pkg) {
+        return pkg;
+    }
+    
+    protected String getClassName(BaseTable t, Part p, String name) {
+        if (p == Part.ABSTRACT) {
+            return "Abstract" + name;
+        }
+        
+        if (p == Part.HOOK) {
+            return "Default" + name;
+        }
+        
+        if (p == Part.IMPLEMENTATION) {
+            return name + "Impl";
+        }
+        
+        return name;
+    }
+    
+    
     private String getPackageName(Schema schema) {
         StringBuffer n = new StringBuffer();
         
@@ -163,22 +179,22 @@ public class DefaultTableMapper
         return createEntityTypeMap(table).get(part);        
     }
 
-    @Override
-    public File getSourceDir(BaseTable table, Part part) {
-        return getSourceDirMap().get(part);
-    }
+//    @Override
+//    public File getSourceDir(BaseTable table, Part part) {
+//        return getSourceDirMap().get(part);
+//    }
 
-    public void setSourceDir(Part part, File sourceDir) {
-        getSourceDirMap().put(part, sourceDir);
-    }
-
-    private EnumMap<Part, File> getSourceDirMap() {
-        if (sourceDirMap == null) {
-            sourceDirMap = new EnumMap<Part, File>(Part.class);            
-        }
-
-        return sourceDirMap;
-    }
+//    public void setSourceDir(Part part, File sourceDir) {
+//        getSourceDirMap().put(part, sourceDir);
+//    }
+//
+//    private EnumMap<Part, File> getSourceDirMap() {
+//        if (sourceDirMap == null) {
+//            sourceDirMap = new EnumMap<Part, File>(Part.class);            
+//        }
+//
+//        return sourceDirMap;
+//    }
 
     @Override
     public JavaType factoryType(Schema schema, Part part) {
@@ -195,7 +211,13 @@ public class DefaultTableMapper
         }
         
         return null;
-    }    
+    }
+
+    @Override
+    public JavaType catalogContextType() {    
+        return new JavaType(getRootPackage(), "CatalogContext");
+    }
+    
 }
 
     

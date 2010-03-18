@@ -5,6 +5,9 @@ package fi.tnie.db.expr;
 
 import fi.tnie.db.meta.SchemaElement;
 
+// TODO: pull up the common parts from 
+// SchemaName and SchemaElement name to abstract QualifiedName class.  
+
 public final class SchemaElementName
 	extends Name {
 	
@@ -29,29 +32,24 @@ public final class SchemaElementName
 	
 	@Override
 	protected void traverseContent(VisitContext vc, ElementVisitor v) {
-		this.qualifier.traverse(vc, v);
-		Symbol.DOT.traverse(vc, v);
+	    if (this.qualifier != null) {
+	        this.qualifier.traverse(vc, v);
+	        Symbol.DOT.traverse(vc, v);	        
+	    }
+	    
 		this.name.traverse(vc, v);
 	}
 
 	public Identifier getUnqualifiedName() {
 		return name;
 	}
-		
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (obj == null) {
-//			throw new NullPointerException();
-//		}
-//			
-//		Comparator<Identifier> icmp = 
-//			qualifier.getSchema().getCatalog().identifierComparator();
-//		
-//		SchemaElementName n = (SchemaElementName) obj;
-//							
-//		return 
-//		  n.qualifier.equals(this.qualifier) && 
-//		  icmp.compare(n.getUnqualifiedName(), name) == 0;		
-//	}
 	
+	/** 
+	 * Returns true if this name has not qualifying schema name. 
+	 * 
+	 * @return
+	 */	
+	public boolean isRelative() {
+	    return this.qualifier == null; 
+	}
 }

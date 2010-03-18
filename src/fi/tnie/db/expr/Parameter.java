@@ -10,7 +10,7 @@ import fi.tnie.db.meta.Column;
 
 public abstract class Parameter
 	extends SimpleElement
-	implements ValueExpression, Token {
+	implements ValueExpression, SelectListElement, Token {
 	
 	private String name;
 	private int type;	

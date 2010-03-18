@@ -19,17 +19,17 @@ public class EmptyEntityDiff<
 	}
 
 	@Override
-	public Map<A, EntityDiff.Change> attributes() {
+	public Map<A, Change> attributes() {
 		return Collections.emptyMap();
 	}
 
 	@Override
-	public EntityDiff.Change change() {
+	public Change change() {
 		return null;
 	}
 
 	@Override
-	public Map<R, fi.tnie.db.EntityDiff.Change> references() {	
+	public Map<R, fi.tnie.db.Change> references() {	
 		return Collections.emptyMap();
 	}
 }

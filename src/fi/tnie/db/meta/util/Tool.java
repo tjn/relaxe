@@ -16,6 +16,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.QueryException;
+import fi.tnie.db.feature.SQLGenerationException;
 import fi.tnie.util.io.IOHelper;
 
 public abstract class Tool {
@@ -23,7 +24,7 @@ public abstract class Tool {
 	private static Logger logger = Logger.getLogger(Tool.class);
 	
 	public void run(String[] args) 
-		throws ClassNotFoundException, QueryException, SQLException, IOException {
+		throws Exception {
 		
 		if (args.length < 3) {
 			throw new IllegalArgumentException(
@@ -84,7 +85,7 @@ public abstract class Tool {
 	}
 
 	public abstract void run(Connection c, Properties config)
-		throws QueryException, IOException;
+		throws QueryException, IOException, SQLGenerationException, SQLException;
 
 	public static Logger logger() {
 		return Tool.logger;

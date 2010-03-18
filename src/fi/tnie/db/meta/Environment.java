@@ -7,6 +7,7 @@ import java.util.Comparator;
 
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
+import fi.tnie.db.expr.ddl.ColumnDefinition;
 
 public interface Environment {
 	
@@ -24,7 +25,7 @@ public interface Environment {
 	 * delimited identifier is constructed, if possible.
 	 * Otherwise, {@link IllegalIdentifierException} is thrown.  
 	 * 
-	 * @param Name of the identifier.
+	 * @param SQLTypeName of the identifier.
 	 * @return
 	 * @throws IllegalIdentifierException  If <code>name</code> represents neither ordinary nor delimited valid identifier. 
 	 * @throws NullPointerException if <code>name</code> is null
@@ -38,4 +39,12 @@ public interface Environment {
 	 * @return
 	 */
 	CatalogFactory catalogFactory();
+
+	/***
+	 * 
+	 * 
+	 * @param columnName
+	 * @return
+	 */
+    ColumnDefinition serialColumnDefinition(String columnName, boolean big);
 }

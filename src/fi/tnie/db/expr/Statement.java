@@ -9,7 +9,7 @@ public abstract class Statement
 		
 	enum Type {
 		/**
-		 * CREATE/ALTER/DROP/TRUNCATE/COMMENT/RENAME -statement 
+		 * CREATE_SCHEMA/ALTER_TABLE/DROP_SCHEMA/TRUNCATE/COMMENT/RENAME -statement 
 		 */			  
 		DATA_DEFINITION_LANGUAGE,
 		/**
@@ -34,9 +34,14 @@ public abstract class Statement
 	
 	public enum Name {
 //	DDL:
-		CREATE(DDL),
-		ALTER(DDL), 
-		DROP(DDL),
+		CREATE_SCHEMA(DDL),
+		CREATE_TABLE(DDL),
+		CREATE_VIEW(DDL),
+		ALTER_TABLE(DDL), 
+		DROP_SCHEMA(DDL),
+		DROP_TABLE(DDL),
+		DROP_VIEW(DDL),
+		DROP_CONSTRAINT(DDL),
 		TRUNCATE(DDL),
 		COMMENT(DDL),
 		RENAME(DDL),		
@@ -98,6 +103,14 @@ public abstract class Statement
 	public Type getType() {
 		return getName().getType();
 	}
+	
+	protected Keyword cascade(Boolean cascade) {
+	    if (cascade == null) {
+	        return null;
+	    }
+	
+	    return cascade.booleanValue() ? Keyword.CASCADE : Keyword.RESTRICT;
+    }
 	
 
 }

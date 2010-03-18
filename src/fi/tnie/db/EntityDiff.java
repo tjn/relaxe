@@ -23,12 +23,6 @@ public interface EntityDiff<
 	Q extends Enum<Q> & Identifiable,
 	E extends Entity<A, R, Q, ? extends E>>
 {	
-	enum Change {
-		ADDITION,
-		DELETION,
-		MODIFICATION
-	}
-	
 	/**
 	 * "Total" difference between original and modified entity.
 	 * 
@@ -54,6 +48,6 @@ public interface EntityDiff<
 	/**  
 	 * @return
 	 */
-	Map<A, Change> attributes();	
+	Map<A, Change> attributes();
 	Map<R, Change> references();	
 }

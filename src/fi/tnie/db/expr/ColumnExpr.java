@@ -5,7 +5,7 @@ package fi.tnie.db.expr;
 
 public abstract class ColumnExpr 
 	extends CompoundElement 
-	implements ValueExpression {
+	implements ValueExpression, SelectListElement {
 
 	private AbstractTableReference table;	
 	private ColumnName columnName;

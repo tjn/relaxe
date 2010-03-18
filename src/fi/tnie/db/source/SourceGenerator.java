@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +21,6 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.QueryException;
 import fi.tnie.db.TableMapper;
 import fi.tnie.db.TableMapper.Part;
@@ -30,16 +28,12 @@ import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Schema;
-import fi.tnie.db.meta.impl.pg.PGEnvironment;
-import fi.tnie.db.meta.util.Tool;
 import fi.tnie.util.io.IOHelper;
 
-public class SourceGenerator
-	extends Tool {
+public class SourceGenerator {
 
     /**
      * Pattern which is replaced with the simple name of the table interface in template files.
@@ -60,6 +54,16 @@ public class SourceGenerator
      * Pattern which is replaced with the simple name of the catalog context class in template files.
      */
     private static final String PATTERN_CATALOG_CONTEXT_CLASS = "{{catalog-context-class}}";
+    
+    /**
+     * Pattern which is replaced with the package name of the tyep being generated in template files.
+     */
+    private static final String PATTERN_PACKAGE = "{{package-name}}";    
+    
+    /**
+     * Pattern which is replaced with the list of imports.
+     */
+    private static final String PATTERN_IMPORTS = "{{imports}}";     
 
     /**
      * TODO: add constants for all patterns
@@ -78,9 +82,9 @@ public class SourceGenerator
      */
 
 	private static Logger logger = Logger.getLogger(SourceGenerator.class);
-
-	public static final String KEY_PACKAGE = "package";
-	public static final String KEY_SOURCE_ROOT_DIR = "root-dir";
+	
+	private File defaultSourceDir;	
+	private EnumMap<Part, File> sourceDirMap;
 
 	private Map<Class<?>, Class<?>> wrapperMap;
 
@@ -92,15 +96,11 @@ public class SourceGenerator
             super(Part.class);
         }
 	}
-
-	public static void main(String[] args) {
-		try {
-			new SourceGenerator().run(args);
-		}
-		catch (Exception e) {
-			logger().error(e.getMessage(), e);
-		}
-	}
+	
+	public SourceGenerator(File defaultSourceDir) {
+        super();
+        this.defaultSourceDir = defaultSourceDir;
+    }
 
 	private static boolean knownAbbr(String t) {
 		return t.equals("url") || t.equals("http") || t.equals("xml");
@@ -116,57 +116,84 @@ public class SourceGenerator
 		return SourceGenerator.logger;
 	}
 
-	@Override
-	public void run(Connection c, Properties config)
-		throws QueryException, IOException {
+//	@Override
+//	public void run(Connection c, Properties config)
+//		throws QueryException, IOException {
+//
+//		try {
+//			String pkg = config.getProperty(KEY_PACKAGE);
+//			String r = config.getProperty(KEY_DEFAULT_SOURCE_DIR);
+//			
+//			File root = (r == null) ? new File(".") : new File(r);
+//
+//			if (!root.isDirectory()) {
+//				throw new IllegalArgumentException("No root directory: " + root.getAbsolutePath());
+//			}
+//			
+//			setSourceDir(root);
+//			DefaultTableMapper tm = new DefaultTableMapper(pkg);
+////			tm.setSourceDir(, root);
+//
+//			PGEnvironment env = new PGEnvironment();
+//			CatalogFactory cf = env.catalogFactory();
+//			Catalog cat = cf.create(c);
+//
+//			List<JavaType> ccil = new ArrayList<JavaType>();
+//			Map<JavaType, CharSequence> fm = new HashMap<JavaType, CharSequence>();
+//
+//			for (Schema s : cat.schemas().values()) {
+//				process(s, tm, ccil, fm);
+//			}
+//
+//			List<String> il = new ArrayList<String>();
+//
+//			for (JavaType t : ccil) {
+//			    if (t != null) {
+//			        il.add(t.getQualifiedName());
+//			    }
+//            }
+//
+//
+//			JavaType cc = new JavaType(tm.getRootPackage(), "CatalogContext");
+//
+//			CharSequence src = generateContext(cc, tm, il, fm);
+//			write(root, cc, src);
+//		}
+//		catch (SQLException e) {
+//			throw new QueryException(e.getMessage(), e);
+//		}
+//	}
+	
+    public Properties run(Connection c, Catalog cat, TableMapper tm)
+        throws QueryException, IOException {
+        
+        Map<File, String> gm = new HashMap<File, String>();
+        Properties generated = new Properties();
+         
+        List<JavaType> ccil = new ArrayList<JavaType>();
+        Map<JavaType, CharSequence> fm = new HashMap<JavaType, CharSequence>();
 
-		try {
-			String pkg = config.getProperty(KEY_PACKAGE);
+        for (Schema s : cat.schemas().values()) {
+            process(s, tm, ccil, fm, generated, gm);
+        }
 
-			String r = config.getProperty(KEY_SOURCE_ROOT_DIR);
-			File root = (r == null) ? new File(".") : new File(r);
+        List<String> il = new ArrayList<String>();
 
-			if (!root.isDirectory()) {
-				throw new IllegalArgumentException("No root directory: " + root.getAbsolutePath());
-			}
-
-			DefaultTableMapper tm = new DefaultTableMapper(pkg);
-//			tm.setSourceDir(, root);
-
-			PGEnvironment env = new PGEnvironment();
-			CatalogFactory cf = env.catalogFactory();
-			Catalog cat = cf.create(c);
-
-			List<JavaType> ccil = new ArrayList<JavaType>();
-			Map<JavaType, CharSequence> fm = new HashMap<JavaType, CharSequence>();
-
-			for (Schema s : cat.schemas().values()) {
-				process(s, root, tm, ccil, fm);
-			}
-
-			List<String> il = new ArrayList<String>();
-
-			for (JavaType t : ccil) {
-			    if (t != null) {
-			        il.add(t.getQualifiedName());
-			    }
+        for (JavaType t : ccil) {
+            if (t != null) {
+                il.add(t.getQualifiedName());
             }
+        }    
+
+        JavaType cc = tm.catalogContextType();
+        CharSequence src = generateContext(cc, tm, il, fm);            
+        write(getSourceDir(), cc, src, generated, gm);
+        
+        return generated;        
+    }	
 
 
-			JavaType cc = new JavaType(tm.getRootPackage(), "CatalogContext");
-
-			CharSequence src = generateContext(cc, tm, il, fm);
-			write(root, cc, src);
-
-
-		}
-		catch (SQLException e) {
-			throw new QueryException(e.getMessage(), e);
-		}
-	}
-
-
-    private CharSequence generateContext(JavaType cc, DefaultTableMapper tm,
+    private CharSequence generateContext(JavaType cc, TableMapper tm,
             Collection<String> il, Map<JavaType, CharSequence> fm) throws IOException {
 
         String src = getTemplateForCatalogContext();
@@ -196,7 +223,7 @@ public class SourceGenerator
     }
 
 
-    private void process(Schema s, final File root, final TableMapper tm, Collection<JavaType> ccil, Map<JavaType, CharSequence> factories)
+    private void process(Schema s, final TableMapper tm, Collection<JavaType> ccil, Map<JavaType, CharSequence> factories, Properties generated, Map<File, String> gm) 
 		throws IOException {
 
 	    List<TypeInfo> types = new ArrayList<TypeInfo>();
@@ -206,38 +233,43 @@ public class SourceGenerator
 		    final JavaType at = tm.entityType(t, Part.ABSTRACT);
 		    final JavaType hp = tm.entityType(t, Part.HOOK);
 		    final JavaType impl = tm.entityType(t, Part.IMPLEMENTATION);
-
+		    
 		    if (intf == null || impl == null) {
 		        continue;
 		    }
 		    else {
+		        final Schema schema = t.getSchema();
+		        
 		        {
-                    CharSequence source = generateInterface(t, intf, tm);
-                    logger().debug("interface: " + source);
-                    // TODO: use table-mapper's source-dir
-                    write(root, intf, source);
+                    CharSequence source = generateInterface(t, intf, tm);                    
+                    File root = getSourceDir(schema, Part.INTERFACE);
+//                    logger().debug("interface: " + source);                   
+                    write(root, intf, source, generated, gm);
 		        }
 
                 if (at != null) {
                    CharSequence source = generateAbstract(t, at, tm);
-                   write(root, at, source);
+                   File root = getSourceDir(schema, Part.ABSTRACT);
+                   write(root, at, source, generated, gm);
                 }
 
                 if (hp != null) {
                     CharSequence source = generateHook(t, hp, tm);
 
                     if (source != null) {
+                        File root = getSourceDir(schema, Part.HOOK);
                         File sourceFile = getSourceFile(root, hp);
 
                         if (!sourceFile.exists()) {
-                            write(root, hp, source);
+                            write(root, hp, source, generated, gm);
                         }
                     }
                 }
 
                 {
                     CharSequence source = generateImplementation(t, impl, tm);
-                    write(root, impl, source);
+                    File root = getSourceDir(schema, Part.IMPLEMENTATION);
+                    write(root, impl, source, generated, gm);
                 }
 
                 TypeInfo info = new TypeInfo();
@@ -260,7 +292,8 @@ public class SourceGenerator
 
                 }
                 else {
-                    write(root, intf, generateFactoryInterface(s, intf, tm, types));
+                    File root = getSourceDir(s, Part.INTERFACE);
+                    write(root, intf, generateFactoryInterface(s, intf, tm, types), generated, gm);
 
     //                CharSequence src = generateFactoryImplementation(s, impl, tm, types);
                     CharSequence src = generateAnonymousFactoryImplementation(s, tm, types);
@@ -278,18 +311,51 @@ public class SourceGenerator
         }
 	}
 
+    private File getSourceDir(Schema s, Part part) {
+        return getSourceDir(part);
+    }
+
     private File getSourceFile(File root, JavaType type)
 	    throws IOException {
-	    File pd = packageDir(root, type.getPackageName());
+        File pd = packageDir(type.getPackageName());        
+        pd = (pd == null) ? root : new File(root, pd.getPath());     
 	    return getSourceFile(pd, type.getUnqualifiedName());
 	}
 
-	private void write(File root, JavaType type, CharSequence source)
+	private void write(File root, JavaType type, CharSequence source, Properties dest, Map<File, String> files) 
 		throws IOException {
-		IOHelper.write(source, getSourceFile(root, type));
+	    
+	    String pkg = type.getPackageName();
+	    File pd = packageDir(pkg);
+
+        // We want 'sf' to appear into 'dest'
+        // relative to 'root', not relative to the current dir
+	    File sf = getSourceFile(pd, type.getUnqualifiedName());
+	    
+	    File out = new File(root, sf.getPath());
+	    
+	    mkdirs(out.getParentFile(), pkg, dest);	    	    
+		IOHelper.write(source, out);
+		String k = type.getQualifiedName();
+						
+		dest.put(k, sf.getPath());
+		files.put(sf, k);
 	}
 
-	public CharSequence generateInterface(BaseTable t, JavaType mt, TableMapper tm)
+	private void mkdirs(File pd, String pkg, Properties dest) 
+	    throws IOException {
+        if (!pd.exists()) {
+            pd.mkdirs();
+            
+            if (!pd.isDirectory()) {
+                throw new IOException("unable to create directory: " + pd.getPath());
+            }
+            
+            dest.put(pkg, pd.getPath());
+        }        
+    }
+
+    public CharSequence generateInterface(BaseTable t, JavaType mt, TableMapper tm)
 	    throws IOException {
 
 	    String src = getTemplateFor(Part.INTERFACE);
@@ -693,8 +759,7 @@ public class SourceGenerator
         sb.append(")");
     }
 
-
-    private String name(String name) {
+    public String name(String name) {
         int len = name.length();
         StringBuffer nb = new StringBuffer(len);
         boolean upper = true;
@@ -706,11 +771,9 @@ public class SourceGenerator
                 upper = true;
                 continue;
             }
-            else {
-                upper = (i == 0);
-            }
 
             nb.append(upper ? Character.toUpperCase(c) : Character.toLowerCase(c));
+            upper = false;
         }
 
         return nb.toString();
@@ -853,34 +916,31 @@ public class SourceGenerator
 		}
 	}
 
-	private File getSourceFile(File pd, String etype) {
-		return new File(pd, etype + ".java");
+	private File getSourceFile(File pd, String type) {
+		return new File(pd, type + ".java");
 	}
-
-	private File packageDir(File root, String pkg)
-		throws IOException {
+	
+//	private File packageDir(File root, String pkg, Properties generated) 
+//	    throws IOException {
+//	    File pd = packageDir(pkg);	    
+//	    pd = (pd == null) ? root : new File(root, pd.getPath());
+//        return pd;	    
+//	}
+	
+	private File packageDir(String pkg) {	    
 		if (pkg == null) {
-			return root;
+			return null;
 		}
 
 		String[] elems = pkg.split(Pattern.quote("."));
-
 		StringBuffer path = new StringBuffer(elems[0]);
 
 		for (int i = 1; i < elems.length; i++) {
 			path.append(File.separatorChar);
 			path.append(elems[i]);
 		}
-
-		File pd = new File(root, path.toString());
-
-		pd.mkdirs();
-
-		if (!pd.isDirectory()) {
-			throw new IOException("unable to create directory: " + pd.getPath());
-		}
-
-		return pd;
+		
+		return new File(path.toString());
 	}
 
 	public String getAttributeType(String uname) {
@@ -957,8 +1017,38 @@ public class SourceGenerator
 	}
 
 	private String replacePackageAndImports(String src, JavaType type, Collection<String> importList) {
-	    src = replaceAll(src, "{{package-name}}", type.getPackageName());
-	    src = replaceAll(src, "{{imports}}", imports(importList));
+	    src = replaceAll(src, PATTERN_PACKAGE, type.getPackageName());
+	    src = replaceAll(src, PATTERN_IMPORTS, imports(importList));
 	    return src;
 	}
+    
+    public void setSourceDir(Part part, File dir) {
+        if (part == null) {
+            throw new NullPointerException();
+        }
+                        
+        getSourceDirMap().put(part, dir); 
+    }
+        
+    public File getSourceDir(Part part) {
+        File dir = getSourceDirMap().get(part);        
+        return (dir != null) ? dir : getSourceDir();        
+    }
+
+    public File getSourceDir() {
+        return defaultSourceDir;
+    }
+
+    public void setSourceDir(File defaultDir) {
+        this.defaultSourceDir = defaultDir;
+    }    
+
+    private EnumMap<Part, File> getSourceDirMap() {
+        if (sourceDirMap == null) {
+            sourceDirMap = new EnumMap<Part, File>(Part.class);            
+        }
+
+        return sourceDirMap;
+    }
+
 }
