@@ -16,8 +16,7 @@ public class PGRestoreTest
 	}
 	
     public void testRestoreDropped() 
-        throws Exception {
-        
+        throws Exception {        
         dropDatabaseIfExists();
         restore();
     }	
