@@ -3,14 +3,27 @@
  */
 package fi.tnie.db.feature;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import fi.tnie.db.QueryException;
+import fi.tnie.db.QueryHelper;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.SchemaElementName;
+import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.ddl.CreateSchema;
 import fi.tnie.db.expr.ddl.CreateTable;
 import fi.tnie.db.expr.ddl.DropSchema;
 import fi.tnie.db.expr.ddl.DropTable;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.Schema;
 
@@ -21,9 +34,12 @@ public class Features
     private static final String FEATURE_TABLE = "feature";
     private static final String DEPENDENCY_TABLE = "dependency";
     
+    private List<Feature> featureList;
+
+    private static Logger logger = Logger.getLogger(Features.class);
+    
     public Features() {
-        super(Features.class, 0, 1);
-        
+        super(Features.class, 0, 1);        
     }
 
     @Override
@@ -31,6 +47,22 @@ public class Features
         return new Generator();
     }    
     
+    public void addFeature(Feature feature) {
+        if (feature == null) {
+            throw new NullPointerException("'feature' must not be null");
+        }
+        
+        getFeatureList().add(feature);
+    }
+
+    private List<Feature> getFeatureList() {
+        if (featureList == null) {
+            featureList = new ArrayList<Feature>();            
+        }
+    
+        return featureList;
+    }
+
     class Generator 
         implements SQLGenerator {
 
@@ -152,8 +184,88 @@ public class Features
         
         private Identifier dependenciesTable(Environment env) {
             return env.createIdentifier(DEPENDENCY_TABLE);        
-        }       
+        }
+    }
+    
+    public void installAll(Connection c, CatalogFactory cf, boolean intermediateCommit) 
+        throws QueryException, SQLException, SQLGenerationException {
+        List<Feature> features = getFeatureList();
+        
+        {
+            ArrayList<Feature> reversed = new ArrayList<Feature>(features);
+            Collections.reverse(reversed);              
+            boolean revert = true;
+            
+            for(int i = 0; i < 5; i++) {
+                // revert all
+                if (!process(c, cf, reversed, revert, intermediateCommit)) {                  
+                }
+            }
+        }
+                            
+        for(int i = 0; i < 5; i++) {
+            //  keep generating layers until any feature
+            //  has nothing to add/remove:
+            if (!process(c, cf, features, false, intermediateCommit)) {
+                break;
+            }
+        }
+        
+        if (!intermediateCommit) {
+            c.commit();    
+        }                
+    }
 
+    private boolean process(Connection c, CatalogFactory cf, List<Feature> features, boolean revert, boolean commit) 
+        throws QueryException, SQLException, SQLGenerationException {
+    
+        Catalog cat = cf.create(c);
+        int count = 0;
+                  
+        for (Feature f : features) {                            
+            SQLGenerator g = f.getSQLGenerator();
+              
+            if (g != null) {
+                SQLGenerationResult result = revert ? g.revert(cat) : g.modify(cat);
+                List<Statement> list = result.statements();
+                
+                if (!list.isEmpty()) {
+                  executeAll(c, list);
+                  
+                  if (commit) {
+                      c.commit();
+                  }
+                  
+                  count += list.size();                                    
+    //              recreate catalog to get the updated meta-data:
+                  cat = cf.create(c);
+                }                
+            }
+        }
+    
+        return count > 0;
+    }
+
+    private void executeAll(Connection c, List<Statement> list)
+        throws SQLException {
+        
+        for (Statement statement : list) {
+            String sql = statement.generate();
+            
+            logger().debug("query: " + sql);      
+            PreparedStatement ps = c.prepareStatement(sql);
+            
+            try {
+                ps.executeUpdate();      
+            }
+            finally {
+                ps = QueryHelper.doClose(ps);                
+            }
+        }
+    }
+    
+    public static Logger logger() {
+        return Features.logger;
     }
 
 }

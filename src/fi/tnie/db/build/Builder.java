@@ -36,17 +36,17 @@ public class Builder
     
     public static final String KEY_PACKAGE = "package";
     public static final String KEY_DEFAULT_SOURCE_DIR = "root-dir";
+    
+    private Features features;
 
     private Environment environment;
-    private List<Feature> featureList;
-
     public static void main(String[] args) {
         try {
             PGEnvironment env = new PGEnvironment();
             Builder b = new Builder(env);
             
             final Features f = new Features();            
-            b.addFeature(f);
+            b.setFeatures(f);
             b.run(args);
         }
         catch (Exception e) {
@@ -59,37 +59,14 @@ public class Builder
           throws QueryException, IOException, SQLGenerationException, SQLException {
           
           final Environment env = this.environment;
-          CatalogFactory cf = env.catalogFactory();
-          
-          List<Feature> features = getFeatureList();
-          
-          {
-              ArrayList<Feature> reversed = new ArrayList<Feature>(features);
-              Collections.reverse(reversed);              
-              boolean revert = true;
-              
-              for(int i = 0; i < 5; i++) {
-                  // revert all
-                  if (!process(c, cf, reversed, revert)) {                  
-                  }
-              }
-          }
-                              
-          for(int i = 0; i < 5; i++) {
-              //  keep generating layers until any feature
-              //  has nothing to add/remove:
-              if (!process(c, cf, features, false)) {
-                  break;
-              }
-          }
-          
+          CatalogFactory cf = env.catalogFactory();          
+          getFeatures().installAll(c, cf, false);         
+                    
           String pkg = config.getProperty(KEY_PACKAGE);
           File root = getSourceRoot(config);
-          
-          
-          generateSources(c, env, root, pkg);
-          
                     
+          generateSources(c, env, root, pkg);
+                              
           new FileProcessor(true) {
             @Override
             public void apply(File file) {
@@ -98,51 +75,6 @@ public class Builder
           }.traverse(root);
       }
 
-    private boolean process(Connection c, CatalogFactory cf, List<Feature> features, boolean revert) 
-        throws QueryException, SQLException, SQLGenerationException {
-        
-        Catalog cat = cf.create(c);
-        int count = 0;
-                  
-        for (Feature f : features) {                            
-            SQLGenerator g = f.getSQLGenerator();
-              
-            if (g != null) {
-                SQLGenerationResult result = revert ? g.revert(cat) : g.modify(cat);
-                List<Statement> list = result.statements();
-                
-                if (!list.isEmpty()) {
-                  executeAll(c, list);
-                  count += list.size();
-                                    
-//                  recreate:
-                  cat = cf.create(c);
-                }                
-            }
-        }
-    
-        return count > 0;
-    }
-
-    private void executeAll(Connection c, List<Statement> list)
-        throws SQLException {
-        
-        for (Statement statement : list) {
-            String sql = statement.generate();
-            
-            logger().debug("query: " + sql);            
-            PreparedStatement ps = c.prepareStatement(sql);
-            
-            try {
-                ps.executeUpdate();      
-            }
-            finally {
-                ps = QueryHelper.doClose(ps);                
-            }
-        }
-        
-        c.commit();
-    }
     
 
     private File getSourceRoot(Properties config) {
@@ -172,11 +104,16 @@ public class Builder
         int count = 0;        
         String p = sourceList.getAbsolutePath();
         
+        logger().info("source list available ? " + sourceList.exists());
+        
         if (sourceList.exists()) {
             Properties previous = IOHelper.load(p);
+            logger().info("previous files: " + previous.size());
             
             for (Object o : previous.values()) {
                 File d = new File(o.toString());
+                
+//                logger().info("deleting files: " + previous.size());
                 
                 if (d.exists()) {
                     if (d.delete()) {                        
@@ -219,24 +156,16 @@ public class Builder
         this.environment = env;
     }
     
-    public void addFeature(Feature feature) {
-        if (feature == null) {
-            throw new NullPointerException("'feature' must not be null");
-        }
-        
-        getFeatureList().add(feature);
-    }
-
-    private List<Feature> getFeatureList() {
-        if (featureList == null) {
-            featureList = new ArrayList<Feature>();            
-        }
-
-        return featureList;
-    }
-    
     private File getSourceList(File sourceRoot) {
         return new File(sourceRoot, "generated-sources-files.txt");        
+    }
+
+    public Features getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(Features features) {
+        this.features = features;
     }
 
     
