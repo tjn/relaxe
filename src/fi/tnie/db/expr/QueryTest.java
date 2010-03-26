@@ -75,7 +75,7 @@ public class QueryTest {
 			CatalogFactory cf = env.catalogFactory();
 			
 			logger().debug("loading config: " + new File(cfg).getAbsolutePath());					
-			Properties info = IOHelper.load(cfg);
+			Properties info = IOHelper.doLoad(cfg);
 			logger().debug("config loaded.");
 											
 			logger().debug("connecting to: " + url);

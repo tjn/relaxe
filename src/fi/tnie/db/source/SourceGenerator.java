@@ -335,7 +335,7 @@ public class SourceGenerator {
 	    File out = new File(root, sf.getPath());
 	    
 	    mkdirs(out.getParentFile(), pkg, dest);	    	    
-		IOHelper.write(source, out);
+		IOHelper.doWrite(source, out);
 		String k = type.getQualifiedName();
 						
 		dest.put(k, sf.getPath());

@@ -107,7 +107,7 @@ public class Builder
         logger().info("source list available ? " + sourceList.exists());
         
         if (sourceList.exists()) {
-            Properties previous = IOHelper.load(p);
+            Properties previous = IOHelper.doLoad(p);
             logger().info("previous files: " + previous.size());
             
             for (Object o : previous.values()) {
@@ -141,7 +141,7 @@ public class Builder
             Catalog cat = cf.create(c);
             Properties current = gen.run(c, cat, tm);
             
-            IOHelper.store(current, sourceList.getPath(), "List of the generated source files");            
+            IOHelper.doStore(current, sourceList.getPath(), "List of the generated source files");            
         }
         catch (SQLException e) {
           throw new QueryException(e.getMessage(), e);
