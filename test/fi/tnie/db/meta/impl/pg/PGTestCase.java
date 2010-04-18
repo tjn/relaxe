@@ -14,13 +14,14 @@ import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
+import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaMap;
 import fi.tnie.db.meta.impl.common.JDBCTestCase;
 import fi.tnie.dbmeta.tools.pg.PGRestore;
 
 public abstract class PGTestCase
-	extends JDBCTestCase {
+    extends JDBCTestCase {
 	
 	private Catalog catalog = null;
 	public static final String SCHEMA_PUBLIC = "public";

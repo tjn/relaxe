@@ -4,6 +4,7 @@
 package fi.tnie.db.meta.impl.common;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -16,10 +17,23 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.QueryException;
+import fi.tnie.db.StatementExecutor;
+import fi.tnie.db.exec.QueryProcessor;
+import fi.tnie.db.expr.Statement;
+import fi.tnie.db.expr.ddl.DropConstraint;
+import fi.tnie.db.expr.ddl.DropTable;
+import fi.tnie.db.expr.ddl.DropView;
+import fi.tnie.db.expr.ddl.Truncate;
+import fi.tnie.db.meta.BaseTable;
+import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.Constraint;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
+import fi.tnie.db.meta.Schema;
+import fi.tnie.db.meta.Table;
 import fi.tnie.db.meta.util.ResultSetWriter;
+import fi.tnie.db.meta.util.SimpleQueryProcessor;
 import fi.tnie.db.meta.util.StringListReader;
 import fi.tnie.util.io.Launcher;
 import fi.tnie.util.io.RunResult;
@@ -44,7 +58,7 @@ public abstract class JDBCTestCase
 	
 	protected RunResult exec(List<String> args) 
 	    throws IOException, InterruptedException {
-	    return Launcher.exec(args);
+	    return Launcher.doExec(args);
 	}
 	
 	protected JDBCTestCase(String driverClass, String userid, String passwd, String database) {
@@ -72,16 +86,23 @@ public abstract class JDBCTestCase
 	@Override
 	protected void setUp() throws Exception {			
 		super.setUp();
-				
-//		restore();
 		
 		if (this.driverClass != null) {
 			Class.forName(this.driverClass);
-		}
-		
-		String url = getDatabaseURL();
-		this.connection = DriverManager.getConnection(url, getUserid(), getPasswd());
-		logger().debug("connection reserved");
+		}		
+	}
+	
+	protected void setUp(boolean drop, boolean truncate) throws Exception {
+	    super.setUp();
+	    
+	    if (truncate) {
+	        Connection c = getConnection();
+	        Catalog cat = getCatalog();
+	        
+    	    if (cat != null) {
+    	        truncate(cat);
+    	    }
+	    }
 	}
 
 	@Override
@@ -101,8 +122,15 @@ public abstract class JDBCTestCase
 		}		
 	}
 
-	protected Connection getConnection() {
-		return connection;
+	protected Connection getConnection() 
+	    throws SQLException {
+		if (connection == null) {
+	        String url = getDatabaseURL();
+	        this.connection = DriverManager.getConnection(url, getUserid(), getPasswd());
+	        logger().debug("connection reserved");            
+        }
+
+        return connection;
 	}
 
 	protected String getUserid() {
@@ -316,15 +344,21 @@ public abstract class JDBCTestCase
 			rw.header("Functions");			
 			rw.apply(meta.getFunctions(null, null, null));
 		}
-		catch (SQLException e) {
-			rw.println(e.getMessage());
-		}
+        catch (SQLException e) {
+            rw.println(e.getMessage());
+        }       
+        catch (AbstractMethodError e) {
+            rw.println(e.getMessage());
+        }
 		
 		try {
 			rw.header("Function Columns");			
 			rw.apply(meta.getFunctionColumns(null, null, null, null));
 		}
-		catch (SQLException e) {
+        catch (SQLException e) {
+            rw.println(e.getMessage());
+        }		
+		catch (AbstractMethodError e) {
 			rw.println(e.getMessage());
 		}
 
@@ -340,7 +374,7 @@ public abstract class JDBCTestCase
 			rw.header("Procedure columns");			
 			rw.apply(meta.getProcedureColumns(null, null, null, null));
 		}
-		catch (SQLException e) {
+		catch (Exception e) {
 			rw.println(e.getMessage());
 		}
 			
@@ -349,6 +383,11 @@ public abstract class JDBCTestCase
 			rw.header("Tables");
 			rw.apply(meta.getTables(null, "public", "%", null));
 		}
+		
+		{
+		    rw.header("Tables");
+	        rw.apply(meta.getTables(c.getCatalog(), null, "%", null));
+	    }
 				
 //		if (jdbcMajor >= 4) {
 //			rw.header("ClientInfo properties");
@@ -372,8 +411,16 @@ public abstract class JDBCTestCase
 		StringListReader r = new StringListReader(tables, 3);
 		r.apply(meta.getTables(null, "public", "%", null));
 		
+		logger().debug("table-count: " + r.getRowCount());
+		
+		if (r.getRowCount() == 0) {		    
+		    // for MySQL:
+		    r.apply(meta.getTables(c.getCatalog(), null, "%", null));
+		    logger().debug("table-count-2: " + r.getRowCount());
+		}
+		
 		for (String n : tables) {				
-			rw.header("Columns in table");
+			rw.header("Columns in table: " + n);
 			rw.apply(meta.getColumns(null, null, n, null));
 			
 			rw.header("Primary key columns in table");
@@ -432,6 +479,74 @@ public abstract class JDBCTestCase
 			}
 		}
 	}
+		
+	public List<Statement> truncation(Catalog cat) {
+	    
+	    List<Statement> statements = new ArrayList<Statement>(); 
+	    
+	    for (Schema s : cat.schemas().values()) {
+	        logger().debug("fks: " + s.foreignKeys().values().size());
+	        logger().debug("pks: " + s.primaryKeys().values().size());
+	        logger().debug("constraints: " + s.constraints().values().size());
+	        
+            for (ForeignKey fk : s.foreignKeys().values()) {
+                Statement stmt = new DropConstraint(fk);
+                statements.add(stmt);                
+            }
+        }
+	    
+        for (Schema s : cat.schemas().values()) {                        
+            for (Table t : s.tables().values()) {
+                Statement stmt = t.isBaseTable() ? 
+//                        new Truncate((BaseTable) t) :
+                        new DropTable(t.getName(), Boolean.TRUE) :                            
+                        new DropView(t.getName(), Boolean.TRUE);                        
+                statements.add(stmt);                
+            }
+        }
+        
+        return statements;
+	}
+	
+    public void truncate(Catalog cat) throws QueryException, SQLException {        
+        Connection c = getConnection();     
+        List<Statement> statements = truncation(cat);
+                
+        StatementExecutor e = new StatementExecutor();
+        
+        QueryProcessor qp = createQueryProcessor();
+        
+        c.setAutoCommit(false);
+                        
+        for (Statement s : statements) {
+            String q = s.generate();
+            logger().debug(q);
+            e.execute(s, c, qp);
+            c.commit();
+        }
+    }
+
+    protected QueryProcessor createQueryProcessor() {
+        PrintWriter pw = new PrintWriter(System.out) {
+            @Override
+            public void print(String s) {            
+                logger().debug(s);
+            }           
+        };
+        
+        QueryProcessor qp = new SimpleQueryProcessor(pw) {
+            @Override
+            public void abort(Throwable e) {             
+                throw new RuntimeException(e);
+            }
+        };
+        return qp;
+    }
+    
+    protected Catalog getCatalog()
+        throws QueryException, SQLException {
+        return null;
+    }
 	
 }
 
