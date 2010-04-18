@@ -3,50 +3,56 @@
  */
 package fi.tnie.db.meta.impl.mysql;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.QueryException;
+import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.CatalogMap;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.impl.DefaultCatalogFactory;
+import fi.tnie.db.meta.impl.DefaultCatalogMap;
 import fi.tnie.db.meta.impl.DefaultMutableCatalog;
 
 public class MySQLCatalogFactory extends DefaultCatalogFactory {
 
 	private static Logger logger = Logger.getLogger(MySQLCatalogFactory.class);
 	
-	private String schema;	
+//	private String schema;	
 		
 	public MySQLCatalogFactory(MySQLEnvironment env) {
 		super(env);	
 	}
 
-	public MySQLCatalogFactory(MySQLEnvironment env, String schema) {
-		this(env);
-		this.schema = schema;
-	}
+//	public MySQLCatalogFactory(MySQLEnvironment env, String schema) {
+//		this(env);
+//		this.schema = schema;
+//	}
 	
 	
+		
 	@Override
-	protected String getCatalogNameFromSchemas(DatabaseMetaData meta, ResultSet schemas)
+	public String getCatalogNameFromSchemas(DatabaseMetaData meta, ResultSet schemas)
 			throws SQLException {		
 		return null;
 	}
 	
 	@Override
-	protected String getSchemaNameFromSchemas(DatabaseMetaData meta, ResultSet rs) throws SQLException {
-		return rs.getString(2);
+	public String getSchemaNameFromSchemas(DatabaseMetaData meta, ResultSet rs) throws SQLException {
+		return rs.getString(1);
 	}
 	
 	
 	@Override
-	protected String getCatalogNameFromTables(DatabaseMetaData meta, ResultSet tables) throws SQLException {
+	public String getCatalogNameFromTables(DatabaseMetaData meta, ResultSet tables) throws SQLException {
 		return null;
 	}
 	
 	@Override
-	protected String getSchemaNameFromTables(DatabaseMetaData meta, ResultSet tables)
+	public String getSchemaNameFromTables(DatabaseMetaData meta, ResultSet tables)
 			throws SQLException {		
 		return tables.getString(1);
 	}
@@ -127,4 +133,54 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
 	protected Schema getSchema(DefaultMutableCatalog catalog, String sch, String cat) {		
 		return catalog.schemas().get(sch);
 	}
+	
+	
+	@Override
+	public ResultSet getSchemas(DatabaseMetaData meta) throws SQLException {	 
+	    return meta.getCatalogs();
+	}
+	
+	
+    @Override
+    public String getSchemaNameFromPrimaryKeys(DatabaseMetaData meta, ResultSet pkcols) throws SQLException {
+        return pkcols.getString(1);     
+    }
+
+    @Override
+    public String getCatalogNameFromPrimaryKeys(DatabaseMetaData meta, ResultSet pkcols) throws SQLException {
+        return null;     
+    }
+    
+    @Override
+    public String getCatalogNameFromImportedKeys(DatabaseMetaData meta, ResultSet fkcols) throws SQLException {
+        return null;     
+    }
+    
+    @Override
+    protected String getSchemaNameFromImportedKeys(DatabaseMetaData meta, ResultSet fkcols) throws SQLException {
+        return fkcols.getString(5);     
+    }
+    
+    @Override
+    public String getReferencedTableCatalogName(DatabaseMetaData meta, ResultSet fkcols) throws SQLException {       
+        return null;
+    }
+    
+    @Override
+    public String getReferencedTableSchemaName(DatabaseMetaData meta, ResultSet fkcols) throws SQLException {        
+        return fkcols.getString(5);
+    }
+
+    @Override
+    public CatalogMap createAll(Connection c) throws QueryException,
+            SQLException {        
+        DefaultCatalogMap cm = new DefaultCatalogMap(getEnvironment());        
+        Catalog cat = this.create(c);
+        cm.add((DefaultMutableCatalog) cat);
+        return cm;
+    }
+
+    public String getCatalogName(Connection c) throws SQLException {
+        return null;
+    }
 }

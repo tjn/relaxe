@@ -3,6 +3,7 @@
  */
 package fi.tnie.db;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -57,4 +58,16 @@ public class QueryHelper {
 
 	public void closeError(ResultSet st, SQLException e) {		
 	}
+
+    public static Connection doClose(Connection c) {
+        if (c != null) {
+            try {
+                c.close();
+            } 
+            catch (SQLException e) {            
+            }
+        }
+        
+        return null;        
+    }
 }

@@ -21,12 +21,12 @@ public class CatalogTest
     public static final String TABLE_CONTINENT = "continent";
     public static final String TABLE_COUNTRY = "country";
 
-    protected Catalog getCatalog() {
-        assertNotNull(getContext());
-        Catalog catalog = getContext().getCatalog();
-        assertNotNull(catalog);        
-        return catalog;
-    }
+//    protected Catalog getCatalog() {
+//        assertNotNull(getContext());
+//        Catalog catalog = getContext().getCatalog();
+//        assertNotNull(catalog);        
+//        return catalog;
+//    }
 
     protected void testBaseTable(BaseTable t) {
     			

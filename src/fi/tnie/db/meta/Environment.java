@@ -47,4 +47,9 @@ public interface Environment {
 	 * @return
 	 */
     ColumnDefinition serialColumnDefinition(String columnName, boolean big);
+        
+    String driverClassName();
+        
+//    void loadDriver()
+//        throws ClassNotFoundException;
 }

@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.feature;
 
-import java.sql.Connection;
 import fi.tnie.db.meta.Catalog;
 
 public interface SQLGenerator {    

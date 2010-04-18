@@ -12,6 +12,8 @@ public class StringListReader extends AbstractQueryProcessor {
 	private Collection<String> destination;
 	private int column;
 	
+	private int rowCount = 0; 
+	
 	public StringListReader(Collection<String> dest) {
 		this(dest, 1);
 	}
@@ -26,10 +28,21 @@ public class StringListReader extends AbstractQueryProcessor {
 		this.destination = dest;
 		this.column = column;
 	}
+	
+	@Override
+	public void prepare() {
+	    rowCount = 0;	
+	}
+	
 
 	@Override
 	public void process(ResultSet rs, long ordinal) throws SQLException {
 		String value = rs.getString(column);
 		this.destination.add(value);
+		rowCount++;
 	}
+	
+	public int getRowCount() {
+        return rowCount;
+    }
 }

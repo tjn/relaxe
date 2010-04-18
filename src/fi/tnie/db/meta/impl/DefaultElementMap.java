@@ -55,7 +55,7 @@ public class DefaultElementMap<E extends MetaObject>
 		E previous = content.get(k);
 		
 		if (previous != null && previous != value) {
-			throw new IllegalArgumentException("Element name is already reserved: " + k); 
+			throw new IllegalArgumentException("Element name is already reserved: " + k.getName()); 
 		}
 		
 		if (previous == null) {

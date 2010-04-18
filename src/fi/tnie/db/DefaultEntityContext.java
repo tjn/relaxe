@@ -21,6 +21,9 @@ public class DefaultEntityContext
 	private Catalog	catalog;
 	
 	private static Logger logger = Logger.getLogger(DefaultEntityContext.class);
+	
+	public DefaultEntityContext() {	    
+	}
 		
 	public DefaultEntityContext(Catalog catalog) {
 		this(catalog, null);		
@@ -41,9 +44,17 @@ public class DefaultEntityContext
 	}
 	
 	public void bindAll(final TableMapper tm) {
+	    bindAll(this.catalog, tm);
+	}
+	
+	public void bindAll(Catalog catalog, final TableMapper tm) {
 	    if (tm == null) {
 	        throw new NullPointerException();
 	    }
+	    
+	    if (catalog == null) {
+            throw new NullPointerException("'catalog' must not be null");
+        }
 	    
 		if (metaMap != null) {
 			metaMap.clear();
@@ -62,8 +73,9 @@ public class DefaultEntityContext
 			}			
 		};
 		
-		ct.traverse(catalog);	
-	}
+		ct.traverse(catalog);
+		this.catalog = catalog;
+	}	
 
 	protected void bind(BaseTable t, TableMapper tm)
 		throws EntityException {
@@ -87,16 +99,16 @@ public class DefaultEntityContext
 			try {
 				JavaType impl = tm.entityType(t, Part.IMPLEMENTATION);
 				// impl.getQualifiedName() + "MetaData";
-																
-				Class<?> m = Class.forName(impl.getQualifiedName());
+								
+				ClassLoader pl = getClass().getClassLoader();																								
+				Class<?> m = Class.forName(impl.getQualifiedName(), false, pl);
 				
 //				this is ugly, isn't it:
 				Entity<?,?,?,?> prototype = (Entity<?,?,?,?>) m.newInstance();								
 				meta = prototype.getMetaData();			
 				meta.bind(t);
 				
-				register(meta);
-				
+				register(meta);				
 			}
 			catch (EntityException e) {
 				logger().error(e.getMessage(), e);
@@ -115,11 +127,11 @@ public class DefaultEntityContext
 		return getMetaMap().get(table);
 	}	
 	
-	private void register(EntityMetaData<?, ?, ?, ?> meta) {
-		getMetaMap().put(meta.getBaseTable(), meta);
+	private void register(EntityMetaData<?, ?, ?, ?> meta) {	    
+		getMetaMap().put(meta.getBaseTable(), meta);		
 	}
 
-	private Map<BaseTable, EntityMetaData<?, ?, ?, ?>> getMetaMap() {
+	public Map<BaseTable, EntityMetaData<?, ?, ?, ?>> getMetaMap() {
 		if (metaMap == null) {
 			metaMap = new HashMap<BaseTable, EntityMetaData<?, ?, ?, ?>>();
 		}
@@ -128,12 +140,13 @@ public class DefaultEntityContext
 	}	
 
 	@Override
-	public Catalog getCatalog() {	
+	public Catalog boundTo() {	
 		return this.catalog;
 	}
 	
 	public static Logger logger() {
 		return DefaultEntityContext.logger;
 	}
-
+	
+	
 }

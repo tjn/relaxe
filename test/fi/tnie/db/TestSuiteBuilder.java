@@ -23,6 +23,8 @@ import junit.framework.TestSuite;
 
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.build.Builder;
+import fi.tnie.db.build.BuilderTest;
 import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.impl.pg.PGEnvironmentTest;
@@ -347,13 +349,15 @@ public class TestSuiteBuilder
   private TestSuite createEnvironmentTestSuite(SimpleTestContext tctx) {
      TestSuite ts = new TestSuite("env");
      
-     Environment env = tctx.getEnvironment();
+     final Environment env = tctx.getEnvironment();
           
      addSuite(createTestsFor(Environment.class, tctx), ts);
      addSuite(createTestsFor(env.getClass(), tctx), ts);
           
      addSuite(createTestsFor(CatalogFactory.class, tctx), ts);
      addSuite(createTestsFor(env.catalogFactory().getClass(), tctx), ts);
+     
+     addSuite(createTestsFor(Builder.class, tctx), ts);     
                     
      return ts;
   }
@@ -486,8 +490,6 @@ public class TestSuiteBuilder
           logger().info("test-class for " + klass.getName() + ": " + testClass);
           
           Class<?> tt = Class.forName(testClass);
-//          Test test = TestSuite.createTest(tt, klass.getName());
-          // Test test = TestSuite.createTest(theClass, name);
           TestSuite gts = new TestSuite(tt);
           
           logger().info("gts-test: " + gts.testCount());

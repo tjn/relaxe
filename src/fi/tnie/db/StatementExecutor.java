@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
-
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.exec.QueryProcessor;
@@ -18,34 +17,47 @@ public class StatementExecutor {
 
 	private static Logger logger = Logger.getLogger(StatementExecutor.class);
 	
-	private Statement statement; 
+//	private List<Statement> statements;
 	
-	private StatementExecutor(Statement statement) {
-		super();
-		
-		if (statement == null) {
-			throw new NullPointerException("'statement' must not be null");
-		}
-		
-		this.statement = statement;
-	}
-
-	public void execute(Connection c, QueryProcessor qp)
+//	public StatementExecutor(List<Statement> statements) {
+//	    this.statements
+//	}
+//	
+//	public StatementExecutor(Statement statement) {
+//		super();
+//		this.statement = statement;
+//	}
+//	
+//	public void execute(Connection c, QueryProcessor qp) {
+//	    
+//	}
+	
+	
+	
+	public void execute(Statement statement, Connection c, QueryProcessor qp)
 		throws SQLException {
 
+	    if (statement == null) {
+            throw new NullPointerException("'statement' must not be null");
+        }
+
 		try {
-			Statement s = this.statement;
-			String qs = s.generate();
+			String qs = statement.generate();
 			PreparedStatement ps = null;
 			
-			if (s.getName() == Name.CALL) {
+			if (statement.getName() == Name.CALL) {
 				ps = c.prepareCall(qs);
 			}
 			else {
-				ps = c.prepareStatement(qs, java.sql.Statement.RETURN_GENERATED_KEYS);
+			    if (statement.getName() == Name.INSERT) {
+			        ps = c.prepareStatement(qs, java.sql.Statement.RETURN_GENERATED_KEYS);
+			    }
+			    else {
+			        ps = c.prepareStatement(qs);
+			    }
 			}
 									
-			if (s.getName().equals(Name.SELECT)) {
+			if (statement.getName().equals(Name.SELECT)) {
 				ResultSet rs = null;
 				
 				try {
@@ -56,7 +68,10 @@ public class StatementExecutor {
 				}								
 			}
 			else {
-				int updated = ps.executeUpdate(qs, java.sql.Statement.RETURN_GENERATED_KEYS);
+			    
+			    // org.postgresql.util.PSQLException: Can't use query methods that take a query string on a PreparedStatement.			    
+//				int updated = ps.executeUpdate(java.sql.Statement.RETURN_GENERATED_KEYS);
+				int updated = ps.executeUpdate();
 				
 				qp.updated(updated);
 				

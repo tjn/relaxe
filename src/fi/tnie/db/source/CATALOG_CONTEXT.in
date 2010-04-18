@@ -11,6 +11,9 @@ import fi.tnie.db.TableMapper;
 public class {{catalog-context-class}}
     extends DefaultEntityContext {
     
+    public {{catalog-context-class}}() {            
+    }
+    
     public {{catalog-context-class}}(Catalog catalog, TableMapper tm) 
         throws EntityException {
         super(catalog, tm);        

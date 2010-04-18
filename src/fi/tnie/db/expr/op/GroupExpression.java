@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.expr.op;
 
-import java.util.List;
-
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.ValueExpression;
 

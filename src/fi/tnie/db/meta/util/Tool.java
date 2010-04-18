@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.meta.util;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -17,27 +16,17 @@ import org.apache.log4j.Logger;
 
 import fi.tnie.db.QueryException;
 import fi.tnie.db.feature.SQLGenerationException;
-import fi.tnie.util.io.IOHelper;
+import fi.tnie.db.meta.Environment;
 
 public abstract class Tool {
 
 	private static Logger logger = Logger.getLogger(Tool.class);
 	
-	public void run(String[] args) 
+	public void run(Environment env, String jdbcUrl, Properties jdbcConfig) 
 		throws Exception {
-		
-		if (args.length < 3) {
-			throw new IllegalArgumentException(
-					"usage:\n" +
-					"java " + getClass().getName() + " <driver-class> <url> <config-file>"					
-			);
-		}			
-		
-		String driverName = args[0];
-		String url = args[1];
-		String cfg = args[2];
-							
-		logger().debug("loading " + driverName);
+	        		
+	    String driverName = env.driverClassName();
+	    logger().debug("loading " + driverName);
 		Class<?> driverClass = Class.forName(driverName);
 		logger().debug("driver loaded.");
 		
@@ -52,39 +41,41 @@ public abstract class Tool {
 			}				
 		}
 		
-		if (!selected.acceptsURL(url)) {
+		if (!selected.acceptsURL(jdbcUrl)) {
 			throw new IllegalArgumentException(
-					"driver " + selected.getClass() + " does not accept URL: " + url);
+					"Driver " + selected.getClass() + " does not accept URL: " + jdbcUrl);
 		}
 		
-		logger().debug("loading config: " + new File(cfg).getAbsolutePath());					
-		Properties info = IOHelper.doLoad(cfg);
-		logger().debug("config loaded.");
-										
-		logger().debug("connecting to: " + url);
+		logger().debug("connecting to: " + jdbcUrl);
 		
-		Connection c = selected.connect(url, info);
+		Connection c = selected.connect(jdbcUrl, jdbcConfig);
 				
 		logger().debug("connected.");
 		
 		if (c == null) {
-			throw new IllegalArgumentException("can not create connection to " + url);
+			throw new IllegalArgumentException("can not create connection to " + jdbcUrl);
 		}
 		
 		try {
-			run(c, info);
+			run(env, c);
 		}
 		finally {
-			try {
-				c.close();
-			}
-			catch (SQLException e) {
-				logger().error(e.getMessage(), e);
-			}
+		    close(c);		    
 		}		
 	}
 
-	public abstract void run(Connection c, Properties config)
+	protected void close(Connection c) {
+	    if (c != null) {
+	        try {
+                c.close();
+            } 
+	        catch (SQLException e) {
+	            logger().warn(e.getMessage());
+            }
+	    }
+    }
+
+    public abstract void run(Environment env, Connection c)
 		throws QueryException, IOException, SQLGenerationException, SQLException;
 
 	public static Logger logger() {

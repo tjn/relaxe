@@ -8,7 +8,6 @@ import fi.tnie.db.expr.Keyword;
 import fi.tnie.db.expr.SchemaElementName;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.VisitContext;
-import fi.tnie.db.expr.Statement.Name;
 
 public abstract class DropSchemaElement 
     extends Statement
@@ -28,7 +27,7 @@ public abstract class DropSchemaElement
             throw new NullPointerException("'elementType' must not be null");
         }
         
-        this.name = name;        
+        this.name = relativize(name);        
         this.elementType = elementType;
         this.cascade = cascade(cascade);
     }    

@@ -20,8 +20,6 @@ public class PGEnvironment
 	extends DefaultEnvironment {
 
 	public PGEnvironment() {
-		
-	
 	}
 
 	@Override
@@ -66,6 +64,13 @@ public class PGEnvironment
         public boolean isOrdinary() {
             return true;
         }
-    }	
+    }
+
+    @Override
+    public String driverClassName() {    
+        return "org.postgresql.Driver";
+    }
+    
+    
 	
 }

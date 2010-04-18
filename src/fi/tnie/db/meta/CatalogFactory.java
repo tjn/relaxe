@@ -16,4 +16,6 @@ public interface CatalogFactory {
 	CatalogMap createAll(Connection c)
 		throws QueryException, SQLException;
 	
+	String getCatalogName(Connection c)
+	    throws SQLException;
 }

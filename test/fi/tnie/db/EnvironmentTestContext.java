@@ -16,4 +16,5 @@ public interface EnvironmentTestContext {
     public Connection connect() throws SQLException;
     public Driver getDriver();
     public Catalog getCatalog();
+    public void setCatalog(Catalog catalog);
 }

@@ -73,4 +73,8 @@ public class SchemaName
     public boolean isRelative() {
         return this.catalogName == null; 
     }
+    
+    public SchemaName toRelative() {
+        return (this.catalogName == null) ? this : new SchemaName(null, this.schemaName); 
+    }
 }

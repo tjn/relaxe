@@ -17,6 +17,7 @@ import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
 import fi.tnie.db.DBMetaTest;
 import fi.tnie.db.EnvironmentTestContext;
+import fi.tnie.db.QueryException;
 import fi.tnie.db.QueryHelper;
 import fi.tnie.db.meta.impl.DefaultCatalogFactory;
 import fi.tnie.db.meta.impl.mysql.MySQLCatalogFactory;
@@ -191,5 +192,14 @@ public class DBMetaTestCase
 
     public CatalogFactory factory() {        
         return getContext().getEnvironment().catalogFactory();        
+    }
+    
+    
+    
+    public Catalog getCatalog() throws QueryException, SQLException {
+        Connection c = getConnection();
+        CatalogFactory cf = factory();
+        Catalog cat = cf.create(c);
+        return cat;
     }
 }

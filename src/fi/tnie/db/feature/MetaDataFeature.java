@@ -6,8 +6,6 @@ package fi.tnie.db.feature;
 import java.util.Collections;
 import java.util.Set;
 
-import fi.tnie.db.meta.Catalog;
-
 public class MetaDataFeature implements Feature {
 
     @Override

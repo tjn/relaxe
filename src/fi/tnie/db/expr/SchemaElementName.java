@@ -52,4 +52,9 @@ public final class SchemaElementName
 	public boolean isRelative() {
 	    return this.qualifier == null; 
 	}
+	
+	public SchemaName getQualifier() {
+	    return this.qualifier;
+	}
+	
 }

@@ -8,8 +8,6 @@ import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.Keyword;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.VisitContext;
-import fi.tnie.db.expr.Statement.Name;
-import fi.tnie.db.meta.Environment;
 
 public class CreateSchema
 	extends Statement {

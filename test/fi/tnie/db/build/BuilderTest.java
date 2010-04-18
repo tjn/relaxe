@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -18,67 +19,96 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.DefaultEntityContext;
 import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.EntityContext;
+import fi.tnie.db.EntityMetaData;
+import fi.tnie.db.EnvironmentTestContext;
 import fi.tnie.db.QueryException;
 import fi.tnie.db.expr.ddl.CreateTable;
 import fi.tnie.db.feature.Features;
 import fi.tnie.db.feature.SQLGenerationException;
+import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.meta.Environment;
+import fi.tnie.db.meta.SchemaElementMap;
 import fi.tnie.db.meta.impl.pg.PGEnvironment;
 import fi.tnie.testapp.CatalogContext;
+import fi.tnie.testapp.pub.PublicFactory;
 import fi.tnie.util.io.IOHelper;
 import fi.tnie.util.io.Launcher;
 import fi.tnie.util.io.RunResult;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 
-public class BuilderTest extends TestCase {
+public class BuilderTest extends DBMetaTestCase {
     
-    public static final String ROOT_PACKAGE = "fi.tnie.testapp";
+    // public static final String ROOT_PACKAGE = "fi.tnie.testapp";
     
     private static Logger logger = Logger.getLogger(BuilderTest.class);
         
-    private Catalog catalog = null;
-    private Connection connection = null;    
     private String rootPackage = null;
     private File sourceDir = null;
     private File outputDir = null;
         
-//    @SuppressWarnings("deprecation")
-//    public void testGeneration(Catalog cat, Connection c) 
-//        throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-//    
-//        File srcdir = new File("generated/src");
-//        File bindir = new File("generated/bin");        
-//                        
-//        testGeneration(cat, c, ROOT_PACKAGE, srcdir, bindir);        
-//    }
+    @SuppressWarnings("deprecation")
+    public void testGeneration(Catalog cat, Connection c) 
+        throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    
+        File srcdir = new File("gen/src");
+        File bindir = new File("gen/bin");
+        
+        srcdir.mkdirs();
+        bindir.mkdirs();
+        
+        Builder b = new Builder();
+        b.setSourceDir(srcdir);
+        b.setRootPackage(getRootPackage());
+        testGeneration(b, cat, c, bindir);
+    }
   
        
     
-    @Override
-    public void run(TestResult result) {
-        try {
-            testGeneration(getCatalog(), getConnection(), getRootPackage(), getSourceDir(), getOutputDir(), result);
-        }
-        catch (Exception e) {
-            result.addError(this, e);
-        }
-    }
+//    @Override
+//    public void run(TestResult result) {
+//        try {
+//            testGeneration(getCatalog(), getConnection());
+//        }
+//        catch (Exception e) {
+//            result.addError(this, e);
+//        }
+//    }
     
-    @SuppressWarnings("deprecation")
-    public void testGeneration(Catalog cat, Connection c, String rootpkg, File srcdir, File bindir, TestResult result) 
-        throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-    
+    public void testGeneration() throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        Connection c = getConnection();
+        assertNotNull(c);
+        Catalog cat = getCatalog();
+        assertNotNull(cat);
+        
         Builder b = new Builder();
-                                
+        
+        File srcdir = new File("gen/src");        
+        File bindir = new File("gen/bin");
+        
         srcdir.mkdirs();
         b.removePreviouslyGenerated(srcdir);
         b.setSourceDir(srcdir);
-        b.setRootPackage(rootpkg);
+        b.setRootPackage(getClass().getPackage().getName());
+        
+        testGeneration(b, cat, c, bindir);    
+        
+        c.close();
+    }
+        
+    @SuppressWarnings("deprecation")
+    public void testGeneration(Builder b, Catalog cat, Connection c, File bindir) 
+        throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    
+        final File srcdir = b.getSourceDir();               
+        b.removePreviouslyGenerated(srcdir);
         
         final Features f = new Features();            
         b.setFeatures(f);
+        
+        final String root = b.getRootPackage();
         
         b.run(cat.getEnvironment(), c);
         
@@ -125,13 +155,37 @@ public class BuilderTest extends TestCase {
         
         URL[] path = { bindir.toURL() };                  
         URLClassLoader gcl = new URLClassLoader(path);
-        
+                        
         logger().debug("instantiating entity context...");
-        String n = ROOT_PACKAGE + ".CatalogContext";        
+        String n = root + ".CatalogContext";        
         EntityContext ec = load(n, gcl);
         assertNotNull(ec);
+        
         logger().debug("binding all...");
-        ec.bindAll(cat, new DefaultTableMapper(ROOT_PACKAGE));        
+        ec.bindAll(cat, new DefaultTableMapper(root));
+        logger().debug("bound all");
+        
+        DefaultEntityContext dec = (DefaultEntityContext) ec;
+        
+        SchemaElementMap<? extends BaseTable> tables = cat.schemas().get(SCHEMA_PUBLIC).baseTables();
+        assertNotNull(tables);
+        
+        int tableCount = tables.keySet().size();
+        assertTrue(tableCount > 0);
+        
+        Map<BaseTable, EntityMetaData<?, ?, ?, ?>> mm = dec.getMetaMap();
+        assertNotNull(mm);
+        assertFalse(mm.isEmpty());
+        assertEquals(tableCount, mm.size());
+                
+        cat.schemas().get(SCHEMA_PUBLIC).baseTables().get(TABLE_COUNTRY);
+                
+        BaseTable tab = cat.schemas().get(SCHEMA_PUBLIC).baseTables().get(TABLE_COUNTRY);
+        assertNotNull(tab);
+                        
+        EntityMetaData<?, ?, ?, ?> m = ec.getMetaData(tab);
+        assertNotNull(m);        
+                                        
         logger().debug("generation OK.");
     }
 
@@ -148,23 +202,20 @@ public class BuilderTest extends TestCase {
     }
 
 
-    public void setCatalog(Catalog catalog) {
-        this.catalog = catalog;
-    }
-
-    public Catalog getCatalog() {
-        return catalog;
-    }
+    
+//    public void setCatalog(Catalog catalog) {
+//        this.catalog = catalog;
+//    }
 
 
-    public Connection getConnection() {
-        return connection;
-    }
-
-
-    public void setConnection(Connection connection) {
-        this.connection = connection;
-    }
+//    public Connection getConnection() {
+//        return connection;
+//    }
+//
+//
+//    public void setConnection(Connection connection) {
+//        this.connection = connection;
+//    }
 
 
 
@@ -195,8 +246,6 @@ public class BuilderTest extends TestCase {
     public File getOutputDir() {
         return outputDir;
     }
-
-
 
     public void setOutputDir(File outputDir) {
         this.outputDir = outputDir;

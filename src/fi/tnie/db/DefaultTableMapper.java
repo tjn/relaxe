@@ -3,14 +3,12 @@
  */
 package fi.tnie.db;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Types;
 import java.util.EnumMap;
 import java.util.Map;
 
-import fi.tnie.db.TableMapper.Part;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;

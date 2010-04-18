@@ -11,5 +11,20 @@ public interface EntityContext {
 		 
 	EntityMetaData<?, ?, ?, ?> getMetaData(BaseTable table);
 	
-	Catalog getCatalog();
+	/** 
+	 * Returns the catalog this context is bound to or <code>null</code> 
+	 * if this context is not bound to any catalog. 
+	 * 
+	 * @return
+	 */
+	Catalog boundTo();
+	
+	/**
+	 * Binds this context to the specific catalog by using <code>tm</code> as the mapper.
+	 * 
+	 * @param catalog
+	 * @param tm
+	 */
+	void bindAll(Catalog catalog, final TableMapper tm);
+		
 }

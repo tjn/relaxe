@@ -19,7 +19,7 @@ public class PGCatalogFactory
 	private String catalog;
 	
 	@Override
-	protected void prepare(DatabaseMetaData m) 
+	public void prepare(DatabaseMetaData m) 
 		throws SQLException {
 		
 		if (catalog != null) {
@@ -27,30 +27,47 @@ public class PGCatalogFactory
 		}
 		
 		this.catalog = m.getConnection().getCatalog();
-	}	
-
-	@Override
-	protected String getCatalogNameFromSchemas(DatabaseMetaData meta,
-			ResultSet schemas) throws SQLException {
-		return this.catalog;
 	}
 	
 	@Override
-	protected String getCatalogNameFromTables(DatabaseMetaData meta, ResultSet tables)
+	public String getCatalogNameFromPrimaryKeys(DatabaseMetaData meta, ResultSet pkcols) throws SQLException {
+	    return meta.getConnection().getCatalog();
+	};
+	
+	
+	@Override
+	public String getCatalogNameFromImportedKeys(DatabaseMetaData meta,
+	        ResultSet fkcols) throws SQLException {
+	    return getCatalog(meta);
+	}
+	
+	@Override
+    public String getCatalogNameFromSchemas(DatabaseMetaData meta,
+			ResultSet schemas) throws SQLException {
+	    return getCatalog(meta);
+	}	
+	
+	@Override
+    public String getCatalogNameFromTables(DatabaseMetaData meta, ResultSet tables)
 			throws SQLException {		
 		String cn = super.getCatalogNameFromTables(meta, tables);		
-		return (cn == null) ? this.catalog : cn;
+		return (cn == null) ? getCatalog(meta) : cn;
 	}
 	
 	@Override
-	protected String getReferencedTableCatalogName(DatabaseMetaData meta,
+    public String getReferencedTableCatalogName(DatabaseMetaData meta,
 			ResultSet fkcols) throws SQLException {		
 		String cn = super.getReferencedTableCatalogName(meta, fkcols);		
-		return (cn == null) ? this.catalog : cn;		
+		return (cn == null) ? getCatalog(meta) : cn;		
 	}
 	
 	@Override
 	protected void finish() {		
 		this.catalog = null;		
+	}
+	
+	private String getCatalog(DatabaseMetaData meta) 
+	    throws SQLException {
+	    return meta.getConnection().getCatalog();
 	}
 }

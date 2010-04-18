@@ -113,4 +113,15 @@ public abstract class Statement
     }
 	
 
+	protected SchemaElementName relativize(SchemaElementName n) {	    
+	    SchemaName q = n.getQualifier();
+	    
+	    if (q == null || q.isRelative()) {
+	        return n;
+	    }
+	    
+	    return new SchemaElementName(n.getQualifier().toRelative(), n.getUnqualifiedName());
+	}
+            
+
 }
