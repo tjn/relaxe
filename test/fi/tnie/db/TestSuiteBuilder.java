@@ -484,18 +484,18 @@ public class TestSuiteBuilder
     private TestSuite createTestsFor(Class<?> klass, final SimpleTestContext ctx) {    
         
         String testClass = klass.getName() + "Test";
-        TestSuite injected = new TestSuite(testClass);
+        TestSuite suite = null;
         
         try {
           logger().info("test-class for " + klass.getName() + ": " + testClass);
           
           Class<?> tt = Class.forName(testClass);
-          TestSuite gts = new TestSuite(tt);
+          suite = new TestSuite(tt);
           
-          logger().info("gts-test: " + gts.testCount());
+          logger().info("suite-tests: " + suite.testCount());
           
-          for (int i = 0; i < gts.testCount(); i++) {
-              Test single = gts.testAt(i);            
+          for (int i = 0; i < suite.testCount(); i++) {
+              Test single = suite.testAt(i);            
               logger().info("testcase " + i + ": " + single.getClass() + ": elems=" + single.countTestCases());
               
               if (single instanceof DBMetaTest) {
@@ -504,62 +504,13 @@ public class TestSuiteBuilder
                   dbtest.init(ctx);
                   logger().debug("inited: " + dbtest.id());
               }
-          }    
-          
-          injected.addTest(gts);
-          
-//          logger().info("test-class: " + test.getClass());
-//                    
-//          if (test instanceof DBMetaTest) {
-//              DBMetaTest dbtest = (DBMetaTest) test;
-//              logger().debug("initing with: " + dbtest.id() + " with " + ctx);
-//              dbtest.init(ctx);
-//              logger().debug("inited: " + dbtest.id());
-//          }
-          
-//          injected.addTest(test);
-                    
-//          final TestSuite ts = new TestSuite(tt);
-//          injected.setName(ts.getName());
-//                
-//          int testCount = ts.testCount();
-//          logger().info("test-count: " + ts.testCount());
-//          
-//          for (int i = 0; i < testCount; i++) {
-//              final Test t = ts.testAt(i);
-//              logger().debug("test: " + t.getClass());              
-//              final TestCase tc = (TestCase) ((t instanceof TestCase) ? t : null);
-//                            
-//              TestCase a = new TestCase() {            
-//                @Override
-//                public void run(TestResult tr) {
-//                    if (t instanceof DBMetaTest) {
-//                        DBMetaTest dbtest = (DBMetaTest) t;
-//                        dbtest.init(ctx);          
-//                    }                    
-//                    
-//                    t.run(tr);
-//                }
-//                
-//                @Override
-//                public int countTestCases() {                 
-//                    return t.countTestCases();
-//                }
-//                
-//                @Override
-//                public String getName() {
-//                    return (tc == null) ? super.getName() : tc.getName()+ ".inj";
-//                }                 
-//              };
-//              
-//              injected.addTest(a);       
-//          }      
+          }
         } 
         catch (ClassNotFoundException e) {
             logger().info("no test class for: " + klass.getName());
         } 
         
-        return injected;
+        return suite;
     }
 
     public static Logger logger() {

@@ -9,8 +9,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -20,24 +18,16 @@ import fi.tnie.db.DefaultEntityContext;
 import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.EntityContext;
 import fi.tnie.db.EntityMetaData;
-import fi.tnie.db.EnvironmentTestContext;
 import fi.tnie.db.QueryException;
-import fi.tnie.db.expr.ddl.CreateTable;
 import fi.tnie.db.feature.Features;
 import fi.tnie.db.feature.SQLGenerationException;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.DBMetaTestCase;
-import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.SchemaElementMap;
-import fi.tnie.db.meta.impl.pg.PGEnvironment;
-import fi.tnie.testapp.CatalogContext;
-import fi.tnie.testapp.pub.PublicFactory;
 import fi.tnie.util.io.IOHelper;
 import fi.tnie.util.io.Launcher;
 import fi.tnie.util.io.RunResult;
-import junit.framework.TestCase;
-import junit.framework.TestResult;
 
 public class BuilderTest extends DBMetaTestCase {
     
@@ -48,8 +38,8 @@ public class BuilderTest extends DBMetaTestCase {
     private String rootPackage = null;
     private File sourceDir = null;
     private File outputDir = null;
-        
-    @SuppressWarnings("deprecation")
+      
+    
     public void testGeneration(Catalog cat, Connection c) 
         throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
     
