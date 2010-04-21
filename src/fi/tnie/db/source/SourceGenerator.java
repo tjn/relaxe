@@ -115,54 +115,6 @@ public class SourceGenerator {
 	public static Logger logger() {
 		return SourceGenerator.logger;
 	}
-
-//	@Override
-//	public void run(Connection c, Properties config)
-//		throws QueryException, IOException {
-//
-//		try {
-//			String pkg = config.getProperty(KEY_PACKAGE);
-//			String r = config.getProperty(KEY_DEFAULT_SOURCE_DIR);
-//			
-//			File root = (r == null) ? new File(".") : new File(r);
-//
-//			if (!root.isDirectory()) {
-//				throw new IllegalArgumentException("No root directory: " + root.getAbsolutePath());
-//			}
-//			
-//			setSourceDir(root);
-//			DefaultTableMapper tm = new DefaultTableMapper(pkg);
-////			tm.setSourceDir(, root);
-//
-//			PGEnvironment env = new PGEnvironment();
-//			CatalogFactory cf = env.catalogFactory();
-//			Catalog cat = cf.create(c);
-//
-//			List<JavaType> ccil = new ArrayList<JavaType>();
-//			Map<JavaType, CharSequence> fm = new HashMap<JavaType, CharSequence>();
-//
-//			for (Schema s : cat.schemas().values()) {
-//				process(s, tm, ccil, fm);
-//			}
-//
-//			List<String> il = new ArrayList<String>();
-//
-//			for (JavaType t : ccil) {
-//			    if (t != null) {
-//			        il.add(t.getQualifiedName());
-//			    }
-//            }
-//
-//
-//			JavaType cc = new JavaType(tm.getRootPackage(), "CatalogContext");
-//
-//			CharSequence src = generateContext(cc, tm, il, fm);
-//			write(root, cc, src);
-//		}
-//		catch (SQLException e) {
-//			throw new QueryException(e.getMessage(), e);
-//		}
-//	}
 	
     public Properties run(Connection c, Catalog cat, TableMapper tm)
         throws QueryException, IOException {
@@ -190,8 +142,7 @@ public class SourceGenerator {
         write(getSourceDir(), cc, src, generated, gm);
         
         return generated;        
-    }	
-
+    }
 
     private CharSequence generateContext(JavaType cc, TableMapper tm,
             Collection<String> il, Map<JavaType, CharSequence> fm) throws IOException {
@@ -435,39 +386,39 @@ public class SourceGenerator {
         return src;
     }
 
-    private CharSequence generateFactoryImplementation(Schema s, JavaType impl, TableMapper tm, Collection<TypeInfo> types)
-        throws IOException {
-
-        JavaType intf = tm.factoryType(s, Part.INTERFACE);
-        String src = getFactoryTemplateFor(Part.IMPLEMENTATION);
-
-        List<String> il = new ArrayList<String>();
-
-        addImport(impl, intf, il);
-
-        for (TypeInfo t : types) {
-            JavaType returnType = getFactoryMethodReturnType(t);
-            addImport(impl, returnType, il);
-        }
-
-        src = replacePackageAndImports(src, impl, il);
-
-        src = replaceAll(src, "{{schema-factory-impl}}", impl.getUnqualifiedName());
-        src = replaceAll(src, "{{schema-factory}}", intf.getUnqualifiedName());
-
-        StringBuffer code = new StringBuffer();
-
-        for (TypeInfo t : types) {
-            String m = formatFactoryMethod(t, true);
-            a(code, m, 1);
-        }
-
-        src = replaceAll(src, "{{factory-method-list}}", code.toString());
-
-        logger().debug("factory impl: " + src);
-
-        return src;
-    }
+//    private CharSequence generateFactoryImplementation(Schema s, JavaType impl, TableMapper tm, Collection<TypeInfo> types)
+//        throws IOException {
+//
+//        JavaType intf = tm.factoryType(s, Part.INTERFACE);
+//        String src = getFactoryTemplateFor(Part.IMPLEMENTATION);
+//
+//        List<String> il = new ArrayList<String>();
+//
+//        addImport(impl, intf, il);
+//
+//        for (TypeInfo t : types) {
+//            JavaType returnType = getFactoryMethodReturnType(t);
+//            addImport(impl, returnType, il);
+//        }
+//
+//        src = replacePackageAndImports(src, impl, il);
+//
+//        src = replaceAll(src, "{{schema-factory-impl}}", impl.getUnqualifiedName());
+//        src = replaceAll(src, "{{schema-factory}}", intf.getUnqualifiedName());
+//
+//        StringBuffer code = new StringBuffer();
+//
+//        for (TypeInfo t : types) {
+//            String m = formatFactoryMethod(t, true);
+//            a(code, m, 1);
+//        }
+//
+//        src = replaceAll(src, "{{factory-method-list}}", code.toString());
+//
+//        logger().debug("factory impl: " + src);
+//
+//        return src;
+//    }
 
 
     private JavaType getFactoryMethodReturnType(TypeInfo info) {
@@ -480,11 +431,11 @@ public class SourceGenerator {
 
 
     private String formatFactoryMethod(TypeInfo info, boolean impl) {
-        JavaType itfp = info.get(Part.INTERFACE);
+        JavaType ap = info.get(Part.ABSTRACT);
         JavaType impp = info.get(Part.IMPLEMENTATION);
         JavaType returnType = getFactoryMethodReturnType(info);
 
-        String signature = returnType.getUnqualifiedName() + " new" + itfp.getUnqualifiedName() + "()";
+        String signature = returnType.getUnqualifiedName() + " new" + ap.getUnqualifiedName() + "()";
         String src = null;
 
         if (!impl) {
@@ -908,13 +859,13 @@ public class SourceGenerator {
 		return attr;
 	}
 
-	private void indent(int indentLevel, StringBuffer dest) {
-		String indent = "  ";
-
-		for (int level = 0; level < indentLevel; level++) {
-			dest.append(indent);
-		}
-	}
+//	private void indent(int indentLevel, StringBuffer dest) {
+//		String indent = "  ";
+//
+//		for (int level = 0; level < indentLevel; level++) {
+//			dest.append(indent);
+//		}
+//	}
 
 	private File getSourceFile(File pd, String type) {
 		return new File(pd, type + ".java");
