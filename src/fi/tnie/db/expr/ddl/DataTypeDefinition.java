@@ -48,7 +48,5 @@ public abstract class DataTypeDefinition
         v.start(vc, this);
         traverseNonEmpty(getName(), vc, v);
         v.end(this);
-    }    
-    
-    
+    }
 }

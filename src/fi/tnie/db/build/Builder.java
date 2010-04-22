@@ -268,7 +268,11 @@ public class Builder
     }
 
     public Features getFeatures() {
-        return features;
+        if (features == null) {
+            features = new Features();            
+        }
+
+        return features; 
     }
 
     public void setFeatures(Features features) {

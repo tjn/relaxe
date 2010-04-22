@@ -189,6 +189,9 @@ public class Features
     
     public void installAll(Connection c, CatalogFactory cf, boolean intermediateCommit) 
         throws QueryException, SQLException, SQLGenerationException {
+        
+        logger().debug("installAll - enter");
+        
         List<Feature> features = getFeatureList();
         
         {
@@ -213,12 +216,16 @@ public class Features
         
         if (!intermediateCommit) {
             c.commit();    
-        }                
+        }
+        
+        logger().debug("installAll - exit");
     }
 
     private boolean process(Connection c, CatalogFactory cf, List<Feature> features, boolean revert, boolean commit) 
         throws QueryException, SQLException, SQLGenerationException {
     
+        logger().debug("process - enter");
+        
         Catalog cat = cf.create(c);
         int count = 0;
                   
@@ -242,6 +249,8 @@ public class Features
                 }                
             }
         }
+        
+        logger().debug("process - exit: " + count);
     
         return count > 0;
     }
