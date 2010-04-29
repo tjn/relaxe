@@ -9,8 +9,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -19,12 +21,23 @@ import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.EntityContext;
 import fi.tnie.db.EntityMetaData;
 import fi.tnie.db.QueryException;
+import fi.tnie.db.expr.Statement;
+import fi.tnie.db.expr.Statement.Name;
+import fi.tnie.db.feature.Dependency;
+import fi.tnie.db.feature.Feature;
 import fi.tnie.db.feature.Features;
+import fi.tnie.db.feature.MetaData;
 import fi.tnie.db.feature.SQLGenerationException;
+import fi.tnie.db.feature.SQLGenerationResult;
+import fi.tnie.db.feature.SQLGenerator;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.DBMetaTestCase;
+import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaElementMap;
+import fi.tnie.db.meta.impl.DefaultMutableColumn;
+import fi.tnie.testapp.pub.AbstractState;
 import fi.tnie.util.io.IOHelper;
 import fi.tnie.util.io.Launcher;
 import fi.tnie.util.io.RunResult;
@@ -67,7 +80,7 @@ public class BuilderTest extends DBMetaTestCase {
 //        }
 //    }
     
-    public void testGeneration() throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void _testGeneration() throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Connection c = getConnection();
         assertNotNull(c);
         Catalog cat = getCatalog();
@@ -81,11 +94,56 @@ public class BuilderTest extends DBMetaTestCase {
         srcdir.mkdirs();
         b.removePreviouslyGenerated(srcdir);
         b.setSourceDir(srcdir);
+        b.setRootPackage(getClass().getPackage().getName());                        
+        testGeneration(b, cat, c, bindir);           
+        c.close();
+    }
+    
+    
+    public void testGenerationWithMetaData() throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        Connection c = getConnection();
+        assertNotNull(c);
+        Catalog cat = getCatalog();
+        assertNotNull(cat);
+        
+        Builder b = new Builder();
+        
+        File srcdir = new File("gen/src");
+        File bindir = new File("gen/bin");
+        
+        srcdir.mkdirs();
+        b.removePreviouslyGenerated(srcdir);
+        b.setSourceDir(srcdir);
         b.setRootPackage(getClass().getPackage().getName());
         
-        testGeneration(b, cat, c, bindir);    
         
-        c.close();
+//        MetaData md = new MetaData() {
+//              @Override
+//            public SQLGenerationResult modify(Catalog cat)
+//                    throws SQLGenerationException {
+//                  
+//            }  
+//        };                       
+        
+        b.getFeatures().addFeature(new MetaData());
+        
+        testGeneration(b, cat, c, bindir);
+        
+        CatalogFactory cf = getCatalog().getEnvironment().catalogFactory();
+        assertNotNull(cf);
+        final Catalog newCatalog = cf.create(c);                
+        assertNotNull(newCatalog);
+        
+        for (Schema s : newCatalog.schemas().values()) {
+            for (BaseTable t : s.baseTables().values()) {
+                DefaultMutableColumn cc = t.columnMap().get("created_at");
+                assertNotNull(cc);
+                assertNotNull(cc.getDataType() != null);
+                assertEquals(Types.TIMESTAMP, cc.getDataType().getDataType());
+            }
+        }
+        
+        // c.close();        
     }
         
     @SuppressWarnings("deprecation")
@@ -94,9 +152,8 @@ public class BuilderTest extends DBMetaTestCase {
     
         final File srcdir = b.getSourceDir();               
         b.removePreviouslyGenerated(srcdir);
-        
-        final Features f = new Features();            
-        b.setFeatures(f);
+                             
+        // b.setFeatures((f == null) ? new Features());
         
         final String root = b.getRootPackage();
         
@@ -219,8 +276,6 @@ public class BuilderTest extends DBMetaTestCase {
         this.rootPackage = rootPackage;
     }
 
-
-
     public File getSourceDir() {
         return sourceDir;
     }
@@ -239,5 +294,91 @@ public class BuilderTest extends DBMetaTestCase {
 
     public void setOutputDir(File outputDir) {
         this.outputDir = outputDir;
-    }    
+    }
+    
+    
+    public class DelegatingFeature
+        implements Feature {
+        
+        private Feature feature;
+        
+        public DelegatingFeature(Feature feature) {
+            this.feature = feature;            
+        }
+
+        @Override
+        public Set<Dependency> dependencies() {
+            return this.feature.dependencies();
+        }
+
+        @Override
+        public String getName() {         
+            return this.feature.getName();
+        }
+
+        @Override
+        public SQLGenerator getSQLGenerator() {
+            return this.feature.getSQLGenerator();
+        }
+
+        @Override
+        public int getVersionMajor() {
+            return this.feature.getVersionMajor();
+        }
+
+        @Override
+        public int getVersionMinor() {            
+            return this.feature.getVersionMinor();
+        }
+        
+        
+        
+        
+    }
+    
+    public class DelegatingStatement
+        extends Statement {
+        
+        private Statement delegated;
+
+        public DelegatingStatement(Statement s) {
+            super(s.getName());
+        }
+        
+        @Override
+        public String generate() {
+            return delegated.generate();
+        }        
+    }
+    
+    
+    private class TestFeature
+        extends DelegatingFeature {
+
+        public TestFeature() {
+            super(new MetaData());
+        }
+        
+        @Override
+        public SQLGenerator getSQLGenerator() {         
+            final SQLGenerator g = super.getSQLGenerator();
+            return new SQLGenerator() {
+
+                @Override
+                public SQLGenerationResult modify(Catalog cat)
+                        throws SQLGenerationException {
+                    SQLGenerationResult r = g.modify(cat);
+                    return r;
+                }
+
+                @Override
+                public SQLGenerationResult revert(Catalog cat)
+                        throws SQLGenerationException {
+                    SQLGenerationResult r = g.revert(cat);                    
+                    return r;                
+                }                
+            };
+        }
+ 
+    }
 }
