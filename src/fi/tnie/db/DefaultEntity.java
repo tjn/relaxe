@@ -225,7 +225,7 @@ public abstract class DefaultEntity<
 		return DefaultEntity.logger;
 	}
 		
-	protected Predicate getPKPredicate(TableReference tref) 
+	public Predicate getPKPredicate(TableReference tref) 
 		throws EntityException {
 		
 		if (tref == null) {

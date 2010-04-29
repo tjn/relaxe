@@ -72,11 +72,4 @@ public interface Entity<
 	 */	
 	EntityMetaData<A, R, Q, E> getMetaData();
 	
-	InsertStatement createInsertStatement()
-		throws EntityException;	
-	UpdateStatement createUpdateStatement()
-		throws EntityException;
-	DeleteStatement createDeleteStatement() 
-		throws EntityException;
-	
 }

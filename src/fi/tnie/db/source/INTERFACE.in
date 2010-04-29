@@ -1,10 +1,10 @@
 package {{package-name}};
 
-import fi.tnie.db.PersistentEntity;
+import fi.tnie.db.Entity;
 import fi.tnie.db.Identifiable;
 
 public interface {{table-interface}}
-    extends PersistentEntity<
+    extends Entity<
         {{table-interface}}.Attribute,
         {{table-interface}}.Reference,
         {{table-interface}}.Query,
