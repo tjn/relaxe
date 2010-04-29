@@ -41,8 +41,7 @@ public abstract class Statement
 		DROP_SCHEMA(DDL),
 		DROP_TABLE(DDL),
 		DROP_VIEW(DDL),
-		DROP_CONSTRAINT(DDL),
-		TRUNCATE(DDL),
+		DROP_CONSTRAINT(DDL),		
 		COMMENT(DDL),
 		RENAME(DDL),		
 
@@ -52,6 +51,7 @@ public abstract class Statement
 		UPDATE(DML),
 		DELETE(DML),
 		CALL(DML),
+		TRUNCATE(DML),
 		EXPLAIN_PLAN(DML),
 		
 //	DCL:
