@@ -166,7 +166,8 @@ public class CSVInsert
     }
     
     @Override
-    protected void init(CommandLine cl) {     
+    protected void init(CommandLine cl) 
+        throws ToolException {     
         super.init(cl);
         
         if (cl.values().isEmpty()) {

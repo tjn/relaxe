@@ -83,8 +83,9 @@ public abstract class CatalogTool {
         this.catalog = catalog;
     }
     
-    public int run() {
-        return 0;        
+    public int run()
+        throws ToolException {
+        return 0;
     }
 
     protected int run(String[] args) {
@@ -98,13 +99,15 @@ public abstract class CatalogTool {
             init(cl);
             result = run();                        
         } 
-        catch (IllegalArgumentException e) {
+        catch (ToolConfigurationException e) {
             System.err.println(e.getMessage());
             System.err.println();
-            System.err.println(p.usage(getClass()));            
-            // e.printStackTrace();
+            System.err.println(p.usage(getClass()));
         } 
-        catch (Exception e) {
+        catch (ToolException e) {
+            if (e.getCause() != null) {
+                e.getCause().printStackTrace();
+            }
             e.printStackTrace();
         } 
         finally {
@@ -138,19 +141,16 @@ public abstract class CatalogTool {
         }   
     }
 
-    protected void init(CommandLine cl) {
+    protected void init(CommandLine cl)
+        throws ToolConfigurationException, ToolException {
         try {            
             if (cl.has(OPTION_VERSION)) {
                 System.err.println(getVersion());
-            }            
-            
-            if (cl.isEmpty()) {
-                throw new IllegalArgumentException("Empty command line. You need help");            
             }
             
             if (cl.has(OPTION_HELP)) {
-                throw new IllegalArgumentException("You need help.");            
-            }
+                throw new ToolConfigurationException("You need help.");            
+            }            
             
             setVerbose(cl.has(OPTION_VERBOSE));
             
@@ -169,26 +169,31 @@ public abstract class CatalogTool {
                     
             final Catalog cat = cf.create(c);
             setConnection(c);
-            setCatalog(cat);
-            
+            setCatalog(cat);            
         }
         catch (ClassNotFoundException e) {
             e.printStackTrace();
+            throw new ToolException(e.getMessage(), e);
         } 
         catch (IOException e) {
             e.printStackTrace();
+            throw new ToolException(e.getMessage(), e);
         } 
         catch (InstantiationException e) {
             e.printStackTrace();
+            throw new ToolException(e.getMessage(), e);
         } 
         catch (IllegalAccessException e) {
             e.printStackTrace();
+            throw new ToolException(e.getMessage(), e);
         } 
         catch (SQLException e) {
             e.printStackTrace();
+            throw new ToolException(e.getMessage(), e);
         } 
         catch (QueryException e) {
             e.printStackTrace();
+            throw new ToolException(e.getMessage(), e);
         }
      }    
     
