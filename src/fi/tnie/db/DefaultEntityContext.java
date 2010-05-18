@@ -19,17 +19,20 @@ public class DefaultEntityContext
 		
 	private Map<BaseTable, EntityMetaData<?, ?, ?, ?>> metaMap;	
 	private Catalog	catalog;
-	
+	private Catalog boundTo;	
+	private ClassLoader loader;
+		
 	private static Logger logger = Logger.getLogger(DefaultEntityContext.class);
 	
-	public DefaultEntityContext() {	    
+	public DefaultEntityContext() {
+	    System.err.println("instantiated version: " + 2);
 	}
 		
-	public DefaultEntityContext(Catalog catalog) {
-		this(catalog, null);		
+	public DefaultEntityContext(Catalog catalog, ClassLoader cl) {
+		this(catalog, cl, null);		
 	}
 	
-	public DefaultEntityContext(Catalog catalog, final TableMapper tm) {
+	public DefaultEntityContext(Catalog catalog, ClassLoader cl, final TableMapper tm) {
 		super();
 		
 		if (catalog == null) {
@@ -38,12 +41,14 @@ public class DefaultEntityContext
 		
 		this.catalog = catalog;
 		
+		setClassLoader(cl);
+		
 		if (tm != null) {		
 		    bindAll(tm);
 		}
 	}
 	
-	public void bindAll(final TableMapper tm) {
+	public void bindAll(final TableMapper tm) {	    	    
 	    bindAll(this.catalog, tm);
 	}
 	
@@ -75,6 +80,7 @@ public class DefaultEntityContext
 		
 		ct.traverse(catalog);
 		this.catalog = catalog;
+		this.boundTo = this.catalog;
 	}	
 
 	protected void bind(BaseTable t, TableMapper tm)
@@ -98,9 +104,10 @@ public class DefaultEntityContext
 
 			try {
 				JavaType impl = tm.entityType(t, Part.IMPLEMENTATION);
-				// impl.getQualifiedName() + "MetaData";
-								
-				ClassLoader pl = getClass().getClassLoader();																								
+												
+				ClassLoader pl = getClassLoader();
+				
+				logger().debug("loading impl: " + impl.getQualifiedName());
 				Class<?> m = Class.forName(impl.getQualifiedName(), false, pl);
 				
 //				this is ugly, isn't it:
@@ -118,8 +125,7 @@ public class DefaultEntityContext
 				logger().error(e.getMessage(), e);
 				throw new EntityException(e.getMessage(), e);
 			}
-		}
-		
+		}		
 	}
 
 	@Override
@@ -141,12 +147,19 @@ public class DefaultEntityContext
 
 	@Override
 	public Catalog boundTo() {	
-		return this.catalog;
+		return this.boundTo;
 	}
 	
 	public static Logger logger() {
 		return DefaultEntityContext.logger;
 	}
-	
+
+    public ClassLoader getClassLoader() {
+        return (this.loader == null) ? getClass().getClassLoader() : this.loader;            
+    }
+
+    public void setClassLoader(ClassLoader cl) {
+        this.loader = cl;
+    }	
 	
 }

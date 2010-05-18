@@ -5,10 +5,10 @@ package fi.tnie.db;
 
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,6 +33,7 @@ import fi.tnie.db.expr.TableColumnExpr;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.DataType;
 import fi.tnie.db.meta.ForeignKey;
 
 public class DefaultEntityQuery<
@@ -42,13 +43,15 @@ public class DefaultEntityQuery<
 	E extends Entity<A, R, Q, ? extends E>
 	> implements EntityQuery<A, R, Q, E>
 {		
-	private EntityMetaData<A, R, Q, E> meta;
-	private EntityFactory<A, R, Q, E> factory;
+	private EntityMetaData<A, R, Q, ? extends E> meta;
+	private EntityFactory<A, R, Q, ? extends E> factory;
 	private DefaultTableExpression query;
 	
+	private TableReference tableRef;
+			
 	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class);
 									
-	public DefaultEntityQuery(EntityMetaData<A, R, Q, E> meta) {
+	public DefaultEntityQuery(EntityMetaData<A, R, Q, ? extends E> meta) {
 		super();				
 		this.meta = meta;
 		this.factory = meta.getFactory();
@@ -57,7 +60,7 @@ public class DefaultEntityQuery<
 	public DefaultTableExpression getQuery() {		
 		if (query == null) {
 			DefaultTableExpression q = new DefaultTableExpression();		
-			TableReference tref = new TableReference(meta.getBaseTable());
+			TableReference tref = getTableRef();
 			q.setFrom(new From(tref));
 					
 			Select s = new Select();
@@ -66,8 +69,9 @@ public class DefaultEntityQuery<
 
 			for (A a : meta.attributes()) {
 				Column c = meta.getColumn(a);
-				p.add(new ValueElement(new TableColumnExpr(tref, c)));
-			}			
+				TableColumnExpr tce = new TableColumnExpr(tref, c);
+				p.add(new ValueElement(tce, tce.getColumnName()));
+			}
 			
 			// get columns from foreign keys, 
 			// but remove duplicates
@@ -82,6 +86,8 @@ public class DefaultEntityQuery<
 			for (Column c : kc) {
 				p.add(new ValueElement(new TableColumnExpr(tref, c)));	
 			}
+			
+			logger().debug("projection: " + p);			
 						
 			q.setSelect(s);
 			this.query = q;
@@ -122,15 +128,18 @@ public class DefaultEntityQuery<
 	public EntityQueryResult<A, R, Q, E> exec(QueryFilter qf, Connection c) 
 		throws EntityQueryException {
 			
-		Statement st = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		EntityQueryResult<A, R, Q, E> qr = null;
 				
 		try {
-			st = c.createStatement();						
-			
 			DefaultTableExpression qo = getQuery();
-			String qs = qo.generate();									
+			
+			String qs = qo.generate();
+			
+			ps = c.prepareStatement(qs);                
+			qo.traverse(null, new ParameterAssignment(ps));     
+						
 			final EntityQueryProcessor ep = new EntityQueryProcessor(this, qo);
 			
 			if (qf != null) {
@@ -144,12 +153,16 @@ public class DefaultEntityQuery<
 			long ordinal = 0;
 												
 			try {
-				rs = st.executeQuery(qs);				
+			    logger().debug("query: " + qs);
+			    
+				rs = ps.executeQuery();	
 				qp.startQuery(rs.getMetaData());
 							
 				while(rs.next()) {
 					qp.process(rs, ++ordinal);
 				}
+				
+				logger().debug("rows: " + ordinal);
 				
 				qp.endQuery();
 			}
@@ -169,7 +182,7 @@ public class DefaultEntityQuery<
 		}
 		finally {			
 			rs = QueryHelper.doClose(rs);
-			st = QueryHelper.doClose(st);			
+			ps = QueryHelper.doClose(ps);			
 		}
 		
 		return qr;
@@ -179,7 +192,7 @@ public class DefaultEntityQuery<
 		this.factory = factory;
 	}
 
-	public EntityFactory<A, R, Q, E> getFactory() {
+	public EntityFactory<A, R, Q, ? extends E> getFactory() {
 		return factory;
 	}
 	
@@ -264,9 +277,12 @@ public class DefaultEntityQuery<
 									
 			for (ColumnName n : qo.getSelect().getColumnNameList().getContent()) {
 				colno++;
-				Column column = table.getColumn(n);
 				
-				int sqltype = column.getDataType().getDataType();
+				Column column = table.getColumn(n);
+				logger().debug(n + " => " + column);
+				
+				DataType t = column.getDataType();
+				int sqltype = t.getDataType();
 				
 				ValueExtractor e = null;
 					
@@ -333,7 +349,7 @@ public class DefaultEntityQuery<
 		@Override
 		public void process(ResultSet rs, long ordinal) throws QueryException {
 			try {
-				EntityFactory<A, R, Q, E> ef = getFactory();				
+				EntityFactory<A, R, Q, ? extends E> ef = getFactory();				
 				E e = ef.newInstance();
 				
 				for (int i = 0; i < this.extractors.length; i++) {
@@ -366,7 +382,12 @@ public class DefaultEntityQuery<
 	private static Logger logger() {
 		return DefaultEntityQuery.logger;
 	}
-	
-	
-	
+
+    public TableReference getTableRef() {
+        if (this.tableRef == null) {
+            this.tableRef = new TableReference(meta.getBaseTable());
+        }
+        
+        return this.tableRef;
+    }    
 }

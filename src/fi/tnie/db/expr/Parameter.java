@@ -13,7 +13,7 @@ public abstract class Parameter
 	implements ValueExpression, SelectListElement, Token {
 	
 	private String name;
-	private int type;	
+	private int type;
 	private ColumnName columnName;
 		
 	public Parameter(Column column) {

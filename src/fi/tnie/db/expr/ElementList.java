@@ -44,7 +44,7 @@ public class ElementList<E extends Element>
 	}
 	
 	public boolean isEmpty() {
-		return this.content == null || this.content.isEmpty();  
+		return (this.content == null) || this.content.isEmpty();  
 	}
 	
 	public void copyTo(ElementList<E> dest) {

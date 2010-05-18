@@ -56,7 +56,7 @@ public abstract class NonJoinedTable
 		public void traverse(VisitContext vc, ElementVisitor v) {
 			v.start(vc, this);
 			
-			traverseContent(vc, v);
+//			traverseContent(vc, v);
 			
 			Identifier cn = getCorrelationName(v.getContext());
 			cn.traverse(vc, v);

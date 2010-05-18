@@ -8,16 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.management.PersistentMBean;
+
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.expr.ColumnExpr;
-import fi.tnie.db.expr.Predicate;
-import fi.tnie.db.expr.TableColumnExpr;
-import fi.tnie.db.expr.TableReference;
-import fi.tnie.db.expr.ValueExpression;
-import fi.tnie.db.expr.ValueParameter;
-import fi.tnie.db.expr.op.AndPredicate;
-import fi.tnie.db.expr.op.Eq;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 
@@ -138,11 +132,6 @@ public abstract class DefaultEntity<
 	public Entity<?,?,?,?> get(R r) {
 		return refs().get(r);
 	}	
-
-	// TODO EntityDiff<E> & MergeStrategy ms  
-	public void store() {			
-		
-	}
 	
 //	public void insert(Connection c) 
 //		throws EntityException {
@@ -225,46 +214,46 @@ public abstract class DefaultEntity<
 		return DefaultEntity.logger;
 	}
 		
-	public Predicate getPKPredicate(TableReference tref) 
-		throws EntityException {
-		
-		if (tref == null) {
-			throw new NullPointerException();
-		}
-		
-		EntityMetaData<A, R, Q, E> meta = getMetaData();
-		Set<Column> pkcols = meta.getPKDefinition();
-				
-		if (pkcols.isEmpty()) {
-			throw new EntityException("no pk-attributes available");			
-		}					
-		
-		Predicate p = null;
-		
-		for (Column col : pkcols) {
-			Object o = get(col);
-			
-			// to successfully create a pk predicate 
-			// every component must be set: 			
-			if (o == null) {				
-				return null;
-			}
-			
-			ColumnExpr ce = new TableColumnExpr(tref, col);
-			ValueParameter param = new ValueParameter(col, o);
-			p = AndPredicate.newAnd(p, eq(ce, param));
-		}
-		
-		return p;
-	}
+//	public Predicate getPKPredicate(TableReference tref) 
+//		throws EntityException {
+//		
+//		if (tref == null) {
+//			throw new NullPointerException();
+//		}
+//		
+//		EntityMetaData<A, R, Q, E> meta = getMetaData();
+//		Set<Column> pkcols = meta.getPKDefinition();
+//				
+//		if (pkcols.isEmpty()) {
+//			throw new EntityException("no pk-attributes available");			
+//		}					
+//		
+//		Predicate p = null;
+//		
+//		for (Column col : pkcols) {
+//			Object o = get(col);
+//			
+//			// to successfully create a pk predicate 
+//			// every component must be set: 			
+//			if (o == null) {				
+//				return null;
+//			}
+//			
+//			ColumnExpr ce = new TableColumnExpr(tref, col);
+//			ValueParameter param = new ValueParameter(col, o);
+//			p = AndPredicate.newAnd(p, eq(ce, param));
+//		}
+//		
+//		return p;
+//	}
 	
-	private Eq eq(ValueExpression a, ValueExpression b) {
-		return new Eq(a, b);
-	}
+//	private Eq eq(ValueExpression a, ValueExpression b) {
+//		return new Eq(a, b);
+//	}
 	
-	protected TableReference createTableRef() {
-		return new TableReference(getMetaData().getBaseTable());
-	}	
+//	protected TableReference createTableRef() {
+//		return new TableReference(getMetaData().getBaseTable());
+//	}	
 	
 	
 	public EntityDiff<A, R, Q, E> diff(E another) {
@@ -302,5 +291,9 @@ public abstract class DefaultEntity<
 	
 	void markLoaded(EntityQueryResult<A, R, Q, ?> result) {
 		this.result = result;
+	}
+	
+	public PersistenceManager<A, R, Q, Entity<A, R, Q, ? extends E>> createPersistentManager() {
+	    return new PersistenceManager<A, R, Q, Entity<A,R,Q,? extends E>>(this);	    	    	    
 	}
 }

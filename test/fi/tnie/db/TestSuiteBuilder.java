@@ -358,6 +358,9 @@ public class TestSuiteBuilder
      addSuite(createTestsFor(env.catalogFactory().getClass(), tctx), ts);
      
      addSuite(createTestsFor(Builder.class, tctx), ts);     
+     addSuite(createTestsFor(DefaultEntityContext.class, tctx), ts);     
+          
+     addSuite(createTestsFor(PersistenceManager.class, tctx), ts);
                     
      return ts;
   }

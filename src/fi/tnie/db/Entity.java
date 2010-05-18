@@ -71,5 +71,6 @@ public interface Entity<
 	 * @return
 	 */	
 	EntityMetaData<A, R, Q, E> getMetaData();
+
 	
 }

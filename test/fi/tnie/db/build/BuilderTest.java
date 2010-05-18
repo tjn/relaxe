@@ -10,6 +10,7 @@ import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -37,7 +38,7 @@ import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaElementMap;
 import fi.tnie.db.meta.impl.DefaultMutableColumn;
-import fi.tnie.testapp.pub.AbstractState;
+
 import fi.tnie.util.io.IOHelper;
 import fi.tnie.util.io.Launcher;
 import fi.tnie.util.io.RunResult;
@@ -48,7 +49,7 @@ public class BuilderTest extends DBMetaTestCase {
     
     private static Logger logger = Logger.getLogger(BuilderTest.class);
         
-    private String rootPackage = null;
+//    private String rootPackage = null;
     private File sourceDir = null;
     private File outputDir = null;
       
@@ -56,8 +57,8 @@ public class BuilderTest extends DBMetaTestCase {
     public void testGeneration(Catalog cat, Connection c) 
         throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
     
-        File srcdir = new File("gen/src");
-        File bindir = new File("gen/bin");
+        File srcdir = getGeneratedSrcDir();
+        File bindir = getGeneratedBinDir();
         
         srcdir.mkdirs();
         bindir.mkdirs();
@@ -67,8 +68,7 @@ public class BuilderTest extends DBMetaTestCase {
         b.setRootPackage(getRootPackage());
         testGeneration(b, cat, c, bindir);
     }
-  
-       
+        
     
 //    @Override
 //    public void run(TestResult result) {
@@ -88,13 +88,14 @@ public class BuilderTest extends DBMetaTestCase {
         
         Builder b = new Builder();
         
-        File srcdir = new File("gen/src");        
-        File bindir = new File("gen/bin");
+        File srcdir = getGeneratedSrcDir();        
+        File bindir = getGeneratedBinDir();
         
         srcdir.mkdirs();
         b.removePreviouslyGenerated(srcdir);
         b.setSourceDir(srcdir);
-        b.setRootPackage(getClass().getPackage().getName());                        
+        // b.setRootPackage(getClass().getPackage().getName());                        
+        b.setRootPackage(getRootPackage());
         testGeneration(b, cat, c, bindir);           
         c.close();
     }
@@ -108,13 +109,13 @@ public class BuilderTest extends DBMetaTestCase {
         
         Builder b = new Builder();
         
-        File srcdir = new File("gen/src");
-        File bindir = new File("gen/bin");
+        File srcdir = getGeneratedSrcDir();
+        File bindir = getGeneratedBinDir();
         
         srcdir.mkdirs();
         b.removePreviouslyGenerated(srcdir);
         b.setSourceDir(srcdir);
-        b.setRootPackage(getClass().getPackage().getName());
+        b.setRootPackage(getRootPackage());
         
         
 //        MetaData md = new MetaData() {
@@ -166,6 +167,13 @@ public class BuilderTest extends DBMetaTestCase {
         Properties sources = IOHelper.doLoad(sourceList.getPath());
         assertNotNull(sources);
         assertFalse(sources.isEmpty());
+        
+        
+        for (Object o : sources.values()) {
+            String v = o.toString();
+            File f = new File(srcdir, v);
+            assertTrue(f.isFile());
+        }                
                 
         Launcher cl = new Launcher();
         cl.setDir(srcdir);
@@ -248,45 +256,13 @@ public class BuilderTest extends DBMetaTestCase {
         return cc.newInstance();
     }
 
-
-    
-//    public void setCatalog(Catalog catalog) {
-//        this.catalog = catalog;
-//    }
-
-
-//    public Connection getConnection() {
-//        return connection;
-//    }
-//
-//
-//    public void setConnection(Connection connection) {
-//        this.connection = connection;
-//    }
-
-
-
-    public String getRootPackage() {
-        return rootPackage;
-    }
-
-
-
-    public void setRootPackage(String rootPackage) {
-        this.rootPackage = rootPackage;
-    }
-
     public File getSourceDir() {
         return sourceDir;
     }
 
-
-
     public void setSourceDir(File sourceDir) {
         this.sourceDir = sourceDir;
     }
-
-
 
     public File getOutputDir() {
         return outputDir;
@@ -330,10 +306,6 @@ public class BuilderTest extends DBMetaTestCase {
         public int getVersionMinor() {            
             return this.feature.getVersionMinor();
         }
-        
-        
-        
-        
     }
     
     public class DelegatingStatement
@@ -378,7 +350,12 @@ public class BuilderTest extends DBMetaTestCase {
                     return r;                
                 }                
             };
-        }
- 
+        } 
     }
+    
+//    public static String getRootPackage() {
+//        return BuilderTest.class.getPackage().getName();
+//    }
+    
+    
 }

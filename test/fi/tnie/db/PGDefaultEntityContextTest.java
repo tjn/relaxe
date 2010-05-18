@@ -14,7 +14,7 @@ public class PGDefaultEntityContextTest extends PGTestCase {
 		Catalog catalog = getCatalog();
 		
 		TableMapper tm = new DefaultTableMapper("fi.tnie.db.generated");		
-		final DefaultEntityContext ec = new DefaultEntityContext(catalog);
+		final DefaultEntityContext ec = new DefaultEntityContext(catalog, null);
 		ec.bindAll(tm);
 								
 		testBaseTable(getContinentTable(), ec);

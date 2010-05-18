@@ -14,14 +14,14 @@ public class {{catalog-context-class}}
     public {{catalog-context-class}}() {            
     }
     
-    public {{catalog-context-class}}(Catalog catalog, TableMapper tm) 
+    public {{catalog-context-class}}(Catalog catalog, ClassLoader cl, TableMapper tm) 
         throws EntityException {
-        super(catalog, tm);        
+        super(catalog, cl, tm);        
     }
     
-    public {{catalog-context-class}}(Catalog catalog) 
+    public {{catalog-context-class}}(Catalog catalog, ClassLoader cl) 
         throws EntityException {
-        super(catalog, new DefaultTableMapper("{{package-name}}"));        
+        super(catalog, cl, new DefaultTableMapper("{{package-name}}"));        
     }
         
 {{factory-method-list}}

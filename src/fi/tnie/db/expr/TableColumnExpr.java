@@ -26,6 +26,7 @@ public class TableColumnExpr
 		}
 		
 		this.column = column;
+		logger().debug("table-col-expr column-name: " + column.getColumnName().getName());
 	}
 	
 	@Override

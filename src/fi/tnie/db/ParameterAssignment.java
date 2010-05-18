@@ -50,4 +50,11 @@ public class ParameterAssignment extends ElementVisitorAdapter {
 	private static Logger logger() {
 		return ParameterAssignment.logger;
 	}
+	
+	
+	public void reset() 
+	    throws SQLException {
+	    this.ordinal = 1;
+	    this.preparedStatement.clearParameters();
+	}
 }

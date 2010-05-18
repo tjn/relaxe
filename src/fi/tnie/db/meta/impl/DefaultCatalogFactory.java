@@ -45,7 +45,10 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	private static final int TABLE_NAME_COLUMN = 3;
 
 	private Environment environment;
-		
+	
+//	TODO: requiring environment as an argument for constructor, makes
+//	instantiating via Class.newInstance() (too) painful 
+//	in Environment -implementations.
 	public DefaultCatalogFactory(Environment environment) {
 		super();
 		
@@ -54,7 +57,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 		}
 		
 		this.environment = environment;
-	}
+	}	
 
 	class ColumnReader extends QueryProcessorAdapter {
 		private DefaultMutableBaseTable table;

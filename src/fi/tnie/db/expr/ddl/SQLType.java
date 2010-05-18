@@ -3,6 +3,8 @@
  */
 package fi.tnie.db.expr.ddl;
 
+import java.sql.Types;
+
 import fi.tnie.db.expr.Element;
 
 public abstract class SQLType
@@ -14,5 +16,18 @@ public abstract class SQLType
     }
     
     public abstract SQLTypeName getSQLTypeName();
+    
+    
+    public static boolean isTextType(int sqltype) {
+        return 
+            (sqltype == Types.CHAR) || 
+            (sqltype == Types.VARCHAR) ||            
+            (sqltype == Types.LONGVARCHAR) ||
+            (sqltype == Types.NCHAR) ||
+            (sqltype == Types.NVARCHAR) ||
+            (sqltype == Types.LONGNVARCHAR) ||            
+            (sqltype == Types.CLOB)
+           ;        
+    }
     
 }

@@ -43,6 +43,10 @@ public class QueryHelper {
 	public void closeError(Statement st, SQLException e) {		
 	}
 
+	public void rollbackError(Connection c, SQLException e) {      
+	}
+	
+
 	public ResultSet close(ResultSet st) {
 		if (st != null) {
 			try {
@@ -69,5 +73,21 @@ public class QueryHelper {
         }
         
         return null;        
+    }
+    
+    public static void doRollback(Connection c) {
+        instance.rollback(c);        
+    }
+
+    
+    public void rollback(Connection c) {
+        if (c != null) {
+            try {
+                c.rollback();
+            } 
+            catch (SQLException e) {            
+                rollbackError(c, e);
+            }
+        }
     }
 }

@@ -43,9 +43,15 @@ public class QueryGenerator
 	@Override
 	public VisitContext visit(Token next) {
 		if (previous != null) {
-			if (previous.isOrdinary() && next.isOrdinary()) {
-				buffer.append(" ");
-			}
+//			if (previous.isOrdinary() && next.isOrdinary()) {
+//				buffer.append(" ");
+//			}
+		    
+		    buffer.append(" ");
+			
+//			if (previous.isOrdinary()) {
+//			    buffer.append(" ");
+//			}
 		}
 		
 //		logger().debug("token: " + next);

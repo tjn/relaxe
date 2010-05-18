@@ -22,7 +22,19 @@ public class InsertStatement
 		
 		return columnNameList.getContent().size();
 	}
+	
+	public InsertStatement(Table target, ElementList<ColumnName> columnNameList) {
+	    this(target, columnNameList, null);	    
+	}
 			
+	
+	/**
+	 * Constructs a new  
+	 * 
+	 * @param target Target table to insert rows into.
+	 * @param columnNameList Must not be null.
+	 * @param valueRow May me null.
+	 */
 	public InsertStatement(Table target, ElementList<ColumnName> columnNameList, ValueRow valueRow) {
 		super(Name.INSERT);
 		

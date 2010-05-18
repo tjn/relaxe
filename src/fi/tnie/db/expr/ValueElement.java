@@ -6,6 +6,8 @@ package fi.tnie.db.expr;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 
 
 /**
@@ -21,6 +23,8 @@ public class ValueElement
 	private ValueExpression expr;
 	private ColumnName newName;
 	private ColumnName name;
+	
+	private static Logger logger = Logger.getLogger(ValueElement.class);
 	
 	public ValueElement(ValueElement e) {
 		this(e.getValue(), e.getColumnName());
@@ -51,30 +55,20 @@ public class ValueElement
 	
 	public ColumnName getColumnName() {
 		// TODO: fix: we should return a "made-up" name if there 
-		//		is not column name available 
-		
-		return 
+		//		is not column name available		
+		ColumnName cn = 
 			(this.newName != null) ? this.newName : 
 			(this.name != null) ? this.name :
 			null;		
+	
+		logger().debug("column-name: " + cn);
+		return cn;
 	}
 	
 	
 	public ValueExpression getValue() {
 		return this.expr;
 	}
-	
-
-//	@Override
-//	public void generate(SimpleQueryContext qc, StringBuffer dest) {
-//		expr.generate(qc, dest);
-//	
-//		if (newName != null) {
-//			dest.append(" AS ");
-//			dest.append(newName);
-//			dest.append(" ");
-//		}
-//	}
 		
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
@@ -104,5 +98,8 @@ public class ValueElement
 		return getValue();
 	}
 	
+	public static Logger logger() {
+        return ValueElement.logger;
+    }
 	
 }

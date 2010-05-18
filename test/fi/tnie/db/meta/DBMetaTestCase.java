@@ -3,6 +3,10 @@
  */
 package fi.tnie.db.meta;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.ResultSet;
@@ -13,12 +17,13 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
-
 import fi.tnie.db.DBMetaTest;
+import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.EnvironmentTestContext;
 import fi.tnie.db.QueryException;
 import fi.tnie.db.QueryHelper;
+import fi.tnie.db.build.Builder;
+import fi.tnie.db.build.BuilderTest;
 import fi.tnie.db.meta.impl.DefaultCatalogFactory;
 import fi.tnie.db.meta.impl.mysql.MySQLCatalogFactory;
 import fi.tnie.db.meta.impl.mysql.MySQLEnvironment;
@@ -30,12 +35,15 @@ public class DBMetaTestCase
     
     public static final String SCHEMA_PUBLIC = "public";
     public static final String TABLE_CONTINENT = "continent";
-    public static final String TABLE_COUNTRY = "country";    
+    public static final String TABLE_COUNTRY = "country";
     
     private static Logger logger = Logger.getLogger(DBMetaTestCase.class);
     private EnvironmentTestContext context = null;
     
-    private Connection connection = null;
+    private Connection connection = null;    
+    private DefaultTableMapper tableMapper;
+    
+    private ClassLoader classLoaderForGenerated = null;
     
     protected int read(ResultSet rs, int col, Collection<String> dest) 
         throws SQLException {
@@ -65,44 +73,56 @@ public class DBMetaTestCase
     	Catalog catalog = cm.get(catalogName);						
     	assertNotNull(catalog);
     	
-    	SchemaMap sm = catalog.schemas();
-    	assertNotNull(sm);
-    	
-    	assertFalse(sm.keySet().isEmpty());
-   	
-    	logger().debug("schemas: " + sm.keySet());    	
-    			
-    	Schema sp = sm.get(SCHEMA_PUBLIC);
-//    	
-//    	if (sp == null) {
-//    	    // MySQL test database does not currently contain the schema public  
-//    	    sp = sm.get(c.getCatalog());
-//    	}
-    	
-    	assertNotNull(sp);
-    	
-    	SchemaElementMap<? extends Table> tables = sp.tables();		
-    	assertNotNull(tables);
-    	assertNotNull(tables.values());
-    	
-    	SchemaElementMap<? extends BaseTable> baseTables = sp.baseTables();
-    	assertNotNull(baseTables);
-    	assertNotNull(baseTables.values());
-    	
-    	HashSet<Table> ts = new HashSet<Table>(tables.values());
-    	HashSet<Table> bs = new HashSet<Table>(baseTables.values());
-    			
-    	assertTrue(ts.containsAll(bs));
-    	
-    	for (Table table : ts) {
-    		if (table.isBaseTable()) {
-    			assertTrue("Expected baseTables to contain: " + table, bs.contains(table));
-    		}
-    	}
-    	
-    	assertTrue(!baseTables.keySet().isEmpty());
+    	testCatalog(catalog, c);    	
     }
     
+    public void testCatalog(Catalog catalog, Connection c) throws Exception {     
+                            
+        assertNotNull(catalog);
+        
+        SchemaMap sm = catalog.schemas();
+        assertNotNull(sm);
+        
+        assertFalse(sm.keySet().isEmpty());
+    
+        logger().debug("schemas: " + sm.keySet());      
+                
+        Schema sp = sm.get(SCHEMA_PUBLIC);
+//      
+//      if (sp == null) {
+//          // MySQL test database does not currently contain the schema public  
+//          sp = sm.get(c.getCatalog());
+//      }
+        
+        assertNotNull(sp);
+        
+        SchemaElementMap<? extends Table> tables = sp.tables();     
+        assertNotNull(tables);
+        assertNotNull(tables.values());
+        
+        BaseTable cont = getWellKnownBaseTable(catalog, SCHEMA_PUBLIC, TABLE_CONTINENT);
+        assertNotNull(cont);
+
+        BaseTable countries = getWellKnownBaseTable(catalog, SCHEMA_PUBLIC, TABLE_COUNTRY);
+        assertNotNull(countries);
+
+        SchemaElementMap<? extends BaseTable> baseTables = sp.baseTables();
+        assertNotNull(baseTables);
+        assertNotNull(baseTables.values());
+        
+        HashSet<Table> ts = new HashSet<Table>(tables.values());
+        HashSet<Table> bs = new HashSet<Table>(baseTables.values());
+                
+        assertTrue(ts.containsAll(bs));
+        
+        for (Table table : ts) {
+            if (table.isBaseTable()) {
+                assertTrue("Expected baseTables to contain: " + table, bs.contains(table));
+            }
+        }
+        
+        assertTrue(!baseTables.keySet().isEmpty());
+    }
     public static Logger logger() {
         return DBMetaTestCase.logger;
     }
@@ -141,6 +161,7 @@ public class DBMetaTestCase
     protected void setUp() throws Exception {        
         super.setUp();
         this.connection = connect();
+        this.connection.setAutoCommit(false);
     }
     
     @Override
@@ -190,16 +211,73 @@ public class DBMetaTestCase
     	assertFalse(pk.columns().isEmpty());
     }
 
-    public CatalogFactory factory() {        
+    public CatalogFactory factory() {
+        // ClassLoader cl = getClassLoaderForGenerated();
         return getContext().getEnvironment().catalogFactory();        
     }
-    
-    
     
     public Catalog getCatalog() throws QueryException, SQLException {
         Connection c = getConnection();
         CatalogFactory cf = factory();
         Catalog cat = cf.create(c);
         return cat;
+    }
+    
+    public BaseTable getContinentTable(Catalog cat) throws QueryException, SQLException {
+    	return getWellKnownBaseTable(cat, SCHEMA_PUBLIC, TABLE_CONTINENT);
+    }
+
+    protected BaseTable getCountryTable(Catalog cat) throws QueryException, SQLException {
+    	return getWellKnownBaseTable(cat, SCHEMA_PUBLIC, TABLE_COUNTRY);
+    }
+
+    protected BaseTable getWellKnownBaseTable(Catalog cat, String schema, String table)
+        throws QueryException, SQLException {
+        	SchemaMap sm = cat.schemas();
+        	assertNotNull(sm);				
+        	Schema pub = sm.get(schema);
+        	assertNotNull(sm);
+        	BaseTable t = pub.baseTables().get(table);
+        	assertNotNull(t);		
+        	return t;
+        }
+
+    protected DefaultTableMapper getTableMapper() {
+        if (this.tableMapper == null) {
+            this.tableMapper = new DefaultTableMapper(getRootPackage());
+        }
+        
+        return this.tableMapper;
+    }
+
+
+    public String getRootPackage() {
+        return DBMetaTestCase.class.getPackage().getName();
+    }
+        
+    protected File getGeneratedSrcDir() {
+        return new File("gen/src");
+    }
+    
+    protected File getGeneratedBinDir() {
+        return new File("gen/bin");
+    }
+    
+    @SuppressWarnings("deprecation")
+    protected ClassLoader createClassLoaderForGenerated() 
+        throws MalformedURLException {
+        File dir = getGeneratedBinDir();
+        URL[] path = { dir.toURL() };                  
+        URLClassLoader gcl = new URLClassLoader(path);        
+        return gcl;
+    }
+    
+    protected ClassLoader getClassLoaderForGenerated() 
+        throws MalformedURLException {
+        if (this.classLoaderForGenerated == null) {
+            this.classLoaderForGenerated = createClassLoaderForGenerated();            
+        }
+
+        return this.classLoaderForGenerated;
     }
 }

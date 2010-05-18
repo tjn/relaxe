@@ -17,17 +17,6 @@ public class CatalogTest
     extends DBMetaTestCase {
 
     
-    public static final String SCHEMA_PUBLIC = "public";
-    public static final String TABLE_CONTINENT = "continent";
-    public static final String TABLE_COUNTRY = "country";
-
-//    protected Catalog getCatalog() {
-//        assertNotNull(getContext());
-//        Catalog catalog = getContext().getCatalog();
-//        assertNotNull(catalog);        
-//        return catalog;
-//    }
-
     protected void testBaseTable(BaseTable t) {
     			
     	assertNotNull(t);
@@ -76,7 +65,7 @@ public class CatalogTest
     }
 
     public void testColumns() throws Exception {
-    		BaseTable t = getCountryTable();
+    		BaseTable t = getCountryTable(getCatalog());
     		
     		assertNotNull(t.columnMap());
     		assertNotNull(t.columns());
@@ -84,7 +73,7 @@ public class CatalogTest
     		assertTrue(t.columnMap().keySet().size() > 1);
     		assertTrue(t.columns().size() > 1);
     		
-    		PrimaryKey pk = t.getPrimaryKey();
+//    		PrimaryKey pk = t.getPrimaryKey();
     //		pk.getColumn(name)
     					
     		for (Column c : t.columns()) {
@@ -184,27 +173,6 @@ public class CatalogTest
     			testPrimaryKey(pk);
     		}
     	}
-    }
-
-    protected BaseTable getContinentTable() 
-    	throws QueryException, SQLException {
-    	return getWellKnownBaseTable(SCHEMA_PUBLIC, TABLE_CONTINENT);
-    }
-
-    protected BaseTable getCountryTable() 
-    	throws QueryException, SQLException {
-    	return getWellKnownBaseTable(SCHEMA_PUBLIC, TABLE_COUNTRY);
-    }
-
-    protected BaseTable getWellKnownBaseTable(String schema, String table) 
-    	throws QueryException, SQLException {
-    	SchemaMap sm = getCatalog().schemas();
-    	assertNotNull(sm);				
-    	Schema pub = sm.get(schema);
-    	assertNotNull(sm);
-    	BaseTable t = pub.baseTables().get(table);
-    	assertNotNull(t);		
-    	return t;
     }
 
     protected Identifier id(String name) 
