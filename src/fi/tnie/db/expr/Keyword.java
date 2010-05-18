@@ -58,14 +58,11 @@ public enum Keyword implements Token {
 	CURRENT_TIME,
 	CURRENT_TIMESTAMP, 
 	CHARACTER, VARCHAR, CLOB, BIGINT, BIT, BLOB, NUMERIC, DECIMAL, INTEGER, SMALLINT, FLOAT, VARYING, INT, TINYINT, DATE, TIME, TIMESTAMP, CONSTRAINT
+	
 	;
 	
 	private static EnumSet<Keyword> keywords = EnumSet.allOf(Keyword.class);
 	
-//	public void generate(SimpleQueryContext qc, StringBuffer dest) {
-//		dest.append(toString());
-//	}
-
 	public void traverse(VisitContext vc, ElementVisitor v) {
 		v.start(vc, this);
 		v.end(this);		

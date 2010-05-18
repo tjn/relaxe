@@ -6,7 +6,6 @@ package fi.tnie.db.expr;
 public class DeleteStatement
 	extends Statement {
 
-//    private Element target;
 	private TableReference target;		
 	
 	private Where where;

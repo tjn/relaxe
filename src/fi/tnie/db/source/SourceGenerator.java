@@ -431,11 +431,12 @@ public class SourceGenerator {
 
 
     private String formatFactoryMethod(TypeInfo info, boolean impl) {
-        JavaType ap = info.get(Part.ABSTRACT);
+        JavaType itf = info.get(Part.INTERFACE);
+        // JavaType ap = info.get(Part.ABSTRACT);
         JavaType impp = info.get(Part.IMPLEMENTATION);
         JavaType returnType = getFactoryMethodReturnType(info);
 
-        String signature = returnType.getUnqualifiedName() + " new" + ap.getUnqualifiedName() + "()";
+        String signature = returnType.getUnqualifiedName() + " new" + itf.getUnqualifiedName() + "()";
         String src = null;
 
         if (!impl) {

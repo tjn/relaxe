@@ -7,6 +7,7 @@ import java.util.Comparator;
 
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
+import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.expr.ddl.ColumnDefinition;
 
 public interface Environment {
@@ -49,6 +50,8 @@ public interface Environment {
     ColumnDefinition serialColumnDefinition(String columnName, boolean big);
         
     String driverClassName();
+    
+    SQLSyntax getSyntax();
         
 //    void loadDriver()
 //        throws ClassNotFoundException;

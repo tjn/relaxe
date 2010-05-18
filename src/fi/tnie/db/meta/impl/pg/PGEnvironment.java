@@ -3,11 +3,14 @@
  */
 package fi.tnie.db.meta.impl.pg;
 
+import java.sql.SQLSyntaxErrorException;
 import java.util.Comparator;
 
 import fi.tnie.db.FoldingComparator;
+import fi.tnie.db.expr.DefaultSQLSyntax;
 import fi.tnie.db.expr.ElementVisitor;
 import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.expr.SimpleElement;
 import fi.tnie.db.expr.Token;
 import fi.tnie.db.expr.VisitContext;
@@ -18,6 +21,8 @@ import fi.tnie.db.meta.impl.DefaultEnvironment;
 
 public class PGEnvironment
 	extends DefaultEnvironment {
+    
+    private SQLSyntax syntax;
 
 	public PGEnvironment() {
 	}
@@ -72,5 +77,17 @@ public class PGEnvironment
     }
     
     
-	
+    public static class PGSyntax
+        extends DefaultSQLSyntax {
+        
+    }
+
+    @Override
+    public SQLSyntax getSyntax() {
+        if (syntax == null) {
+            syntax = new PGSyntax();            
+        }
+
+        return syntax;
+    }
 }

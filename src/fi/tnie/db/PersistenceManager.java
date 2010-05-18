@@ -6,6 +6,7 @@ package fi.tnie.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import fi.tnie.db.expr.DeleteStatement;
 import fi.tnie.db.expr.ElementList;
 import fi.tnie.db.expr.InsertStatement;
 import fi.tnie.db.expr.Predicate;
+import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.expr.TableColumnExpr;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.expr.UpdateStatement;
@@ -32,6 +34,7 @@ import fi.tnie.db.expr.op.AndPredicate;
 import fi.tnie.db.expr.op.Eq;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.impl.ColumnMap;
 
@@ -58,6 +61,10 @@ public class PersistenceManager<
     public DeleteStatement createDeleteStatement() throws EntityException {
         E pe = getTarget();
         final EntityMetaData<?, ?, ?, ?> meta = pe.getMetaData();
+        
+        Environment env = meta.getCatalog().getEnvironment();
+        SQLSyntax stx = env.getSyntax();
+                
     	TableReference tref = new TableReference(meta.getBaseTable());
     	Predicate pkp = getPKPredicate(tref, pe);    	   	
     	
@@ -65,7 +72,7 @@ public class PersistenceManager<
     		return null;
     	}		
     				
-    	return new DeleteStatement(tref, pkp);
+    	return stx.newDeleteStatement(tref, pkp);
     }
 
     
@@ -214,15 +221,28 @@ public class PersistenceManager<
 //				buf.setLength(0);
 				
 				int cc = rs.getMetaData().getColumnCount();
+				
+				logger().debug("getGeneratedKeys: ");
+				
+				ResultSetMetaData meta = rs.getMetaData();
+				
+				for (int i = 1; i <= cc; i++) {
+				    String label = meta.getColumnLabel(i);
+				    logger().debug("[" + i + "]: " + label);
+                }
+				
+				
+				
 	//			StringBuffer buf = new StringBuffer();			
 				
 				EntityMetaData<A, R, Q, ? extends E> em = pe.getMetaData();
 				BaseTable table = em.getBaseTable();
 				ColumnMap cm = table.columnMap();
 				List<A> keys = new ArrayList<A>();
+				
 							
 				for (int i = 1; i <= cc; i++) {
-					String name = rs.getMetaData().getColumnLabel(i);
+					String name = rs.getMetaData().getColumnLabel(i);					
 					Column col = cm.get(name);
 					
 					if (col == null) {

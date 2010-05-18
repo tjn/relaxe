@@ -6,6 +6,7 @@ package fi.tnie.db;
 import java.util.Set;
 
 import fi.tnie.db.meta.BaseTable;
+import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 
@@ -57,4 +58,10 @@ public interface EntityMetaData<
 	 * @return
 	 */	
 	Set<R> getReferences(Column c);
+	
+	/**
+	 * Returns an object identical to getBaseTable().getSchema().getCatalog()
+	 * @return
+	 */	
+	Catalog getCatalog();
 }

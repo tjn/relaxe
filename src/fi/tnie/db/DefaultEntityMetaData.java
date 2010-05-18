@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fi.tnie.db.meta.BaseTable;
+import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 
@@ -182,5 +183,11 @@ public abstract class DefaultEntityMetaData<
 	@Override
 	public Set<R> getReferences(Column c) {
 		return this.columnReferenceMap.get(c);
+	}
+	
+	@Override
+	public Catalog getCatalog() {
+	    BaseTable table = getBaseTable();	    
+	    return (table == null) ? null : table.getSchema().getCatalog();
 	}
 }
