@@ -197,9 +197,10 @@ public abstract class CatalogTool {
         }
      }    
     
-    protected Option require(CommandLine cl, Option required) {
+    protected Option require(CommandLine cl, Option required) 
+        throws ToolConfigurationException {
         if (!cl.has(required)) {
-            throw new IllegalArgumentException("option " + required.name() + " is required");
+            throw new ToolConfigurationException("option " + required.name() + " is required");
         }
                         
         return required;
