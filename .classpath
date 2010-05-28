@@ -5,9 +5,9 @@
 	<classpathentry kind="src" path="tools"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache Log4J"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Utilities"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="lib" path="gen/bin"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache CSV"/>
+	<classpathentry kind="lib" path="lib/util.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
