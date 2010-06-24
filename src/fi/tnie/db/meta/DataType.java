@@ -10,7 +10,7 @@ public interface DataType {
 	String getTypeName();
 	int getCharOctetLength();
 	int getDecimalDigits();
-	int getNumPrefixRadix();
+	int getNumPrecRadix();
 	int getSize();	
 
 }

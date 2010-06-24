@@ -12,7 +12,7 @@ public class DataTypeImpl
 	private String typeName;
 	private int charOctetLength;	
 	private int decimalDigits;
-	private int numPrefixRadix;
+	private int numPrecRadix;
 	private int size;
 	
 //	private short sourceDataType;
@@ -74,10 +74,10 @@ public class DataTypeImpl
 	}
 
 	/* (non-Javadoc)
-	 * @see fi.tnie.db.meta.impl.DataType#getNumPrefixRadix()
+	 * @see fi.tnie.db.meta.impl.DataType#getNumPrecRadix()
 	 */
-	public int getNumPrefixRadix() {
-		return numPrefixRadix;
+	public int getNumPrecRadix() {
+		return numPrecRadix;
 	}
 
 	/* (non-Javadoc)
@@ -95,8 +95,8 @@ public class DataTypeImpl
 		this.decimalDigits = decimalDigits;
 	}
 
-	public void setNumPrefixRadix(int numPrefixRadix) {
-		this.numPrefixRadix = numPrefixRadix;
+	public void setNumPrecRadix(int numPrecRadix) {
+		this.numPrecRadix = numPrecRadix;
 	}
 
 	public void setSize(int size) {

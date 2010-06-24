@@ -43,9 +43,8 @@ public class KeyGenerationInfo
     }
     
     @Override
-    public int run() {
-      int result = -1;
-      
+    public void run()
+        throws ToolException {            
       try {                        
           String q = getQuery();             
           
@@ -63,15 +62,11 @@ public class KeyGenerationInfo
           ResultSetWriter rw = new ResultSetWriter(System.out, false);
                               
           rs.close();
-          
-          result = 0;
       }
       catch (Exception e) {
           e.printStackTrace();
-      }
-      
-      
-      return result;
+          throw new ToolException(-1, e.getMessage(), e);
+      }      
     }
     
     @Override

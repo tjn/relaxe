@@ -17,11 +17,10 @@ public class CatalogInfo
     }
     
     @Override
-    public int run() {
+    public void run() {
         Identifier n = getCatalog().getName();
         String cat = (n == null) ? null : n.getName();        
-        message("Catalog loaded: " + ((cat == null) ? "<unnamed>" : cat));        
-        return 0;
+        message("Catalog loaded: " + ((cat == null) ? "<unnamed>" : cat));
     }
     
     @Override

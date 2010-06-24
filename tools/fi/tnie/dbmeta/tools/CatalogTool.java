@@ -16,6 +16,8 @@ import fi.tnie.db.QueryHelper;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.Environment;
+import fi.tnie.db.meta.impl.mysql.MySQLEnvironment;
+import fi.tnie.db.meta.impl.pg.PGEnvironment;
 import fi.tnie.util.cli.Argument;
 import fi.tnie.util.cli.CommandLine;
 import fi.tnie.util.cli.Option;
@@ -47,9 +49,21 @@ public abstract class CatalogTool {
         new SimpleOption("jdbc-driver-config", "j", 
             new Argument(false), "JDBC Driver configuration as file path to Java properties file");
     
+    public static final Option OPTION_SCHEMA = 
+        new SimpleOption("schema", "s", new Argument(false), "Process this schema only.");  
+
+    public static final Option OPTION_TABLE = 
+        new SimpleOption("table", "t", new Argument(false), "Process this table only.");  
+
+    
     private Connection connection;
     private Catalog catalog;
     private boolean verbose;
+        
+    private Environment environment;
+    
+    private String jdbcURL;
+    private Properties jdbcConfig;
     
     private List<Option> options;    
         
@@ -79,13 +93,12 @@ public abstract class CatalogTool {
         return catalog;
     }
 
-    private void setCatalog(Catalog catalog) {
+    protected void setCatalog(Catalog catalog) {
         this.catalog = catalog;
     }
     
-    public int run()
-        throws ToolException {
-        return 0;
+    protected void run()
+        throws ToolException {        
     }
 
     protected int run(String[] args) {
@@ -97,14 +110,19 @@ public abstract class CatalogTool {
             prepare(p);
             CommandLine cl = p.parse(args);            
             init(cl);
-            result = run();                        
+            run();            
+            result = 0;
         } 
         catch (ToolConfigurationException e) {
             System.err.println(e.getMessage());
             System.err.println();
             System.err.println(p.usage(getClass()));
+            
+            result = e.getExitCode();
         } 
         catch (ToolException e) {
+            result = e.getExitCode();
+            
             if (e.getCause() != null) {
                 e.getCause().printStackTrace();
             }
@@ -140,7 +158,13 @@ public abstract class CatalogTool {
             p.option(opt);
         }   
     }
-
+    
+    /**
+     * 
+     * @param cl
+     * @throws ToolConfigurationException
+     * @throws ToolException
+     */
     protected void init(CommandLine cl)
         throws ToolConfigurationException, ToolException {
         try {            
@@ -152,24 +176,26 @@ public abstract class CatalogTool {
                 throw new ToolConfigurationException("You need help.");            
             }            
             
-            setVerbose(cl.has(OPTION_VERBOSE));
+            setVerbose(cl.has(OPTION_VERBOSE));                        
             
-            String environmentTypeName = cl.value(require(cl, OPTION_ENV));
             String jdbcURL = cl.value(require(cl, OPTION_JDBC_URL));
-            String jdbcDriverConfigPath = cl.value(require(cl, OPTION_JDBC_CONFIG)); 
+            // setJdbcURL(jdbcURL);            
+                        
+             
+            String environmentTypeName = cl.value(OPTION_ENV);
             
+            Environment env = null;
+            
+            if (environmentTypeName != null) {
+                Class<?> environmentType = Class.forName(environmentTypeName);
+                env = (Environment) environmentType.newInstance();                
+            }
+
+            String jdbcDriverConfigPath = cl.value(require(cl, OPTION_JDBC_CONFIG));            
             Properties jdbcConfig = IOHelper.doLoad(jdbcDriverConfigPath);
-                
-            Class<?> environmentType = Class.forName(environmentTypeName);
-            Environment env = (Environment) environmentType.newInstance();
-            CatalogFactory cf = env.catalogFactory();
             
-            Class.forName(env.driverClassName());
-            Connection c = DriverManager.getConnection(jdbcURL, jdbcConfig);
-                    
-            final Catalog cat = cf.create(c);
-            setConnection(c);
-            setCatalog(cat);            
+            init(jdbcURL, jdbcConfig, env);
+            
         }
         catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -186,31 +212,93 @@ public abstract class CatalogTool {
         catch (IllegalAccessException e) {
             e.printStackTrace();
             throw new ToolException(e.getMessage(), e);
-        } 
-        catch (SQLException e) {
-            e.printStackTrace();
-            throw new ToolException(e.getMessage(), e);
-        } 
-        catch (QueryException e) {
-            e.printStackTrace();
-            throw new ToolException(e.getMessage(), e);
         }
-     }    
+     }
+    
+     public void init(String jdbcURL, Properties jdbcConfig, Environment env)
+         throws ToolConfigurationException, ToolException {
+
+         try {
+             if (jdbcURL == null) {
+                throw new NullPointerException("'jdbcURL' must not be null");
+             }
+             
+             if (jdbcConfig == null) {
+                throw new NullPointerException("'jdbcConfig' must not be null");
+             }
+             
+             String environmentTypeName = null;
+             
+             if (env == null) {
+                 if (jdbcURL.startsWith("jdbc:postgres:")) {
+                     environmentTypeName = PGEnvironment.class.getName();
+                 }
+                 
+                 if (jdbcURL.startsWith("jdbc:mysql:")) {
+                     environmentTypeName = MySQLEnvironment.class.getName();
+                 }
+                 
+                 if (environmentTypeName == null) {
+                     throw new ToolConfigurationException(
+                             "Environment-type is not set and " +
+                             "can not be determined from jdbc-url: " + jdbcURL);
+                 }  
+                 
+                 Class<?> environmentType = Class.forName(environmentTypeName);
+                 env = (Environment) environmentType.newInstance();                 
+             }
+             
+             setJdbcURL(jdbcURL);
+             setJdbcConfig(jdbcConfig);
+             setEnvironment(env);             
+                                                  
+             Class.forName(env.driverClassName());                        
+             Connection c = createConnection();
+             
+             CatalogFactory cf = env.catalogFactory();
+             final Catalog cat = cf.create(c);
+             setConnection(c);
+             setCatalog(cat);            
+         }
+         catch (ClassNotFoundException e) {
+             e.printStackTrace();
+             throw new ToolException(e.getMessage(), e);
+         } 
+         catch (InstantiationException e) {
+             e.printStackTrace();
+             throw new ToolException(e.getMessage(), e);
+         } 
+         catch (IllegalAccessException e) {
+             e.printStackTrace();
+             throw new ToolException(e.getMessage(), e);
+         } 
+         catch (SQLException e) {
+             e.printStackTrace();
+             throw new ToolException(e.getMessage(), e);
+         } 
+         catch (QueryException e) {
+             e.printStackTrace();
+             throw new ToolException(e.getMessage(), e);
+         }
+     }
+
+    
+    
     
     protected Option require(CommandLine cl, Option required) 
         throws ToolConfigurationException {
         if (!cl.has(required)) {
             throw new ToolConfigurationException("option " + required.name() + " is required");
         }
-                        
         return required;
+        
     }
 
     public Connection getConnection() {
         return connection;
     }
 
-    private void setConnection(Connection connection) {
+    protected void setConnection(Connection connection) {
         this.connection = connection;
     }
 
@@ -239,4 +327,46 @@ public abstract class CatalogTool {
     public String getVersion() {
         return getClass().getName() + " " + getVersionMajor() + "." + getVersionMinor();
     }
+
+    public String getJdbcURL() {
+        return jdbcURL;
+    }
+
+    public void setJdbcURL(String jdbcURL) {
+        this.jdbcURL = jdbcURL;
+    }
+
+    public Properties getJdbcConfig() {
+        return jdbcConfig;
+    }
+
+    public void setJdbcConfig(Properties jdbcConfig) {
+        if (this.jdbcConfig == null) {
+            this.jdbcConfig = new Properties();
+        }
+        
+        this.jdbcConfig = jdbcConfig;
+    }
+        
+    private Connection createConnection() 
+        throws SQLException, ClassNotFoundException {
+           
+        String jdbcURL = getJdbcURL();
+        Properties jdbcConfig = getJdbcConfig();                                
+        Class.forName(getEnvironment().driverClassName());
+        Connection c = DriverManager.getConnection(jdbcURL, jdbcConfig);
+        return c;
+    }
+
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+    
+    
+    
+    
 }

@@ -5,10 +5,10 @@ package fi.tnie.dbmeta.tools;
 
 public class ToolConfigurationException extends ToolException {
     public ToolConfigurationException(String msg) {
-        super(msg);
+        this(msg, null);
     }
 
     public ToolConfigurationException(String msg, Throwable cause) {
-        super(msg, cause);
+        super(CONFIGURATION_ERROR, msg, cause);
     }
 }

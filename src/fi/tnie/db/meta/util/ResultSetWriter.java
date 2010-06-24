@@ -48,6 +48,18 @@ public class ResultSetWriter
 		}
 		
 		out.println(buf.toString());
+		buf.setLength(0);
+		
+		for (int i = 1; i <= cc; i++) {
+            buf.append(m.getColumnTypeName(i));
+            
+            if (i < cc) {
+                buf.append(delimiter);
+            }                       
+        }
+		
+		out.println(buf.toString());
+	    buf.setLength(0);
 	}
 	
 	

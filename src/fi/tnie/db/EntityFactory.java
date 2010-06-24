@@ -9,6 +9,5 @@ public interface EntityFactory<
 	Q extends Enum<Q> & Identifiable,
 	E extends Entity<A, R, Q, ? extends E>	
 > {			
-	E newInstance() 
-		throws EntityException;
+	E newInstance();
 }

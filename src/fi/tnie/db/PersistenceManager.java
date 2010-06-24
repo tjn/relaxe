@@ -22,11 +22,13 @@ import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.DeleteStatement;
 import fi.tnie.db.expr.ElementList;
 import fi.tnie.db.expr.InsertStatement;
+import fi.tnie.db.expr.Keyword;
 import fi.tnie.db.expr.Predicate;
 import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.expr.TableColumnExpr;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.expr.UpdateStatement;
+import fi.tnie.db.expr.ValueElement;
 import fi.tnie.db.expr.ValueExpression;
 import fi.tnie.db.expr.ValueParameter;
 import fi.tnie.db.expr.ValueRow;
@@ -92,6 +94,7 @@ public class PersistenceManager<
     		
     		if (value == null && col.isPrimaryKeyColumn()) {
     		    // this might be auto-increment pk-column
+    		    // newRow.add(new ValueExpression());
     		}    		
     		else {
                 ValueParameter p = new ValueParameter(col, value);

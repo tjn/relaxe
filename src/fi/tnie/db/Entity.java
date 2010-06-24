@@ -5,9 +5,6 @@ package fi.tnie.db;
 
 import java.util.Map;
 
-import fi.tnie.db.expr.DeleteStatement;
-import fi.tnie.db.expr.InsertStatement;
-import fi.tnie.db.expr.UpdateStatement;
 import fi.tnie.db.meta.Column;
 
 public interface Entity<
@@ -72,5 +69,6 @@ public interface Entity<
 	 */	
 	EntityMetaData<A, R, Q, E> getMetaData();
 
-	
+//	PersistenceManager<A, R, Q, Entity<A, R, Q, ? extends E>> createPersistentManager();
+//	EntityDiff<A, R, Q, E> diff(E another);
 }

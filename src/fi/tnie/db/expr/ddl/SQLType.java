@@ -30,4 +30,27 @@ public abstract class SQLType
            ;        
     }
     
+    public static boolean isIntegralType(int sqltype) {
+        return 
+        (sqltype == Types.TINYINT) || 
+        (sqltype == Types.INTEGER) ||            
+        (sqltype == Types.SMALLINT) ||
+        (sqltype == Types.BIGINT)    
+       ;        
+    }
+    
+    public static boolean isFixedNumeric(int sqltype) {
+        return 
+        (sqltype == Types.NUMERIC) || 
+        (sqltype == Types.DECIMAL)    
+       ;        
+    }    
+    
+    public static boolean isFloatingPoint(int sqltype) {
+        return 
+        (sqltype == Types.REAL) || 
+        (sqltype == Types.FLOAT) ||
+        (sqltype == Types.DOUBLE)    
+       ;        
+    }        
 }

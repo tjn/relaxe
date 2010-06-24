@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.QueryException;
 import fi.tnie.db.feature.Features;
@@ -16,169 +18,248 @@ import fi.tnie.db.feature.SQLGenerationException;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.Environment;
-import fi.tnie.db.meta.util.Tool;
 import fi.tnie.db.source.SourceGenerator;
+import fi.tnie.dbmeta.tools.CatalogTool;
+import fi.tnie.dbmeta.tools.ToolConfigurationException;
+import fi.tnie.dbmeta.tools.ToolException;
+import fi.tnie.util.cli.Argument;
 import fi.tnie.util.cli.CommandLine;
 import fi.tnie.util.cli.Option;
 import fi.tnie.util.cli.Parser;
+import fi.tnie.util.cli.SimpleOption;
 import fi.tnie.util.io.FileProcessor;
 import fi.tnie.util.io.IOHelper;
 
 public class Builder
-    extends Tool {
-    
-//    public static final String KEY_PACKAGE = "package";
-//    public static final String KEY_DEFAULT_SOURCE_DIR = "root-dir";
+    extends CatalogTool {
     
     private Features features;
     private String rootPackage;
-    private File sourceDir;    
+    private File sourceDir;
+    
+    public static final Option OPTION_GENERATED_DIR = 
+        new SimpleOption("generated-sources", "g", new Argument(false), "Dir for generated source files.");  
+
+    public static final Option OPTION_ROOT_PACKAGE = 
+        new SimpleOption("root-package", "r", new Argument(false), "Root java package name for generated classes.");  
+    
+    private static Logger logger = Logger.getLogger(Builder.class);
     
     public static void main(String[] args) {
-        try {
-            Builder b = new Builder();
-            Parser clp = new Parser();
-            
-            Option cfg = clp.option("config", "c", false);
-            Option et = clp.option("env-type", "e", false);            
-            Option jurl = clp.option("jdbc-url", "j", false);
-            Option jcfg = clp.option("jdbc-config", null, false);
-            Option jusr = clp.option("jdbc-user", "u", true);
-            Option jpw = clp.option("jdbc-password", "p", true);
-            Option src = clp.option("source-dir", "d", false);
-            Option rpkg = clp.option("root-package", "r", false);
-            Option help = clp.option("help", "h", false);
-            
-            CommandLine cl = clp.parse(args);
-            
-            if (cl.isEmpty() || cl.options().contains(help)) {
-                System.err.println(clp.usage(Builder.class));
-                System.exit(-1);
-                return;
-            }
-            
-            String configPath = b.optional(cl, cfg);
-            
-            final Properties config = (configPath == null) ?
-                new Properties() : 
-                IOHelper.doLoad(configPath);
-            
-            b.overrideWith(config, cl, et);
-            b.overrideWith(config, cl, jcfg);
-            b.overrideWith(config, cl, jurl);
-            b.overrideWith(config, cl, src);
-            b.overrideWith(config, cl, rpkg);
-
-            String jdbcConfigPath = b.optional(cl, jcfg);
-            
-            Properties jdbcConfig = (jdbcConfigPath == null) ? 
-                new Properties() :
-                IOHelper.doLoad(jdbcConfigPath);
-                
-            b.overrideWith(jdbcConfig, cl, jusr, "user");
-            b.overrideWith(jdbcConfig, cl, jpw, "password");
-                        
-            String environmentTypeName = b.required(config, et);
-            Class<?> environmentType = Class.forName(environmentTypeName);            
-            Environment env = (Environment) environmentType.newInstance();
-            
-            String jdbcUrl = b.required(config, jurl);
-            
-            // set up builder:
-            final Features f = new Features();            
-            b.setFeatures(f); 
-                        
-            b.setRootPackage(b.required(config, rpkg));
-            b.setSourceDir(new File(b.required(config, src)));
-                                              
-            b.run(env, jdbcUrl, config);
-        }
-        catch (Exception e) {
-            logger().error(e.getMessage(), e);
-        }
+        System.exit(new Builder().run(args));
+        
+//        try {
+//            Builder b = new Builder();
+//            Parser clp = new Parser();
+//            
+//            Option cfg = clp.option("config", "c", false);
+//            Option et = clp.option("env-type", "e", false);            
+//            Option jurl = clp.option("jdbc-url", "j", false);
+//            Option jcfg = clp.option("jdbc-config", null, false);
+//            Option jusr = clp.option("jdbc-user", "u", true);
+//            Option jpw = clp.option("jdbc-password", "p", true);
+//            Option src = clp.option("source-dir", "d", false);
+//            Option rpkg = clp.option("root-package", "r", false);
+//            Option help = clp.option("help", "h", false);
+//            
+//            CommandLine cl = clp.parse(args);
+//            
+//            if (cl.isEmpty() || cl.options().contains(help)) {
+//                System.err.println(clp.usage(Builder.class));
+//                System.exit(-1);
+//                return;
+//            }
+//                                    
+////            String configPath = b.optional(cl, cfg);
+////            
+////            logger().info("configPath: " + configPath);
+////            
+////            final Properties config = (configPath == null) ?
+////                new Properties() : 
+////                IOHelper.doLoad(configPath);
+////            
+////            b.overrideWith(config, cl, et);
+////            b.overrideWith(config, cl, jcfg);
+////            b.overrideWith(config, cl, jurl);
+////            b.overrideWith(config, cl, src);
+////            b.overrideWith(config, cl, rpkg);
+////
+////            String jdbcConfigPath = b.optional(cl, jcfg);
+////            
+////            Properties jdbcConfig = (jdbcConfigPath == null) ? 
+////                new Properties() :
+////                IOHelper.doLoad(jdbcConfigPath);
+////                
+////            b.overrideWith(jdbcConfig, cl, jusr, "user");
+////            b.overrideWith(jdbcConfig, cl, jpw, "password");
+////            String environmentTypeName = b.required(config, et);
+//            
+//            String environmentTypeName = cl.value(et);
+//            String jdbcUrl = cl.value(jurl);
+//            String rootpkg = cl.value(rpkg);
+//            String srcdir = cl.value(src);
+//            String jdbcConfigPath = cl.value(jcfg);
+//            
+//            Class<?> environmentType = Class.forName(environmentTypeName);            
+//            Environment env = (Environment) environmentType.newInstance();
+//            
+////            String jdbcUrl = b.required(config, jurl);
+//            
+//            
+//            // set up builder:
+//            final Features f = new Features();            
+//            b.setFeatures(f); 
+//                        
+//            // b.setRootPackage(b.required(config, rpkg));
+//            b.setRootPackage(rootpkg);
+////            b.setSourceDir(new File(b.required(config, src)));
+//            b.setSourceDir(new File(srcdir));
+//            
+//          Properties jdbcConfig = (jdbcConfigPath == null) ? 
+//                  new Properties() :
+//                      IOHelper.doLoad(jdbcConfigPath);
+//            
+//            // jdbcConfig.list(System.out);                        
+//            b.run(env, jdbcUrl, jdbcConfig);
+//        }
+//        catch (Exception e) {
+//            logger().error(e.getMessage(), e);
+//        }
     }
     
-    private String overrideWith(Properties config, CommandLine cl, Option opt) {
-        return overrideWith(config, cl, opt, key(opt));
-    }
+//    private String overrideWith(Properties config, CommandLine cl, Option opt) {
+//        return overrideWith(config, cl, opt, key(opt));
+//    }
+//    
+//    private String overrideWith(Properties config, CommandLine cl, Option opt, String key) {
+//        String value = optional(cl, opt);
+//        
+//        if (value == null) {
+//            logger().debug("no option: " + opt.name());
+//        }
+//        else {            
+//            config.setProperty(key, value);            
+//            logger().debug("set option: " + key + "=" + value);
+//        }
+//        
+//        return value;
+//    }
+//
+//    public String optional(CommandLine cl, Option opt) {
+//        if (!cl.has(opt)) {
+//            return null;
+//        }
+//        
+//        return cl.value(opt);
+//    }
+//    
+//    protected String key(Option o) {
+//        return key(getKeyPrefix(), o);
+//    }
+//        
+//    protected String key(String prefix, Option o) {
+//        String n = o.name();
+//        return ((prefix == null) ? ""  : prefix)  + ((n != null) ? n : o.flag());
+//    }
+//    
+//    public String required(Properties config, Option opt) {
+//        String k = key(getKeyPrefix(), opt);
+//        
+//        if (!config.containsKey(k)) {
+//            throw new IllegalArgumentException("option " + opt.name() + " is required");
+//        }
+//        
+//        String value = config.getProperty(k);
+//        
+//        if (value == null) {
+//            throw new IllegalArgumentException(
+//                    "required argument for option " + opt.name() + " is missing");
+//        }
+//        
+//        return value;
+//    }
+//    
+//    public String required(CommandLine cl, Option opt) {
+//        if (!cl.options().contains(opt)) {
+//            throw new IllegalArgumentException("option " + opt.name() + " is required");
+//        }
+//        String value = cl.value(opt);
+//        
+//        if (value == null) {
+//            throw new IllegalArgumentException(
+//                    "required argument for option " + opt.name() + " is missing");
+//        }
+//        
+//        return value;
+//    }
     
-    private String overrideWith(Properties config, CommandLine cl, Option opt, String key) {
-        String value = optional(cl, opt);
-        
-        if (value != null) {
-            config.setProperty(key, value);            
-        }
-        
-        return value;
-    }
-
-    public String optional(CommandLine cl, Option opt) {
-        if (!cl.options().contains(opt)) {
-            return null;
-        }
-        
-        return cl.value(opt);
-    }
-    
-    protected String key(Option o) {
-        return key(getKeyPrefix(), o);
-    }
-        
-    protected String key(String prefix, Option o) {
-        String n = o.name();
-        return ((prefix == null) ? ""  : prefix)  + ((n != null) ? n : o.flag());
-    }
-    
-    public String required(Properties config, Option opt) {
-        String k = key(getKeyPrefix(), opt);
-        
-        if (!config.containsKey(k)) {
-            throw new IllegalArgumentException("option " + opt.name() + " is required");
-        }
-        
-        String value = config.getProperty(k);
-        
-        if (value == null) {
-            throw new IllegalArgumentException(
-                    "required argument for option " + opt.name() + " is missing");
-        }
-        
-        return value;
-    }
-    
-    public String required(CommandLine cl, Option opt) {
-        if (!cl.options().contains(opt)) {
-            throw new IllegalArgumentException("option " + opt.name() + " is required");
-        }
-        String value = cl.value(opt);
-        
-        if (value == null) {
-            throw new IllegalArgumentException(
-                    "required argument for option " + opt.name() + " is missing");
-        }
-        
-        return value;
-    }
-
     @Override
-      public void run(final Environment env, Connection c)
-          throws QueryException, IOException, SQLGenerationException, SQLException {
-
-          c.setAutoCommit(false);        
-          CatalogFactory cf = env.catalogFactory();          
-          getFeatures().installAll(c, cf, false);         
-                    
-          String pkg = getRootPackage();
-          File root = getSourceDir();
-                    
-          generateSources(c, env, root, pkg);
-                              
-          new FileProcessor(true) {
-            @Override
-            public void apply(File file) {
-                logger().debug(file.getAbsolutePath());                
-            }              
-          }.traverse(root);
+    protected void prepare(Parser p) {     
+        super.prepare(p);
+        addOption(p, OPTION_GENERATED_DIR);
+        addOption(p, OPTION_ROOT_PACKAGE);
+        
+    }
+    
+    
+    
+    @Override
+    protected void init(CommandLine cl) 
+        throws ToolConfigurationException, ToolException {     
+        super.init(cl);
+        
+        String gen = cl.value(require(cl, OPTION_GENERATED_DIR));
+        String pkg = cl.value(require(cl, OPTION_ROOT_PACKAGE));
+        
+        setSourceDir(new File(gen));
+        setRootPackage(pkg);        
+    }
+    
+    @Override
+    protected void run() 
+        throws ToolException {
+        
+        try {        
+            Connection c = getConnection();
+            Catalog cat = getCatalog();            
+            
+            Environment env = cat.getEnvironment();
+            
+            c.setAutoCommit(false);        
+            CatalogFactory cf = env.catalogFactory();          
+            getFeatures().installAll(c, cf, false);         
+                        
+              String pkg = getRootPackage();
+              File root = getSourceDir();
+                        
+              generateSources(c, env, root, pkg);
+                                  
+              new FileProcessor(true) {
+                @Override
+                public void apply(File file) {
+                    logger().debug(file.getAbsolutePath());                
+                }              
+              }.traverse(root);
+        } 
+        catch (SQLException e) {
+            logger().error(e.getMessage(), e);
+            throw new ToolException(e); 
+        } 
+        catch (QueryException e) {          
+            logger().error(e.getMessage(), e);
+            throw new ToolException(e.getMessage(), e);
+        } 
+        catch (SQLGenerationException e) {        
+            logger().error(e.getMessage(), e);
+            throw new ToolException(e.getMessage(), e);
+        } 
+        catch (IOException e) {
+            logger().error(e.getMessage(), e);
+            throw new ToolException(e);
+        }
+        finally {
+            
+        }
       }
 
     
@@ -307,5 +388,20 @@ public class Builder
         
         this.sourceDir = sourceDir;
     }
+    
+    public static Logger logger() {
+        return Builder.logger;
+    }
+
+    @Override
+    public void setCatalog(Catalog catalog) {
+        super.setCatalog(catalog);
+    }
+
+    @Override
+    public void setConnection(Connection connection) {
+        super.setConnection(connection);
+    }
+    
     
 }

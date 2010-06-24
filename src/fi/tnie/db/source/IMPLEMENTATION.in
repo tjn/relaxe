@@ -26,8 +26,7 @@ public class {{table-impl-class}}
         public EntityFactory<{{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Query, {{table-interface}}> getFactory() {          
             return new EntityFactory<{{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Query, {{table-interface}}>() {
                 @Override
-                public {{table-interface}} newInstance()
-                            throws EntityException {
+                public {{table-interface}} newInstance() {
                         return new {{table-impl-class}}();
                     }       
             };

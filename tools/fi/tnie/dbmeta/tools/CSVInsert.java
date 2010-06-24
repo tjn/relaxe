@@ -45,14 +45,13 @@ public class CSVInsert
     }
     
     @Override
-    public int run() {
-      int result = -1;
-        
+    protected void run()
+        throws ToolException {
       String defaultSchema = getDefaultSchema();      
       List<String> files = getFiles();
       
       if (files.isEmpty()) {
-          throw new IllegalStateException("no input files");
+          throw new ToolException("no input files");           
       }     
       
       message("files: " + files);
@@ -159,19 +158,19 @@ public class CSVInsert
           }          
       }
       
-      result = failures;
+      message("failures: " + failures);
       
-      message("failures: " + result);      
-      return result; 
+      if (failures > 0) {
+          throw new ToolException("failures: " + failures);
+      }       
     }
     
     @Override
     protected void init(CommandLine cl) 
         throws ToolException {     
-        super.init(cl);
         
         if (cl.values().isEmpty()) {
-            throw new IllegalArgumentException("No input files. You need help.");
+            throw new ToolConfigurationException("No input files. You need help.");
         }
         
         setFiles(cl.values());

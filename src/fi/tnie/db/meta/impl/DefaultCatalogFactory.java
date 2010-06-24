@@ -135,22 +135,25 @@ public class DefaultCatalogFactory implements CatalogFactory {
 
 			short type = rs.getShort(5);
 			String typeName = rs.getString(6);
+			
+			DefaultMutableColumn col = null;
 
-			DataTypeImpl dataType = new DataTypeImpl(type, typeName);			
-			Identifier n = getEnvironment().createIdentifier(name);
+			{
+    			DataTypeImpl dataType = new DataTypeImpl(type, typeName);			
+                dataType.setSize(rs.getInt(7));
+                dataType.setDecimalDigits(rs.getInt(9));
+                dataType.setNumPrecRadix(rs.getInt(10));
+    			
+    			Identifier n = getEnvironment().createIdentifier(name);
 
-			DefaultMutableColumn col = 
-			    new DefaultMutableColumn(this.table, n, dataType);
-
-			dataType.setSize(rs.getInt(7));
-			dataType.setDecimalDigits(rs.getInt(9));
-			dataType.setNumPrefixRadix(rs.getInt(10));
-
+    			col = new DefaultMutableColumn(this.table, n, dataType);
+			}
+					
 			col.setNullable(rs.getInt(11));
 			col.setRemarks(rs.getString(12));
 			col.setColumnDefault(rs.getString(13));
 
-			dataType.setCharOctetLength(rs.getInt(16));
+			col.getDataTypeImpl().setCharOctetLength(rs.getInt(16));
 			col.setOrdinalPosition(rs.getInt(17));
 		}
 	}

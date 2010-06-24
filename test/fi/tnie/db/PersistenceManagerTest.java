@@ -69,11 +69,12 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
         PublicFactory pf = cc.newPublicFactory();
         DefaultContinent cont = pf.newAbstractContinent();
         
-        PersistenceManager<Attribute, Reference, Query, Entity<Attribute, Reference, Query, ? extends Continent>> pm = cont.createPersistentManager();
         
+        PersistenceManager<Attribute, Reference, Query, Entity<Attribute, Reference, Query, ? extends Continent>> pm = cont.createPersistentManager();
+                
         cont.setId(8);
         cont.setName("asdf");
-               
+                               
         pm.merge(c);
         c.commit();        
         pm.delete(c);
@@ -83,7 +84,13 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
         pm.update(c);
         c.commit();
         pm.delete(c);
-        c.commit();        
+        c.commit();
+        
+        DefaultContinent newCont = pf.newAbstractContinent();
+        newCont.setName("asdf");
+        pm = newCont.createPersistentManager();
+        pm.merge(c);
+        c.commit();
     }
 
 }

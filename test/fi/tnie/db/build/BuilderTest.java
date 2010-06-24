@@ -38,6 +38,7 @@ import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaElementMap;
 import fi.tnie.db.meta.impl.DefaultMutableColumn;
+import fi.tnie.dbmeta.tools.ToolException;
 
 import fi.tnie.util.io.IOHelper;
 import fi.tnie.util.io.Launcher;
@@ -54,20 +55,22 @@ public class BuilderTest extends DBMetaTestCase {
     private File outputDir = null;
       
     
-    public void testGeneration(Catalog cat, Connection c) 
-        throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-    
-        File srcdir = getGeneratedSrcDir();
-        File bindir = getGeneratedBinDir();
-        
-        srcdir.mkdirs();
-        bindir.mkdirs();
-        
-        Builder b = new Builder();
-        b.setSourceDir(srcdir);
-        b.setRootPackage(getRootPackage());
-        testGeneration(b, cat, c, bindir);
-    }
+//    public void testGeneration(Catalog cat, Connection c) 
+//        throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, ToolException {
+//    
+//        File srcdir = getGeneratedSrcDir();
+//        File bindir = getGeneratedBinDir();
+//        
+//        srcdir.mkdirs();
+//        bindir.mkdirs();
+//        
+//        Builder b = new Builder();
+//                        
+//        b.setSourceDir(srcdir);
+//        b.setRootPackage(getRootPackage());        
+//                
+//        testGeneration(b, cat, c, bindir);
+//    }
         
     
 //    @Override
@@ -80,7 +83,7 @@ public class BuilderTest extends DBMetaTestCase {
 //        }
 //    }
     
-    public void _testGeneration() throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void _testGeneration() throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, ToolException {
         Connection c = getConnection();
         assertNotNull(c);
         Catalog cat = getCatalog();
@@ -101,7 +104,7 @@ public class BuilderTest extends DBMetaTestCase {
     }
     
     
-    public void testGenerationWithMetaData() throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void testGenerationWithMetaData() throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, ToolException {
         Connection c = getConnection();
         assertNotNull(c);
         Catalog cat = getCatalog();
@@ -149,7 +152,7 @@ public class BuilderTest extends DBMetaTestCase {
         
     @SuppressWarnings("deprecation")
     public void testGeneration(Builder b, Catalog cat, Connection c, File bindir) 
-        throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        throws IOException, QueryException, SQLGenerationException, SQLException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, ToolException {
     
         final File srcdir = b.getSourceDir();               
         b.removePreviouslyGenerated(srcdir);
@@ -158,7 +161,12 @@ public class BuilderTest extends DBMetaTestCase {
         
         final String root = b.getRootPackage();
         
-        b.run(cat.getEnvironment(), c);
+//        b.set
+//        b.setEnvironment(cat.getEnvironment());
+//        b.setCatalog(cat);        
+        b.setCatalog(cat);
+        b.setConnection(c);
+        b.run();
         
         File sourceList = b.getSourceList(srcdir);
         assertNotNull(sourceList);

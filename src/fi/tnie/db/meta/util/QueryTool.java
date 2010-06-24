@@ -191,16 +191,13 @@ public class QueryTool {
 			logger().debug("statement: (" + s + ")");
 			
 			PreparedStatement ps = c.prepareStatement(s);						
-			processAdHoc(ps, s, qp);			
+			processAdHoc(ps, qp);			
 		}
 	}
 	
 	
-	private static void processAdHoc(PreparedStatement ps, String query, QueryProcessor qp) 
+	public static void processAdHoc(PreparedStatement ps, QueryProcessor qp) 
 		throws SQLException {
-
-//		ResultSetMetaData m = ps.getMetaData();			
-//		int cc = (m == null) ? 0 : m.getColumnCount();
 
 	    qp.prepare();
 				
@@ -245,6 +242,33 @@ public class QueryTool {
 		}
 	}
 
+	public static long process(ResultSet rs, QueryProcessor qp) 
+	   throws SQLException {
+
+       qp.prepare();
+            
+       long ordinal = 0;
+       
+       try {        
+           qp.startQuery(rs.getMetaData());
+                   
+           while (rs.next()) {
+               ordinal++;
+               qp.process(rs, ordinal);
+           }
+                   
+           qp.endQuery();                  
+       }
+       catch (Throwable e) {
+           logger().error(e.getMessage(), e);
+           qp.abort(e);
+       }
+       finally {
+           qp.finish();
+       }
+       
+       return ordinal;
+   }
 
 
 	private static void copy(String path, Writer w) 
