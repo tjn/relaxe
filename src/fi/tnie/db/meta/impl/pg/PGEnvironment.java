@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.meta.impl.pg;
 
-import java.sql.SQLSyntaxErrorException;
 import java.util.Comparator;
 
 import fi.tnie.db.FoldingComparator;

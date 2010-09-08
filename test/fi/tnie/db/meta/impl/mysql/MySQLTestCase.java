@@ -111,6 +111,7 @@ public abstract class MySQLTestCase
 		return new MySQLEnvironment();
 	}
 
+	@Override
 	protected Catalog getCatalog() 
 		throws QueryException, SQLException {
 	

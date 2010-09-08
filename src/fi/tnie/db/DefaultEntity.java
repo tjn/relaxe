@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.management.PersistentMBean;
-
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.meta.Column;

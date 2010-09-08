@@ -22,11 +22,6 @@ import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.EnvironmentTestContext;
 import fi.tnie.db.QueryException;
 import fi.tnie.db.QueryHelper;
-import fi.tnie.db.build.Builder;
-import fi.tnie.db.build.BuilderTest;
-import fi.tnie.db.meta.impl.DefaultCatalogFactory;
-import fi.tnie.db.meta.impl.mysql.MySQLCatalogFactory;
-import fi.tnie.db.meta.impl.mysql.MySQLEnvironment;
 import junit.framework.TestCase;
 
 public class DBMetaTestCase
