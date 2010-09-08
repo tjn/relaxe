@@ -4,16 +4,6 @@
 package fi.tnie.db.meta.impl.pg;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import fi.tnie.db.QueryException;
-import fi.tnie.db.build.BuilderTest;
-import fi.tnie.db.feature.SQLGenerationException;
-import fi.tnie.db.meta.BaseTable;
-import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.Column;
-import fi.tnie.db.meta.ForeignKey;
 
 public class PGBuilderTest
 	extends PGTestCase {

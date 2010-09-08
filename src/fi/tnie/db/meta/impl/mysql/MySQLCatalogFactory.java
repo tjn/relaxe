@@ -180,7 +180,8 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
         return cm;
     }
 
-    public String getCatalogName(Connection c) throws SQLException {
+    @Override
+	public String getCatalogName(Connection c) throws SQLException {
         return null;
     }
 }

@@ -6,7 +6,6 @@ package fi.tnie.db;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
 
-import fi.tnie.db.build.BuilderTest;
 import fi.tnie.db.build.CatalogContext;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.DBMetaTestCase;

@@ -10,9 +10,6 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
-
-import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.impl.DefaultCatalogMap;
@@ -130,7 +127,8 @@ public class PGCatalogFactoryTest extends DBMetaTestCase {
         return getConnection().getMetaData();
     }
     
-    public PGCatalogFactory factory() {
+    @Override
+	public PGCatalogFactory factory() {
         PGEnvironment e = new PGEnvironment();
         return new PGCatalogFactory(e);
     }

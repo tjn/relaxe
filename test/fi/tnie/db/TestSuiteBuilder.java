@@ -24,10 +24,8 @@ import junit.framework.TestSuite;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.build.Builder;
-import fi.tnie.db.build.BuilderTest;
 import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.Environment;
-import fi.tnie.db.meta.impl.pg.PGEnvironmentTest;
 import fi.tnie.util.io.FileProcessor;
 import fi.tnie.util.io.IOHelper;
 

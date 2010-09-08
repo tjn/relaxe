@@ -4,29 +4,14 @@
 package fi.tnie.dbmeta.tools;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import fi.tnie.db.expr.ddl.DropTable;
-import fi.tnie.db.meta.BaseTable;
-import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.Schema;
-import fi.tnie.db.meta.Table;
 import fi.tnie.db.meta.util.ResultSetWriter;
 import fi.tnie.util.cli.Argument;
 import fi.tnie.util.cli.CommandLine;
-import fi.tnie.util.cli.Option;
 import fi.tnie.util.cli.Parser;
-import fi.tnie.util.cli.SimpleOption;
 import fi.tnie.util.io.IOHelper;
 
 public class KeyGenerationInfo

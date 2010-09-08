@@ -17,7 +17,6 @@ import fi.tnie.db.meta.impl.DefaultCatalogFactory;
 import fi.tnie.db.meta.impl.DefaultCatalogMap;
 import fi.tnie.db.meta.impl.DefaultMutableCatalog;
 import fi.tnie.db.meta.impl.DefaultMutableSchema;
-import fi.tnie.db.meta.impl.pg.PGCatalogFactory;
 
 public class MySQLCatalogFactoryTest extends DBMetaTestCase {
 
@@ -152,7 +151,8 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase {
         factory.populateForeignKeys(cm, meta);
     }
     
-    public MySQLCatalogFactory factory() {        
+    @Override
+	public MySQLCatalogFactory factory() {        
         return new MySQLCatalogFactory(new MySQLEnvironment());        
     }
 
