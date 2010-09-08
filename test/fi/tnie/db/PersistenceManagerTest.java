@@ -4,29 +4,16 @@
 package fi.tnie.db;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.Arrays;
-import java.util.Set;
-
-import fi.tnie.db.expr.DeleteStatement;
-import fi.tnie.db.expr.ddl.SQLType;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.DBMetaTestCase;
-import fi.tnie.db.meta.DataType;
-import fi.tnie.db.build.Builder;
-import fi.tnie.db.build.BuilderTest;
 import fi.tnie.db.build.CatalogContext;
-import fi.tnie.db.build.pub.AbstractContinent;
-import fi.tnie.db.build.pub.Continent;
-import fi.tnie.db.build.pub.ContinentImpl;
-import fi.tnie.db.build.pub.DefaultContinent;
-import fi.tnie.db.build.pub.PublicFactory;
-import fi.tnie.db.build.pub.Continent.Attribute;
-import fi.tnie.db.build.pub.Continent.Query;
-import fi.tnie.db.build.pub.Continent.Reference;
+import fi.tnie.db.build.personal.DefaultPerson;
+import fi.tnie.db.build.personal.Person;
+import fi.tnie.db.build.personal.PersonalFactory;
+import fi.tnie.db.build.personal.Person.Attribute;
+import fi.tnie.db.build.personal.Person.Query;
+import fi.tnie.db.build.personal.Person.Reference;
 
 public class PersistenceManagerTest extends DBMetaTestCase  {
 
@@ -66,15 +53,16 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
         EntityFactory<?, ?, ?, ?> ef = meta.getFactory();
         assertNotNull(ef);
                 
-        PublicFactory pf = cc.newPublicFactory();
-        DefaultContinent cont = pf.newAbstractContinent();
-        
-        
-        PersistenceManager<Attribute, Reference, Query, Entity<Attribute, Reference, Query, ? extends Continent>> pm = cont.createPersistentManager();
+        PersonalFactory pf = cc.newPersonalFactory();
+        DefaultPerson p = pf.newPerson();
                 
-        cont.setId(8);
-        cont.setName("asdf");
-                               
+        PersistenceManager<Attribute, Reference, Query, Entity<Attribute, Reference, Query, ? extends Person>> pm = p.createPersistentManager();
+                
+        // p.setId(8);
+        // p.setName("asdf");
+        p.setFirstName("a");
+        p.setLastName("b");
+                                       
         pm.merge(c);
         c.commit();        
         pm.delete(c);
@@ -86,11 +74,11 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
         pm.delete(c);
         c.commit();
         
-        DefaultContinent newCont = pf.newAbstractContinent();
-        newCont.setName("asdf");
-        pm = newCont.createPersistentManager();
-        pm.merge(c);
-        c.commit();
+//        DefaultContinent newCont = pf.newAbstractContinent();
+//        newCont.setName("asdf");
+//        pm = newCont.createPersistentManager();
+//        pm.merge(c);
+//        c.commit();
     }
 
 }
