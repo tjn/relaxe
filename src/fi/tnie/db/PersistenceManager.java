@@ -36,6 +36,7 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.meta.GeneratedKeyHandler;
 import fi.tnie.db.meta.impl.ColumnMap;
 
 public class PersistenceManager<
@@ -215,60 +216,31 @@ public class PersistenceManager<
 			logger().debug("inserted: " + ins);
 			
 			rs = ps.getGeneratedKeys();
+						
+			Environment env = target.getMetaData().getCatalog().getEnvironment();
 			
 //			logger().debug(buf.toString());
 			
 			if (rs.next()) {
-//				buf.setLength(0);
+			
+				GeneratedKeyHandler kh = env.generatedKeyHandler();
 				
-				int cc = rs.getMetaData().getColumnCount();
+				kh.processGeneratedKeys(q, pe, rs);
 				
-				logger().debug("getGeneratedKeys: ");
-				
-				ResultSetMetaData meta = rs.getMetaData();
-				
-				for (int i = 1; i <= cc; i++) {
-				    String label = meta.getColumnLabel(i);
-				    logger().debug("[" + i + "]: " + label);
-                }
-				
-				
-				
-	//			StringBuffer buf = new StringBuffer();			
-				
-				EntityMetaData<A, R, Q, ? extends E> em = pe.getMetaData();
-				BaseTable table = em.getBaseTable();
-				ColumnMap cm = table.columnMap();
-				List<A> keys = new ArrayList<A>();
-				
-							
-				for (int i = 1; i <= cc; i++) {
-					String name = rs.getMetaData().getColumnLabel(i);					
-					Column col = cm.get(name);
-					
-					if (col == null) {
-						throw new NullPointerException("Can not find column " + name + " in table: " + table.getQualifiedName());
-					} 
-					
-					A attr = em.getAttribute(col);				
-					keys.add(attr);				
-					
-	//				buf.append(name);
-	//				buf.append("\t");
-				}			
-								
-				for (int i = 1; i <= cc; i++) {					
-					A attr = keys.get(i - 1);
-					
-					if (attr != null) {
-						Object value = rs.getObject(i);
-						pe.set(attr, value);
-					}
-															
-//					String col = rs.getString(i);
-//					buf.append(col);
-//					buf.append("\t");
-				}
+//				
+//								
+//				for (int i = 1; i <= cc; i++) {					
+//					A attr = keys.get(i - 1);
+//					
+//					if (attr != null) {
+//						Object value = rs.getObject(i);
+//						pe.set(attr, value);
+//					}
+//															
+////					String col = rs.getString(i);
+////					buf.append(col);
+////					buf.append("\t");
+//				}
 			}
 				
 //				logger().debug(buf.toString());				

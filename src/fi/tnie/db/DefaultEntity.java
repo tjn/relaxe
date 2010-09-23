@@ -42,10 +42,10 @@ public abstract class DefaultEntity<
 >
 	extends AbstractEntity<A, R, Q, E> {
 	
-	private EnumMap<A, Object> values;
+	private EnumMap<A, Holder> values;
 	private ReferenceMap<R, Entity<?,?,?,?>> refs;
 	
-	private EntityQueryResult<A, R, Q, ?> result;
+//	private EntityQueryResult<A, R, Q, ?> result;
 		
 	private static Logger logger = Logger.getLogger(DefaultEntity.class);
 	
@@ -53,7 +53,7 @@ public abstract class DefaultEntity<
 		super();		
 	}
 
-	public Object get(A a) {
+	public Holder get(A a) {
 		if (a == null) {
 			throw new NullPointerException("'a' must not be null");
 		}
@@ -61,7 +61,7 @@ public abstract class DefaultEntity<
 		return attrs().get(a);		
 	};
 
-	public Object get(Column column)
+	public Holder get(Column column)
 		throws NullPointerException {
 		if (column == null) {
 			throw new NullPointerException("'c' must not be null");
@@ -104,14 +104,15 @@ public abstract class DefaultEntity<
 		return ref.get(fkcol);
 	};
 	
-	public void set(A a, Object value) {
+	public void set(A a, Holder value) {
 		attrs().put(a, value);		
 	}
 	
-	protected EnumMap<A, Object> attrs() {
+	protected EnumMap<A, Holder> attrs() {
 		if (values == null) {
-			values = new EnumMap<A, Object>(getMetaData().getAttributeNameType()); 
+			values = new EnumMap<A, Holder>(getMetaData().getAttributeNameType()); 
 		}
+		
 		return values;
 	}
 	
@@ -287,9 +288,9 @@ public abstract class DefaultEntity<
 		return pk;
 	}	
 	
-	void markLoaded(EntityQueryResult<A, R, Q, ?> result) {
-		this.result = result;
-	}
+//	void markLoaded(EntityQueryResult<A, R, Q, ?> result) {
+//		this.result = result;
+//	}
 	
 	public PersistenceManager<A, R, Q, Entity<A, R, Q, ? extends E>> createPersistentManager() {
 	    return new PersistenceManager<A, R, Q, Entity<A,R,Q,? extends E>>(this);	    	    	    

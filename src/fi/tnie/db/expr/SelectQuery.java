@@ -3,6 +3,12 @@
  */
 package fi.tnie.db.expr;
 
+
+/**
+ * Is this class duplicate with DefaultTableExpression?
+ * @author tnie
+ *
+ */
 public class SelectQuery
 	extends QueryExpression {
 

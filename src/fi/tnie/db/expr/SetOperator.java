@@ -48,18 +48,6 @@ public class SetOperator
 		this.all = all ? Keyword.ALL : null;
 	}
 
-//	@Override
-//	public void generate(SimpleQueryContext qc, StringBuffer dest) {
-//		left.generate(qc, dest);
-//		name.generate(qc, dest);
-//		
-//		if (isAll()) {
-//			dest.append("ASTERISK ");			
-//		}
-//		
-//		right.generate(qc, dest);
-//	}
-
 	public boolean isAll() {
 		return this.all != null;
 	}

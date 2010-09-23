@@ -5,6 +5,7 @@ package fi.tnie.db.meta;
 
 import java.util.Comparator;
 
+import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.expr.SQLSyntax;
@@ -52,7 +53,12 @@ public interface Environment {
     String driverClassName();
     
     SQLSyntax getSyntax();
+
+    GeneratedKeyHandler generatedKeyHandler(); 
         
 //    void loadDriver()
 //        throws ClassNotFoundException;
+    
+    ValueExtractorFactory getValueExtractorFactory();
 }
+

@@ -196,49 +196,6 @@ public class DefaultEntityQuery<
 		return factory;
 	}
 	
-	public class AttributeExtractor {		
-		private A attribute;		
-		private ValueExtractor extractor;
-		
-		public AttributeExtractor(A attribute, ValueExtractor extractor) {
-			super();
-			this.attribute = attribute;
-			this.extractor = extractor;
-		}
-
-		public void set(E dest) {
-			dest.set(this.attribute, extractor.last());			
-		}		
-	}
-	
-		
-	private static class IntExtractor
-		extends ValueExtractor
-	{
-		public IntExtractor(int column) {
-			super(column);			
-		}
-
-		@Override
-		public Integer doExtract(ResultSet rs) throws SQLException {
-			int v = rs.getInt(getColumn());
-			return rs.wasNull() ? null : new Integer(v);			
-		}
-	}
-	
-	private static class StringExtractor
-		extends ValueExtractor
-	{
-		public StringExtractor(int column) {
-			super(column);			
-		}
-		
-		@Override
-		public String doExtract(ResultSet rs) throws SQLException {
-			return rs.getString(getColumn());			
-		}
-	}
-	
 	private static class ObjectExtractor
 		extends ValueExtractor
 	{
@@ -247,16 +204,17 @@ public class DefaultEntityQuery<
 		}
 		
 		@Override
-		public Object doExtract(ResultSet rs) throws SQLException {
-			return rs.getObject(getColumn());
+		public Holder extractValue(ResultSet rs) throws SQLException {
+//			return rs.getObject(getColumn());
+			throw new UnsupportedOperationException("unsupported: " + getClass() + ".extractValue()");
 		}
 	}
 	
 	public class EntityQueryProcessor 
 		extends QueryProcessorAdapter {
 		
-		private Extractor[] extractors = null;
-		private List<AttributeExtractor> attributeWriterList;
+//		private Extractor[] extractors = null;
+		private List<AttributeExtractor<A, R, Q, E>> attributeWriterList;
 		private int attrs;
 		private List<E> content;
 		private E first;
@@ -273,7 +231,7 @@ public class DefaultEntityQuery<
 			List<? extends ColumnName> cl = qo.getSelect().getColumnNameList().getContent();
 			
 			Extractor[] xa = new Extractor[cl.size()];
-			List<AttributeExtractor> awl = new ArrayList<AttributeExtractor>();
+			List<AttributeExtractor<A, R, Q, E>> awl = new ArrayList<AttributeExtractor<A, R, Q, E>>();
 									
 			for (ColumnName n : qo.getSelect().getColumnNameList().getContent()) {
 				colno++;
@@ -306,11 +264,11 @@ public class DefaultEntityQuery<
 				A a = meta.getAttribute(column);
 				
 				if (a != null) {
-					awl.add(new AttributeExtractor(a, e));		
+					awl.add(new AttributeExtractor<A, R, Q, E>(a, e));		
 				}
 			}			
 			
-			this.extractors = xa;
+//			this.extractors = xa;
 			this.attributeWriterList = awl;
 			this.attrs = awl.size();			
 		}
@@ -352,15 +310,20 @@ public class DefaultEntityQuery<
 				EntityFactory<A, R, Q, ? extends E> ef = getFactory();				
 				E e = ef.newInstance();
 				
-				for (int i = 0; i < this.extractors.length; i++) {
-					this.extractors[i].extract(rs);				
-				}
+//				for (int i = 0; i < this.extractors.length; i++) {
+//					this.extractors[i].extract(rs);				
+//				}
+				
+//				for (int i = 0; i < attrs; i++) {
+//					AttributeExtractor ax = this.attributeWriterList.get(i);
+//					ax.set(e);
+//				}
 				
 				for (int i = 0; i < attrs; i++) {
 					AttributeExtractor ax = this.attributeWriterList.get(i);
-					ax.set(e);
+					ax.extract(rs, e);
 				}
-				
+								
 				if (this.first == null) {
 					this.first = e;
 				}

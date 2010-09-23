@@ -12,19 +12,21 @@ public interface Entity<
 	R extends Enum<R> & Identifiable,
 	Q extends Enum<Q> & Identifiable,
 	E extends Entity<A, R, Q, ? extends E>
-> {		
+> 
+	extends DataObject
+{		
 	
 	/**
 	 * Returns a value of the attribute <code>a</code>  
 	 * @param r
 	 * @return
 	 */
-	Object get(A a);
+	Holder get(A a);
 	
 	/***
 	 * Returns the value of the corresponding column.
 	 * 
-	 * If the <code>column</code> directy corresponds an attribute, the value of that attribute is returned.  
+	 * If the <code>column</code> directly corresponds an attribute, the value of that attribute is returned.  
 	 * Otherwise, the foreign keys the <code>column</code> is a part of are searched to find an entity reference.
 	 * 
 	 * If there is no referenced entity, <code>null</code> is returned.
@@ -37,7 +39,7 @@ public interface Entity<
 	 * @return Scalar value or <code>null</code>, if the value is not set
 	 * @throws NullPointerException If <code>c</code> is <code>null</code>.	 
 	 */
-	Object get(Column c);
+	Holder get(Column c);
 	
 	/**
 	 * Set the value of the attribute <code>a</code>
@@ -45,7 +47,7 @@ public interface Entity<
 	 * @param a
 	 * @param value
 	 */
-	void set(A a, Object value);
+	void set(A a, Holder value);
 	
 	/**
 	 * Returns an entity to which this entity refers by relationship <code>r</code>  
@@ -68,7 +70,4 @@ public interface Entity<
 	 * @return
 	 */	
 	EntityMetaData<A, R, Q, E> getMetaData();
-
-//	PersistenceManager<A, R, Q, Entity<A, R, Q, ? extends E>> createPersistentManager();
-//	EntityDiff<A, R, Q, E> diff(E another);
 }

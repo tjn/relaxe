@@ -6,9 +6,8 @@ package fi.tnie.db;
 import java.io.Serializable;
 
 /**
- * Typed, immutable value holder.
  * 
- * @author tnie
+ * @author Topi Nieminen <topi.nieminen@gmail.com>
  */
 public abstract class Holder
 	implements Serializable {
@@ -18,4 +17,6 @@ public abstract class Holder
 	 */
 	private static final long serialVersionUID = -2127849751940907829L;
 	
+	public abstract Serializable value();	
+	// public abstract int getType();
 }

@@ -113,9 +113,6 @@ public class DefaultTableExpression
 	public void setHaving(Having having) {
 		this.having = having;
 	}
-
-	
-	
 	
 	@Override
 	protected void traverseContent(VisitContext vc, ElementVisitor v) {
@@ -143,27 +140,27 @@ public class DefaultTableExpression
 		return dest.toString();
 	}
 	
-	public SetOperator unionAll(DefaultTableExpression rp) {
+	public SetOperator unionAll(TableExpression rp) {
 		return new SetOperator(Op.UNION, true, this, rp);
 	}
 	
-	public SetOperator union(DefaultTableExpression rp) {
+	public SetOperator union(TableExpression rp) {
 		return new SetOperator(Op.UNION, false, this, rp);
 	}
 	
-	public SetOperator intersect(DefaultTableExpression rp) {
+	public SetOperator intersect(TableExpression rp) {
 		return new SetOperator(Op.INTERSECT, false, this, rp);
 	}
 	
-	public SetOperator intersectAll(DefaultTableExpression rp) {
+	public SetOperator intersectAll(TableExpression rp) {
 		return new SetOperator(Op.INTERSECT, true, this, rp);
 	}
 	
-	public SetOperator except(DefaultTableExpression rp) {
+	public SetOperator except(TableExpression rp) {
 		return new SetOperator(Op.EXCEPT, false, this, rp);
 	}
 	
-	public SetOperator exceptAll(DefaultTableExpression rp) {
+	public SetOperator exceptAll(TableExpression rp) {
 		return new SetOperator(Op.EXCEPT, true, this, rp);
 	}
 	

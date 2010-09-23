@@ -13,7 +13,7 @@ public abstract class ValueExtractor
 	implements Extractor {
 	
 	private int column;
-	private Object last = null;
+	private Holder last = null;
 
 	public ValueExtractor(int column) {
 		super();			
@@ -24,19 +24,22 @@ public abstract class ValueExtractor
 		return column;
 	}
 
-	public Object last() {
+	public Holder last() {
 		return this.last;
 	}
 
-	public abstract Object doExtract(ResultSet rs)
+	public abstract Holder extractValue(ResultSet rs)
 		throws SQLException;
 	
 	public void extract(ResultSet rs)
 		throws SQLException {
-		this.last = doExtract(rs);
-		set(this.last);			
+		this.last = extractValue(rs);
+		set(this.last);
 	}
 		
 	protected void set(Object value) {	
 	}
+	
+	
+	
 }
