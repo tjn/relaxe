@@ -29,9 +29,9 @@ import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
-import fi.tnie.db.meta.util.ResultSetWriter;
-import fi.tnie.db.meta.util.SimpleQueryProcessor;
-import fi.tnie.db.meta.util.StringListReader;
+import fi.tnie.db.env.util.ResultSetWriter;
+import fi.tnie.db.env.util.SimpleQueryProcessor;
+import fi.tnie.db.env.util.StringListReader;
 import fi.tnie.util.io.Launcher;
 import fi.tnie.util.io.RunResult;
 
@@ -192,7 +192,7 @@ public abstract class JDBCTestCase
 		Connection c = getConnection();		
 		DatabaseMetaData meta = c.getMetaData();
 		
-		ResultSetWriter rw = new ResultSetWriter(System.out, false);		
+		fi.tnie.db.env.util.ResultSetWriter rw = new ResultSetWriter(System.out, false);		
 		
 		final int jdbcMajor = meta.getJDBCMajorVersion();
 		

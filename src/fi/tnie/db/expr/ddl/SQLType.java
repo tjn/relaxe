@@ -3,9 +3,8 @@
  */
 package fi.tnie.db.expr.ddl;
 
-import java.sql.Types;
-
 import fi.tnie.db.expr.Element;
+import fi.tnie.db.types.Type;
 
 public abstract class SQLType
     extends DataTypeDefinition {
@@ -20,37 +19,37 @@ public abstract class SQLType
     
     public static boolean isTextType(int sqltype) {
         return 
-            (sqltype == Types.CHAR) || 
-            (sqltype == Types.VARCHAR) ||            
-            (sqltype == Types.LONGVARCHAR) ||
-            (sqltype == Types.NCHAR) ||
-            (sqltype == Types.NVARCHAR) ||
-            (sqltype == Types.LONGNVARCHAR) ||            
-            (sqltype == Types.CLOB)
+            (sqltype == Type.CHAR) || 
+            (sqltype == Type.VARCHAR) ||            
+            (sqltype == Type.LONGVARCHAR) ||
+            (sqltype == Type.NCHAR) ||
+            (sqltype == Type.NVARCHAR) ||
+            (sqltype == Type.LONGNVARCHAR) ||            
+            (sqltype == Type.CLOB)
            ;        
     }
     
     public static boolean isIntegralType(int sqltype) {
         return 
-        (sqltype == Types.TINYINT) || 
-        (sqltype == Types.INTEGER) ||            
-        (sqltype == Types.SMALLINT) ||
-        (sqltype == Types.BIGINT)    
+        (sqltype == Type.TINYINT) || 
+        (sqltype == Type.INTEGER) ||            
+        (sqltype == Type.SMALLINT) ||
+        (sqltype == Type.BIGINT)    
        ;        
     }
     
     public static boolean isFixedNumeric(int sqltype) {
         return 
-        (sqltype == Types.NUMERIC) || 
-        (sqltype == Types.DECIMAL)    
+        (sqltype == Type.NUMERIC) || 
+        (sqltype == Type.DECIMAL)    
        ;        
     }    
     
     public static boolean isFloatingPoint(int sqltype) {
         return 
-        (sqltype == Types.REAL) || 
-        (sqltype == Types.FLOAT) ||
-        (sqltype == Types.DOUBLE)    
+        (sqltype == Type.REAL) || 
+        (sqltype == Type.FLOAT) ||
+        (sqltype == Type.DOUBLE)    
        ;        
     }        
 }

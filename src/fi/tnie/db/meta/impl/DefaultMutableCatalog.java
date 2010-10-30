@@ -3,13 +3,20 @@
  */
 package fi.tnie.db.meta.impl;
 
+import java.io.Serializable;
+
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.SchemaMap;
 
 public class DefaultMutableCatalog
-	implements Catalog {
+	implements Catalog, Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6146182416382357119L;
 	
 	private Identifier name;	
 //	private Comparator<Identifier> identifierComp;
@@ -17,6 +24,11 @@ public class DefaultMutableCatalog
 
 	private DefaultSchemaMap schemaMap;
 	
+	
+	private DefaultMutableCatalog() {
+		super();
+	}
+
 	public DefaultMutableCatalog(Environment environment) {
 		super();
 		this.environment = environment;
@@ -53,9 +65,8 @@ public class DefaultMutableCatalog
 		return getSchemaMap().add(newSchema);		
 	}
 
-
-
-	DefaultSchemaMap getSchemaMap() {
+	
+	public DefaultSchemaMap getSchemaMap() {
 		if (schemaMap == null) {
 			schemaMap = new DefaultSchemaMap(this);			
 		}
@@ -77,7 +88,7 @@ public class DefaultMutableCatalog
 		return getSchemaMap();
 	}
 
-	static class DefaultSchemaMap
+	public static class DefaultSchemaMap
 		extends DefaultElementMap<DefaultMutableSchema> 
 		implements SchemaMap {
 

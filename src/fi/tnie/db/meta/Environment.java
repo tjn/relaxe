@@ -5,10 +5,8 @@ package fi.tnie.db.meta;
 
 import java.util.Comparator;
 
-import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
-import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.expr.ddl.ColumnDefinition;
 
 public interface Environment {
@@ -34,13 +32,6 @@ public interface Environment {
 	 */
 	Identifier createIdentifier(String name)
 		throws IllegalIdentifierException;
-	
-	
-	/** Creates a factory to build entire catalog in this environment. 
-	 * 
-	 * @return
-	 */
-	CatalogFactory catalogFactory();
 
 	/***
 	 * 
@@ -48,17 +39,6 @@ public interface Environment {
 	 * @param columnName
 	 * @return
 	 */
-    ColumnDefinition serialColumnDefinition(String columnName, boolean big);
-        
-    String driverClassName();
-    
-    SQLSyntax getSyntax();
-
-    GeneratedKeyHandler generatedKeyHandler(); 
-        
-//    void loadDriver()
-//        throws ClassNotFoundException;
-    
-    ValueExtractorFactory getValueExtractorFactory();
+	ColumnDefinition serialColumnDefinition(String columnName, boolean big);
 }
 

@@ -5,6 +5,8 @@ package fi.tnie.db;
 
 import java.sql.Connection;
 
+import fi.tnie.db.ent.EntityException;
+
 public interface Persistable {
 
     void insert(Connection c)

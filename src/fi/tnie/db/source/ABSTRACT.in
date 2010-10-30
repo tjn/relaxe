@@ -1,6 +1,6 @@
 package {{package-name}};
 
-import fi.tnie.db.DefaultEntity;
+import fi.tnie.db.ent.DefaultEntity;
 {{imports}}
 
 public abstract class {{table-abstract-class}}
@@ -8,10 +8,15 @@ public abstract class {{table-abstract-class}}
         {{table-interface}}.Attribute,
         {{table-interface}}.Reference,
         {{table-interface}}.Query,
+        {{table-interface}}.Type,
         {{table-interface}}
     >
     implements {{table-interface}}
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;    
 
     
 } 

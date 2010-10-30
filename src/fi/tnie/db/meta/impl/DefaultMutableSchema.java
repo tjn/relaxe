@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.meta.impl;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.BaseTable;
@@ -18,7 +18,7 @@ import fi.tnie.db.meta.Table;
 public class DefaultMutableSchema
 	implements Schema {
 		
-	private static Logger logger = Logger.getLogger(DefaultMutableSchema.class);	
+//	private static Logger logger = Logger.getLogger(DefaultMutableSchema.class);	
 		
 	private DefaultSchemaElementMap<DefaultMutableTable> tables;
 	private DefaultSchemaElementMap<DefaultPrimaryKey> primaryKeys;
@@ -60,9 +60,9 @@ public class DefaultMutableSchema
 		return this.catalog;
 	}
 
-	public static Logger logger() {
-		return DefaultMutableSchema.logger;
-	}
+//	public static Logger logger() {
+//		return DefaultMutableSchema.logger;
+//	}
 	
 	@Override
 	public String toString() {		

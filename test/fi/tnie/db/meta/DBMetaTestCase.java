@@ -22,6 +22,7 @@ import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.EnvironmentTestContext;
 import fi.tnie.db.QueryException;
 import fi.tnie.db.QueryHelper;
+import fi.tnie.db.env.CatalogFactory;
 import junit.framework.TestCase;
 
 public class DBMetaTestCase
@@ -208,7 +209,7 @@ public class DBMetaTestCase
 
     public CatalogFactory factory() {
         // ClassLoader cl = getClassLoaderForGenerated();
-        return getContext().getEnvironment().catalogFactory();        
+        return getContext().getImplementation().catalogFactory();        
     }
     
     public Catalog getCatalog() throws QueryException, SQLException {
@@ -247,15 +248,15 @@ public class DBMetaTestCase
 
 
     public String getRootPackage() {
-        return DBMetaTestCase.class.getPackage().getName();
+        return "fi.tnie.db.gen";
     }
         
     protected File getGeneratedSrcDir() {
-        return new File("gen/src");
+        return new File("out/src");
     }
     
     protected File getGeneratedBinDir() {
-        return new File("gen/bin");
+        return new File("out/bin");
     }
     
     @SuppressWarnings("deprecation")

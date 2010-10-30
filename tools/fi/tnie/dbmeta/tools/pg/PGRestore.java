@@ -6,13 +6,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.meta.impl.pg.PGTestCase;
 import fi.tnie.util.io.Launcher;
 import fi.tnie.util.io.RunResult;
 
@@ -24,24 +22,24 @@ public class PGRestore
     
     private static Logger logger = Logger.getLogger(PGRestore.class);
     
-    public static void main(String[] args) {
-        try {            
-            Class.forName("org.postgresql.Driver");
-            
-            String u = "tester";
-            String p = "password";
-            String d = "dbmeta_test";
-            
-            System.out.println("restoring database: " + d + ": " + new Date());
-            File dump = PGTestCase.dump();            
-            PGRestore pg = new PGRestore(u, p, d);
-            pg.restore(dump);
-            System.out.println("database restored: " + d + ": " + new Date());
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }    
+//    public static void main(String[] args) {
+//        try {            
+//            Class.forName("org.postgresql.Driver");
+//            
+//            String u = "tester";
+//            String p = "password";
+//            String d = "dbmeta_test";
+//            
+//            System.out.println("restoring database: " + d + ": " + new Date());
+//            File dump = PGTestCase.dump();            
+//            PGRestore pg = new PGRestore(u, p, d);
+//            pg.restore(dump);
+//            System.out.println("database restored: " + d + ": " + new Date());
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }    
     
     public PGRestore(String userid, String passwd, String database) {
         super();

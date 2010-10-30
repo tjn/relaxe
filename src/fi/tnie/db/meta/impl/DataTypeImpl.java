@@ -3,11 +3,17 @@
  */
 package fi.tnie.db.meta.impl;
 
+import java.io.Serializable;
+
 import fi.tnie.db.meta.DataType;
 
 public class DataTypeImpl 
-	implements DataType, Cloneable {
+	implements DataType, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4891848179452614861L;
 	private int dataType;	
 	private String typeName;
 	private int charOctetLength;	
@@ -25,6 +31,13 @@ public class DataTypeImpl
 		super();
 		this.dataType = dataType;
 		this.typeName = typeName;		
+	}
+	
+	public DataTypeImpl(DataTypeImpl source) {
+		super();
+		this.dataType = source.getDataType();
+		this.typeName = source.getTypeName();
+		// TODO: add others
 	}
 
 
@@ -104,10 +117,10 @@ public class DataTypeImpl
 	}
 		
 	
-	@Override
-	protected Object clone() throws CloneNotSupportedException {	
-		DataTypeImpl copy = (DataTypeImpl) super.clone();				
-		return copy;
-	}
+//	@Override
+//	protected Object clone() throws CloneNotSupportedException {	
+//		DataTypeImpl copy = (DataTypeImpl) super.clone();				
+//		return copy;
+//	}
 
 }

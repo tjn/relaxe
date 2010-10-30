@@ -16,7 +16,7 @@ public class DefaultPrimaryKey
 	implements PrimaryKey {
 	
 	private DefaultMutableBaseTable table;
-	private ColumnMap columnMap = null; 
+	private DefaultColumnMap columnMap = null; 
 
 	@Override
 	public BaseTable getTable() {
@@ -97,9 +97,9 @@ public class DefaultPrimaryKey
 		return Type.PRIMARY_KEY;
 	}
 
-	private ColumnMap getColumnMap() {
+	private DefaultColumnMap getColumnMap() {
 		if (columnMap == null) {			
-			columnMap = new ColumnMap(this.table);			
+			columnMap = new DefaultColumnMap(this.table);			
 		}
 
 		return columnMap;

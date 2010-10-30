@@ -13,7 +13,7 @@ public abstract class DefaultMutableTable
 	extends DefaultSchemaElement
 	implements Table {
 	
-	private ColumnMap columnMap;
+	private DefaultColumnMap columnMap;
 			
 	DefaultMutableTable(DefaultMutableSchema s, Identifier name) {
 		super(s, name);		
@@ -29,9 +29,9 @@ public abstract class DefaultMutableTable
 		return (DefaultMutableBaseTable) (isBaseTable() ? this : null);
 	}
 
-	ColumnMap getColumnMap() {
+	DefaultColumnMap getColumnMap() {
 		if (columnMap == null) {
-			columnMap = new ColumnMap(this);			
+			columnMap = new DefaultColumnMap(this);			
 		}
 
 		return columnMap;
@@ -43,7 +43,7 @@ public abstract class DefaultMutableTable
 	}
 
 	@Override
-	public ColumnMap columnMap() {		
+	public DefaultColumnMap columnMap() {		
 		return getColumnMap();
 	}
 	

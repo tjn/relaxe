@@ -42,7 +42,7 @@ public class DefaultForeignKey
 		this(schema, name, Collections.singletonList(new DefaultForeignKey.Pair(referencing, referenced)));		
 	}
 	
-	DefaultForeignKey(DefaultMutableSchema schema, Identifier name) {
+	public DefaultForeignKey(DefaultMutableSchema schema, Identifier name) {
 		super(schema, name);
 	}
 

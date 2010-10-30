@@ -16,11 +16,14 @@ public interface TableMapper {
 		ABSTRACT,		
 		HOOK,
 		IMPLEMENTATION,
+		FACTORY,
 		METADATA
 	}
 				
 	JavaType entityType(BaseTable table, Part part);	
-	Class<?> getAttributeType(Table table, Column c);	
+	Class<?> getAttributeHolderType(Table table, Column c);
+	Class<?> getAttributeType(Table table, Column c);
 	JavaType factoryType(Schema schema, Part part);	
 	JavaType catalogContextType();
+	String getRootPackage();
 }

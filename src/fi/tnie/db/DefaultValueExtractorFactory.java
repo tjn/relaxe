@@ -10,9 +10,9 @@ import java.sql.Types;
 public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 
 	@Override
-	public ValueExtractor createExtractor(ResultSetMetaData meta, int col) 
+	public ValueExtractor<?, ?> createExtractor(ResultSetMetaData meta, int col) 
 		throws SQLException {
-		ValueExtractor e = null;
+		ValueExtractor<?, ?> e = null;
 		int sqltype = meta.getColumnType(col);
 	
 		switch (sqltype) {
@@ -23,7 +23,7 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 				break;
 			case Types.VARCHAR:
 			case Types.CHAR:
-				e = new StringExtractor(col);	
+				e = new VarcharExtractor(col);	
 				break;					
 			default:
 				// 

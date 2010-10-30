@@ -6,7 +6,6 @@ package fi.tnie.db.meta;
 import java.util.List;
 
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.meta.impl.ColumnMap;
 
 public interface Table
 	extends SchemaElement {

@@ -24,8 +24,9 @@ import junit.framework.TestSuite;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.build.Builder;
-import fi.tnie.db.meta.CatalogFactory;
-import fi.tnie.db.meta.Environment;
+import fi.tnie.db.env.CatalogFactory;
+import fi.tnie.db.env.Implementation;
+import fi.tnie.db.gen.personal.Person;
 import fi.tnie.util.io.FileProcessor;
 import fi.tnie.util.io.IOHelper;
 
@@ -166,7 +167,7 @@ public class TestSuiteBuilder
         assertNotNull("no key 'env-type' in impl-config for " + impl, environmentTypeName);        
         
         Class<?> environmentType = Class.forName(environmentTypeName);            
-        Environment env = (Environment) environmentType.newInstance();
+        Implementation env = (Implementation) environmentType.newInstance();
         
         IOHelper ioh = new IOHelper();
                 
@@ -196,6 +197,8 @@ public class TestSuiteBuilder
                 for (File f : driverConfigFiles) {     
                     File cd = f.getParentFile();
                     Properties drvcfg = loadTestConfig(cd);
+                    
+                    
                     
                     TestSuite driverConfigSuite = new TestSuite("Driver config: " + cd.getName());
                     driverSuite.addTest(driverConfigSuite);
@@ -317,7 +320,7 @@ public class TestSuiteBuilder
           ((jardir == null) ? "" : "@" + jardir.getPath());
   }
 
-  private TestSuite createSuite(final Environment env, Driver driver, Properties drvcfg, Properties srvcfg) 
+  private TestSuite createSuite(final Implementation env, Driver driver, Properties drvcfg, Properties srvcfg) 
       throws SQLException 
   {            
       assertNotNull(env);
@@ -347,24 +350,24 @@ public class TestSuiteBuilder
   private TestSuite createEnvironmentTestSuite(SimpleTestContext tctx) {
      TestSuite ts = new TestSuite("env");
      
-     final Environment env = tctx.getEnvironment();
+     final Implementation env = tctx.getImplementation();
           
-     addSuite(createTestsFor(Environment.class, tctx), ts);
+     addSuite(createTestsFor(Implementation.class, tctx), ts);
      addSuite(createTestsFor(env.getClass(), tctx), ts);
           
      addSuite(createTestsFor(CatalogFactory.class, tctx), ts);
      addSuite(createTestsFor(env.catalogFactory().getClass(), tctx), ts);
      
      addSuite(createTestsFor(Builder.class, tctx), ts);     
-     addSuite(createTestsFor(DefaultEntityContext.class, tctx), ts);     
-          
-     addSuite(createTestsFor(PersistenceManager.class, tctx), ts);
+     addSuite(createTestsFor(DefaultEntityContext.class, tctx), ts);
+     addSuite(createTestsFor(PersistenceManager.class, tctx), ts);     
+     addSuite(createTestsFor(Person.class, tctx), ts);
                     
      return ts;
   }
 
 @SuppressWarnings("deprecation")
-  private static Driver loadDriver(final Environment env, File jardir) {      
+  private static Driver loadDriver(final Implementation env, File jardir) {      
     Driver driver = null;
       
     try {
@@ -397,6 +400,8 @@ public class TestSuiteBuilder
 
     private static Properties loadTestConfig(File dir) 
         throws IOException {
+    	logger().debug("loadTestConfig - enter: " + dir);
+    	
         LinkedList<File> files = new LinkedList<File>(); 
         
         while (dir != null) {
@@ -414,9 +419,12 @@ public class TestSuiteBuilder
         
         if (!files.isEmpty()) {
             for (File f : files) {
+            	logger().debug("append from: " + f);
                 cfg = ioh.load(f.getAbsolutePath(), cfg);
             }            
         }
+        
+        logger().debug("loadTestConfig - exit: " + cfg);
         
         return cfg;        
     }

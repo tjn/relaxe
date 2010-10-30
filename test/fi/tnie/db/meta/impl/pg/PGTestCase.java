@@ -9,11 +9,12 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import fi.tnie.db.QueryException;
+import fi.tnie.db.env.CatalogFactory;
+import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaMap;
 import fi.tnie.db.meta.impl.common.JDBCTestCase;
@@ -75,8 +76,8 @@ public abstract class PGTestCase
     }
 
 
-    protected PGEnvironment newEnv() {
-		return new PGEnvironment();
+    protected PGImplementation newEnv() {
+		return new PGImplementation();
 	}
 	
 	@Override
@@ -84,7 +85,7 @@ public abstract class PGTestCase
 		throws QueryException, SQLException {
 	
 		if (catalog == null) {
-			PGEnvironment env = newEnv();
+			PGImplementation env = newEnv();
 			CatalogFactory cf = env.catalogFactory();
 			
 			assertNotNull(cf);		

@@ -10,10 +10,12 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-import fi.tnie.db.meta.CatalogFactory;
+import fi.tnie.db.env.CatalogFactory;
+import fi.tnie.db.env.DefaultCatalogFactory;
+import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.mysql.MySQLCatalogFactory;
+import fi.tnie.db.env.mysql.MySQLEnvironment;
 import fi.tnie.db.meta.DBMetaTestCase;
-import fi.tnie.db.meta.Environment;
-import fi.tnie.db.meta.impl.DefaultCatalogFactory;
 import fi.tnie.db.meta.impl.DefaultCatalogMap;
 import fi.tnie.db.meta.impl.DefaultMutableCatalog;
 import fi.tnie.db.meta.impl.DefaultMutableSchema;
@@ -25,7 +27,7 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase {
         assertNotNull(getContext());
                 
         DatabaseMetaData meta = meta();                
-        DefaultCatalogFactory f = factory();
+        MySQLCatalogFactory f = factory();
         
         String n = null;
         
@@ -130,7 +132,7 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase {
     
     public void testCreateCatalog() 
         throws Exception {                
-        Environment env = getContext().getEnvironment();
+    	Implementation env = getContext().getImplementation();
         DefaultCatalogFactory factory = factory();                
         Connection c = getConnection();        
         String current = c.getCatalog();

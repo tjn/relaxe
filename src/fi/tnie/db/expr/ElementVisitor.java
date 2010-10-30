@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.expr;
 
-import fi.tnie.db.QueryContext;
 
 public interface ElementVisitor {
 	

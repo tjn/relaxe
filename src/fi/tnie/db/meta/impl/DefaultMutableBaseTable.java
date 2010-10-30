@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.meta.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import fi.tnie.db.expr.Identifier;
@@ -23,7 +21,7 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 	private static EmptyForeignKeyMap emptyForeignKeyMap = new EmptyForeignKeyMap();
 	
 	private Date instantiated = new Date();
-	private static DateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
+//	private static DateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
 	
 	public DefaultMutableBaseTable(DefaultMutableSchema s, Identifier name) {
 		super(s, name);
@@ -115,7 +113,8 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 	}
 	
 	private String format(Date d) {
-	    return timestampFormat.format(d); 
+//	    return timestampFormat.format(d);
+		return d == null ? "" : d.toString();
 	}
 
 	@Override

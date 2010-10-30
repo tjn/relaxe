@@ -56,10 +56,22 @@ public class SourceGenerator {
     private static final String PATTERN_CATALOG_CONTEXT_CLASS = "{{catalog-context-class}}";
     
     /**
+     * Pattern which is replaced with the simple name of the catalog context class in template files.
+     */
+    private static final String PATTERN_CATALOG_CONTEXT_PACKAGE_NAME = "{{catalog-context-package-name}}";    
+    
+    /**
      * Pattern which is replaced with the package name of the tyep being generated in template files.
      */
-    private static final String PATTERN_PACKAGE = "{{package-name}}";    
+    private static final String PATTERN_PACKAGE = "{{package-name}}";
     
+    
+    private static final String PATTERN_ROOT_PACKAGE = "{{root-package-name}}";
+    /**
+     * Pattern which is replaced with the simple name of the hook class in template files.
+     */
+    private static final String FACTORY_METHOD_LIST = "{{factory-method-list}}";
+
     /**
      * Pattern which is replaced with the list of imports.
      */
@@ -131,11 +143,11 @@ public class SourceGenerator {
 
         List<String> il = new ArrayList<String>();
 
-        for (JavaType t : ccil) {
-            if (t != null) {
-                il.add(t.getQualifiedName());
-            }
-        }    
+//        for (JavaType t : ccil) {
+//            if (t != null) {
+//                il.add(t.getQualifiedName());
+//            }
+//        }    
 
         JavaType cc = tm.catalogContextType();
         CharSequence src = generateContext(cc, tm, il, fm);            
@@ -150,22 +162,26 @@ public class SourceGenerator {
         String src = getTemplateForCatalogContext();
 
         src = replacePackageAndImports(src, cc, il);
+        
+        src = replaceAll(src, PATTERN_ROOT_PACKAGE, tm.getRootPackage());        
+        src = replaceAll(src, PATTERN_CATALOG_CONTEXT_PACKAGE_NAME, cc.getPackageName());
         src = replaceAll(src, PATTERN_CATALOG_CONTEXT_CLASS, cc.getUnqualifiedName());
 
         StringBuffer buf = new StringBuffer();
-
+                
         for (Map.Entry<JavaType, CharSequence> e : fm.entrySet()) {
             buf.append(formatSchemaFactoryMethod(e.getKey(), e.getValue()));
         }
 
-        src = replaceAll(src, "{{factory-method-list}}", buf.toString());
+        src = replaceAll(src, FACTORY_METHOD_LIST, buf.toString());
 
         return src;
     }
 
-    private Object formatSchemaFactoryMethod(JavaType key, CharSequence value) {
+    private String formatSchemaFactoryMethod(JavaType key, CharSequence value) {
         String n = key.getUnqualifiedName();
-        return "public " + n + " new" + n + "() { return " + value + " } ";
+        String qn = key.getQualifiedName();
+        return "public " + qn + " new" + n + "() { return " + value + " } ";
     }
 
 
@@ -178,7 +194,7 @@ public class SourceGenerator {
 		throws IOException {
 
 	    List<TypeInfo> types = new ArrayList<TypeInfo>();
-
+	    
 		for (BaseTable t : s.baseTables().values()) {
 		    final JavaType intf = tm.entityType(t, Part.INTERFACE);
 		    final JavaType at = tm.entityType(t, Part.ABSTRACT);
@@ -236,6 +252,7 @@ public class SourceGenerator {
 
 		{
             final JavaType intf = tm.factoryType(s, Part.INTERFACE);
+            final JavaType fimp = tm.factoryType(s, Part.IMPLEMENTATION);
 //            final JavaType impl = tm.factoryType(s, Part.IMPLEMENTATION);
 
             if (intf != null) {
@@ -246,8 +263,11 @@ public class SourceGenerator {
                     File root = getSourceDir(s, Part.INTERFACE);
                     write(root, intf, generateFactoryInterface(s, intf, tm, types), generated, gm);
 
-    //                CharSequence src = generateFactoryImplementation(s, impl, tm, types);
-                    CharSequence src = generateAnonymousFactoryImplementation(s, tm, types);
+                    root = getSourceDir(s, Part.IMPLEMENTATION);
+                    write(root, fimp, generateFactoryImplementation(s, fimp, tm, types), generated, gm);
+                                       
+                    CharSequence src = generateSchemaFactoryMethodImplementation(s, tm, types);
+//                    CharSequence src = generateAnonymousFactoryImplementation(s, tm, types);
                     factories.put(intf, src);
 
                     ccil.add(intf);
@@ -346,7 +366,7 @@ public class SourceGenerator {
 	   String src = getFactoryTemplateFor(Part.INTERFACE);
 
 	   src = replacePackageAndImports(src, factoryType);
-
+	   	   
        src = replaceAll(src, "{{schema-factory}}", factoryType.getUnqualifiedName());
 
        StringBuffer code = new StringBuffer();
@@ -385,40 +405,66 @@ public class SourceGenerator {
 
         return src;
     }
+    
+	private CharSequence generateSchemaFactoryMethodImplementation(Schema s, TableMapper tm, Collection<TypeInfo> types)
+	    throws IOException {
+	
+//	    JavaType intf = tm.factoryType(s, Part.INTERFACE);
+//	    String src = getFactoryTemplateFor(Part.INTERFACE);
+	    
+	    JavaType impl = tm.factoryType(s, Part.IMPLEMENTATION);
+	    
+	    String src = " new " + impl.getQualifiedName() + "(); ";
+	
+//	    src = replaceAll(src, "{{schema-factory}}", intf.getUnqualifiedName());
+//	
+//	    StringBuffer code = new StringBuffer();
+//	
+//	    for (TypeInfo t : types) {
+//	        String m = formatFactoryMethod(t, true);
+//	        a(code, m, 1);
+//	    }
+//	
+//	    src = replaceAll(src, FACTORY_METHOD_LIST, code.toString());
+//	
+//	    logger().debug("factory impl: " + src);
+	
+	    return src;
+	}
 
-//    private CharSequence generateFactoryImplementation(Schema s, JavaType impl, TableMapper tm, Collection<TypeInfo> types)
-//        throws IOException {
-//
-//        JavaType intf = tm.factoryType(s, Part.INTERFACE);
-//        String src = getFactoryTemplateFor(Part.IMPLEMENTATION);
-//
-//        List<String> il = new ArrayList<String>();
-//
-//        addImport(impl, intf, il);
-//
-//        for (TypeInfo t : types) {
-//            JavaType returnType = getFactoryMethodReturnType(t);
-//            addImport(impl, returnType, il);
-//        }
-//
-//        src = replacePackageAndImports(src, impl, il);
-//
-//        src = replaceAll(src, "{{schema-factory-impl}}", impl.getUnqualifiedName());
-//        src = replaceAll(src, "{{schema-factory}}", intf.getUnqualifiedName());
-//
-//        StringBuffer code = new StringBuffer();
-//
-//        for (TypeInfo t : types) {
-//            String m = formatFactoryMethod(t, true);
-//            a(code, m, 1);
-//        }
-//
-//        src = replaceAll(src, "{{factory-method-list}}", code.toString());
-//
-//        logger().debug("factory impl: " + src);
-//
-//        return src;
-//    }
+    private CharSequence generateFactoryImplementation(Schema s, JavaType impl, TableMapper tm, Collection<TypeInfo> types)
+        throws IOException {
+
+        JavaType intf = tm.factoryType(s, Part.INTERFACE);
+        String src = getFactoryTemplateFor(Part.IMPLEMENTATION);
+
+        List<String> il = new ArrayList<String>();
+
+        addImport(impl, intf, il);
+
+        for (TypeInfo t : types) {
+            JavaType returnType = getFactoryMethodReturnType(t);
+            addImport(impl, returnType, il);
+        }
+
+        src = replacePackageAndImports(src, impl, il);
+
+        src = replaceAll(src, "{{schema-factory-impl}}", impl.getUnqualifiedName());
+        src = replaceAll(src, "{{schema-factory}}", intf.getQualifiedName());
+
+        StringBuffer code = new StringBuffer();
+
+        for (TypeInfo t : types) {
+            String m = formatFactoryMethod(t, true);
+            a(code, m, 1);
+        }
+
+        src = replaceAll(src, "{{factory-method-list}}", code.toString());
+
+        logger().debug("factory impl: " + src);
+
+        return src;
+    }
 
 
     private JavaType getFactoryMethodReturnType(TypeInfo info) {
@@ -429,21 +475,27 @@ public class SourceGenerator {
         return (hp != null) ? hp : (at != null) ? at : itfp;
     }
 
+    /**
+     * Formats a factory method for JavaType.
+     * @param info
+     * @param impl
+     * @return
+     */
 
     private String formatFactoryMethod(TypeInfo info, boolean impl) {
         JavaType itf = info.get(Part.INTERFACE);
-        // JavaType ap = info.get(Part.ABSTRACT);
         JavaType impp = info.get(Part.IMPLEMENTATION);
+        
         JavaType returnType = getFactoryMethodReturnType(info);
 
-        String signature = returnType.getUnqualifiedName() + " new" + itf.getUnqualifiedName() + "()";
+        String signature = returnType.getQualifiedName() + " new" + itf.getUnqualifiedName() + "()";
         String src = null;
 
         if (!impl) {
             src = signature + ";";
         }
         else {
-            src = "public " + signature + " { return new " + impp.getUnqualifiedName() + "(); } ";
+            src = "public " + signature + " { return new " + impp.getQualifiedName() + "(); } ";
         }
 
         return src;
@@ -597,29 +649,34 @@ public class SourceGenerator {
             // fk-columns  are not intended to be set individually,
             // but atomically with ref -methods
             if (!fkcols.contains(c.getColumnName())) {
-                Class<?> jt = tm.getAttributeType(t, c);
+                Class<?> at = tm.getAttributeType(t, c);
+                Class<?> ht = tm.getAttributeHolderType(t, c);
 
-                if (jt != null) {
-                    String code = formatAccessors(c, jt, impl);
+                if (at != null && ht != null) {
+                    String code = formatAccessors(c, at, ht, impl);
                     content.append(code);
                 }
             }
         }
     }
 
-    private String formatAccessors(Column c, Class<?> attributeType, boolean impl) {
+    private String formatAccessors(Column c, Class<?> attributeType, Class<?> holderType, boolean impl) {
         final String attributeName = attr(c);
         final String type = attributeType.getName();
 
         StringBuffer nb = new StringBuffer();
         final String n = name(c.getColumnName().getName());
-
+        
+        boolean b = attributeType.equals(Boolean.class) || attributeType.equals(Boolean.TYPE);
+        
+        String prefix = b ? "is" : "get";
+        
         a(nb, "public ");
         a(nb, type);
-        a(nb, " get");
+        a(nb, " ");
+        a(nb, prefix);
         a(nb, n);
         a(nb, "()");
-
 
         if (!impl) {
             a(nb, ";", 1);
@@ -631,17 +688,33 @@ public class SourceGenerator {
             if (!attributeType.isPrimitive()) {
                 a(nb, "return ");
                 // call super & cast:
-                expr(nb, attributeType, attributeName);
-                a(nb, ";", 1);
+//                expr(nb, attributeType, attributeName);
+                
+                nb.append(prefix);
+                
+                String tn = getSimpleName(attributeType);
+                
+                nb.append(tn);
+                nb.append("(");
+                nb.append(getAttributeType());
+                nb.append(".");
+                nb.append(attributeName);                                                
+                a(nb, ");", 1);
             }
             else {
                 Class<?> wt = wrapper(attributeType);
                 a(nb, wt.getName());
-
+                
                 a(nb, " o = ");
                 // call super & cast:
-                expr(nb, attributeType, attributeName);
-                a(nb, ";", 2);
+//                expr(nb, attributeType, attributeName);
+                a(nb, prefix);
+                a(nb, getSimpleName(wt));                
+                a(nb, "(");
+                a(nb, getAttributeType());
+                a(nb, ".");
+                a(nb, attributeName);                
+                a(nb, ");", 2);
 
                 a(nb, "return (o == null) ? ");
 
@@ -661,54 +734,73 @@ public class SourceGenerator {
 
             a(nb, "}", 2);
         }
-
-        a(nb, "public void set");
-        a(nb, n);
-        a(nb, "(");
-        a(nb, type);
-        a(nb, " ");
-        a(nb, "newValue)");
-
-        if (!impl) {
-            a(nb, ";", 1);
-        }
-        else {
-            a(nb, " {", 1);
-            a(nb, "set(");
-            a(nb, getAttributeType());
-            a(nb, ".");
-            a(nb, attributeName);
-            a(nb, ", ");
-
-            if (!attributeType.isPrimitive()) {
-                a(nb, "newValue");
-            }
-            else {
-                Class<?> wt = wrapper(attributeType);
-                a(nb, wt.getName());
-                a(nb, ".valueOf(");
-                a(nb, "newValue");
-                a(nb, ")");
-            }
-            a(nb, ");", 1);
-            a(nb, "}", 2);
+        
+        if (holderType != null) {
+	        a(nb, "public void set");
+	        a(nb, n);
+	        a(nb, "(");
+	        a(nb, type);
+	        a(nb, " ");
+	        a(nb, "newValue)");
+	
+	        if (!impl) {
+	            a(nb, ";", 1);
+	        }
+	        else {
+	            a(nb, " {", 1);
+	            
+	            String hn = getSimpleName(holderType);
+	            
+	            a(nb, "set");
+	
+	            if (!attributeType.isPrimitive()) {
+		            a(nb, hn);
+		            a(nb, "(");
+		            a(nb, getAttributeType());
+		            a(nb, ".");
+		            a(nb, attributeName);
+		            a(nb, ", ");	            	
+	            	a(nb, holderType.getName());
+	                a(nb, ".valueOf(newValue)");
+	            }
+	            else {
+	                Class<?> wt = wrapper(attributeType);
+	            	a(nb, getSimpleName(wt));
+		            a(nb, "(");
+		            a(nb, getAttributeType());
+		            a(nb, ".");
+		            a(nb, attributeName);
+		            a(nb, ", ");	            	
+	                a(nb, wt.getName());
+	                a(nb, ".valueOf(");
+	                a(nb, "newValue");
+	                a(nb, ")");
+	            }
+	            a(nb, ");", 1);
+	            a(nb, "}", 2);
+	        }
         }
 
         return nb.toString();
     }
+
+	private String getSimpleName(Class<?> attributeType) {
+		String tn = attributeType.getName();
+		int pos = tn.lastIndexOf(".");                
+		tn = tn.substring(pos < 0 ? 0 : pos + 1);
+		return tn;
+	}
 
     private void expr(StringBuffer sb, Class<?> attributeType, String attributeName) {
         Class<?> castTo = attributeType.isPrimitive() ?
                 wrapper(attributeType) :
                 attributeType;
 
-        sb.append("(");
-        sb.append(castTo.getName());
-        sb.append(") super.get(");
+        sb.append(" getString(");
         sb.append(getAttributeType());
         sb.append(".");
         sb.append(attributeName);
-        sb.append(")");
+        sb.append(").value()");
     }
 
     public String name(String name) {

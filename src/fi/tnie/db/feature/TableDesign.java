@@ -24,10 +24,10 @@ public class TableDesign {
         private Environment environment;
         private CreateTable table;
         
-        TableDesign(Environment environment, CreateTable table) {
+        TableDesign(Environment env, CreateTable table) {
             super();
             
-            if (environment == null) {
+            if (env == null) {
                 throw new NullPointerException("'environment' must not be null");
             }
             
@@ -35,7 +35,7 @@ public class TableDesign {
                 throw new NullPointerException("'table' must not be null");
             }
             
-            this.environment = environment;
+            this.environment = env;
             this.table = table;
         }
         

@@ -10,7 +10,7 @@ import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.SchemaElement;
 import fi.tnie.db.meta.SchemaElementMap;
 
-class DefaultSchemaElementMap<E extends SchemaElement>
+public class DefaultSchemaElementMap<E extends SchemaElement>
 	extends DefaultElementMap<E>
 	implements SchemaElementMap<E> {
 	

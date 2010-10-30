@@ -10,6 +10,7 @@ import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -19,8 +20,11 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.DefaultEntityContext;
 import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.EntityContext;
-import fi.tnie.db.EntityMetaData;
 import fi.tnie.db.QueryException;
+import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.env.CatalogFactory;
+import fi.tnie.db.env.Implementation;
+import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.feature.Dependency;
 import fi.tnie.db.feature.Feature;
@@ -30,8 +34,9 @@ import fi.tnie.db.feature.SQLGenerationResult;
 import fi.tnie.db.feature.SQLGenerator;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.CatalogFactory;
+import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.DBMetaTestCase;
+import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaElementMap;
 import fi.tnie.db.meta.impl.DefaultMutableColumn;
@@ -41,7 +46,8 @@ import fi.tnie.util.io.IOHelper;
 import fi.tnie.util.io.Launcher;
 import fi.tnie.util.io.RunResult;
 
-public class BuilderTest extends DBMetaTestCase {
+public class BuilderTest 
+	extends DBMetaTestCase {
     
     // public static final String ROOT_PACKAGE = "fi.tnie.testapp";
     
@@ -107,7 +113,10 @@ public class BuilderTest extends DBMetaTestCase {
         Catalog cat = getCatalog();
         assertNotNull(cat);
         
+        Implementation impl = getContext().getImplementation();
+        
         Builder b = new Builder();
+        b.setImplementation(impl);
         
         File srcdir = getGeneratedSrcDir();
         File bindir = getGeneratedBinDir();
@@ -128,16 +137,19 @@ public class BuilderTest extends DBMetaTestCase {
         
         b.getFeatures().addFeature(new MetaData());
         
+        CatalogFactory cf = getContext().getImplementation().catalogFactory();
+        
         testGeneration(b, cat, c, bindir);
         
-        CatalogFactory cf = getCatalog().getEnvironment().catalogFactory();
+        
+//        CatalogFactory cf = getCatalog().getEnvironment().catalogFactory();
         assertNotNull(cf);
         final Catalog newCatalog = cf.create(c);                
         assertNotNull(newCatalog);
         
         for (Schema s : newCatalog.schemas().values()) {
             for (BaseTable t : s.baseTables().values()) {
-                DefaultMutableColumn cc = t.columnMap().get("created_at");
+                Column cc = t.columnMap().get("created_at");
                 assertNotNull(cc);
                 assertNotNull(cc.getDataType() != null);
                 assertEquals(Types.TIMESTAMP, cc.getDataType().getDataType());
@@ -171,13 +183,12 @@ public class BuilderTest extends DBMetaTestCase {
         bindir.mkdirs();        
         Properties sources = IOHelper.doLoad(sourceList.getPath());
         assertNotNull(sources);
-        assertFalse(sources.isEmpty());
-        
+        assertFalse(sources.isEmpty());        
         
         for (Object o : sources.values()) {
             String v = o.toString();
             File f = new File(srcdir, v);
-            assertTrue(f.isFile());
+//            assertTrue(f.getAbsolutePath(), f.isFile());
         }                
                 
         Launcher cl = new Launcher();
@@ -233,17 +244,30 @@ public class BuilderTest extends DBMetaTestCase {
         int tableCount = tables.keySet().size();
         assertTrue(tableCount > 0);
         
-        Map<BaseTable, EntityMetaData<?, ?, ?, ?>> mm = dec.getMetaMap();
+        Map<BaseTable, EntityMetaData<?, ?, ?, ?, ?>> mm = dec.getMetaMap();
         assertNotNull(mm);
         assertFalse(mm.isEmpty());
-        assertEquals(tableCount, mm.size());
+        
+        int inpub = 0;
+        Environment env = cat.getEnvironment();
+        Comparator<Identifier> icmp = env.identifierComparator();
+        Identifier pub = env.createIdentifier(SCHEMA_PUBLIC);
+        
+        for (EntityMetaData<?, ?, ?, ?, ?> m : mm.values()) {
+			Schema s = m.getBaseTable().getSchema();
+			
+			if (icmp.compare(s.getUnqualifiedName(), pub) == 0) {
+				inpub++;
+			}
+		}
                 
+        assertEquals(tableCount, inpub);                
         cat.schemas().get(SCHEMA_PUBLIC).baseTables().get(TABLE_COUNTRY);
                 
         BaseTable tab = cat.schemas().get(SCHEMA_PUBLIC).baseTables().get(TABLE_COUNTRY);
         assertNotNull(tab);
                         
-        EntityMetaData<?, ?, ?, ?> m = ec.getMetaData(tab);
+        EntityMetaData<?, ?, ?, ?, ?> m = ec.getMetaData(tab);
         assertNotNull(m);        
                                         
         logger().debug("generation OK.");

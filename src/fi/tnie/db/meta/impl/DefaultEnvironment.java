@@ -5,25 +5,17 @@ package fi.tnie.db.meta.impl;
 
 import java.util.Comparator;
 
-import fi.tnie.db.DefaultValueExtractorFactory;
-import fi.tnie.db.FoldingComparator;
-import fi.tnie.db.ValueExtractor;
-import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.expr.AbstractIdentifier;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
-import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.Environment;
+import fi.tnie.db.meta.FoldingComparator;
 
-public abstract class DefaultEnvironment implements Environment {
+public abstract class DefaultEnvironment 
+	implements Environment {
 
-	private Comparator<Identifier> identifierComp;
-	
-	private DefaultValueExtractorFactory valueExtractorFactory; 
-	
-	@Override
-	public abstract CatalogFactory catalogFactory();
-
+	private Comparator<Identifier> identifierComp;	
+			
 	@Override
 	public Identifier createIdentifier(String name)
 			throws IllegalIdentifierException {
@@ -41,16 +33,5 @@ public abstract class DefaultEnvironment implements Environment {
 	
 	protected Comparator<Identifier> createIdentifierComparator() {
 		return new FoldingComparator();
-	}
-		
-	public ValueExtractorFactory getValueExtractorFactory() {
-		if (valueExtractorFactory == null) {
-			valueExtractorFactory = new DefaultValueExtractorFactory();			
-		}
-
-		return valueExtractorFactory;
-	}
-	
-	
-	
+	}		
 }

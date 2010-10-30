@@ -13,11 +13,11 @@ import org.apache.log4j.Logger;
 
 import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.QueryException;
+import fi.tnie.db.env.CatalogFactory;
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.feature.Features;
 import fi.tnie.db.feature.SQLGenerationException;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.CatalogFactory;
-import fi.tnie.db.meta.Environment;
 import fi.tnie.db.source.SourceGenerator;
 import fi.tnie.dbmeta.tools.CatalogTool;
 import fi.tnie.dbmeta.tools.ToolConfigurationException;
@@ -35,6 +35,7 @@ public class Builder
     
     private Features features;
     private String rootPackage;
+    private String catalogContextPackage;
     private File sourceDir;
     
     public static final Option OPTION_GENERATED_DIR = 
@@ -42,7 +43,10 @@ public class Builder
 
     public static final Option OPTION_ROOT_PACKAGE = 
         new SimpleOption("root-package", "r", new Argument(false), "Root java package name for generated classes.");  
-    
+
+    public static final Option OPTION_CATALOG_CONTEXT_PACKAGE = 
+        new SimpleOption("catalog-context-package", "c", new Argument(false), "Java package name for generated catalog context classes.");  
+
     private static Logger logger = Logger.getLogger(Builder.class);
     
     public static void main(String[] args) {
@@ -198,10 +202,8 @@ public class Builder
         super.prepare(p);
         addOption(p, OPTION_GENERATED_DIR);
         addOption(p, OPTION_ROOT_PACKAGE);
-        
-    }
-    
-    
+        addOption(p, OPTION_CATALOG_CONTEXT_PACKAGE);        
+    }      
     
     @Override
     protected void init(CommandLine cl) 
@@ -210,9 +212,11 @@ public class Builder
         
         String gen = cl.value(require(cl, OPTION_GENERATED_DIR));
         String pkg = cl.value(require(cl, OPTION_ROOT_PACKAGE));
+        String ccp = cl.value(OPTION_CATALOG_CONTEXT_PACKAGE);
         
         setSourceDir(new File(gen));
-        setRootPackage(pkg);        
+        setRootPackage(pkg);
+        setCatalogContextPackage(ccp);
     }
     
     @Override
@@ -221,18 +225,18 @@ public class Builder
         
         try {        
             Connection c = getConnection();
-            Catalog cat = getCatalog();            
+//            Catalog cat = getCatalog();            
             
-            Environment env = cat.getEnvironment();
+//            Environment env = cat.getEnvironment();            
+            Implementation impl = getImplementation();
             
             c.setAutoCommit(false);        
-            CatalogFactory cf = env.catalogFactory();          
+            CatalogFactory cf = impl.catalogFactory();          
             getFeatures().installAll(c, cf, false);         
                         
-              String pkg = getRootPackage();
-              File root = getSourceDir();
+            File root = getSourceDir();
                         
-              generateSources(c, env, root, pkg);
+            generateSources(c, impl, root);
                                   
               new FileProcessor(true) {
                 @Override
@@ -321,14 +325,17 @@ public class Builder
         return count;
     }
     
-    private void generateSources(Connection c, Environment env, File sourceRoot, String pkg)
+    private void generateSources(Connection c, Implementation env, File sourceRoot)
             throws QueryException, IOException {
         try {
             final File sourceList = getSourceList(sourceRoot);            
             remove(sourceList);
+            
+            String rp = getRootPackage();
+            String ccp = getCatalogContextPackage();
                         
-            SourceGenerator gen = new SourceGenerator(sourceRoot);              
-            DefaultTableMapper tm = new DefaultTableMapper(pkg);   
+            SourceGenerator gen = new SourceGenerator(sourceRoot);            
+            DefaultTableMapper tm = new DefaultTableMapper(rp, ccp);   
                   
             CatalogFactory cf = env.catalogFactory();
             Catalog cat = cf.create(c);
@@ -402,6 +409,14 @@ public class Builder
     public void setConnection(Connection connection) {
         super.setConnection(connection);
     }
+
+	public String getCatalogContextPackage() {
+		return catalogContextPackage;
+	}
+
+	public void setCatalogContextPackage(String catalogContextPackage) {
+		this.catalogContextPackage = catalogContextPackage;
+	}
     
     
 }

@@ -10,8 +10,10 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
+import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.pg.PGCatalogFactory;
+import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.meta.DBMetaTestCase;
-import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.impl.DefaultCatalogMap;
 import fi.tnie.db.meta.impl.DefaultMutableCatalog;
 import fi.tnie.db.meta.impl.DefaultMutableSchema;
@@ -129,7 +131,7 @@ public class PGCatalogFactoryTest extends DBMetaTestCase {
     
     @Override
 	public PGCatalogFactory factory() {
-        PGEnvironment e = new PGEnvironment();
+        PGImplementation e = new PGImplementation();
         return new PGCatalogFactory(e);
     }
     
@@ -142,7 +144,7 @@ public class PGCatalogFactoryTest extends DBMetaTestCase {
     
     public void testCreateCatalog() 
         throws Exception {                
-        Environment env = getContext().getEnvironment();
+        Implementation env = getContext().getImplementation();
         PGCatalogFactory factory = factory();                
         Connection c = getConnection();        
         String current = c.getCatalog();

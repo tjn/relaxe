@@ -6,6 +6,8 @@ package fi.tnie.db;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import fi.tnie.db.ent.Identifiable;
+
 public interface BaseTableRowFactory<C extends Enum<C> & Identifiable, R extends BaseTableRow<C>, I extends InstantiationContext<R>>
 	extends RowFactory<R, I>
 {	

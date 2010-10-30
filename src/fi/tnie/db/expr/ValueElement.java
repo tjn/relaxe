@@ -6,10 +6,6 @@ package fi.tnie.db.expr;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
-
-
 /**
  * Represents scalar-valued select-list-element.
  *  
@@ -24,7 +20,7 @@ public class ValueElement
 	private ColumnName newName;
 	private ColumnName name;
 	
-	private static Logger logger = Logger.getLogger(ValueElement.class);
+//	private static Logger logger = Logger.getLogger(ValueElement.class);
 	
 	public ValueElement(ValueElement e) {
 		this(e.getValue(), e.getColumnName());
@@ -61,7 +57,7 @@ public class ValueElement
 			(this.name != null) ? this.name :
 			null;		
 	
-		logger().debug("column-name: " + cn);
+//		logger().debug("column-name: " + cn);
 		return cn;
 	}
 	
@@ -98,8 +94,8 @@ public class ValueElement
 		return getValue();
 	}
 	
-	public static Logger logger() {
-        return ValueElement.logger;
-    }
+//	public static Logger logger() {
+//        return ValueElement.logger;
+//    }
 	
 }

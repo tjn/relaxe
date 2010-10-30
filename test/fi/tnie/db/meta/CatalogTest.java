@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 
 import fi.tnie.db.QueryException;
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.expr.DelimitedIdentifier;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
@@ -137,7 +138,7 @@ public class CatalogTest
     public void testIdentifierComparator() 
     	throws SQLException {
     	
-    	Environment env = getContext().getEnvironment();
+    	Implementation env = getContext().getImplementation();
     	Comparator<Identifier> icmp = env.identifierComparator();
     		
     	{

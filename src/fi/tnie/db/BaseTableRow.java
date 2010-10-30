@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.ent.Identifiable;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.ElementList;
 import fi.tnie.db.expr.InsertStatement;
@@ -27,7 +28,8 @@ import fi.tnie.db.expr.op.AndPredicate;
 import fi.tnie.db.expr.op.Comparison;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
-import fi.tnie.db.meta.impl.ColumnMap;
+import fi.tnie.db.meta.ColumnMap;
+import fi.tnie.db.meta.impl.DefaultColumnMap;
 
 public class BaseTableRow<C extends Enum<C> & Identifiable> 
 	implements Row {

@@ -26,9 +26,10 @@ import fi.tnie.db.expr.ValueParameter;
 import fi.tnie.db.expr.ValueRow;
 import fi.tnie.db.expr.ddl.SQLType;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.ColumnMap;
 import fi.tnie.db.meta.DataType;
 import fi.tnie.db.meta.Table;
-import fi.tnie.db.meta.impl.ColumnMap;
+import fi.tnie.db.meta.impl.DefaultColumnMap;
 import fi.tnie.db.meta.impl.DefaultMutableColumn;
 
 class CSVInsertTask
@@ -66,7 +67,7 @@ class CSVInsertTask
             List<Column> columnList = new ArrayList<Column>();
                                             
             for (String n : line) {
-                DefaultMutableColumn column = cm.get(n);
+                Column column = cm.get(n);
                 
                 if (column == null) {
                     throw new IllegalArgumentException("column not found " + n);

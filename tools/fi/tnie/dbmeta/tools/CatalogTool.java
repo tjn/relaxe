@@ -13,11 +13,12 @@ import java.util.List;
 import java.util.Properties;
 import fi.tnie.db.QueryException;
 import fi.tnie.db.QueryHelper;
+import fi.tnie.db.env.CatalogFactory;
+import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.mysql.MySQLEnvironment;
+import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.Environment;
-import fi.tnie.db.meta.impl.mysql.MySQLEnvironment;
-import fi.tnie.db.meta.impl.pg.PGEnvironment;
 import fi.tnie.util.cli.Argument;
 import fi.tnie.util.cli.CommandLine;
 import fi.tnie.util.cli.Option;
@@ -39,7 +40,7 @@ public abstract class CatalogTool {
     public static final Option OPTION_ENV = 
         new SimpleOption("environment-type", "e", new Argument(false),
             "Fully qualified name of the class which implements '" + 
-            Environment.class.getName() + "'. " +
+            Implementation.class.getName() + "'. " +
            "Implementation must have a no-arg public constructor.");
     
     public static final Option OPTION_JDBC_URL = 
@@ -60,7 +61,7 @@ public abstract class CatalogTool {
     private Catalog catalog;
     private boolean verbose;
         
-    private Environment environment;
+    private Implementation implementation;
     
     private String jdbcURL;
     private Properties jdbcConfig;
@@ -184,11 +185,11 @@ public abstract class CatalogTool {
              
             String environmentTypeName = cl.value(OPTION_ENV);
             
-            Environment env = null;
+            Implementation env = null;
             
             if (environmentTypeName != null) {
                 Class<?> environmentType = Class.forName(environmentTypeName);
-                env = (Environment) environmentType.newInstance();                
+                env = (Implementation) environmentType.newInstance();                
             }
 
             String jdbcDriverConfigPath = cl.value(require(cl, OPTION_JDBC_CONFIG));            
@@ -215,7 +216,7 @@ public abstract class CatalogTool {
         }
      }
     
-     public void init(String jdbcURL, Properties jdbcConfig, Environment env)
+     public void init(String jdbcURL, Properties jdbcConfig, Implementation env)
          throws ToolConfigurationException, ToolException {
 
          try {
@@ -231,7 +232,7 @@ public abstract class CatalogTool {
              
              if (env == null) {
                  if (jdbcURL.startsWith("jdbc:postgres:")) {
-                     environmentTypeName = PGEnvironment.class.getName();
+                     environmentTypeName = PGImplementation.class.getName();
                  }
                  
                  if (jdbcURL.startsWith("jdbc:mysql:")) {
@@ -245,12 +246,12 @@ public abstract class CatalogTool {
                  }  
                  
                  Class<?> environmentType = Class.forName(environmentTypeName);
-                 env = (Environment) environmentType.newInstance();                 
+                 env = (Implementation) environmentType.newInstance();                 
              }
              
              setJdbcURL(jdbcURL);
              setJdbcConfig(jdbcConfig);
-             setEnvironment(env);             
+             setImplementation(env);             
                                                   
              Class.forName(env.driverClassName());                        
              Connection c = createConnection();
@@ -353,17 +354,21 @@ public abstract class CatalogTool {
            
         String jdbcURL = getJdbcURL();
         Properties jdbcConfig = getJdbcConfig();                                
-        Class.forName(getEnvironment().driverClassName());
+        Class.forName(getImplementation().driverClassName());
         Connection c = DriverManager.getConnection(jdbcURL, jdbcConfig);
         return c;
     }
 
-    public Environment getEnvironment() {
-        return environment;
+    public Implementation getImplementation() {
+        return implementation;
     }
 
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
+    public void setImplementation(Implementation environment) {
+    	if (environment == null) {
+			throw new NullPointerException();
+		}
+    	
+        this.implementation = environment;
     }
     
     

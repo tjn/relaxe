@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import fi.tnie.db.QueryException;
 import fi.tnie.db.QueryHelper;
+import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.SchemaElementName;
 import fi.tnie.db.expr.Statement;
@@ -23,7 +24,6 @@ import fi.tnie.db.expr.ddl.DropSchema;
 import fi.tnie.db.expr.ddl.DropTable;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.CatalogFactory;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.Schema;
 
@@ -37,7 +37,7 @@ public class Features
     private List<Feature> featureList;
 
     private static Logger logger = Logger.getLogger(Features.class);
-    
+        
     public Features() {
         super(Features.class, 0, 1);        
     }

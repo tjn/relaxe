@@ -6,33 +6,34 @@
  */
 package fi.tnie.db.expr.ddl;
 
-import java.sql.Types;
+//import java.sql.Types;
 
 import fi.tnie.db.expr.Element;
 import fi.tnie.db.expr.ElementVisitor;
 import fi.tnie.db.expr.Keyword;
 import fi.tnie.db.expr.VisitContext;
+import fi.tnie.db.types.Type;
 
 enum SQLTypeName
     implements Element {
         
-    CHAR(Types.CHAR, Keyword.CHARACTER),
-    VARCHAR(Types.VARCHAR, Keyword.VARCHAR),
-    CLOB(Types.CLOB, Keyword.CLOB),
-    BIGINT(Types.BIGINT, Keyword.BIGINT),
-    BIT(Types.BIT, Keyword.BIT),    
-    // BIT_VARYING(Types.BITV, Keyword.BIT, Keyword.VARYING),
-    BLOB(Types.BLOB, Keyword.BLOB),
-    NUMERIC(Types.NUMERIC, Keyword.NUMERIC), 
-    DECIMAL(Types.DECIMAL, Keyword.DECIMAL),
-    INTEGER(Types.INTEGER, Keyword.INTEGER),
-    // INT(Types.INTEGER, Keyword.INT),
-    SMALLINT(Types.SMALLINT, Keyword.SMALLINT),
-    TINYINT(Types.TINYINT, Keyword.TINYINT),
-    FLOAT(Types.FLOAT, Keyword.FLOAT),
-    DATE(Types.DATE, Keyword.DATE),
-    TIME(Types.TIME, Keyword.TIME),
-    TIMESTAMP(Types.TIMESTAMP, Keyword.TIMESTAMP),
+    CHAR(Type.CHAR, Keyword.CHARACTER),
+    VARCHAR(Type.VARCHAR, Keyword.VARCHAR),
+    CLOB(Type.CLOB, Keyword.CLOB),
+    BIGINT(Type.BIGINT, Keyword.BIGINT),
+    BIT(Type.BIT, Keyword.BIT),    
+    // BIT_VARYING(Type.BITV, Keyword.BIT, Keyword.VARYING),
+    BLOB(Type.BLOB, Keyword.BLOB),
+    NUMERIC(Type.NUMERIC, Keyword.NUMERIC), 
+    DECIMAL(Type.DECIMAL, Keyword.DECIMAL),
+    INTEGER(Type.INTEGER, Keyword.INTEGER),
+    // INT(Type.INTEGER, Keyword.INT),
+    SMALLINT(Type.SMALLINT, Keyword.SMALLINT),
+    TINYINT(Type.TINYINT, Keyword.TINYINT),
+    FLOAT(Type.FLOAT, Keyword.FLOAT),
+    DATE(Type.DATE, Keyword.DATE),
+    TIME(Type.TIME, Keyword.TIME),
+    TIMESTAMP(Type.TIMESTAMP, Keyword.TIMESTAMP),
     ;
                 
     private SQLTypeName(int type, Keyword... kws) {

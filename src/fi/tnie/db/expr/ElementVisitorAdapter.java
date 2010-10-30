@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.expr;
 
-import fi.tnie.db.QueryContext;
-import fi.tnie.db.SimpleQueryContext;
 
 public class ElementVisitorAdapter implements ElementVisitor {
 

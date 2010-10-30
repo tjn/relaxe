@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import fi.tnie.db.meta.util.ResultSetWriter;
+
+import fi.tnie.db.env.util.ResultSetWriter;
 import fi.tnie.util.cli.Argument;
 import fi.tnie.util.cli.CommandLine;
 import fi.tnie.util.cli.Parser;

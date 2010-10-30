@@ -15,6 +15,6 @@ public interface ValueExtractorFactory {
 	 * @return
 	 * @throws SQLException
 	 */
-	ValueExtractor createExtractor(ResultSetMetaData meta, int col) 
+	ValueExtractor<?, ? > createExtractor(ResultSetMetaData meta, int col) 
 		throws SQLException;
 }

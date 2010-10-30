@@ -6,16 +6,19 @@ package fi.tnie.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.ent.DefaultEntityQuery;
+import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityException;
+import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.Identifiable;
+import fi.tnie.db.env.GeneratedKeyHandler;
 import fi.tnie.db.expr.Assignment;
 import fi.tnie.db.expr.ColumnExpr;
 import fi.tnie.db.expr.ColumnName;
@@ -34,37 +37,38 @@ import fi.tnie.db.expr.op.AndPredicate;
 import fi.tnie.db.expr.op.Eq;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
-import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.ForeignKey;
-import fi.tnie.db.meta.GeneratedKeyHandler;
-import fi.tnie.db.meta.impl.ColumnMap;
+import fi.tnie.db.types.ReferenceType;
 
 public class PersistenceManager<
     A extends Enum<A> & Identifiable, 
     R extends Enum<R> & Identifiable,
     Q extends Enum<Q> & Identifiable,
-    E extends Entity<A, R, Q, ? extends E>>
+    T extends ReferenceType<T>,
+    E extends Entity<A, R, Q, T, ? extends E>>
 {
     
     private class Query
-        extends DefaultEntityQuery<A, R, Q, E>
+        extends DefaultEntityQuery<A, R, Q, T, E>
     {
-        public Query(EntityMetaData<A, R, Q, ? extends E> meta) {
+        public Query(EntityMetaData<A, R, Q, T, ? extends E> meta) {
             super(meta);
         }       
     }
     
     private E target;
     private Query query = null;
+    private GeneratedKeyHandler keyHandler = null;
+    private SQLSyntax syntax = null;
         
     private static Logger logger = Logger.getLogger(PersistenceManager.class);
 
     public DeleteStatement createDeleteStatement() throws EntityException {
         E pe = getTarget();
-        final EntityMetaData<?, ?, ?, ?> meta = pe.getMetaData();
+        final EntityMetaData<?, ?, ?, ?, ?> meta = pe.getMetaData();
         
-        Environment env = meta.getCatalog().getEnvironment();
-        SQLSyntax stx = env.getSyntax();
+//        Environment env = meta.getCatalog().getEnvironment();
+//		SQLSyntax stx = env.getSyntax();
                 
     	TableReference tref = new TableReference(meta.getBaseTable());
     	Predicate pkp = getPKPredicate(tref, pe);    	   	
@@ -73,7 +77,7 @@ public class PersistenceManager<
     		return null;
     	}		
     				
-    	return stx.newDeleteStatement(tref, pkp);
+    	return syntax.newDeleteStatement(tref, pkp);
     }
 
     
@@ -81,7 +85,7 @@ public class PersistenceManager<
         E pe = getTarget();        
     	ValueRow newRow = new ValueRow();
     	 
-    	final EntityMetaData<A, R, Q, ? extends E> meta = pe.getMetaData();				
+    	final EntityMetaData<A, R, Q, T, ? extends E> meta = pe.getMetaData();				
     	BaseTable t = meta.getBaseTable();
     			
     	ElementList<ColumnName> names = new ElementList<ColumnName>();
@@ -104,7 +108,7 @@ public class PersistenceManager<
     	
     	for (R r : meta.relationships()) {
             ForeignKey fk = meta.getForeignKey(r);
-            Entity<?, ?, ?, ?> ref = pe.get(r);
+            Entity<?, ?, ?, ?, ?> ref = pe.get(r);
                         
             if (ref == null) {
                 for (Column c : fk.columns().keySet()) {
@@ -130,7 +134,7 @@ public class PersistenceManager<
     public UpdateStatement createUpdateStatement() throws EntityException {
         E pe = getTarget();
     
-    	final EntityMetaData<A, R, Q, ? extends E> meta = pe.getMetaData();
+    	final EntityMetaData<A, R, Q, T, ? extends E> meta = pe.getMetaData();
     	// TableReference tref = meta.createTableRef();
     	TableReference tref = new TableReference(meta.getBaseTable());
     	    	
@@ -153,7 +157,7 @@ public class PersistenceManager<
     	
         for (R r : meta.relationships()) {          
             ForeignKey fk = meta.getForeignKey(r);         
-            Entity<?,?,?,?> ref = pe.get(r);
+            Entity<?,?,?,?,?> ref = pe.get(r);
             
             if (ref == null) {
                 for (Column c : fk.columns().keySet()) {
@@ -217,14 +221,10 @@ public class PersistenceManager<
 			
 			rs = ps.getGeneratedKeys();
 						
-			Environment env = target.getMetaData().getCatalog().getEnvironment();
-			
 //			logger().debug(buf.toString());
 			
-			if (rs.next()) {
-			
-				GeneratedKeyHandler kh = env.generatedKeyHandler();
-				
+			if (rs.next()) {			
+				GeneratedKeyHandler kh = getKeyHandler();				
 				kh.processGeneratedKeys(q, pe, rs);
 				
 //				
@@ -258,14 +258,16 @@ public class PersistenceManager<
     public void merge(Connection c) throws EntityException {
         Query pq = getQuery();
         TableReference tref = pq.getTableRef();
-               
         
+        DefaultEntityQueryTask<A, R, Q, T, E> qt = 
+        	new DefaultEntityQueryTask<A, R, Q, T, E>(pq);  
+                              
     	Predicate pkp = getPKPredicate(tref, getTarget());
     	E stored = null; 
     	    
     	if (pkp != null) {
             pq.getQuery().getWhere().setSearchCondition(pkp);
-            stored = pq.exec(c).first();    		
+            stored = qt.exec(c).first();    		
     	}    	
     	
     	if (stored == null) {    		
@@ -310,7 +312,7 @@ public class PersistenceManager<
 
     private Predicate getPKPredicate() throws EntityException {
         E pe = getTarget();
-    	EntityMetaData<A, R, Q, ? extends E> meta = pe.getMetaData();
+    	EntityMetaData<A, R, Q, T, ? extends E> meta = pe.getMetaData();
     	TableReference tref = new TableReference(meta.getBaseTable());
     	Predicate pkp = getPKPredicate(tref, pe);
         return pkp;
@@ -320,14 +322,16 @@ public class PersistenceManager<
         return PersistenceManager.logger;
     }
         
-    public PersistenceManager(E target) {
+    public PersistenceManager(E target, GeneratedKeyHandler keyHandler, SQLSyntax syntax) {
         super();
         
         if (target == null) {
             throw new NullPointerException("'target' must not be null");
         }
         
-        setTarget(target);    
+        setTarget(target);
+        setKeyHandler(keyHandler);
+        setSyntax(syntax);
     }
 
 //    public static <
@@ -359,7 +363,7 @@ public class PersistenceManager<
             throw new NullPointerException();
         }
         
-        EntityMetaData<A, R, Q, ? extends E> meta = pe.getMetaData();
+        EntityMetaData<A, R, Q, T, ? extends E> meta = pe.getMetaData();
         Set<Column> pkcols = meta.getPKDefinition();
             
         if (pkcols.isEmpty()) {
@@ -386,13 +390,13 @@ public class PersistenceManager<
     }
     
     
-    public Object get(Entity<A, R, Q, E> pe, Column column)
+    public Object get(Entity<A, R, Q, T, E> pe, Column column)
         throws NullPointerException {
         if (column == null) {
             throw new NullPointerException("'c' must not be null");
         }
         
-        EntityMetaData<A, R, Q, E> m = pe.getMetaData();
+        EntityMetaData<A, R, Q, T, E> m = pe.getMetaData();
         
         A a = m.getAttribute(column);
         
@@ -408,7 +412,7 @@ public class PersistenceManager<
             return null;
         }
     
-        Entity<?, ?, ?, ?> ref = null;
+        Entity<?, ?, ?, ?, ?> ref = null;
         R r = null;
         
         for (R ri : rs) {
@@ -441,5 +445,24 @@ public class PersistenceManager<
 
         return this.query;
     }
+
+
+	public GeneratedKeyHandler getKeyHandler() {
+		return keyHandler;
+	}
+
+
+	private void setKeyHandler(GeneratedKeyHandler keyHandler) {
+		this.keyHandler = keyHandler;
+	}
+
+
+	public SQLSyntax getSyntax() {
+		return syntax;
+	}
+
+	private void setSyntax(SQLSyntax syntax) {
+		this.syntax = syntax;
+	}
 
 }

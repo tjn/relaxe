@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.meta.impl;
 
-import java.sql.DatabaseMetaData;
+//import java.sql.DatabaseMetaData;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +30,11 @@ public class DefaultMutableColumn
 	private Set<DefaultForeignKey> references;	
 	private ColumnName columnName;	
 	private int ordinalPosition;
+	
+	/**
+	 * Same as DatabaseMetaData.columnNoNulls
+	 */
+	private static final int columnNoNulls = 0;
 		
 	public DefaultMutableColumn() {
 		super();
@@ -43,13 +48,7 @@ public class DefaultMutableColumn
 		this.columnName = new ColumnName(name);
 		this.table = t;
 		
-		try {
-			this.dataType = (DataTypeImpl) type.clone();
-		} 
-		catch (CloneNotSupportedException e) {		
-			throw new IllegalArgumentException("type was not cloneable: " + e);
-		}
-		
+		this.dataType = new DataTypeImpl(type);		
 		t.add(this);
 	}
 
@@ -57,8 +56,8 @@ public class DefaultMutableColumn
 //		return nullable;
 //	}
 
-	public void setNullable(int nullability) {
-	    this.definitelyNotNullable = (nullability == DatabaseMetaData.columnNoNulls);
+	public void setNullable(int nullability) {						
+	    this.definitelyNotNullable = (nullability == columnNoNulls);
 	}
 
 	public String getRemarks() {

@@ -1,8 +1,8 @@
 package {{package-name}};
 
-import fi.tnie.db.DefaultEntityMetaData;
-import fi.tnie.db.EntityFactory;
-import fi.tnie.db.EntityException;
+import fi.tnie.db.ent.DefaultEntityMetaData;
+import fi.tnie.db.ent.EntityFactory;
+import fi.tnie.db.ent.EntityException;
 {{imports}}
 
 public class {{table-impl-class}}
@@ -14,6 +14,7 @@ public class {{table-impl-class}}
         {{table-interface}}.Attribute, 
         {{table-interface}}.Reference, 
         {{table-interface}}.Query, 
+        {{table-interface}}.Type,
         {{table-interface}}> {
 
         private static {{table-interface}}MetaData instance = new {{table-interface}}MetaData();
@@ -23,15 +24,29 @@ public class {{table-impl-class}}
         }
         
         @Override
-        public EntityFactory<{{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Query, {{table-interface}}> getFactory() {          
-            return new EntityFactory<{{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Query, {{table-interface}}>() {
+        public EntityFactory<{{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Query, {{table-interface}}.Type, {{table-interface}}> getFactory() {          
+            return new EntityFactory<{{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Query, {{table-interface}}.Type, {{table-interface}}>() {
                 @Override
                 public {{table-interface}} newInstance() {
                         return new {{table-impl-class}}();
                     }       
             };
         }
+        
+        public static {{table-interface}}MetaData getInstance() {
+        	return {{table-interface}}MetaData.instance; 
+        }
+        
+        @Override
+	    public Type getType() {
+	     	return {{table-interface}}.TYPE;
+	    }        
     }    
+        
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;    
     
     public {{table-impl-class}}() {
     }
@@ -40,7 +55,7 @@ public class {{table-impl-class}}
     public {{table-interface}}MetaData getMetaData() {      
         return {{table-interface}}MetaData.instance;
     }
-
+    
     @Override       
     public {{table-impl-base}} self() {     
         return this;

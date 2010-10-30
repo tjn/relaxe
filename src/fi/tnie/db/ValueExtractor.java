@@ -6,14 +6,19 @@
  */
 package fi.tnie.db;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import fi.tnie.db.rpc.Holder;
+import fi.tnie.db.types.PrimitiveType;
+
 public abstract class ValueExtractor
+	<V extends Serializable, T extends PrimitiveType<T>>
 	implements Extractor {
 	
 	private int column;
-	private Holder last = null;
+	private Holder<V, T> last = null;
 
 	public ValueExtractor(int column) {
 		super();			
@@ -24,11 +29,11 @@ public abstract class ValueExtractor
 		return column;
 	}
 
-	public Holder last() {
+	public Holder<V, T> last() {
 		return this.last;
 	}
 
-	public abstract Holder extractValue(ResultSet rs)
+	public abstract Holder<V, T> extractValue(ResultSet rs)
 		throws SQLException;
 	
 	public void extract(ResultSet rs)
@@ -37,7 +42,7 @@ public abstract class ValueExtractor
 		set(this.last);
 	}
 		
-	protected void set(Object value) {	
+	protected void set(Holder<V, T> value) {	
 	}
 	
 	

@@ -3,10 +3,10 @@
  */
 package fi.tnie.db.meta.impl.pg;
 
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.meta.DBMetaTestCase;
-import fi.tnie.db.meta.Environment;
 
 public class PGEnvironmentTest 
 	extends DBMetaTestCase {
@@ -19,7 +19,7 @@ public class PGEnvironmentTest
 	public void testCreateIdentifier() 
 		throws Exception {
 	    
-	    Environment env = getContext().getEnvironment();
+		Implementation env = getContext().getImplementation();
 		// PGEnvironment env = newEnv();		
 		 
 		final Identifier a = env.createIdentifier("abc");		
@@ -174,7 +174,7 @@ public class PGEnvironmentTest
 	
 	
 	public void testIllegalIdentifier() throws Exception {
-	    Environment env = getContext().getEnvironment();
+		Implementation env = getContext().getImplementation();
 		
 		try {
 			env.createIdentifier("");

@@ -4,8 +4,8 @@
 package fi.tnie.db;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Types;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -14,12 +14,16 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
+import fi.tnie.db.rpc.DateHolder;
+import fi.tnie.db.rpc.IntegerHolder;
+import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.source.JavaType;
 
 public class DefaultTableMapper
 	implements TableMapper {
 	    
 	private String rootPackage;		
+	private String contextPackage;
 			
 	private Map<Part, JavaType> createEntityTypeMap(BaseTable table) {	    		
 		String pkg = getPackageName(table.getSchema());		
@@ -123,48 +127,47 @@ public class DefaultTableMapper
 		}		
 	}
 	
-
 	public DefaultTableMapper(String rootPackage) {
+		this(rootPackage, null);
+	}
+	
+	public DefaultTableMapper(String rootPackage, String contextPackage) {
 		super();
 		setRootPackage(rootPackage);
+		setContextPackage(contextPackage);
 	}
 
     @Override
-    public Class<?> getAttributeType(Table table, Column c) {
+    public Class<?> getAttributeHolderType(Table table, Column c) {
         int type = c.getDataType().getDataType();
-        
-        boolean nn = c.isDefinitelyNotNullable();
-
         Class<?> jtype = null;
                         
         switch (type) {
             case Types.CHAR:
             case Types.VARCHAR:
+                jtype = VarcharHolder.class; 
+                break;            	
             case Types.LONGNVARCHAR:
-                jtype = String.class; 
-                break;                 
+            	break;
             case Types.INTEGER:            
-                jtype = nn ? Integer.TYPE : Integer.class;
+                jtype = IntegerHolder.class;
                 break;
             case Types.TINYINT:            
-                jtype = nn ? Short.TYPE : Short.class;
                 break;
-            case Types.BIGINT:
-                jtype = BigInteger.class;        
+            case Types.BIGINT:                        
             case Types.BIT:
-                jtype = nn ? Boolean.TYPE : Boolean.class;            
+                           
             case Types.REAL:
-                jtype = nn ? Float.TYPE : Float.class;
                 break;
             case Types.FLOAT:                
-            case Types.DOUBLE:
-                jtype = nn ? Double.TYPE : Double.class;
+            case Types.DOUBLE:                
                 break;                
-            case Types.NUMERIC:
-                jtype = BigDecimal.class;
+            case Types.NUMERIC:                
                 break;
-            default:
-                jtype = Object.class;
+            case Types.DATE:            
+                jtype = DateHolder.class;
+                break;                
+            default:                
                 break;
         }
                 
@@ -212,10 +215,74 @@ public class DefaultTableMapper
     }
 
     @Override
-    public JavaType catalogContextType() {    
-        return new JavaType(getRootPackage(), "CatalogContext");
+    public JavaType catalogContextType() {
+    	String p = getContextPackage();
+        return new JavaType(p, "CatalogContext");
     }
-    
+
+	@Override
+	public Class<?> getAttributeType(Table table, Column c) {
+        int type = c.getDataType().getDataType();
+        
+        boolean nn = c.isDefinitelyNotNullable();
+
+        Class<?> jtype = null;
+                        
+        switch (type) {
+            case Types.CHAR:
+            case Types.VARCHAR:            	
+            case Types.LONGNVARCHAR:
+                jtype = String.class; 
+                break;                 
+            case Types.INTEGER:            
+                jtype = nn ? Integer.TYPE : Integer.class;
+                break;
+            case Types.TINYINT:            
+                jtype = nn ? Short.TYPE : Short.class;
+                break;
+            case Types.BIGINT:
+//                jtype = BigInteger.class;
+            	// not supported yet
+            	break;
+            case Types.BIT:
+                jtype = nn ? Boolean.TYPE : Boolean.class;            
+            case Types.REAL:
+                jtype = nn ? Float.TYPE : Float.class;
+                break;
+            case Types.FLOAT:                
+            case Types.DOUBLE:
+                jtype = nn ? Double.TYPE : Double.class;
+                break;                
+            case Types.NUMERIC:
+                jtype = BigDecimal.class;
+                break;
+            case Types.DATE:
+                jtype = Date.class;
+                break;                
+            default:            	
+//                jtype = Object.class;
+            	// generally not supported yet
+                break;
+        }
+                
+        return jtype;	
+    }
+
+	public String getContextPackage() {
+		if (contextPackage == null) {
+			return getRootPackage();			
+		}
+
+		return contextPackage;
+	}
+
+	public void setContextPackage(String contextPackage) {
+		this.contextPackage = contextPackage;
+	}
+	
+	public void setContextSubPackage(String sp) {
+		setContextPackage(getRootPackage() + "." + sp);
+	}
 }
 
     

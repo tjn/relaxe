@@ -6,7 +6,6 @@ package fi.tnie.db.expr;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import fi.tnie.db.QueryContext;
 
 public abstract class NonJoinedTable
 	extends AbstractTableReference {

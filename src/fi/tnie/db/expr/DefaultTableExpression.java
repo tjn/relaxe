@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.expr;
 
-import org.apache.log4j.Logger;
-
 import fi.tnie.db.expr.SetOperator.Op;
 
 /**
@@ -27,7 +25,7 @@ public class DefaultTableExpression
 	public DefaultTableExpression() {
 	}
 				
-	private static Logger logger = Logger.getLogger(DefaultTableExpression.class);
+//	private static Logger logger = Logger.getLogger(DefaultTableExpression.class);
 	
 //	public String generate(SimpleQueryContext ctx) {
 //		StringBuffer dest = new StringBuffer();		
@@ -72,9 +70,6 @@ public class DefaultTableExpression
 		if (e != null) {
 			e.traverse(vc, v);
 		}
-	}
-	public static Logger logger() {
-		return DefaultTableExpression.logger;
 	}
 
 	public void setSelect(Select select) {

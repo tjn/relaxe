@@ -8,6 +8,7 @@ import fi.tnie.db.expr.ddl.AlterTableAddColumn;
 import fi.tnie.db.expr.ddl.Timestamp;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.impl.DefaultMutableColumn;
@@ -41,7 +42,7 @@ public class MetaData
         
         for (Schema s : cat.schemas().values()) {
             for (BaseTable t : s.baseTables().values()) {                
-                DefaultMutableColumn c = t.columnMap().get(n);
+                Column c = t.columnMap().get(n);
                 
                 if (c == null) {                    
                     result.add(addStatement(t, n));

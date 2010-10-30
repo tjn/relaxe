@@ -1,7 +1,5 @@
 package {{package-name}};
 
-{{imports}}
-
 public class {{schema-factory-impl}} 
     implements {{schema-factory}} {
 {{factory-method-list}}

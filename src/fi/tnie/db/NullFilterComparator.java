@@ -5,6 +5,8 @@ package fi.tnie.db;
 
 import java.util.Comparator;
 
+import fi.tnie.db.meta.NullComparator;
+
 public class NullFilterComparator<T>
 	extends NullComparator<T> {
 
