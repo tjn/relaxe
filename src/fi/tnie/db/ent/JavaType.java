@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.source;
+package fi.tnie.db.ent;
 
 /**
  * @author Administrator
@@ -11,13 +11,6 @@ public class JavaType {
 	private String packageName; 
 	private String unqualifiedName;
 	private String qualifiedName;
-			
-	public JavaType(Class<?> clazz) {	    	    
-	    String pkg = clazz.getPackage().getName();
-	    String name = clazz.getName();
-	    name = name.substring(pkg.length() + 1);
-	    setName(pkg, name);
-	}
 			
 	public JavaType(String packageName, String unqualifiedName) {
 		super();

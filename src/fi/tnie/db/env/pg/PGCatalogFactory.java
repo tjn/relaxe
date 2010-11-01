@@ -8,12 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import fi.tnie.db.env.DefaultCatalogFactory;
+import fi.tnie.db.meta.impl.pg.PGEnvironment;
 
 public class PGCatalogFactory
 	extends DefaultCatalogFactory {
 
-	public PGCatalogFactory(PGImplementation environment) {
-		super(environment);
+	public PGCatalogFactory(PGEnvironment env) {
+		super(env);
 	}
 	
 	private String catalog;

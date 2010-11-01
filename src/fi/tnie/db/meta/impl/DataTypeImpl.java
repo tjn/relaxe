@@ -33,6 +33,15 @@ public class DataTypeImpl
 		this.typeName = typeName;		
 	}
 	
+	public DataTypeImpl(int dataType, String typeName, int charOctetLength, int decimalDigits, int numPrecRadix, int size) {
+		this.dataType = dataType;
+		this.typeName = typeName;		
+		this.charOctetLength = charOctetLength;
+		this.decimalDigits = decimalDigits;
+		this.numPrecRadix = numPrecRadix;
+		this.size = size;
+	}
+	
 	public DataTypeImpl(DataTypeImpl source) {
 		super();
 		this.dataType = source.getDataType();

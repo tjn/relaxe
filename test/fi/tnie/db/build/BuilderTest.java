@@ -19,8 +19,8 @@ import org.apache.log4j.Logger;
 
 import fi.tnie.db.DefaultEntityContext;
 import fi.tnie.db.DefaultTableMapper;
-import fi.tnie.db.EntityContext;
 import fi.tnie.db.QueryException;
+import fi.tnie.db.ent.EntityContext;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;

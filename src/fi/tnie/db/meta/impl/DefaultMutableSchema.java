@@ -47,6 +47,25 @@ public class DefaultMutableSchema
 		catalog.addSchema(this);
 	}
 	
+	public DefaultMutableSchema(Identifier name) {
+		super();
+		
+		if (name == null) {
+			throw new NullPointerException("'name' must not be null");
+		}
+		
+		this.name = name;
+	}
+	
+	public void setCatalog(DefaultMutableCatalog catalog) {
+		if (this.catalog != null) {
+			throw new IllegalArgumentException("catalog ahas already been set");
+		}
+						
+		this.catalog = catalog;
+		this.catalog.addSchema(this);
+	}
+	
 	public boolean add(DefaultMutableTable newTable) {
 		return getTables().add(newTable);
 	}

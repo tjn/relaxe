@@ -8,14 +8,16 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.TableMapper.Part;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityContext;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.JavaType;
+import fi.tnie.db.ent.TableMapper;
+import fi.tnie.db.ent.TableMapper.Part;
 import fi.tnie.db.env.util.CatalogTraversal;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.source.JavaType;
 
 public class DefaultEntityContext
 	implements EntityContext {

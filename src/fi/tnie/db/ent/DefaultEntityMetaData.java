@@ -63,8 +63,14 @@ public abstract class DefaultEntityMetaData<
 		
 		Set<Column> pkc = new HashSet<Column>();
 		
-		for (A a : this.attributes) {			
+		for (A a : this.attributes) {
 			Column c = table.columnMap().get(a.identifier());
+			
+			if (c == null) {
+				throw new NullPointerException(
+						"no column for attribute: " + a.identifier() + " in " + 
+						table.columns());
+			}
 			
 			this.attributeMap.put(a, c);
 			this.columnMap.put(c, a);

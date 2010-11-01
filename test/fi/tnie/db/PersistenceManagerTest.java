@@ -7,6 +7,7 @@ import java.sql.Connection;
 
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.TableMapper;
 import fi.tnie.db.genctx.CatalogContext;
 import fi.tnie.db.gen.personal.DefaultPerson;
 import fi.tnie.db.gen.personal.PersonalFactory;

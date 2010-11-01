@@ -1,0 +1,478 @@
+package {{package-name}};
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.EnumMap;
+
+import fi.tnie.db.ent.EntityException;
+import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityContext;
+import fi.tnie.db.ent.TableMapper;
+import fi.tnie.db.expr.ColumnName;
+import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.expr.SchemaElementName;
+import fi.tnie.db.meta.BaseTable;
+import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.Constraint;
+import fi.tnie.db.meta.DataType;
+import fi.tnie.db.meta.Environment;
+import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.meta.PrimaryKey;
+import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.Schema;
+import fi.tnie.db.meta.SchemaElementMap;
+import fi.tnie.db.meta.SchemaMap;
+import fi.tnie.db.meta.Table;
+import fi.tnie.db.meta.impl.DataTypeImpl;
+import fi.tnie.db.meta.impl.DefaultColumnMap;
+import fi.tnie.db.meta.impl.DefaultMutableBaseTable;
+import fi.tnie.db.meta.impl.DefaultMutableCatalog;
+import fi.tnie.db.meta.impl.DefaultMutableColumn;
+import fi.tnie.db.meta.impl.DefaultMutableSchema;
+import fi.tnie.db.meta.impl.DefaultForeignKey;
+
+public class LiteralCatalog	
+	implements EntityContext, Catalog {
+
+	private Identifier name;
+	private Environment environment;	
+	private DefaultMutableCatalog content;
+	private EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?, ?>> metaMap;
+	
+	private void setName(Identifier name) {
+		this.name = name;
+	}
+
+	private void setEnvironment(Environment environment) {
+		if (environment == null) {
+			throw new NullPointerException("environment must not be null here");
+		}
+		
+		this.environment = environment;
+	}
+
+	public Environment getEnvironment() {
+		return environment;
+	}
+	
+	public Environment env() {
+		return this.environment;
+	}
+	
+	private static LiteralCatalog instance = null;
+	
+	public static LiteralCatalog getInstance() {
+		if (LiteralCatalog.instance == null) {
+			LiteralCatalog.instance = new LiteralCatalog(
+				"{{catalog-name}}",
+				{{new-environment-expr}}
+			);
+			
+			try {
+				LiteralCatalog.instance.populate();
+			} 
+			catch (EntityException e) {			
+				// TODO: throw runtime exception
+				LiteralCatalog.instance = null;				
+			}
+		}
+		
+		return LiteralCatalog.instance;
+		
+	}
+			
+	protected LiteralCatalog(String name, Environment env) {
+		super();
+		setEnvironment(env);
+		setName(env.createIdentifier(name));		
+		// populate();
+	}
+
+	private void populate() throws EntityException {
+		for (LiteralSchema s : LiteralSchema.values()) {			
+			s.bind();
+		}
+		
+		for (LiteralBaseTable s : LiteralBaseTable.values()) {			
+			s.bind();
+		}
+		
+		for (LiteralColumn s : LiteralColumn.values()) {			
+			s.bind();
+		}
+		
+		for (LiteralForeignKey s : LiteralForeignKey.values()) {			
+			s.bind();
+		}
+		
+		// populates meta-map
+		getMetaMap();
+ 
+//		According JLS, 
+//		"The direct superclass of an enum type named E is Enum<E>. 
+//		In addition to the members it inherits from Enum<E>, for each declared enum constant with the name n the enum type has an implicitly declared public static final field named n of type E."
+//		...
+//		"The enum constant is said to be created when the corresponding field 
+//		is initialized."
+//		
+//		Based on that, we expect all the LiteralBaseTable -elements 
+//		already instantiated at this point.
+//		
+//		Not sure if GWT compiler honors this behavior, though.
+	}
+	
+	private void populateMetaMap(EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?, ?>> mm) 
+		throws EntityException {
+{{meta-map-population}}
+	}
+	
+	private void add(EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?, ?>> mm, LiteralBaseTable t, EntityMetaData<?, ?, ?, ?, ?> meta) 
+		throws EntityException {
+		meta.bind(t.getTable());
+		mm.put(t, meta);
+	}
+
+	public enum LiteralSchema implements Schema {
+//schema-enum-list//
+{{schema-enum-list}}
+		;
+				
+		private DefaultMutableSchema schema;
+		private String name;
+		
+		private LiteralSchema(String name) {
+			this.name = name;
+		}
+		
+		public void bind() {
+			LiteralCatalog cat = getInstance();
+			Identifier s = cat.getEnvironment().createIdentifier(this.name);
+			this.schema = new DefaultMutableSchema(cat.getContent(), s);
+		}
+
+		
+		private DefaultMutableSchema getMutableSchema() {
+			return schema;
+		}
+
+		@Override
+		public SchemaElementMap<? extends BaseTable> baseTables() {
+			return schema.baseTables();
+		}
+
+		@Override
+		public SchemaElementMap<? extends Constraint> constraints() {
+			return schema.constraints();
+		}
+
+		@Override
+		public SchemaElementMap<? extends ForeignKey> foreignKeys() {
+			return schema.foreignKeys();
+		}
+
+		@Override
+		public Catalog getCatalog() {
+			return schema.getCatalog();
+		}
+
+		@Override
+		public Identifier getUnqualifiedName() {
+			return schema.getUnqualifiedName();
+		}
+
+		@Override
+		public SchemaElementMap<? extends PrimaryKey> primaryKeys() {
+			return schema.primaryKeys();
+		}
+
+		@Override
+		public SchemaElementMap<? extends Table> tables() {
+			return schema.tables();
+		}
+	}
+	
+	public enum LiteralBaseTable		
+		implements BaseTable {		
+{{base-table-enum-list}}
+		;		
+		
+		private LiteralSchema schema;
+		private DefaultMutableBaseTable table;
+		private String name;
+		
+		LiteralBaseTable(LiteralSchema s, String name) {
+			this.name = name;
+			this.schema = s;			
+		}
+		
+		public void bind() {
+			LiteralCatalog cat = getInstance();
+			DefaultMutableSchema ms = this.schema.getMutableSchema();
+			Identifier t = cat.getEnvironment().createIdentifier(this.name);			
+			this.table = new DefaultMutableBaseTable(ms, t);
+		}
+
+		@Override
+		public SchemaElementMap<ForeignKey> foreignKeys() {
+			return this.table.foreignKeys();
+		}
+
+		@Override
+		public PrimaryKey getPrimaryKey() {
+			return this.table.getPrimaryKey();
+		}
+
+		@Override
+		public SchemaElementMap<ForeignKey> references() {
+			return this.table.references();
+		}
+
+		@Override
+		public DefaultColumnMap columnMap() {
+			return this.table.columnMap();
+		}
+
+		@Override
+		public List<? extends fi.tnie.db.meta.Column> columns() {
+			return this.table.columns();
+		}
+
+		@Override
+		public fi.tnie.db.meta.Column getColumn(Identifier cn) {
+			return this.table.getColumn(cn);
+		}
+
+		@Override
+		public String getTableType() {
+			return this.table.getTableType();
+		}
+
+		@Override
+		public boolean isBaseTable() {
+			return this.table.isBaseTable();
+		}
+
+		@Override
+		public SchemaElementName getName() {
+			return this.table.getName();
+		}
+
+		@Override
+		public String getQualifiedName() {
+			return this.table.getQualifiedName();
+		}
+
+		@Override
+		public Schema getSchema() {
+			return this.schema;
+		}
+
+		@Override
+		public Identifier getUnqualifiedName() {
+			return this.table.getUnqualifiedName();
+		}
+
+		private DefaultMutableBaseTable getTable() {
+			return table;
+		};
+	}
+	
+	public enum LiteralColumn
+		implements Column {
+{{column-enum-list}}		
+		;
+		
+		private LiteralBaseTable table;
+		private DefaultMutableColumn column;
+		private String name;
+		private DataTypeImpl type;
+				
+		LiteralColumn(LiteralBaseTable table, String name, DataTypeImpl type) {
+			this.name = name;
+			this.table = table;
+			this.type = type;
+		}
+		
+		public void bind () {
+			Identifier n = getInstance().env().createIdentifier(this.name);						
+			this.column = new DefaultMutableColumn(table.getTable(), n, this.type);			
+		}
+
+		@Override
+		public ColumnName getColumnName() {
+			return column.getColumnName();
+		}
+
+		@Override
+		public DataType getDataType() {
+			return column.getDataType();
+		}
+
+		@Override
+		public Boolean isAutoIncrement() {
+			return column.isAutoIncrement();
+		}
+
+		@Override
+		public boolean isDefinitelyNotNullable() {
+			return column.isDefinitelyNotNullable();
+		}
+
+		@Override
+		public boolean isPrimaryKeyColumn() {
+			return column.isPrimaryKeyColumn();
+		}
+
+		@Override
+		public Identifier getUnqualifiedName() {
+			return column.getUnqualifiedName();
+		}		
+		
+		private DefaultMutableColumn getColumn() {
+			return column;
+		}		
+	}	
+	
+	
+	public enum LiteralForeignKey
+		implements ForeignKey {
+{{foreign-key-enum-list}}			
+		;
+		
+		private String name;
+		private LiteralSchema schema;
+		private DefaultForeignKey foreignKey; 
+		private LiteralColumn[] columnList;
+		
+		/**
+		 * @param name
+		 * @param lac An array containing column pairs.
+		 * [0] => [1] 
+		 * [2] => [3]
+		 */
+		// TODO: add update/delete action
+		LiteralForeignKey(LiteralSchema ls, String name, LiteralColumn ... lac) {
+			if (lac == null) {
+				throw new NullPointerException();
+			}
+			
+			if (lac.length == 0 || (lac.length % 2) != 0) {
+				throw new IllegalArgumentException("size of lac should be min 2 and even here but was: " + lac.length);
+			}
+			
+			this.name = name;
+			this.schema = ls;
+			this.columnList = lac;
+		}
+
+		private void bind() {
+			DefaultMutableSchema ms = schema.getMutableSchema();
+			Identifier fk = ms.getCatalog().getEnvironment().createIdentifier(name);			
+			DefaultForeignKey k = new DefaultForeignKey(ms, fk);
+						
+			List<DefaultForeignKey.Pair> pl = new ArrayList<DefaultForeignKey.Pair>();
+			
+			LiteralColumn[] lac = this.columnList;
+			
+			for (int i = 0; i < (lac.length - 1); i += 2) {
+				pl.add(new DefaultForeignKey.Pair(
+						lac[i].getColumn(), 
+						lac[i + 1].getColumn()
+				));
+			}
+			
+			k.setColumnMap(pl);
+			this.foreignKey = k;
+		}
+
+		@Override
+		public Map<Column, Column> columns() {		
+			return this.foreignKey.columns();
+		}
+
+		@Override
+		public BaseTable getReferenced() {
+			return this.foreignKey.getReferenced();
+		}
+
+		@Override
+		public BaseTable getReferencing() {
+			return this.foreignKey.getReferencing();
+		}
+
+		@Override
+		public Type getType() {
+			return this.foreignKey.getType();
+		}
+
+		@Override
+		public SchemaElementName getName() {
+			return this.foreignKey.getName();
+		}
+
+		@Override
+		public String getQualifiedName() {
+			return this.foreignKey.getQualifiedName();
+		}
+
+		@Override
+		public Schema getSchema() {
+			return this.foreignKey.getSchema();
+		}
+
+		@Override
+		public Identifier getUnqualifiedName() {
+			return this.foreignKey.getUnqualifiedName();
+		}
+	}
+	
+	@Override
+	public Identifier getName() {
+		return this.name;
+	}
+
+	@Override
+	public SchemaMap schemas() {
+		return getContent().getSchemaMap();
+	}
+
+	@Override
+	public Identifier getUnqualifiedName() {
+		return this.name;
+	}
+
+	@Override
+	public void bindAll(Catalog catalog, TableMapper tm) {
+		
+	}
+
+	@Override
+	public Catalog boundTo() {
+		return this;
+	}
+
+
+	private DefaultMutableCatalog getContent() {
+		if (content == null) {
+			content = new DefaultMutableCatalog(getEnvironment(), getName());			
+		}
+
+		return content;
+	}
+	
+	@Override
+	public EntityMetaData<?, ?, ?, ?, ?> getMetaData(BaseTable table)  {
+		return this.metaMap.get(table);
+	}
+
+	private EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?, ?>> getMetaMap() 
+		throws EntityException {
+		if (metaMap == null) {
+			metaMap = new EnumMap<LiteralBaseTable, EntityMetaData<?,?,?,?,?>>(LiteralBaseTable.class);
+			populateMetaMap(metaMap);			
+		}
+
+		return metaMap;
+	}	
+}

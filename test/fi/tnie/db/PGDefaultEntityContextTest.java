@@ -4,8 +4,10 @@
 package fi.tnie.db;
 
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityContext;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.TableMapper;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.impl.pg.PGTestCase;

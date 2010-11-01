@@ -20,63 +20,157 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
+import javax.swing.table.TableModel;
+
 import org.apache.log4j.Logger;
+
 import fi.tnie.db.QueryException;
-import fi.tnie.db.TableMapper;
-import fi.tnie.db.TableMapper.Part;
+import fi.tnie.db.ent.JavaType;
+import fi.tnie.db.ent.TableMapper;
+import fi.tnie.db.ent.TableMapper.Part;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.gen.LiteralCatalog.LiteralBaseTable;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.DataType;
+import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Schema;
+import fi.tnie.db.meta.SchemaElement;
+import fi.tnie.db.meta.SchemaElementMap;
+import fi.tnie.db.meta.Table;
 import fi.tnie.util.io.IOHelper;
 
 public class SourceGenerator {
+	
+	
+	public enum Tag {
+	    /**
+	     * Pattern which is replaced with the simple name of the table interface in template files.
+	     */		
+		TABLE_INTERFACE,
+	    /**
+	     * Pattern which is replaced with the simple name of the abstract class in template files.
+	     */		
+		TABLE_ABSTRACT_CLASS,
+	    /** 
+	     * Pattern which is replaced with the simple name of the hook class in template files.
+	     */		
+		TABLE_HOOK_CLASS,
+		
+	    /**
+	     * Pattern which is replaced with the simple name of the class the hook-class inherits from in template files.
+	     */		
+		TABLE_HOOK_BASE_CLASS,
+		
+	    /**  
+	     * Pattern which is replaced with the simple name of the hook class in template files.
+	     */		
+		TABLE_IMPL_CLASS,
+	    /**  
+	     * Pattern which is replaced with the simple name of the hook class in template files.
+	     */		
+		TABLE_IMPL_BASE,
+		
+	    /**  
+	     * TODO: which accessors 
+	     */		
+		ACCESSOR_LIST,		
+	    /**
+	     * Pattern which is replaced with the simple name of the catalog context class in template files.
+	     */		
+		CATALOG_CONTEXT_CLASS,
+	    /**
+	     * Pattern which is replaced with the simple name of the catalog context class in template files.
+	     */		
+		CATALOG_CONTEXT_PACKAGE_NAME,
+	    /**
+	     * Pattern which is replaced with the package name of the type being generated in template files.
+	     */
+		PACKAGE_NAME,
+	    /**
+	     * Pattern which is replaced with the package name of the type being generated in template files.
+	     */
+		ROOT_PACKAGE_NAME,
+		
+		FACTORY_METHOD_LIST,
+		/**
+		 * Generated imports
+		 */
+		IMPORTS,		
+		NEW_ENVIRONMENT_EXPR, 
+		SCHEMA_ENUM_LIST,
+		BASE_TABLE_ENUM_LIST,
+		VIEW_ENUM_LIST,
+		COLUMN_ENUM_LIST,
+		FOREIGN_KEY_ENUM_LIST,
+		PRIMARY_KEY_ENUM_LIST,
+		META_MAP_POPULATION,
+		;	
+		
+					
 
-    /**
-     * Pattern which is replaced with the simple name of the table interface in template files.
-     */
-    private static final String PATTERN_TABLE_INTERFACE = "{{table-interface}}";
+		private Tag() {
+			this.tag = tag(toString());
+		}
+		private Tag(String tag) {
+			this.tag = tag;
+		}		
+		
+		private String tag(String n) {
+			return "{{" + n.toLowerCase().replace("_", "-") + "}}";
+		}
 
-    /**
-     * Pattern which is replaced with the simple name of the abstract class in template files.
-     */
-    private static final String PATTERN_TABLE_ABSTRACT = "{{table-abstract-class}}";
+		private String tag;
 
-    /**
-     * Pattern which is replaced with the simple name of the hook class in template files.
-     */
-    private static final String PATTERN_TABLE_HOOK = "{{table-hook-class}}";
+		public String getTag() {
+			return tag;
+		}		
+	}
 
-    /**
-     * Pattern which is replaced with the simple name of the catalog context class in template files.
-     */
-    private static final String PATTERN_CATALOG_CONTEXT_CLASS = "{{catalog-context-class}}";
+//    private static final String PATTERN_TABLE_INTERFACE = "{{table-interface}}";
+
+//    private static final String PATTERN_TABLE_ABSTRACT = "{{table-abstract-class}}";
+
+//    /**
+//     * Pattern which is replaced with the simple name of the hook class in template files.
+//     */
+//    private static final String PATTERN_TABLE_HOOK = "{{table-hook-class}}";
+
+//    /**
+//     * Pattern which is replaced with the simple name of the catalog context class in template files.
+//     */
+//    private static final String PATTERN_CATALOG_CONTEXT_CLASS = "{{catalog-context-class}}";
     
-    /**
-     * Pattern which is replaced with the simple name of the catalog context class in template files.
-     */
-    private static final String PATTERN_CATALOG_CONTEXT_PACKAGE_NAME = "{{catalog-context-package-name}}";    
-    
-    /**
-     * Pattern which is replaced with the package name of the tyep being generated in template files.
-     */
-    private static final String PATTERN_PACKAGE = "{{package-name}}";
-    
-    
-    private static final String PATTERN_ROOT_PACKAGE = "{{root-package-name}}";
-    /**
-     * Pattern which is replaced with the simple name of the hook class in template files.
-     */
-    private static final String FACTORY_METHOD_LIST = "{{factory-method-list}}";
+//    /**
+//     * Pattern which is replaced with the simple name of the catalog context class in template files.
+//     */
+//    private static final String PATTERN_CATALOG_CONTEXT_PACKAGE_NAME = "{{catalog-context-package-name}}";    
+//    
+//    /**
+//     * Pattern which is replaced with the package name of the type being generated in template files.
+//     */
+//    private static final String PATTERN_PACKAGE = "{{package-name}}";
+//    
+//    private static final String PATTERN_ROOT_PACKAGE = "{{root-package-name}}";
+//    /**
+//     * Pattern which is replaced with the simple name of the hook class in template files.
+//     */
+//    private static final String FACTORY_METHOD_LIST = "{{factory-method-list}}";
 
-    /**
-     * Pattern which is replaced with the list of imports.
-     */
-    private static final String PATTERN_IMPORTS = "{{imports}}";     
+//    /**
+//     * Pattern which is replaced with the list of imports.
+//     */
+//    private static final String PATTERN_IMPORTS = "{{imports}}";     
 
+    
+//    /**
+//     * Pattern which is replaced with the list of imports.
+//     */
+//    private static final String PATTERN_NEW_ENVIRONMENT_EXPR = "{{new-environment-expr}}";     
+    
     /**
      * TODO: add constants for all patterns
      */
@@ -149,23 +243,262 @@ public class SourceGenerator {
 //            }
 //        }    
 
-        JavaType cc = tm.catalogContextType();
-        CharSequence src = generateContext(cc, tm, il, fm);            
-        write(getSourceDir(), cc, src, generated, gm);
+
+        {
+	        JavaType cc = tm.catalogContextType();
+	        CharSequence src = generateContext(cc, tm, il, fm);            
+	        write(getSourceDir(), cc, src, generated, gm);
+        }
+
+        {
+	        JavaType lc = tm.literalContextType();
+	        CharSequence src = generateLiteralContext(lc, cat, tm, il);            
+	        writeIfGenerated(getSourceDir(), lc, src, generated, gm);
+        }
         
         return generated;        
     }
 
-    private CharSequence generateContext(JavaType cc, TableMapper tm,
+    private CharSequence generateLiteralContext(JavaType lc, Catalog cat, TableMapper tm, List<String> il) throws IOException {
+    	   	
+    	String src = getTemplateForLiteralCatalog();    	
+    	    	    	
+    	src = replaceAll(src, Tag.PACKAGE_NAME, lc.getPackageName());
+    	
+    	Environment env = cat.getEnvironment();
+    	String e = env.getClass().getName();
+    	src = replaceAll(src, Tag.NEW_ENVIRONMENT_EXPR, "new " + e + "()");
+    	
+    	{
+	    	String list = generateSchemaList(cat);
+	    	src = replaceAll(src, Tag.SCHEMA_ENUM_LIST, list);
+    	}
+    	
+    	{
+	    	String list = generateBaseTableList(cat);
+	    	src = replaceAll(src, Tag.BASE_TABLE_ENUM_LIST, list);
+    	}
+    	
+    	{
+	    	String list = generateColumnList(cat);
+	    	src = replaceAll(src, Tag.COLUMN_ENUM_LIST, list);
+    	}
+    	
+    	{
+	    	String list = generateForeignKeyList(cat);
+	    	src = replaceAll(src, Tag.FOREIGN_KEY_ENUM_LIST, list);
+    	}
+    	
+    	
+    	{
+	    	String list = generateMetaMapPopulation(cat, tm);
+	    	src = replaceAll(src, Tag.META_MAP_POPULATION, list);
+    	}
+    	    	
+    	
+		return src;
+	}
+	
+	private String generateMetaMapPopulation(Catalog cat, TableMapper tm) {
+		StringBuffer buf = new StringBuffer();
+				
+		for (Schema s : cat.schemas().values()) {
+			for (BaseTable t : s.baseTables().values()) {				
+				String tn = tableEnumeratedName(t);
+				
+				JavaType impl = tm.entityType(t, Part.IMPLEMENTATION);
+				JavaType intf = tm.entityType(t, Part.INTERFACE);
+				
+				// add(mm, LiteralBaseTable.PERSONAL_HOUR_REPORT, fi.tnie.db.gen.personal.HourReportImpl.HourReportMetaData.getInstance());
+				
+				buf.append("add(mm, LiteralBaseTable.");
+				buf.append(tn);
+				buf.append(", ");
+				buf.append(impl.getQualifiedName());				
+				buf.append(".");
+				buf.append(intf.getUnqualifiedName());
+				buf.append("MetaData.getInstance()");
+				buf.append(");\n");				
+			}
+		}		
+		
+		return buf.toString();
+	}
+
+	private String generateForeignKeyList(Catalog cat) {
+		StringBuffer buf = new StringBuffer();
+
+		for (Schema s : cat.schemas().values()) {
+			for (BaseTable t : s.baseTables().values()) {
+				SchemaElementMap<ForeignKey> fm = t.foreignKeys();
+								
+				for (ForeignKey fk : fm.values()) {					
+					String n = foreignKeyEnumeratedName(fk);
+					String sn = schemaEnumeratedName(s);
+					Identifier un = fk.getUnqualifiedName();
+									
+					buf.append(n);
+					buf.append("(LiteralSchema.");
+					buf.append(sn);
+					buf.append(", \"");
+					buf.append(un.getName());
+					buf.append("\"");
+					
+					BaseTable kt = fk.getReferencing();
+					BaseTable rt = fk.getReferenced();
+					
+					for (Map.Entry<Column, Column> e : fk.columns().entrySet()) {												
+						buf.append(", LiteralColumn.");
+						buf.append(columnEnumeratedName(kt, e.getKey()));
+						buf.append(", LiteralColumn.");
+						buf.append(columnEnumeratedName(rt, e.getValue()));
+					}
+					
+					buf.append("),\n");									
+				}
+			}
+		}		
+		
+		return buf.toString();	
+	}
+
+	private String generateColumnList(Catalog cat) {
+		StringBuffer buf = new StringBuffer();
+
+		for (Schema s : cat.schemas().values()) {
+			for (Table t : s.tables().values()) {
+				boolean b = t.isBaseTable();
+				String te = b ? "LiteralBaseTable" : "LiteralView"; 				
+				
+				for (Column c : t.columns()) {
+					String cn = columnEnumeratedName(t, c);
+					String tn = tableEnumeratedName(t);					
+					Identifier un = c.getUnqualifiedName();
+					
+					// TODO: add 'autoinc' -info etc
+														
+					buf.append(cn);
+					buf.append("(");
+					buf.append(te);
+					buf.append(".");
+					buf.append(tn);
+					buf.append(", \"");
+					buf.append(un.getName());
+					buf.append("\", ");										
+					generateNewDataType(buf, c.getDataType());
+					buf.append("),\n");									
+				}
+			}
+		}		
+		
+		return buf.toString();
+	}
+	/**
+	 * Formats the expression: new DataTypeImpl(...)
+	 * @param buf
+	 * @param t
+	 */
+
+	private void generateNewDataType(StringBuffer buf, DataType t) {
+		buf.append("new DataTypeImpl(");				
+//		call: new DataTypeImpl(int dataType, String typeName, int charOctetLength, int decimalDigits, int numPrecRadix, int size)
+		buf.append(t.getDataType());
+		buf.append(", \"");
+		buf.append(t.getTypeName());
+		buf.append("\", ");
+		buf.append(t.getCharOctetLength());
+		buf.append(", ");
+		buf.append(t.getDecimalDigits());
+		buf.append(", ");
+		buf.append(t.getNumPrecRadix());
+		buf.append(", ");
+		buf.append(t.getSize());					
+		buf.append(")");
+	}
+
+	private String generateBaseTableList(Catalog cat) {
+		StringBuffer buf = new StringBuffer();
+
+		for (Schema s : cat.schemas().values()) {
+			for (BaseTable t : s.baseTables().values()) {				
+				String tn = tableEnumeratedName(t);
+				String sn = schemaEnumeratedName(s);
+				Identifier un = t.getUnqualifiedName();
+								
+				buf.append(tn);
+				buf.append("(LiteralSchema.");
+				buf.append(sn);
+				buf.append(", \"");
+				buf.append(un.getName());
+				buf.append("\"),\n");				
+			}
+		}		
+		
+		return buf.toString();
+	}
+
+	private String generateSchemaList(Catalog cat) {
+		StringBuffer buf = new StringBuffer();
+
+		for (Schema s : cat.schemas().values()) {
+			Identifier un = s.getUnqualifiedName();
+			String n = un.getName();
+			buf.append(schemaEnumeratedName(s));
+			buf.append("(\"");
+			buf.append(n);
+			buf.append("\"),\n");
+		}		
+		
+		return buf.toString();
+	}
+	
+	private String schemaEnumeratedName(Schema s) {
+		Identifier un = s.getUnqualifiedName();
+		return un.getName().toUpperCase();				
+	}
+	
+	private String tableEnumeratedName(Table t) {		
+		return enumeratedName(t);
+	}
+	
+	private String foreignKeyEnumeratedName(ForeignKey k) {		
+		return enumeratedName(k);
+	}
+	
+	private String enumeratedName(SchemaElement e) {
+		StringBuffer buf = new StringBuffer();
+		buf.append(e.getSchema().getUnqualifiedName().getName());
+		buf.append("_");
+		buf.append(e.getUnqualifiedName().getName());		
+		
+		return buf.toString().toUpperCase();
+	}
+	
+	private String columnEnumeratedName(Table t, Column c) {
+		StringBuffer buf = new StringBuffer();
+				
+		buf.append(t.getSchema().getUnqualifiedName().getName());
+		buf.append("_");
+		buf.append(t.getUnqualifiedName().getName());		
+		buf.append("_");
+		buf.append(c.getUnqualifiedName().getName());
+		
+		return buf.toString().toUpperCase();			
+		
+	}
+
+	private CharSequence generateContext(JavaType cc, TableMapper tm,
             Collection<String> il, Map<JavaType, CharSequence> fm) throws IOException {
 
         String src = getTemplateForCatalogContext();
 
-        src = replacePackageAndImports(src, cc, il);
+//        src = replacePackageAndImports(src, cc, il);
         
-        src = replaceAll(src, PATTERN_ROOT_PACKAGE, tm.getRootPackage());        
-        src = replaceAll(src, PATTERN_CATALOG_CONTEXT_PACKAGE_NAME, cc.getPackageName());
-        src = replaceAll(src, PATTERN_CATALOG_CONTEXT_CLASS, cc.getUnqualifiedName());
+	    src = replaceAll(src, Tag.PACKAGE_NAME, cc.getPackageName());
+	    src = replaceAll(src, Tag.IMPORTS, imports(il));        
+        src = replaceAll(src, Tag.ROOT_PACKAGE_NAME, tm.getRootPackage());        
+        src = replaceAll(src, Tag.CATALOG_CONTEXT_PACKAGE_NAME, cc.getPackageName());
+        src = replaceAll(src, Tag.CATALOG_CONTEXT_CLASS, cc.getUnqualifiedName());
 
         StringBuffer buf = new StringBuffer();
                 
@@ -173,7 +506,7 @@ public class SourceGenerator {
             buf.append(formatSchemaFactoryMethod(e.getKey(), e.getValue()));
         }
 
-        src = replaceAll(src, FACTORY_METHOD_LIST, buf.toString());
+        src = replaceAll(src, Tag.FACTORY_METHOD_LIST, buf.toString());
 
         return src;
     }
@@ -187,6 +520,10 @@ public class SourceGenerator {
 
     private String getTemplateForCatalogContext() throws IOException {
         return read("CATALOG_CONTEXT.in");
+    }
+    
+    private String getTemplateForLiteralCatalog() throws IOException {
+        return read("LITERAL_CATALOG.in");
     }
 
 
@@ -292,9 +629,20 @@ public class SourceGenerator {
         pd = (pd == null) ? root : new File(root, pd.getPath());     
 	    return getSourceFile(pd, type.getUnqualifiedName());
 	}
+    
+    private void writeIfGenerated(File root, JavaType type, CharSequence source, Properties dest, Map<File, String> files) 
+    	throws IOException {
+		if (source == null) {
+			return;
+		}
+		
+		write(root, type, source, dest, files);
+    }
+    
 
 	private void write(File root, JavaType type, CharSequence source, Properties dest, Map<File, String> files) 
 		throws IOException {
+		
 	    
 	    String pkg = type.getPackageName();
 	    File pd = packageDir(pkg);
@@ -335,7 +683,7 @@ public class SourceGenerator {
 
 	    src = replacePackageAndImports(src, mt);
 
-	    src = replaceAll(src, PATTERN_TABLE_INTERFACE, mt.getUnqualifiedName());
+	    src = replaceAll(src, Tag.TABLE_INTERFACE, mt.getUnqualifiedName());
 
 	    {
     	    String type = createEnumType(et, "Attribute", attrs(t));
@@ -549,6 +897,10 @@ public class SourceGenerator {
 
 	    return src.toString();
 	}
+	
+	private String replaceAll(String text, Tag pattern, String replacement) {
+		return replaceAll(text, pattern.getTag(), replacement);
+	}
 
 	private String replaceAll(String text, String pattern, String replacement) {
 	    if (replacement == null) {
@@ -571,8 +923,8 @@ public class SourceGenerator {
 
         src = replacePackageAndImports(src, mt, implist);
 
-        src = replaceAll(src, PATTERN_TABLE_ABSTRACT, mt.getUnqualifiedName());
-        src = replaceAll(src, PATTERN_TABLE_INTERFACE, intf.getUnqualifiedName());
+        src = replaceAll(src, Tag.TABLE_ABSTRACT_CLASS, mt.getUnqualifiedName());
+        src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
 
         return src;
 	}
@@ -591,8 +943,8 @@ public class SourceGenerator {
 
         src = replacePackageAndImports(src, mt, implist);
 
-        src = replaceAll(src, PATTERN_TABLE_HOOK, mt.getUnqualifiedName());
-        src = replaceAll(src, "{{table-hook-base-class}}", base.getUnqualifiedName());
+        src = replaceAll(src, Tag.TABLE_HOOK_CLASS, mt.getUnqualifiedName());
+        src = replaceAll(src, Tag.TABLE_HOOK_BASE_CLASS, base.getUnqualifiedName());
 
         return src;
 	}
@@ -623,13 +975,13 @@ public class SourceGenerator {
 
         src = replacePackageAndImports(src, impl, il);
 
-        src = replaceAll(src, PATTERN_TABLE_INTERFACE, intf.getUnqualifiedName());
-        src = replaceAll(src, "{{table-impl-class}}", impl.getUnqualifiedName());
-        src = replaceAll(src, "{{table-impl-base}}", base.getUnqualifiedName());
+        src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
+        src = replaceAll(src, Tag.TABLE_IMPL_CLASS, impl.getUnqualifiedName());
+        src = replaceAll(src, Tag.TABLE_IMPL_BASE, base.getUnqualifiedName());
 
         {
             String code = accessors(t, tm, true);
-            src = replaceAll(src, "{{accessor-list}}", code);
+            src = replaceAll(src, Tag.ACCESSOR_LIST, code);
         }
 
         return src;
@@ -802,7 +1154,12 @@ public class SourceGenerator {
         sb.append(attributeName);
         sb.append(").value()");
     }
-
+    
+    /**
+     * 
+     * @param name
+     * @return
+     */
     public String name(String name) {
         int len = name.length();
         StringBuffer nb = new StringBuffer(len);
@@ -1061,8 +1418,8 @@ public class SourceGenerator {
 	}
 
 	private String replacePackageAndImports(String src, JavaType type, Collection<String> importList) {
-	    src = replaceAll(src, PATTERN_PACKAGE, type.getPackageName());
-	    src = replaceAll(src, PATTERN_IMPORTS, imports(importList));
+	    src = replaceAll(src, Tag.PACKAGE_NAME, type.getPackageName());
+	    src = replaceAll(src, Tag.IMPORTS, imports(importList));
 	    return src;
 	}
     
@@ -1094,5 +1451,4 @@ public class SourceGenerator {
 
         return sourceDirMap;
     }
-
 }

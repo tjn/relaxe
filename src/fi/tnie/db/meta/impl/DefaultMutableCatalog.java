@@ -23,8 +23,7 @@ public class DefaultMutableCatalog
 	private Environment environment;
 
 	private DefaultSchemaMap schemaMap;
-	
-	
+		
 	private DefaultMutableCatalog() {
 		super();
 	}
@@ -64,7 +63,6 @@ public class DefaultMutableCatalog
 	public boolean addSchema(DefaultMutableSchema newSchema) {		
 		return getSchemaMap().add(newSchema);		
 	}
-
 	
 	public DefaultSchemaMap getSchemaMap() {
 		if (schemaMap == null) {

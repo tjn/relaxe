@@ -132,7 +132,7 @@ public class PGCatalogFactoryTest extends DBMetaTestCase {
     @Override
 	public PGCatalogFactory factory() {
         PGImplementation e = new PGImplementation();
-        return new PGCatalogFactory(e);
+        return new PGCatalogFactory(e.getEnvironment());
     }
     
     public void testCreate() 

@@ -3,7 +3,7 @@ package {{package-name}};
 import fi.tnie.db.DefaultEntityContext;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.DefaultTableMapper;
-import fi.tnie.db.TableMapper;
+import fi.tnie.db.ent.TableMapper;
 import fi.tnie.db.ent.EntityException;
 
 {{imports}}

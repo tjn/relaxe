@@ -60,6 +60,8 @@ public interface Entity<
 	 */
 	Entity<?,?,?,?,?> get(R r);
 	
+	EntityDiff<A, R, Q, T, E> diff(E another);
+	
 	/**
 	 * Sets an entity to which this entity refers by relationship <code>r</code>
 	 * @param r

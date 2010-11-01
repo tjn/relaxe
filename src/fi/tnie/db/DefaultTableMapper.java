@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.EnumMap;
 import java.util.Map;
 
+import fi.tnie.db.ent.JavaType;
+import fi.tnie.db.ent.TableMapper;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
@@ -17,7 +19,6 @@ import fi.tnie.db.meta.Table;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.VarcharHolder;
-import fi.tnie.db.source.JavaType;
 
 public class DefaultTableMapper
 	implements TableMapper {
@@ -282,6 +283,12 @@ public class DefaultTableMapper
 	
 	public void setContextSubPackage(String sp) {
 		setContextPackage(getRootPackage() + "." + sp);
+	}
+
+	@Override
+	public JavaType literalContextType() {
+    	String p = getRootPackage();
+        return new JavaType(p, "LiteralCatalog");
 	}
 }
 

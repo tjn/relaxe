@@ -36,7 +36,7 @@ public class PGImplementation
 
 	@Override
 	public CatalogFactory catalogFactory() {	
-		return new PGCatalogFactory(this);
+		return new PGCatalogFactory(this.environment);
 	}
 
 	@Override
@@ -112,5 +112,9 @@ public class PGImplementation
 		}
 
 		return generatedKeyHandler;	
+	}
+
+	public PGEnvironment getEnvironment() {
+		return environment;
 	}
 }
