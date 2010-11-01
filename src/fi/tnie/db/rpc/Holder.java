@@ -25,4 +25,23 @@ public abstract class Holder<V extends Serializable, T extends Type<T>>
 	}
 	
 	public abstract T getType();
+	
+	public boolean equals(Holder<?, ?> another) {
+		if (another == null) {
+			throw new NullPointerException();
+		}
+		
+		if (another == this) {
+			return true;
+		}
+		
+		V a = value();
+		Object b = another.value();
+		
+		boolean result = (a == null) ? 
+				(b == null) : 
+				(b == null) ? false : a.equals(b);
+				
+		return result;
+	}
 }

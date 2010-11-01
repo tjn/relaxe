@@ -63,24 +63,32 @@ public abstract class AbstractEntityDiff<
 		return null;
 	}
 	
+	/**
+	 * TODO: Make definition clearer. 
+	 * 
+	 * @param original
+	 * @param modified
+	 * @return
+	 */
+	
 	protected Map<A, Change> attributes(E original, E modified) {
 		EntityMetaData<A, R, Q, T, ? extends E> meta = original.getMetaData();
 		EnumMap<A, Change> cm = new EnumMap<A, Change>(meta.getAttributeNameType());
 		
 		for (A a : meta.attributes()) {
-			Object o = original.get(a);			
-			Object m = modified.get(a);
+			Holder<?, ?> o = original.get(a);			
+			Holder<?, ?> m = modified.get(a);
 			
 			if ((o == null && m == null) || (o == m)) {
 				continue;
 			}
 			
-			if (o == null) {
-				cm.put(a, Change.ADDITION);
+			if (o == null || o.isNull()) {
+				cm.put(a, Change.ADDITION);				
 				continue;
 			}
 			
-			if (m == null) {
+			if (m == null || m.isNull()) {
 				cm.put(a, Change.DELETION);
 				continue;
 			}						
