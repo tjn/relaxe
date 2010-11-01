@@ -252,14 +252,14 @@ public class SourceGenerator {
 
         {
 	        JavaType lc = tm.literalContextType();
-	        CharSequence src = generateLiteralContext(lc, cat, tm, il);            
+	        CharSequence src = generateLiteralContext(lc, cat, tm, il, fm);            
 	        writeIfGenerated(getSourceDir(), lc, src, generated, gm);
         }
         
         return generated;        
     }
 
-    private CharSequence generateLiteralContext(JavaType lc, Catalog cat, TableMapper tm, List<String> il) throws IOException {
+    private CharSequence generateLiteralContext(JavaType lc, Catalog cat, TableMapper tm, List<String> il, Map<JavaType, CharSequence> fm) throws IOException {
     	   	
     	String src = getTemplateForLiteralCatalog();    	
     	    	    	
@@ -294,7 +294,11 @@ public class SourceGenerator {
 	    	String list = generateMetaMapPopulation(cat, tm);
 	    	src = replaceAll(src, Tag.META_MAP_POPULATION, list);
     	}
-    	    	
+
+    	{
+	        String list = generateFactoryMethodList(fm);
+	        src = replaceAll(src, Tag.FACTORY_METHOD_LIST, list);
+    	}   	
     	
 		return src;
 	}
@@ -500,16 +504,21 @@ public class SourceGenerator {
         src = replaceAll(src, Tag.CATALOG_CONTEXT_PACKAGE_NAME, cc.getPackageName());
         src = replaceAll(src, Tag.CATALOG_CONTEXT_CLASS, cc.getUnqualifiedName());
 
-        StringBuffer buf = new StringBuffer();
+        String list = generateFactoryMethodList(fm);
+        src = replaceAll(src, Tag.FACTORY_METHOD_LIST, list);
+
+        return src;
+    }
+
+	private String generateFactoryMethodList(
+			Map<JavaType, CharSequence> fm) {
+		StringBuffer buf = new StringBuffer();
                 
         for (Map.Entry<JavaType, CharSequence> e : fm.entrySet()) {
             buf.append(formatSchemaFactoryMethod(e.getKey(), e.getValue()));
         }
-
-        src = replaceAll(src, Tag.FACTORY_METHOD_LIST, buf.toString());
-
-        return src;
-    }
+		return buf.toString();
+	}
 
     private String formatSchemaFactoryMethod(JavaType key, CharSequence value) {
         String n = key.getUnqualifiedName();
