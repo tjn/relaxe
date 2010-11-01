@@ -29,8 +29,6 @@ import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ColumnMap;
 import fi.tnie.db.meta.DataType;
 import fi.tnie.db.meta.Table;
-import fi.tnie.db.meta.impl.DefaultColumnMap;
-import fi.tnie.db.meta.impl.DefaultMutableColumn;
 
 class CSVInsertTask
     extends CatalogTool {

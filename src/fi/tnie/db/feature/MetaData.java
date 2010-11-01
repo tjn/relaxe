@@ -11,7 +11,6 @@ import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.Schema;
-import fi.tnie.db.meta.impl.DefaultMutableColumn;
 
 public class MetaData
     extends AbstractFeature

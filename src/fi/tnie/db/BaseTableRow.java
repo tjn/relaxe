@@ -29,7 +29,6 @@ import fi.tnie.db.expr.op.Comparison;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ColumnMap;
-import fi.tnie.db.meta.impl.DefaultColumnMap;
 
 public class BaseTableRow<C extends Enum<C> & Identifiable> 
 	implements Row {

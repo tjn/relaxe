@@ -39,7 +39,6 @@ import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaElementMap;
-import fi.tnie.db.meta.impl.DefaultMutableColumn;
 import fi.tnie.dbmeta.tools.ToolException;
 
 import fi.tnie.util.io.IOHelper;

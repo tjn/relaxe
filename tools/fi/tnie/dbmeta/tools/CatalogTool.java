@@ -18,7 +18,6 @@ import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.mysql.MySQLEnvironment;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.Environment;
 import fi.tnie.util.cli.Argument;
 import fi.tnie.util.cli.CommandLine;
 import fi.tnie.util.cli.Option;

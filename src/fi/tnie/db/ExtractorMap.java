@@ -16,7 +16,6 @@ import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ColumnMap;
-import fi.tnie.db.meta.impl.DefaultColumnMap;
 import fi.tnie.db.types.ReferenceType;
 
 public class ExtractorMap<
