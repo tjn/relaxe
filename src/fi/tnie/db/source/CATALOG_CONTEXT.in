@@ -22,7 +22,8 @@ public class {{catalog-context-class}}
     public {{catalog-context-class}}(Catalog catalog, ClassLoader cl) 
         throws EntityException {
         super(catalog, cl, new DefaultTableMapper(
-        	"{{root-package-name}}", "{{package-name}}"));        
+        	{{root-package-name-literal}}, 
+        	{{package-name-literal}}));        
     }
         
 	{{factory-method-list}}

@@ -20,8 +20,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
-import javax.swing.table.TableModel;
-
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.QueryException;
@@ -30,7 +28,6 @@ import fi.tnie.db.ent.TableMapper;
 import fi.tnie.db.ent.TableMapper.Part;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.gen.LiteralCatalog.LiteralBaseTable;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
@@ -90,10 +87,16 @@ public class SourceGenerator {
 	     * Pattern which is replaced with the package name of the type being generated in template files.
 	     */
 		PACKAGE_NAME,
+
 	    /**
 	     * Pattern which is replaced with the package name of the type being generated in template files.
 	     */
-		ROOT_PACKAGE_NAME,
+		PACKAGE_NAME_LITERAL,
+		
+		/**
+	     * Pattern which is replaced with the package name of the type being generated in template files.
+	     */
+		ROOT_PACKAGE_NAME_LITERAL,
 		
 		FACTORY_METHOD_LIST,
 		/**
@@ -263,41 +266,41 @@ public class SourceGenerator {
     	   	
     	String src = getTemplateForLiteralCatalog();    	
     	    	    	
-    	src = replaceAll(src, Tag.PACKAGE_NAME, lc.getPackageName());
+    	src = replaceAllWithComment(src, Tag.PACKAGE_NAME, lc.getPackageName());
     	
     	Environment env = cat.getEnvironment();
     	String e = env.getClass().getName();
-    	src = replaceAll(src, Tag.NEW_ENVIRONMENT_EXPR, "new " + e + "()");
+    	src = replaceAllWithComment(src, Tag.NEW_ENVIRONMENT_EXPR, "new " + e + "()");
     	
     	{
 	    	String list = generateSchemaList(cat);
-	    	src = replaceAll(src, Tag.SCHEMA_ENUM_LIST, list);
+	    	src = replaceAllWithComment(src, Tag.SCHEMA_ENUM_LIST, list);
     	}
     	
     	{
 	    	String list = generateBaseTableList(cat);
-	    	src = replaceAll(src, Tag.BASE_TABLE_ENUM_LIST, list);
+	    	src = replaceAllWithComment(src, Tag.BASE_TABLE_ENUM_LIST, list);
     	}
     	
     	{
 	    	String list = generateColumnList(cat);
-	    	src = replaceAll(src, Tag.COLUMN_ENUM_LIST, list);
+	    	src = replaceAllWithComment(src, Tag.COLUMN_ENUM_LIST, list);
     	}
     	
     	{
 	    	String list = generateForeignKeyList(cat);
-	    	src = replaceAll(src, Tag.FOREIGN_KEY_ENUM_LIST, list);
+	    	src = replaceAllWithComment(src, Tag.FOREIGN_KEY_ENUM_LIST, list);
     	}
     	
     	
     	{
 	    	String list = generateMetaMapPopulation(cat, tm);
-	    	src = replaceAll(src, Tag.META_MAP_POPULATION, list);
+	    	src = replaceAllWithComment(src, Tag.META_MAP_POPULATION, list);
     	}
 
     	{
 	        String list = generateFactoryMethodList(fm);
-	        src = replaceAll(src, Tag.FACTORY_METHOD_LIST, list);
+	        src = replaceAllWithComment(src, Tag.FACTORY_METHOD_LIST, list);
     	}   	
     	
 		return src;
@@ -498,9 +501,10 @@ public class SourceGenerator {
 
 //        src = replacePackageAndImports(src, cc, il);
         
-	    src = replaceAll(src, Tag.PACKAGE_NAME, cc.getPackageName());
+        src = replaceAll(src, Tag.PACKAGE_NAME, cc.getPackageName());
+	    src = replaceAll(src, Tag.PACKAGE_NAME_LITERAL, "\"" + cc.getPackageName() + "\"");
 	    src = replaceAll(src, Tag.IMPORTS, imports(il));        
-        src = replaceAll(src, Tag.ROOT_PACKAGE_NAME, tm.getRootPackage());        
+        src = replaceAll(src, Tag.ROOT_PACKAGE_NAME_LITERAL, "\"" + tm.getRootPackage() + "\"");        
         src = replaceAll(src, Tag.CATALOG_CONTEXT_PACKAGE_NAME, cc.getPackageName());
         src = replaceAll(src, Tag.CATALOG_CONTEXT_CLASS, cc.getUnqualifiedName());
 
@@ -852,7 +856,11 @@ public class SourceGenerator {
             src = signature + ";";
         }
         else {
-            src = "public " + signature + " { return new " + impp.getQualifiedName() + "(); } ";
+            src = "public " + signature + " { " +
+            		"return " + 
+            		impp.getQualifiedName() + "." +            		
+            		itf.getUnqualifiedName() + "MetaData.getInstance().getFactory().newInstance" +
+            		"(); } ";
         }
 
         return src;
@@ -907,6 +915,10 @@ public class SourceGenerator {
 	    return src.toString();
 	}
 	
+	private String replaceAllWithComment(String text, Tag pattern, String replacement) {
+		replacement = "// " + pattern.getTag() + "\n" + replacement;
+		return replaceAll(text, pattern, replacement);
+	}
 	private String replaceAll(String text, Tag pattern, String replacement) {
 		return replaceAll(text, pattern.getTag(), replacement);
 	}

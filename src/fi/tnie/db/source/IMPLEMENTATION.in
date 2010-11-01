@@ -2,7 +2,6 @@ package {{package-name}};
 
 import fi.tnie.db.ent.DefaultEntityMetaData;
 import fi.tnie.db.ent.EntityFactory;
-import fi.tnie.db.ent.EntityException;
 {{imports}}
 
 public class {{table-impl-class}}
@@ -17,20 +16,16 @@ public class {{table-impl-class}}
         {{table-interface}}.Type,
         {{table-interface}}> {
 
-        private static {{table-interface}}MetaData instance = new {{table-interface}}MetaData();
+        private static final {{table-interface}}MetaData instance = new {{table-interface}}MetaData();
+        private final Factory factory = new Factory();
     
         public {{table-interface}}MetaData() {
             super({{table-interface}}.Attribute.class, {{table-interface}}.Reference.class, {{table-interface}}.Query.class);
         }
         
         @Override
-        public EntityFactory<{{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Query, {{table-interface}}.Type, {{table-interface}}> getFactory() {          
-            return new EntityFactory<{{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Query, {{table-interface}}.Type, {{table-interface}}>() {
-                @Override
-                public {{table-interface}} newInstance() {
-                        return new {{table-impl-class}}();
-                    }       
-            };
+        public Factory getFactory() {
+			return factory;       
         }
         
         public static {{table-interface}}MetaData getInstance() {
@@ -54,6 +49,14 @@ public class {{table-impl-class}}
     @Override       
     public {{table-interface}}MetaData getMetaData() {      
         return {{table-interface}}MetaData.instance;
+    }
+    
+    public static class Factory
+    	implements EntityFactory<{{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Query, {{table-interface}}.Type, {{table-interface}}> {
+        @Override
+        public {{table-impl-base}} newInstance() {
+           return new {{table-impl-class}}();
+        }       
     }
     
     @Override       
