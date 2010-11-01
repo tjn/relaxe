@@ -11,7 +11,7 @@ MKDIR %GENSRC% 2> NULL
 SET JDBC_CONFIG=%ROOT%\pg.properties
 SET JDBC_URL=jdbc:postgresql:test
 SET ENV=fi.tnie.db.env.pg.PGImplementation
-SET ROOT_PACKAGE=fi.tnie.db.gen
+SET ROOT_PACKAGE=fi.tnie.db.gen.ent
 SET CC_PACKAGE=fi.tnie.db.genctx
 
 REM echo %JARDIR%
