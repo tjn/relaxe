@@ -24,47 +24,6 @@ public class DefaultTableExpression
 	
 	public DefaultTableExpression() {
 	}
-				
-//	private static Logger logger = Logger.getLogger(DefaultTableExpression.class);
-	
-//	public String generate(SimpleQueryContext ctx) {
-//		StringBuffer dest = new StringBuffer();		
-//		generate(ctx, dest);		
-//		return dest.toString();
-//	}
-					
-//	@Override
-//	public void generate(SimpleQueryContext qc, StringBuffer dest) {
-//				
-//		if (getSelect() == null) {
-//			throw new NullPointerException("Select -clause must not be null");
-//		}
-//		
-//		if (getFrom() == null) {
-//			throw new NullPointerException("From -clause must not be null");
-//		}
-//		
-//		try {
-////			for (AbstractTableReference r : refs) {				
-////				qc.start(r, r.getCorrelationNamePrefix());
-////			}
-//						
-//			getSelect().generate(qc, dest);		
-//			getFrom().generate(qc, dest);
-//			generate(getWhere(), qc, dest);			
-//			generate(getHaving(), qc, dest);
-//			generate(getOrderBy(), qc, dest);
-//		}
-//		finally {
-////			endAll(qc, refs);
-//		}
-//	}
-	
-//	private void generate(Element e, SimpleQueryContext qc, StringBuffer dest) {
-//		if (e != null) {
-//			e.generate(qc, dest);
-//		}
-//	}
 	
 	private void traverse(Element e, VisitContext vc, ElementVisitor v) {
 		if (e != null) {
