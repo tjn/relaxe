@@ -35,19 +35,20 @@ public class KeyGenerationInfo
       try {                        
           String q = getQuery();             
           
+          System.out.println("statement: " + q);
+          
           Connection c = getConnection();
           c.setAutoCommit(false);
           
           Statement st = c.createStatement();          
           
-          int uc = st.executeUpdate(q, Statement.RETURN_GENERATED_KEYS);
-          
-          System.out.println("update-count: " + uc);
-          
-          ResultSet rs = st.getGeneratedKeys();
-          
+          int uc = st.executeUpdate(q, Statement.RETURN_GENERATED_KEYS);          
+          System.out.println("update-count: " + uc);          
+          ResultSet rs = st.getGeneratedKeys();          
           ResultSetWriter rw = new ResultSetWriter(System.out, false);
-                              
+          rw.apply(rs);                              
+          
+          c.commit();
           rs.close();
       }
       catch (Exception e) {
