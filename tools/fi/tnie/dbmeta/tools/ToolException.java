@@ -8,7 +8,12 @@ import java.sql.SQLException;
 
 public class ToolException extends Exception {
     
-    private int exitCode;    
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 283736356679234853L;
+
+	private int exitCode;    
     
     public static final int GENERAL_ERROR = -1;
     public static final int IO_ERROR = -2;    
@@ -46,6 +51,5 @@ public class ToolException extends Exception {
 
     private void setExitCode(int exitCode) {
         this.exitCode = exitCode;
-    }
-    
+    }    
 }

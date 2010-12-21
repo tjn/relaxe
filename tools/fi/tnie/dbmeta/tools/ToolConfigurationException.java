@@ -4,7 +4,12 @@
 package fi.tnie.dbmeta.tools;
 
 public class ToolConfigurationException extends ToolException {
-    public ToolConfigurationException(String msg) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6619050162462367830L;
+
+	public ToolConfigurationException(String msg) {
         this(msg, null);
     }
 
