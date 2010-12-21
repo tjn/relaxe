@@ -5,6 +5,7 @@ package fi.tnie.dbmeta.tools;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -17,7 +18,7 @@ import fi.tnie.util.io.IOHelper;
 
 public class KeyGenerationInfo
     extends CatalogTool {
-    
+    	
     public static final Argument QUERY_FILE = new Argument("query-file", 1, 1);
     private String query;    
     
@@ -59,23 +60,27 @@ public class KeyGenerationInfo
     protected void init(CommandLine cl) 
         throws ToolException {     
         super.init(cl);
-        
+                        
         String qf = cl.value(QUERY_FILE);
-        
-        if (qf == null) {
-            throw new ToolException("no query file specified");            
-        }
+        String q = null;
         
         try {
-            String q = new IOHelper().read(new File(qf));
-            setQuery(q);
+	        IOHelper ih = new IOHelper();	    
+	        
+	        if (qf == null) {
+	            // read from stdin:        
+	        	String name = Charset.defaultCharset().name();	        	
+	            q = ih.read(System.in, name, 4096);            
+	        }
+	        else {
+	            q = ih.read(new File(qf));	            
+	        }
         } 
         catch (IOException e) {         
-            e.printStackTrace();
+            throw new ToolException(e);
         }
         
-        
-        
+        setQuery(q);        
     }    
         
     @Override
