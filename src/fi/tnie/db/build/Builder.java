@@ -261,6 +261,10 @@ public class Builder
             logger().error(e.getMessage(), e);
             throw new ToolException(e);
         }
+        catch (Throwable e) {
+            logger().error(e.getMessage(), e);
+            throw new ToolException(e.getMessage(), e);
+        }        
         finally {
             
         }
