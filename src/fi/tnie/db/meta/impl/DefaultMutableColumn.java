@@ -29,8 +29,8 @@ public class DefaultMutableColumn
 	private DataTypeImpl dataType;	
 	private Set<DefaultForeignKey> references;	
 	private ColumnName columnName;	
-	private int ordinalPosition;
-	
+	private int ordinalPosition;	
+			
 	/**
 	 * Same as DatabaseMetaData.columnNoNulls
 	 */
@@ -88,7 +88,6 @@ public class DefaultMutableColumn
 		return dataType;
 	}
 
-
 	public DefaultMutableTable getTable() {
 		return table;
 	}
@@ -124,7 +123,7 @@ public class DefaultMutableColumn
 	}
 
 	@Override
-	public boolean isPrimaryKeyColumn() {
+	public boolean isPrimaryKeyColumn() {				
 		DefaultMutableTable t = getTable();
 		BaseTable b = (t == null) ? null : t.asBaseTable();
 		PrimaryKey pk = (b == null) ? null : b.getPrimaryKey();							
@@ -177,11 +176,5 @@ public class DefaultMutableColumn
     public boolean isDefinitelyNotNullable() {
         return definitelyNotNullable;
     }
-	
-//	@Override
-//	public Boolean isNullable() {	 
-//	    return this.nullable;
-//	}
-	
 	
 }

@@ -43,6 +43,11 @@ public class DefaultPrimaryKey
 		table.setPrimaryKey(this);
 	}
 	
+	public DefaultPrimaryKey(DefaultMutableBaseTable table, Identifier name, List<DefaultMutableColumn> columnList) {
+		this(table, name);
+		setColumnList(columnList);
+	}
+	
 	public void setColumnList(List<DefaultMutableColumn> columnList) {		
 		if (columnList == null) {
 			throw new NullPointerException("columnList must not be null");
@@ -56,35 +61,6 @@ public class DefaultPrimaryKey
 			getColumnMap().add(c);
 		}
 	}
-	
-	
-//	public void setColumnList(List<DefaultMutableColumn> columnMap) {
-//		if (columnMap == null) {
-//			throw new NullPointerException("columnMap must not be null");
-//		}
-//		
-//		if (columnMap.isEmpty()) {
-//			throw new IllegalArgumentException("columnMap must not be empty");
-//		}
-//						
-//		if (this.table != null) {
-//			this.table.setPrimaryKey(null);
-//			this.table = null;
-//		}
-//						
-//		for (DefaultMutableColumn c : columnMap) {
-//			if (this.table == null) {
-//				this.table = (DefaultMutableBaseTable) c.getParentNode();				
-//			}
-//			else {				
-//				ensureSameTable(c.getParentNode(), this.table, 
-//						"all the columns of the multi-column primary key must originate from the same table");
-//			}						
-//		}
-//		
-//		this.table.setPrimaryKey(this);
-//		this.columnList = new ArrayList<DefaultMutableColumn>(columnMap);
-//	}
 	
 	@Override
 	public List<? extends Column> columns() {

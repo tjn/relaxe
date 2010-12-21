@@ -34,6 +34,7 @@ import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.DataType;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaElement;
 import fi.tnie.db.meta.SchemaElementMap;
@@ -107,7 +108,7 @@ public class SourceGenerator {
 		SCHEMA_ENUM_LIST,
 		BASE_TABLE_ENUM_LIST,
 		VIEW_ENUM_LIST,
-		COLUMN_ENUM_LIST,
+		COLUMN_ENUM_LIST,		
 		FOREIGN_KEY_ENUM_LIST,
 		PRIMARY_KEY_ENUM_LIST,
 		META_MAP_POPULATION,
@@ -132,51 +133,6 @@ public class SourceGenerator {
 			return tag;
 		}		
 	}
-
-//    private static final String PATTERN_TABLE_INTERFACE = "{{table-interface}}";
-
-//    private static final String PATTERN_TABLE_ABSTRACT = "{{table-abstract-class}}";
-
-//    /**
-//     * Pattern which is replaced with the simple name of the hook class in template files.
-//     */
-//    private static final String PATTERN_TABLE_HOOK = "{{table-hook-class}}";
-
-//    /**
-//     * Pattern which is replaced with the simple name of the catalog context class in template files.
-//     */
-//    private static final String PATTERN_CATALOG_CONTEXT_CLASS = "{{catalog-context-class}}";
-    
-//    /**
-//     * Pattern which is replaced with the simple name of the catalog context class in template files.
-//     */
-//    private static final String PATTERN_CATALOG_CONTEXT_PACKAGE_NAME = "{{catalog-context-package-name}}";    
-//    
-//    /**
-//     * Pattern which is replaced with the package name of the type being generated in template files.
-//     */
-//    private static final String PATTERN_PACKAGE = "{{package-name}}";
-//    
-//    private static final String PATTERN_ROOT_PACKAGE = "{{root-package-name}}";
-//    /**
-//     * Pattern which is replaced with the simple name of the hook class in template files.
-//     */
-//    private static final String FACTORY_METHOD_LIST = "{{factory-method-list}}";
-
-//    /**
-//     * Pattern which is replaced with the list of imports.
-//     */
-//    private static final String PATTERN_IMPORTS = "{{imports}}";     
-
-    
-//    /**
-//     * Pattern which is replaced with the list of imports.
-//     */
-//    private static final String PATTERN_NEW_ENVIRONMENT_EXPR = "{{new-environment-expr}}";     
-    
-    /**
-     * TODO: add constants for all patterns
-     */
 
     /**
      * TODO:
@@ -221,13 +177,13 @@ public class SourceGenerator {
 			t.equals("at") || t.equals("for");
 	}
 
-	public static Logger logger() {
+	private static Logger logger() {
 		return SourceGenerator.logger;
 	}
 	
     public Properties run(Connection c, Catalog cat, TableMapper tm)
         throws QueryException, IOException {
-        
+    	
         Map<File, String> gm = new HashMap<File, String>();
         Properties generated = new Properties();
          
@@ -246,8 +202,8 @@ public class SourceGenerator {
 //            }
 //        }    
 
-
         {
+        	
 	        JavaType cc = tm.catalogContextType();
 	        CharSequence src = generateContext(cc, tm, il, fm);            
 	        write(getSourceDir(), cc, src, generated, gm);
@@ -255,15 +211,17 @@ public class SourceGenerator {
 
         {
 	        JavaType lc = tm.literalContextType();
-	        CharSequence src = generateLiteralContext(lc, cat, tm, il, fm);            
+	        CharSequence src = generateLiteralContext(lc, cat, tm, il, fm);
+	        logger().debug("generated lit ctx: src={" + src + "}");
 	        writeIfGenerated(getSourceDir(), lc, src, generated, gm);
         }
         
-        return generated;        
+        return generated;
     }
 
     private CharSequence generateLiteralContext(JavaType lc, Catalog cat, TableMapper tm, List<String> il, Map<JavaType, CharSequence> fm) throws IOException {
     	   	
+    	logger().debug("generateLiteralContext - enter");
     	String src = getTemplateForLiteralCatalog();    	
     	    	    	
     	src = replaceAllWithComment(src, Tag.PACKAGE_NAME, lc.getPackageName());
@@ -287,6 +245,11 @@ public class SourceGenerator {
 	    	src = replaceAllWithComment(src, Tag.COLUMN_ENUM_LIST, list);
     	}
     	
+    	
+    	{
+	    	String list = generatePrimaryKeyList(cat);
+	    	src = replaceAllWithComment(src, Tag.PRIMARY_KEY_ENUM_LIST, list);
+    	}    	
     	{
 	    	String list = generateForeignKeyList(cat);
 	    	src = replaceAllWithComment(src, Tag.FOREIGN_KEY_ENUM_LIST, list);
@@ -302,6 +265,8 @@ public class SourceGenerator {
 	        String list = generateFactoryMethodList(fm);
 	        src = replaceAllWithComment(src, Tag.FACTORY_METHOD_LIST, list);
     	}   	
+    	
+    	logger().debug("generateLiteralContext - exit");
     	
 		return src;
 	}
@@ -368,6 +333,42 @@ public class SourceGenerator {
 		
 		return buf.toString();	
 	}
+	
+	private String generatePrimaryKeyList(Catalog cat) {
+		StringBuffer buf = new StringBuffer();
+
+		
+		for (Schema s : cat.schemas().values()) {
+			for (BaseTable t : s.baseTables().values()) {
+				PrimaryKey pk = t.getPrimaryKey();
+				
+				if (pk == null) {
+					logger().warn("table without primary key: " + t.getQualifiedName());
+					continue;
+				}
+								
+				String n = primaryKeyEnumeratedName(pk);
+				String tn = tableEnumeratedName(t);
+				Identifier un = pk.getUnqualifiedName();
+								
+				buf.append(n);
+				buf.append("(LiteralBaseTable.");
+				buf.append(tn);
+				buf.append(", \"");
+				buf.append(un.getName());
+				buf.append("\"");
+				
+				for (Column c : pk.columns()) {
+					buf.append(", LiteralColumn.");
+					buf.append(columnEnumeratedName(t, c));
+				}
+				
+				buf.append("),\n");									
+			}				
+		}		
+		
+		return buf.toString();	
+	}
 
 	private String generateColumnList(Catalog cat) {
 		StringBuffer buf = new StringBuffer();
@@ -383,7 +384,7 @@ public class SourceGenerator {
 					Identifier un = c.getUnqualifiedName();
 					
 					// TODO: add 'autoinc' -info etc
-														
+					
 					buf.append(cn);
 					buf.append("(");
 					buf.append(te);
@@ -472,6 +473,10 @@ public class SourceGenerator {
 		return enumeratedName(k);
 	}
 	
+	private String primaryKeyEnumeratedName(PrimaryKey k) {		
+		return enumeratedName(k);
+	}
+	
 	private String enumeratedName(SchemaElement e) {
 		StringBuffer buf = new StringBuffer();
 		buf.append(e.getSchema().getUnqualifiedName().getName());
@@ -497,6 +502,7 @@ public class SourceGenerator {
 	private CharSequence generateContext(JavaType cc, TableMapper tm,
             Collection<String> il, Map<JavaType, CharSequence> fm) throws IOException {
 
+		logger().debug("generateContext - enter");
         String src = getTemplateForCatalogContext();
 
 //        src = replacePackageAndImports(src, cc, il);
@@ -510,6 +516,8 @@ public class SourceGenerator {
 
         String list = generateFactoryMethodList(fm);
         src = replaceAll(src, Tag.FACTORY_METHOD_LIST, list);
+        
+        logger().debug("generateContext - exit");
 
         return src;
     }
@@ -645,6 +653,7 @@ public class SourceGenerator {
     
     private void writeIfGenerated(File root, JavaType type, CharSequence source, Properties dest, Map<File, String> files) 
     	throws IOException {
+    	
 		if (source == null) {
 			return;
 		}

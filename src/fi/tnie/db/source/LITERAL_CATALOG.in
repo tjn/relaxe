@@ -3,6 +3,7 @@ package {{package-name}};
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.EnumMap;
 
 import fi.tnie.db.ent.EntityException;
@@ -20,17 +21,19 @@ import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.ColumnMap;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaElementMap;
 import fi.tnie.db.meta.SchemaMap;
 import fi.tnie.db.meta.Table;
 import fi.tnie.db.meta.impl.DataTypeImpl;
-import fi.tnie.db.meta.impl.DefaultColumnMap;
 import fi.tnie.db.meta.impl.DefaultMutableBaseTable;
 import fi.tnie.db.meta.impl.DefaultMutableCatalog;
 import fi.tnie.db.meta.impl.DefaultMutableColumn;
 import fi.tnie.db.meta.impl.DefaultMutableSchema;
 import fi.tnie.db.meta.impl.DefaultForeignKey;
+import fi.tnie.db.meta.impl.DefaultPrimaryKey;
+import fi.tnie.db.meta.impl.DefaultMutableTable;
 
 public class LiteralCatalog	
 	implements EntityContext, Catalog {
@@ -39,6 +42,8 @@ public class LiteralCatalog
 	private Environment environment;	
 	private DefaultMutableCatalog content;
 	private EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?, ?>> metaMap;
+	
+	private Map<LiteralTable, DefaultMutableTable> mutableTableMap;
 	
 	private void setName(Identifier name) {
 		this.name = name;
@@ -89,7 +94,7 @@ public class LiteralCatalog
 		// populate();
 	}
 
-	private void populate() throws EntityException {
+	private void populate() throws EntityException {			
 		for (LiteralSchema s : LiteralSchema.values()) {			
 			s.bind();
 		}
@@ -99,6 +104,10 @@ public class LiteralCatalog
 		}
 		
 		for (LiteralColumn s : LiteralColumn.values()) {			
+			s.bind();
+		}
+		
+		for (LiteralPrimaryKey s : LiteralPrimaryKey.values()) {			
 			s.bind();
 		}
 		
@@ -132,6 +141,7 @@ public class LiteralCatalog
 		meta.bind(t.getTable());
 		mm.put(t, meta);
 	}
+	
 
 	public enum LiteralSchema implements Schema {
 //schema-enum-list//
@@ -145,7 +155,7 @@ public class LiteralCatalog
 			this.name = name;
 		}
 		
-		public void bind() {
+		private void bind() {
 			LiteralCatalog cat = getInstance();
 			Identifier s = cat.getEnvironment().createIdentifier(this.name);
 			this.schema = new DefaultMutableSchema(cat.getContent(), s);
@@ -193,7 +203,7 @@ public class LiteralCatalog
 	}
 	
 	public enum LiteralBaseTable		
-		implements BaseTable {		
+		implements BaseTable, LiteralTable {		
 {{base-table-enum-list}}
 		;		
 		
@@ -206,11 +216,12 @@ public class LiteralCatalog
 			this.schema = s;			
 		}
 		
-		public void bind() {
+		private void bind() {
 			LiteralCatalog cat = getInstance();
 			DefaultMutableSchema ms = this.schema.getMutableSchema();
 			Identifier t = cat.getEnvironment().createIdentifier(this.name);			
-			this.table = new DefaultMutableBaseTable(ms, t);
+			this.table = new DefaultMutableBaseTable(ms, t);			
+			getInstance().getMutableTableMap().put(this, this.table);			
 		}
 
 		@Override
@@ -229,7 +240,7 @@ public class LiteralCatalog
 		}
 
 		@Override
-		public DefaultColumnMap columnMap() {
+		public ColumnMap columnMap() {
 			return this.table.columnMap();
 		}
 
@@ -274,7 +285,7 @@ public class LiteralCatalog
 		}
 
 		private DefaultMutableBaseTable getTable() {
-			return table;
+			return this.table;
 		};
 	}
 	
@@ -283,20 +294,21 @@ public class LiteralCatalog
 {{column-enum-list}}		
 		;
 		
-		private LiteralBaseTable table;
+		private LiteralTable table;		
 		private DefaultMutableColumn column;
 		private String name;
 		private DataTypeImpl type;
 				
-		LiteralColumn(LiteralBaseTable table, String name, DataTypeImpl type) {
+		LiteralColumn(LiteralTable table, String name, DataTypeImpl type) {
 			this.name = name;
 			this.table = table;
 			this.type = type;
 		}
 		
-		public void bind () {
-			Identifier n = getInstance().env().createIdentifier(this.name);						
-			this.column = new DefaultMutableColumn(table.getTable(), n, this.type);			
+		private void bind () {
+			Identifier n = getInstance().env().createIdentifier(this.name);
+			DefaultMutableTable mt = getInstance().getMutableTableMap().get(this.table);									
+			this.column = new DefaultMutableColumn(mt, n, this.type);			
 		}
 
 		@Override
@@ -427,6 +439,94 @@ public class LiteralCatalog
 		}
 	}
 	
+	
+	public enum LiteralPrimaryKey
+		implements PrimaryKey {
+//primary-key-enum-list//
+{{primary-key-enum-list}}			
+		;
+		
+		private String name;
+		private LiteralBaseTable table;
+		private DefaultPrimaryKey primaryKey; 
+		private LiteralColumn[] columnList;
+		
+		/**
+		 * @param name
+		 * @param cols An array containing column pairs.
+		 */
+		LiteralPrimaryKey(LiteralBaseTable table, String name, LiteralColumn ... cols) {
+			if (cols == null) {
+				throw new NullPointerException();
+			}
+			
+			if (cols.length < 1) {
+				throw new IllegalArgumentException("size of 'lac' should at least '1' here but was: " + cols.length);
+			}
+			
+			this.name = name;
+			this.table = table;
+			this.columnList = cols;						
+		}
+
+		private void bind() {			
+			DefaultMutableBaseTable table = this.table.getTable();			
+			DefaultMutableSchema ms = table.getMutableSchema();
+			Identifier pkname = ms.getCatalog().getEnvironment().createIdentifier(name);
+			
+			List<DefaultMutableColumn> cl = new ArrayList<DefaultMutableColumn>(this.columnList.length); 
+			
+			for (LiteralColumn c : this.columnList) {
+				cl.add(c.getColumn());
+			}			
+										
+			this.primaryKey = new DefaultPrimaryKey(table, pkname, cl);
+		}
+
+
+		@Override
+		public Column getColumn(Identifier name) {
+			return this.primaryKey.getColumn(name);
+		}
+
+		@Override
+		public List<? extends Column> columns() {		
+			return this.primaryKey.columns();
+		}
+
+		@Override
+		public BaseTable getTable() {
+			return this.primaryKey.getTable();
+		}
+
+
+		@Override
+		public SchemaElementName getName() {
+			return this.primaryKey.getName();
+		}
+
+		@Override
+		public String getQualifiedName() {
+			return this.primaryKey.getQualifiedName();
+		}
+
+		@Override
+		public Schema getSchema() {
+			return this.primaryKey.getSchema();
+		}
+
+		@Override
+		public Identifier getUnqualifiedName() {
+			return this.primaryKey.getUnqualifiedName();
+		}
+		
+		@Override
+		public Type getType() {
+			return this.primaryKey.getType();
+		}
+		
+	}	
+	
 	@Override
 	public Identifier getName() {
 		return this.name;
@@ -476,5 +576,22 @@ public class LiteralCatalog
 		return metaMap;
 	}
 	
-	{{factory-method-list}}	
+	private interface LiteralTable {		
+	}
+	
+	
+	private Map<LiteralTable, DefaultMutableTable> getMutableTableMap() {
+		if (mutableTableMap == null) {
+			mutableTableMap = new HashMap<LiteralTable, DefaultMutableTable>();		
+		}
+	
+		return mutableTableMap;
+	} 	
+	
+	
+	{{factory-method-list}}
+	
+	
+	
+			
 }
