@@ -52,6 +52,12 @@ public class Select
 		return e;
 	}
 	
+	public TableColumnExpr add(TableColumnExpr expr) {
+		ValueExpression ve = expr;
+		add(ve);
+		return expr;
+	}
+	
 	public ValueElement add(ValueExpression expr) {
 		return add(expr, (ColumnName) null);
 	}
