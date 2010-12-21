@@ -7,15 +7,19 @@ package fi.tnie.db.ent;
 import java.util.HashSet;
 import java.util.Set;
 
+import fi.tnie.db.rpc.Holder;
 import fi.tnie.db.types.ReferenceType;
+import fi.tnie.db.expr.AbstractTableReference;
 import fi.tnie.db.expr.DefaultTableExpression;
 import fi.tnie.db.expr.ElementList;
+import fi.tnie.db.expr.ForeignKeyJoinCondition;
 import fi.tnie.db.expr.From;
 import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.SelectListElement;
 import fi.tnie.db.expr.ValueElement;
 import fi.tnie.db.expr.TableColumnExpr;
 import fi.tnie.db.expr.TableReference;
+import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 
@@ -37,7 +41,105 @@ public class DefaultEntityQuery<
 	public DefaultEntityQuery(EntityMetaData<A, R, Q, T, ? extends E> meta) {
 		super();				
 		this.meta = meta;
-	}	
+	}
+	
+	
+	public DefaultEntityQuery(E template) 
+		throws CyclicTemplateException {
+		super();
+		
+		if (template == null) {
+			throw new NullPointerException();
+		}
+		
+		EntityMetaData<A, R, Q, T, ? extends E> meta = template.getMetaData();		
+		BaseTable table = meta.getBaseTable();
+		
+		if (table == null) {
+			throw new NullPointerException("EntityMetaData.getBaseTable()");
+		}
+		
+		this.meta = meta;
+		
+		DefaultTableExpression q = new DefaultTableExpression();
+		HashSet<Entity<?,?,?,?,?>> visited = new HashSet<Entity<?,?,?,?,?>>();
+		
+		AbstractTableReference tref = fromTemplate(template, null, null, q, visited);		
+		q.setFrom(new From(tref));
+				
+		this.query = q;
+	}
+
+
+	private 
+	<
+		TA extends Enum<TA> & Identifiable,
+		TR extends Enum<TR> & Identifiable
+	>
+	AbstractTableReference fromTemplate(Entity<TA,TR,?,?,?> template, AbstractTableReference qref, ForeignKey fk, DefaultTableExpression q, Set<Entity<?,?,?,?,?>> visited) 
+		throws CyclicTemplateException		
+	{		
+		if (visited.contains(template)) {
+			throw new CyclicTemplateException(template);
+		}
+		else {
+			visited.add(template);
+		}
+		
+		
+		Select s = q.getSelect();
+		
+		if (s == null) {
+			q.setSelect(s = new Select());
+		}
+		
+		EntityMetaData<TA, TR, ?, ?, ?> meta = template.getMetaData();
+		
+		TableReference tref = null;
+		
+		if (qref == null) {
+			tref = getTableRef();
+			qref = tref;  
+		}
+		else {
+			tref = new TableReference(meta.getBaseTable());
+			ForeignKeyJoinCondition jc = new ForeignKeyJoinCondition(fk, qref, tref);			
+			qref = qref.leftJoin(tref, jc);
+		}
+		
+		Set<TA> as = meta.attributes();
+		
+		for (TA a : as) {
+			Holder<?, ?> h = template.get(a);
+			
+			if (h != null) {
+				Column c = meta.getColumn(a);
+				
+				if (c != null) {				
+					s.add(new TableColumnExpr(tref, c));
+				}
+			}
+		}		
+				
+		Set<TR> rs = meta.relationships();
+		
+		for (TR r : rs) {
+			Entity<?, ?, ?, ?, ?> e = template.get(r);
+			
+			if (e != null) {
+				fk = meta.getForeignKey(r);
+				
+				if (fk == null) {
+					throw new NullPointerException();
+				}
+				
+				qref = fromTemplate(e, qref, fk, q, visited);
+			}
+		}
+		
+		return qref;
+	}
+	
 	
 	public DefaultTableExpression getQuery() {		
 		if (query == null) {
