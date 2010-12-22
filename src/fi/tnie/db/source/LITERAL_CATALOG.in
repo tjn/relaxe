@@ -44,6 +44,37 @@ public class LiteralCatalog
 	private EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?, ?>> metaMap;
 	
 	private Map<LiteralTable, DefaultMutableTable> mutableTableMap;
+	private Map<LiteralColumn, DefaultMutableColumn> mutableColumnMap;		
+			
+	public interface Initializable {
+		public void init();
+	}
+		
+	public static class ColumnInitializer {	
+		private String name; 
+		private LiteralTable table;
+		private DataTypeImpl type;
+					
+		public ColumnInitializer(LiteralTable table, String name, DataTypeImpl type) {
+			this.table = table;
+			this.name = name;
+			this.type = type;
+		}
+		
+		public Column init(LiteralColumn c) {
+			LiteralCatalog cat = LiteralCatalog.getInstance();			
+			Identifier n = cat.env().createIdentifier(this.name);
+			DefaultMutableTable mt = cat.getMutableTableMap().get(this.table);						
+			DefaultMutableColumn mc = (mt == null) ? null : new DefaultMutableColumn(mt, n, this.type);
+			
+			if (mc != null) {
+				cat.getMutableColumnMap().put(c, mc);
+			}			
+			
+			return mc;
+		}
+	}
+		
 	
 	private void setName(Identifier name) {
 		this.name = name;
@@ -103,9 +134,9 @@ public class LiteralCatalog
 			s.bind();
 		}
 		
-		for (LiteralColumn s : LiteralColumn.values()) {			
-			s.bind();
-		}
+//		for (LiteralColumn s : LiteralColumn.values()) {			
+//			s.bind();
+//		}
 		
 		for (LiteralPrimaryKey s : LiteralPrimaryKey.values()) {			
 			s.bind();
@@ -117,6 +148,9 @@ public class LiteralCatalog
 		
 		// populates meta-map
 		getMetaMap();
+
+ 		{{init-column-enum-list}}
+		
  
 //		According JLS, 
 //		"The direct superclass of an enum type named E is Enum<E>. 
@@ -289,7 +323,7 @@ public class LiteralCatalog
 		};
 	}
 	
-	public enum LiteralColumn
+	public enum LiteralCatalogColumn
 		implements Column {
 {{column-enum-list}}		
 		;
@@ -299,7 +333,7 @@ public class LiteralCatalog
 		private String name;
 		private DataTypeImpl type;
 				
-		LiteralColumn(LiteralTable table, String name, DataTypeImpl type) {
+		LiteralCatalogColumn(LiteralTable table, String name, DataTypeImpl type) {
 			this.name = name;
 			this.table = table;
 			this.type = type;
@@ -355,7 +389,7 @@ public class LiteralCatalog
 		private String name;
 		private LiteralSchema schema;
 		private DefaultForeignKey foreignKey; 
-		private LiteralColumn[] columnList;
+		private LiteralCatalogColumn[] columnList;
 		
 		/**
 		 * @param name
@@ -364,7 +398,7 @@ public class LiteralCatalog
 		 * [2] => [3]
 		 */
 		// TODO: add update/delete action
-		LiteralForeignKey(LiteralSchema ls, String name, LiteralColumn ... lac) {
+		LiteralForeignKey(LiteralSchema ls, String name, LiteralCatalogColumn ... lac) {
 			if (lac == null) {
 				throw new NullPointerException();
 			}
@@ -385,7 +419,7 @@ public class LiteralCatalog
 						
 			List<DefaultForeignKey.Pair> pl = new ArrayList<DefaultForeignKey.Pair>();
 			
-			LiteralColumn[] lac = this.columnList;
+			LiteralCatalogColumn[] lac = this.columnList;
 			
 			for (int i = 0; i < (lac.length - 1); i += 2) {
 				pl.add(new DefaultForeignKey.Pair(
@@ -449,13 +483,13 @@ public class LiteralCatalog
 		private String name;
 		private LiteralBaseTable table;
 		private DefaultPrimaryKey primaryKey; 
-		private LiteralColumn[] columnList;
+		private LiteralCatalogColumn[] columnList;
 		
 		/**
 		 * @param name
 		 * @param cols An array containing column pairs.
 		 */
-		LiteralPrimaryKey(LiteralBaseTable table, String name, LiteralColumn ... cols) {
+		LiteralPrimaryKey(LiteralBaseTable table, String name, LiteralCatalogColumn ... cols) {
 			if (cols == null) {
 				throw new NullPointerException();
 			}
@@ -476,7 +510,7 @@ public class LiteralCatalog
 			
 			List<DefaultMutableColumn> cl = new ArrayList<DefaultMutableColumn>(this.columnList.length); 
 			
-			for (LiteralColumn c : this.columnList) {
+			for (LiteralCatalogColumn c : this.columnList) {
 				cl.add(c.getColumn());
 			}			
 										
@@ -575,9 +609,20 @@ public class LiteralCatalog
 
 		return metaMap;
 	}
-	
+
+	/**
+		tagging interface
+	*/	
 	private interface LiteralTable {		
 	}
+
+	/**
+		tagging interface
+	*/
+	public interface LiteralColumn
+		extends Column {		
+	}	
+	
 	
 	
 	private Map<LiteralTable, DefaultMutableTable> getMutableTableMap() {
@@ -588,10 +633,17 @@ public class LiteralCatalog
 		return mutableTableMap;
 	} 	
 	
+	private Map<LiteralColumn, DefaultMutableColumn> getMutableColumnMap() {
+		if (mutableColumnMap == null) {
+			mutableColumnMap = new HashMap<LiteralColumn, DefaultMutableColumn>();			
+		}
+
+		return mutableColumnMap;
+	}
+	
 	
 	{{factory-method-list}}
-	
-	
-	
+		
+	/* {{table-column-enum-list}} */
 			
 }

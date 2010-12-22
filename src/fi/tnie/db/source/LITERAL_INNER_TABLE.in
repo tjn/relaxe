@@ -1,0 +1,50 @@
+
+public enum Literal{{schema-type-name}}{{table-interface}}
+	implements Column, LiteralCatalog.Initializable {
+	
+{{column-enum-list}}
+			
+	private Column column;
+	private LiteralCatalog.ColumnInitializer initializer;
+				
+	Literal{{schema-type-name}}{{table-interface}}(LiteralCatalog.ColumnInitializer ci) {
+		this.initializer = ci;		
+	}
+	
+	public void init() {
+		if (this.column == null) {
+			this.column = this.initializer.init();
+			this.initializer = null;
+		}			
+	}
+
+	@Override
+	public ColumnName getColumnName() {
+		return column.getColumnName();
+	}
+
+	@Override
+	public DataType getDataType() {
+		return column.getDataType();
+	}
+
+	@Override
+	public Boolean isAutoIncrement() {
+		return column.isAutoIncrement();
+	}
+
+	@Override
+	public boolean isDefinitelyNotNullable() {
+		return column.isDefinitelyNotNullable();
+	}
+
+	@Override
+	public boolean isPrimaryKeyColumn() {
+		return column.isPrimaryKeyColumn();
+	}
+
+	@Override
+	public Identifier getUnqualifiedName() {
+		return column.getUnqualifiedName();
+	}	
+}

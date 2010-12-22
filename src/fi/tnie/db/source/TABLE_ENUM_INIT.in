@@ -1,0 +1,3 @@
+for({{table-enum-init-type}} e : {{table-enum-init-type}}.values()) {
+	e.init();
+}

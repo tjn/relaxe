@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import fi.tnie.db.ent.TableMapper;
 import fi.tnie.db.ent.TableMapper.Part;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.gen.ent.LiteralCatalog.LiteralCatalogColumn;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
@@ -63,6 +65,11 @@ public class SourceGenerator {
 	     */		
 		TABLE_HOOK_BASE_CLASS,
 		
+	    /**
+	     *
+	     */		
+		LITERAL_TABLE_ENUM,
+		
 	    /**  
 	     * Pattern which is replaced with the simple name of the hook class in template files.
 	     */		
@@ -72,6 +79,9 @@ public class SourceGenerator {
 	     */		
 		TABLE_IMPL_BASE,
 		
+		TABLE_ENUM_INIT_TYPE,		
+		
+		INIT_COLUMN_ENUM_LIST,
 	    /**  
 	     * TODO: which accessors 
 	     */		
@@ -103,15 +113,22 @@ public class SourceGenerator {
 		/**
 		 * Generated imports
 		 */
-		IMPORTS,		
+		IMPORTS,
 		NEW_ENVIRONMENT_EXPR, 
 		SCHEMA_ENUM_LIST,
 		BASE_TABLE_ENUM_LIST,
 		VIEW_ENUM_LIST,
 		COLUMN_ENUM_LIST,		
+		SCHEMA_TYPE_NAME,
 		FOREIGN_KEY_ENUM_LIST,
 		PRIMARY_KEY_ENUM_LIST,
 		META_MAP_POPULATION,
+		TABLE_COLUMN_ENUM_LIST,
+		
+	    /**
+	     * Pattern which is replaced package declaration useing the package name of the type being generated in template files.
+	     */
+		PACKAGE_DECL,		
 		;	
 		
 					
@@ -245,16 +262,15 @@ public class SourceGenerator {
 	    	src = replaceAllWithComment(src, Tag.COLUMN_ENUM_LIST, list);
     	}
     	
-    	
     	{
 	    	String list = generatePrimaryKeyList(cat);
 	    	src = replaceAllWithComment(src, Tag.PRIMARY_KEY_ENUM_LIST, list);
-    	}    	
+    	}
+    	
     	{
 	    	String list = generateForeignKeyList(cat);
 	    	src = replaceAllWithComment(src, Tag.FOREIGN_KEY_ENUM_LIST, list);
-    	}
-    	
+    	}    	
     	
     	{
 	    	String list = generateMetaMapPopulation(cat, tm);
@@ -264,8 +280,54 @@ public class SourceGenerator {
     	{
 	        String list = generateFactoryMethodList(fm);
 	        src = replaceAllWithComment(src, Tag.FACTORY_METHOD_LIST, list);
-    	}   	
+    	}
     	
+    	final String tsrc = getTemplateForLiteralInnerTable();  
+    	
+    	StringBuffer buf = new StringBuffer();
+    	
+    	EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
+    	List<String> initList = new ArrayList<String>(); 
+    	
+    	for (Schema s : cat.schemas().values()) {
+    		String sn = name(s.getUnqualifiedName().getName());
+    		
+    		for (Table t : s.tables().values()) {
+    			String tn = getSimpleName(t);
+    			
+    			StringBuffer ebuf = new StringBuffer();    			    			
+    			generateColumnListElements(t, ebuf, nq);
+    			String cl = ebuf.toString();
+    			String tc = replaceAll(tsrc, Tag.COLUMN_ENUM_LIST, cl);    			
+    			tc = replaceAll(tc, Tag.SCHEMA_TYPE_NAME, sn);
+    			tc = replaceAll(tc, Tag.TABLE_INTERFACE, tn);			
+    			
+    			// if inner class:
+    			tc = replaceAll(tc, Tag.PACKAGE_DECL, "");
+    			tc = replaceAll(tc, Tag.IMPORTS, "");
+    			    			
+    			buf.append(tc);
+    			buf.append("\n\n");
+    			    			
+    			JavaType tet = tm.entityType(t, Part.LITERAL_TABLE_ENUM);
+    			
+    			if (tet != null) {
+    				initList.add(tet.getQualifiedName());
+    			}
+			}			
+		}
+    	
+    	final String tin = getTemplateForTableEnumInit();
+    	StringBuffer initCode = new StringBuffer();
+    	
+    	for (String it : initList) {
+    		initCode.append(replaceAll(tin, Tag.TABLE_ENUM_INIT_TYPE, it));
+		}
+    	
+    	src = replaceAll(src, Tag.INIT_COLUMN_ENUM_LIST, initCode.toString());
+    	
+    	src = replaceAllWithComment(src, Tag.TABLE_COLUMN_ENUM_LIST, buf.toString());
+    	    	
     	logger().debug("generateLiteralContext - exit");
     	
 		return src;
@@ -320,9 +382,9 @@ public class SourceGenerator {
 					BaseTable rt = fk.getReferenced();
 					
 					for (Map.Entry<Column, Column> e : fk.columns().entrySet()) {												
-						buf.append(", LiteralColumn.");
+						buf.append(", LiteralCatalogColumn.");
 						buf.append(columnEnumeratedName(kt, e.getKey()));
-						buf.append(", LiteralColumn.");
+						buf.append(", LiteralCatalogColumn.");
 						buf.append(columnEnumeratedName(rt, e.getValue()));
 					}
 					
@@ -359,7 +421,7 @@ public class SourceGenerator {
 				buf.append("\"");
 				
 				for (Column c : pk.columns()) {
-					buf.append(", LiteralColumn.");
+					buf.append(", LiteralCatalogColumn.");
 					buf.append(columnEnumeratedName(t, c));
 				}
 				
@@ -369,6 +431,61 @@ public class SourceGenerator {
 		
 		return buf.toString();	
 	}
+	
+	private String generateColumnList(Table t) {
+		StringBuffer buf = new StringBuffer();
+			
+		Identifier sn = t.getSchema().getUnqualifiedName();
+		Identifier tn = t.getUnqualifiedName();
+		String ce = name(sn.getName()) + name(tn.getName());			
+		
+		buf.append("enum ");
+		buf.append(ce);
+		buf.append(" {");
+		buf.append("\n");
+		
+		EnumSet<NameQualification> fq = EnumSet.allOf(NameQualification.class);		
+		generateColumnListElements(t, buf, fq);
+		
+		buf.append("\n");
+		buf.append("}");
+		
+		return buf.toString();
+	}
+	
+	enum NameQualification {
+		SCHEMA,
+		TABLE,
+		COLUMN
+	}
+
+	private void generateColumnListElements(Table t, StringBuffer buf, EnumSet<NameQualification> nq) {
+		boolean b = t.isBaseTable();
+		String te = b ? "LiteralBaseTable" : "LiteralView"; 				
+		
+		for (Column c : t.columns()) {
+			String cn = columnEnumeratedName(t, c, nq);			
+			String ten = tableEnumeratedName(t);					
+			Identifier un = c.getUnqualifiedName();
+			
+			// TODO: add 'autoinc' -info etc
+			
+			buf.append(cn);
+			buf.append("(");			
+			buf.append("new LiteralCatalog.ColumnInitializer(");
+			buf.append("LiteralCatalog.");
+			buf.append(te);
+			buf.append(".");
+			buf.append(ten);
+			buf.append(", \"");
+			buf.append(un.getName());
+			buf.append("\", ");										
+			generateNewDataType(buf, c.getDataType());
+			buf.append(")),\n");									
+		}
+		
+		buf.append(";\n");
+	}	
 
 	private String generateColumnList(Catalog cat) {
 		StringBuffer buf = new StringBuffer();
@@ -487,13 +604,25 @@ public class SourceGenerator {
 	}
 	
 	private String columnEnumeratedName(Table t, Column c) {
+		return columnEnumeratedName(t, c, EnumSet.allOf(NameQualification.class));
+	}
+	
+	private String columnEnumeratedName(Table t, Column c, EnumSet<NameQualification> nq) {
 		StringBuffer buf = new StringBuffer();
-				
-		buf.append(t.getSchema().getUnqualifiedName().getName());
-		buf.append("_");
-		buf.append(t.getUnqualifiedName().getName());		
-		buf.append("_");
-		buf.append(c.getUnqualifiedName().getName());
+		
+		if (nq.contains(NameQualification.SCHEMA)) {						
+			buf.append(t.getSchema().getUnqualifiedName().getName());
+			buf.append("_");
+		}
+		
+		if (nq.contains(NameQualification.TABLE)) {
+			buf.append(t.getUnqualifiedName().getName());		
+			buf.append("_");			
+		}
+
+		if (nq.contains(NameQualification.COLUMN)) {
+			buf.append(c.getUnqualifiedName().getName());
+		}
 		
 		return buf.toString().toUpperCase();			
 		
@@ -546,7 +675,18 @@ public class SourceGenerator {
     private String getTemplateForLiteralCatalog() throws IOException {
         return read("LITERAL_CATALOG.in");
     }
+    
+    private String getTemplateForLiteralInnerTable() throws IOException {
+        return read("LITERAL_INNER_TABLE.in");
+    }
+    
+    private String getTemplateForLiteralTable() throws IOException {
+        return read("LITERAL_TABLE_ENUM.in");
+    }
 
+    private String getTemplateForTableEnumInit() throws IOException {
+        return read("TABLE_ENUM_INIT.in");
+    }
 
     private void process(Schema s, final TableMapper tm, Collection<JavaType> ccil, Map<JavaType, CharSequence> factories, Properties generated, Map<File, String> gm) 
 		throws IOException {
@@ -558,6 +698,7 @@ public class SourceGenerator {
 		    final JavaType at = tm.entityType(t, Part.ABSTRACT);
 		    final JavaType hp = tm.entityType(t, Part.HOOK);
 		    final JavaType impl = tm.entityType(t, Part.IMPLEMENTATION);
+		    final JavaType te = tm.entityType(t, Part.LITERAL_TABLE_ENUM);
 		    
 		    if (intf == null || impl == null) {
 		        continue;
@@ -577,6 +718,12 @@ public class SourceGenerator {
                    File root = getSourceDir(schema, Part.ABSTRACT);
                    write(root, at, source, generated, gm);
                 }
+                
+                if (te != null) {
+                    CharSequence source = generateTableEnum(t, te, tm);
+                    File root = getSourceDir(schema, Part.LITERAL_TABLE_ENUM);
+                    write(root, te, source, generated, gm);
+                 }                
 
                 if (hp != null) {
                     CharSequence source = generateHook(t, hp, tm);
@@ -664,8 +811,7 @@ public class SourceGenerator {
 
 	private void write(File root, JavaType type, CharSequence source, Properties dest, Map<File, String> files) 
 		throws IOException {
-		
-	    
+			    
 	    String pkg = type.getPackageName();
 	    File pd = packageDir(pkg);
 
@@ -727,6 +873,25 @@ public class SourceGenerator {
             src = replaceAll(src, "{{abstract-accessor-list}}", code);
         }
 
+	    return src;
+	}
+    
+    public CharSequence generateTableEnum(BaseTable t, JavaType mt, TableMapper tm)
+    	throws IOException {
+
+	    String src = getTemplateFor(Part.LITERAL_TABLE_ENUM);			
+	    
+	    src = replacePackageAndImports(src, mt);
+	    
+	    src = replaceAll(src, Tag.LITERAL_TABLE_ENUM, mt.getUnqualifiedName());
+	
+	    EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
+	    
+	    StringBuffer ebuf = new StringBuffer();
+		generateColumnListElements(t, ebuf, nq);
+		String cl = ebuf.toString();
+		src = replaceAll(src, Tag.COLUMN_ENUM_LIST, cl);
+		
 	    return src;
 	}
 
@@ -928,6 +1093,7 @@ public class SourceGenerator {
 		replacement = "// " + pattern.getTag() + "\n" + replacement;
 		return replaceAll(text, pattern, replacement);
 	}
+	
 	private String replaceAll(String text, Tag pattern, String replacement) {
 		return replaceAll(text, pattern.getTag(), replacement);
 	}
@@ -1186,17 +1352,18 @@ public class SourceGenerator {
     }
     
     /**
+     * Converts SQL style name to camel case 
      * 
-     * @param name
+     * @param identifier
      * @return
      */
-    public String name(String name) {
-        int len = name.length();
+    public String name(String identifier) {
+        int len = identifier.length();
         StringBuffer nb = new StringBuffer(len);
         boolean upper = true;
 
         for (int i = 0; i < len; i++) {
-            char c = name.charAt(i);
+            char c = identifier.charAt(i);
 
             if (c == '_') {
                 upper = true;
@@ -1481,4 +1648,32 @@ public class SourceGenerator {
 
         return sourceDirMap;
     }
+    
+	public String getSimpleName(Table table) {                
+        return getSimpleName(table.getUnqualifiedName());	    
+	}
+	
+	public String getSimpleName(Identifier identifier) {	            
+	    return translate(identifier.getName());        
+	}
+
+	private String translate(String n) {
+		String[] tokens = n.split("_");
+		
+		StringBuffer buf = new StringBuffer();
+		
+		for (int i = 0; i < tokens.length; i++) {
+			capitalize(tokens[i], buf);			
+		}
+		
+		return buf.toString();
+	}
+	
+	private void capitalize(String t, StringBuffer dest) {		
+		dest.append(Character.toUpperCase(t.charAt(0)));
+		
+		if (t.length() > 1) {
+			dest.append(t.substring(1).toLowerCase());
+		}		
+	}
 }

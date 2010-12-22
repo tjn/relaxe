@@ -26,7 +26,7 @@ public class DefaultTableMapper
 	private String rootPackage;		
 	private String contextPackage;
 			
-	private Map<Part, JavaType> createEntityTypeMap(BaseTable table) {	    		
+	private Map<Part, JavaType> createEntityTypeMap(Table table) {	    		
 		String pkg = getPackageName(table.getSchema());		
 		String u = getSimpleName(table);
 	
@@ -44,23 +44,27 @@ public class DefaultTableMapper
 		return types;
 	}
 	
-	protected JavaType map(BaseTable t, Part p, String rootPackage, String name) {	    
+	protected JavaType map(Table t, Part p, String rootPackage, String name) {	    
 	    String pp = getPackageName(t, p, rootPackage);
 	    String n = getClassName(t, p, name);	    
 	    return (pp == null || n == null) ? null : new JavaType(pp, n);
 	}
 
-    protected String getPackageName(BaseTable t, Part p, String pkg) {
+    protected String getPackageName(Table t, Part p, String pkg) {
         return pkg;
     }
     
-    protected String getClassName(BaseTable t, Part p, String name) {
+    protected String getClassName(Table t, Part p, String name) {
         if (p == Part.ABSTRACT) {
             return "Abstract" + name;
         }
         
         if (p == Part.HOOK) {
             return "Default" + name;
+        }
+        
+        if (p == Part.LITERAL_TABLE_ENUM) {
+            return "Literal" + name;
         }
         
         if (p == Part.IMPLEMENTATION) {
@@ -92,11 +96,11 @@ public class DefaultTableMapper
         return n.toString();
 	}
 	
-	private String getSimpleName(BaseTable table) {                
+	public String getSimpleName(Table table) {                
         return getSimpleName(table.getUnqualifiedName());	    
 	}
 	
-	private String getSimpleName(Identifier identifier) {	            
+	public String getSimpleName(Identifier identifier) {	            
 	    return translate(identifier.getName());        
 	}
 
@@ -176,7 +180,7 @@ public class DefaultTableMapper
     }
 
     @Override
-    public JavaType entityType(BaseTable table, Part part) {
+    public JavaType entityType(Table table, Part part) {
         // TODO: cache JavaType's keyed by table+part
         return createEntityTypeMap(table).get(part);        
     }

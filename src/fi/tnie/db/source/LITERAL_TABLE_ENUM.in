@@ -1,0 +1,58 @@
+package {{package-name}};
+
+import fi.tnie.db.expr.ColumnName;
+import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.gen.ent.LiteralCatalog;
+import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.DataType;
+import fi.tnie.db.meta.impl.DataTypeImpl;
+
+public enum {{literal-table-enum}}
+	implements LiteralCatalog.LiteralColumn, LiteralCatalog.Initializable {
+	
+{{column-enum-list}}
+			
+	private Column column;
+	private LiteralCatalog.ColumnInitializer initializer;
+				
+	{{literal-table-enum}}(LiteralCatalog.ColumnInitializer ci) {
+		this.initializer = ci;		
+	}
+	
+	public void init() {
+		if (this.column == null) {
+			this.column = this.initializer.init(this);
+			this.initializer = null;
+		}			
+	}
+
+	@Override
+	public ColumnName getColumnName() {
+		return column.getColumnName();
+	}
+
+	@Override
+	public DataType getDataType() {
+		return column.getDataType();
+	}
+
+	@Override
+	public Boolean isAutoIncrement() {
+		return column.isAutoIncrement();
+	}
+
+	@Override
+	public boolean isDefinitelyNotNullable() {
+		return column.isDefinitelyNotNullable();
+	}
+
+	@Override
+	public boolean isPrimaryKeyColumn() {
+		return column.isPrimaryKeyColumn();
+	}
+
+	@Override
+	public Identifier getUnqualifiedName() {
+		return column.getUnqualifiedName();
+	}	
+}

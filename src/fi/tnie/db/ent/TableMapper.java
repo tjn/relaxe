@@ -12,6 +12,7 @@ public interface TableMapper {
 	
 	enum Part {
 		INTERFACE,
+		LITERAL_TABLE_ENUM,
 		ABSTRACT,		
 		HOOK,
 		IMPLEMENTATION,
@@ -19,7 +20,7 @@ public interface TableMapper {
 		METADATA
 	}
 				
-	JavaType entityType(BaseTable table, Part part);	
+	JavaType entityType(Table table, Part part);	
 	Class<?> getAttributeHolderType(Table table, Column c);
 	Class<?> getAttributeType(Table table, Column c);
 	JavaType factoryType(Schema schema, Part part);	
