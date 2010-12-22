@@ -22,7 +22,7 @@ public class Varchar
     }
     
     @Override
-    public SQLTypeName getSQLTypeName() {     
-        return SQLTypeName.VARCHAR;
+    public SQLType.Name getSQLTypeName() {     
+        return SQLType.Name.VARCHAR;
     }
 }

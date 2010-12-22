@@ -11,7 +11,7 @@ public class Char
     }
     
     @Override
-    public SQLTypeName getSQLTypeName() {
-        return SQLTypeName.CHAR;
+    public SQLType.Name getSQLTypeName() {
+        return SQLType.Name.CHAR;
     }
 }

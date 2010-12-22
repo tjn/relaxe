@@ -11,7 +11,7 @@ public class Timestamp
     }   
     
     @Override
-    public SQLTypeName getSQLTypeName() {     
-        return SQLTypeName.TIMESTAMP;
+    public SQLType.Name getSQLTypeName() {     
+        return SQLType.Name.TIMESTAMP;
     }
 }

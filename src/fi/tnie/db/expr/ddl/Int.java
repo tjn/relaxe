@@ -6,7 +6,7 @@ package fi.tnie.db.expr.ddl;
 public class Int
     extends NumericType {
     
-    private SQLTypeName name;
+    private SQLType.Name name;
     
     enum Type {
         TINY,
@@ -20,7 +20,7 @@ public class Int
     }
     
     public Int(Type t) {
-        this.name = SQLTypeName.INTEGER;
+        this.name = SQLType.Name.INTEGER;
     }
     
     @Override
@@ -29,7 +29,7 @@ public class Int
     }
     
     @Override
-    public SQLTypeName getSQLTypeName() {
+    public SQLType.Name getSQLTypeName() {
         return this.name;
     }
 
