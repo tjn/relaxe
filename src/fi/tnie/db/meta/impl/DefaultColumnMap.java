@@ -27,16 +27,20 @@ public class DefaultColumnMap
 	}
 	
 	@Override
-	public boolean add(DefaultMutableColumn c) {
-		if (c.getTable() != this.table) {
-			new IllegalArgumentException(
-					"table of the column: " + c.getTable() + ", expected: " + this.table);
+	public boolean add(DefaultMutableColumn column) {
+		if (column == null) {
+			throw new NullPointerException("column");
 		}
 		
-		boolean added = super.add(c);
+		if (column.getTable() != this.table) {
+			new IllegalArgumentException(
+					"table of the column: " + column.getTable() + ", expected: " + this.table);
+		}
+		
+		boolean added = super.add(column);
 		
 		if (added) {
-			getColumnList().add(c);
+			getColumnList().add(column);
 		}
 		
 		return added;
