@@ -29,7 +29,6 @@ import fi.tnie.db.ent.TableMapper;
 import fi.tnie.db.ent.TableMapper.Part;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.gen.ent.LiteralCatalog.LiteralCatalogColumn;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
@@ -263,12 +262,12 @@ public class SourceGenerator {
     	}
     	
     	{
-	    	String list = generatePrimaryKeyList(cat);
+	    	String list = generatePrimaryKeyList(cat, tm);
 	    	src = replaceAllWithComment(src, Tag.PRIMARY_KEY_ENUM_LIST, list);
     	}
     	
     	{
-	    	String list = generateForeignKeyList(cat);
+	    	String list = generateForeignKeyList(cat, tm);
 	    	src = replaceAllWithComment(src, Tag.FOREIGN_KEY_ENUM_LIST, list);
     	}    	
     	
@@ -359,9 +358,11 @@ public class SourceGenerator {
 		return buf.toString();
 	}
 
-	private String generateForeignKeyList(Catalog cat) {
+	private String generateForeignKeyList(Catalog cat, TableMapper tm) {
 		StringBuffer buf = new StringBuffer();
-
+		
+		EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
+		
 		for (Schema s : cat.schemas().values()) {
 			for (BaseTable t : s.baseTables().values()) {
 				SchemaElementMap<ForeignKey> fm = t.foreignKeys();
@@ -378,14 +379,23 @@ public class SourceGenerator {
 					buf.append(un.getName());
 					buf.append("\"");
 					
-					BaseTable kt = fk.getReferencing();
+					BaseTable kt = fk.getReferencing();					
+					JavaType jkt = tm.entityType(kt, Part.LITERAL_TABLE_ENUM);
+															
 					BaseTable rt = fk.getReferenced();
+					JavaType jrt = tm.entityType(rt, Part.LITERAL_TABLE_ENUM);
 					
-					for (Map.Entry<Column, Column> e : fk.columns().entrySet()) {												
-						buf.append(", LiteralCatalogColumn.");
-						buf.append(columnEnumeratedName(kt, e.getKey()));
-						buf.append(", LiteralCatalogColumn.");
-						buf.append(columnEnumeratedName(rt, e.getValue()));
+					for (Map.Entry<Column, Column> e : fk.columns().entrySet()) {
+												
+						// buf.append(", LiteralCatalogColumn.");						
+						buf.append(", ");
+						buf.append(jkt.getQualifiedName());
+						buf.append(".");
+						buf.append(columnEnumeratedName(kt, e.getKey(), nq));
+						buf.append(", ");
+						buf.append(jrt.getQualifiedName());
+						buf.append(".");
+						buf.append(columnEnumeratedName(rt, e.getValue(), nq));
 					}
 					
 					buf.append("),\n");									
@@ -396,9 +406,10 @@ public class SourceGenerator {
 		return buf.toString();	
 	}
 	
-	private String generatePrimaryKeyList(Catalog cat) {
+	private String generatePrimaryKeyList(Catalog cat, TableMapper tm) {
 		StringBuffer buf = new StringBuffer();
 
+		EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
 		
 		for (Schema s : cat.schemas().values()) {
 			for (BaseTable t : s.baseTables().values()) {
@@ -408,6 +419,8 @@ public class SourceGenerator {
 					logger().warn("table without primary key: " + t.getQualifiedName());
 					continue;
 				}
+				
+				JavaType jt = tm.entityType(t, Part.LITERAL_TABLE_ENUM);
 								
 				String n = primaryKeyEnumeratedName(pk);
 				String tn = tableEnumeratedName(t);
@@ -421,8 +434,11 @@ public class SourceGenerator {
 				buf.append("\"");
 				
 				for (Column c : pk.columns()) {
-					buf.append(", LiteralCatalogColumn.");
-					buf.append(columnEnumeratedName(t, c));
+					buf.append(", ");
+					// buf.append("LiteralCatalogColumn.");
+					buf.append(jt.getQualifiedName());
+					buf.append(".");
+					buf.append(columnEnumeratedName(t, c, nq));
 				}
 				
 				buf.append("),\n");									

@@ -138,6 +138,8 @@ public class LiteralCatalog
 //			s.bind();
 //		}
 		
+ 		{{init-column-enum-list}}
+ 		
 		for (LiteralPrimaryKey s : LiteralPrimaryKey.values()) {			
 			s.bind();
 		}
@@ -145,11 +147,9 @@ public class LiteralCatalog
 		for (LiteralForeignKey s : LiteralForeignKey.values()) {			
 			s.bind();
 		}
-		
+
 		// populates meta-map
 		getMetaMap();
-
- 		{{init-column-enum-list}}
 		
  
 //		According JLS, 
@@ -323,63 +323,6 @@ public class LiteralCatalog
 		};
 	}
 	
-	public enum LiteralCatalogColumn
-		implements Column {
-{{column-enum-list}}		
-		;
-		
-		private LiteralTable table;		
-		private DefaultMutableColumn column;
-		private String name;
-		private DataTypeImpl type;
-				
-		LiteralCatalogColumn(LiteralTable table, String name, DataTypeImpl type) {
-			this.name = name;
-			this.table = table;
-			this.type = type;
-		}
-		
-		private void bind () {
-			Identifier n = getInstance().env().createIdentifier(this.name);
-			DefaultMutableTable mt = getInstance().getMutableTableMap().get(this.table);									
-			this.column = new DefaultMutableColumn(mt, n, this.type);			
-		}
-
-		@Override
-		public ColumnName getColumnName() {
-			return column.getColumnName();
-		}
-
-		@Override
-		public DataType getDataType() {
-			return column.getDataType();
-		}
-
-		@Override
-		public Boolean isAutoIncrement() {
-			return column.isAutoIncrement();
-		}
-
-		@Override
-		public boolean isDefinitelyNotNullable() {
-			return column.isDefinitelyNotNullable();
-		}
-
-		@Override
-		public boolean isPrimaryKeyColumn() {
-			return column.isPrimaryKeyColumn();
-		}
-
-		@Override
-		public Identifier getUnqualifiedName() {
-			return column.getUnqualifiedName();
-		}		
-		
-		private DefaultMutableColumn getColumn() {
-			return column;
-		}		
-	}	
-	
 	
 	public enum LiteralForeignKey
 		implements ForeignKey {
@@ -389,7 +332,7 @@ public class LiteralCatalog
 		private String name;
 		private LiteralSchema schema;
 		private DefaultForeignKey foreignKey; 
-		private LiteralCatalogColumn[] columnList;
+		private LiteralColumn[] columnList;
 		
 		/**
 		 * @param name
@@ -398,7 +341,7 @@ public class LiteralCatalog
 		 * [2] => [3]
 		 */
 		// TODO: add update/delete action
-		LiteralForeignKey(LiteralSchema ls, String name, LiteralCatalogColumn ... lac) {
+		LiteralForeignKey(LiteralSchema ls, String name, LiteralColumn ... lac) {
 			if (lac == null) {
 				throw new NullPointerException();
 			}
@@ -419,12 +362,15 @@ public class LiteralCatalog
 						
 			List<DefaultForeignKey.Pair> pl = new ArrayList<DefaultForeignKey.Pair>();
 			
-			LiteralCatalogColumn[] lac = this.columnList;
+			LiteralColumn[] lac = this.columnList;
+
+			Map<LiteralColumn, DefaultMutableColumn> mcm = 
+				LiteralCatalog.getInstance().getMutableColumnMap();
 			
 			for (int i = 0; i < (lac.length - 1); i += 2) {
 				pl.add(new DefaultForeignKey.Pair(
-						lac[i].getColumn(), 
-						lac[i + 1].getColumn()
+						mcm.get(lac[i]),
+						mcm.get(lac[i + 1])
 				));
 			}
 			
@@ -483,13 +429,13 @@ public class LiteralCatalog
 		private String name;
 		private LiteralBaseTable table;
 		private DefaultPrimaryKey primaryKey; 
-		private LiteralCatalogColumn[] columnList;
+		private LiteralColumn[] columnList;
 		
 		/**
 		 * @param name
 		 * @param cols An array containing column pairs.
 		 */
-		LiteralPrimaryKey(LiteralBaseTable table, String name, LiteralCatalogColumn ... cols) {
+		LiteralPrimaryKey(LiteralBaseTable table, String name, LiteralColumn ... cols) {
 			if (cols == null) {
 				throw new NullPointerException();
 			}
@@ -508,10 +454,12 @@ public class LiteralCatalog
 			DefaultMutableSchema ms = table.getMutableSchema();
 			Identifier pkname = ms.getCatalog().getEnvironment().createIdentifier(name);
 			
-			List<DefaultMutableColumn> cl = new ArrayList<DefaultMutableColumn>(this.columnList.length); 
+			List<DefaultMutableColumn> cl = new ArrayList<DefaultMutableColumn>(this.columnList.length);
+			Map<LiteralColumn, DefaultMutableColumn> mcm = 
+				LiteralCatalog.getInstance().getMutableColumnMap(); 
 			
-			for (LiteralCatalogColumn c : this.columnList) {
-				cl.add(c.getColumn());
+			for (LiteralColumn c : this.columnList) {
+				cl.add(mcm.get(c));
 			}			
 										
 			this.primaryKey = new DefaultPrimaryKey(table, pkname, cl);
