@@ -5,6 +5,7 @@ package fi.tnie.db.model;
 
 import fi.tnie.db.model.cm.ChangeSet;
 import fi.tnie.db.model.cm.ConstrainedComputedModel;
+import fi.tnie.db.model.cm.ConstrainedIntegerModel;
 import fi.tnie.db.model.cm.Constraint;
 import fi.tnie.db.model.cm.Proposition;
 import junit.framework.TestCase;
