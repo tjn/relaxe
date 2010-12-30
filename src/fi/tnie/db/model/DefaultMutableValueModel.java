@@ -19,7 +19,7 @@ public class DefaultMutableValueModel<V>
 	
 	@Override
 	public V get() {
-		return this.get();
+		return this.value;
 	}
 
 	@Override
