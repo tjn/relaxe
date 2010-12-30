@@ -1,9 +1,8 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.model;
+package fi.tnie.db.model.cm;
 
-import fi.tnie.db.model.cm.ConstrainedMutableValueModel;
 
 public class ConstrainedIntegerModel
 	extends ConstrainedMutableValueModel<Integer> {
@@ -19,5 +18,4 @@ public class ConstrainedIntegerModel
 	public ConstrainedIntegerModel(int value) {
 		this(Integer.valueOf(value));	
 	}
-
 }
