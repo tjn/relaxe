@@ -41,7 +41,7 @@ public abstract class AbstractConstrainedValueModel<V>
 	 * @return
 	 */
 	public Proposition submit(ChangeSet cs, final Proposition p) {
-		p.submit(cs);		
+		// p.submit(cs);		
 		
 		for (Constraint pl : getConstraintMap().values()) {
 			fireSubmitted(cs, p, pl);

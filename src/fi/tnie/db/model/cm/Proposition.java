@@ -12,12 +12,9 @@ package fi.tnie.db.model.cm;
  * 
  * @author tnie
  */
-public interface Proposition {
-			
-	void submit(ChangeSet cs);
+public interface Proposition {	
 	void reject();
 	void commit();
 	boolean isRejected();
-	boolean isSubmitted();
 	boolean isCommitted();
 }

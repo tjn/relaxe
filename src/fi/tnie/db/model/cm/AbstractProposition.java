@@ -24,8 +24,6 @@ public abstract class AbstractProposition
 	}
 	
 	public boolean isRejected() {
-		
-		
 		return this.rejectCount > 0;
 	}
 	
@@ -45,19 +43,19 @@ public abstract class AbstractProposition
 			throw new IllegalStateException("can not commit rejected proposition");
 		}
 		
-		if (!isSubmitted()) {
-			System.err.println(this);
-			throw new IllegalStateException("can not commit unsubmitted proposition");
-		}
+//		if (!isSubmitted()) {
+//			System.err.println(this);
+//			throw new IllegalStateException("can not commit unsubmitted proposition");
+//		}
 		
 		apply();
 	}
 	
-	@Override
-	public void submit(ChangeSet cs) {
-		this.rejectCount = 0;
-		this.submitted = true;
-	}
+//	@Override
+//	public void submit(ChangeSet cs) {
+//		this.rejectCount = 0;
+//		this.submitted = true;
+//	}
 		
 	public boolean isCompleted() {
 		return isRejected() || isCommitted();

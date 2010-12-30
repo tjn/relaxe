@@ -11,7 +11,6 @@ public class ChangeSet
 	implements Proposition {	
 
 	private int rejected = 0;
-	private boolean submitted;
 	private boolean committed;
 	
 	private Map<ConstrainedValueModel<?>, Proposition> propositionMap;
@@ -72,7 +71,7 @@ public class ChangeSet
 	
 	public boolean apply() {		
 		boolean committed = false;
-		submit(this);
+		submit();
 		
 		if (!isRejected()) {
 			commit();
@@ -80,14 +79,9 @@ public class ChangeSet
 		}
 		
 		return committed;
-	}
+	}	
 	
 	public void submit() {
-		submit(this);
-	}
-
-	@Override
-	public void submit(ChangeSet cs) {
 		// Calls to ConstrainedValueModel.submit(ChangeSet cs, Proposition p)
 		// may cause the dependent models to be added in this change-set.
 		// By taking a snapshot of the key-set we avoid   
@@ -100,26 +94,19 @@ public class ChangeSet
 				
 		for (ConstrainedValueModel<?> m : keys) {
 			Proposition p = pm.get(m);		
-			m.submit(cs, p);
+			m.submit(this, p);
 						
 			if (p.isRejected()) {
 				this.rejected++;
 				// one is enough
 				break;
 			}
-		}
-		
-		this.submitted = true;
+		}		
 	}
 
 	@Override
 	public boolean isCommitted() {
 		return this.committed; 
-	}
-
-	@Override
-	public boolean isSubmitted() {		
-		return this.submitted;
 	}
 
 	@Override
