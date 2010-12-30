@@ -104,6 +104,8 @@ public class ChangeSet
 						
 			if (p.isRejected()) {
 				this.rejected++;
+				// one is enough
+				break;
 			}
 		}
 		
