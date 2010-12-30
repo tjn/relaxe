@@ -17,7 +17,7 @@ public class ChangeSet
 	private Map<ConstrainedValueModel<?>, Proposition> propositionMap;
 	
 	/**
-	 * Creates proposition <code>proposed</code> value and adds it to this change set.
+	 * Creates proposition from <code>proposed</code> value and adds it to this change set.
 	 * 
 	 * @param <V>
 	 * @param model
