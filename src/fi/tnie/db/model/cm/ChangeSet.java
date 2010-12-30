@@ -16,10 +16,25 @@ public class ChangeSet
 	
 	private Map<ConstrainedValueModel<?>, Proposition> propositionMap;
 	
+	/**
+	 * Creates proposition <code>proposed</code> value and adds it to this change set.
+	 * 
+	 * @param <V>
+	 * @param model
+	 * @param proposed
+	 * @return
+	 */
 	public <V> Proposition add(final ConstrainedValueModel<V> model, V proposed) {
 		return add(model, proposed, false);  
 	}
 	
+	/**
+	 * Creates and adds proposition from <code>proposed</code> value and submits it.
+	 * @param <V>
+	 * @param model
+	 * @param proposed
+	 * @return
+	 */	
 	public <V> Proposition submit(final ConstrainedValueModel<V> model, V proposed) {
 		return add(model, proposed, true);  
 	}
@@ -84,7 +99,7 @@ public class ChangeSet
 			new ArrayList<ConstrainedValueModel<?>>(pm.keySet());
 				
 		for (ConstrainedValueModel<?> m : keys) {
-			Proposition p = pm.get(m);						
+			Proposition p = pm.get(m);		
 			m.submit(cs, p);
 						
 			if (p.isRejected()) {
