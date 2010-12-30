@@ -15,7 +15,6 @@ public abstract class SimpleProposition<V>
 	
 	private V from;	
 	private V to;		
-	private int rejectCount;
 	 			
 	SimpleProposition(ValueModel<V> from, V to) {
 		super();		
@@ -29,16 +28,5 @@ public abstract class SimpleProposition<V>
 
 	public V to() {
 		return this.to;
-	}
-
-	@Override
-	public void reject() {
-		this.rejectCount++;			
-	}
-	
-	@Override
-	public boolean isRejected() {
-		return this.rejectCount > 0;
-	}
-	
+	}	
 }
