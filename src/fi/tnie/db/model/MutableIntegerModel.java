@@ -20,6 +20,5 @@ public class MutableIntegerModel
 		
 	public void set(int value) {	
 		super.set(Integer.valueOf(value));
-	}	
-
+	}
 }
