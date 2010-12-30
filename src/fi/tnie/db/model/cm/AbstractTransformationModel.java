@@ -15,14 +15,19 @@ import fi.tnie.db.model.ValueModel;
 public abstract class AbstractTransformationModel<V, S>
 	extends AbstractValueModel<V> {
 	
+	private ValueModel<S> source;
+	
 	public AbstractTransformationModel(final ValueModel<S> source) {
 		source.addChangeHandler(new ChangeListener<S>() {
 			@Override
 			public void changed(S from, S to) {
-				V result = transform(to);
-				fireIfChanged(get(), result);
+				// change has already taken place:
+				V previous = transform(from);				
+				fireIfChanged(previous, get());
 			}
 		});
+		
+		this.source = source;
 	}
 	
 	/**
@@ -30,4 +35,13 @@ public abstract class AbstractTransformationModel<V, S>
 	 * @return
 	 */
 	public abstract V transform(S source);
+
+	public ValueModel<S> getSource() {
+		return source;
+	}
+	
+	@Override
+	public V get() {		
+		return transform(getSource().get());
+	}
 }
