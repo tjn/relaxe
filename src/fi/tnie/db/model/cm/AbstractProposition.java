@@ -10,7 +10,7 @@ public abstract class AbstractProposition
 	implements Proposition {
 	
 	private int rejectCount;
-	private boolean submitted;
+	private boolean committed;
 				
 	public AbstractProposition() {
 		super();		
@@ -26,14 +26,9 @@ public abstract class AbstractProposition
 	public boolean isRejected() {
 		return this.rejectCount > 0;
 	}
-	
-	public boolean isSubmitted() {		
-		return submitted;
-	}
-	
+		
 	public boolean isCommitted() {
-		// TODO: track explicitly
-		return submitted && (!isRejected());
+		return committed;
 	}
 	
 	public void commit()
@@ -43,24 +38,13 @@ public abstract class AbstractProposition
 			throw new IllegalStateException("can not commit rejected proposition");
 		}
 		
-//		if (!isSubmitted()) {
-//			System.err.println(this);
-//			throw new IllegalStateException("can not commit unsubmitted proposition");
-//		}
-		
 		apply();
+		this.committed = true;
 	}
 	
-//	@Override
-//	public void submit(ChangeSet cs) {
-//		this.rejectCount = 0;
-//		this.submitted = true;
-//	}
-		
 	public boolean isCompleted() {
 		return isRejected() || isCommitted();
 	}
 
 	protected abstract void apply();
-
 }
