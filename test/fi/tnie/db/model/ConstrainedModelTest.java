@@ -7,7 +7,6 @@ import fi.tnie.db.model.cm.ChangeSet;
 import fi.tnie.db.model.cm.ConstrainedBinaryOperatorModel;
 import fi.tnie.db.model.cm.ConstrainedMutableValueModel;
 import fi.tnie.db.model.cm.DefaultConstrainedMutableValueModel;
-import fi.tnie.db.model.cm.ConstrainedValueModel;
 import fi.tnie.db.model.cm.Proposition;
 import junit.framework.TestCase;
 

@@ -12,7 +12,6 @@ import java.util.Map;
 import fi.tnie.db.ent.JavaType;
 import fi.tnie.db.ent.TableMapper;
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
