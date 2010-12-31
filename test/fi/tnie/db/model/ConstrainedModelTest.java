@@ -106,10 +106,5 @@ public class ConstrainedModelTest extends TestCase {
 			assertEquals(2, cc.getCount());
 			assertNull(op.get());
 		}		
-	}
-
-	
-	
-	
-	
+	}	
 }

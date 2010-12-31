@@ -47,7 +47,7 @@ public abstract class AbstractValueModel<V>
 		}		
 		
 		Key reg = new Key(dest);
-		dest.put(reg, handler);		
+		dest.put(reg, handler);
 		return reg;
 	}
 	
