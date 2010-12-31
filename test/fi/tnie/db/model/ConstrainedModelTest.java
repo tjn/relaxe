@@ -52,7 +52,8 @@ public class ConstrainedModelTest extends TestCase {
 		{
 			ChangeSet cs = new ChangeSet();		
 			cs.add(a, Boolean.TRUE);
-			cs.add(b, Boolean.TRUE);
+			cs.add(b, Boolean.TRUE);			
+			
 			committed = cs.apply();	
 			assertFalse(committed);
 			assertEquals(0, cc.getCount());

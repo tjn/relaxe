@@ -9,6 +9,8 @@ import java.util.Map;
 public abstract class AbstractValueModel<V>
 	implements ValueModel<V> {
 	
+	private DefaultImmutableModel<V> immutable;
+	
 	public static class Key
 		implements Registration {
 	
@@ -72,7 +74,14 @@ public abstract class AbstractValueModel<V>
 	private void fireChanged(V from, V to, ChangeListener<V> cl) {
 		cl.changed(from, to);		
 	}
-
+	
+	/**
+	 *     
+	 * 
+	 * @param oldValue
+	 * @param newValue
+	 * @return
+	 */
 	protected boolean hasChanged(V oldValue, V newValue) {		
 		if (oldValue == null) {
 			return newValue != null;
@@ -82,7 +91,24 @@ public abstract class AbstractValueModel<V>
 			return true;
 		}
 		
-		return oldValue.equals(newValue) == false;    
+		return !oldValue.equals(newValue);    
 	}
-		
+	
+	/**
+	 * Returns <code>null</code> which makes subclasses immutable by default.
+	 */	
+	@Override
+	public MutableValueModel<V> asMutable() {	
+		return null;
+	}
+	
+	@Override
+	public ImmutableValueModel<V> asImmutable() {
+		if (immutable == null) {
+			immutable = new DefaultImmutableModel<V>(this);			
+		}
+
+		return immutable;
+	}
+
 }

@@ -3,14 +3,16 @@
  */
 package fi.tnie.db.model.cm;
 
+import fi.tnie.db.model.DefaultImmutableModel;
 import fi.tnie.db.model.MutableValueModel;
+import fi.tnie.db.model.ValueModel;
 
 public class ConstrainedMutableValueModel<V>
 	extends AbstractConstrainedValueModel<V>
 	implements MutableValueModel<V> {
 
 	private V value;
-	
+		
 	public ConstrainedMutableValueModel(V value) {
 		super();
 		this.value = value;
@@ -41,5 +43,6 @@ public class ConstrainedMutableValueModel<V>
 				m.fireIfChanged(from(), to());
 			}
 		};
-	}	
+	}
+	
 }

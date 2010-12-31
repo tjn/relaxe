@@ -6,5 +6,6 @@ package fi.tnie.db.model;
 public interface MutableValueModel<V>
 	extends ValueModel<V> {
 
-	void set(V newValue);
+	void set(V newValue);	
+	ImmutableValueModel<V> asImmutable();
 }

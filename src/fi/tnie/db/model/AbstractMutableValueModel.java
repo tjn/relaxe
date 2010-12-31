@@ -25,4 +25,9 @@ public abstract class AbstractMutableValueModel<V>
 	public V get() {
 		return this.value;
 	}
+	
+	@Override
+	public MutableValueModel<V> asMutable() {	
+		return this;
+	}
 }

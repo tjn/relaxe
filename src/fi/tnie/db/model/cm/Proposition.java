@@ -8,7 +8,6 @@ package fi.tnie.db.model.cm;
  * TODO: 
  * State model for this class is way too vague.
  * And so are relationships with ChangeSet and ConstrainedValueModel.
- *   
  * 
  * @author tnie
  */
