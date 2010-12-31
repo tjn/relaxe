@@ -23,7 +23,7 @@ public class ChangeSet
 	 * @param proposed
 	 * @return
 	 */
-	public <V> Proposition add(final ConstrainedValueModel<V> model, V proposed) {
+	public <V> Proposition add(final ConstrainedMutableValueModel<V> model, V proposed) {
 		return add(model, proposed, false, null);  
 	}
 	
@@ -38,7 +38,11 @@ public class ChangeSet
 		return add(model, proposed, true, impliedBy);  
 	}
 		
-	private <V> Proposition add(final ConstrainedValueModel<V> model, V proposed, boolean submit, Proposition impliedBy) {		
+	private <V> Proposition add(final ConstrainedValueModel<V> model, V proposed, boolean submit, Proposition impliedBy) {
+		if (model.asMutable() == null && impliedBy == null) {
+			throw new NullPointerException("impliedBy -proposition is required for read-only model");
+		}		
+		
 		Proposition p = model.propose(this, proposed, impliedBy);
 		getPropositionMap().put(model, p);
 		

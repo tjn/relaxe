@@ -4,7 +4,7 @@
 package fi.tnie.db.model;
 
 import fi.tnie.db.model.cm.ChangeSet;
-import fi.tnie.db.model.cm.ConstrainedMutableValueModel;
+import fi.tnie.db.model.cm.DefaultConstrainedMutableValueModel;
 import fi.tnie.db.model.cm.Constraint;
 import fi.tnie.db.model.cm.Proposition;
 import junit.framework.TestCase;
@@ -13,8 +13,8 @@ public class ValueModelTest extends TestCase {
 
 	
 	public void testValueModel() {		
-		final ConstrainedMutableValueModel<Boolean> m = 
-			new ConstrainedMutableValueModel<Boolean>();
+		final DefaultConstrainedMutableValueModel<Boolean> m = 
+			new DefaultConstrainedMutableValueModel<Boolean>();
 		
 		assertNull(m.get());				
 		m.set(Boolean.TRUE);

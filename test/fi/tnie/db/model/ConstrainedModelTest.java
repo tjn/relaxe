@@ -6,6 +6,7 @@ package fi.tnie.db.model;
 import fi.tnie.db.model.cm.ChangeSet;
 import fi.tnie.db.model.cm.ConstrainedBinaryOperatorModel;
 import fi.tnie.db.model.cm.ConstrainedMutableValueModel;
+import fi.tnie.db.model.cm.DefaultConstrainedMutableValueModel;
 import fi.tnie.db.model.cm.ConstrainedValueModel;
 import fi.tnie.db.model.cm.Proposition;
 import junit.framework.TestCase;
@@ -13,11 +14,11 @@ import junit.framework.TestCase;
 public class ConstrainedModelTest extends TestCase {
 
 	public void testConstrainedModel() {		
-		ConstrainedValueModel<Boolean> a = 
-			new ConstrainedMutableValueModel<Boolean>();
+		ConstrainedMutableValueModel<Boolean> a = 
+			new DefaultConstrainedMutableValueModel<Boolean>();
 		
-		ConstrainedValueModel<Boolean> b = 
-			new ConstrainedMutableValueModel<Boolean>();
+		ConstrainedMutableValueModel<Boolean> b = 
+			new DefaultConstrainedMutableValueModel<Boolean>();
 		 
 		ConstrainedBinaryOperatorModel<Boolean, Boolean, Boolean> op = 
 			new ConstrainedBinaryOperatorModel<Boolean, Boolean, Boolean>(a, b) {
@@ -64,6 +65,7 @@ public class ConstrainedModelTest extends TestCase {
 			ChangeSet cs = new ChangeSet();		
 			cs.add(a, Boolean.FALSE);
 			cs.add(b, Boolean.TRUE);
+			
 			committed = cs.apply();	
 			assertTrue(committed);
 			assertEquals(1, cc.getCount());
@@ -106,6 +108,7 @@ public class ConstrainedModelTest extends TestCase {
 			assertNull(op.get());
 		}		
 	}
+
 	
 	
 	

@@ -5,7 +5,7 @@ package fi.tnie.db.model.cm;
 
 
 public class ConstrainedIntegerModel
-	extends ConstrainedMutableValueModel<Integer> {
+	extends DefaultConstrainedMutableValueModel<Integer> {
 	
 	public ConstrainedIntegerModel() {
 		super();
