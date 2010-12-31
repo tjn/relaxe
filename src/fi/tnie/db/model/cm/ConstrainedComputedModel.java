@@ -19,14 +19,9 @@ public abstract class ConstrainedComputedModel<V, S>
 			@Override
 			public void apply(ChangeSet cs, Proposition change) {
 				S proposed = source.proposed(cs);				
-				V result = compute(proposed);
-								
-				Proposition np = cs.submit(ConstrainedComputedModel.this, result, change);
-				
-				if (np.isRejected()) {
-					// reject the dependent model
-					change.reject();
-				}
+				V result = compute(proposed);								
+				// rejection of implied proposition also rejects 'p'
+				cs.submit(ConstrainedComputedModel.this, result, change);
 			}
 		});
 		
