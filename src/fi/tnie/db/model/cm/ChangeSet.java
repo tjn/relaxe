@@ -87,7 +87,7 @@ public class ChangeSet
 	
 	private void submit() {
 		// Calls to ConstrainedValueModel.submit(ChangeSet cs, Proposition p)
-		// may cause the dependent models to be added in this change-set.
+		// may cause dependent models to be added in this change-set.
 		// By taking a snapshot of the key-set we avoid   
 		// ConcurrentModificationExceptions:
 		
