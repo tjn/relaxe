@@ -18,9 +18,15 @@ public abstract class AbstractProposition
 	}
 
 	@Override
-	public void reject() {
+	public void reject() {		
 		// new Exception("").printStackTrace(System.err);		
 		this.rejectCount++;
+		
+		Proposition ip = impliedBy();
+		
+		if (ip != null) {
+			ip.reject();
+		}		
 	}
 	
 	public boolean isRejected() {

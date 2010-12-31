@@ -21,7 +21,7 @@ public abstract class ConstrainedComputedModel<V, S>
 				S proposed = source.proposed(cs);				
 				V result = compute(proposed);
 								
-				Proposition np = cs.submit(ConstrainedComputedModel.this, result);
+				Proposition np = cs.submit(ConstrainedComputedModel.this, result, change);
 				
 				if (np.isRejected()) {
 					// reject the dependent model

@@ -16,4 +16,12 @@ public interface Proposition {
 	void commit();
 	boolean isRejected();
 	boolean isCommitted();
+	
+	/**
+	 * Returns a proposition which implies this proposition.
+	 * Returns <code>null</code> this proposition is not implied by any other proposition. 
+	 *     
+	 * @return
+	 */
+	Proposition impliedBy();
 }

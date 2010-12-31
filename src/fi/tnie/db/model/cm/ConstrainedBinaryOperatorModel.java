@@ -17,7 +17,7 @@ public abstract class ConstrainedBinaryOperatorModel<V, A, B>
 				B bv = b.proposed(cs);				
 				V newValue = compute(av, bv);	
 								
-				Proposition np = cs.submit(ConstrainedBinaryOperatorModel.this, newValue);
+				Proposition np = cs.submit(ConstrainedBinaryOperatorModel.this, newValue, p);
 																				
 				if (np.isRejected()) {
 					p.reject();

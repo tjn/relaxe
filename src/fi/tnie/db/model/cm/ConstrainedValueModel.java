@@ -16,7 +16,7 @@ public interface ConstrainedValueModel<V>
 	 * @param newValue
 	 * @return
 	 */	
-	Proposition propose(ChangeSet cs, V newValue);
+	Proposition propose(ChangeSet cs, V newValue, Proposition impliedBy);
 	
 	/**
 	 * Submits the proposition and returns it.  

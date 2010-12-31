@@ -50,12 +50,12 @@ public abstract class AbstractConstrainedValueModel<V>
 		return p;
 	}
 	
-	public Proposition propose(ChangeSet cs, final V newValue) {
+	public Proposition propose(ChangeSet cs, final V newValue, Proposition impliedBy) {
 		if (cs == null) {
 			throw new NullPointerException("cs");
 		}
 		
-		Proposition p = createProposition(newValue);
+		Proposition p = createProposition(newValue, impliedBy);
 		getPropositionMap().put(cs, newValue);
 		
 		return p;		
@@ -64,7 +64,7 @@ public abstract class AbstractConstrainedValueModel<V>
 	public Proposition apply(V newValue) {
 		ChangeSet cs = new ChangeSet(); // atomic change
 		
-		Proposition p = cs.submit(this, newValue);
+		Proposition p = cs.submit(this, newValue, null);
 		
 		if (!p.isRejected()) {
 			cs.commit();
@@ -73,8 +73,8 @@ public abstract class AbstractConstrainedValueModel<V>
 		return p;
 	}
 
-	protected Proposition createProposition(V newValue) {
-		return new SimpleProposition<V>(this, newValue) {
+	protected Proposition createProposition(V newValue, Proposition impliedBy) {
+		return new SimpleProposition<V>(this, newValue, impliedBy) {
 			@Override
 			protected void apply() {				
 				AbstractConstrainedValueModel<V> m = AbstractConstrainedValueModel.this;				

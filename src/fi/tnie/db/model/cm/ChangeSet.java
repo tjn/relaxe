@@ -24,7 +24,7 @@ public class ChangeSet
 	 * @return
 	 */
 	public <V> Proposition add(final ConstrainedValueModel<V> model, V proposed) {
-		return add(model, proposed, false);  
+		return add(model, proposed, false, null);  
 	}
 	
 	/**
@@ -34,12 +34,12 @@ public class ChangeSet
 	 * @param proposed
 	 * @return
 	 */	
-	public <V> Proposition submit(final ConstrainedValueModel<V> model, V proposed) {
-		return add(model, proposed, true);  
+	public <V> Proposition submit(final ConstrainedValueModel<V> model, V proposed, Proposition impliedBy) {
+		return add(model, proposed, true, impliedBy);  
 	}
 		
-	private <V> Proposition add(final ConstrainedValueModel<V> model, V proposed, boolean submit) {		
-		Proposition p = model.propose(this, proposed);
+	private <V> Proposition add(final ConstrainedValueModel<V> model, V proposed, boolean submit, Proposition impliedBy) {		
+		Proposition p = model.propose(this, proposed, impliedBy);
 		getPropositionMap().put(model, p);
 		
 		if (submit) {
@@ -121,4 +121,10 @@ public class ChangeSet
 
 		return propositionMap;
 	}
+
+	@Override
+	public Proposition impliedBy() {
+		return null;
+	}
+	
 }

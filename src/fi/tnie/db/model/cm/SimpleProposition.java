@@ -14,12 +14,18 @@ public abstract class SimpleProposition<V>
 	implements Change<V> {
 	
 	private V from;	
-	private V to;		
+	private V to;
+	private Proposition impliedBy;
+	
+	public SimpleProposition(ValueModel<V> from, V to) {
+		this(from, to, null);
+	}
 	 			
-	SimpleProposition(ValueModel<V> from, V to) {
+	public SimpleProposition(ValueModel<V> from, V to, Proposition impliedBy) {
 		super();		
 		this.from = from.get();
-		this.to = to;
+		this.to = to;		
+		this.impliedBy = impliedBy;
 	}
 
 	public V from() {
@@ -28,5 +34,10 @@ public abstract class SimpleProposition<V>
 
 	public V to() {
 		return this.to;
-	}	
+	}
+	
+	@Override	
+	public Proposition impliedBy() {
+		return this.impliedBy;
+	}
 }

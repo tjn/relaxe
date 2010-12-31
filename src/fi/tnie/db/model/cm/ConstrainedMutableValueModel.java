@@ -3,9 +3,7 @@
  */
 package fi.tnie.db.model.cm;
 
-import fi.tnie.db.model.DefaultImmutableModel;
 import fi.tnie.db.model.MutableValueModel;
-import fi.tnie.db.model.ValueModel;
 
 public class ConstrainedMutableValueModel<V>
 	extends AbstractConstrainedValueModel<V>
@@ -34,8 +32,8 @@ public class ConstrainedMutableValueModel<V>
 	}
 	
 	@Override
-	protected Proposition createProposition(V newValue) {
-		return new SimpleProposition<V>(this, newValue) {
+	protected Proposition createProposition(V newValue, Proposition impliedBy) {
+		return new SimpleProposition<V>(this, newValue, impliedBy) {
 			@Override
 			protected void apply() {
 				ConstrainedMutableValueModel<V> m = ConstrainedMutableValueModel.this;
