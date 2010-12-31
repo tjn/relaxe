@@ -110,5 +110,9 @@ public abstract class AbstractValueModel<V>
 
 		return immutable;
 	}
-
+	
+	@Override
+	public boolean isMutable() {
+		return (asMutable() != null);
+	}
 }

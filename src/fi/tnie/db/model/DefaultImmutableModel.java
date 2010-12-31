@@ -37,4 +37,9 @@ public class DefaultImmutableModel<V>
 	public ImmutableValueModel<V> asImmutable() {	
 		return this;
 	}
+	
+	@Override
+	public boolean isMutable() {	
+		return false;
+	}
 }

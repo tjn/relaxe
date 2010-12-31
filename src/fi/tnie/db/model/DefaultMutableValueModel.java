@@ -28,4 +28,6 @@ public class DefaultMutableValueModel<V>
 		this.value = newValue;
 		fireIfChanged(from, this.value);
 	}
+	
+	
 }

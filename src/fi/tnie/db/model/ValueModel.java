@@ -37,6 +37,13 @@ public interface ValueModel<V> {
 	MutableValueModel<V> asMutable();
 	
 	/**
+	 * Returns true if and only if this model is mutable. 
+	 *   
+	 * @return
+	 */	
+	boolean isMutable();
+	
+	/**
 	 * If this model is immutable, returns itself. 
 	 * If this model is mutable, wraps itself in immutable model and returns the immmmutable view. 
 	 *   
