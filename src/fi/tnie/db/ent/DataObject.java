@@ -3,10 +3,29 @@
  */
 package fi.tnie.db.ent;
 
-import fi.tnie.db.rpc.Holder;
+import fi.tnie.db.expr.ColumnExpr;
+import fi.tnie.db.expr.QueryExpression;
+import fi.tnie.db.expr.ValueExpression;
+import fi.tnie.db.rpc.PrimitiveHolder;
 
 public interface DataObject
 {	
-	Holder<?, ?> get(Identifiable a);
-	void set(Identifiable a, Holder<?, ?> h);
+	PrimitiveHolder<?, ?> get(int index);
+	
+	/**
+	 * May return null if data object is not read from result-set 
+	 * or value does not map to table column. 
+	 *  
+	 * @param a
+	 * @return
+	 */
+	MetaData meta();
+	
+	public interface MetaData {		
+		public int getColumnCount();
+		public QueryExpression getQuery();
+		public ColumnExpr column(int index);
+		public ValueExpression expr(int index);
+	}
+
 }

@@ -7,8 +7,7 @@ import java.io.Serializable;
 
 import fi.tnie.db.types.Type;
 
-/**
- * 
+/** 
  * @author Topi Nieminen <topi.nieminen@gmail.com>
  */
 public abstract class Holder<V extends Serializable, T extends Type<T>>
@@ -38,7 +37,8 @@ public abstract class Holder<V extends Serializable, T extends Type<T>>
 		V a = value();
 		Object b = another.value();
 		
-		boolean result = (a == null) ? 
+		boolean result = 
+				(a == null) ? 
 				(b == null) : 
 				(b == null) ? false : a.equals(b);
 				

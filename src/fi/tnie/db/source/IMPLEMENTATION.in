@@ -1,18 +1,23 @@
 package {{package-name}};
 
-import fi.tnie.db.ent.DefaultEntityMetaData;
+import fi.tnie.db.ent.EnumMetaData;
 import fi.tnie.db.ent.EntityFactory;
+import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.BaseTable;
+import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.rpc.ReferenceHolder;
 {{imports}}
 
 public class {{table-impl-class}}
     extends {{table-impl-base}} {
     
+    private ReferenceHolder<{{table-interface}}, {{table-interface}}.Type> holder;
+    
     public static class {{table-interface}}MetaData
-        extends DefaultEntityMetaData
+        extends EnumMetaData
     <
         {{table-interface}}.Attribute, 
-        {{table-interface}}.Reference, 
-        {{table-interface}}.Query, 
+        {{table-interface}}.Reference,
         {{table-interface}}.Type,
         {{table-interface}}> {
 
@@ -20,7 +25,7 @@ public class {{table-impl-class}}
         private final Factory factory = new Factory();
     
         public {{table-interface}}MetaData() {
-            super({{table-interface}}.Attribute.class, {{table-interface}}.Reference.class, {{table-interface}}.Query.class);
+            super({{table-interface}}.Attribute.class, {{table-interface}}.Reference.class);
         }
         
         @Override
@@ -35,7 +40,17 @@ public class {{table-impl-class}}
         @Override
 	    public Type getType() {
 	     	return {{table-interface}}.TYPE;
-	    }        
+	    }   
+	    
+	    @Override
+		protected Column map(BaseTable table, Attribute a) {		
+			return table.columnMap().get(a.identifier());
+		}
+
+		@Override
+		protected ForeignKey map(BaseTable table, Reference r) {
+			return table.foreignKeys().get(r.identifier());			
+		}
     }    
         
 	/**
@@ -52,7 +67,7 @@ public class {{table-impl-class}}
     }
     
     public static class Factory
-    	implements EntityFactory<{{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Query, {{table-interface}}.Type, {{table-interface}}> {
+    	implements EntityFactory<{{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Type, {{table-interface}}> {
         @Override
         public {{table-impl-base}} newInstance() {
            return new {{table-impl-class}}();
@@ -63,6 +78,16 @@ public class {{table-impl-class}}
     public {{table-impl-base}} self() {     
         return this;
     }
+    
+    @Override
+	public ReferenceHolder<{{table-interface}}, {{table-interface}}.Type> ref() {
+		if (holder == null) {
+			holder = new {{table-interface}}.Holder(this);		
+		}
+
+		return holder;		
+	}
+    
         
     {{accessor-list}}
 } 

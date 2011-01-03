@@ -10,16 +10,15 @@ import fi.tnie.db.types.ReferenceType;
 
 
 public class EmptyEntityQueryResult<
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable,
-	Q extends Enum<Q> & Identifiable,
+	A,
+	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, Q, T, ? extends E>
-> extends AbstractEntityQueryResult<A, R, Q, T, E> {
+	E extends Entity<A, R, T, ? extends E>
+> extends AbstractEntityQueryResult<A, R, T, E> {
 		
 	private List<E> content;
 	
-	public EmptyEntityQueryResult(EntityQuery<A, R, Q, T, E> source, long available) {		
+	public EmptyEntityQueryResult(EntityQuery<A, R, T, E> source, long available) {		
 		super(source, available);		
 		this.content = Collections.emptyList();
 	}

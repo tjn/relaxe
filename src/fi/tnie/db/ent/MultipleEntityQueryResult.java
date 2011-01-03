@@ -9,16 +9,15 @@ import java.util.List;
 import fi.tnie.db.types.ReferenceType;
 
 public class MultipleEntityQueryResult<
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable,
-	Q extends Enum<Q> & Identifiable,
+	A,
+	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, Q, T, ? extends E>
-> extends AbstractEntityQueryResult<A, R, Q, T, E>{		
+	E extends Entity<A, R, T, ? extends E>
+> extends AbstractEntityQueryResult<A, R, T, E>{		
 
 	private List<E> content;
 			
-	public MultipleEntityQueryResult(EntityQuery<A, R, Q, T, E> source, List<E> content, long available) {		
+	public MultipleEntityQueryResult(EntityQuery<A, R, T, E> source, List<E> content, long available) {		
 		super(source, available);
 		
 		if (content == null) {

@@ -243,7 +243,7 @@ public class BuilderTest
         int tableCount = tables.keySet().size();
         assertTrue(tableCount > 0);
         
-        Map<BaseTable, EntityMetaData<?, ?, ?, ?, ?>> mm = dec.getMetaMap();
+        Map<BaseTable, EntityMetaData<?, ?, ?, ?>> mm = dec.getMetaMap();
         assertNotNull(mm);
         assertFalse(mm.isEmpty());
         
@@ -252,7 +252,7 @@ public class BuilderTest
         Comparator<Identifier> icmp = env.identifierComparator();
         Identifier pub = env.createIdentifier(SCHEMA_PUBLIC);
         
-        for (EntityMetaData<?, ?, ?, ?, ?> m : mm.values()) {
+        for (EntityMetaData<?, ?, ?, ?> m : mm.values()) {
 			Schema s = m.getBaseTable().getSchema();
 			
 			if (icmp.compare(s.getUnqualifiedName(), pub) == 0) {
@@ -266,7 +266,7 @@ public class BuilderTest
         BaseTable tab = cat.schemas().get(SCHEMA_PUBLIC).baseTables().get(TABLE_COUNTRY);
         assertNotNull(tab);
                         
-        EntityMetaData<?, ?, ?, ?, ?> m = ec.getMetaData(tab);
+        EntityMetaData<?, ?, ?, ?> m = ec.getMetaData(tab);
         assertNotNull(m);        
                                         
         logger().debug("generation OK.");

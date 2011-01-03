@@ -8,9 +8,9 @@ import java.sql.Connection;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.TableMapper;
-import fi.tnie.db.genctx.CatalogContext;
 import fi.tnie.db.gen.ent.personal.DefaultPerson;
 import fi.tnie.db.gen.ent.personal.PersonalFactory;
+import fi.tnie.db.genctx.CatalogContext;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.DBMetaTestCase;
@@ -30,7 +30,7 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
         
         // ClassLoader gcl = createClassLoaderForGenerated();
         ClassLoader gcl = null;
-        
+                
         CatalogContext cc = new CatalogContext(cat, gcl, tm);
                         
         assertEquals(cat, cc.boundTo());                
@@ -47,10 +47,10 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
         
         assertTrue(cc.getMetaMap().containsKey(ct));               
                         
-        EntityMetaData<?, ?, ?, ?, ?> meta = cc.getMetaData(ct);
+        EntityMetaData<?, ?, ?, ?> meta = cc.getMetaData(ct);
         assertNotNull(meta);
                 
-        EntityFactory<?, ?, ?, ?, ?> ef = meta.getFactory();
+        EntityFactory<?, ?, ?, ?> ef = meta.getFactory();
         assertNotNull(ef);
                 
         PersonalFactory pf = cc.newPersonalFactory();

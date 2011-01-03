@@ -2,10 +2,11 @@ package {{package-name}};
 
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.DataType;
 import fi.tnie.db.meta.impl.DataTypeImpl;
+// {{imports}}
+
 
 public enum {{literal-table-enum}}
 	implements LiteralCatalog.LiteralColumn, LiteralCatalog.Initializable {

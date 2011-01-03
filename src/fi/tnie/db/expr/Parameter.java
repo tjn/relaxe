@@ -72,6 +72,13 @@ public abstract class Parameter
 		return this;
 	}
 	
-	
+	@Override
+	public ColumnExpr getTableColumnExpr(int column) {
+		if (column != 1) {
+			throw new IndexOutOfBoundsException(Integer.toString(column));
+		}
+		
+		return null;
+	}
 	
 }

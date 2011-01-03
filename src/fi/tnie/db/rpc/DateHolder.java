@@ -9,7 +9,7 @@ import fi.tnie.db.types.DateType;
 
 
 public class DateHolder
-	extends Holder<Date, DateType> {
+	extends PrimitiveHolder<Date, DateType> {
 		
 	/**
 	 * 

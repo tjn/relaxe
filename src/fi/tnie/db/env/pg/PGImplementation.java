@@ -11,7 +11,6 @@ import fi.tnie.db.ExtractorMap;
 import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.Identifiable;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.DefaultImplementation;
 import fi.tnie.db.env.GeneratedKeyHandler;
@@ -59,11 +58,10 @@ public class PGImplementation
 
 		@Override
 		public <
-			A extends Enum<A> & Identifiable, 
-			R extends Enum<R> & Identifiable, 
-			Q extends Enum<Q> & Identifiable, 
+			A,
+			R, 
 			T extends ReferenceType<T>,
-			E extends Entity<A, R, Q, T, ? extends E>
+			E extends Entity<A, R, T, ? extends E>
 		> 
 		void processGeneratedKeys(
 				InsertStatement ins, E target, ResultSet rs) throws SQLException {
@@ -73,10 +71,10 @@ public class PGImplementation
 //				
 			ResultSetMetaData meta = rs.getMetaData();
 
-			EntityMetaData<A, R, Q, T, ? extends E> em = target.getMetaData();
+			EntityMetaData<A, R, T, ? extends E> em = target.getMetaData();
 			
-			ExtractorMap<A, R, Q, T, E> xm = 
-				new ExtractorMap<A, R, Q, T, E>(meta, em, extractorFactory);				
+			ExtractorMap<A, R, T, E> xm = 
+				new ExtractorMap<A, R, T, E>(meta, em, extractorFactory);				
 //			List<A> keys = new ArrayList<A>();
 													
 			xm.extract(rs, target);

@@ -10,13 +10,13 @@ import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityContext;
 import fi.tnie.db.ent.TableMapper;
-import fi.tnie.db.expr.ColumnName;
+// import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.SchemaElementName;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Constraint;
-import fi.tnie.db.meta.DataType;
+// import fi.tnie.db.meta.DataType;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
@@ -41,7 +41,7 @@ public class LiteralCatalog
 	private Identifier name;
 	private Environment environment;	
 	private DefaultMutableCatalog content;
-	private EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?, ?>> metaMap;
+	private EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?>> metaMap;
 	
 	private Map<LiteralTable, DefaultMutableTable> mutableTableMap;
 	private Map<LiteralColumn, DefaultMutableColumn> mutableColumnMap;		
@@ -165,12 +165,12 @@ public class LiteralCatalog
 //		Not sure if GWT compiler honors this behavior, though.
 	}
 	
-	private void populateMetaMap(EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?, ?>> mm) 
+	private void populateMetaMap(EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?>> mm) 
 		throws EntityException {
 {{meta-map-population}}
 	}
 	
-	private void add(EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?, ?>> mm, LiteralBaseTable t, EntityMetaData<?, ?, ?, ?, ?> meta) 
+	private void add(EnumMap<LiteralBaseTable, EntityMetaData<?,?,?,?>> mm, LiteralBaseTable t, EntityMetaData<?,?,?,?> meta) 
 		throws EntityException {
 		meta.bind(t.getTable());
 		mm.put(t, meta);
@@ -544,14 +544,14 @@ public class LiteralCatalog
 	}
 	
 	@Override
-	public EntityMetaData<?, ?, ?, ?, ?> getMetaData(BaseTable table)  {
+	public EntityMetaData<?, ?, ?, ?> getMetaData(BaseTable table)  {
 		return this.metaMap.get(table);
 	}
 
-	private EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?, ?>> getMetaMap() 
+	private EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?>> getMetaMap() 
 		throws EntityException {
 		if (metaMap == null) {
-			metaMap = new EnumMap<LiteralBaseTable, EntityMetaData<?,?,?,?,?>>(LiteralBaseTable.class);
+			metaMap = new EnumMap<LiteralBaseTable, EntityMetaData<?,?,?,?>>(LiteralBaseTable.class);
 			populateMetaMap(metaMap);			
 		}
 

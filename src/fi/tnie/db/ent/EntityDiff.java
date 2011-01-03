@@ -20,11 +20,10 @@ import fi.tnie.db.types.ReferenceType;
  */
 
 public interface EntityDiff<
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable,	
-	Q extends Enum<Q> & Identifiable,
+	A,
+	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, Q, T, ? extends E>>
+	E extends Entity<A, R, T, ? extends E>>
 {	
 	/**
 	 * "Total" difference between original and modified entity.
@@ -48,9 +47,13 @@ public interface EntityDiff<
 	E getOriginal();
 	E getModified();
 	
-	/**  
+	/**	 *   
 	 * @return
 	 */
 	Map<A, Change> attributes();
-	Map<R, Change> references();	
+	
+	/**  
+	 * @return
+	 */
+	Map<R, Change> references();
 }

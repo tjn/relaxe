@@ -6,17 +6,16 @@ package fi.tnie.db.ent;
 import fi.tnie.db.types.ReferenceType;
 
 public abstract class AbstractEntityQueryResult <
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable,
-	Q extends Enum<Q> & Identifiable,
+	A,
+	R, 
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, Q, T, ? extends E>>
-	implements EntityQueryResult<A, R, Q, T, E>
+	E extends Entity<A, R, T, ? extends E>>
+	implements EntityQueryResult<A, R, T, E>
 {
-	private EntityQuery<A, R, Q, T, E> source; 
+	private EntityQuery<A, R, T, E> source; 
 	private long available;
 	
-	protected AbstractEntityQueryResult(EntityQuery<A, R, Q, T, E> source, long available) {		
+	protected AbstractEntityQueryResult(EntityQuery<A, R, T, E> source, long available) {		
 		if (source == null) {
 			throw new NullPointerException("'source' must not be null");
 		}
@@ -26,7 +25,7 @@ public abstract class AbstractEntityQueryResult <
 	}
 	
 	@Override
-	public EntityQuery<A, R, Q, T, E> getSource() {		
+	public EntityQuery<A, R, T, E> getSource() {		
 		return this.source;
 	}
 	
@@ -34,5 +33,4 @@ public abstract class AbstractEntityQueryResult <
 	public long getAvailable() {		
 		return this.available;
 	}
-
 }

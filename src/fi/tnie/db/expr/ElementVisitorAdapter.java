@@ -59,7 +59,7 @@ public class ElementVisitorAdapter implements ElementVisitor {
 	}
 
 	@Override
-	public VisitContext start(VisitContext vc, TableColumnExpr e) {
+	public VisitContext start(VisitContext vc, ColumnReference e) {
 		return null;
 	}
 

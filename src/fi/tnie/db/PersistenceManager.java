@@ -17,7 +17,6 @@ import fi.tnie.db.ent.DefaultEntityQuery;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.Identifiable;
 import fi.tnie.db.env.GeneratedKeyHandler;
 import fi.tnie.db.expr.Assignment;
 import fi.tnie.db.expr.ColumnExpr;
@@ -27,7 +26,7 @@ import fi.tnie.db.expr.ElementList;
 import fi.tnie.db.expr.InsertStatement;
 import fi.tnie.db.expr.Predicate;
 import fi.tnie.db.expr.SQLSyntax;
-import fi.tnie.db.expr.TableColumnExpr;
+import fi.tnie.db.expr.ColumnReference;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.expr.UpdateStatement;
 import fi.tnie.db.expr.ValueExpression;
@@ -38,20 +37,20 @@ import fi.tnie.db.expr.op.Eq;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.ReferenceType;
 
 public class PersistenceManager<
-    A extends Enum<A> & Identifiable, 
-    R extends Enum<R> & Identifiable,
-    Q extends Enum<Q> & Identifiable,
+    A,
+    R,
     T extends ReferenceType<T>,
-    E extends Entity<A, R, Q, T, ? extends E>>
+    E extends Entity<A, R, T, ? extends E>>
 {
     
     private class Query
-        extends DefaultEntityQuery<A, R, Q, T, E>
+        extends DefaultEntityQuery<A, R, T, E>
     {
-        public Query(EntityMetaData<A, R, Q, T, ? extends E> meta) {
+        public Query(EntityMetaData<A, R, T, ? extends E> meta) {
             super(meta);
         }       
     }
@@ -65,7 +64,7 @@ public class PersistenceManager<
 
     public DeleteStatement createDeleteStatement() throws EntityException {
         E pe = getTarget();
-        final EntityMetaData<?, ?, ?, ?, ?> meta = pe.getMetaData();
+        final EntityMetaData<?, ?, ?, ?> meta = pe.getMetaData();
         
 //        Environment env = meta.getCatalog().getEnvironment();
 //		SQLSyntax stx = env.getSyntax();
@@ -85,7 +84,7 @@ public class PersistenceManager<
         E pe = getTarget();        
     	ValueRow newRow = new ValueRow();
     	 
-    	final EntityMetaData<A, R, Q, T, ? extends E> meta = pe.getMetaData();				
+    	final EntityMetaData<A, R, T, ? extends E> meta = pe.getMetaData();				
     	BaseTable t = meta.getBaseTable();
     			
     	ElementList<ColumnName> names = new ElementList<ColumnName>();
@@ -93,22 +92,24 @@ public class PersistenceManager<
     	for (A a : meta.attributes()) {    	    
     		Column col = meta.getColumn(a);
     		
-    		Object value = pe.get(a);
+//    		Object value = pe.value(a);
+    		PrimitiveHolder<?, ?> holder = pe.value(a);
     		
-    		if (value == null && col.isPrimaryKeyColumn()) {
+    		if (holder.isNull() && col.isPrimaryKeyColumn()) {
     		    // this might be auto-increment pk-column
     		    // newRow.add(new ValueExpression());
     		}    		
-    		else {
-                ValueParameter p = new ValueParameter(col, value);
+    		else {    			
+                ValueParameter p = new ValueParameter(col, holder.value());
                 newRow.add(p);
                 names.add(col.getColumnName());    		    
     		}
-    	}		
+    	}
+    	
     	
     	for (R r : meta.relationships()) {
             ForeignKey fk = meta.getForeignKey(r);
-            Entity<?, ?, ?, ?, ?> ref = pe.get(r);
+            Entity<?, ?, ?, ?> ref = pe.ref(r).value();
                         
             if (ref == null) {
                 for (Column c : fk.columns().keySet()) {
@@ -134,7 +135,7 @@ public class PersistenceManager<
     public UpdateStatement createUpdateStatement() throws EntityException {
         E pe = getTarget();
     
-    	final EntityMetaData<A, R, Q, T, ? extends E> meta = pe.getMetaData();
+    	final EntityMetaData<A, R, T, ? extends E> meta = pe.getMetaData();
     	// TableReference tref = meta.createTableRef();
     	TableReference tref = new TableReference(meta.getBaseTable());
     	    	
@@ -149,31 +150,33 @@ public class PersistenceManager<
     	    	 		
     	for (A a : meta.attributes()) {			
     		Column col = meta.getColumn(a);
-    		Object value = pe.get(a);
+    		Object value = pe.value(a).value();
     		ValueParameter vp = new ValueParameter(col, value);						
     		assignments.add(new Assignment(col.getColumnName(), vp));
     	}
-    	    	
+    	    
     	
-        for (R r : meta.relationships()) {          
-            ForeignKey fk = meta.getForeignKey(r);         
-            Entity<?,?,?,?,?> ref = pe.get(r);
-            
-            if (ref == null) {
-                for (Column c : fk.columns().keySet()) {
-                    assignments.add(new Assignment(c.getColumnName(), null));
-                }
-            }
-            else {
-                for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
-                    Column fc = ce.getValue();
-                    Object o = ref.get(fc);
-                    Column column = ce.getKey();                                        
-                    ValueParameter vp = new ValueParameter(column, o);
-                    assignments.add(new Assignment(column.getColumnName(), vp));
-                }
-            }
-        }
+    	// TODO: check
+    	
+//        for (R r : meta.relationships()) {          
+//            ForeignKey fk = meta.getForeignKey(r);         
+//            Entity<?,?,?,?,?> ref = pe.get(r);
+//            
+//            if (ref == null) {
+//                for (Column c : fk.columns().keySet()) {
+//                    assignments.add(new Assignment(c.getColumnName(), null));
+//                }
+//            }
+//            else {
+//                for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
+//                    Column fc = ce.getValue();
+//                    Object o = ref.get(fc);
+//                    Column column = ce.getKey();                                        
+//                    ValueParameter vp = new ValueParameter(column, o);
+//                    assignments.add(new Assignment(column.getColumnName(), vp));
+//                }
+//            }
+//        }
     				
     	return new UpdateStatement(tref, assignments, p);
     }
@@ -226,21 +229,6 @@ public class PersistenceManager<
 			if (rs.next()) {			
 				GeneratedKeyHandler kh = getKeyHandler();				
 				kh.processGeneratedKeys(q, pe, rs);
-				
-//				
-//								
-//				for (int i = 1; i <= cc; i++) {					
-//					A attr = keys.get(i - 1);
-//					
-//					if (attr != null) {
-//						Object value = rs.getObject(i);
-//						pe.set(attr, value);
-//					}
-//															
-////					String col = rs.getString(i);
-////					buf.append(col);
-////					buf.append("\t");
-//				}
 			}
 				
 //				logger().debug(buf.toString());				
@@ -259,8 +247,8 @@ public class PersistenceManager<
         Query pq = getQuery();
         TableReference tref = pq.getTableRef();
         
-        DefaultEntityQueryTask<A, R, Q, T, E> qt = 
-        	new DefaultEntityQueryTask<A, R, Q, T, E>(pq);  
+        DefaultEntityQueryTask<A, R, T, E> qt = 
+        	new DefaultEntityQueryTask<A, R, T, E>(pq);  
                               
     	Predicate pkp = getPKPredicate(tref, getTarget());
     	E stored = null; 
@@ -312,7 +300,7 @@ public class PersistenceManager<
 
     private Predicate getPKPredicate() throws EntityException {
         E pe = getTarget();
-    	EntityMetaData<A, R, Q, T, ? extends E> meta = pe.getMetaData();
+    	EntityMetaData<A, R, T, ? extends E> meta = pe.getMetaData();
     	TableReference tref = new TableReference(meta.getBaseTable());
     	Predicate pkp = getPKPredicate(tref, pe);
         return pkp;
@@ -338,10 +326,10 @@ public class PersistenceManager<
 //      A extends Enum<A> & Identifiable, 
 //      R extends Enum<R> & Identifiable, 
 //      Q extends Enum<Q> & Identifiable, 
-//      E extends Entity<A, R, Q, ? extends E>
+//      E extends Entity<A, ? extends E>
 //    > 
-//    PersistenceManager<A, R, Q, ? extends E> newInstance(E pe) {
-//        return new PersistenceManager<A, R, Q, E>(pe);
+//    PersistenceManager<A, ? extends E> newInstance(E pe) {
+//        return new PersistenceManager<A, E>(pe);
 //    }
 
 
@@ -363,7 +351,7 @@ public class PersistenceManager<
             throw new NullPointerException();
         }
         
-        EntityMetaData<A, R, Q, T, ? extends E> meta = pe.getMetaData();
+        EntityMetaData<A, R, T, ? extends E> meta = pe.getMetaData();
         Set<Column> pkcols = meta.getPKDefinition();
             
         if (pkcols.isEmpty()) {
@@ -381,27 +369,27 @@ public class PersistenceManager<
                 return null;
             }
             
-            ColumnExpr ce = new TableColumnExpr(tref, col);
+            ColumnReference cr = new ColumnReference(tref, col);
             ValueParameter param = new ValueParameter(col, o);
-            p = AndPredicate.newAnd(p, eq(ce, param));
+            p = AndPredicate.newAnd(p, eq(cr, param));
         }
         
         return p;
     }
     
     
-    public Object get(Entity<A, R, Q, T, E> pe, Column column)
+    public Object get(Entity<A, R, T, E> pe, Column column)
         throws NullPointerException {
         if (column == null) {
             throw new NullPointerException("'c' must not be null");
         }
         
-        EntityMetaData<A, R, Q, T, E> m = pe.getMetaData();
+        EntityMetaData<A, R, T, E> m = pe.getMetaData();
         
         A a = m.getAttribute(column);
         
         if (a != null) {
-            return pe.get(a);
+            return pe.value(a).value();
         }
         
         // column may be part of multiple
@@ -412,11 +400,11 @@ public class PersistenceManager<
             return null;
         }
     
-        Entity<?, ?, ?, ?, ?> ref = null;
+        Entity<?, ?, ?, ?> ref = null;
         R r = null;
         
         for (R ri : rs) {
-            ref = pe.get(r);
+            ref = pe.ref(r).value();
             
             if (ref != null) {              
                 r = ri;

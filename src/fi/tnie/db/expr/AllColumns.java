@@ -71,12 +71,15 @@ public abstract class AllColumns
 		return cc;
 	}
 	
+	public ValueExpression getColumnExpr(final int column) {
+		return getTableColumnExpr(column);
+	}
 	
 	
 	@Override
-	public ValueExpression getColumnExpr(final int column) {
+	public ColumnExpr getTableColumnExpr(final int column) {
 		int c = 0;	
-		ValueExpression e = null;
+		ColumnExpr e = null;
 		
 		int index = column - 1;
 		
@@ -93,7 +96,7 @@ public abstract class AllColumns
 			
 			if (column <= c) {
 				int pos = c - column;				
-				e = tref.getAllColumns().getColumnExpr(pos);
+				e = tref.getAllColumns().getTableColumnExpr(pos);
 				break;
 			}
 		}

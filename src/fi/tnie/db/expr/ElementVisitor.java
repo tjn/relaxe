@@ -20,7 +20,7 @@ public interface ElementVisitor {
 	VisitContext start(VisitContext vc, AbstractTableReference e);
 	VisitContext start(VisitContext vc, JoinType e);
 	VisitContext start(VisitContext vc, Name e);
-	VisitContext start(VisitContext vc, TableColumnExpr e);
+	VisitContext start(VisitContext vc, ColumnReference e);
 	VisitContext start(VisitContext vc, Symbol e);
 	VisitContext start(VisitContext vc, SchemaElementName e);
 	VisitContext start(VisitContext vc, Parameter e);

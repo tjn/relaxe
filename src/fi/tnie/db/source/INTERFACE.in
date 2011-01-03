@@ -3,12 +3,12 @@ package {{package-name}};
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.Identifiable;
 import fi.tnie.db.types.ReferenceType;
+import fi.tnie.db.rpc.ReferenceHolder;
 
 public interface {{table-interface}}
     extends Entity<
         {{table-interface}}.Attribute,
-        {{table-interface}}.Reference,
-        {{table-interface}}.Query,
+        {{table-interface}}.Reference,        
         {{table-interface}}.Type,
         {{table-interface}}
     > {
@@ -16,7 +16,29 @@ public interface {{table-interface}}
 	class Type extends ReferenceType<Type> {	
 	}
 
-	Type TYPE = new Type();    
+	Type TYPE = new Type();
+	
+	public static class Holder
+		extends ReferenceHolder<{{table-interface}}, {{table-interface}}.Type> {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;		
+		public static final Holder NULL = new Holder();
+		
+		private Holder() {			
+		}
+
+		public Holder({{table-interface}} value) {
+			super(value);
+		}
+	
+		@Override
+		public Type getType() {
+			return {{table-interface}}.TYPE;
+		}
+	}
         
     {{attribute-name-type}}    
     {{reference-name-type}}    

@@ -3,21 +3,20 @@
  */
 package fi.tnie.db.ent;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import fi.tnie.db.meta.Column;
-import fi.tnie.db.rpc.Holder;
+import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.ReferenceType;
 
 public abstract class AbstractEntityDiff<
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable,	
-	Q extends Enum<Q> & Identifiable,
+	A,
+	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, Q, T, ? extends E>
+	E extends Entity<A, R, T, ? extends E>
 >
-	implements EntityDiff<A, R, Q, T, E>
+	implements EntityDiff<A, R, T, E>
 {	
 	private E original;
 	private E modified;
@@ -56,10 +55,6 @@ public abstract class AbstractEntityDiff<
 			return Change.MODIFICATION;
 		}
 		
-		if (!references().isEmpty()) {
-			return Change.MODIFICATION;
-		}
-				
 		return null;
 	}
 	
@@ -72,12 +67,12 @@ public abstract class AbstractEntityDiff<
 	 */
 	
 	protected Map<A, Change> attributes(E original, E modified) {
-		EntityMetaData<A, R, Q, T, ? extends E> meta = original.getMetaData();
-		EnumMap<A, Change> cm = new EnumMap<A, Change>(meta.getAttributeNameType());
+		EntityMetaData<A, R, T, ? extends E> meta = original.getMetaData();
+		Map<A, Change> cm = new HashMap<A, Change>();
 		
 		for (A a : meta.attributes()) {
-			Holder<?, ?> o = original.get(a);			
-			Holder<?, ?> m = modified.get(a);
+			PrimitiveHolder<?, ?> o = original.value(a);			
+			PrimitiveHolder<?, ?> m = modified.value(a);
 			
 			if ((o == null && m == null) || (o == m)) {
 				continue;
@@ -109,12 +104,12 @@ public abstract class AbstractEntityDiff<
 	}
 	
 	protected Map<R, Change> references(E original, E modified) {
-		EntityMetaData<A, R, Q, T, ? extends E> meta = original.getMetaData();
-		EnumMap<R, Change> cm = new EnumMap<R, Change>(meta.getRelationshipNameType());
+		EntityMetaData<A, R, T, ? extends E> meta = original.getMetaData();
+		Map<R, Change> cm = new HashMap<R, Change>();
 		
 		for (R r : meta.relationships()) {
-			Entity<?,?,?,?,?> o = original.get(r);			
-			Entity<?,?,?,?,?> m = modified.get(r);
+			Entity<?,?,?,?> o = original.ref(r).value();			
+			Entity<?,?,?,?> m = modified.ref(r).value();
 			
 			if ((o == null && m == null) || (o == m)) {
 				continue;
@@ -139,9 +134,11 @@ public abstract class AbstractEntityDiff<
 		return cm;		
 	}
 	
-	private boolean primaryKeyDiffers(Entity<?,?,?,?,?> o, Entity<?,?,?,?,?> m) {
-		Map<Column, Holder<?,?>> a = o.getPrimaryKey();
-		Map<Column, Holder<?,?>> b = m.getPrimaryKey();
+	private
+	<P extends Entity<?, ?, ?, ?>>	
+	boolean primaryKeyDiffers(P o, P m) {
+		Map<Column, PrimitiveHolder<?,?>> a = o.getPrimaryKey();
+		Map<Column, PrimitiveHolder<?,?>> b = m.getPrimaryKey();
 		
 		if (a == null || b == null) {
 			return a != b;

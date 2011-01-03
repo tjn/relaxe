@@ -7,7 +7,7 @@ package fi.tnie.db.ent;
 import java.util.HashSet;
 import java.util.Set;
 
-import fi.tnie.db.rpc.Holder;
+import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.expr.AbstractTableReference;
 import fi.tnie.db.expr.DefaultTableExpression;
@@ -17,28 +17,27 @@ import fi.tnie.db.expr.From;
 import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.SelectListElement;
 import fi.tnie.db.expr.ValueElement;
-import fi.tnie.db.expr.TableColumnExpr;
+import fi.tnie.db.expr.ColumnReference;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 
 public class DefaultEntityQuery<
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable,
-	Q extends Enum<Q> & Identifiable,
+	A,
+	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, Q, T, ? extends E>
-	> implements EntityQuery<A, R, Q, T, E>
+	E extends Entity<A, R, T, ? extends E>
+	> implements EntityQuery<A, R, T, E>
 {		
-	private EntityMetaData<A, R, Q, T, ? extends E> meta;
+	private EntityMetaData<A, R, T, ? extends E> meta;
 	private DefaultTableExpression query;
 	
 	private TableReference tableRef;
 			
 //	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class);
 									
-	public DefaultEntityQuery(EntityMetaData<A, R, Q, T, ? extends E> meta) {
+	public DefaultEntityQuery(EntityMetaData<A, R, T, ? extends E> meta) {
 		super();				
 		this.meta = meta;
 	}
@@ -52,7 +51,7 @@ public class DefaultEntityQuery<
 			throw new NullPointerException();
 		}
 		
-		EntityMetaData<A, R, Q, T, ? extends E> meta = template.getMetaData();		
+		EntityMetaData<A, R, T, ? extends E> meta = template.getMetaData();		
 		BaseTable table = meta.getBaseTable();
 		
 		if (table == null) {
@@ -62,7 +61,7 @@ public class DefaultEntityQuery<
 		this.meta = meta;
 		
 		DefaultTableExpression q = new DefaultTableExpression();
-		HashSet<Entity<?,?,?,?,?>> visited = new HashSet<Entity<?,?,?,?,?>>();
+		HashSet<Entity<?,?,?,?>> visited = new HashSet<Entity<?,?,?,?>>();
 		
 		AbstractTableReference tref = fromTemplate(template, null, null, q, visited);		
 		q.setFrom(new From(tref));
@@ -72,11 +71,8 @@ public class DefaultEntityQuery<
 
 
 	private 
-	<
-		TA extends Enum<TA> & Identifiable,
-		TR extends Enum<TR> & Identifiable
-	>
-	AbstractTableReference fromTemplate(Entity<TA,TR,?,?,?> template, AbstractTableReference qref, ForeignKey fk, DefaultTableExpression q, Set<Entity<?,?,?,?,?>> visited) 
+	<TA, TR>
+	AbstractTableReference fromTemplate(Entity<TA,TR,?,?> template, AbstractTableReference qref, ForeignKey fk, DefaultTableExpression q, Set<Entity<?,?,?,?>> visited) 
 		throws CyclicTemplateException		
 	{		
 		if (visited.contains(template)) {
@@ -93,7 +89,7 @@ public class DefaultEntityQuery<
 			q.setSelect(s = new Select());
 		}
 		
-		EntityMetaData<TA, TR, ?, ?, ?> meta = template.getMetaData();
+		EntityMetaData<TA,TR,?,?> meta = template.getMetaData();
 		
 		TableReference tref = null;
 		
@@ -110,32 +106,34 @@ public class DefaultEntityQuery<
 		Set<TA> as = meta.attributes();
 		
 		for (TA a : as) {
-			Holder<?, ?> h = template.get(a);
+			PrimitiveHolder<?, ?> h = template.value(a);
 			
 			if (h != null) {
 				Column c = meta.getColumn(a);
 				
 				if (c != null) {				
-					s.add(new TableColumnExpr(tref, c));
+					s.add(new ColumnReference(tref, c));
 				}
-			}
-		}		
-				
-		Set<TR> rs = meta.relationships();
-		
-		for (TR r : rs) {
-			Entity<?, ?, ?, ?, ?> e = template.get(r);
-			
-			if (e != null) {
-				fk = meta.getForeignKey(r);
-				
-				if (fk == null) {
-					throw new NullPointerException();
-				}
-				
-				qref = fromTemplate(e, qref, fk, q, visited);
 			}
 		}
+		
+		// TODO check:
+				
+//		Set<TR> rs = meta.relationships();
+//		
+//		for (TR r : rs) {
+//			Entity<?, ?, ?, ?, ?> e = template.get(r);
+//			
+//			if (e != null) {
+//				fk = meta.getForeignKey(r);
+//				
+//				if (fk == null) {
+//					throw new NullPointerException();
+//				}
+//				
+//				qref = fromTemplate(e, qref, fk, q, visited);
+//			}
+//		}
 		
 		return qref;
 	}
@@ -153,9 +151,10 @@ public class DefaultEntityQuery<
 
 			for (A a : meta.attributes()) {
 				Column c = meta.getColumn(a);
-				TableColumnExpr tce = new TableColumnExpr(tref, c);
-				p.add(new ValueElement(tce, tce.getColumnName()));
+				ColumnReference cr = new ColumnReference(tref, c);
+				p.add(new ValueElement(cr, cr.getColumnName()));
 			}
+			
 			
 			// get columns from foreign keys, 
 			// but remove duplicates
@@ -168,7 +167,7 @@ public class DefaultEntityQuery<
 			}
 			
 			for (Column c : kc) {
-				p.add(new ValueElement(new TableColumnExpr(tref, c)));	
+				p.add(new ValueElement(new ColumnReference(tref, c)));	
 			}
 			
 //			logger().debug("projection: " + p);			
@@ -201,7 +200,7 @@ public class DefaultEntityQuery<
 	}
 
 	@Override
-	public EntityMetaData<A, R, Q, T, ? extends E> getMetaData() {
+	public EntityMetaData<A, R, T, ? extends E> getMetaData() {
 		return this.meta;
 	}    
 }

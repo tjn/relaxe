@@ -8,13 +8,13 @@ import java.util.List;
 
 import fi.tnie.db.meta.Column;
 
-public class TableColumnExpr
+public class ColumnReference
 	extends ColumnExpr 
 	implements ValueExpression {
 
 	private Column column;
 		
-	public TableColumnExpr(AbstractTableReference table, Column column) {
+	public ColumnReference(AbstractTableReference table, Column column) {
 		super(table, column.getColumnName());
 		
 		if (column == null) {

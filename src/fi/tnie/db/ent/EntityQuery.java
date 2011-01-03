@@ -7,11 +7,10 @@ import fi.tnie.db.expr.DefaultTableExpression;
 import fi.tnie.db.types.ReferenceType;
 
 public interface EntityQuery<
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable, 
-	Q extends Enum<Q> & Identifiable,
+	A,
+	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, Q, T, ? extends E>
+	E extends Entity<A, R, T, ? extends E>
 >
 {
 //	QueryPredicate getPredicate();
@@ -24,5 +23,5 @@ public interface EntityQuery<
 	 * result item meta-data
 	 * @return
 	 */
-	EntityMetaData<A, R, Q, T, ? extends E> getMetaData();
+	EntityMetaData<A, R, T, ? extends E> getMetaData();
 }

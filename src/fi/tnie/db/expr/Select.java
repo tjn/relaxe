@@ -3,6 +3,9 @@
  */
 package fi.tnie.db.expr;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Select
 	extends AbstractClause {
@@ -14,25 +17,56 @@ public class Select
 		super(Keyword.SELECT);
 	}
 
-//	@Override
-//	public void generate(SimpleQueryContext qc, StringBuffer dest) {
-//		dest.append("SELECT ");
-//		
-//		if (isDistinct()) {
-//			dest.append("DISTINCT ");
-//		}
-//		
-//		getSelectList().generate(qc, dest);
-//		dest.append(" ");
-//	}
-	
-
 	public ElementList<SelectListElement> getSelectList() {
 		if (selectList == null) {
 			selectList = new ElementList<SelectListElement>();			
 		}
 
 		return selectList;
+	}
+	
+	public int getColumnCount() {
+		int cc = 0;
+		
+		for(SelectListElement e : getSelectList().getContent()) {
+			cc += e.getColumnCount();
+		}
+		
+		return cc;
+	}
+	
+	public List<ValueExpression> expandValueExprList() {
+		ArrayList<ValueExpression> el = new ArrayList<ValueExpression>();
+		
+		for(SelectListElement e : getSelectList().getContent()) {
+			int cc = e.getColumnCount();
+			
+			for (int i = 1; i <= cc; i++) {
+				el.add(e.getColumnExpr(i));
+			}
+		}		
+		
+		return el;
+	}
+	
+	/**
+	 * NOTE: selected list contains contains <code>null</code> -element
+	 * for those columns that are not column references.  
+	 * 
+	 * @return
+	 */	
+	public List<ColumnExpr> expandColumnExprList() {
+		ArrayList<ColumnExpr> el = new ArrayList<ColumnExpr>();
+		
+		for(SelectListElement e : getSelectList().getContent()) {
+			int cc = e.getColumnCount();
+			
+			for (int i = 1; i <= cc; i++) {
+				el.add(e.getTableColumnExpr(i));
+			}
+		}		
+		
+		return el;
 	}
 
 	public void setDistinct(boolean distinct) {
@@ -52,9 +86,9 @@ public class Select
 		return e;
 	}
 	
-	public TableColumnExpr add(TableColumnExpr expr) {
-		ValueExpression ve = expr;
-		add(ve);
+	public ColumnReference add(ColumnReference expr) {		
+		// avoid renaming by passing null:
+		add(expr, (ColumnName) null);
 		return expr;
 	}
 	
@@ -81,17 +115,7 @@ public class Select
 		}
 		
 		return add(expr, n);		
-	}
-		
-	public int getColumnCount() {
-		int cc = 0;
-		
-		for (SelectListElement e : getSelectList().getContent()) {
-			cc += e.getColumnNames().size();
-		}
-		
-		return cc;
-	}
+	}	
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {

@@ -7,8 +7,8 @@ package fi.tnie.db.ent;
 public class AttributeNotPresentException
 	extends RuntimeException {
 
-	private Identifiable attribute;
-	
+	private Ref<?> attribute;
+		
 	/**
 	 * 
 	 */
@@ -17,16 +17,16 @@ public class AttributeNotPresentException
 	protected AttributeNotPresentException() {
 		super();	
 	}
-	
-	public AttributeNotPresentException(Identifiable a) {
+		
+	public AttributeNotPresentException(Ref<?> a) {
 		if (a == null) {
-			throw new NullPointerException("a was null");
+			throw new NullPointerException("a");
 		}
 		
 		this.attribute = a;
 	}
 
-	public Identifiable getAttribute() {
+	public Ref<?> getAttribute() {
 		return attribute;
 	}	
 }

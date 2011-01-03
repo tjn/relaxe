@@ -4,17 +4,19 @@
 package fi.tnie.db.ent;
 
 import java.util.Date;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+
 import fi.tnie.db.rpc.DateHolder;
-import fi.tnie.db.rpc.Holder;
 import fi.tnie.db.rpc.IntegerHolder;
+import fi.tnie.db.rpc.PrimitiveHolder;
+import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.rpc.StringHolder;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.ReferenceType;
+import fi.tnie.db.expr.ColumnReference;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 
@@ -40,20 +42,18 @@ import fi.tnie.db.meta.ForeignKey;
 
 
 public abstract class DefaultEntity<
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable,
-	Q extends Enum<Q> & Identifiable,
+	A,
+	R, 
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, Q, T, ? extends E>
+	E extends Entity<A, R, T, ? extends E>
 >
-	extends AbstractEntity<A, R, Q, T, E> {
+	extends AbstractEntity<A, R, T, E> {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3498823449580706161L;
-	private EnumMap<A, Holder<?, ?>> values;
-	private ReferenceMap<R, Entity<?,?,?,?,?>> refs;
+	// private Map<A, PrimitiveHolder<?, ?>> values;	
 		
 //	private static Logger logger = Logger.getLogger(DefaultEntity.class);
 	
@@ -91,12 +91,12 @@ public abstract class DefaultEntity<
 		return (DateHolder) holder(a);
 	}
 	
-	private Holder<?, ?> holder(A a)
+	private PrimitiveHolder<?, ?> holder(A a)
 		throws AttributeNotPresentException {				
-		Holder<?, ?> h = get(a);
+		PrimitiveHolder<?, ?> h = value(a);
 		
 		if (h == null) {
-			throw new AttributeNotPresentException(a);
+			throw new AttributeNotPresentException(new Ref<A>(a));
 		}
 		
 		return h;
@@ -153,31 +153,32 @@ public abstract class DefaultEntity<
 	
 	
 	public boolean isPresent(A a) {
-		return get(a) != null;
+		return value(a) != null;
 	}
 
-	public Holder<?, ?> get(A a) {
+	public PrimitiveHolder<?, ?> value(A a) {
 		if (a == null) {
 			throw new NullPointerException("'a' must not be null");
 		}
 		
-		return attrs().get(a);
+		return values().get(a);
 	};
 
-	public Holder<?, ?> get(Column column)
+	public PrimitiveHolder<?, ?> get(Column column)
 		throws NullPointerException {
+		
 		if (column == null) {
-			throw new NullPointerException("'c' must not be null");
+			throw new NullPointerException("column");
 		}
 		
-		EntityMetaData<A, R, Q, T, E> m = getMetaData();
+		EntityMetaData<A, R, T, E> m = getMetaData();
 		
 		A a = m.getAttribute(column);
 		
 		if (a != null) {
-			return get(a);			
-		}
-		
+			return value(a);			
+		}	
+								
 		// column may be part of multiple
 		// overlapping foreign-keys:				
 		Set<R> rs = m.getReferences(column);
@@ -186,15 +187,19 @@ public abstract class DefaultEntity<
 			return null;
 		}
 	
-		Entity<?, ?, ?, ?, ?> ref = null;
+		Entity<?, ?, ?, ?> ref = null;
 		R r = null;
 		
-		for (R ri : rs) {
-			ref = this.get(r);
+		for (R ri : rs) {			
+			ReferenceHolder<?, ?> rh = ref(ri);
 			
-			if (ref != null) {				
-				r = ri;
-				break;
+			if (rh != null) {
+				ref = rh.value();
+							
+				if (ref != null) {				
+					r = ri;
+					break;
+				}
 			}
 		}
 				
@@ -207,33 +212,25 @@ public abstract class DefaultEntity<
 		return ref.get(fkcol);
 	};
 	
-	public void set(A a, Holder<?, ?> value) {
-		attrs().put(a, value);		
+	public void set(A a, PrimitiveHolder<?, ?> value) {
+		values().put(a, value);		
 	}
 	
-	protected EnumMap<A, Holder<?, ?>> attrs() {
-		if (values == null) {
-			values = new EnumMap<A, Holder<?, ?>>(getMetaData().getAttributeNameType()); 
-		}
-		
-		return values;
-	}
-	
-	protected ReferenceMap<R, Entity<?,?,?,?,?>> refs() {
-		if (refs == null) {
-			refs = new ReferenceMap<R, Entity<?,?,?,?,?>>(getMetaData().getRelationshipNameType()); 
-		}
-		
-		return refs;
-	}
-
-	public void set(R r, fi.tnie.db.ent.Entity<?,?,?,?,?> ref) {	
-		refs().put(r, ref);
-	}
-	
-	public Entity<?,?,?,?,?> get(R r) {
-		return refs().get(r);
+	public void set(R r, ReferenceHolder<?, ?> value) {
+		references().put(r, value);		
 	}	
+	
+	protected abstract Map<A, PrimitiveHolder<?, ?>> values();
+		
+	protected abstract Map<R, ReferenceHolder<?, ?>> references();
+
+//	public void set(R r, fi.tnie.db.ent.Entity<?,?,?,?,?> ref) {	
+//		refs().put(r, ref);
+//	}
+//	
+//	public Entity<?,?,?,?,?> get(R r) {
+//		return refs().get(r);
+//	}	
 	
 //	public void insert(Connection c) 
 //		throws EntityException {
@@ -358,14 +355,14 @@ public abstract class DefaultEntity<
 //	}	
 	
 	
-	public EntityDiff<A, R, Q, T, E> diff(E another) {
+	public EntityDiff<A, R, T, E> diff(E another) {
 		final E self = self();
 				
 		if (this == another || another == null) {
-			return new EmptyEntityDiff<A, R, Q, T, E>(self);
+			return new EmptyEntityDiff<A, R, T, E>(self);
 		}
 		
-		return new EntitySnapshotDiff<A, R, Q, T, E>(self, another);
+		return new EntitySnapshotDiff<A, R, T, E>(self, another);
 	}
 
 	/**
@@ -375,11 +372,11 @@ public abstract class DefaultEntity<
 	 */
 	protected abstract E self();
 	
-	public Map<Column, Holder<?,?>> getPrimaryKey() {
-		Map<Column, Holder<?,?>> pk = new HashMap<Column, Holder<?,?>>(); 
+	public Map<Column, PrimitiveHolder<?,?>> getPrimaryKey() {
+		Map<Column, PrimitiveHolder<?,?>> pk = new HashMap<Column, PrimitiveHolder<?,?>>(); 
 		
 		for (Column pkcol : getMetaData().getPKDefinition()) {
-			Holder<?, ?> v = get(pkcol);
+			PrimitiveHolder<?, ?> v = get(pkcol);
 			
 			if (v == null) {
 				return null;
@@ -389,7 +386,10 @@ public abstract class DefaultEntity<
 		}
 		
 		return pk;
-	}	
+	}
+	
+
+	
 	
 //	void markLoaded(EntityQueryResult<A, R, Q, ?> result) {
 //		this.result = result;
@@ -404,4 +404,24 @@ public abstract class DefaultEntity<
     public T getType() {
      	return getMetaData().getType();
     }
+    
+    public ReferenceHolder<?,?> ref(R ref) {    	
+    	return references().get(ref);    	
+    }
+    
+
+//	@Override
+//	public PrimitiveHolder<?, ?> get(String attribute) {
+//		String cn = attribute;
+//		EntityMetaData<A, R, T, E> meta = getMetaData();
+//		Column c = meta.getBaseTable().columnMap().get(cn);
+//		
+//		if (c == null) {
+//			throw new NullPointerException("no such column: " + cn); 			
+//		}
+//		
+//		PrimitiveHolder<?, ?> v = get(c);
+//		return v;
+//	}
+	    
 }

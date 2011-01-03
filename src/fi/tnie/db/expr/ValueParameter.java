@@ -13,14 +13,9 @@ public class ValueParameter extends Parameter {
 	
 	public ValueParameter(Column column, Object value) {
 		super(column);
-//		this(column.getName(), column.getDataType().getDataType(), value);
 		this.value = value;
 	}
 
-//	public ValueParameter(String name, int type, Object value) {
-//		super(name, type);
-//		this.value = value;
-//	}
 
 	@Override
 	public Object getValue() {

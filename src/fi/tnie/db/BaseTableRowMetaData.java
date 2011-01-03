@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import fi.tnie.db.ent.Identifiable;
-import fi.tnie.db.expr.TableColumnExpr;
+import fi.tnie.db.expr.ColumnReference;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.expr.ValueExpression;
 import fi.tnie.db.meta.BaseTable;
@@ -32,7 +32,7 @@ public abstract class BaseTableRowMetaData<C extends Enum<C> & Identifiable>
 	
 	private List<C> columnList;
 	
-	private EnumMap<C, TableColumnExpr> exprMap;
+	private EnumMap<C, ColumnReference> exprMap;
 	
 	public BaseTableRowMetaData(TableReference tref, BaseTableRowFactory<C, BaseTableRow<C>, ?> factory) {
 		this(null, tref, factory);		
@@ -97,14 +97,14 @@ public abstract class BaseTableRowMetaData<C extends Enum<C> & Identifiable>
 	}
 	
 	
-	public TableColumnExpr getTableColumnExpr(int ordinal) {						
+	public ColumnReference getTableColumnExpr(int ordinal) {						
 		C column = this.columnList.get(ordinal - 1);
 		
 		if (exprMap == null) {
-			exprMap = new EnumMap<C, TableColumnExpr>(getColumnNameType());
+			exprMap = new EnumMap<C, ColumnReference>(getColumnNameType());
 		}
 		
-		TableColumnExpr e = exprMap.get(column);
+		ColumnReference e = exprMap.get(column);
 		
 //		if (e == null) {
 //			Column c = baseTable.getColumn(column.identifier());			

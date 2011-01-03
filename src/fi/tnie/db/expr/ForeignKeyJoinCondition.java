@@ -43,8 +43,8 @@ public class ForeignKeyJoinCondition
 				Column b = e.getValue();
 							
 				jp = AndPredicate.newAnd(jp, Comparison.eq(
-						new TableColumnExpr(referencing, a),
-						new TableColumnExpr(referenced,  b)));
+						new ColumnReference(referencing, a),
+						new ColumnReference(referenced,  b)));
 			}
 			
 			this.condition = jp;

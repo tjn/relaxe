@@ -7,7 +7,7 @@ import fi.tnie.db.types.IntegerType;
 
 
 public class IntegerHolder
-	extends Holder<Integer, IntegerType> {
+	extends PrimitiveHolder<Integer, IntegerType> {
 	
 		
 	/**

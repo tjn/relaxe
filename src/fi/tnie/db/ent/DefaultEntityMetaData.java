@@ -4,8 +4,6 @@
 package fi.tnie.db.ent;
 
 import java.util.Collections;
-import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -18,87 +16,122 @@ import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.types.ReferenceType;
 
 public abstract class DefaultEntityMetaData<
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable, 
-	Q extends Enum<Q> & Identifiable,
+	A,
+	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, Q, T, E>
+	E extends Entity<A, R, T, E>
 >
-	extends AbstractEntityMetaData<A, R, Q, T, E>
+	extends AbstractEntityMetaData<A, R, T, E>
 {	
-	private Class<A> attributeType;
-	private Class<R> referenceType;
-	private Class<Q> queryType;
 	private BaseTable baseTable;
 	
-	private EnumSet<A> attributes;
-	private EnumMap<A, Column> attributeMap;
+	private Set<A> attributes;
+	private Map<A, Column> attributeMap;
 	private Map<Column, A> columnMap;
-//	private Set<A> pkattrs;
 	private Set<Column> pkcols;
 	
-	private EnumSet<R> references;	
-	private EnumMap<R, ForeignKey> referenceMap;
+	private Set<R> relationships;	
+	private Map<R, ForeignKey> referenceMap;
 	private Map<Column, Set<R>> columnReferenceMap;
 	
-	protected DefaultEntityMetaData(Class<A> atype, Class<R> rtype, Class<Q> qtype) {
-		this.attributeType = atype;
-		this.referenceType = rtype;
-		this.queryType = qtype;
+	protected DefaultEntityMetaData() {
 	}
 	
 	@Override
 	public void bind(BaseTable table) {
 		this.baseTable = table;
-		populateAttributes(this.attributeType, table);
-		populateReferences(this.referenceType, table);
+		populateAttributes(table);
+		populateReferences(table);
 	}	
 	
-	private void populateAttributes(Class<A> atype, BaseTable table) {
-		this.attributes = EnumSet.allOf(atype);		
-		this.attributeMap = new EnumMap<A, Column>(atype);		
-		this.columnMap = new HashMap<Column, A>();		
+	protected abstract void populateAttributes(BaseTable table);
+	
+//	private void populateAttributes(BaseTable table) {
+//		this.attributes = EnumSet.allOf(atype);		
+//		this.attributeMap = new EnumMap<A, Column>(atype);		
+//		this.columnMap = new HashMap<Column, A>();		
+//		
+////		EnumSet<A> pka = EnumSet.noneOf(atype);
+//		
+//		Set<Column> pkc = new HashSet<Column>();
+//		
+//		for (A a : this.attributes) {
+//			Column c = table.columnMap().get(a.identifier());
+//			
+//			if (c == null) {
+//				throw new NullPointerException(
+//						"no column for attribute: " + a.identifier() + " in " + 
+//						table.columns());
+//			}
+//			
+//			this.attributeMap.put(a, c);
+//			this.columnMap.put(c, a);
+//			
+//			if (c.isPrimaryKeyColumn()) {
+//				pkc.add(c);
+////				pka.add(a);
+//			}
+//		}
+//		
+//		this.pkcols = Collections.unmodifiableSet(pkc);						
+////		this.pkattrs = Collections.unmodifiableSet(pka);
+//	}
+	
+	protected void populateAttributes(Set<A> attributes, Map<A, Column> attributeMap, BaseTable table) {		
 		
-//		EnumSet<A> pka = EnumSet.noneOf(atype);
+		// EnumSet<K> attributes = EnumSet.allOf(keyType);		
+		// EnumMap<K, Column> attributeMap = new EnumMap<K, Column>(keyType);
 		
+		//	this.attributes = EnumSet.allOf(keyType);		
+		//	this.attributeMap = new EnumMap<A, Column>(atype);		
+		Map<Column, A> columnMap = new HashMap<Column, A>();		
+	
+		//	EnumSet<A> pka = EnumSet.noneOf(atype);
+			
 		Set<Column> pkc = new HashSet<Column>();
 		
-		for (A a : this.attributes) {
-			Column c = table.columnMap().get(a.identifier());
-			
+		for (A a : attributes) {		
+//			Column c = table.columnMap().get(a);
+			Column c = map(table, a);
+							
 			if (c == null) {
 				throw new NullPointerException(
-						"no column for attribute: " + a.identifier() + " in " + 
+						"no column for attribute: " + a + " in " + 
 						table.columns());
 			}
 			
-			this.attributeMap.put(a, c);
-			this.columnMap.put(c, a);
+			attributeMap.put(a, c);
+			columnMap.put(c, a);
 			
 			if (c.isPrimaryKeyColumn()) {
 				pkc.add(c);
-//				pka.add(a);
 			}
 		}
-		
-		this.pkcols = Collections.unmodifiableSet(pkc);						
-//		this.pkattrs = Collections.unmodifiableSet(pka);
+
+		this.attributes = Collections.unmodifiableSet(attributes);		
+		this.attributeMap = attributeMap;
+		this.pkcols = Collections.unmodifiableSet(pkc);			
 	}
 	
-	private void populateReferences(Class<R> rtype, BaseTable table) {
-		this.references = EnumSet.allOf(rtype);				
-		this.referenceMap = new EnumMap<R, ForeignKey>(rtype);
-		
+	protected abstract Column map(BaseTable table, A a); 
+	
+	protected abstract void populateReferences(BaseTable table);
+	
+	protected void populateReferences(Set<R> relationships, Map<R, ForeignKey> referenceMap, BaseTable table) {
+//		this.references = EnumSet.allOf(rtype);				
+//		this.referenceMap = new EnumMap<R, ForeignKey>(rtype);
+//		
 		Map<Column, Set<R>> rm = new HashMap<Column, Set<R>>();
 		
-		for (R r : this.references) {			
-			ForeignKey fk = table.foreignKeys().get(r.identifier());
+		for (R r : relationships) {			
+			// ForeignKey fk = table.foreignKeys().get(r.identifier());
+			ForeignKey fk = map(table, r);
 			
 			if (fk == null) {
-				throw new NullPointerException("no such foreign key: " + r.identifier());
+				throw new NullPointerException("no such foreign key: " + r);
 			}
 			else {
-				this.referenceMap.put(r, fk);				
+				referenceMap.put(r, fk);				
 				populateColumnReferenceMap(fk, r, rm);				
 			}
 		}
@@ -115,7 +148,12 @@ public abstract class DefaultEntityMetaData<
 		}
 		
 		this.columnReferenceMap = rm;
+		
+		this.relationships = Collections.unmodifiableSet(relationships);				
+		this.referenceMap = referenceMap;
 	}
+
+	protected abstract ForeignKey map(BaseTable table, R r);
 
 	private void populateColumnReferenceMap(ForeignKey fk, R r, Map<Column, Set<R>> dest) {
 		for (Column fkcol : fk.columns().keySet()) {
@@ -137,16 +175,11 @@ public abstract class DefaultEntityMetaData<
 	}
 	
 	public Set<A> attributes() {
-		return Collections.unmodifiableSet(this.attributes);
+		return this.attributes;
 	}
 	
 	public Set<R> relationships() {
-		return Collections.unmodifiableSet(this.references);
-	}
-
-	@Override
-	public Class<A> getAttributeNameType() {
-		return this.attributeType;
+		return this.relationships;
 	}
 
 	@Override
@@ -174,16 +207,6 @@ public abstract class DefaultEntityMetaData<
 	}
 
 	@Override
-	public Class<Q> getQueryNameType() {
-		return this.queryType;
-	}
-
-	@Override
-	public Class<R> getRelationshipNameType() {	
-		return this.referenceType;
-	}
-
-	@Override
 	public ForeignKey getForeignKey(R r) {
 		return this.referenceMap.get(r);
 	}
@@ -198,4 +221,6 @@ public abstract class DefaultEntityMetaData<
 	    BaseTable table = getBaseTable();	    
 	    return (table == null) ? null : table.getSchema().getCatalog();
 	}
+	
+	
 }

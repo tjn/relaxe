@@ -13,7 +13,6 @@ import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.Identifiable;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.DefaultImplementation;
 import fi.tnie.db.env.GeneratedKeyHandler;
@@ -82,18 +81,17 @@ public class MySQLEnvironment
     private final class MySQLGeneratedKeyHandler implements GeneratedKeyHandler {
 		@Override
 		public <
-			A extends Enum<A> & Identifiable, 
-			R extends Enum<R> & Identifiable, 
-			Q extends Enum<Q> & Identifiable, 
+			A, 
+			R,
 			T extends ReferenceType<T>,
-			E extends Entity<A, R, Q, T, ? extends E>
+			E extends Entity<A, R, T, ? extends E>
 		> 
 		void processGeneratedKeys(
 			InsertStatement ins, E target, ResultSet rs) 
 			throws EntityException, SQLException {
 			ResultSetMetaData meta = rs.getMetaData();
 			
-			EntityMetaData<A, R, Q, T, ? extends E> em = target.getMetaData();						
+			EntityMetaData<A, R, T, ? extends E> em = target.getMetaData();						
 			ValueExtractorFactory vef = getValueExtractorFactory();
 			
 //			ResultSet is expected to contain single column: GENERATED_KEY
@@ -109,7 +107,7 @@ public class MySQLEnvironment
 			}
 			
 			A a = em.getAttribute(col);			
-			AttributeExtractor<A, R, Q, T, E> ae = new AttributeExtractor<A, R, Q, T, E>(a, ve);			
+			AttributeExtractor<A, R, T, E> ae = new AttributeExtractor<A, R, T, E>(a, ve);			
 			ae.extract(rs, target);			
 		}
 

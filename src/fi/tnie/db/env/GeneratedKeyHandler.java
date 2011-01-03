@@ -8,17 +8,15 @@ import java.sql.SQLException;
 
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
-import fi.tnie.db.ent.Identifiable;
 import fi.tnie.db.expr.InsertStatement;
 import fi.tnie.db.types.ReferenceType;
 
 public interface GeneratedKeyHandler {	
 	<
-	    A extends Enum<A> & Identifiable, 
-	    R extends Enum<R> & Identifiable,
-	    Q extends Enum<Q> & Identifiable,
+	    A,
+	    R,
 	    T extends ReferenceType<T>,
-	    E extends Entity<A, R, Q, T, ? extends E>
+	    E extends Entity<A, R, T, ? extends E>
 	>
 	void processGeneratedKeys(InsertStatement insert, E target, ResultSet rs) 
 		throws SQLException, EntityException;

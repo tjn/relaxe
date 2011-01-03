@@ -113,7 +113,7 @@ public class OrderBy
 		super(Keyword.ORDER_BY);
 	}
 	
-	public void add(TableColumnExpr c, Order o) {
+	public void add(ColumnReference c, Order o) {
 		getSortKeyList().add(new ExprSortKey(c, o));
 	}
 	

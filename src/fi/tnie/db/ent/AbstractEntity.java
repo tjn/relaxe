@@ -7,13 +7,12 @@ import fi.tnie.db.types.ReferenceType;
 
 
 public abstract class AbstractEntity<
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable,
-	Q extends Enum<Q> & Identifiable,
+	K,
+	R, 
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, Q, T, ? extends E>
+	E extends Entity<K, R, T, ? extends E>
 > 
-	implements Entity<A, R, Q, T, E>
+	implements Entity<K, R, T, E>
 {
 	/**
 	 * 

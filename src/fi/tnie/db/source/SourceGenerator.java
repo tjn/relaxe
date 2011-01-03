@@ -97,6 +97,8 @@ public class SourceGenerator {
 	     * Pattern which is replaced with the package name of the type being generated in template files.
 	     */
 		PACKAGE_NAME,
+		LITERAL_CONTEXT_PACKAGE_NAME,
+		
 
 	    /**
 	     * Pattern which is replaced with the package name of the type being generated in template files.
@@ -241,7 +243,7 @@ public class SourceGenerator {
     	String src = getTemplateForLiteralCatalog();    	
     	    	    	
     	src = replaceAllWithComment(src, Tag.PACKAGE_NAME, lc.getPackageName());
-    	
+    	    	    	
     	Environment env = cat.getEnvironment();
     	String e = env.getClass().getName();
     	src = replaceAllWithComment(src, Tag.NEW_ENVIRONMENT_EXPR, "new " + e + "()");
@@ -652,9 +654,9 @@ public class SourceGenerator {
 
 //        src = replacePackageAndImports(src, cc, il);
         
-        src = replaceAll(src, Tag.PACKAGE_NAME, cc.getPackageName());
+        src = replacePackageName(src, cc);
 	    src = replaceAll(src, Tag.PACKAGE_NAME_LITERAL, "\"" + cc.getPackageName() + "\"");
-	    src = replaceAll(src, Tag.IMPORTS, imports(il));        
+	    src = replaceImportList(src, il);        
         src = replaceAll(src, Tag.ROOT_PACKAGE_NAME_LITERAL, "\"" + tm.getRootPackage() + "\"");        
         src = replaceAll(src, Tag.CATALOG_CONTEXT_PACKAGE_NAME, cc.getPackageName());
         src = replaceAll(src, Tag.CATALOG_CONTEXT_CLASS, cc.getUnqualifiedName());
@@ -897,7 +899,11 @@ public class SourceGenerator {
 
 	    String src = getTemplateFor(Part.LITERAL_TABLE_ENUM);			
 	    
-	    src = replacePackageAndImports(src, mt);
+	    src = replacePackageName(src, mt);
+
+	    ArrayList<String> il = new ArrayList<String>();
+	    addImport(mt, tm.literalContextType(), il);
+	    src = replaceImportList(src, il);
 	    
 	    src = replaceAll(src, Tag.LITERAL_TABLE_ENUM, mt.getUnqualifiedName());
 	
@@ -997,6 +1003,9 @@ public class SourceGenerator {
             JavaType returnType = getFactoryMethodReturnType(t);
             addImport(impl, returnType, il);
         }
+            
+        // addImport(impl, tm.literalContextType(), il);        
+        src = replaceAll(src, Tag.LITERAL_CONTEXT_PACKAGE_NAME, tm.literalContextType().getPackageName());                
 
         src = replacePackageAndImports(src, impl, il);
 
@@ -1161,12 +1170,12 @@ public class SourceGenerator {
         return src;
 	}
 
-	private void addImport(JavaType type, JavaType referenced, List<String> importList) {
-	    if (referenced == null ||
-	        referenced.getPackageName().equals(type.getPackageName())) {
+	private void addImport(JavaType importingType, JavaType imported, List<String> importList) {
+	    if (imported == null ||
+	        imported.getPackageName().equals(importingType.getPackageName())) {
 	        return;
 	    }
-	    importList.add(referenced.getQualifiedName());
+	    importList.add(imported.getQualifiedName());
 	}
 
 	private CharSequence generateImplementation(BaseTable t, JavaType impl, TableMapper tm)
@@ -1631,9 +1640,19 @@ public class SourceGenerator {
 	}
 
 	private String replacePackageAndImports(String src, JavaType type, Collection<String> importList) {
-	    src = replaceAll(src, Tag.PACKAGE_NAME, type.getPackageName());
-	    src = replaceAll(src, Tag.IMPORTS, imports(importList));
+	    src = replacePackageName(src, type);
+	    src = replaceImportList(src, importList);
 	    return src;
+	}
+
+	private String replacePackageName(String src, JavaType type) {
+		src = replaceAll(src, Tag.PACKAGE_NAME, type.getPackageName());
+		return src;
+	}
+
+	private String replaceImportList(String src, Collection<String> importList) {
+		src = replaceAllWithComment(src, Tag.IMPORTS, imports(importList));
+		return src;
 	}
     
     public void setSourceDir(Part part, File dir) {

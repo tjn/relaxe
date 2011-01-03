@@ -31,10 +31,16 @@ public abstract class ColumnExpr
 
 	@Override
 	public ValueExpression getColumnExpr(int column) {
+		return getTableColumnExpr(column);
+	}
+
+	@Override
+	public ColumnExpr getTableColumnExpr(int column) {
 		if (column != 1) {
 			throw new IndexOutOfBoundsException(Integer.toString(column));
 		}
 
 		return this;
-	}	
+	}
+	
 }

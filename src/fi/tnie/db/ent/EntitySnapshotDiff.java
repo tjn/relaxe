@@ -9,13 +9,12 @@ import java.util.Map;
 import fi.tnie.db.types.ReferenceType;
 
 public class EntitySnapshotDiff <
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable,	
-	Q extends Enum<Q> & Identifiable,
+	A, 
+	R,
 	T extends ReferenceType<T>, 
-	E extends Entity<A, R, Q, T, ? extends E>
+	E extends Entity<A, R, T, ? extends E>
 >
-	extends AbstractEntityDiff<A, R, Q, T, E>
+	extends AbstractEntityDiff<A, R, T, E>
 {
 	private Map<A, Change> attributes = null; 
 	private Map<R, Change> references = null;

@@ -46,9 +46,13 @@ public class TableColumns
 	public int getColumnCount() {
 		return tableRef.getColumnNameList().getContent().size();
 	}
+	
+	public ValueExpression getColumnExpr(int column) {
+		return getTableColumnExpr(column);
+	}
 
 	@Override
-	public ValueExpression getColumnExpr(int column) {
+	public ColumnExpr getTableColumnExpr(int column) {
 		int cc = getColumnCount();
 		int index = column - 1;
 		
@@ -56,6 +60,6 @@ public class TableColumns
 			throw new IndexOutOfBoundsException(Integer.toString(column));
 		}
 			 
-		return tableRef.getAllColumns().getColumnExpr(column);
+		return tableRef.getAllColumns().getTableColumnExpr(column);
 	}		
 }

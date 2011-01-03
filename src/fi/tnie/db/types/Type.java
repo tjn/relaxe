@@ -54,7 +54,7 @@ public abstract class Type<T extends Type<T>> {
 	}
 
 	public boolean equals(T t) {
-		return this == t;		
+		return (this == t);		
 	}
 	
 	public Integer getSqlType() {

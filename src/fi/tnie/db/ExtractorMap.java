@@ -11,7 +11,6 @@ import java.util.List;
 
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.Identifiable;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.meta.Column;
@@ -19,14 +18,13 @@ import fi.tnie.db.meta.ColumnMap;
 import fi.tnie.db.types.ReferenceType;
 
 public class ExtractorMap<
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable,
-	Q extends Enum<Q> & Identifiable,
+	A,
+	R,
 	T extends ReferenceType<T>, 
-	E extends Entity<A, R, Q, T, ? extends E>
+	E extends Entity<A, R, T, ? extends E>
 > {
 	
-	private List<AttributeExtractor<A, R, Q, T, E>> attributeExctractorList;
+	private List<AttributeExtractor<A, R, T, E>> attributeExctractorList;
 
 	/**
 	 * TODO: when initialized like this, this does not read references properly  
@@ -34,9 +32,12 @@ public class ExtractorMap<
 	 * @param em
 	 * @throws SQLException
 	 */
-	public ExtractorMap(ResultSetMetaData rsmd, EntityMetaData<A, R, Q, T, ? extends E> em, ValueExtractorFactory vef) throws SQLException {		
+	public ExtractorMap(ResultSetMetaData rsmd, 
+			EntityMetaData<A, R, T, ? extends E> em, 
+			ValueExtractorFactory vef) throws SQLException {		
 		int cc = rsmd.getColumnCount();
-		this.attributeExctractorList = new ArrayList<AttributeExtractor<A, R, Q, T, E>>(cc);
+		this.attributeExctractorList = 
+			new ArrayList<AttributeExtractor<A, R, T, E>>(cc);
 		
 		ColumnMap cm = em.getBaseTable().columnMap();		
 				
@@ -48,7 +49,8 @@ public class ExtractorMap<
 			A a = em.getAttribute(col);
 			
 			if (a != null) {
-				AttributeExtractor<A, R, Q, T, E> ae = new AttributeExtractor<A, R, Q, T, E>(a, ve);
+				AttributeExtractor<A, R, T, E> ae =
+					new AttributeExtractor<A, R, T, E>(a, ve);
 				this.attributeExctractorList.add(ae);		
 			}
 			
@@ -65,7 +67,7 @@ public class ExtractorMap<
 //		e.getTableExpr().getSelect().get
 	}
 	
-	public ExtractorMap(EntityQueryTask<A, R, Q, T, E> query) throws SQLException {
+	public ExtractorMap(EntityQueryTask<A, R, T, E> query) throws SQLException {
 				
 	}
 

@@ -9,13 +9,12 @@ import java.util.Map;
 import fi.tnie.db.types.ReferenceType;
 
 public class EmptyEntityDiff<
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable,	
-	Q extends Enum<Q> & Identifiable,
+	A,
+	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, Q, T, ? extends E>
+	E extends Entity<A, R, T, ? extends E>
 >
-	extends AbstractEntityDiff<A, R, Q, T, E>
+	extends AbstractEntityDiff<A, R, T, E>
 {
 	protected EmptyEntityDiff(E original) {
 		super(original, original);
@@ -30,9 +29,9 @@ public class EmptyEntityDiff<
 	public Change change() {
 		return null;
 	}
-
+	
 	@Override
-	public Map<R, fi.tnie.db.ent.Change> references() {	
+	public Map<R, Change> references() {	
 		return Collections.emptyMap();
 	}
 }

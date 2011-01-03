@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import fi.tnie.db.rpc.Holder;
+import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 
 public abstract class ValueExtractor
@@ -18,7 +19,7 @@ public abstract class ValueExtractor
 	implements Extractor {
 	
 	private int column;
-	private Holder<V, T> last = null;
+	private PrimitiveHolder<V, T> last = null;
 
 	public ValueExtractor(int column) {
 		super();			
@@ -33,7 +34,7 @@ public abstract class ValueExtractor
 		return this.last;
 	}
 
-	public abstract Holder<V, T> extractValue(ResultSet rs)
+	public abstract PrimitiveHolder<V, T> extractValue(ResultSet rs)
 		throws SQLException;
 	
 	public void extract(ResultSet rs)
@@ -42,9 +43,6 @@ public abstract class ValueExtractor
 		set(this.last);
 	}
 		
-	protected void set(Holder<V, T> value) {	
-	}
-	
-	
-	
+	protected void set(PrimitiveHolder<V, T> value) {	
+	}	
 }

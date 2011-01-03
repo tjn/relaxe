@@ -2,5 +2,11 @@ package {{package-name}};
 
 public class {{schema-factory-impl}} 
     implements {{schema-factory}} {
+
+	static {
+		fi.tnie.db.gen.ent.LiteralCatalog.getInstance();
+	}
+    
+    
 {{factory-method-list}}
 }

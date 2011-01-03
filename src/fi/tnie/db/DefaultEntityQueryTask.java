@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.rpc.Holder;
+import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.types.VarcharType;
 import fi.tnie.db.ent.EmptyEntityQueryResult;
@@ -25,7 +25,6 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.EntityQueryException;
 import fi.tnie.db.ent.EntityQueryResult;
-import fi.tnie.db.ent.Identifiable;
 import fi.tnie.db.ent.MultipleEntityQueryResult;
 import fi.tnie.db.ent.SingleEntityQueryResult;
 import fi.tnie.db.exec.QueryFilter;
@@ -40,20 +39,19 @@ import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.DataType;
 
 public class DefaultEntityQueryTask<
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable,
-	Q extends Enum<Q> & Identifiable,
+	A,
+	R, 
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, Q, T, ? extends E>
-	> implements EntityQueryTask<A, R, Q, T, E>
+	E extends Entity<A, R, T, ? extends E>> 
+	implements EntityQueryTask<A, R, T, E>
 {		
 	
-	private EntityQuery<A, R, Q, T, E> entityQuery;
-	private EntityFactory<A, R, Q, T, ? extends E> factory;	
+	private EntityQuery<A, R, T, E> entityQuery;
+	private EntityFactory<A, R, T, ? extends E> factory;	
 	
 	private static Logger logger = Logger.getLogger(DefaultEntityQueryTask.class);
 									
-	public DefaultEntityQueryTask(EntityQuery<A, R, Q, T, E> query) {
+	public DefaultEntityQueryTask(EntityQuery<A, R, T, E> query) {
 		super();				
 		this.entityQuery = query;		
 		this.factory = query.getMetaData().getFactory();
@@ -63,7 +61,7 @@ public class DefaultEntityQueryTask<
 	/* (non-Javadoc)
 	 * @see fi.tnie.db.EntityQuery#exec(java.sql.Connection)
 	 */
-	public EntityQueryResult<A, R, Q, T, E> exec(Connection c) 
+	public EntityQueryResult<A, R, T, E> exec(Connection c) 
 		throws EntityQueryException {
 		return exec(null, c);
 	}
@@ -71,7 +69,7 @@ public class DefaultEntityQueryTask<
 	/* (non-Javadoc)
 	 * @see fi.tnie.db.EntityQuery#exec(long, java.lang.Long, java.sql.Connection)
 	 */
-	public EntityQueryResult<A, R, Q, T, E> exec(long offset, Long limit, Connection c) 
+	public EntityQueryResult<A, R, T, E> exec(long offset, Long limit, Connection c) 
 		throws EntityQueryException {
 		QueryFilter qf = null;	
 	
@@ -89,12 +87,12 @@ public class DefaultEntityQueryTask<
 	/* (non-Javadoc)
 	 * @see fi.tnie.db.EntityQuery#exec(fi.tnie.db.exec.QueryFilter, java.sql.Connection)
 	 */
-	public EntityQueryResult<A, R, Q, T, E> exec(QueryFilter qf, Connection c) 
+	public EntityQueryResult<A, R, T, E> exec(QueryFilter qf, Connection c) 
 		throws EntityQueryException {
 			
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		EntityQueryResult<A, R, Q, T, E> qr = null;
+		EntityQueryResult<A, R, T, E> qr = null;
 				
 		try {			
 			DefaultTableExpression qo = this.entityQuery.getQuery();
@@ -152,11 +150,11 @@ public class DefaultEntityQueryTask<
 		return qr;
 	}
 
-	public void setFactory(EntityFactory<A, R, Q, T, E> factory) {
+	public void setFactory(EntityFactory<A, R, T, E> factory) {
 		this.factory = factory;
 	}
 
-	public EntityFactory<A, R, Q, T, ? extends E> getFactory() {
+	public EntityFactory<A, R, T, ? extends E> getFactory() {
 		return factory;
 	}
 	
@@ -168,7 +166,7 @@ public class DefaultEntityQueryTask<
 		}
 		
 		@Override
-		public Holder<Serializable, VarcharType> extractValue(ResultSet rs) throws SQLException {
+		public PrimitiveHolder<Serializable, VarcharType> extractValue(ResultSet rs) throws SQLException {
 //			return rs.getObject(getColumn());
 			throw new UnsupportedOperationException("unsupported: " + getClass() + ".extractValue()");
 		}
@@ -178,25 +176,25 @@ public class DefaultEntityQueryTask<
 		extends QueryProcessorAdapter {
 		
 //		private Extractor[] extractors = null;
-		private List<AttributeExtractor<A, R, Q, T, E>> attributeWriterList;
+		private List<AttributeExtractor<A, R, T, E>> attributeWriterList;
 		private int attrs;
 		private List<E> content;
 		private E first;
-		private EntityQuery<A, R, Q, T, E> source;
+		private EntityQuery<A, R, T, E> source;
 		private boolean completed;
 								
-		public EntityQueryProcessor(EntityQuery<A, R, Q, T, E> source, DefaultTableExpression qo) {
+		public EntityQueryProcessor(EntityQuery<A, R, T, E> source, DefaultTableExpression qo) {
 			int colno = 0;			
 			this.source = source;
 			this.completed = false;
 												
-			EntityMetaData<A, R, Q, T, ? extends E> meta = source.getMetaData();
+			EntityMetaData<A, R, T, ? extends E> meta = source.getMetaData();
 			BaseTable table = meta.getBaseTable();
 			
 			List<? extends ColumnName> cl = qo.getSelect().getColumnNameList().getContent();
 			
 			Extractor[] xa = new Extractor[cl.size()];
-			List<AttributeExtractor<A, R, Q, T, E>> awl = new ArrayList<AttributeExtractor<A, R, Q, T, E>>();
+			List<AttributeExtractor<A, R, T, E>> awl = new ArrayList<AttributeExtractor<A, R, T, E>>();
 									
 			for (ColumnName n : qo.getSelect().getColumnNameList().getContent()) {
 				colno++;
@@ -229,7 +227,7 @@ public class DefaultEntityQueryTask<
 				A a = meta.getAttribute(column);
 				
 				if (a != null) {
-					awl.add(new AttributeExtractor<A, R, Q, T, E>(a, e));		
+					awl.add(new AttributeExtractor<A, R, T, E>(a, e));		
 				}
 			}			
 			
@@ -251,28 +249,28 @@ public class DefaultEntityQueryTask<
 			this.completed = true;
 		}
 
-		private EntityQueryResult<A, R, Q, T, E> getQueryResult(
-				EntityQueryTask<A, R, Q, T, E> source, long available) {
+		private EntityQueryResult<A, R, T, E> getQueryResult(
+				EntityQueryTask<A, R, T, E> source, long available) {
 			
 			if (!this.completed) {
 				return null;
 			}
 
 			if (this.first == null) {
-				return new EmptyEntityQueryResult<A, R, Q, T, E>(this.source, available);
+				return new EmptyEntityQueryResult<A, R, T, E>(this.source, available);
 			}
 			
 			if (this.content == null) {
-				return new SingleEntityQueryResult<A, R, Q, T, E>(this.source, this.first, available);
+				return new SingleEntityQueryResult<A, R, T, E>(this.source, this.first, available);
 			}
 			
-			return new MultipleEntityQueryResult<A, R, Q, T, E>(this.source, this.content, available);
+			return new MultipleEntityQueryResult<A, R, T, E>(this.source, this.content, available);
 		}
 
 		@Override
 		public void process(ResultSet rs, long ordinal) throws QueryException {
 			try {
-				EntityFactory<A, R, Q, T, ? extends E> ef = getFactory();				
+				EntityFactory<A, R, T, ? extends E> ef = getFactory();				
 				E e = ef.newInstance();
 				
 //				for (int i = 0; i < this.extractors.length; i++) {
@@ -285,7 +283,7 @@ public class DefaultEntityQueryTask<
 //				}
 				
 				for (int i = 0; i < attrs; i++) {
-					AttributeExtractor<A, R, Q, T, E> ax = this.attributeWriterList.get(i);
+					AttributeExtractor<A, R, T, E> ax = this.attributeWriterList.get(i);
 					ax.extract(rs, e);
 				}
 								

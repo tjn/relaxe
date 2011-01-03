@@ -18,8 +18,17 @@ public interface SelectListElement
 	 */	
 	List<? extends ColumnName> getColumnNames();
 	
+	/** 
+	 * @param column 1-based index
+	 * @return
+	 */
 	ValueExpression getColumnExpr(int column);
 	
+	/** 
+	 * @param column 1-based index
+	 * @return
+	 */	
+	ColumnExpr getTableColumnExpr(int column);	
 	
 
 	/** Gets the column count.

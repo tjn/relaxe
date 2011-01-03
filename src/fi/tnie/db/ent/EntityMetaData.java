@@ -12,16 +12,15 @@ import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.types.ReferenceType;
 
 public interface EntityMetaData<
-	A extends Enum<A> & Identifiable, 
-	R extends Enum<R> & Identifiable,
-	Q extends Enum<Q> & Identifiable,
+	A, 
+	R, 
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, Q, T, ? extends E>
+	E extends Entity<A, R, T, ? extends E>
 > {
 
 	Class<A> getAttributeNameType();
-	Class<R> getRelationshipNameType();	
-	Class<Q> getQueryNameType();
+	
+	Class<R> getReferenceNameType();
 	
 	/**
 	 * Returns the base table this meta-data is bound to or <code>null</code> 
@@ -31,22 +30,18 @@ public interface EntityMetaData<
 	 */
 	BaseTable getBaseTable();
 	
-	EntityFactory<A, R, Q, T, E> getFactory();
+	EntityFactory<A, R, T, E> getFactory();
 	
 	/**
 	 * Unmodifiable set containing the names of the attributes which are applicable to entities this object describes.   
 	 * @return
 	 */
-	Set<A> attributes();
-	
-	/**
-	 * Unmodifiable set containing the names of the relationships which are applicable to entities this object describes.   
-	 * @return
-	 */	
+	Set<A> attributes();	
 	Set<R> relationships();
-	
+		
 	Column getColumn(A a);
-	A getAttribute(Column c);	
+	A getAttribute(Column c);
+	
 	ForeignKey getForeignKey(R r);		
 	Set<Column> getPKDefinition();
 	
