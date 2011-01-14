@@ -5,8 +5,7 @@ package fi.tnie.db.expr;
 
 public abstract class Statement
 	extends CompoundElement {
-	
-		
+			
 	enum Type {
 		/**
 		 * CREATE_SCHEMA/ALTER_TABLE/DROP_SCHEMA/TRUNCATE/COMMENT/RENAME -statement 

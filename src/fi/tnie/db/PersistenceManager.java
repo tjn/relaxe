@@ -19,7 +19,6 @@ import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.env.GeneratedKeyHandler;
 import fi.tnie.db.expr.Assignment;
-import fi.tnie.db.expr.ColumnExpr;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.DeleteStatement;
 import fi.tnie.db.expr.ElementList;

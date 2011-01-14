@@ -29,5 +29,4 @@ public class DefaultMutableValueModel<V>
 		fireIfChanged(from, this.value);
 	}
 	
-	
 }

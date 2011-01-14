@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.model;
 
-import fi.tnie.db.model.cm.AbstractTransformationModel;
 import junit.framework.TestCase;
 
 public class TransformationModelTest extends TestCase {

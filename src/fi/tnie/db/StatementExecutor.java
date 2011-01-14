@@ -17,23 +17,6 @@ public class StatementExecutor {
 
 	private static Logger logger = Logger.getLogger(StatementExecutor.class);
 	
-//	private List<Statement> statements;
-	
-//	public StatementExecutor(List<Statement> statements) {
-//	    this.statements
-//	}
-//	
-//	public StatementExecutor(Statement statement) {
-//		super();
-//		this.statement = statement;
-//	}
-//	
-//	public void execute(Connection c, QueryProcessor qp) {
-//	    
-//	}
-	
-	
-	
 	public void execute(Statement statement, Connection c, QueryProcessor qp)
 		throws SQLException {
 
@@ -79,8 +62,6 @@ public class StatementExecutor {
 					
 				}
 			}
-						
-			
 		}
 		finally {
 			qp.finish();		
