@@ -1,11 +1,8 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.model.cm;
+package fi.tnie.db.model;
 
-import fi.tnie.db.model.AbstractValueModel;
-import fi.tnie.db.model.ChangeListener;
-import fi.tnie.db.model.ValueModel;
 
 /** 
  *
