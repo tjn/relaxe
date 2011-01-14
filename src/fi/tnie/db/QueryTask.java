@@ -134,11 +134,10 @@ public class QueryTask
 		private ValueExtractor<?, ?>[] createExtractorArray(List<ValueExpression> el) {
 			int colno = 0;
 			ValueExtractor<?, ?>[] xa = new ValueExtractor<?, ?>[el.size()];
-																		
+																								
 			for (ValueExpression expr : el) {
-				colno++;
-				
-				int sqltype = expr.getType();		
+				colno++;				
+				int sqltype = expr.getType();				
 				
 				ValueExtractor<?, ?> e = null;
 					
@@ -171,9 +170,8 @@ public class QueryTask
 				int count = this.extractors.length;
 				
 				for (int i = 0; i < count; i++) {
-					ValueExtractor<?, ?> ve = this.extractors[i];
-					PrimitiveHolder<?, ?> h = ve.extractValue(rs);
-					o.set(i, h);
+					ValueExtractor<?, ?> ve = this.extractors[i];					
+					o.set(i, ve.extractValue(rs));
 				}			
 				
 				this.content.add(o);																
