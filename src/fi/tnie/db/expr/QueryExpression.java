@@ -17,5 +17,7 @@ public abstract class QueryExpression
 	
 	public abstract TableExpression getTableExpr();
 	public abstract OrderBy getOrderBy();
+	public abstract Limit getLimit();
+	public abstract Offset getOffset();
 //	public abstract Select getSelect();
 }

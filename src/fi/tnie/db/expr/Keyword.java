@@ -13,6 +13,8 @@ public enum Keyword implements Token {
 	GROUP_BY,
 	HAVING,
 	ORDER_BY,
+	LIMIT,
+	OFFSET,
 	IN,
 	LIKE,
 	BETWEEN,

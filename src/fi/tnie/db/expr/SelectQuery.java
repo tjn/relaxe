@@ -13,7 +13,9 @@ public class SelectQuery
 	extends QueryExpression {
 
 	private TableExpression tableExpr;
-	private OrderBy orderBy;	
+	private OrderBy orderBy;
+	private Limit limit;
+	private Offset offset;
 	
 	@Override
 	public OrderBy getOrderBy() {
@@ -45,7 +47,29 @@ public class SelectQuery
 						
 		if (o != null) {
 			o.traverse(vc, v);		
-		}				
+		}
+		
+		Limit limit = getLimit();
+		
+		if (limit != null) {
+			limit.traverse(vc, v);
+		}
+	}
+
+	public Limit getLimit() {
+		return limit;
+	}
+
+	public void setLimit(Limit limit) {
+		this.limit = limit;
+	}
+
+	public Offset getOffset() {
+		return offset;
+	}
+
+	public void setOffset(Offset offset) {
+		this.offset = offset;
 	}
 
 	

@@ -37,6 +37,16 @@ public class NestedSelect
 	public OrderBy getOrderBy() {
 		return null;
 	}
+	
+	@Override
+	public Limit getLimit() {	
+		return null;
+	}
+	
+	@Override
+	public Offset getOffset() {	
+		return null;
+	}
 
 	@Override
 	public TableExpression getTableExpr() {

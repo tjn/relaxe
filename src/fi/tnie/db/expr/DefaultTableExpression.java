@@ -141,6 +141,16 @@ public class DefaultTableExpression
 	}
 	
 	@Override
+	public Limit getLimit() {	
+		return null;
+	}
+	
+	@Override
+	public Offset getOffset() {	
+		return null;
+	}
+	
+	@Override
 	public TableExpression getTableExpr() {
 		return this;
 	}
