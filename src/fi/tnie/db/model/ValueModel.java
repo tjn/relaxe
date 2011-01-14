@@ -45,7 +45,7 @@ public interface ValueModel<V> {
 	
 	/**
 	 * If this model is immutable, returns itself. 
-	 * If this model is mutable, wraps itself in immutable model and returns the immmmutable view. 
+	 * If this model is mutable, wraps itself in immutable model and returns the immutable view. 
 	 *   
 	 * @return
 	 */	
