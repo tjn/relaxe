@@ -45,8 +45,11 @@ public class DataTypeImpl
 	public DataTypeImpl(DataTypeImpl source) {
 		super();
 		this.dataType = source.getDataType();
-		this.typeName = source.getTypeName();
-		// TODO: add others
+		this.typeName = source.getTypeName();		
+		this.charOctetLength = source.getCharOctetLength();
+		this.decimalDigits = source.getDecimalDigits();
+		this.numPrecRadix = source.getNumPrecRadix();
+		this.size = source.getSize();
 	}
 
 
