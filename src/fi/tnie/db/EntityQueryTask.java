@@ -15,7 +15,7 @@ public interface EntityQueryTask<
 	A,
 	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, ? extends E>
+	E extends Entity<A, R, T, E>
 >
 {
 	EntityQueryResult<A, R, T, E> exec(Connection c)

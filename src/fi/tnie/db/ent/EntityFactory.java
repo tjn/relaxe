@@ -9,7 +9,7 @@ public interface EntityFactory<
 	A,
 	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, ? extends E>	
+	E extends Entity<A, R, T, ?>	
 > {			
 	E newInstance();
 }

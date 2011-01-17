@@ -4,7 +4,8 @@
 package fi.tnie.db.model;
 
 public class MutableIntegerModel
-	extends DefaultMutableValueModel<Integer> {
+	extends DefaultMutableValueModel<Integer>
+	implements IntegerModel {
 
 	public MutableIntegerModel() {
 		super();

@@ -7,8 +7,12 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import org.apache.log4j.Logger;
+
 public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 
+	private static Logger logger = Logger.getLogger(DefaultValueExtractorFactory.class);
+	
 	@Override
 	public ValueExtractor<?, ?> createExtractor(ResultSetMetaData meta, int col) 
 		throws SQLException {
@@ -22,15 +26,30 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 				e = new IntExtractor(col);	
 				break;
 			case Types.VARCHAR:
+				e = new VarcharExtractor(col);
 			case Types.CHAR:
-				e = new VarcharExtractor(col);	
+				e = new CharExtractor(col);	
 				break;					
+			case Types.DATE:
+				e = new DateExtractor(col);	
+				break;
+			case Types.TIMESTAMP:
+				e = new TimestampExtractor(col);	
+				break;								
 			default:
 				// 
 	//			e = new ObjectExtractor(colno);
 				break;
-			}	
+			}
+		
+		
+			logger().debug("createExtractor - exit " + meta.getColumnLabel(col) + ": " + sqltype + " => " + e);
 			
 			return e;
+		}
+	
+	
+		private static Logger logger() {
+			return DefaultValueExtractorFactory.logger;
 		}
 	}

@@ -8,7 +8,7 @@ package fi.tnie.db.expr;
  * @author Administrator
  */
 
-public abstract class QueryExpression 	
+public abstract class QueryExpression
 	extends Statement {
 	
 	protected QueryExpression() {

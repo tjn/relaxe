@@ -7,9 +7,11 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.types.ReferenceType;
 
 
-public abstract class ReferenceHolder<	
-	V extends Entity<?, ?, T, ? extends V>,
-	T extends ReferenceType<T>>	
+public abstract class ReferenceHolder<
+	A,
+	R,
+	T extends ReferenceType<T>,
+	V extends Entity<A, R, T, V>>
 	extends Holder<V, T> {
 	
 	/**

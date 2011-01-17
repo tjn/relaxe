@@ -12,7 +12,11 @@ public class SchemaName
 	private Identifier schemaName;	
 		
 	public SchemaName(Schema schema) {
-		this(schema.getCatalog().getUnqualifiedName(), schema.getUnqualifiedName());		
+		this(schema, true);		
+	}
+	
+	public SchemaName(Schema schema, boolean relative) {
+		this(relative ? null : schema.getCatalog().getUnqualifiedName(), schema.getUnqualifiedName());		
 	}
 	
 	public SchemaName(Identifier catalogName, Identifier schemaName) {

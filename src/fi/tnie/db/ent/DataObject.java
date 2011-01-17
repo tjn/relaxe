@@ -3,12 +3,15 @@
  */
 package fi.tnie.db.ent;
 
+import java.io.Serializable;
+
 import fi.tnie.db.expr.ColumnExpr;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.ValueExpression;
 import fi.tnie.db.rpc.PrimitiveHolder;
 
-public interface DataObject
+public interface DataObject	
+	extends Serializable
 {	
 	PrimitiveHolder<?, ?> get(int index);
 	

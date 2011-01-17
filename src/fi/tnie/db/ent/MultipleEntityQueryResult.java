@@ -12,7 +12,7 @@ public class MultipleEntityQueryResult<
 	A,
 	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, ? extends E>
+	E extends Entity<A, R, T, E>
 > extends AbstractEntityQueryResult<A, R, T, E>{		
 
 	private List<E> content;

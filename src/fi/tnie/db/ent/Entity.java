@@ -10,12 +10,12 @@ import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.meta.Column;
-
+	
 public interface Entity<
 	A,
 	R,
 	T extends ReferenceType<T>, 
-	E extends Entity<A, R, T, ? extends E>
+	E extends Entity<A, R, T, E>
 > 
 	extends
 	Serializable
@@ -71,7 +71,7 @@ public interface Entity<
 	 */
 //	ReferenceHolder<?, ?> get(ForeignKey fk);
 		
-	ReferenceHolder<?, ?> ref(R ref);
+	ReferenceHolder<?, ?, ?, ?> ref(R ref);
 	
 	
 	/** 
@@ -90,7 +90,7 @@ public interface Entity<
 	 * @param a
 	 * @param value
 	 */
-	void set(R r, ReferenceHolder<?, ?> value);
+	void set(R r, ReferenceHolder<?, ?, ?, ?> value);
 	
 	EntityDiff<A, R, T, E> diff(E another);
 		
@@ -104,6 +104,10 @@ public interface Entity<
 		
 	T getType();
 	
-	ReferenceHolder<E, T> ref();
+	ReferenceHolder<A, R, T, E> ref();
 	
+	/**
+	 * TODO: EntityQueryTask should be also rewritten to use DataObjectReader
+	 */
+	// DataObject getSource();
 }

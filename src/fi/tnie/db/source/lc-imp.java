@@ -9,7 +9,7 @@
 // the count of the columns is limited.  
 
 //
-//	public static enum LiteralTableHourReport
+//	public enum LiteralPersonalHourReport
 //		implements Column {
 //		
 //		ID(LiteralBaseTable.PERSONAL_HOUR_REPORT, "id", new DataTypeImpl(4, "serial", 10, 0, 0, 0)),

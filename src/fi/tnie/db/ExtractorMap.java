@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.expr.QueryExpression;
@@ -21,10 +23,12 @@ public class ExtractorMap<
 	A,
 	R,
 	T extends ReferenceType<T>, 
-	E extends Entity<A, R, T, ? extends E>
+	E extends Entity<A, R, T, E>
 > {
 	
 	private List<AttributeExtractor<A, R, T, E>> attributeExctractorList;
+	
+	private static Logger logger = Logger.getLogger(ExtractorMap.class);
 
 	/**
 	 * TODO: when initialized like this, this does not read references properly  
@@ -46,13 +50,22 @@ public class ExtractorMap<
 			String cl = rsmd.getColumnLabel(c);
 			Column col = cm.get(cl);
 						
-			A a = em.getAttribute(col);
+			A a = em.getAttribute(col);			
 			
 			if (a != null) {
-				AttributeExtractor<A, R, T, E> ae =
+				logger().info("attribute for column label: " + cl + " => " + a);
+				
+				AttributeExtractor<A, R, T, E> ae = 
 					new AttributeExtractor<A, R, T, E>(a, ve);
-				this.attributeExctractorList.add(ae);		
+				this.attributeExctractorList.add(ae);
 			}
+			else {
+				logger().warn("no attribute for column label: " + cl);
+				logger().warn("column: " + col);
+			}
+			
+			
+						
 			
 //			Set<R> refs = em.getReferences(col);
 //			
@@ -77,5 +90,9 @@ public class ExtractorMap<
 		for (int i = 0; i < ec; i++) {
 			attributeExctractorList.get(i).extract(src, e);
 		}
+	}
+	
+	private static Logger logger() {
+		return ExtractorMap.logger;
 	}
 }

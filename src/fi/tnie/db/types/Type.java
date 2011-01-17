@@ -57,9 +57,9 @@ public abstract class Type<T extends Type<T>> {
 		return (this == t);		
 	}
 	
-	public Integer getSqlType() {
-		return sqlType;
-	}
+//	public Integer getSqlType() {
+//		return sqlType;
+//	}
 	
 	private void setSqlType(Integer sqlType) {
 		this.sqlType = sqlType;

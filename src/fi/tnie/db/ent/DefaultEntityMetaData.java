@@ -4,6 +4,8 @@
 package fi.tnie.db.ent;
 
 import java.util.Collections;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -46,37 +48,8 @@ public abstract class DefaultEntityMetaData<
 	
 	protected abstract void populateAttributes(BaseTable table);
 	
-//	private void populateAttributes(BaseTable table) {
-//		this.attributes = EnumSet.allOf(atype);		
-//		this.attributeMap = new EnumMap<A, Column>(atype);		
-//		this.columnMap = new HashMap<Column, A>();		
-//		
-////		EnumSet<A> pka = EnumSet.noneOf(atype);
-//		
-//		Set<Column> pkc = new HashSet<Column>();
-//		
-//		for (A a : this.attributes) {
-//			Column c = table.columnMap().get(a.identifier());
-//			
-//			if (c == null) {
-//				throw new NullPointerException(
-//						"no column for attribute: " + a.identifier() + " in " + 
-//						table.columns());
-//			}
-//			
-//			this.attributeMap.put(a, c);
-//			this.columnMap.put(c, a);
-//			
-//			if (c.isPrimaryKeyColumn()) {
-//				pkc.add(c);
-////				pka.add(a);
-//			}
-//		}
-//		
-//		this.pkcols = Collections.unmodifiableSet(pkc);						
-////		this.pkattrs = Collections.unmodifiableSet(pka);
-//	}
 	
+		
 	protected void populateAttributes(Set<A> attributes, Map<A, Column> attributeMap, BaseTable table) {		
 		
 		// EnumSet<K> attributes = EnumSet.allOf(keyType);		
@@ -110,7 +83,8 @@ public abstract class DefaultEntityMetaData<
 
 		this.attributes = Collections.unmodifiableSet(attributes);		
 		this.attributeMap = attributeMap;
-		this.pkcols = Collections.unmodifiableSet(pkc);			
+		this.pkcols = Collections.unmodifiableSet(pkc);		
+		this.columnMap = columnMap;
 	}
 	
 	protected abstract Column map(BaseTable table, A a); 
@@ -221,6 +195,4 @@ public abstract class DefaultEntityMetaData<
 	    BaseTable table = getBaseTable();	    
 	    return (table == null) ? null : table.getSchema().getCatalog();
 	}
-	
-	
 }

@@ -24,6 +24,15 @@ public class AttributeExtractor	<
 		
 		public AttributeExtractor(A attribute, ValueExtractor<?, ?> extractor) {
 			super();
+			
+			if (attribute == null) {
+				throw new NullPointerException("attribute");
+			}
+			
+			if (extractor == null) {
+				throw new NullPointerException("extractor for attribute: " + attribute);
+			}
+			
 			this.attribute = attribute;
 			this.extractor = extractor;
 		}

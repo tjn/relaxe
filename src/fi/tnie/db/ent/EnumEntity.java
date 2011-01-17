@@ -14,7 +14,7 @@ public abstract class EnumEntity<
 	A extends Enum<A> & Identifiable,
 	R extends Enum<R> & Identifiable,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, ? extends E>
+	E extends Entity<A, R, T, E>
 	>
 	extends DefaultEntity<A, R, T, E>
 {
@@ -25,27 +25,25 @@ public abstract class EnumEntity<
 	private static final long serialVersionUID = -4951609635150994535L;
 	
 	private Map<A, PrimitiveHolder<?, ?>> values;
-	private Map<R, ReferenceHolder<?, ?>> refs;
+	private Map<R, ReferenceHolder<?, ?, ?, ?>> refs;
 
 	@Override
 	protected Map<A, PrimitiveHolder<?, ?>> values() {
 		if (values == null) {						
 			Class<A> nt = getMetaData().getAttributeNameType();
-			values = new EnumMap<A, PrimitiveHolder<?, ?>>(nt); 
+			values = new EnumMap<A, PrimitiveHolder<?, ?>>(nt);
 		}
 		
 		return values;	
 	}
 	
 	@Override
-	protected Map<R, ReferenceHolder<?, ?>> references() {
+	protected Map<R, ReferenceHolder<?, ?, ?, ?>> references() {
 		if (refs == null) {
 			Class<R> nt = getMetaData().getReferenceNameType();
-			refs = new EnumMap<R, ReferenceHolder<?, ?>>(nt); 
+			refs = new EnumMap<R, ReferenceHolder<?, ?, ?, ?>>(nt); 
 		}
 		
 		return refs;		
 	}
-	
-	
 }

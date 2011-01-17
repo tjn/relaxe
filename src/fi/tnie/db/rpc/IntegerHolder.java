@@ -4,12 +4,12 @@
 package fi.tnie.db.rpc;
 
 import fi.tnie.db.types.IntegerType;
+import fi.tnie.db.types.Type;
 
 
 public class IntegerHolder
 	extends PrimitiveHolder<Integer, IntegerType> {
-	
-		
+			
 	/**
 	 * 
 	 */
@@ -45,5 +45,10 @@ public class IntegerHolder
 	@Override
 	public IntegerType getType() {
 		return IntegerType.TYPE;
+	}
+
+	@Override
+	public int getSqlType() {
+		return Type.INTEGER;
 	}
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.EnumMap;
 
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
@@ -41,7 +40,7 @@ public class LiteralCatalog
 	private Identifier name;
 	private Environment environment;	
 	private DefaultMutableCatalog content;
-	private EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?>> metaMap;
+	private Map<String, EntityMetaData<?, ?, ?, ?>> metaMap;
 	
 	private Map<LiteralTable, DefaultMutableTable> mutableTableMap;
 	private Map<LiteralColumn, DefaultMutableColumn> mutableColumnMap;		
@@ -165,15 +164,16 @@ public class LiteralCatalog
 //		Not sure if GWT compiler honors this behavior, though.
 	}
 	
-	private void populateMetaMap(EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?>> mm) 
+	private void populateMetaMap(Map<String, EntityMetaData<?, ?, ?, ?>> mm) 
 		throws EntityException {
 {{meta-map-population}}
 	}
 	
-	private void add(EnumMap<LiteralBaseTable, EntityMetaData<?,?,?,?>> mm, LiteralBaseTable t, EntityMetaData<?,?,?,?> meta) 
+	private void add(Map<String, EntityMetaData<?,?,?,?>> mm, LiteralBaseTable t, EntityMetaData<?,?,?,?> meta) 
 		throws EntityException {
-		meta.bind(t.getTable());
-		mm.put(t, meta);
+		BaseTable baseTable = t.getTable();
+		meta.bind(baseTable);
+		mm.put(t.getQualifiedName(), meta);		
 	}
 	
 
@@ -545,13 +545,17 @@ public class LiteralCatalog
 	
 	@Override
 	public EntityMetaData<?, ?, ?, ?> getMetaData(BaseTable table)  {
-		return this.metaMap.get(table);
+		if (table == null) {
+			throw new NullPointerException("table");
+		}
+		
+		return this.metaMap.get(table.getQualifiedName());
 	}
 
-	private EnumMap<LiteralBaseTable, EntityMetaData<?, ?, ?, ?>> getMetaMap() 
+	private Map<String, EntityMetaData<?, ?, ?, ?>> getMetaMap() 
 		throws EntityException {
 		if (metaMap == null) {
-			metaMap = new EnumMap<LiteralBaseTable, EntityMetaData<?,?,?,?>>(LiteralBaseTable.class);
+			metaMap = new HashMap<String, EntityMetaData<?,?,?,?>>();
 			populateMetaMap(metaMap);			
 		}
 

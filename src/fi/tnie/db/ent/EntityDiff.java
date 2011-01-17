@@ -23,7 +23,7 @@ public interface EntityDiff<
 	A,
 	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, ? extends E>>
+	E extends Entity<A, R, T, ?>>
 {	
 	/**
 	 * "Total" difference between original and modified entity.

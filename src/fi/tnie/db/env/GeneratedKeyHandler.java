@@ -16,7 +16,7 @@ public interface GeneratedKeyHandler {
 	    A,
 	    R,
 	    T extends ReferenceType<T>,
-	    E extends Entity<A, R, T, ? extends E>
+	    E extends Entity<A, R, T, E>
 	>
 	void processGeneratedKeys(InsertStatement insert, E target, ResultSet rs) 
 		throws SQLException, EntityException;

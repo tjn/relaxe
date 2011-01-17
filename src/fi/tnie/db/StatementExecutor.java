@@ -44,7 +44,8 @@ public class StatementExecutor {
 				ResultSet rs = null;
 				
 				try {
-					rs = ps.executeQuery();					
+					rs = ps.executeQuery();
+					
 				}
 				finally {
 					doClose(rs);

@@ -9,7 +9,7 @@ public abstract class AbstractEntityQueryResult <
 	A,
 	R, 
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, ? extends E>>
+	E extends Entity<A, R, T, E>>
 	implements EntityQueryResult<A, R, T, E>
 {
 	private EntityQuery<A, R, T, E> source; 

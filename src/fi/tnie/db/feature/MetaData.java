@@ -38,7 +38,7 @@ public class MetaData
         SQLGenerationResult result = new SQLGenerationResult();
         
         final Identifier n = env.createIdentifier("created_at");
-        
+                
         for (Schema s : cat.schemas().values()) {
             for (BaseTable t : s.baseTables().values()) {                
                 Column c = t.columnMap().get(n);

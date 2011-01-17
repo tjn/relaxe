@@ -27,31 +27,30 @@ public class DefaultEntityQuery<
 	A,
 	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, ? extends E>
+	E extends Entity<A, R, T, E>
 	> implements EntityQuery<A, R, T, E>
 {		
-	private EntityMetaData<A, R, T, ? extends E> meta;
+	private EntityMetaData<A, R, T, E> meta;
 	private DefaultTableExpression query;
 	
 	private TableReference tableRef;
 			
 //	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class);
 									
-	public DefaultEntityQuery(EntityMetaData<A, R, T, ? extends E> meta) {
+	public DefaultEntityQuery(EntityMetaData<A, R, T, E> meta) {
 		super();				
 		this.meta = meta;
 	}
-	
-	
-	public DefaultEntityQuery(E template) 
+		
+	public DefaultEntityQuery(E root) 
 		throws CyclicTemplateException {
 		super();
 		
-		if (template == null) {
+		if (root == null) {
 			throw new NullPointerException();
 		}
-		
-		EntityMetaData<A, R, T, ? extends E> meta = template.getMetaData();		
+				
+		EntityMetaData<A, R, T, E> meta = root.getMetaData();		
 		BaseTable table = meta.getBaseTable();
 		
 		if (table == null) {
@@ -63,7 +62,7 @@ public class DefaultEntityQuery<
 		DefaultTableExpression q = new DefaultTableExpression();
 		HashSet<Entity<?,?,?,?>> visited = new HashSet<Entity<?,?,?,?>>();
 		
-		AbstractTableReference tref = fromTemplate(template, null, null, q, visited);		
+		AbstractTableReference tref = fromTemplate(root, null, null, q, visited);		
 		q.setFrom(new From(tref));
 				
 		this.query = q;
@@ -200,7 +199,7 @@ public class DefaultEntityQuery<
 	}
 
 	@Override
-	public EntityMetaData<A, R, T, ? extends E> getMetaData() {
+	public EntityMetaData<A, R, T, E> getMetaData() {
 		return this.meta;
 	}    
 }

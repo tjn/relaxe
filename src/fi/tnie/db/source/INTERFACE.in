@@ -19,7 +19,7 @@ public interface {{table-interface}}
 	Type TYPE = new Type();
 	
 	public static class Holder
-		extends ReferenceHolder<{{table-interface}}, {{table-interface}}.Type> {
+		extends ReferenceHolder<Attribute, Reference, Type, {{table-interface}}> {
 		
 		/**
 		 * 

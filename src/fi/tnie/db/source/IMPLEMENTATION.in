@@ -10,8 +10,8 @@ import fi.tnie.db.rpc.ReferenceHolder;
 
 public class {{table-impl-class}}
     extends {{table-impl-base}} {
-    
-    private ReferenceHolder<{{table-interface}}, {{table-interface}}.Type> holder;
+        
+    private {{table-interface}}.Holder holder;
     
     public static class {{table-interface}}MetaData
         extends EnumMetaData
@@ -22,7 +22,7 @@ public class {{table-impl-class}}
         {{table-interface}}> {
 
         private static final {{table-interface}}MetaData instance = new {{table-interface}}MetaData();
-        private final Factory factory = new Factory();
+        private static final Factory factory = new Factory();
     
         public {{table-interface}}MetaData() {
             super({{table-interface}}.Attribute.class, {{table-interface}}.Reference.class);
@@ -80,7 +80,7 @@ public class {{table-impl-class}}
     }
     
     @Override
-	public ReferenceHolder<{{table-interface}}, {{table-interface}}.Type> ref() {
+	public {{table-interface}}.Holder ref() {
 		if (holder == null) {
 			holder = new {{table-interface}}.Holder(this);		
 		}

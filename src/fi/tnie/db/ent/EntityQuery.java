@@ -10,7 +10,7 @@ public interface EntityQuery<
 	A,
 	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, ? extends E>
+	E extends Entity<A, R, T, E>
 >
 {
 //	QueryPredicate getPredicate();
@@ -23,5 +23,5 @@ public interface EntityQuery<
 	 * result item meta-data
 	 * @return
 	 */
-	EntityMetaData<A, R, T, ? extends E> getMetaData();
+	EntityMetaData<A, R, T, E> getMetaData();
 }

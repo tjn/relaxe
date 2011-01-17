@@ -56,6 +56,7 @@ public class SelectQuery
 		}
 	}
 
+	@Override
 	public Limit getLimit() {
 		return limit;
 	}
@@ -64,6 +65,7 @@ public class SelectQuery
 		this.limit = limit;
 	}
 
+	@Override
 	public Offset getOffset() {
 		return offset;
 	}

@@ -42,12 +42,12 @@ public class DefaultEntityQueryTask<
 	A,
 	R, 
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, ? extends E>> 
+	E extends Entity<A, R, T, E>> 
 	implements EntityQueryTask<A, R, T, E>
 {		
 	
 	private EntityQuery<A, R, T, E> entityQuery;
-	private EntityFactory<A, R, T, ? extends E> factory;	
+	private EntityFactory<A, R, T, E> factory;	
 	
 	private static Logger logger = Logger.getLogger(DefaultEntityQueryTask.class);
 									
@@ -154,7 +154,7 @@ public class DefaultEntityQueryTask<
 		this.factory = factory;
 	}
 
-	public EntityFactory<A, R, T, ? extends E> getFactory() {
+	public EntityFactory<A, R, T, E> getFactory() {
 		return factory;
 	}
 	
@@ -188,7 +188,7 @@ public class DefaultEntityQueryTask<
 			this.source = source;
 			this.completed = false;
 												
-			EntityMetaData<A, R, T, ? extends E> meta = source.getMetaData();
+			EntityMetaData<A, R, T, ?> meta = source.getMetaData();
 			BaseTable table = meta.getBaseTable();
 			
 			List<? extends ColumnName> cl = qo.getSelect().getColumnNameList().getContent();
@@ -270,7 +270,7 @@ public class DefaultEntityQueryTask<
 		@Override
 		public void process(ResultSet rs, long ordinal) throws QueryException {
 			try {
-				EntityFactory<A, R, T, ? extends E> ef = getFactory();				
+				EntityFactory<A, R, T, E> ef = getFactory();				
 				E e = ef.newInstance();
 				
 //				for (int i = 0; i < this.extractors.length; i++) {

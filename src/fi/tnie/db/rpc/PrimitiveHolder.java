@@ -16,4 +16,5 @@ public abstract class PrimitiveHolder<V extends Serializable, T extends Primitiv
 	 */
 	private static final long serialVersionUID = 2373967913129102220L;
 
+	public abstract int getSqlType();
 }

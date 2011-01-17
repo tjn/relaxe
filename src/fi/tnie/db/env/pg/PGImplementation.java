@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Comparator;
+
+import fi.tnie.db.DataObjectReader;
 import fi.tnie.db.ExtractorMap;
 import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.Entity;
@@ -51,9 +53,9 @@ public class PGImplementation
     private final class PGGeneratedKeyHandler implements GeneratedKeyHandler {    	
     	private ValueExtractorFactory extractorFactory;
     	
-		public PGGeneratedKeyHandler(ValueExtractorFactory extractorfactory) {
+		public PGGeneratedKeyHandler(ValueExtractorFactory vef) {
 			super();
-			this.extractorFactory = extractorfactory;
+			this.extractorFactory = vef;
 		}
 
 		@Override
@@ -61,7 +63,7 @@ public class PGImplementation
 			A,
 			R, 
 			T extends ReferenceType<T>,
-			E extends Entity<A, R, T, ? extends E>
+			E extends Entity<A, R, T, E>
 		> 
 		void processGeneratedKeys(
 				InsertStatement ins, E target, ResultSet rs) throws SQLException {
@@ -70,9 +72,10 @@ public class PGImplementation
 ////				logger().debug("getGeneratedKeys: ");
 //				
 			ResultSetMetaData meta = rs.getMetaData();
-
 			EntityMetaData<A, R, T, ? extends E> em = target.getMetaData();
 			
+			
+									
 			ExtractorMap<A, R, T, E> xm = 
 				new ExtractorMap<A, R, T, E>(meta, em, extractorFactory);				
 //			List<A> keys = new ArrayList<A>();

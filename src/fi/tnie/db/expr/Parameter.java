@@ -5,9 +5,14 @@ package fi.tnie.db.expr;
 
 import java.util.Collections;
 import java.util.List;
-
 import fi.tnie.db.meta.Column;
 
+
+/**
+ * Value should be primitive holder
+ * @author tnie
+ *
+ */
 public abstract class Parameter
 	extends SimpleElement
 	implements ValueExpression, SelectListElement, Token {

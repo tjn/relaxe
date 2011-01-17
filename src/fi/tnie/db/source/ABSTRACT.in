@@ -1,10 +1,10 @@
 package {{package-name}};
 
-import fi.tnie.db.ent.EnumEntity;
+import fi.tnie.db.ent.DefaultEntity;
 {{imports}}
 
 public abstract class {{table-abstract-class}}
-    extends EnumEntity<
+    extends DefaultEntity<
         {{table-interface}}.Attribute,
         {{table-interface}}.Reference,        
         {{table-interface}}.Type,

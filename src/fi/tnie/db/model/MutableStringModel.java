@@ -4,7 +4,8 @@
 package fi.tnie.db.model;
 
 public class MutableStringModel
-	extends DefaultMutableValueModel<String> {
+	extends DefaultMutableValueModel<String>
+	implements StringModel {
 
 	public MutableStringModel() {
 		super();

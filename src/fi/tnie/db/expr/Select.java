@@ -125,7 +125,8 @@ public class Select
 			Keyword.DISTINCT.traverse(vc, v);
 		}
 		
-		getContent().traverse(vc, v);	}
+		getContent().traverse(vc, v);	
+	}
 	
 	@Override
 	protected Element getContent() {		

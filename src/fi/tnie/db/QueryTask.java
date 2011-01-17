@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -16,11 +15,7 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.VarcharType;
 import fi.tnie.db.ent.DataObject;
-import fi.tnie.db.ent.EntityQueryException;
-import fi.tnie.db.exec.QueryProcessorAdapter;
 import fi.tnie.db.expr.QueryExpression;
-import fi.tnie.db.expr.TableExpression;
-import fi.tnie.db.expr.ValueExpression;
 
 public class QueryTask
 {		
@@ -28,15 +23,12 @@ public class QueryTask
 	private Query query;
 									
 	public QueryTask(Query q) {
-		super();				
+		super();
 		this.query = q;
 	}
 
-	/* (non-Javadoc)
-	 * @see fi.tnie.db.EntityQuery#exec(fi.tnie.db.exec.QueryFilter, java.sql.Connection)
-	 */
 	public QueryResult<DataObject> exec(Connection c) 
-		throws EntityQueryException {
+		throws QueryException {
 			
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -91,7 +83,7 @@ public class QueryTask
 		} 
 		catch (Throwable e) {
 			logger().error(e.getMessage(), e);
-			throw new EntityQueryException(e.getMessage(), e);
+			throw new QueryException(e.getMessage(), e);
 		}
 		finally {			
 			rs = QueryHelper.doClose(rs);
@@ -101,7 +93,7 @@ public class QueryTask
 		return qr;
 	}
 
-	private static class ObjectExtractor
+	static class ObjectExtractor
 		extends ValueExtractor<Serializable, VarcharType>
 	{
 		public ObjectExtractor(int column) {
@@ -112,73 +104,6 @@ public class QueryTask
 		public PrimitiveHolder<Serializable, VarcharType> extractValue(ResultSet rs) throws SQLException {
 //			return rs.getObject(getColumn());
 			throw new UnsupportedOperationException("unsupported: " + getClass() + ".extractValue()");
-		}
-	}
-	
-	public class DataObjectReader
-		extends QueryProcessorAdapter {
-		
-		private List<DataObject> content;		
-		private DefaultDataObject.MetaData meta;
-		private ValueExtractor<?, ?>[] extractors;
-										
-		public DataObjectReader(QueryExpression qo, List<DataObject> content) {									
-			TableExpression te = qo.getTableExpr();
-			List<ValueExpression> el = te.getSelect().expandValueExprList();
-			
-			this.content = content;
-			this.meta = new DefaultDataObject.MetaData(qo);			
-			this.extractors = createExtractorArray(el);
-		}
-
-		private ValueExtractor<?, ?>[] createExtractorArray(List<ValueExpression> el) {
-			int colno = 0;
-			ValueExtractor<?, ?>[] xa = new ValueExtractor<?, ?>[el.size()];
-																								
-			for (ValueExpression expr : el) {
-				colno++;				
-				int sqltype = expr.getType();				
-				
-				ValueExtractor<?, ?> e = null;
-					
-				switch (sqltype) {
-					case Types.INTEGER:					
-					case Types.SMALLINT:
-					case Types.TINYINT:
-						e = new IntExtractor(colno);	
-						break;
-					case Types.VARCHAR:
-					case Types.CHAR:
-						e = new VarcharExtractor(colno);	
-						break;					
-					default:
-						e = new ObjectExtractor(colno);
-						break;
-				}
-				
-				xa[colno - 1] = e;
-			}
-			
-			return xa;
-		}
-				
-		@Override
-		public void process(ResultSet rs, long ordinal) throws QueryException {
-			try {
-				DefaultDataObject o = new DefaultDataObject(this.meta);
-				
-				int count = this.extractors.length;
-				
-				for (int i = 0; i < count; i++) {
-					ValueExtractor<?, ?> ve = this.extractors[i];					
-					o.set(i, ve.extractValue(rs));
-				}			
-				
-				this.content.add(o);																
-			}
-			catch (Throwable e) {
-				throw new QueryException(e.getMessage(), e);
-			}
 		}
 	}
 	

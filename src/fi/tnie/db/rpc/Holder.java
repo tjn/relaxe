@@ -10,7 +10,7 @@ import fi.tnie.db.types.Type;
 /** 
  * @author Topi Nieminen <topi.nieminen@gmail.com>
  */
-public abstract class Holder<V extends Serializable, T extends Type<T>>
+public abstract class Holder<V extends Serializable, T extends Type<?>>
 	implements Serializable {
 	
 	/**

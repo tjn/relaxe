@@ -3,6 +3,7 @@
  */
 package fi.tnie.db;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,16 +20,33 @@ import fi.tnie.db.rpc.PrimitiveHolder;
 public class DefaultDataObject
 	implements DataObject {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5199827695443766073L;
+	
 	private List<PrimitiveHolder<?, ?>> content;
 	private DefaultDataObject.MetaData metaData;
 		
 	public static class MetaData
-		implements DataObject.MetaData {
+		implements DataObject.MetaData, Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5107557882111255138L;
+		
 		private int columnCount;
 		private List<ValueExpression> valueList;
 		private List<ColumnExpr> columnList;
 		private Map<ColumnName, Integer> columnIndexMap;
 		private QueryExpression query;
+		
+		/**
+			 * No-argument constructor for GWT Serialization
+			 */
+		@SuppressWarnings("unused")
+		private MetaData() {	
+		}
 		
 		public MetaData(QueryExpression qe) {
 			this.query = qe;			
@@ -57,21 +75,10 @@ public class DefaultDataObject
 			return this.columnIndexMap.get(n).intValue();
 		}
 
-//		@Override
-//		public ColumnExpr column(ColumnName a) {
-//			return this.columnList.get(index(a)); 
-//		}
-		
 		@Override
 		public ColumnExpr column(int index) {
 			return this.columnList.get(index); 
 		}
-
-
-//		@Override
-//		public ValueExpression expr(ColumnName a) {
-//			return this.valueList.get(index(a));
-//		}
 
 		@Override
 		public ValueExpression expr(int index) {

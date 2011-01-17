@@ -43,13 +43,13 @@ public class PersistenceManager<
     A,
     R,
     T extends ReferenceType<T>,
-    E extends Entity<A, R, T, ? extends E>>
+    E extends Entity<A, R, T, E>>
 {
     
     private class Query
         extends DefaultEntityQuery<A, R, T, E>
     {
-        public Query(EntityMetaData<A, R, T, ? extends E> meta) {
+        public Query(EntityMetaData<A, R, T, E> meta) {
             super(meta);
         }       
     }
@@ -82,8 +82,8 @@ public class PersistenceManager<
     public InsertStatement createInsertStatement() {	
         E pe = getTarget();        
     	ValueRow newRow = new ValueRow();
-    	 
-    	final EntityMetaData<A, R, T, ? extends E> meta = pe.getMetaData();				
+    	    	
+    	final EntityMetaData<A, R, T, ?> meta = pe.getMetaData();				
     	BaseTable t = meta.getBaseTable();
     			
     	ElementList<ColumnName> names = new ElementList<ColumnName>();
@@ -93,6 +93,10 @@ public class PersistenceManager<
     		
 //    		Object value = pe.value(a);
     		PrimitiveHolder<?, ?> holder = pe.value(a);
+    		
+    		if (holder == null) {
+    			continue;
+    		}
     		
     		if (holder.isNull() && col.isPrimaryKeyColumn()) {
     		    // this might be auto-increment pk-column
@@ -134,7 +138,7 @@ public class PersistenceManager<
     public UpdateStatement createUpdateStatement() throws EntityException {
         E pe = getTarget();
     
-    	final EntityMetaData<A, R, T, ? extends E> meta = pe.getMetaData();
+    	final EntityMetaData<A, R, T, ?> meta = pe.getMetaData();
     	// TableReference tref = meta.createTableRef();
     	TableReference tref = new TableReference(meta.getBaseTable());
     	    	
@@ -250,7 +254,7 @@ public class PersistenceManager<
         	new DefaultEntityQueryTask<A, R, T, E>(pq);  
                               
     	Predicate pkp = getPKPredicate(tref, getTarget());
-    	E stored = null; 
+    	E stored = null;
     	    
     	if (pkp != null) {
             pq.getQuery().getWhere().setSearchCondition(pkp);
@@ -299,7 +303,7 @@ public class PersistenceManager<
 
     private Predicate getPKPredicate() throws EntityException {
         E pe = getTarget();
-    	EntityMetaData<A, R, T, ? extends E> meta = pe.getMetaData();
+    	EntityMetaData<A, R, T, ?> meta = pe.getMetaData();
     	TableReference tref = new TableReference(meta.getBaseTable());
     	Predicate pkp = getPKPredicate(tref, pe);
         return pkp;
@@ -350,7 +354,7 @@ public class PersistenceManager<
             throw new NullPointerException();
         }
         
-        EntityMetaData<A, R, T, ? extends E> meta = pe.getMetaData();
+        EntityMetaData<A, R, T, ?> meta = pe.getMetaData();
         Set<Column> pkcols = meta.getPKDefinition();
             
         if (pkcols.isEmpty()) {
@@ -359,7 +363,7 @@ public class PersistenceManager<
         
         Predicate p = null;
         
-        for (Column col : pkcols) {
+        for (Column col : pkcols) {        	
             Object o = pe.get(col);
             
             // to successfully create a pk predicate 
@@ -377,13 +381,13 @@ public class PersistenceManager<
     }
     
     
-    public Object get(Entity<A, R, T, E> pe, Column column)
+    public Object get(Entity<A, R, T, ?> pe, Column column)
         throws NullPointerException {
         if (column == null) {
             throw new NullPointerException("'c' must not be null");
         }
         
-        EntityMetaData<A, R, T, E> m = pe.getMetaData();
+        EntityMetaData<A, R, T, ?> m = pe.getMetaData();
         
         A a = m.getAttribute(column);
         
