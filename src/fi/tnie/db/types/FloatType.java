@@ -3,6 +3,8 @@
  */
 package fi.tnie.db.types;
 
+import fi.tnie.db.rpc.PrimitiveHolder;
+
 public class FloatType
 	extends PrimitiveType<FloatType> {
 	
@@ -14,6 +16,12 @@ public class FloatType
 	@Override
 	public int getSqlType() {
 		return Type.FLOAT;
+	}
+	
+
+	@Override
+	public PrimitiveHolder<?, FloatType> nil() {
+		return null; // TODO: implement FloatHolder		
 	}
 
 }

@@ -3,6 +3,9 @@
  */
 package fi.tnie.db.types;
 
+import fi.tnie.db.rpc.CharHolder;
+import fi.tnie.db.rpc.PrimitiveHolder;
+
 public class CharType
 	extends PrimitiveType<CharType> {
 
@@ -15,4 +18,9 @@ public class CharType
 	public int getSqlType() {
 		return Type.CHAR;
 	}
+	
+	@Override
+	public PrimitiveHolder<?, CharType> nil() {
+		return CharHolder.NULL_HOLDER;
+	}	
 }

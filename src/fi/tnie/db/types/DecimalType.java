@@ -3,6 +3,8 @@
  */
 package fi.tnie.db.types;
 
+import fi.tnie.db.rpc.PrimitiveHolder;
+
 public class DecimalType
 	extends PrimitiveType<DecimalType> {
 	
@@ -16,4 +18,9 @@ public class DecimalType
 		return Type.DECIMAL;
 	}
 
+	@Override
+	public PrimitiveHolder<?, DecimalType> nil() {
+		return null; // TODO: implement transliterable Decimal & DecimalHolder
+//		return DecimalHolder.NULL_HOLDER;
+	}
 }

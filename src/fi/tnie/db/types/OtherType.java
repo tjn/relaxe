@@ -3,6 +3,8 @@
  */
 package fi.tnie.db.types;
 
+import fi.tnie.db.rpc.PrimitiveHolder;
+
 public class OtherType
 	extends PrimitiveType<OtherType> {
 	
@@ -15,4 +17,10 @@ public class OtherType
 	public int getSqlType() {
 		return Type.OTHER;
 	}
+	
+	@Override
+	public PrimitiveHolder<?, OtherType> nil() {
+		return null; // TODO: implement OtherHolder		
+	}
+	
 }

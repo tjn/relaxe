@@ -3,6 +3,8 @@
  */
 package fi.tnie.db.types;
 
+import fi.tnie.db.rpc.PrimitiveHolder;
+
 public class LongVarcharType
 	extends PrimitiveType<LongVarcharType> {
 
@@ -14,5 +16,11 @@ public class LongVarcharType
 	@Override
 	public int getSqlType() {
 		return Type.LONGNVARCHAR;
-	}	
+	}
+	
+	@Override
+	public PrimitiveHolder<?, LongVarcharType> nil() {
+		return null; // TODO: implement LongVarcharTypeHolder		
+	}
+	
 }
