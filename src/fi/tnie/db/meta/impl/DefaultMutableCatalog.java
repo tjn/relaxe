@@ -24,10 +24,13 @@ public class DefaultMutableCatalog
 
 	private DefaultSchemaMap schemaMap;
 		
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	@SuppressWarnings("unused")
 	private DefaultMutableCatalog() {
-		super();
 	}
-
+	
 	public DefaultMutableCatalog(Environment environment) {
 		super();
 		this.environment = environment;
