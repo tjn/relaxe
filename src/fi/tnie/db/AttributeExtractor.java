@@ -6,45 +6,58 @@
  */
 package fi.tnie.db;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.value.Key;
+import fi.tnie.db.ent.value.Value;
 import fi.tnie.db.rpc.PrimitiveHolder;
-import fi.tnie.db.types.ReferenceType;
+import fi.tnie.db.types.PrimitiveType;
 
-public class AttributeExtractor	<
-		A,
-		R,
-		T extends ReferenceType<T>,
-		E extends Entity<A, R, T, ? extends E>>
+public class AttributeExtractor<
+		V extends Serializable,
+		P extends PrimitiveType<P>,
+		H extends PrimitiveHolder<V, P>,
+		A extends Serializable,
+		E extends Entity<A, ?, ?, E>,
+		K extends Key<A, V, P, H, E, K>>
 	{		
-		private A attribute;		
-		private ValueExtractor<?, ?> extractor;
-		
-		public AttributeExtractor(A attribute, ValueExtractor<?, ?> extractor) {
+		private ValueExtractor<V, P, H> extractor;
+		private K key = null;
+								
+		protected AttributeExtractor(ValueExtractorFactory vef, A a, K key, int col) {
 			super();
 			
-			if (attribute == null) {
-				throw new NullPointerException("attribute");
+			if (key == null) {
+				throw new NullPointerException("attribute key for: " + a);
 			}
-			
-			if (extractor == null) {
-				throw new NullPointerException("extractor for attribute: " + attribute);
-			}
-			
-			this.attribute = attribute;
-			this.extractor = extractor;
+						
+			this.extractor = createValueExtractor(vef, col);
+			this.key = key;
 		}
-
-//		public void set(E dest) {
-//			extractor.extractValue(rs);
-//			dest.set(this.attribute, extractor.last());			
-//		}
+		
+		public AttributeExtractor(ValueExtractor<V, P, H> ve, A a, K key, int col) {
+			super();
+			
+			if (key == null) {
+				throw new NullPointerException("attribute key for: " + a);
+			}
+						
+			this.extractor = ve;
+			this.key = key;
+		}
 		
 		public void extract(ResultSet src, E dest) 
-			throws SQLException {
-			PrimitiveHolder<?, ?> h = extractor.extractValue(src);
-			dest.set(this.attribute, h);			
-		}		
+			throws SQLException {			
+			H vp = extractor.extractValue(src);
+			Value<A, V, P, H, E, K> v = key.value(dest);
+			v.setHolder(vp);
+		}
+		
+		protected ValueExtractor<V, P, H> createValueExtractor(ValueExtractorFactory vef, int col) {
+			return null;
+		}
+		
 	}

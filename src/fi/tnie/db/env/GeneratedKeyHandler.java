@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.env;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -13,7 +14,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public interface GeneratedKeyHandler {	
 	<
-	    A,
+	    A extends Serializable,
 	    R,
 	    T extends ReferenceType<T>,
 	    E extends Entity<A, R, T, E>

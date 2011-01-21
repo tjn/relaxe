@@ -3,16 +3,19 @@
  */
 package fi.tnie.db.env.mysql;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import fi.tnie.db.AttributeExtractor;
+import fi.tnie.db.AttributeExtractorFactory;
+import fi.tnie.db.DefaultAttributeExtractorFactory;
 import fi.tnie.db.ValueExtractor;
 import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.value.Key;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.DefaultImplementation;
 import fi.tnie.db.env.GeneratedKeyHandler;
@@ -26,6 +29,8 @@ import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.expr.ddl.ColumnDefinition;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.rpc.PrimitiveHolder;
+import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
 
 /**
@@ -81,7 +86,7 @@ public class MySQLEnvironment
     private final class MySQLGeneratedKeyHandler implements GeneratedKeyHandler {
 		@Override
 		public <
-			A, 
+			A extends Serializable, 
 			R,
 			T extends ReferenceType<T>,
 			E extends Entity<A, R, T, E>
@@ -89,13 +94,11 @@ public class MySQLEnvironment
 		void processGeneratedKeys(
 			InsertStatement ins, E target, ResultSet rs) 
 			throws EntityException, SQLException {
-			ResultSetMetaData meta = rs.getMetaData();
-			
-			EntityMetaData<A, R, T, ? extends E> em = target.getMetaData();						
+						
+			EntityMetaData<A, R, T, E> em = target.getMetaData();						
 			ValueExtractorFactory vef = getValueExtractorFactory();
 			
 //			ResultSet is expected to contain single column: GENERATED_KEY
-			ValueExtractor<?, ?> ve = vef.createExtractor(meta, 1);
 			
 			// MySQL supports max one auto-increment column per table:						
 			Column col = findAutoIncrementColumn(em.getBaseTable());
@@ -105,10 +108,27 @@ public class MySQLEnvironment
 						"unable to find AUTO_INCREMENT column from table " + 
 						em.getBaseTable());				
 			}
-			
+						
 			A a = em.getAttribute(col);			
-			AttributeExtractor<A, R, T, E> ae = new AttributeExtractor<A, R, T, E>(a, ve);			
-			ae.extract(rs, target);			
+			
+			AttributeExtractorFactory aef = new DefaultAttributeExtractorFactory();
+			AttributeExtractor<?, ?, ?, A, E, ?> ae = aef.createExtractor(a, em, col.getDataType().getDataType(), 1, vef);
+			
+			if (rs.next()) {
+				ae.extract(rs, target);
+			}
+			else {
+				String cn = em.getBaseTable().getQualifiedName() + "." + col.getUnqualifiedName();				
+				throw new EntityException("can not get auto-increment key (" + cn + ")"); 
+			}
+						
+			// TODO: creation of AttributeExtractor by sqlType 
+						
+						
+//			createAttributeExtractor(a, key, col, ve);
+//			AttributeExtractor<?, ?, ?, A, E> ae = createAttributeExtractor(a, key, col, ve);
+			// AttributeExtractor<A, R, T, E> ae = new AttributeExtractor<A, R, T, E>(a, ve);
+//			ae.extract(rs, target);			
 		}
 
 		private Column findAutoIncrementColumn(BaseTable tbl) {						
@@ -119,6 +139,22 @@ public class MySQLEnvironment
 			}
 			
 			return null;
+		}
+		
+//		private 
+//		<A, V extends Serializable, P extends PrimitiveType<P>, H extends PrimitiveHolder<V, P>, E extends Entity<A, ?, ?, E>>
+//		AttributeExtractor<?, ?, ?, A, E> createAttributeExtractor(A a,
+//				ValueExtractor<V, P, H> ve) {	
+//			return new AttributeExtractor<V, P, H, A, E>(a, ve);	
+//		}
+		
+		private 
+		<A extends Serializable, V extends Serializable, P extends PrimitiveType<P>, H extends PrimitiveHolder<V, P>, 
+		E extends Entity<A, ?, ?, E>,
+		K extends Key<A, V, P, H, E, K>		
+		>
+		AttributeExtractor<V, P, H, A, E, K> createAttributeExtractor(A a, K key, int col, ValueExtractor<V, P, H> ve) {	
+			return new AttributeExtractor<V, P, H, A, E, K>(ve, a, key, col);	
 		}
 	}
 

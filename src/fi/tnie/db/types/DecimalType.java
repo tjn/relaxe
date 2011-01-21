@@ -8,7 +8,12 @@ public class DecimalType
 	
 	public static final DecimalType TYPE = new DecimalType();
 	
-	private DecimalType() {
-		super(Type.INTEGER);
+	private DecimalType() {		
 	}
+	
+	@Override
+	public int getSqlType() {
+		return Type.DECIMAL;
+	}
+
 }

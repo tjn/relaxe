@@ -34,7 +34,7 @@ public class IntegerHolder
 		this.value = Integer.valueOf(value);
 	}
 	
-	private IntegerHolder() {		
+	protected IntegerHolder() {		
 	}
 	
 	@Override

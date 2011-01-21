@@ -3,9 +3,11 @@
  */
 package fi.tnie.db;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,16 +22,17 @@ import fi.tnie.db.meta.ColumnMap;
 import fi.tnie.db.types.ReferenceType;
 
 public class ExtractorMap<
-	A,
+	A extends Serializable,
 	R,
 	T extends ReferenceType<T>, 
 	E extends Entity<A, R, T, E>
 > {
 	
-	private List<AttributeExtractor<A, R, T, E>> attributeExctractorList;
+	private List<AttributeExtractor<?, ?, ?, A, E, ?>> attributeExctractorList;
 	
 	private static Logger logger = Logger.getLogger(ExtractorMap.class);
-
+	
+	
 	/**
 	 * TODO: when initialized like this, this does not read references properly  
 	 * @param rsmd
@@ -37,34 +40,38 @@ public class ExtractorMap<
 	 * @throws SQLException
 	 */
 	public ExtractorMap(ResultSetMetaData rsmd, 
-			EntityMetaData<A, R, T, ? extends E> em, 
+			EntityMetaData<A, R, T, E> em, 
 			ValueExtractorFactory vef) throws SQLException {		
 		int cc = rsmd.getColumnCount();
 		this.attributeExctractorList = 
-			new ArrayList<AttributeExtractor<A, R, T, E>>(cc);
+			new ArrayList<AttributeExtractor<?, ?, ?, A, E, ?>>(cc);
 		
-		ColumnMap cm = em.getBaseTable().columnMap();		
-				
-		for (int c = 1; c <= cc; c++) {			
-			ValueExtractor<?, ?> ve = vef.createExtractor(rsmd, c);				
+		ColumnMap cm = em.getBaseTable().columnMap();
+						
+		for (int c = 1; c <= cc; c++) {
 			String cl = rsmd.getColumnLabel(c);
 			Column col = cm.get(cl);
-						
-			A a = em.getAttribute(col);			
+			int t = col.getDataType().getDataType();
 			
-			if (a != null) {
-				logger().info("attribute for column label: " + cl + " => " + a);
-				
-				AttributeExtractor<A, R, T, E> ae = 
-					new AttributeExtractor<A, R, T, E>(a, ve);
+			AttributeExtractor<?, ?, ?, A, E, ?> ae = createAttributeExtractor(t, c, col, em, vef);
+			
+			if (ae != null) {
 				this.attributeExctractorList.add(ae);
 			}
-			else {
-				logger().warn("no attribute for column label: " + cl);
-				logger().warn("column: " + col);
-			}
 			
-			
+//			ValueExtractor<?, ?, ?> ve = vef.createExtractor(rsmd, c);				
+//			
+////			A a = em.getAttribute(col);
+//			
+//			if (a != null) {
+//				logger().info("attribute for column label: " + cl + " => " + a);				
+//				AttributeExtractor<?, ?, ?, A, E> ae = createAttributeExtractor(a, ve);
+//				this.attributeExctractorList.add(ae);
+//			}
+//			else {
+//				logger().warn("no attribute for column label: " + cl);
+//				logger().warn("column: " + col);
+//			}
 						
 			
 //			Set<R> refs = em.getReferences(col);
@@ -75,19 +82,50 @@ public class ExtractorMap<
 		}
 	}
 	
+	public AttributeExtractor<?, ?, ?, A, E, ?> createAttributeExtractor(int sqltype, int c, Column col, EntityMetaData<A, R, T, E> em, ValueExtractorFactory vef) 
+				throws SQLException {
+		
+		final A attribute = em.getAttribute(col);
+		AttributeExtractor<?, ?, ?, A, E, ?> ae = null;
+						
+		switch (sqltype) {
+			case Types.INTEGER:					
+			case Types.SMALLINT:
+			case Types.TINYINT:
+				ae = new IntegerAttributeExtractor<A, E>(attribute, em, vef, c);
+				break;
+			case Types.VARCHAR:
+//				e = new VarcharExtractor(col);
+			case Types.CHAR:
+//				e = new CharExtractor(col);	
+				break;					
+			case Types.DATE:
+//				e = new DateExtractor(col);	
+				break;
+			case Types.TIMESTAMP:
+//				e = new TimestampExtractor(col);	
+				break;								
+			default:
+				// 
+	//			e = new ObjectExtractor(colno);
+				break;
+		}
+		
+		logger().debug("createExtractor - exit " + col + ": " + sqltype + " => " + ae);
+			
+		return ae;			
+	}
+
 	public ExtractorMap(QueryExpression e, TableReference b) throws SQLException {
 		// e.getTableExpr().getSelect().getSelectList()
 //		e.getTableExpr().getSelect().get
 	}
 	
-	public ExtractorMap(EntityQueryTask<A, R, T, E> query) throws SQLException {
-				
-	}
 
 	public void extract(ResultSet src, E e) throws SQLException {
 		int ec = attributeExctractorList.size();
 				
-		for (int i = 0; i < ec; i++) {
+		for (int i = 0; i < ec; i++) {			
 			attributeExctractorList.get(i).extract(src, e);
 		}
 	}

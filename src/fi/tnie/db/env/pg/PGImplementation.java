@@ -3,12 +3,12 @@
  */
 package fi.tnie.db.env.pg;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Comparator;
 
-import fi.tnie.db.DataObjectReader;
 import fi.tnie.db.ExtractorMap;
 import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.Entity;
@@ -60,7 +60,7 @@ public class PGImplementation
 
 		@Override
 		public <
-			A,
+			A extends Serializable,
 			R, 
 			T extends ReferenceType<T>,
 			E extends Entity<A, R, T, E>
@@ -72,9 +72,7 @@ public class PGImplementation
 ////				logger().debug("getGeneratedKeys: ");
 //				
 			ResultSetMetaData meta = rs.getMetaData();
-			EntityMetaData<A, R, T, ? extends E> em = target.getMetaData();
-			
-			
+			EntityMetaData<A, R, T, E> em = target.getMetaData();
 									
 			ExtractorMap<A, R, T, E> xm = 
 				new ExtractorMap<A, R, T, E>(meta, em, extractorFactory);				

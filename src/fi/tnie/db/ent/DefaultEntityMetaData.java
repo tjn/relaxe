@@ -3,14 +3,14 @@
  */
 package fi.tnie.db.ent;
 
+import java.io.Serializable;
 import java.util.Collections;
-import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
@@ -18,7 +18,7 @@ import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.types.ReferenceType;
 
 public abstract class DefaultEntityMetaData<
-	A,
+	A extends Serializable,
 	R,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>
@@ -195,4 +195,12 @@ public abstract class DefaultEntityMetaData<
 	    BaseTable table = getBaseTable();	    
 	    return (table == null) ? null : table.getSchema().getCatalog();
 	}
+
+	public fi.tnie.db.ent.value.PrimitiveKey<A,?,?,?,E,?> key(A a) {
+		IntegerKey<A, E> ik = new IntegerKey<A, E>(a);
+		return ik;
+	};
+	
+	
+	
 }

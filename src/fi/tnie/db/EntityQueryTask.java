@@ -3,6 +3,7 @@
  */
 package fi.tnie.db;
 
+import java.io.Serializable;
 import java.sql.Connection;
 
 import fi.tnie.db.ent.Entity;
@@ -12,7 +13,7 @@ import fi.tnie.db.exec.QueryFilter;
 import fi.tnie.db.types.ReferenceType;
 
 public interface EntityQueryTask<
-	A,
+	A extends Serializable,
 	R,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>

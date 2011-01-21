@@ -4,6 +4,7 @@
 package fi.tnie.db.ent;
 
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 
 public class DefaultEntityQuery<
-	A,
+	A extends Serializable,
 	R,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>
@@ -70,7 +71,7 @@ public class DefaultEntityQuery<
 
 
 	private 
-	<TA, TR>
+	<TA extends Serializable, TR>
 	AbstractTableReference fromTemplate(Entity<TA,TR,?,?> template, AbstractTableReference qref, ForeignKey fk, DefaultTableExpression q, Set<Entity<?,?,?,?>> visited) 
 		throws CyclicTemplateException		
 	{		
@@ -105,7 +106,7 @@ public class DefaultEntityQuery<
 		Set<TA> as = meta.attributes();
 		
 		for (TA a : as) {
-			PrimitiveHolder<?, ?> h = template.value(a);
+			PrimitiveHolder<?, ?> h = template.value(a).getHolder();
 			
 			if (h != null) {
 				Column c = meta.getColumn(a);

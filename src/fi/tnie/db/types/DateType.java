@@ -9,6 +9,11 @@ public class DateType
 	public static final DateType TYPE = new DateType();
 	
 	private DateType() {
-		super(Type.DATE);
 	}
+	
+	@Override
+	public int getSqlType() {
+		return Type.DATE;
+	}
+
 }

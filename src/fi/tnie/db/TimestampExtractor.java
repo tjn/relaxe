@@ -14,7 +14,7 @@ import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.types.TimestampType;
 
 class TimestampExtractor
-	extends ValueExtractor<Date, TimestampType>
+	extends ValueExtractor<Date, TimestampType, TimestampHolder>
 {
 	public TimestampExtractor(int column) {
 		super(column);			

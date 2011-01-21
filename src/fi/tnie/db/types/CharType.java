@@ -9,6 +9,10 @@ public class CharType
 	public static final CharType TYPE = new CharType();
 	
 	private CharType() {
-		super(Type.CHAR);
+	}
+	
+	@Override
+	public int getSqlType() {
+		return Type.CHAR;
 	}
 }

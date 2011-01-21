@@ -39,10 +39,14 @@ public interface {{table-interface}}
 			return {{table-interface}}.TYPE;
 		}
 	}
+	
+	{{attribute-key-list}}
         
     {{attribute-name-type}}    
     {{reference-name-type}}    
     {{query-name-type}}
+    
+    {{value-accessor-list}}
     
     {{abstract-accessor-list}}
 } 

@@ -29,9 +29,20 @@ import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ColumnMap;
 import fi.tnie.db.meta.DataType;
 import fi.tnie.db.meta.Table;
+import fi.tnie.db.rpc.VarcharHolder;
+import fi.tnie.db.types.VarcharType;
 
 class CSVInsertTask
     extends CatalogTool {
+	
+	
+	private static class VarcharParameter 
+		extends ValueParameter<VarcharType, VarcharHolder> {
+
+		public VarcharParameter(Column column, VarcharHolder value) {
+			super(column, value);
+		}		
+	}
         
 
     public void run(Connection connection, Reader input, Table table) 
@@ -86,7 +97,8 @@ class CSVInsertTask
             InsertStatement ins = new InsertStatement(table, names, vr);
             PreparedStatement ps = null;
             
-            ValueParameter[] params = new ValueParameter[expectedColumnCount];
+            VarcharParameter[] params = new VarcharParameter[expectedColumnCount];
+            
             ParameterAssignment pa = null;
                                     
             while ((line = p.getLine()) != null) {
@@ -101,8 +113,9 @@ class CSVInsertTask
                 if (ps == null) {                
                     for (int i = 0; i < params.length; i++) {                      
                         Column column = columnList.get(i);
-                        Object value = parse(column, line[i]);                    
-                        ValueParameter param = new ValueParameter(column, value);                    
+                        VarcharHolder h = parse(column, line[i]);     
+                        
+                        VarcharParameter param = new VarcharParameter(column, h);                    
                         params[i] = param;
                         vr.add(param);
                     }
@@ -120,9 +133,9 @@ class CSVInsertTask
                     
                     for (int i = 0; i < line.length; i++) {
                         Column column = columnList.get(i);
-                        Object value = parse(column, line[i]);
-                        ValueParameter param = params[i];                                        
-                        param.setValue(value);                    
+                        VarcharHolder h = parse(column, line[i]);
+                        VarcharParameter param = params[i];                                        
+                        param.setValue(h);                    
                     }
                 }
                             
@@ -142,7 +155,7 @@ class CSVInsertTask
         }
     }
 
-    private Object parse(Column column, String value) {
+    private VarcharHolder parse(Column column, String value) {
         if (value.equals("")) {
             DataType dataType = column.getDataType();        
             boolean textType = SQLType.isTextType(dataType.getDataType());
@@ -152,7 +165,7 @@ class CSVInsertTask
             }
         }
         
-        return value;
+        return VarcharHolder.valueOf(value);
     }            
     
     

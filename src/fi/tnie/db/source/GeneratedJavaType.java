@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.source;
 
-import fi.tnie.db.ent.JavaType;
+import fi.tnie.db.map.JavaType;
 
 /**
  * @author Administrator

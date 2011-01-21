@@ -6,6 +6,8 @@ package fi.tnie.db.expr;
 import java.util.Collections;
 import java.util.List;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.rpc.PrimitiveHolder;
+import fi.tnie.db.types.PrimitiveType;
 
 
 /**
@@ -13,7 +15,7 @@ import fi.tnie.db.meta.Column;
  * @author tnie
  *
  */
-public abstract class Parameter
+public abstract class Parameter<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T>>
 	extends SimpleElement
 	implements ValueExpression, SelectListElement, Token {
 	
@@ -31,7 +33,7 @@ public abstract class Parameter
 		return this.type;
 	}
 	
-	public abstract Object getValue();
+	public abstract H getValue();
 
 	public String getName() {
 		return name;

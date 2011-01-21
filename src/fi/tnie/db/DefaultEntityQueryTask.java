@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.rpc.PrimitiveHolder;
+import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.types.VarcharType;
 import fi.tnie.db.ent.EmptyEntityQueryResult;
@@ -39,10 +39,11 @@ import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.DataType;
 
 public class DefaultEntityQueryTask<
-	A,
+	A extends Serializable,
 	R, 
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>> 
+	E extends Entity<A, R, T, E>	
+> 
 	implements EntityQueryTask<A, R, T, E>
 {		
 	
@@ -159,14 +160,14 @@ public class DefaultEntityQueryTask<
 	}
 	
 	private static class ObjectExtractor
-		extends ValueExtractor<Serializable, VarcharType>
+		extends ValueExtractor<String, VarcharType, VarcharHolder>
 	{
 		public ObjectExtractor(int column) {
 			super(column);			
 		}
 		
 		@Override
-		public PrimitiveHolder<Serializable, VarcharType> extractValue(ResultSet rs) throws SQLException {
+		public VarcharHolder extractValue(ResultSet rs) throws SQLException {
 //			return rs.getObject(getColumn());
 			throw new UnsupportedOperationException("unsupported: " + getClass() + ".extractValue()");
 		}
@@ -176,7 +177,7 @@ public class DefaultEntityQueryTask<
 		extends QueryProcessorAdapter {
 		
 //		private Extractor[] extractors = null;
-		private List<AttributeExtractor<A, R, T, E>> attributeWriterList;
+		private List<AttributeExtractor<?, ?, ?, A, E, ?>> attributeWriterList;
 		private int attrs;
 		private List<E> content;
 		private E first;
@@ -188,13 +189,16 @@ public class DefaultEntityQueryTask<
 			this.source = source;
 			this.completed = false;
 												
-			EntityMetaData<A, R, T, ?> meta = source.getMetaData();
+			EntityMetaData<A, R, T, E> meta = source.getMetaData();
 			BaseTable table = meta.getBaseTable();
 			
 			List<? extends ColumnName> cl = qo.getSelect().getColumnNameList().getContent();
 			
 			Extractor[] xa = new Extractor[cl.size()];
-			List<AttributeExtractor<A, R, T, E>> awl = new ArrayList<AttributeExtractor<A, R, T, E>>();
+//			List<AttributeExtractor<A, R, T, E>> awl = new ArrayList<AttributeExtractor<A, R, T, E>>();
+			List<AttributeExtractor<?, ?, ?, A, E, ?>> awl = new ArrayList<AttributeExtractor<?, ?, ?, A, E, ?>>();
+			
+			DefaultValueExtractorFactory vef = new DefaultValueExtractorFactory();
 									
 			for (ColumnName n : qo.getSelect().getColumnNameList().getContent()) {
 				colno++;
@@ -205,13 +209,17 @@ public class DefaultEntityQueryTask<
 				DataType t = column.getDataType();
 				int sqltype = t.getDataType();
 				
-				ValueExtractor<?, ?> e = null;
+				ValueExtractor<?, ?, ?> e = null;
+				
+				A a = meta.getAttribute(column);
+				AttributeExtractor<?, ?, ?, A, E, ?> ae = null;
+				
 					
 				switch (sqltype) {
 					case Types.INTEGER:					
 					case Types.SMALLINT:
 					case Types.TINYINT:
-						e = new IntExtractor(colno);	
+						ae = new IntegerAttributeExtractor<A, E>(a, meta, vef, colno); 
 						break;
 					case Types.VARCHAR:
 					case Types.CHAR:
@@ -223,11 +231,11 @@ public class DefaultEntityQueryTask<
 				}
 				
 				xa[colno - 1] = e;
-				
-				A a = meta.getAttribute(column);
-				
-				if (a != null) {
-					awl.add(new AttributeExtractor<A, R, T, E>(a, e));		
+												
+				if (ae != null) {
+//					AttributeExtractor<?, ?, ?, A, E, ?> ae = createAttributeExtractor(key, e);
+					awl.add(ae);
+//					awl.add(new AttributeExtractor<A, R, T, E>(a, e));		
 				}
 			}			
 			
@@ -235,6 +243,7 @@ public class DefaultEntityQueryTask<
 			this.attributeWriterList = awl;
 			this.attrs = awl.size();			
 		}
+				
 		
 		@Override
 		public void startQuery(ResultSetMetaData m) throws QueryException,
@@ -283,7 +292,7 @@ public class DefaultEntityQueryTask<
 //				}
 				
 				for (int i = 0; i < attrs; i++) {
-					AttributeExtractor<A, R, T, E> ax = this.attributeWriterList.get(i);
+					AttributeExtractor<?, ?, ?, A, E, ?> ax = this.attributeWriterList.get(i);
 					ax.extract(rs, e);
 				}
 								

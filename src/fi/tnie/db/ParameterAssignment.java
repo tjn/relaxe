@@ -15,6 +15,7 @@ import fi.tnie.db.expr.ElementVisitorAdapter;
 import fi.tnie.db.expr.Parameter;
 import fi.tnie.db.expr.VisitContext;
 import fi.tnie.db.expr.VisitException;
+import fi.tnie.db.rpc.PrimitiveHolder;
 
 public class ParameterAssignment extends ElementVisitorAdapter {
 	private PreparedStatement preparedStatement;
@@ -34,10 +35,12 @@ public class ParameterAssignment extends ElementVisitorAdapter {
 	}	
 
 	@Override
-	public VisitContext start(VisitContext vc, Parameter p) {								
-		try {
-			logger().debug(ordinal + " [" + p.getName() + "] => " + p.getValue());			
-			preparedStatement.setObject(ordinal, p.getValue(), p.getType());
+	public VisitContext start(VisitContext vc, Parameter<?, ?> p) {								
+		try {			
+			PrimitiveHolder<?, ?> h = p.getValue();
+			logger().debug(ordinal + " [" + p.getName() + "] => " + h.value());
+			preparedStatement.setObject(ordinal, h.value(), p.getType());
+						
 			ordinal++;
 		} 
 		catch (SQLException e) {				

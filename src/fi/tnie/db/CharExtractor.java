@@ -13,7 +13,7 @@ import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.types.CharType;
 
 class CharExtractor
-	extends ValueExtractor<String, CharType>
+	extends ValueExtractor<String, CharType, CharHolder>
 {
 	public CharExtractor(int column) {
 		super(column);			
@@ -22,6 +22,6 @@ class CharExtractor
 	@Override
 	public CharHolder extractValue(ResultSet rs) throws SQLException {
 		String s = rs.getString(getColumn());
-		return (s == null) ? CharHolder.NULL_HOLDER : new CharHolder(s);
+		return CharHolder.valueOf(s);
 	}
 }

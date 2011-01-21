@@ -3,12 +3,23 @@
  */
 package fi.tnie.db.rpc;
 
+import java.io.Serializable;
+
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.types.ReferenceType;
 
 
+/**
+ *  
+ *
+ * @param <A>
+ * @param <R>
+ * @param <T>
+ * @param <V>
+ */
+
 public abstract class ReferenceHolder<
-	A,
+	A extends Serializable,
 	R,
 	T extends ReferenceType<T>,
 	V extends Entity<A, R, T, V>>

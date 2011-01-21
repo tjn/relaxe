@@ -13,7 +13,7 @@ import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.VarcharType;
 
 class VarcharExtractor
-	extends ValueExtractor<String, VarcharType>
+	extends ValueExtractor<String, VarcharType, VarcharHolder>
 {
 	public VarcharExtractor(int column) {
 		super(column);			
@@ -22,6 +22,6 @@ class VarcharExtractor
 	@Override
 	public VarcharHolder extractValue(ResultSet rs) throws SQLException {
 		String s = rs.getString(getColumn());
-		return (s == null) ? VarcharHolder.NULL_HOLDER : new VarcharHolder(s);
+		return VarcharHolder.valueOf(s);
 	}
 }

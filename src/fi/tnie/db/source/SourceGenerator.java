@@ -24,11 +24,18 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.QueryException;
-import fi.tnie.db.ent.JavaType;
-import fi.tnie.db.ent.TableMapper;
-import fi.tnie.db.ent.TableMapper.Part;
+import fi.tnie.db.ent.value.CharKey;
+import fi.tnie.db.ent.value.DateKey;
+import fi.tnie.db.ent.value.DoubleKey;
+import fi.tnie.db.ent.value.IntegerKey;
+import fi.tnie.db.ent.value.TimestampKey;
+import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.map.AttributeInfo;
+import fi.tnie.db.map.JavaType;
+import fi.tnie.db.map.TableMapper;
+import fi.tnie.db.map.TableMapper.Part;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
@@ -85,6 +92,17 @@ public class SourceGenerator {
 	     * TODO: which accessors 
 	     */		
 		ACCESSOR_LIST,		
+		
+		/**
+		 * static attribute keys in meta-data implementation
+		 */
+		ATTRIBUTE_KEY_LIST,
+		
+
+		/**
+		 * 
+		 */
+		ATTRIBUTE_KEY_MAP_LIST,
 	    /**
 	     * Pattern which is replaced with the simple name of the catalog context class in template files.
 	     */		
@@ -127,9 +145,15 @@ public class SourceGenerator {
 		TABLE_COLUMN_ENUM_LIST,
 		
 	    /**
-	     * Pattern which is replaced package declaration useing the package name of the type being generated in template files.
+	     * Pattern which is replaced package declaration using the package name of the type being generated in template files.
 	     */
-		PACKAGE_DECL,		
+		PACKAGE_DECL, 
+		
+		META_DATA_INITIALIZATION,		
+		KEY_ACCESSOR_LIST, 
+		COLUMN_KEY_MAP_POPULATION, 
+		VALUE_VARIABLE_LIST,
+		VALUE_ACCESSOR_LIST,
 		;	
 		
 					
@@ -170,6 +194,8 @@ public class SourceGenerator {
 	private EnumMap<Part, File> sourceDirMap;
 
 	private Map<Class<?>, Class<?>> wrapperMap;
+	
+	private List<Class<?>> keyTypes;
 
 	@SuppressWarnings("serial")
     private static class TypeInfo
@@ -870,6 +896,11 @@ public class SourceGenerator {
 	    src = replacePackageAndImports(src, mt);
 
 	    src = replaceAll(src, Tag.TABLE_INTERFACE, mt.getUnqualifiedName());
+	    
+        {
+            String code = attributeKeyList(t, tm);
+            src = replaceAll(src, Tag.ATTRIBUTE_KEY_LIST, code);
+        }
 
 	    {
     	    String type = createEnumType(et, "Attribute", attrs(t));
@@ -890,6 +921,13 @@ public class SourceGenerator {
             String code = accessors(t, tm, false);
             src = replaceAll(src, "{{abstract-accessor-list}}", code);
         }
+        
+        {
+            String code = valueAccessorList(t, tm, false);     
+            src = replaceAll(src, Tag.VALUE_ACCESSOR_LIST, code);
+        }
+        
+        
 
 	    return src;
 	}
@@ -1199,13 +1237,487 @@ public class SourceGenerator {
         src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
         src = replaceAll(src, Tag.TABLE_IMPL_CLASS, impl.getUnqualifiedName());
         src = replaceAll(src, Tag.TABLE_IMPL_BASE, base.getUnqualifiedName());
-
+        
         {
             String code = accessors(t, tm, true);
             src = replaceAll(src, Tag.ACCESSOR_LIST, code);
         }
 
+        {
+            String code = attributeKeyMapList(t, tm);
+            src = replaceAll(src, Tag.ATTRIBUTE_KEY_MAP_LIST, code);
+        }
+                
+        {
+            String code = metaDataInitialization(t, tm);
+            src = replaceAll(src, Tag.META_DATA_INITIALIZATION, code);
+        }
+        
+        {
+            String code = columnKeyMapPopulation(t, tm);
+            src = replaceAll(src, Tag.COLUMN_KEY_MAP_POPULATION, code);
+        }
+        
+        {
+            String code = keyAccessorList(t, tm);           
+            src = replaceAll(src, Tag.KEY_ACCESSOR_LIST, code);
+        }
+        
+        {
+            String code = valueVariableList(t, tm);           
+            src = replaceAll(src, Tag.VALUE_VARIABLE_LIST, code);
+        }
+        
+        {
+            String code = valueAccessorList(t, tm, true);     
+            src = replaceAll(src, Tag.VALUE_ACCESSOR_LIST, code);
+        }
+
         return src;
+	}
+	
+	private String columnKeyMapPopulation(BaseTable t, TableMapper tm) {
+		List<Column> acl = getAttributeColumnList(t, tm);        
+        StringBuffer content = new StringBuffer();
+        
+        JavaType intf = tm.entityType(t, Part.INTERFACE);
+        
+        for (Column c : acl) {
+        	AttributeInfo a = tm.getAttributeInfo(t, c);
+        	
+        	if (a.getKeyType() != null) {        	
+	        	// example: add(PersonMetaData.ID, columnKeyMap);
+	        	content.append("add(");
+	        	content.append(keyConstantExpression(t, c, intf));
+	        	content.append(", columnKeyMap);\n");
+        	}
+        }
+        
+        return content.toString();
+	}
+
+	private String keyAccessorList(BaseTable t, TableMapper tm) {
+		Map<Class<?>, Integer> tom = keyTypeOccurenceMap(t, tm);		
+		StringBuffer content = new StringBuffer();
+		
+		List<Class<?>> ktl = getKeyTypes();
+		
+		logger().debug("type-count: " + ktl.size());
+		
+		for (Class<?> kt : ktl) {
+			Integer v = tom.get(kt);
+			int occurences = (v == null) ? 0 : v.intValue();
+			
+			logger().debug("keyAccessorList: kt=" + occurences);
+			String ka = metaDataKeyAccessor(kt, occurences, t, tm);
+			logger().debug("keyAccessorList: ka=" + ka);						
+			content.append(ka);			
+		}
+				
+		
+		return content.toString();
+	}
+	
+	private String valueVariableList(BaseTable t, TableMapper tm) {
+		List<Column> acl = getAttributeColumnList(t, tm);        
+        StringBuffer content = new StringBuffer();
+
+        for (Column c : acl) {        	        	
+            String code = formatValueVariable(t, c, tm);
+            content.append(code);
+        }
+        
+        return content.toString();
+	}
+	
+	private String valueAccessorList(BaseTable t, TableMapper tm, boolean impl) {
+		List<Column> acl = getAttributeColumnList(t, tm);        
+        StringBuffer content = new StringBuffer();
+
+        for (Column c : acl) {        	        	
+            String code = formatValueAccessor(t, c, tm, impl);
+            content.append(code);
+        }
+        
+        return content.toString();
+	}
+
+
+	private String formatValueVariable(BaseTable t, Column c, TableMapper tm) {
+		
+		// private transient VarcharValue<Person.Attribute, Person> lastName;
+		
+		StringBuffer buf = new StringBuffer();
+
+		AttributeInfo a = tm.getAttributeInfo(t, c);
+		Class<?> vt = a.getValueType();
+        Class<?> kt = a.getKeyType();
+                        
+        if (kt == null || vt == null) {
+        	return "";
+        }
+        
+        JavaType intf = tm.entityType(t, Part.INTERFACE);
+        
+        buf.append("private transient ");
+        buf.append(vt.getName());
+        buf.append("<");
+        buf.append("Attribute");        
+        buf.append(", ");
+        buf.append(intf.getUnqualifiedName());        
+        buf.append("> ");
+        buf.append(valueVariableName(t, c));
+        buf.append(" = null;\n");
+
+		return buf.toString();
+	}
+	
+	
+	private String formatValueAccessor(BaseTable t, Column c, TableMapper tm, boolean impl) {
+		
+//		// output example: 
+//	    public VarcharValue<Attribute, Person> lastName() {
+//	    	if (this.lastName == null) {
+//	    		this.lastName = varcharValue(Person.LAST_NAME);
+//	    	}
+//	    	
+//	    	return this.lastName;
+//	    }		
+		
+		StringBuffer buf = new StringBuffer();
+
+		AttributeInfo a = tm.getAttributeInfo(t, c);
+		Class<?> vt = a.getValueType();
+		Class<?> kt = a.getKeyType();
+                        
+        if (kt == null || vt == null) {
+        	return "";
+        }
+        
+        logger().debug("formatValueAccessor: value-type=" + vt);
+        
+        JavaType intf = tm.entityType(t, Part.INTERFACE);
+        String vv = valueVariableName(t, c);
+        String ke = keyConstantExpression(t, c, intf);
+                    
+        if (impl) {
+        	buf.append("public ");
+        }
+        
+        buf.append(vt.getName());
+        buf.append("<");
+        buf.append("Attribute");        
+        buf.append(", ");
+        buf.append(intf.getUnqualifiedName());        
+        buf.append("> ");
+        buf.append(vv);
+        buf.append("()");
+        
+        if(!impl) {
+        	buf.append(";\n\n");
+        }
+        else {        
+	        buf.append(" {\n");
+	        buf.append("if (this.");
+	        buf.append(vv);
+	        buf.append(" == null) {\n");
+	        buf.append("this.");
+	        buf.append(vv);
+	        buf.append(" = ");
+	        buf.append(decapitalize(getSimpleName(vt)));
+	        buf.append("(");
+	        buf.append(ke);        
+	        buf.append(");\n}\n");        
+	        buf.append("return this.");
+	        buf.append(vv);
+	        buf.append(";\n");
+	        buf.append("}\n\n");
+        }
+        
+		return buf.toString();
+	}	
+
+	private String valueVariableName(Table t, Column c) {
+		return decapitalize(name(c.getColumnName().getName()));
+	}
+
+	private String metaDataKeyAccessor(Class<?> kt, int occurences, BaseTable table, TableMapper tm) {
+		StringBuffer content = new StringBuffer();
+		JavaType intf = tm.entityType(table, Part.INTERFACE);
+
+//      Example of desired output:
+//		==============================================================
+//		@Override
+//		public IntegerKey<Attribute, Person> getIntegerKey(Attribute attribute) {
+//			if (attribute == null) {
+//				throw new NullPointerException("attribute");
+//			}
+//			
+//			return integerKeyMap.get(attribute);
+//		}
+		
+		content.append("@Override public ");		
+		content.append(kt.getName());
+		content.append("<Attribute, ");
+		content.append(intf.getUnqualifiedName());
+		content.append("> get");
+		content.append(getSimpleName(kt));
+		content.append("(Attribute attribute) {\n");		
+		content.append("if (attribute == null) {\n");
+		content.append("throw new NullPointerException(\"attribute\");\n}\n\n");
+		
+		if (occurences == 0) {
+			content.append("return null;\n");
+		}
+		
+		if (occurences == 1) {
+			Column col = getFirstWithKeyType(table, tm, kt);
+			
+			if (col == null) {
+				content.append("return null;\n");
+			}
+			else {
+				content.append("return ");;
+				content.append(keyConstantExpression(table, col, intf));				
+				content.append(";\n");				
+			}			
+		}
+		
+		if (occurences > 1) {			
+			content.append("return ");
+			content.append(getKeyMapVariable(kt));			
+			content.append(".get(attribute);\n");
+		}
+		
+		
+		content.append("}\n");
+				
+		return content.toString();
+	}
+
+	private List<Class<?>> getKeyTypes() {
+		if (keyTypes == null) {
+			keyTypes = new ArrayList<Class<?>>();
+			
+			keyTypes.add(VarcharKey.class);
+			keyTypes.add(CharKey.class);
+			keyTypes.add(IntegerKey.class);						
+			keyTypes.add(DoubleKey.class);
+			keyTypes.add(DateKey.class);
+			keyTypes.add(TimestampKey.class);			
+		}
+
+		return keyTypes;
+	}
+
+	private String metaDataInitialization(BaseTable t, TableMapper tm) {
+		List<Column> acl = getAttributeColumnList(t, tm);        
+        StringBuffer content = new StringBuffer();        
+        Map<Class<?>, Integer> tom = keyTypeOccurenceMap(t, tm);
+        
+        JavaType intf = tm.entityType(t, Part.INTERFACE);
+        
+        for (Column c : acl) {
+        	AttributeInfo a = tm.getAttributeInfo(t, c);
+        	
+        	Class<?> kt = a.getKeyType();
+        	Integer v = tom.get(kt);
+        	int occurences = (v == null) ? 0 : v.intValue();
+        	
+        	if (occurences > 1) {
+            	getKeyMapVariable(a.getKeyType());        	
+            	content.append("addAttributeKey(");
+            	content.append(keyConstantExpression(t, c, intf));
+            	content.append(", ");
+            	content.append(getKeyMapVariable(kt));
+            	content.append(");\n");            	        		
+        	}        	
+        }
+        
+        return content.toString();	
+     }
+
+	private String attributeKeyMapList(BaseTable t, TableMapper tm) {
+		StringBuffer buf = new StringBuffer();
+		Map<Class<?>, Integer> tom = keyTypeOccurenceMap(t, tm);		
+		// Map<Integer, Class<?>> ktm = typeKeyMap(t, tm);
+		
+		logger().debug(t.getQualifiedName() + " - keyTypeOccurenceMap: " + tom);
+		
+		for (Class<?> k : tom.keySet()) {
+			Integer o = tom.get(k);
+
+			// if there's only one occurence we don't need map,
+			// we can return the only one directly in get<X>Key -methods
+			if (o.intValue() > 1) {
+				if (k == null) {
+					throw new NullPointerException("no key-type");		
+				}				
+								
+				String c = formatAttributeKeyMap(t, k, o.intValue(), tm);
+				buf.append(c);
+			}
+		}
+		
+		
+		return buf.toString();
+	}
+	
+	
+	private Map<Class<?>, Integer> keyTypeOccurenceMap(BaseTable t, TableMapper tm) {
+		List<Column> acl = getAttributeColumnList(t, tm);
+           
+        // key -type => occurences:
+        Map<Class<?>, Integer> tom = new HashMap<Class<?>, Integer>();
+        
+        for (Column c : acl) {
+        	AttributeInfo a = tm.getAttributeInfo(t, c);
+        	Class<?> k = a.getKeyType();
+        	
+        	if (k == null) {
+        		logger().warn("no key type for column-type : " + c.getDataType().getTypeName());        		
+        	}
+        	else {
+            	Integer o = tom.get(k);
+            	o = (o == null) ? Integer.valueOf(1) : Integer.valueOf(o.intValue() + 1);
+            	tom.put(k, o);        		
+        	}
+        }
+        
+        return tom;
+	}
+	
+	private Column getFirstWithKeyType(BaseTable t, TableMapper tm, Class<?> keyType) {
+		List<Column> acl = getAttributeColumnList(t, tm);
+		
+		for (Column column : acl) {
+			AttributeInfo a = tm.getAttributeInfo(t, column);
+			Class<?> akt = a.getKeyType();
+			
+			if (akt != null && akt.equals(keyType)) {
+				return column;
+			}
+		}
+		
+		return null;
+	}
+	
+
+    // only non-fk-columns are included in attributes.
+    // fk-columns  are not intended to be set individually,
+    // but atomically with ref -methods
+
+	private List<Column> getAttributeColumnList(BaseTable t, TableMapper tm) {
+		Set<Identifier> fkcols = foreignKeyColumns(t);
+		List<Column> attrs = new ArrayList<Column>();
+		
+		for (Column c : t.columns()) {
+            if (!fkcols.contains(c.getColumnName())) {
+                attrs.add(c);
+            }			
+		}
+		
+		return attrs;
+	}
+
+	private String attributeKeyList(BaseTable t, TableMapper tm) {
+		List<Column> acl = getAttributeColumnList(t, tm);        
+        StringBuffer content = new StringBuffer();
+
+        for (Column c : acl) {
+            String code = formatAttributeKey(t, c, tm);
+            content.append(code);
+        }
+        
+        return content.toString();
+    }
+	
+	private String formatAttributeKeyMap(BaseTable t, Class<?> keyType, int occurences, TableMapper tm) {
+		StringBuffer buf = new StringBuffer();
+		
+        JavaType intf = tm.entityType(t, Part.INTERFACE);
+                        
+        // goal:
+        // private Map<Attribute, IntegerKey<Attribute, Person>> integerKeyMap = new HashMap<Attribute, IntegerKey<Attribute,Person>>();
+        
+        buf.append("private java.util.Map<");
+        buf.append("Attribute");
+        buf.append(", ");
+        buf.append(keyType.getName());
+        buf.append("<");
+        buf.append("Attribute");
+        buf.append(", ");        
+        buf.append(intf.getUnqualifiedName());        
+        buf.append(">> ");
+        buf.append(getKeyMapVariable(keyType));        
+        buf.append(" = new java.util.HashMap<");
+        buf.append("Attribute");
+        buf.append(", ");
+        buf.append(keyType.getName());
+        buf.append("<");
+        buf.append("Attribute");
+        buf.append(", ");        
+        buf.append(intf.getUnqualifiedName());        
+        buf.append(">>();\n");
+        
+        return buf.toString();		
+	}
+	
+
+	private String formatAttributeKey(BaseTable t, Column c, TableMapper tm) {
+		StringBuffer buf = new StringBuffer();
+
+		AttributeInfo a = tm.getAttributeInfo(t, c);		
+        Class<?> kt = a.getKeyType();
+        
+        JavaType intf = tm.entityType(t, Part.INTERFACE);
+                        
+        if (kt == null) {
+        	return "";
+        }
+        
+        // public static final IntegerKey<Attribute, Person> ID = new IntegerKey<Attribute, Person>(Attribute.ID);"
+        
+        buf.append("public static final ");
+        buf.append(kt.getName());
+        buf.append("<");
+        buf.append("Attribute");        
+        buf.append(", ");
+        buf.append(intf.getUnqualifiedName());        
+        buf.append("> ");
+        buf.append(keyConstantVariable(t, c));
+        buf.append(" = new ");
+        buf.append(kt.getName());
+        buf.append("<");
+        buf.append("Attribute");
+        buf.append(", ");
+        buf.append(intf.getUnqualifiedName());        
+        buf.append("> (");
+        buf.append("Attribute");
+        buf.append(".");
+        buf.append(columnEnumeratedName(t, c, NameQualification.COLUMN));
+        buf.append(");\n");
+
+		return buf.toString();
+	}
+	
+	private String keyConstantExpression(BaseTable t, Column c, JavaType intf) {		
+		return intf.getQualifiedName() + "." + keyConstantVariable(t, c);
+	}
+	
+//	private String keyConstantExpression(BaseTable t, Column c, TableMapper tm) {
+//		JavaType intf = tm.entityType(t, Part.INTERFACE);
+//		return keyConstantExpression(t, c, intf);
+//	}
+
+	private String keyConstantVariable(BaseTable t, Column c) {
+		return columnEnumeratedName(t, c, NameQualification.COLUMN);
+	}
+	
+	
+
+	private String columnEnumeratedName(BaseTable t, Column c, NameQualification nq) {
+		return columnEnumeratedName(t, c, EnumSet.of(nq));
 	}
 
 	private String accessors(BaseTable t, TableMapper tm, boolean impl) {
@@ -1215,32 +1727,34 @@ public class SourceGenerator {
 	}
 
 	private void accessors(BaseTable t, StringBuffer content, TableMapper tm, boolean impl) {
-        Set<Identifier> fkcols = foreignKeyColumns(t);
+		List<Column> cols = getAttributeColumnList(t, tm);
 
-        for (Column c : t.columns()) {
-            // only non-fk-columns are included in attributes.
-            // fk-columns  are not intended to be set individually,
-            // but atomically with ref -methods
-            if (!fkcols.contains(c.getColumnName())) {
-                Class<?> at = tm.getAttributeType(t, c);
-                Class<?> ht = tm.getAttributeHolderType(t, c);
+        for (Column c : cols) {
+        	AttributeInfo a = tm.getAttributeInfo(t, c);
+        	
+            Class<?> at = a.getAttributeType();
+            Class<?> ht = a.getHolderType();
 
-                if (at != null && ht != null) {
-                    String code = formatAccessors(c, at, ht, impl);
-                    content.append(code);
-                }
+            if (at != null && ht != null) {
+                String code = formatAccessors(t, c, a, impl);
+                content.append(code);
             }
         }
     }
 
-    private String formatAccessors(Column c, Class<?> attributeType, Class<?> holderType, boolean impl) {
+    private String formatAccessors(Table table, Column c, AttributeInfo info, boolean impl) {
         final String attributeName = attr(c);
+        Class<?> attributeType = info.getAttributeType();
+        Class<?> holderType = info.getHolderType();
+        
         final String type = attributeType.getName();
 
         StringBuffer nb = new StringBuffer();
         final String n = name(c.getColumnName().getName());
         
-        boolean b = attributeType.equals(Boolean.class) || attributeType.equals(Boolean.TYPE);
+        boolean b = attributeType.equals(Boolean.class);
+        
+        String vv = valueVariableName(table, c);
         
         String prefix = b ? "is" : "get";
         
@@ -1257,53 +1771,59 @@ public class SourceGenerator {
         else {
             // getter implementation
             a(nb, " {", 1);
+            
+            // example: return id().get();
+            
+            a(nb, "return ");
+            a(nb, vv);
+            a(nb, "().get();", 1);            
 
-            if (!attributeType.isPrimitive()) {
-                a(nb, "return ");
-                // call super & cast:
-//                expr(nb, attributeType, attributeName);
-                
-                nb.append(prefix);
-                
-                String tn = getSimpleName(attributeType);
-                
-                nb.append(tn);
-                nb.append("(");
-                nb.append(getAttributeType());
-                nb.append(".");
-                nb.append(attributeName);                                                
-                a(nb, ");", 1);
-            }
-            else {
-                Class<?> wt = wrapper(attributeType);
-                a(nb, wt.getName());
-                
-                a(nb, " o = ");
-                // call super & cast:
-//                expr(nb, attributeType, attributeName);
-                a(nb, prefix);
-                a(nb, getSimpleName(wt));                
-                a(nb, "(");
-                a(nb, getAttributeType());
-                a(nb, ".");
-                a(nb, attributeName);                
-                a(nb, ");", 2);
-
-                a(nb, "return (o == null) ? ");
-
-                // default value:
-                if (attributeType.equals(Boolean.TYPE)) {
-                    a(nb, " false ");
-                }
-                else {
-                    // TODO: should we try to parse the column default value here?
-                    a(nb, " 0 ");
-                }
-
-                a(nb, " : ");
-                a(nb, "o.intValue()");
-                a(nb, ";", 1);
-            }
+//            if (!attributeType.isPrimitive()) {
+//                a(nb, "return ");
+//                // call super & cast:
+////                expr(nb, attributeType, attributeName);
+//                
+//                nb.append(prefix);
+//                
+//                String tn = getSimpleName(attributeType);
+//                
+//                nb.append(tn);
+//                nb.append("(");
+//                nb.append(getAttributeType());
+//                nb.append(".");
+//                nb.append(attributeName);                                                
+//                a(nb, ");", 1);
+//            }
+//            else {
+//                Class<?> wt = wrapper(attributeType);
+//                a(nb, wt.getName());
+//                
+//                a(nb, " o = ");
+//                // call super & cast:
+////                expr(nb, attributeType, attributeName);
+//                a(nb, prefix);
+//                a(nb, getSimpleName(wt));                
+//                a(nb, "(");
+//                a(nb, getAttributeType());
+//                a(nb, ".");
+//                a(nb, attributeName);                
+//                a(nb, ");", 2);
+//
+//                a(nb, "return (o == null) ? ");
+//
+//                // default value:
+//                if (attributeType.equals(Boolean.TYPE)) {
+//                    a(nb, " false ");
+//                }
+//                else {
+//                    // TODO: should we try to parse the column default value here?
+//                    a(nb, " 0 ");
+//                }
+//
+//                a(nb, " : ");
+//                a(nb, "o.intValue()");
+//                a(nb, ";", 1);
+//            }
 
             a(nb, "}", 2);
         }
@@ -1321,35 +1841,37 @@ public class SourceGenerator {
 	        }
 	        else {
 	            a(nb, " {", 1);
+	            a(nb, vv);
+	            a(nb, "().set(newValue);", 1);            
 	            
-	            String hn = getSimpleName(holderType);
-	            
-	            a(nb, "set");
-	
-	            if (!attributeType.isPrimitive()) {
-		            a(nb, hn);
-		            a(nb, "(");
-		            a(nb, getAttributeType());
-		            a(nb, ".");
-		            a(nb, attributeName);
-		            a(nb, ", ");	            	
-	            	a(nb, holderType.getName());
-	                a(nb, ".valueOf(newValue)");
-	            }
-	            else {
-	                Class<?> wt = wrapper(attributeType);
-	            	a(nb, getSimpleName(wt));
-		            a(nb, "(");
-		            a(nb, getAttributeType());
-		            a(nb, ".");
-		            a(nb, attributeName);
-		            a(nb, ", ");	            	
-	                a(nb, wt.getName());
-	                a(nb, ".valueOf(");
-	                a(nb, "newValue");
-	                a(nb, ")");
-	            }
-	            a(nb, ");", 1);
+//	            String hn = getSimpleName(holderType);
+//	            
+//	            a(nb, "set");
+//	
+//	            if (!attributeType.isPrimitive()) {
+//		            a(nb, hn);
+//		            a(nb, "(");
+//		            a(nb, getAttributeType());
+//		            a(nb, ".");
+//		            a(nb, attributeName);
+//		            a(nb, ", ");	            	
+//	            	a(nb, holderType.getName());
+//	                a(nb, ".valueOf(newValue)");
+//	            }
+//	            else {
+//	                Class<?> wt = wrapper(attributeType);
+//	            	a(nb, getSimpleName(wt));
+//		            a(nb, "(");
+//		            a(nb, getAttributeType());
+//		            a(nb, ".");
+//		            a(nb, attributeName);
+//		            a(nb, ", ");	            	
+//	                a(nb, wt.getName());
+//	                a(nb, ".valueOf(");
+//	                a(nb, "newValue");
+//	                a(nb, ")");
+//	            }
+//	            a(nb, ");", 1);
 	            a(nb, "}", 2);
 	        }
         }
@@ -1362,6 +1884,14 @@ public class SourceGenerator {
 		int pos = tn.lastIndexOf(".");                
 		tn = tn.substring(pos < 0 ? 0 : pos + 1);
 		return tn;
+	}
+	
+	
+	private String getKeyMapVariable(Class<?> keyType) {
+		StringBuffer buf = new StringBuffer();
+		String n = getSimpleName(keyType) + "Map";
+		decapitalize(n, buf);
+		return buf.toString();
 	}
 
     private void expr(StringBuffer sb, Class<?> attributeType, String attributeName) {
@@ -1407,7 +1937,16 @@ public class SourceGenerator {
         attrs(t, buf);
         return buf.toString();
     }
-
+    
+    public String decapitalize(String identifier) {
+    	if ((identifier == null) || identifier.equals("")) {			
+    		return identifier;
+    	}
+    	
+    	StringBuffer buf = new StringBuffer(identifier);
+    	buf.setCharAt(0, Character.toLowerCase(identifier.charAt(0)));
+    	return buf.toString();
+    }
 
 	private void attrs(BaseTable t, StringBuffer content) {
 //		content.append("public enum ");
@@ -1710,5 +2249,10 @@ public class SourceGenerator {
 		if (t.length() > 1) {
 			dest.append(t.substring(1).toLowerCase());
 		}		
+	}
+	
+	private void decapitalize(String t, StringBuffer dest) {		
+		dest.append(Character.toLowerCase(t.charAt(0)));
+		dest.append(t.substring(1));		
 	}
 }

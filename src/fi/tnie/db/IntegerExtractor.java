@@ -12,10 +12,10 @@ import java.sql.SQLException;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.types.IntegerType;
 
-class IntExtractor
-	extends ValueExtractor<Integer, IntegerType>
+public class IntegerExtractor
+	extends ValueExtractor<Integer, IntegerType, IntegerHolder>
 {
-	public IntExtractor(int column) {
+	public IntegerExtractor(int column) {
 		super(column);			
 	}
 
@@ -24,4 +24,5 @@ class IntExtractor
 		int v = rs.getInt(getColumn());
 		return rs.wasNull() ? IntegerHolder.NULL_HOLDER : IntegerHolder.valueOf(v);			
 	}
+	
 }

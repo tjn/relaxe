@@ -9,6 +9,10 @@ public class IntegerType
 	public static final IntegerType TYPE = new IntegerType();
 	
 	private IntegerType() {
-		super(Type.INTEGER);
+	}
+	
+	@Override
+	public int getSqlType() {
+		return Type.INTEGER;
 	}
 }

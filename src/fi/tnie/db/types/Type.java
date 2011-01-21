@@ -41,17 +41,15 @@ public abstract class Type<T extends Type<T>> {
 	public static final int TINYINT = -6;
 	public static final int VARBINARY = -3;
 	public static final int VARCHAR = 12;
-	
-	private Integer sqlType;
-		
+				
 	public Type() {
 		super();
 	}
 		
-	public Type(int sqlType) {
-		super();
-		setSqlType(Integer.valueOf(sqlType));
-	}
+//	public Type(int sqlType) {
+//		super();
+//		setSqlType(Integer.valueOf(sqlType));
+//	}
 
 	public boolean equals(T t) {
 		return (this == t);		
@@ -61,9 +59,9 @@ public abstract class Type<T extends Type<T>> {
 //		return sqlType;
 //	}
 	
-	private void setSqlType(Integer sqlType) {
-		this.sqlType = sqlType;
-	}
+//	private void setSqlType(Integer sqlType) {
+//		this.sqlType = sqlType;
+//	}
 	
 	public abstract boolean isReferenceType();
 }

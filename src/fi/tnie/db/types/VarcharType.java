@@ -9,6 +9,11 @@ public class VarcharType
 	public static final VarcharType TYPE = new VarcharType();
 	
 	private VarcharType() {
-		super(Type.VARCHAR);
 	}
+	
+	@Override
+	public int getSqlType() {
+		return Type.VARCHAR;
+	}
+	
 }

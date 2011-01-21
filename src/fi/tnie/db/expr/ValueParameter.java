@@ -7,22 +7,26 @@ import java.util.Collections;
 import java.util.List;
 
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.rpc.PrimitiveHolder;
+import fi.tnie.db.types.PrimitiveType;
 
-public class ValueParameter extends Parameter {
-	private Object value;
+public class ValueParameter<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T>>
+	extends Parameter<T, H> {
 	
-	public ValueParameter(Column column, Object value) {
+	private H value;
+	
+	public ValueParameter(Column column, H value) {
 		super(column);
 		this.value = value;
 	}
 
 
 	@Override
-	public Object getValue() {
+	public H getValue() {
 		return value;
 	}
 
-	public void setValue(Object value) {
+	public void setValue(H value) {
 		this.value = value;
 	}
 
@@ -49,6 +53,5 @@ public class ValueParameter extends Parameter {
 		}
 		
 		return this;
-	}
-	
+	}	
 }

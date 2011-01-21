@@ -9,6 +9,11 @@ public class TimeType
 	public static final TimeType TYPE = new TimeType();
 	
 	private TimeType() {
-		super(Type.TIME);
 	}
+	
+	@Override
+	public int getSqlType() {
+		return Type.TIME;
+	}
+	
 }

@@ -3,21 +3,37 @@
  */
 package fi.tnie.db;
 
-import java.math.BigDecimal;
 import java.sql.Types;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.Map;
 
-import fi.tnie.db.ent.JavaType;
-import fi.tnie.db.ent.TableMapper;
+import fi.tnie.db.ent.value.CharKey;
+import fi.tnie.db.ent.value.CharValue;
+import fi.tnie.db.ent.value.DateKey;
+import fi.tnie.db.ent.value.DateValue;
+import fi.tnie.db.ent.value.DoubleKey;
+import fi.tnie.db.ent.value.DoubleValue;
+import fi.tnie.db.ent.value.IntegerKey;
+import fi.tnie.db.ent.value.IntegerValue;
+import fi.tnie.db.ent.value.TimestampKey;
+import fi.tnie.db.ent.value.TimestampValue;
+import fi.tnie.db.ent.value.VarcharKey;
+import fi.tnie.db.ent.value.VarcharValue;
 import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.map.AttributeInfo;
+import fi.tnie.db.map.JavaType;
+import fi.tnie.db.map.TableMapper;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
+import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
+import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.rpc.IntegerHolder;
+import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.rpc.VarcharHolder;
+import fi.tnie.db.source.DefaultAttributeInfo;
 
 public class DefaultTableMapper
 	implements TableMapper {
@@ -140,43 +156,114 @@ public class DefaultTableMapper
 		setRootPackage(rootPackage);
 		setContextPackage(contextPackage);
 	}
-
+	
+	
     @Override
-    public Class<?> getAttributeHolderType(Table table, Column c) {
+    public AttributeInfo getAttributeInfo(Table table, Column c) { 
+        DefaultAttributeInfo a = new DefaultAttributeInfo(table, c);
+        
         int type = c.getDataType().getDataType();
-        Class<?> jtype = null;
-                        
+
         switch (type) {
-            case Types.CHAR:
-            case Types.VARCHAR:
-                jtype = VarcharHolder.class; 
-                break;            	
-            case Types.LONGNVARCHAR:
-            	break;
-            case Types.INTEGER:            
-                jtype = IntegerHolder.class;
-                break;
-            case Types.TINYINT:            
-                break;
-            case Types.BIGINT:                        
-            case Types.BIT:
-                           
-            case Types.REAL:
-                break;
-            case Types.FLOAT:                
-            case Types.DOUBLE:                
-                break;                
-            case Types.NUMERIC:                
-                break;
-            case Types.DATE:            
-                jtype = DateHolder.class;
-                break;                
-            default:                
-                break;
-        }
-                
-        return jtype;
+        case Types.CHAR:
+        	a.setAttributeType(String.class);
+        	a.setHolderType(CharHolder.class);
+        	a.setKeyType(CharKey.class);
+        	a.setValueType(CharValue.class);        	
+        case Types.VARCHAR:
+        	a.setAttributeType(String.class);
+        	a.setHolderType(VarcharHolder.class);
+        	a.setKeyType(VarcharKey.class);
+        	a.setValueType(VarcharValue.class);        	
+            break;            	
+        case Types.LONGNVARCHAR:
+        	break;
+        case Types.INTEGER:            
+        	a.setAttributeType(Integer.class);
+        	a.setHolderType(IntegerHolder.class);
+        	a.setKeyType(IntegerKey.class);
+        	a.setValueType(IntegerValue.class);
+            break;
+        case Types.TINYINT:            
+            break;
+        case Types.BIGINT:                        
+        case Types.BIT:
+                       
+        case Types.REAL:
+            break;
+        case Types.FLOAT:                
+        case Types.DOUBLE:
+        	a.setAttributeType(Double.class);
+        	a.setHolderType(DoubleHolder.class);
+        	a.setKeyType(DoubleKey.class);
+        	a.setValueType(DoubleValue.class);                
+            break;                
+        case Types.NUMERIC:                
+            break;
+        case Types.DATE:            
+        	a.setAttributeType(Date.class);
+        	a.setHolderType(DateHolder.class);
+        	a.setKeyType(DateKey.class);
+        	a.setValueType(DateValue.class);
+            break;
+        case Types.TIMESTAMP:
+        	a.setAttributeType(Date.class);
+        	a.setHolderType(TimestampHolder.class);
+        	a.setKeyType(TimestampKey.class);
+        	a.setValueType(TimestampValue.class);
+            break;
+        default:                
+            break;
     }
+
+    	
+    	return a;
+    }
+
+    	
+
+//    @Override
+//    public Class<?> getAttributeHolderType(Table table, Column c) {
+//        int type = c.getDataType().getDataType();
+//        Class<?> jtype = null;
+//                        
+//        switch (type) {
+//            case Types.CHAR:
+//            	jtype = CharHolder.class;
+//            case Types.VARCHAR:
+//                jtype = VarcharHolder.class; 
+//                break;            	
+//            case Types.LONGNVARCHAR:
+//            	break;
+//            case Types.INTEGER:            
+//                jtype = IntegerHolder.class;
+//                break;
+//            case Types.TINYINT:            
+//                break;
+//            case Types.BIGINT:                        
+//            case Types.BIT:
+//                           
+//            case Types.REAL:
+//                break;
+//            case Types.FLOAT:                
+//            case Types.DOUBLE:
+//            	jtype = DoubleHolder.class;                
+//                break;                
+//            case Types.NUMERIC:                
+//                break;
+//            case Types.DATE:            
+//                jtype = DateHolder.class;
+//                break;
+//            case Types.TIMESTAMP:
+//                jtype = TimestampHolder.class;
+//                break;                
+//                
+//            default:                
+//                break;
+//        }
+//                
+//        return jtype;
+//    }
 
     @Override
     public JavaType entityType(Table table, Part part) {
@@ -224,53 +311,53 @@ public class DefaultTableMapper
         return new JavaType(p, "CatalogContext");
     }
 
-	@Override
-	public Class<?> getAttributeType(Table table, Column c) {
-        int type = c.getDataType().getDataType();
-        
-        boolean nn = c.isDefinitelyNotNullable();
-
-        Class<?> jtype = null;
-                        
-        switch (type) {
-            case Types.CHAR:
-            case Types.VARCHAR:            	
-            case Types.LONGNVARCHAR:
-                jtype = String.class; 
-                break;                 
-            case Types.INTEGER:            
-                jtype = nn ? Integer.TYPE : Integer.class;
-                break;
-            case Types.TINYINT:            
-                jtype = nn ? Short.TYPE : Short.class;
-                break;
-            case Types.BIGINT:
-//                jtype = BigInteger.class;
-            	// not supported yet
-            	break;
-            case Types.BIT:
-                jtype = nn ? Boolean.TYPE : Boolean.class;            
-            case Types.REAL:
-                jtype = nn ? Float.TYPE : Float.class;
-                break;
-            case Types.FLOAT:                
-            case Types.DOUBLE:
-                jtype = nn ? Double.TYPE : Double.class;
-                break;                
-            case Types.NUMERIC:
-                jtype = BigDecimal.class;
-                break;
-            case Types.DATE:
-                jtype = Date.class;
-                break;                
-            default:            	
-//                jtype = Object.class;
-            	// generally not supported yet
-                break;
-        }
-                
-        return jtype;	
-    }
+//	@Override
+//	public Class<?> getAttributeType(Table table, Column c) {
+//        int type = c.getDataType().getDataType();        
+//        boolean nn = c.isDefinitelyNotNullable();
+//
+//        Class<?> jtype = null;
+//                        
+//        switch (type) {
+//            case Types.CHAR:
+//            case Types.VARCHAR:            	
+//            case Types.LONGNVARCHAR:
+//                jtype = String.class; 
+//                break;                 
+//            case Types.INTEGER:            
+//                jtype = Integer.class;
+//                break;
+//            case Types.TINYINT:            
+//                jtype = Short.class;
+//                break;
+//            case Types.BIGINT:
+////                jtype = BigInteger.class;
+//            	// not supported yet
+//            	break;
+//            case Types.BIT:
+//                jtype = Boolean.class;            
+//            case Types.REAL:
+//                jtype = Float.class;
+//                break;
+//            case Types.FLOAT:                
+//            case Types.DOUBLE:
+//                jtype = Double.class;
+//                break;                
+//            case Types.NUMERIC:
+//                jtype = BigDecimal.class;
+//                break;
+//            case Types.DATE:                
+//            case Types.TIMESTAMP:
+//                jtype = Date.class;
+//                break;                
+//            default:            	
+////                jtype = Object.class;
+//            	// generally not supported yet
+//                break;
+//        }
+//                
+//        return jtype;	
+//    }
 
 	public String getContextPackage() {
 		if (contextPackage == null) {
@@ -293,6 +380,18 @@ public class DefaultTableMapper
     	String p = getRootPackage();
         return new JavaType(p, "LiteralCatalog");
 	}
+
+//	@Override
+//	public Class<?> getAttributeKeyType(Table table, Column c) {
+//		// TODO:
+//		return IntegerKey.class;
+//	}
+//
+//	@Override
+//	public Class<?> getAttributeValueType(Table table, Column c) {
+//		// TODO
+//		return IntegerValue.class;
+//	}
 }
 
     

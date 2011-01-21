@@ -3,6 +3,7 @@
  */
 package fi.tnie.db;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,10 +38,11 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
+import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
 
 public class PersistenceManager<
-    A,
+    A extends Serializable,
     R,
     T extends ReferenceType<T>,
     E extends Entity<A, R, T, E>>
@@ -51,7 +53,7 @@ public class PersistenceManager<
     {
         public Query(EntityMetaData<A, R, T, E> meta) {
             super(meta);
-        }       
+        }
     }
     
     private E target;
@@ -83,16 +85,14 @@ public class PersistenceManager<
         E pe = getTarget();        
     	ValueRow newRow = new ValueRow();
     	    	
-    	final EntityMetaData<A, R, T, ?> meta = pe.getMetaData();				
+    	final EntityMetaData<A, R, T, E> meta = pe.getMetaData();				
     	BaseTable t = meta.getBaseTable();
     			
     	ElementList<ColumnName> names = new ElementList<ColumnName>();
     	   	    	
     	for (A a : meta.attributes()) {    	    
     		Column col = meta.getColumn(a);
-    		
-//    		Object value = pe.value(a);
-    		PrimitiveHolder<?, ?> holder = pe.value(a);
+    		PrimitiveHolder<?, ?> holder = pe.value(a).getHolder();
     		
     		if (holder == null) {
     			continue;
@@ -103,7 +103,7 @@ public class PersistenceManager<
     		    // newRow.add(new ValueExpression());
     		}    		
     		else {    			
-                ValueParameter p = new ValueParameter(col, holder.value());
+                ValueParameter<?, ?> p = createParameter(col, holder);
                 newRow.add(p);
                 names.add(col.getColumnName());    		    
     		}
@@ -124,8 +124,11 @@ public class PersistenceManager<
             else {
                 for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
                     Column fc = ce.getValue();
-                    Object o = ref.get(fc);
-                    ValueParameter p = new ValueParameter(ce.getKey(), o);                                      
+//                    Object o = ref.get(fc);
+                    PrimitiveHolder<?, ?> o = ref.get(fc);
+                    
+//                    ValueParameter p = new ValueParameter(ce.getKey(), o);
+                    ValueParameter<?, ?> p = createParameter(ce.getKey(), o);
                     newRow.add(p);
                     names.add(ce.getKey().getColumnName());
                 }
@@ -134,6 +137,13 @@ public class PersistenceManager<
     			
     	return new InsertStatement(t, names, newRow);
     }
+
+
+	private
+	<P extends PrimitiveType<P>, H extends PrimitiveHolder<?, P>>	
+	ValueParameter<P, H> createParameter(Column col, H holder) {
+		return new ValueParameter<P, H>(col, holder);		
+	}
 
     public UpdateStatement createUpdateStatement() throws EntityException {
         E pe = getTarget();
@@ -152,9 +162,11 @@ public class PersistenceManager<
     	
     	    	 		
     	for (A a : meta.attributes()) {			
-    		Column col = meta.getColumn(a);
-    		Object value = pe.value(a).value();
-    		ValueParameter vp = new ValueParameter(col, value);						
+    		Column col = meta.getColumn(a);    		    		    		
+    		PrimitiveHolder<?, ?> h = pe.value(a).getHolder();
+//    		Object value = pe.value(a).value();
+//    		ValueParameter vp = new ValueParameter(col, value);    		
+    		ValueParameter<?, ?> vp = createParameter(col, h);    								
     		assignments.add(new Assignment(col.getColumnName(), vp));
     	}
     	    
@@ -325,27 +337,14 @@ public class PersistenceManager<
         setSyntax(syntax);
     }
 
-//    public static <
-//      A extends Enum<A> & Identifiable, 
-//      R extends Enum<R> & Identifiable, 
-//      Q extends Enum<Q> & Identifiable, 
-//      E extends Entity<A, ? extends E>
-//    > 
-//    PersistenceManager<A, ? extends E> newInstance(E pe) {
-//        return new PersistenceManager<A, E>(pe);
-//    }
-
-
     public E getTarget() {
         return target;
     }
-
 
     public void setTarget(E target) {
         this.target = target;
         this.query = null;
     }
-
 
     public Predicate getPKPredicate(TableReference tref, E pe) 
         throws EntityException {
@@ -363,8 +362,8 @@ public class PersistenceManager<
         
         Predicate p = null;
         
-        for (Column col : pkcols) {        	
-            Object o = pe.get(col);
+        for (Column col : pkcols) {
+            PrimitiveHolder<?, ?> o = pe.get(col);
             
             // to successfully create a pk predicate 
             // every component must be set:             
@@ -372,8 +371,8 @@ public class PersistenceManager<
                 return null;
             }
             
-            ColumnReference cr = new ColumnReference(tref, col);
-            ValueParameter param = new ValueParameter(col, o);
+            ColumnReference cr = new ColumnReference(tref, col);            
+            ValueParameter<?, ?> param = createParameter(col, o);
             p = AndPredicate.newAnd(p, eq(cr, param));
         }
         
@@ -392,7 +391,7 @@ public class PersistenceManager<
         A a = m.getAttribute(column);
         
         if (a != null) {
-            return pe.value(a).value();
+            return pe.value(a).get();
         }
         
         // column may be part of multiple

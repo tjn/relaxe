@@ -94,7 +94,7 @@ public class QueryTask
 	}
 
 	static class ObjectExtractor
-		extends ValueExtractor<Serializable, VarcharType>
+		extends ValueExtractor<Serializable, VarcharType, PrimitiveHolder<Serializable, VarcharType>>
 	{
 		public ObjectExtractor(int column) {
 			super(column);			

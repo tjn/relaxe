@@ -22,7 +22,7 @@ public class DataObjectReader
 	
 	private List<DataObject> content;		
 	private DefaultDataObject.MetaData meta;
-	private ValueExtractor<?, ?>[] extractors;
+	private ValueExtractor<?, ?, ?>[] extractors;
 									
 	public DataObjectReader(QueryExpression qo, List<DataObject> content) {									
 		TableExpression te = qo.getTableExpr();
@@ -33,21 +33,21 @@ public class DataObjectReader
 		this.extractors = createExtractorArray(el);
 	}
 
-	private ValueExtractor<?, ?>[] createExtractorArray(List<ValueExpression> el) {
+	private ValueExtractor<?, ?, ?>[] createExtractorArray(List<ValueExpression> el) {
 		int colno = 0;
-		ValueExtractor<?, ?>[] xa = new ValueExtractor<?, ?>[el.size()];
+		ValueExtractor<?, ?, ?>[] xa = new ValueExtractor<?, ?, ?>[el.size()];
 																							
 		for (ValueExpression expr : el) {
 			colno++;				
 			int sqltype = expr.getType();				
 			
-			ValueExtractor<?, ?> e = null;
+			ValueExtractor<?, ?, ?> e = null;
 				
 			switch (sqltype) {
 				case Types.INTEGER:					
 				case Types.SMALLINT:
 				case Types.TINYINT:
-					e = new IntExtractor(colno);
+					e = new IntegerExtractor(colno);
 					break;
 				case Types.VARCHAR:
 				case Types.CHAR:
@@ -72,7 +72,7 @@ public class DataObjectReader
 			int count = this.extractors.length;
 			
 			for (int i = 0; i < count; i++) {
-				ValueExtractor<?, ?> ve = this.extractors[i];					
+				ValueExtractor<?, ?, ?> ve = this.extractors[i];					
 				o.set(i, ve.extractValue(rs));
 			}			
 			

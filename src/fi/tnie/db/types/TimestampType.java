@@ -9,6 +9,10 @@ public class TimestampType
 	public static final TimestampType TYPE = new TimestampType();
 	
 	private TimestampType() {
-		super(Type.TIMESTAMP);
+	}
+	
+	@Override
+	public int getSqlType() {
+		return Type.TIMESTAMP;
 	}
 }

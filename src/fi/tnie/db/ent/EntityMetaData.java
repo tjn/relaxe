@@ -3,8 +3,17 @@
  */
 package fi.tnie.db.ent;
 
+
+import java.io.Serializable;
 import java.util.Set;
 
+import fi.tnie.db.ent.value.CharKey;
+import fi.tnie.db.ent.value.DateKey;
+import fi.tnie.db.ent.value.DoubleKey;
+import fi.tnie.db.ent.value.IntegerKey;
+import fi.tnie.db.ent.value.Key;
+import fi.tnie.db.ent.value.TimestampKey;
+import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
@@ -12,7 +21,7 @@ import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.types.ReferenceType;
 
 public interface EntityMetaData<
-	A, 
+	A extends Serializable, 
 	R, 
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>
@@ -32,6 +41,21 @@ public interface EntityMetaData<
 	
 	EntityFactory<A, R, T, E> getFactory();
 	
+//	PrimitiveKey<A, ?, ?, ?, E> key(A a);
+	
+	
+//	<
+//		S extends Serializable,
+//		P extends PrimitiveType<P>,
+//		H extends PrimitiveHolder<S, P>,		
+//		K extends Key<A, S, P, H, E>,
+//		V extends Value<A, S, P, H, E, K>,
+//		F extends ValueFactory<A, S, P, H, E, K, V>
+//		
+//	>	
+//	F newValueFactory(K a);
+		
+	
 	/**
 	 * Unmodifiable set containing the names of the attributes which are applicable to entities this object describes.   
 	 * @return
@@ -41,6 +65,16 @@ public interface EntityMetaData<
 		
 	Column getColumn(A a);
 	A getAttribute(Column c);
+	
+	Key<A, ?, ?, ?, E, ?> getKey(Column c);	
+	Key<A, ?, ?, ?, E, ?> getKey(A a);
+	
+	IntegerKey<A, E> getIntegerKey(A a);
+	VarcharKey<A, E> getVarcharKey(A a);
+	DateKey<A, E> getDateKey(A a);
+	DoubleKey<A, E> getDoubleKey(A a);	
+	CharKey<A, E> getCharKey(A a);
+	TimestampKey<A, E> getTimestampKey(A a);
 	
 	ForeignKey getForeignKey(R r);		
 	Set<Column> getPKDefinition();
@@ -63,4 +97,10 @@ public interface EntityMetaData<
 	Catalog getCatalog();
 	
 	T getType();
+
+////	IntAccessor<A, E> integerAccessor(A attribute);
+//	
+//	<P extends PrimitiveType<P>>
+//	Accessor<A, ?, P, ?, E> accessor(A attribute, P type);
+	
 }

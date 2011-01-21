@@ -3,19 +3,17 @@
  */
 package fi.tnie.db.types;
 
-public class PrimitiveType<T extends Type<T>>
+public abstract class PrimitiveType<T extends PrimitiveType<T>>
 	extends Type<T> {
-
+	
 	protected PrimitiveType() {
 		super();
 	}
 
-	public PrimitiveType(int sqlType) {
-		super(sqlType);
-	}
-	
 	@Override
 	public final boolean isReferenceType() {	
 		return false;
 	}
+	
+	public abstract int getSqlType();
 }

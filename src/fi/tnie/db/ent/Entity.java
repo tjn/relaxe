@@ -8,12 +8,25 @@ import java.util.Map;
 
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
+import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
+import fi.tnie.db.ent.value.CharKey;
+import fi.tnie.db.ent.value.CharValue;
+import fi.tnie.db.ent.value.DateKey;
+import fi.tnie.db.ent.value.DateValue;
+import fi.tnie.db.ent.value.IntegerKey;
+import fi.tnie.db.ent.value.IntegerValue;
+import fi.tnie.db.ent.value.Key;
+import fi.tnie.db.ent.value.TimestampKey;
+import fi.tnie.db.ent.value.TimestampValue;
+import fi.tnie.db.ent.value.Value;
+import fi.tnie.db.ent.value.VarcharKey;
+import fi.tnie.db.ent.value.VarcharValue;
 import fi.tnie.db.meta.Column;
 	
 public interface Entity<
-	A,
-	R,
+	A extends Serializable,
+	R,	 
 	T extends ReferenceType<T>, 
 	E extends Entity<A, R, T, E>
 > 
@@ -24,16 +37,27 @@ public interface Entity<
 	 * Returns a value of the attribute <code>a</code>  
 	 * @param r
 	 * @return
-	 */
-	PrimitiveHolder<?, ?> value(A a);
-
-//	/**
-//	 * Returns a value of the attribute <code>a</code>  
-//	 * @param r
-//	 * @return
-//	 */
-//	PrimitiveHolder<?, ?> get(Identifiable a);
-
+	 */	
+//	Value<A, ?, ?, ?> value(A a);
+			
+//	<	
+//		K extends Key<A, ?, ?, ?, E, ?>
+//	>	
+//	Value<A, ?, ?, ?, E, ?> value(K k);
+	
+	
+	<	
+		S extends Serializable,
+		P extends PrimitiveType<P>,
+		H extends PrimitiveHolder<S, P>,
+		K extends Key<A, S, P, H, E, K>
+	>	
+	Value<A, S, P, H, E, K> value(K k);
+	
+	
+	Value<A, ?, ?, ?, E, ?> value(A attribute);
+			
+	
 	/***
 	 * Returns the value of the corresponding column.
 	 * 
@@ -74,14 +98,15 @@ public interface Entity<
 	ReferenceHolder<?, ?, ?, ?> ref(R ref);
 	
 	
-	/** 
-	 * 
-	 * Set the value of the attribute <code>a</code>
-	 * 
-	 * @param a
-	 * @param value
-	 */
-	void set(A a, PrimitiveHolder<?, ?> value);
+//	/** 
+//	 * Should we do type checking by exposing accessors only?
+//	 * 
+//	 * Set the value of the attribute <code>a</code>
+//	 * 
+//	 * @param a
+//	 * @param value
+//	 */
+//	void set(A a, PrimitiveHolder<?, ?> value);
 	
 	
 	/**
@@ -91,7 +116,7 @@ public interface Entity<
 	 * @param value
 	 */
 	void set(R r, ReferenceHolder<?, ?, ?, ?> value);
-	
+			
 	EntityDiff<A, R, T, E> diff(E another);
 		
 	Map<Column, PrimitiveHolder<?, ?>> getPrimaryKey();
@@ -106,6 +131,12 @@ public interface Entity<
 	
 	ReferenceHolder<A, R, T, E> ref();
 	
+	IntegerValue<A, E> integerValue(IntegerKey<A, E> k);	
+	VarcharValue<A, E> varcharValue(VarcharKey<A, E> k);
+	DateValue<A, E> dateValue(DateKey<A, E> k);
+	TimestampValue<A, E> timestampValue(TimestampKey<A, E> k);
+	CharValue<A, E> charValue(CharKey<A, E> k);
+		
 	/**
 	 * TODO: EntityQueryTask should be also rewritten to use DataObjectReader
 	 */

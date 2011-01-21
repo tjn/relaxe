@@ -9,6 +9,10 @@ public class LongVarcharType
 	public static final LongVarcharType TYPE = new LongVarcharType();
 	
 	private LongVarcharType() {
-		super(Type.LONGVARCHAR);
 	}
+	
+	@Override
+	public int getSqlType() {
+		return Type.LONGNVARCHAR;
+	}	
 }

@@ -8,7 +8,11 @@ public class OtherType
 	
 	public static final OtherType TYPE = new OtherType();
 	
-	private OtherType() {
-		super(Type.OTHER);
+	private OtherType() {		
+	}
+	
+	@Override
+	public int getSqlType() {
+		return Type.OTHER;
 	}
 }

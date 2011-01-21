@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.ent;
 
+import fi.tnie.db.map.TableMapper;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 

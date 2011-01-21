@@ -8,7 +8,7 @@ import java.util.HashMap;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityContext;
-import fi.tnie.db.ent.TableMapper;
+import fi.tnie.db.map.TableMapper;
 // import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.SchemaElementName;

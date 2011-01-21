@@ -14,7 +14,7 @@ import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.types.DateType;
 
 class DateExtractor
-	extends ValueExtractor<Date, DateType>
+	extends ValueExtractor<Date, DateType, DateHolder>
 {
 	public DateExtractor(int column) {
 		super(column);			

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.ent;
+package fi.tnie.db.map;
 
 /**
  * @author Administrator

@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.ent;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.ReferenceType;
 
 public abstract class AbstractEntityDiff<
-	A,
+	A extends Serializable,
 	R,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, ? extends E>
@@ -71,8 +72,8 @@ public abstract class AbstractEntityDiff<
 		Map<A, Change> cm = new HashMap<A, Change>();
 		
 		for (A a : meta.attributes()) {
-			PrimitiveHolder<?, ?> o = original.value(a);			
-			PrimitiveHolder<?, ?> m = modified.value(a);
+			PrimitiveHolder<?, ?> o = original.value(a).getHolder();			
+			PrimitiveHolder<?, ?> m = modified.value(a).getHolder();
 			
 			if ((o == null && m == null) || (o == m)) {
 				continue;

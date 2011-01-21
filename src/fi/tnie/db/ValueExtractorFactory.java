@@ -15,6 +15,14 @@ public interface ValueExtractorFactory {
 	 * @return
 	 * @throws SQLException
 	 */
-	ValueExtractor<?, ? > createExtractor(ResultSetMetaData meta, int col) 
+	ValueExtractor<?, ?, ?> createExtractor(ResultSetMetaData meta, int col) 
 		throws SQLException;
+
+	
+	IntegerExtractor createIntegerExtractor(int col);
+	VarcharExtractor createVarcharExtractor(int col);
+	DateExtractor createDateExtractor(int col);
+	CharExtractor createCharExtractor(int col);
+	DoubleExtractor createDoubleExtractor(int col);
+	TimestampExtractor createTimestampExtractor(int col);
 }
