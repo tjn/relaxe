@@ -116,8 +116,10 @@ public class PersistenceManager<
 
             if (ref == null) {
                 for (Column c : fk.columns().keySet()) {
-                    ValueParameter p = new ValueParameter(c, null);
-                    newRow.add(p);
+                	PrimitiveType<?> p = PrimitiveType.get(c.getDataType().getDataType());
+                	PrimitiveHolder<?, ?> h = p.nil();                	
+                	ValueParameter<?, ?> vp = createParameter(c, h);
+                    newRow.add(vp);
                     names.add(c.getColumnName());
                 }
             }
@@ -454,5 +456,7 @@ public class PersistenceManager<
 	private void setSyntax(SQLSyntax syntax) {
 		this.syntax = syntax;
 	}
+	
+	
 
 }
