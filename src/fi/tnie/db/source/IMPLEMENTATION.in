@@ -1,16 +1,16 @@
 package {{package-name}};
 
-import java.util.Date;
+// import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import fi.tnie.db.ent.EnumMetaData;
 import fi.tnie.db.ent.EntityFactory;
-import fi.tnie.db.ent.value.IntegerKey;
-import fi.tnie.db.ent.value.IntegerValue;
+// import fi.tnie.db.ent.value.IntegerKey;
+// import fi.tnie.db.ent.value.IntegerValue;
 import fi.tnie.db.ent.value.Key;
-import fi.tnie.db.ent.value.VarcharKey;
-import fi.tnie.db.ent.value.VarcharValue;
+// import fi.tnie.db.ent.value.VarcharKey;
+// import fi.tnie.db.ent.value.VarcharValue;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.ForeignKey;
@@ -78,6 +78,10 @@ public class {{table-impl-class}}
 			return table.foreignKeys().get(r.identifier());			
 		}
 		
+		/**
+			If there are no two (or more) attributes with equals type, we don't need this.  
+		*/		
+		@SuppressWarnings("unused")
 		private 
 		<K extends Key<Attribute, ?, ?, ?, {{table-interface}}, ?>>
 		void addAttributeKey(K key, Map<Attribute, K> am) {
