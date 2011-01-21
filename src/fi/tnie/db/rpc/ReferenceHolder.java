@@ -3,14 +3,13 @@
  */
 package fi.tnie.db.rpc;
 
-import java.io.Serializable;
-
+import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.types.ReferenceType;
 
 
 /**
- *  
+ *
  *
  * @param <A>
  * @param <R>
@@ -19,24 +18,24 @@ import fi.tnie.db.types.ReferenceType;
  */
 
 public abstract class ReferenceHolder<
-	A extends Serializable,
+	A extends Attribute,
 	R,
 	T extends ReferenceType<T>,
 	V extends Entity<A, R, T, V>>
 	extends Holder<V, T> {
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -7758303666346608268L;
 	private V value;
-			
+
 	protected ReferenceHolder() {
-		super();	
+		super();
 	}
 
 	public ReferenceHolder(V value) {
-		super();		
+		super();
 		this.value = value;
 	}
 

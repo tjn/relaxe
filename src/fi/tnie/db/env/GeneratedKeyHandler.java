@@ -3,22 +3,22 @@
  */
 package fi.tnie.db.env;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.expr.InsertStatement;
 import fi.tnie.db.types.ReferenceType;
 
-public interface GeneratedKeyHandler {	
+public interface GeneratedKeyHandler {
 	<
-	    A extends Serializable,
+	    A extends Attribute,
 	    R,
 	    T extends ReferenceType<T>,
 	    E extends Entity<A, R, T, E>
 	>
-	void processGeneratedKeys(InsertStatement insert, E target, ResultSet rs) 
+	void processGeneratedKeys(InsertStatement insert, E target, ResultSet rs)
 		throws SQLException, EntityException;
 }

@@ -3,15 +3,13 @@
  */
 package fi.tnie.db.ent;
 
-import java.io.Serializable;
-
 import fi.tnie.db.types.ReferenceType;
 
 public interface EntityFactory<
-	A extends Serializable,
+	A extends Attribute,
 	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, ?>	
-> {			
+	E extends Entity<A, R, T, ?>
+> {
 	E newInstance();
 }

@@ -3,15 +3,14 @@
  */
 package fi.tnie.db;
 
-import java.io.Serializable;
-
+import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.types.IntegerType;
 
-public class IntegerAttributeExtractor<A extends Serializable, E extends Entity<A,?,?,E>>
+public class IntegerAttributeExtractor<A extends Attribute, E extends Entity<A,?,?,E>>
 	extends AttributeExtractor<Integer, IntegerType, IntegerHolder, A, E, IntegerKey<A, E>> {
 
 	public IntegerAttributeExtractor(A attribute, EntityMetaData<A, ?, ?, E> meta, ValueExtractorFactory vef, int col) {
@@ -19,7 +18,7 @@ public class IntegerAttributeExtractor<A extends Serializable, E extends Entity<
 	}
 
 	@Override
-	protected ValueExtractor<Integer, IntegerType, IntegerHolder> createValueExtractor(ValueExtractorFactory vef, int col) {		
+	protected ValueExtractor<Integer, IntegerType, IntegerHolder> createValueExtractor(ValueExtractorFactory vef, int col) {
 		return vef.createIntegerExtractor(col);
 	}
 }

@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.ent;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +17,7 @@ import fi.tnie.db.types.ReferenceType;
 
 
 public abstract class AbstractEntity<
-	A extends Serializable,
+	A extends Attribute,
 	R, 
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>

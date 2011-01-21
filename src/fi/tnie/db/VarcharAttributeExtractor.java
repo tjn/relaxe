@@ -3,15 +3,14 @@
  */
 package fi.tnie.db;
 
-import java.io.Serializable;
-
+import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.VarcharType;
 
-public class VarcharAttributeExtractor<A extends Serializable, E extends Entity<A,?,?,E>>
+public class VarcharAttributeExtractor<A extends Attribute, E extends Entity<A,?,?,E>>
 	extends AttributeExtractor<String, VarcharType, VarcharHolder, A, E, VarcharKey<A, E>> {
 
 	public VarcharAttributeExtractor(A attribute, EntityMetaData<A, ?, ?, E> meta, ValueExtractorFactory vef, int col) {
@@ -19,7 +18,7 @@ public class VarcharAttributeExtractor<A extends Serializable, E extends Entity<
 	}
 
 	@Override
-	protected ValueExtractor<String, VarcharType, VarcharHolder> createValueExtractor(ValueExtractorFactory vef, int col) {		
+	protected ValueExtractor<String, VarcharType, VarcharHolder> createValueExtractor(ValueExtractorFactory vef, int col) {
 		return vef.createVarcharExtractor(col);
 	}
 }

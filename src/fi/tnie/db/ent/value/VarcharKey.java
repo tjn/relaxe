@@ -3,17 +3,17 @@
  */
 package fi.tnie.db.ent.value;
 
-import java.io.Serializable;
-
+import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.VarcharType;
 
-public class VarcharKey<A extends Serializable, E extends Entity<A, ?, ?, E>>
+
+public class VarcharKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	extends PrimitiveKey<A, String, VarcharType, VarcharHolder, E, VarcharKey<A, E>>
-{	
+{
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 128524051109455630L;
 
@@ -23,7 +23,7 @@ public class VarcharKey<A extends Serializable, E extends Entity<A, ?, ?, E>>
 	@SuppressWarnings("unused")
 	private VarcharKey() {
 	}
-	
+
 	public VarcharKey(A name) {
 		super(name);
 	}
@@ -36,9 +36,9 @@ public class VarcharKey<A extends Serializable, E extends Entity<A, ?, ?, E>>
 	@Override
 	public VarcharValue<A, E> newValue() {
 		return new VarcharValue<A, E>(this);
-	}	
-	
+	}
+
 	public Value<A, String, VarcharType, VarcharHolder, E, VarcharKey<A,E>> value(E e) {
 		return e.value(this);
-	}		
+	}
 }

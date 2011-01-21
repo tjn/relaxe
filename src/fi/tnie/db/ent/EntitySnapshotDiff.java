@@ -3,23 +3,22 @@
  */
 package fi.tnie.db.ent;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
 import fi.tnie.db.types.ReferenceType;
 
 public class EntitySnapshotDiff <
-	A extends Serializable, 
+	A extends Attribute,
 	R,
-	T extends ReferenceType<T>, 
+	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, ? extends E>
 >
 	extends AbstractEntityDiff<A, R, T, E>
 {
-	private Map<A, Change> attributes = null; 
+	private Map<A, Change> attributes = null;
 	private Map<R, Change> references = null;
-	
+
 	public EntitySnapshotDiff(E original, E modified) {
 		super(original, modified);
 		this.attributes = Collections.unmodifiableMap(super.attributes(original, modified));
@@ -32,9 +31,9 @@ public class EntitySnapshotDiff <
 	}
 
 	@Override
-	public Map<R, Change> references() {	
+	public Map<R, Change> references() {
 		return this.references;
 	}
-	
-	
+
+
 }

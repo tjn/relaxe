@@ -3,14 +3,13 @@
  */
 package fi.tnie.db.ent;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
 import fi.tnie.db.types.ReferenceType;
 
 public class EmptyEntityDiff<
-	A extends Serializable,
+	A extends Attribute,
 	R,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, ? extends E>
@@ -30,9 +29,9 @@ public class EmptyEntityDiff<
 	public Change change() {
 		return null;
 	}
-	
+
 	@Override
-	public Map<R, Change> references() {	
+	public Map<R, Change> references() {
 		return Collections.emptyMap();
 	}
 }

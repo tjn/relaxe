@@ -10,7 +10,7 @@ import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
 public abstract class EnumEntity<
-	A extends Enum<A> & Identifiable,
+	A extends Enum<A> & Attribute,
 	R extends Enum<R> & Identifiable,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>

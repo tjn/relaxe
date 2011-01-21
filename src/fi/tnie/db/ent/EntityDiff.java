@@ -4,14 +4,13 @@
 package fi.tnie.db.ent;
 
 
-import java.io.Serializable;
 import java.util.Map;
 
 import fi.tnie.db.types.ReferenceType;
 
 /**
- * Represents the difference between two entities. 
- * 
+ * Represents the difference between two entities.
+ *
  * @author Administrator
  *
  * @param <A>
@@ -21,39 +20,39 @@ import fi.tnie.db.types.ReferenceType;
  */
 
 public interface EntityDiff<
-	A extends Serializable,
+	A extends Attribute,
 	R,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, ?>>
-{	
+{
 	/**
 	 * "Total" difference between original and modified entity.
-	 * 
-	 *  Return value <code>null</code> indicates that there are no 
-	 *  changes between original and modified.     
-	 *  
-	 *  Return value {@link Change.ADDITION} indicates that  
+	 *
+	 *  Return value <code>null</code> indicates that there are no
+	 *  changes between original and modified.
+	 *
+	 *  Return value {@link Change.ADDITION} indicates that
 	 *  the original is <code>null</code>.
-	 *  
-	 *  Return value {@link Change.DELETION} indicates that  
-	 *  the modified is <code>null</code> 
+	 *
+	 *  Return value {@link Change.DELETION} indicates that
+	 *  the modified is <code>null</code>
 
- 	 *  Return value {@link Change.MODIFICATION} indicates that  
-	 *  either {@link attributes()} or {@link references()} is not empty. 
-	 * 
+ 	 *  Return value {@link Change.MODIFICATION} indicates that
+	 *  either {@link attributes()} or {@link references()} is not empty.
+	 *
 	 * @return The change
-	 */	
+	 */
 	Change change();
-	
+
 	E getOriginal();
 	E getModified();
-	
-	/**	 *   
+
+	/**	 *
 	 * @return
 	 */
 	Map<A, Change> attributes();
-	
-	/**  
+
+	/**
 	 * @return
 	 */
 	Map<R, Change> references();

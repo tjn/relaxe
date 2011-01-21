@@ -3,18 +3,18 @@
  */
 package fi.tnie.db.ent.value;
 
-import java.io.Serializable;
 import java.util.Date;
 
+import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.types.TimestampType;
 
-public class TimestampKey<A extends Serializable, E extends Entity<A, ?, ?, E>>
+public class TimestampKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	extends PrimitiveKey<A, Date, TimestampType, TimestampHolder, E, TimestampKey<A, E>>
-{	
+{
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 7215861304511882107L;
 
@@ -24,7 +24,7 @@ public class TimestampKey<A extends Serializable, E extends Entity<A, ?, ?, E>>
 	@SuppressWarnings("unused")
 	private TimestampKey() {
 	}
-	
+
 	public TimestampKey(A name) {
 		super(name);
 	}
@@ -37,9 +37,9 @@ public class TimestampKey<A extends Serializable, E extends Entity<A, ?, ?, E>>
 	@Override
 	public TimestampValue<A, E> newValue() {
 		return new TimestampValue<A, E>(this);
-	}	
-	
+	}
+
 	public Value<A, Date, TimestampType, TimestampHolder, E, TimestampKey<A,E>> value(E e) {
 		return e.value(this);
-	}		
+	}
 }

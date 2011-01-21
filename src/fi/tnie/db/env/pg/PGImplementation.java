@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.env.pg;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -11,6 +10,7 @@ import java.util.Comparator;
 
 import fi.tnie.db.ExtractorMap;
 import fi.tnie.db.ValueExtractorFactory;
+import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.env.CatalogFactory;
@@ -26,8 +26,8 @@ import fi.tnie.db.types.ReferenceType;
 
 public class PGImplementation
 	extends DefaultImplementation {
-    
-    private SQLSyntax syntax;    
+
+    private SQLSyntax syntax;
     private PGGeneratedKeyHandler generatedKeyHandler;
     private PGEnvironment environment;
 
@@ -36,7 +36,7 @@ public class PGImplementation
 	}
 
 	@Override
-	public CatalogFactory catalogFactory() {	
+	public CatalogFactory catalogFactory() {
 		return new PGCatalogFactory(this.environment);
 	}
 
@@ -49,10 +49,10 @@ public class PGImplementation
     public ColumnDefinition serialColumnDefinition(String columnName, boolean big) {
     	return this.environment.serialColumnDefinition(columnName, big);
     }
-    
-    private final class PGGeneratedKeyHandler implements GeneratedKeyHandler {    	
+
+    private final class PGGeneratedKeyHandler implements GeneratedKeyHandler {
     	private ValueExtractorFactory extractorFactory;
-    	
+
 		public PGGeneratedKeyHandler(ValueExtractorFactory vef) {
 			super();
 			this.extractorFactory = vef;
@@ -60,44 +60,44 @@ public class PGImplementation
 
 		@Override
 		public <
-			A extends Serializable,
-			R, 
+			A extends Attribute,
+			R,
 			T extends ReferenceType<T>,
 			E extends Entity<A, R, T, E>
-		> 
+		>
 		void processGeneratedKeys(
 				InsertStatement ins, E target, ResultSet rs) throws SQLException {
 //				int cc = rs.getMetaData().getColumnCount();
-//				
+//
 ////				logger().debug("getGeneratedKeys: ");
-//				
+//
 			ResultSetMetaData meta = rs.getMetaData();
 			EntityMetaData<A, R, T, E> em = target.getMetaData();
-									
-			ExtractorMap<A, R, T, E> xm = 
-				new ExtractorMap<A, R, T, E>(meta, em, extractorFactory);				
+
+			ExtractorMap<A, R, T, E> xm =
+				new ExtractorMap<A, R, T, E>(meta, em, extractorFactory);
 //			List<A> keys = new ArrayList<A>();
-													
+
 			xm.extract(rs, target);
 		}
 	}
 
 
     @Override
-    public String driverClassName() {    
+    public String driverClassName() {
         return "org.postgresql.Driver";
     }
-    
-    
+
+
     public static class PGSyntax
         extends DefaultSQLSyntax {
-        
+
     }
 
     @Override
     public SQLSyntax getSyntax() {
         if (syntax == null) {
-            syntax = new PGSyntax();            
+            syntax = new PGSyntax();
         }
 
         return syntax;
@@ -110,7 +110,7 @@ public class PGImplementation
 			generatedKeyHandler = new PGGeneratedKeyHandler(vef);
 		}
 
-		return generatedKeyHandler;	
+		return generatedKeyHandler;
 	}
 
 	public PGEnvironment getEnvironment() {

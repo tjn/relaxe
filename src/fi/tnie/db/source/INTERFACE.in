@@ -1,7 +1,6 @@
 package {{package-name}};
 
 import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.Identifiable;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.rpc.ReferenceHolder;
 
