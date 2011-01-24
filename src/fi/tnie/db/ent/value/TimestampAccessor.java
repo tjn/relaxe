@@ -10,8 +10,8 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.types.TimestampType;
 
-public class TimestampValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends PrimitiveValue<A, Date, TimestampType, TimestampHolder, E, TimestampKey<A, E>> {
+public class TimestampAccessor<A extends Attribute, E extends Entity<A, ?, ?, E>>
+	extends PrimitiveAccessor<A, Date, TimestampType, TimestampHolder, E, TimestampKey<A, E>> {
 
 	/**
 	 *
@@ -22,10 +22,10 @@ public class TimestampValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
-	private TimestampValue() {
+	private TimestampAccessor() {
 	}
 
-	public TimestampValue(E target, TimestampKey<A, E> k) {
+	public TimestampAccessor(E target, TimestampKey<A, E> k) {
 		super(target, k);
 	}
 }

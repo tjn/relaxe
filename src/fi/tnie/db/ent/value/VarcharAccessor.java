@@ -8,8 +8,8 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.VarcharType;
 
-public class VarcharValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends PrimitiveValue<A, String, VarcharType, VarcharHolder, E, VarcharKey<A, E>> {
+public class VarcharAccessor<A extends Attribute, E extends Entity<A, ?, ?, E>>
+	extends PrimitiveAccessor<A, String, VarcharType, VarcharHolder, E, VarcharKey<A, E>> {
 
 	/**
 	 *
@@ -20,10 +20,10 @@ public class VarcharValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
-	private VarcharValue() {
+	private VarcharAccessor() {
 	}
 
-	public VarcharValue(E target, VarcharKey<A, E> k) {
+	public VarcharAccessor(E target, VarcharKey<A, E> k) {
 		super(target, k); 
 	}
 }

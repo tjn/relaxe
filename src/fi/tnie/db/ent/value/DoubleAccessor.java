@@ -8,8 +8,8 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.types.DoubleType;
 
-public class DoubleValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends PrimitiveValue<A, Double, DoubleType, DoubleHolder, E, DoubleKey<A, E>> {
+public class DoubleAccessor<A extends Attribute, E extends Entity<A, ?, ?, E>>
+	extends PrimitiveAccessor<A, Double, DoubleType, DoubleHolder, E, DoubleKey<A, E>> {
 
 	/**
 	 *
@@ -20,10 +20,10 @@ public class DoubleValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
-	private DoubleValue() {
+	private DoubleAccessor() {
 	}
 
-	public DoubleValue(E target, DoubleKey<A, E> k) {
+	public DoubleAccessor(E target, DoubleKey<A, E> k) {
 		super(target, k);
 	}
 }

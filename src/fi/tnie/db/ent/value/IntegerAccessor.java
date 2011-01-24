@@ -8,8 +8,8 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.types.IntegerType;
 
-public class IntegerValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends PrimitiveValue<A, Integer, IntegerType, IntegerHolder, E, IntegerKey<A, E>> {
+public class IntegerAccessor<A extends Attribute, E extends Entity<A, ?, ?, E>>
+	extends PrimitiveAccessor<A, Integer, IntegerType, IntegerHolder, E, IntegerKey<A, E>> {
 
 	/**
 	 *
@@ -20,10 +20,10 @@ public class IntegerValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
-	private IntegerValue() {
+	private IntegerAccessor() {
 	}
 
-	public IntegerValue(E target, IntegerKey<A, E> k) {
+	public IntegerAccessor(E target, IntegerKey<A, E> k) {
 		super(target, k);
 	}
 }

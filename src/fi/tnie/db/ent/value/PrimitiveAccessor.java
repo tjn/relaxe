@@ -10,7 +10,7 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 
-public class PrimitiveValue<
+public class PrimitiveAccessor<
 	A extends Attribute,
 	S extends Serializable,
 	P extends PrimitiveType<P>,
@@ -18,9 +18,8 @@ public class PrimitiveValue<
 	E extends Entity<A, ?, ?, E>,
 	K extends Key<A, S, P, H, E, K>
 	>
-	implements Value<A, S, P, H, E, K>
+	implements Accessor<A, S, P, H, E, K>
 {
-
 	/**
 	 *
 	 */
@@ -32,12 +31,15 @@ public class PrimitiveValue<
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected PrimitiveValue() {
+	protected PrimitiveAccessor() {
 	}
 
-	public PrimitiveValue(E target, K key) {
+	public PrimitiveAccessor(E target, K key) {
 		super();
-		setTarget(target);
+
+		if (target == null) {
+			throw new NullPointerException("target");
+		}		
 		
 		if (key == null) {
 			throw new NullPointerException("key");
@@ -74,7 +76,7 @@ public class PrimitiveValue<
 		return target;
 	}
 
-	public void setTarget(E target) {
+	protected void setTarget(E target) {
 		if (target == null) {
 			throw new NullPointerException("target");
 		}

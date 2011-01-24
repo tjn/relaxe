@@ -10,7 +10,7 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 
-public interface Value<
+public interface Accessor<
 	A extends Attribute,
 	S extends Serializable,
 	P extends PrimitiveType<P>,
@@ -20,9 +20,7 @@ public interface Value<
 >
 	extends Serializable
 {
-	K key();
-	void set(S newValue);
+	K key();	
 	S get();
-	void setHolder(H newHolder);
 	public H getHolder();
 }
