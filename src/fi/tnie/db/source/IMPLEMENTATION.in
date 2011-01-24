@@ -74,9 +74,11 @@ public class {{table-impl-class}}
 			return table.foreignKeys().get(r.identifier());			
 		}
 		
+		{{add-attribute-key-method}}
+		
 		/**
 			If there are no two (or more) attributes with equals type, we don't need this.  
-		*/		
+	
 		@SuppressWarnings("unused")
 		private 
 		<K extends Key<Attribute, ?, ?, ?, {{table-interface}}, ?>>
@@ -85,6 +87,7 @@ public class {{table-impl-class}}
 			am.put(n, key);
 			attributeKeyMap.put(n, key);
 		}
+				*/
 		
 		@Override
 		public Key<Attribute, ?, ?, ?, {{table-interface}}, ?> getKey(Column column) {
@@ -174,9 +177,9 @@ public class {{table-impl-class}}
 	
 	
 	/**	
-    	public VarcharValue<Attribute, Person> lastName() {
+    	public VarcharAccessor<Attribute, Person> lastName() {
 	    	if (this.lastName == null) {
-	    		this.lastName = varcharValue(PersonMetaData.LAST_NAME);
+	    		this.lastName = new VarcharAccessor<Attribute, HourReport>(self(), PersonMetaData.LAST_NAME);
 	    	}
 	    	
 	    	return this.lastName;

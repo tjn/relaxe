@@ -153,7 +153,8 @@ public class SourceGenerator {
 		KEY_ACCESSOR_LIST, 
 		COLUMN_KEY_MAP_POPULATION, 
 		VALUE_VARIABLE_LIST,
-		VALUE_ACCESSOR_LIST,
+		VALUE_ACCESSOR_LIST, 
+		ADD_ATTRIBUTE_KEY_METHOD,
 		;	
 		
 					
@@ -1253,6 +1254,12 @@ public class SourceGenerator {
             src = replaceAll(src, Tag.META_DATA_INITIALIZATION, code);
         }
         
+        
+        {
+            String code = addAttributeKeyMethod(t, tm);
+            src = replaceAll(src, Tag.ADD_ATTRIBUTE_KEY_METHOD, code);
+        }        
+        
         {
             String code = columnKeyMapPopulation(t, tm);
             src = replaceAll(src, Tag.COLUMN_KEY_MAP_POPULATION, code);
@@ -1276,6 +1283,30 @@ public class SourceGenerator {
         return src;
 	}
 	
+	private String addAttributeKeyMethod(BaseTable t, TableMapper tm) {
+		Map<Class<?>, Integer> tom = keyTypeOccurenceMap(t, tm);
+		JavaType intf = tm.entityType(t, Part.INTERFACE);
+		
+		boolean referenced = false;
+				
+		for (Integer occ : tom.values()) {
+			if (occ != null && occ.intValue() > 1) {
+				referenced = true;
+				break;
+			}
+		} 
+		
+		return (!referenced) ? 
+			"" : 
+			"private " +
+			"<K extends Key<Attribute, ?, ?, ?, "  + intf.getQualifiedName() + ", ?>>" +
+			"void addAttributeKey(K key, Map<Attribute, K> am) {" +
+			"Attribute n = key.name();" +
+			"am.put(n, key);" +
+			"this.attributeKeyMap.put(n, key);" +
+			"}\n";
+	}
+
 	private String columnKeyMapPopulation(BaseTable t, TableMapper tm) {
 		List<Column> acl = getAttributeColumnList(t, tm);        
         StringBuffer content = new StringBuffer();
