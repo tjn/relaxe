@@ -105,7 +105,7 @@ public class DefaultEntityQuery<
 		Set<TA> as = meta.attributes();
 
 		for (TA a : as) {
-			PrimitiveHolder<?, ?> h = template.value(a).getHolder();
+			PrimitiveHolder<?, ?> h = template.value(a);
 
 			if (h != null) {
 				Column c = meta.getColumn(a);

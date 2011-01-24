@@ -9,7 +9,7 @@ import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.types.DoubleType;
 
 public class DoubleValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends AbstractValue<A, Double, DoubleType, DoubleHolder, E, DoubleKey<A, E>> {
+	extends PrimitiveValue<A, Double, DoubleType, DoubleHolder, E, DoubleKey<A, E>> {
 
 	/**
 	 *
@@ -23,13 +23,7 @@ public class DoubleValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private DoubleValue() {
 	}
 
-	public DoubleValue(DoubleKey<A, E> k) {
-		super(k);
+	public DoubleValue(E target, DoubleKey<A, E> k) {
+		super(target, k);
 	}
-
-	@Override
-	public void set(Double newValue) {
-		setHolder(DoubleHolder.valueOf(newValue));
-	}
-
 }

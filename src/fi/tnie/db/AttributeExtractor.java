@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.value.Key;
-import fi.tnie.db.ent.value.Value;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 
@@ -53,8 +52,7 @@ public class AttributeExtractor<
 		public void extract(ResultSet src, E dest)
 			throws SQLException {
 			H vp = extractor.extractValue(src);
-			Value<A, V, P, H, E, K> v = key.value(dest);
-			v.setHolder(vp);
+			dest.set(key, vp);
 		}
 
 		protected ValueExtractor<V, P, H> createValueExtractor(ValueExtractorFactory vef, int col) {

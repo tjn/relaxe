@@ -9,7 +9,7 @@ import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.types.CharType;
 
 public class CharValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends AbstractValue<A, String, CharType, CharHolder, E, CharKey<A, E>> {
+	extends PrimitiveValue<A, String, CharType, CharHolder, E, CharKey<A, E>> {
 
 	/**
 	 *
@@ -23,12 +23,7 @@ public class CharValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private CharValue() {
 	}
 
-	public CharValue(CharKey<A, E> k) {
-		super(k);
-	}
-
-	@Override
-	public void set(String newValue) {
-		setHolder(CharHolder.valueOf(newValue));
+	public CharValue(E target, CharKey<A, E> k) {
+		super(target, k);
 	}
 }

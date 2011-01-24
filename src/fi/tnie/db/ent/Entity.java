@@ -6,22 +6,23 @@ package fi.tnie.db.ent;
 import java.io.Serializable;
 import java.util.Map;
 
+import fi.tnie.db.rpc.CharHolder;
+import fi.tnie.db.rpc.DateHolder;
+import fi.tnie.db.rpc.DoubleHolder;
+import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
+import fi.tnie.db.rpc.TimestampHolder;
+import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.ent.value.CharKey;
-import fi.tnie.db.ent.value.CharValue;
 import fi.tnie.db.ent.value.DateKey;
-import fi.tnie.db.ent.value.DateValue;
+import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.IntegerKey;
-import fi.tnie.db.ent.value.IntegerValue;
 import fi.tnie.db.ent.value.Key;
 import fi.tnie.db.ent.value.TimestampKey;
-import fi.tnie.db.ent.value.TimestampValue;
-import fi.tnie.db.ent.value.Value;
 import fi.tnie.db.ent.value.VarcharKey;
-import fi.tnie.db.ent.value.VarcharValue;
 import fi.tnie.db.meta.Column;
 	
 public interface Entity<
@@ -33,29 +34,24 @@ public interface Entity<
 	extends
 	Serializable
 {	
-	/**
-	 * Returns a value of the attribute <code>a</code>  
-	 * @param r
-	 * @return
-	 */	
-//	Value<A, ?, ?, ?> value(A a);
-			
-//	<	
-//		K extends Key<A, ?, ?, ?, E, ?>
-//	>	
-//	Value<A, ?, ?, ?, E, ?> value(K k);
-	
-	
+
 	<	
 		S extends Serializable,
 		P extends PrimitiveType<P>,
 		H extends PrimitiveHolder<S, P>,
 		K extends Key<A, S, P, H, E, K>
 	>	
-	Value<A, S, P, H, E, K> value(K k);
+	H get(K k);	
 	
+	<
+		S extends Serializable,
+		P extends PrimitiveType<P>,
+		H extends PrimitiveHolder<S, P>,
+		K extends Key<A, S, P, H, E, K>
+	>	
+	void set(K k, H newValue);
 	
-	Value<A, ?, ?, ?, E, ?> value(A attribute);
+	PrimitiveHolder<?, ?> value(A attribute);
 			
 	
 	/***
@@ -93,21 +89,8 @@ public interface Entity<
 	 * @return Scalar value or <code>null</code>, if the value is not set
 	 * @throws NullPointerException If <code>c</code> is <code>null</code>.	 
 	 */
-//	ReferenceHolder<?, ?> get(ForeignKey fk);
 		
 	ReferenceHolder<?, ?, ?, ?> ref(R ref);
-	
-	
-//	/** 
-//	 * Should we do type checking by exposing accessors only?
-//	 * 
-//	 * Set the value of the attribute <code>a</code>
-//	 * 
-//	 * @param a
-//	 * @param value
-//	 */
-//	void set(A a, PrimitiveHolder<?, ?> value);
-	
 	
 	/**
 	 * Set the value of the attribute <code>a</code>
@@ -131,12 +114,20 @@ public interface Entity<
 	
 	ReferenceHolder<A, R, T, E> ref();
 	
-	IntegerValue<A, E> integerValue(IntegerKey<A, E> k);	
-	VarcharValue<A, E> varcharValue(VarcharKey<A, E> k);
-	DateValue<A, E> dateValue(DateKey<A, E> k);
-	TimestampValue<A, E> timestampValue(TimestampKey<A, E> k);
-	CharValue<A, E> charValue(CharKey<A, E> k);
-		
+	IntegerHolder getInteger(IntegerKey<A, E> k);	
+	VarcharHolder getVarchar(VarcharKey<A, E> k);
+	DateHolder getDate(DateKey<A, E> k);
+	TimestampHolder getTimestamp(TimestampKey<A, E> k);
+	CharHolder getChar(CharKey<A, E> k);
+	
+	
+	void setInteger(IntegerKey<A, E> k, IntegerHolder newValue);
+	void setVarchar(VarcharKey<A, E> k, VarcharHolder newValue);
+	void setChar(CharKey<A, E> k, CharHolder newValue);
+	void setDate(DateKey<A, E> k, DateHolder newValue);
+	void setTimestamp(TimestampKey<A, E> k, TimestampHolder newValue);
+	void setDouble(DoubleKey<A, E> k, DoubleHolder newValue);
+			
 	/**
 	 * TODO: EntityQueryTask should be also rewritten to use DataObjectReader
 	 */

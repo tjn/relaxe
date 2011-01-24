@@ -1378,7 +1378,8 @@ public class SourceGenerator {
 //		// output example: 
 //	    public VarcharValue<Attribute, Person> lastName() {
 //	    	if (this.lastName == null) {
-//	    		this.lastName = varcharValue(Person.LAST_NAME);
+//	    		// this.lastName = varcharValue(Person.LAST_NAME);
+//				this.lastName = new VarcharValue<Person, Attribute>(self(), Person.LAST_NAME);
 //	    	}
 //	    	
 //	    	return this.lastName;
@@ -1423,10 +1424,12 @@ public class SourceGenerator {
 	        buf.append(" == null) {\n");
 	        buf.append("this.");
 	        buf.append(vv);
-	        buf.append(" = ");
-	        buf.append(decapitalize(getSimpleName(vt)));
-	        buf.append("(");
-	        buf.append(ke);        
+	        buf.append(" = new ");
+	        buf.append(getSimpleName(vt));
+	        buf.append("<Attribute, ");
+	        buf.append(intf.getUnqualifiedName());
+	        buf.append(">(self(), ");
+	        buf.append(ke);
 	        buf.append(");\n}\n");        
 	        buf.append("return this.");
 	        buf.append(vv);

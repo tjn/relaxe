@@ -32,12 +32,17 @@ public class DoubleKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		return DoubleType.TYPE;
 	}
 
-	@Override
-	public DoubleValue<A, E> newValue() {
-		return new DoubleValue<A, E>(this);
+	public void set(E e, DoubleHolder newValue) {
+		e.setDouble(this, newValue);
+	}
+	
+	public DoubleHolder get(E e) {
+		return e.get(this);
 	}
 
-	public Value<A, Double, DoubleType, DoubleHolder, E, DoubleKey<A,E>> value(E e) {
-		return e.value(this);
+	@Override
+	public DoubleHolder newHolder(Double newValue) {
+		return DoubleHolder.valueOf(newValue);
 	}
+		
 }

@@ -10,7 +10,7 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 
-public abstract class AbstractValue<
+public class PrimitiveValue<
 	A extends Attribute,
 	S extends Serializable,
 	P extends PrimitiveType<P>,
@@ -25,17 +25,24 @@ public abstract class AbstractValue<
 	 *
 	 */
 	private static final long serialVersionUID = 7060596100410117898L;
-	private H holder;
+	
+	private E target;
 	private K key;
 
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected AbstractValue() {
+	protected PrimitiveValue() {
 	}
 
-	public AbstractValue(K key) {
+	public PrimitiveValue(E target, K key) {
 		super();
+		setTarget(target);
+		
+		if (key == null) {
+			throw new NullPointerException("key");
+		}
+		
 		this.key = key;
 	}
 
@@ -48,17 +55,30 @@ public abstract class AbstractValue<
 	}
 
 	public void setHolder(H newHolder) {
-		this.holder = newHolder;
+		getTarget().set(this.key, newHolder);
 	}
 
 	public H getHolder() {
-		return this.holder;
+		return getTarget().get(this.key);		
 	}
 
-	public abstract void set(S newValue);
-
+	public void set(S newValue) {		
+		setHolder(this.key.newHolder(newValue));
+	}
+		
 	public S get() {
 		return getHolder().value();
 	}
 
+	public E getTarget() {
+		return target;
+	}
+
+	public void setTarget(E target) {
+		if (target == null) {
+			throw new NullPointerException("target");
+		}
+		
+		this.target = target;
+	}
 }

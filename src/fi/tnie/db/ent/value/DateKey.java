@@ -34,12 +34,17 @@ public class DateKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		return DateType.TYPE;
 	}
 
+	public void set(E e, DateHolder newValue) {
+		e.setDate(this, newValue);
+	}
+	
+	public DateHolder get(E e) {
+		return e.get(this);
+	}
+	
 	@Override
-	public DateValue<A, E> newValue() {
-		return new DateValue<A, E>(this);
+	public DateHolder newHolder(Date newValue) {
+		return DateHolder.valueOf(newValue);
 	}
 
-	public Value<A, Date, DateType, DateHolder, E, DateKey<A,E>> value(E e) {
-		return e.value(this);
-	}
 }

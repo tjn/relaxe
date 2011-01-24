@@ -31,13 +31,27 @@ public class CharKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	public CharType type() {
 		return CharType.TYPE;
 	}
+	
+	public void set(E e, CharHolder newValue) {
+		e.setChar(this, newValue);
+	}
+	
+	public CharHolder get(E e) {
+		return e.get(this);
+	}
 
 	@Override
-	public CharValue<A, E> newValue() {
-		return new CharValue<A, E>(this);
+	public CharHolder newHolder(String newValue) {
+		return CharHolder.valueOf(newValue);
 	}
+	
 
-	public Value<A, String, CharType, CharHolder, E, CharKey<A,E>> value(E e) {
-		return e.value(this);
-	}
+//	@Override
+//	public CharValue<A, E> newValue() {
+//		return new CharValue<A, E>(this);
+//	}
+
+//	public Value<A, String, CharType, CharHolder, E, CharKey<A,E>> value(E e) {
+//		return e.value(this);
+//	}
 }

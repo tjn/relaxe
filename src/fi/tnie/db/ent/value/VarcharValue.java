@@ -9,7 +9,7 @@ import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.VarcharType;
 
 public class VarcharValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends AbstractValue<A, String, VarcharType, VarcharHolder, E, VarcharKey<A, E>> {
+	extends PrimitiveValue<A, String, VarcharType, VarcharHolder, E, VarcharKey<A, E>> {
 
 	/**
 	 *
@@ -23,12 +23,7 @@ public class VarcharValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private VarcharValue() {
 	}
 
-	public VarcharValue(VarcharKey<A, E> k) {
-		super(k);
-	}
-
-	@Override
-	public void set(String newValue) {
-		setHolder(VarcharHolder.valueOf(newValue));
+	public VarcharValue(E target, VarcharKey<A, E> k) {
+		super(target, k); 
 	}
 }

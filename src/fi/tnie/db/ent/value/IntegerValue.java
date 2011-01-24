@@ -9,7 +9,7 @@ import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.types.IntegerType;
 
 public class IntegerValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends AbstractValue<A, Integer, IntegerType, IntegerHolder, E, IntegerKey<A, E>> {
+	extends PrimitiveValue<A, Integer, IntegerType, IntegerHolder, E, IntegerKey<A, E>> {
 
 	/**
 	 *
@@ -23,13 +23,7 @@ public class IntegerValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private IntegerValue() {
 	}
 
-	public IntegerValue(IntegerKey<A, E> k) {
-		super(k);
+	public IntegerValue(E target, IntegerKey<A, E> k) {
+		super(target, k);
 	}
-
-	@Override
-	public void set(Integer newValue) {
-		setHolder(IntegerHolder.valueOf(newValue));
-	}
-
 }

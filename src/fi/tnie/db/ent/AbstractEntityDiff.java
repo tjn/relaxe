@@ -71,8 +71,8 @@ public abstract class AbstractEntityDiff<
 		Map<A, Change> cm = new HashMap<A, Change>();
 
 		for (A a : meta.attributes()) {
-			PrimitiveHolder<?, ?> o = original.value(a).getHolder();
-			PrimitiveHolder<?, ?> m = modified.value(a).getHolder();
+			PrimitiveHolder<?, ?> o = original.value(a);
+			PrimitiveHolder<?, ?> m = modified.value(a);
 
 			if ((o == null && m == null) || (o == m)) {
 				continue;

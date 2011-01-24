@@ -10,20 +10,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fi.tnie.db.ent.value.CharKey;
-import fi.tnie.db.ent.value.CharValue;
 import fi.tnie.db.ent.value.DateKey;
-import fi.tnie.db.ent.value.DateValue;
+import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.IntegerKey;
-import fi.tnie.db.ent.value.IntegerValue;
 import fi.tnie.db.ent.value.Key;
 import fi.tnie.db.ent.value.TimestampKey;
-import fi.tnie.db.ent.value.TimestampValue;
-import fi.tnie.db.ent.value.Value;
 import fi.tnie.db.ent.value.VarcharKey;
-import fi.tnie.db.ent.value.VarcharValue;
+import fi.tnie.db.rpc.CharHolder;
+import fi.tnie.db.rpc.DateHolder;
+import fi.tnie.db.rpc.DoubleHolder;
+import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
-import fi.tnie.db.types.PrimitiveType;
+import fi.tnie.db.rpc.TimestampHolder;
+import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.ReferenceType;
 
 /**
@@ -68,15 +68,6 @@ public abstract class DefaultEntity<
 		super();
 	}
 
-//	@Override
-//	public Map<A, PrimitiveHolder<?, ?>> values() {
-//		if (values == null) {
-//			values = new HashMap<A, PrimitiveHolder<?, ?>>();
-//		}
-//
-//		return values;
-//	}
-
 	@Override
 	protected Map<R, ReferenceHolder<?, ?, ?, ?>> references() {
 		if (refs == null) {
@@ -86,143 +77,133 @@ public abstract class DefaultEntity<
 		return refs;
 	}
 
+	private Map<VarcharKey<A, E>, VarcharHolder> varcharValueMap;
+	private Map<IntegerKey<A, E>, IntegerHolder> intValueMap;
 
-
-
-//	public <S extends Serializable, P extends fi.tnie.db.types.PrimitiveType<P>, H extends fi.tnie.db.rpc.PrimitiveHolder<S,P>, K extends fi.tnie.db.ent.Key<A,S,P,H,E,K>> fi.tnie.db.ent.Value<A,S,P,H,E,K> value(K k) {
-//		ValueFactory<A, S, P, H, E, K> vf = k.valueFactory();
-//		newValueMap = vf.newValueMap();
-//
-//	};
-
-
-
-	private Map<VarcharKey<A, E>, VarcharValue<A, E>> varcharValueMap;
-	private Map<IntegerKey<A, E>, IntegerValue<A, E>> intValueMap;
-
-	private Map<IntegerKey<A, E>, IntegerValue<A, E>> getIntValueMap() {
+	private Map<IntegerKey<A, E>, IntegerHolder> getIntValueMap() {
 		if (intValueMap == null) {
-			intValueMap = new HashMap<IntegerKey<A, E>, IntegerValue<A, E>>();
+			intValueMap = new HashMap<IntegerKey<A, E>, IntegerHolder>();
 		}
 
 		return intValueMap;
 	}
 
-	private Map<VarcharKey<A, E>, VarcharValue<A, E>> getVarcharValueMap() {
+	private Map<VarcharKey<A, E>, VarcharHolder> getVarcharValueMap() {
 		if (varcharValueMap == null) {
-			varcharValueMap = new HashMap<VarcharKey<A, E>, VarcharValue<A, E>>();
+			varcharValueMap = new HashMap<VarcharKey<A, E>, VarcharHolder>();
 		}
 
 		return varcharValueMap;
 	}
 
-	private Map<DateKey<A, E>, DateValue<A, E>> dateValueMap;
+	private Map<DateKey<A, E>, DateHolder> dateValueMap;
 
-	private Map<DateKey<A, E>, DateValue<A, E>> getDateValueMap() {
+	private Map<DateKey<A, E>, DateHolder> getDateValueMap() {
 		if (dateValueMap == null) {
-			dateValueMap = new HashMap<DateKey<A, E>, DateValue<A, E>>();
+			dateValueMap = new HashMap<DateKey<A, E>, DateHolder>();
 		}
 
 		return dateValueMap;
 	}
 
 	@Override
-	public DateValue<A, E> dateValue(DateKey<A, E> k) {
-		Map<DateKey<A, E>, DateValue<A, E>> vm = getDateValueMap();
-		DateValue<A, E> value = vm.get(k);
-
-		if (value == null) {
-			DateValue<A, E> v = k.newValue();
-			vm.put(k, v);
-		}
-
-		return value;
+	public DateHolder getDate(DateKey<A, E> k) {
+		return getDateValueMap().get(k);	
 	}
 
 
 	@Override
-	public IntegerValue<A, E> integerValue(IntegerKey<A, E> k) {
-		Map<IntegerKey<A, E>, IntegerValue<A, E>> vm = getIntValueMap();
-		IntegerValue<A, E> value = vm.get(k);
-
-		if (value == null) {
-			value = k.newValue();
-			vm.put(k, value);
-		}
-
-		return value;
+	public IntegerHolder getInteger(IntegerKey<A, E> k) {
+		return getIntValueMap().get(k);
 	}
 
 	@Override
-	public VarcharValue<A, E> varcharValue(VarcharKey<A, E> k) {
-		Map<VarcharKey<A, E>, VarcharValue<A, E>> vm = getVarcharValueMap();
-		VarcharValue<A, E> value = vm.get(k);
-
-		if (value == null) {
-			value = k.newValue();
-			vm.put(k, value);
-		}
-
-		return value;
+	public VarcharHolder getVarchar(VarcharKey<A, E> k) {
+		return getVarcharValueMap().get(k);
 	}
 
-	private Map<TimestampKey<A, E>, TimestampValue<A, E>> timestampValueMap;
+	private Map<TimestampKey<A, E>, TimestampHolder> timestampValueMap;
 
-	private Map<TimestampKey<A, E>, TimestampValue<A, E>> getTimestampValueMap() {
+	private Map<TimestampKey<A, E>, TimestampHolder> getTimestampValueMap() {
 		if (timestampValueMap == null) {
-			timestampValueMap = new HashMap<TimestampKey<A, E>, TimestampValue<A, E>>();
+			timestampValueMap = new HashMap<TimestampKey<A, E>, TimestampHolder>();
 		}
 
 		return timestampValueMap;
 	}
 
 	@Override
-	public TimestampValue<A, E> timestampValue(TimestampKey<A, E> k) {
-		Map<TimestampKey<A, E>, TimestampValue<A, E>> vm = getTimestampValueMap();
-		TimestampValue<A, E> value = vm.get(k);
-
-		if (value == null) {
-			value = k.newValue();
-			vm.put(k, value);
-		}
-
-		return value;
+	public TimestampHolder getTimestamp(TimestampKey<A, E> k) {
+		return getTimestampValueMap().get(k);
 	}
 
+	private Map<CharKey<A, E>, CharHolder> charValueMap;
 
-	private Map<CharKey<A, E>, CharValue<A, E>> charValueMap;
-
-	private Map<CharKey<A, E>, CharValue<A, E>> getCharValueMap() {
+	private Map<CharKey<A, E>, CharHolder> getCharValueMap() {
 		if (charValueMap == null) {
-			charValueMap = new HashMap<CharKey<A, E>, CharValue<A, E>>();
+			charValueMap = new HashMap<CharKey<A, E>, CharHolder>();
 		}
 
 		return charValueMap;
 	}
-
-	@Override
-	public CharValue<A, E> charValue(CharKey<A, E> k) {
-		Map<CharKey<A, E>, CharValue<A, E>> vm = getCharValueMap();
-		CharValue<A, E> value = vm.get(k);
-
-		if (value == null) {
-			value = k.newValue();
-			vm.put(k, value);
-		}
-
-		return value;
-	}
-
-
-
-	@Override
-	public <S extends Serializable, P extends PrimitiveType<P>, H extends PrimitiveHolder<S, P>, K extends Key<A, S, P, H, E, K>> Value<A, S, P, H, E, K> value(
-			K k) {
-		return k.value(self());
-	}
-
-	public fi.tnie.db.ent.value.Value<A,?,?,?,E,?> value(A attribute) {
-		return getMetaData().getKey(attribute).value(self());
+	
+	public <
+	S extends Serializable, 
+	P extends fi.tnie.db.types.PrimitiveType<P>, 
+	H extends fi.tnie.db.rpc.PrimitiveHolder<S,P>, 
+	K extends fi.tnie.db.ent.value.Key<A,S,P,H,E,K>> 
+	void set(K k, H newValue) {
+		k.set(self(), newValue);		
 	};
+
+	@Override
+	public CharHolder getChar(CharKey<A, E> k) {
+		return getCharValueMap().get(k);
+	}
+
+	public PrimitiveHolder<?, ?> get(A attribute) {
+		return getMetaData().getKey(attribute).get(self());
+	}
+
+	@Override
+	public void setInteger(IntegerKey<A, E> k, IntegerHolder newValue) {
+		getIntValueMap().put(k, newValue);		
+	}
+
+	@Override
+	public void setVarchar(VarcharKey<A, E> k, VarcharHolder newValue) {
+		getVarcharValueMap().put(k, newValue);		
+	}
+
+	@Override
+	public void setChar(CharKey<A, E> k, CharHolder newValue) {
+		getCharValueMap().put(k, newValue);		
+	}
+
+	@Override
+	public void setDate(DateKey<A, E> k, DateHolder newValue) {
+		getDateValueMap().put(k, newValue);		
+	}
+
+	@Override
+	public void setDouble(DoubleKey<A, E> k, DoubleHolder newValue) {
+		// TODO: double value map
+//		getDoubleValueMap().put(k, newValue);		
+	}
+
+	@Override
+	public void setTimestamp(TimestampKey<A, E> k, TimestampHolder newValue) {
+		getTimestampValueMap().put(k, newValue);		
+	};
+	
+	public fi.tnie.db.rpc.PrimitiveHolder<?,?> value(A attribute) {
+		Key<A, ?, ?, ?, E, ?> key = getMetaData().getKey(attribute);
+		return key.get(self());		
+	};
+
+	public <S extends Serializable, P extends fi.tnie.db.types.PrimitiveType<P>, H extends fi.tnie.db.rpc.PrimitiveHolder<S,P>, K extends fi.tnie.db.ent.value.Key<A,S,P,H,E,K>> H get(K k) {
+		return k.get(self());		
+	};
+	
 
 }

@@ -31,13 +31,17 @@ public class IntegerKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	public IntegerType type() {
 		return IntegerType.TYPE;
 	}
-
-	@Override
-	public IntegerValue<A, E> newValue() {
-		return new IntegerValue<A, E>(this);
+	
+	public void set(E e, IntegerHolder newValue) {
+		e.setInteger(this, newValue);
 	}
-
-	public Value<A, Integer, IntegerType, IntegerHolder, E, IntegerKey<A,E>> value(E e) {
-		return e.value(this);
+	
+	public IntegerHolder get(E e) {
+		return e.get(this);
+	}
+	
+	@Override
+	public IntegerHolder newHolder(Integer newValue) {
+		return IntegerHolder.valueOf(newValue);
 	}
 }

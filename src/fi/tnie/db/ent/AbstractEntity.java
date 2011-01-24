@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import fi.tnie.db.ent.value.Key;
-import fi.tnie.db.ent.value.Value;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
@@ -45,7 +44,7 @@ public abstract class AbstractEntity<
 		Key<A, ?, ?, ?, E, ?> k = m.getKey(a);
 				
 		if (k != null) {
-			return k.value(self()).getHolder();			
+			return k.get(self());			
 		}	
 								
 		// column may be part of multiple
@@ -139,10 +138,10 @@ public abstract class AbstractEntity<
 		
 		for (A a : meta.attributes()) {
 			Key<A, ?, ?, ?, E, ?> key = meta.getKey(a);
-			Value<A, ?, ?, ?, E, ?> v = key.value(self());
+			PrimitiveHolder<?, ?> v = key.get(self());	
 			buf.append(key.name());
 			buf.append("=");
-			buf.append(v.get());
+			buf.append(v);
 			buf.append("; ");
 		}
 		

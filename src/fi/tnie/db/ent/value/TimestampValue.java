@@ -11,7 +11,7 @@ import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.types.TimestampType;
 
 public class TimestampValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends AbstractValue<A, Date, TimestampType, TimestampHolder, E, TimestampKey<A, E>> {
+	extends PrimitiveValue<A, Date, TimestampType, TimestampHolder, E, TimestampKey<A, E>> {
 
 	/**
 	 *
@@ -25,13 +25,7 @@ public class TimestampValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private TimestampValue() {
 	}
 
-	public TimestampValue(TimestampKey<A, E> k) {
-		super(k);
+	public TimestampValue(E target, TimestampKey<A, E> k) {
+		super(target, k);
 	}
-
-	@Override
-	public void set(Date newValue) {
-		setHolder(TimestampHolder.valueOf(newValue));
-	}
-
 }

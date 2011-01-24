@@ -32,13 +32,17 @@ public class VarcharKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	public VarcharType type() {
 		return VarcharType.TYPE;
 	}
-
-	@Override
-	public VarcharValue<A, E> newValue() {
-		return new VarcharValue<A, E>(this);
+	
+	public void set(E e, VarcharHolder newValue) {
+		e.setVarchar(this, newValue);
 	}
-
-	public Value<A, String, VarcharType, VarcharHolder, E, VarcharKey<A,E>> value(E e) {
-		return e.value(this);
+	
+	public VarcharHolder get(E e) {
+		return e.get(this);
+	}
+	
+	@Override
+	public VarcharHolder newHolder(String newValue) {
+		return VarcharHolder.valueOf(newValue);
 	}
 }

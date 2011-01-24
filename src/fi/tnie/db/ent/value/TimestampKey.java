@@ -34,12 +34,17 @@ public class TimestampKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		return TimestampType.TYPE;
 	}
 
+	public void set(E e, TimestampHolder newValue) {
+		e.setTimestamp(this, newValue);
+	}
+	
+	public TimestampHolder get(E e) {
+		return e.get(this);
+	}
+	
 	@Override
-	public TimestampValue<A, E> newValue() {
-		return new TimestampValue<A, E>(this);
+	public TimestampHolder newHolder(Date newValue) {
+		return TimestampHolder.valueOf(newValue);
 	}
-
-	public Value<A, Date, TimestampType, TimestampHolder, E, TimestampKey<A,E>> value(E e) {
-		return e.value(this);
-	}
+	
 }

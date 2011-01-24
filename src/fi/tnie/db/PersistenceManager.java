@@ -92,8 +92,9 @@ public class PersistenceManager<
 
     	for (A a : meta.attributes()) {
     		Column col = meta.getColumn(a);
-    		PrimitiveHolder<?, ?> holder = pe.value(a).getHolder();
-
+    		
+    		PrimitiveHolder<?, ?> holder = pe.value(a);
+    		
     		if (holder == null) {
     			continue;
     		}
@@ -165,7 +166,7 @@ public class PersistenceManager<
 
     	for (A a : meta.attributes()) {
     		Column col = meta.getColumn(a);
-    		PrimitiveHolder<?, ?> h = pe.value(a).getHolder();
+    		PrimitiveHolder<?, ?> h = pe.value(a);
 //    		Object value = pe.value(a).value();
 //    		ValueParameter vp = new ValueParameter(col, value);
     		ValueParameter<?, ?> vp = createParameter(col, h);
@@ -393,7 +394,7 @@ public class PersistenceManager<
         A a = m.getAttribute(column);
 
         if (a != null) {
-            return pe.value(a).get();
+            return pe.value(a);
         }
 
         // column may be part of multiple

@@ -11,7 +11,7 @@ import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.types.DateType;
 
 public class DateValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends AbstractValue<A, Date, DateType, DateHolder, E, DateKey<A, E>> {
+	extends PrimitiveValue<A, Date, DateType, DateHolder, E, DateKey<A, E>> {
 
 	/**
 	 *
@@ -25,13 +25,7 @@ public class DateValue<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private DateValue() {
 	}
 
-	public DateValue(DateKey<A, E> k) {
-		super(k);
+	public DateValue(E target, DateKey<A, E> k) {
+		super(target, k);
 	}
-
-	@Override
-	public void set(Date newValue) {
-		setHolder(DateHolder.valueOf(newValue));
-	}
-
 }

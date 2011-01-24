@@ -21,8 +21,10 @@ public interface Key<
 	extends Serializable
 {
 	P type();
-	A name();
-	Value<A, V, P, H, E, K> value(E e);
-
-	Value<A, V, P, H, E, K> newValue();
+	A name();	
+	H newHolder(V newValue);	
+//	Value<A, V, P, H, E, K> value(E e);
+	H get(E e);
+	void set(E e, H newValue);	
+	// void set(E e, Value<A, V, P, H, E, K> newValue);
 }
