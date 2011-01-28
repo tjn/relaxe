@@ -1,5 +1,5 @@
 
-enum {{enum-type}} implements fi.tnie.db.ent.Attribute {
+enum {{enum-type}} implements fi.tnie.db.ent.Identifiable {
     {{enum-constants}}
     ;
     

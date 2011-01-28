@@ -1,0 +1,109 @@
+package {{package-name}};
+
+package fi.tnie.db.gen.ent.pub;
+
+import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.value.*;
+
+class IntegerKeyImpl<A extends Attribute, E extends Entity<A, ?, ?, E>>
+extends IntegerKey<A, E>{
+
+/**
+ * 
+ */
+private static final long serialVersionUID = 8406722989180447758L;
+
+/**
+ * No-argument constructor for GWT Serialization
+ */
+@SuppressWarnings("unused")
+private IntegerKeyImpl() {	
+}
+		
+IntegerKeyImpl(A name) {
+	super(name);
+}
+
+@Override
+public IntegerKey<A, E> normalized(EntityMetaData<A, ?, ?, E> meta) {		
+	return this;
+}
+}
+
+
+class CharKeyImpl<A extends Attribute, E extends Entity<A, ?, ?, E>>
+	extends CharKey<A, E>{
+		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3611171509381281272L;
+
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	@SuppressWarnings("unused")
+	private CharKeyImpl() {	
+	}
+			
+	CharKeyImpl(A name) {
+		super(name);
+	}
+
+	@Override
+	public CharKey<A, E> normalized(EntityMetaData<A, ?, ?, E> meta) {	
+		return this;
+	}
+}
+
+class VarcharKeyImpl<A extends Attribute, E extends Entity<A, ?, ?, E>>
+	extends VarcharKey<A, E>{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1869354996940915450L;
+
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	@SuppressWarnings("unused")
+	private VarcharKeyImpl() {	
+	}
+			
+	VarcharKeyImpl(A name) {
+		super(name);
+	}
+	
+	@Override
+	public VarcharKey<A, E> normalized(EntityMetaData<A, ?, ?, E> meta) {	
+		return this;
+	}
+}
+
+class TimestampKeyImpl<A extends Attribute, E extends Entity<A, ?, ?, E>>
+	extends TimestampKey<A, E>{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8033066596954768495L;
+
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	@SuppressWarnings("unused")
+	private TimestampKeyImpl() {	
+	}
+			
+	TimestampKeyImpl(A name) {
+		super(name);
+	}
+	
+	@Override
+	public TimestampKey<A, E> normalized(EntityMetaData<A, ?, ?, E> meta) {	
+		return this;
+	}
+}

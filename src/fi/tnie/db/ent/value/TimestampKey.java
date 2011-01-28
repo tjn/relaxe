@@ -7,10 +7,12 @@ import java.util.Date;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.rpc.TimestampHolder;
+import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.TimestampType;
 
-public class TimestampKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
+public final class TimestampKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	extends PrimitiveKey<A, Date, TimestampType, TimestampHolder, E, TimestampKey<A, E>>
 {
 	/**
@@ -20,13 +22,31 @@ public class TimestampKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 
 	/**
 	 * No-argument constructor for GWT Serialization
-	 */
-	@SuppressWarnings("unused")
+	 */	
 	private TimestampKey() {
 	}
 
-	public TimestampKey(A name) {
-		super(name);
+	private TimestampKey(EntityMetaData<A, ?, ?, E> meta, A name) {
+		super(meta, name);
+		meta.addKey(this);
+	}
+	
+	public static <
+		X extends Attribute,
+		T extends Entity<X, ?, ?, T>
+	>
+	TimestampKey<X, T> get(EntityMetaData<X, ?, ?, T> meta, X a) {
+		TimestampKey<X, T> k = meta.getTimestampKey(a);
+		
+		if (k == null) {
+			PrimitiveType<?> t = meta.getAttributeType(a);
+			
+			if (t != null && t.getSqlType() == PrimitiveType.TIMESTAMP) {
+				k = new TimestampKey<X, T>(meta, a);
+			}			
+		}
+				
+		return k;
 	}
 
 	@Override
@@ -39,12 +59,17 @@ public class TimestampKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	}
 	
 	public TimestampHolder get(E e) {
-		return e.get(this);
+		return e.getTimestamp(this);
 	}
 	
 	@Override
 	public TimestampHolder newHolder(Date newValue) {
 		return TimestampHolder.valueOf(newValue);
+	}
+	
+	@Override
+	public TimestampKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
+		return meta.getTimestampKey(name());
 	}
 	
 }

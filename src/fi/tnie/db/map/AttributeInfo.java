@@ -5,6 +5,7 @@ package fi.tnie.db.map;
 
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Table;
+import fi.tnie.db.types.PrimitiveType;
 
 public interface AttributeInfo {
 
@@ -12,9 +13,9 @@ public interface AttributeInfo {
 	Column getColumn();
 	Class<?> getHolderType();
 	Class<?> getKeyType();
-	Class<?> getValueType();
+	Class<?> getAccessorType();
 	Class<?> getAttributeType();
-	Class<?> getPrimitiveType();
+	PrimitiveType<?> getPrimitiveType();
 
 	
 }

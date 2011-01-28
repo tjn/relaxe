@@ -27,8 +27,8 @@ import fi.tnie.db.meta.Column;
 	
 public interface Entity<
 	A extends Attribute,
-	R,	 
-	T extends ReferenceType<T>, 
+	R,
+	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>
 > 
 	extends
@@ -47,7 +47,7 @@ public interface Entity<
 		S extends Serializable,
 		P extends PrimitiveType<P>,
 		H extends PrimitiveHolder<S, P>,
-		K extends Key<A, S, P, H, E, K>
+		K extends Key<A, S, P, H, E, K> 
 	>	
 	void set(K k, H newValue);
 	
@@ -114,11 +114,14 @@ public interface Entity<
 	
 	ReferenceHolder<A, R, T, E> ref();
 	
-	IntegerHolder getInteger(IntegerKey<A, E> k);	
+	IntegerHolder getInteger(IntegerKey<A, E> k);
 	VarcharHolder getVarchar(VarcharKey<A, E> k);
 	DateHolder getDate(DateKey<A, E> k);
 	TimestampHolder getTimestamp(TimestampKey<A, E> k);
 	CharHolder getChar(CharKey<A, E> k);
+	DoubleHolder getDouble(DoubleKey<A, E> k);
+	
+//	Map<VarcharKey<A, E>, VarcharHolder> getVarcharValueMap();
 	
 	
 	void setInteger(IntegerKey<A, E> k, IntegerHolder newValue);

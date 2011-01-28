@@ -34,6 +34,12 @@ import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.source.DefaultAttributeInfo;
+import fi.tnie.db.types.CharType;
+import fi.tnie.db.types.DateType;
+import fi.tnie.db.types.DoubleType;
+import fi.tnie.db.types.IntegerType;
+import fi.tnie.db.types.TimestampType;
+import fi.tnie.db.types.VarcharType;
 
 public class DefaultTableMapper
 	implements TableMapper {
@@ -169,12 +175,14 @@ public class DefaultTableMapper
         	a.setAttributeType(String.class);
         	a.setHolderType(CharHolder.class);
         	a.setKeyType(CharKey.class);
-        	a.setValueType(CharAccessor.class);        	
+        	a.setAccessorType(CharAccessor.class);
+        	a.setPrimitiveType(CharType.TYPE);        	
         case Types.VARCHAR:
         	a.setAttributeType(String.class);
         	a.setHolderType(VarcharHolder.class);
         	a.setKeyType(VarcharKey.class);
-        	a.setValueType(VarcharAccessor.class);        	
+        	a.setAccessorType(VarcharAccessor.class);
+        	a.setPrimitiveType(VarcharType.TYPE);
             break;            	
         case Types.LONGNVARCHAR:
         	break;
@@ -182,7 +190,8 @@ public class DefaultTableMapper
         	a.setAttributeType(Integer.class);
         	a.setHolderType(IntegerHolder.class);
         	a.setKeyType(IntegerKey.class);
-        	a.setValueType(IntegerAccessor.class);
+        	a.setAccessorType(IntegerAccessor.class);
+        	a.setPrimitiveType(IntegerType.TYPE);
             break;
         case Types.TINYINT:            
             break;
@@ -196,7 +205,8 @@ public class DefaultTableMapper
         	a.setAttributeType(Double.class);
         	a.setHolderType(DoubleHolder.class);
         	a.setKeyType(DoubleKey.class);
-        	a.setValueType(DoubleAccessor.class);                
+        	a.setAccessorType(DoubleAccessor.class);
+        	a.setPrimitiveType(DoubleType.TYPE);
             break;                
         case Types.NUMERIC:                
             break;
@@ -204,13 +214,15 @@ public class DefaultTableMapper
         	a.setAttributeType(Date.class);
         	a.setHolderType(DateHolder.class);
         	a.setKeyType(DateKey.class);
-        	a.setValueType(DateAccessor.class);
+        	a.setAccessorType(DateAccessor.class);
+        	a.setPrimitiveType(DateType.TYPE);
             break;
         case Types.TIMESTAMP:
         	a.setAttributeType(Date.class);
         	a.setHolderType(TimestampHolder.class);
         	a.setKeyType(TimestampKey.class);
-        	a.setValueType(TimestampAccessor.class);
+        	a.setAccessorType(TimestampAccessor.class);
+        	a.setPrimitiveType(TimestampType.TYPE);
             break;
         default:                
             break;

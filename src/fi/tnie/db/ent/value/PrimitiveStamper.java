@@ -38,10 +38,12 @@ public class PrimitiveStamper<
 	}
 
 
+	@Override
 	public void setHolder(H newHolder) {
 		getTarget().set(key(), newHolder);
 	}
 
+	@Override
 	public void set(S newValue) {		
 		setHolder(key().newHolder(newValue));
 	}		

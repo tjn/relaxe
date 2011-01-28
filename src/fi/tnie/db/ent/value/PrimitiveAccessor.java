@@ -45,6 +45,7 @@ public class PrimitiveAccessor<
 			throw new NullPointerException("key");
 		}
 		
+		this.target = target;
 		this.key = key;
 	}
 
@@ -64,7 +65,7 @@ public class PrimitiveAccessor<
 		return getTarget().get(this.key);		
 	}
 
-	public void set(S newValue) {		
+	public void set(S newValue) {
 		setHolder(this.key.newHolder(newValue));
 	}
 		

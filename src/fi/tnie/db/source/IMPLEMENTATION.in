@@ -1,9 +1,6 @@
 package {{package-name}};
 
 // import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import fi.tnie.db.ent.EnumMetaData;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.meta.Column;
@@ -34,16 +31,10 @@ public class {{table-impl-class}}
         {{table-interface}}.Type,
         {{table-interface}}> {
 
-        private static final {{table-interface}}MetaData instance = new {{table-interface}}MetaData();
+        private static {{table-interface}}MetaData instance = null;
         private static final Factory factory = new Factory();
         
         {{attribute-key-map-list}}
-                
-        private Map<Column, Key<Attribute, ?, ?, ?, {{table-interface}}, ?>> columnKeyMap;        
-        private Map<Attribute, Key<Attribute, ?, ?, ?, {{table-interface}}, ?>> attributeKeyMap = new HashMap<Attribute, Key<Attribute, ?, ?, ?, {{table-interface}}, ?>>();
-                
-        // {{column-key-map}}
-        // {{attribute-key-map}}
     
         public {{table-interface}}MetaData() {
             super({{table-interface}}.Attribute.class, {{table-interface}}.Reference.class);
@@ -56,6 +47,10 @@ public class {{table-impl-class}}
         }
         
         public static {{table-interface}}MetaData getInstance() {
+        	if ({{table-interface}}MetaData.instance == null) {
+        		{{table-interface}}MetaData.instance = new {{table-interface}}MetaData();
+        	}
+        	
         	return {{table-interface}}MetaData.instance; 
         }
         
@@ -74,68 +69,8 @@ public class {{table-impl-class}}
 			return table.foreignKeys().get(r.identifier());			
 		}
 		
-		{{add-attribute-key-method}}
-		
-		/**
-			If there are no two (or more) attributes with equals type, we don't need this.  
-	
-		@SuppressWarnings("unused")
-		private 
-		<K extends Key<Attribute, ?, ?, ?, {{table-interface}}, ?>>
-		void addAttributeKey(K key, Map<Attribute, K> am) {
-			Attribute n = key.name();
-			am.put(n, key);
-			attributeKeyMap.put(n, key);
-		}
-				*/
-		
-		@Override
-		public Key<Attribute, ?, ?, ?, {{table-interface}}, ?> getKey(Column column) {
-			if (column == null) {
-				throw new NullPointerException("column");
-			}
 			
-			return getColumnKeyMap().get(column);
-		}
-		
-		@Override
-		public Key<Attribute, ?, ?, ?, {{table-interface}}, ?> getKey(Attribute attribute) {
-			if (attribute == null) {
-				throw new NullPointerException("attribute");
-			}
-		
-			return attributeKeyMap.get(attribute);
-		}
-		
-		private void add(Key<Attribute, ?, ?, ?, {{table-interface}}, ?> key, Map<Column, Key<Attribute,?,?,?,{{table-interface}},?>> cm) {
-			cm.put(getColumn(key.name()), key);
-		}		
-		
-		private Map<Column, Key<Attribute, ?, ?, ?, {{table-interface}}, ?>> getColumnKeyMap() {
-			if (columnKeyMap == null) {
-				columnKeyMap = new HashMap<Column, Key<Attribute,?,?,?,{{table-interface}},?>>();
-				// add(PersonMetaData.ID, columnKeyMap);
-				{{column-key-map-population}}				
-			}
-
-			return columnKeyMap;
-		}
-		
-		
-		/**
-		    something like that for all primitive types: 
-		 
-			@Override
-			public IntegerKey<Attribute, Person> getIntegerKey(Attribute attribute) {
-				if (attribute == null) {
-					throw new NullPointerException("attribute");
-				}
-				
-				return integerKeyMap.get(attribute);
-			}		  
-		 */
-				
-		 {{key-accessor-list}}
+		// {{key-accessor-list}}
 		 
 		 
     }    

@@ -9,6 +9,7 @@ import java.util.Map;
 import fi.tnie.db.map.AttributeInfo;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Table;
+import fi.tnie.db.types.PrimitiveType;
 
 public class DefaultAttributeInfo
 	implements AttributeInfo {
@@ -18,7 +19,9 @@ public class DefaultAttributeInfo
 	private Class<?> attributeType;
 	private Class<?> holderType;
 	private Class<?> keyType;
-	private Class<?> valueType;
+	private Class<?> accessorType;
+//	private Class<PrimitiveType<?>> primitiveType;
+	private PrimitiveType<?> primitiveType;
 	
 	private static Map<Class<?>, Class<?>> primitiveTypeMap = new HashMap<Class<?>, Class<?>>();
 	
@@ -39,10 +42,10 @@ public class DefaultAttributeInfo
 		this.column = column;
 	}	
 	
-	@Override
-	public Class<?> getPrimitiveType() {
-		return primitiveTypeMap.get(getAttributeType());
-	}
+//	@Override
+//	public Class<?> getPrimitiveType() {
+//		return primitiveTypeMap.get(getAttributeType());
+//	}
 
 	@Override
 	public Class<?> getAttributeType() {
@@ -70,8 +73,8 @@ public class DefaultAttributeInfo
 	}
 
 	@Override
-	public Class<?> getValueType() {
-		return this.valueType;
+	public Class<?> getAccessorType() {
+		return this.accessorType;
 	}
 
 	public void setAttributeType(Class<?> attributeType) {
@@ -86,8 +89,15 @@ public class DefaultAttributeInfo
 		this.keyType = keyType;
 	}
 
-	public void setValueType(Class<?> valueType) {
-		this.valueType = valueType;
+	public void setAccessorType(Class<?> valueType) {
+		this.accessorType = valueType;
 	}
 
+	public PrimitiveType<?> getPrimitiveType() {
+		return primitiveType;
+	}
+
+	public void setPrimitiveType(PrimitiveType<?> primitiveType) {
+		this.primitiveType = primitiveType;
+	}	
 }

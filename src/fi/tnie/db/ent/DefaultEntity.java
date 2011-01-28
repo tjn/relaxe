@@ -59,9 +59,24 @@ public abstract class DefaultEntity<
 	 *
 	 */
 	private static final long serialVersionUID = 3498823449580706161L;
-	private Map<A, PrimitiveHolder<?, ?>> values;
 	private Map<R, ReferenceHolder<?, ?, ?, ?>> refs;
-
+	
+	
+	/**
+	 * TODO: 
+	 * Consider having simple A as key here.  
+	 * 
+	 */
+	
+	private Map<VarcharKey<A, E>, VarcharHolder> varcharValueMap;
+	private Map<IntegerKey<A, E>, IntegerHolder> intValueMap;
+	private Map<CharKey<A, E>, CharHolder> charValueMap;
+	private Map<DateKey<A, E>, DateHolder> dateValueMap;
+	private Map<TimestampKey<A, E>, TimestampHolder> timestampValueMap;
+	private Map<DoubleKey<A, E>, DoubleHolder> doubleValueMap;
+	
+	
+	
 //	private static Logger logger = Logger.getLogger(DefaultEntity.class);
 
 	protected DefaultEntity() {
@@ -77,9 +92,6 @@ public abstract class DefaultEntity<
 		return refs;
 	}
 
-	private Map<VarcharKey<A, E>, VarcharHolder> varcharValueMap;
-	private Map<IntegerKey<A, E>, IntegerHolder> intValueMap;
-
 	private Map<IntegerKey<A, E>, IntegerHolder> getIntValueMap() {
 		if (intValueMap == null) {
 			intValueMap = new HashMap<IntegerKey<A, E>, IntegerHolder>();
@@ -88,15 +100,13 @@ public abstract class DefaultEntity<
 		return intValueMap;
 	}
 
-	private Map<VarcharKey<A, E>, VarcharHolder> getVarcharValueMap() {
+	public Map<VarcharKey<A, E>, VarcharHolder> getVarcharValueMap() {
 		if (varcharValueMap == null) {
 			varcharValueMap = new HashMap<VarcharKey<A, E>, VarcharHolder>();
 		}
 
 		return varcharValueMap;
 	}
-
-	private Map<DateKey<A, E>, DateHolder> dateValueMap;
 
 	private Map<DateKey<A, E>, DateHolder> getDateValueMap() {
 		if (dateValueMap == null) {
@@ -111,6 +121,18 @@ public abstract class DefaultEntity<
 		return getDateValueMap().get(k);	
 	}
 
+	private Map<DoubleKey<A, E>, DoubleHolder> getDoubleValueMap() {
+		if (doubleValueMap == null) {
+			doubleValueMap = new HashMap<DoubleKey<A, E>, DoubleHolder>();
+		}
+
+		return doubleValueMap;
+	}
+
+	@Override
+	public DoubleHolder getDouble(DoubleKey<A, E> k) {
+		return getDoubleValueMap().get(k);	
+	}	
 
 	@Override
 	public IntegerHolder getInteger(IntegerKey<A, E> k) {
@@ -121,8 +143,6 @@ public abstract class DefaultEntity<
 	public VarcharHolder getVarchar(VarcharKey<A, E> k) {
 		return getVarcharValueMap().get(k);
 	}
-
-	private Map<TimestampKey<A, E>, TimestampHolder> timestampValueMap;
 
 	private Map<TimestampKey<A, E>, TimestampHolder> getTimestampValueMap() {
 		if (timestampValueMap == null) {
@@ -136,9 +156,7 @@ public abstract class DefaultEntity<
 	public TimestampHolder getTimestamp(TimestampKey<A, E> k) {
 		return getTimestampValueMap().get(k);
 	}
-
-	private Map<CharKey<A, E>, CharHolder> charValueMap;
-
+	
 	private Map<CharKey<A, E>, CharHolder> getCharValueMap() {
 		if (charValueMap == null) {
 			charValueMap = new HashMap<CharKey<A, E>, CharHolder>();
@@ -187,8 +205,7 @@ public abstract class DefaultEntity<
 
 	@Override
 	public void setDouble(DoubleKey<A, E> k, DoubleHolder newValue) {
-		// TODO: double value map
-//		getDoubleValueMap().put(k, newValue);		
+		getDoubleValueMap().put(k, newValue);		
 	}
 
 	@Override
@@ -204,6 +221,6 @@ public abstract class DefaultEntity<
 	public <S extends Serializable, P extends fi.tnie.db.types.PrimitiveType<P>, H extends fi.tnie.db.rpc.PrimitiveHolder<S,P>, K extends fi.tnie.db.ent.value.Key<A,S,P,H,E,K>> H get(K k) {
 		return k.get(self());		
 	};
-	
+
 
 }

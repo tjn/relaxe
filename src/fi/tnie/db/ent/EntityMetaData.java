@@ -17,6 +17,7 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
 
 public interface EntityMetaData<
@@ -64,8 +65,15 @@ public interface EntityMetaData<
 
 	Column getColumn(A a);
 	A getAttribute(Column c);
+	
+	/**
+	 * Type of the attribute <code>name</code>
+	 * @param name
+	 * @return
+	 */
+	PrimitiveType<?> getAttributeType(A name);
 
-	Key<A, ?, ?, ?, E, ?> getKey(Column c);
+//	Key<A, ?, ?, ?, E, ?> getKey(Column c);
 	Key<A, ?, ?, ?, E, ?> getKey(A a);
 
 	IntegerKey<A, E> getIntegerKey(A a);
@@ -97,9 +105,11 @@ public interface EntityMetaData<
 
 	T getType();
 
-////	IntAccessor<A, E> integerAccessor(A attribute);
-//
-//	<P extends PrimitiveType<P>>
-//	Accessor<A, ?, P, ?, E> accessor(A attribute, P type);
-
+	void addKey(DoubleKey<A, E> key);
+	void addKey(IntegerKey<A, E> key);
+	void addKey(CharKey<A, E> key);
+	void addKey(DateKey<A, E> key);
+	void addKey(VarcharKey<A, E> key);
+	void addKey(TimestampKey<A, E> key);
+	
 }

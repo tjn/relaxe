@@ -5,10 +5,12 @@ package fi.tnie.db.ent.value;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.types.CharType;
+import fi.tnie.db.types.PrimitiveType;
 
-public class CharKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
+public final class CharKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	extends PrimitiveKey<A, String, CharType, CharHolder, E, CharKey<A, E>>
 {
 	/**
@@ -18,14 +20,32 @@ public class CharKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 
 	/**
 	 * No-argument constructor for GWT Serialization
-	 */
-	@SuppressWarnings("unused")
+	 */	
 	private CharKey() {
 	}
-
-	public CharKey(A name) {
-		super(name);
-	}
+	
+	private CharKey(EntityMetaData<A, ?, ?, E> meta, A name) {
+		super(meta, name);
+		meta.addKey(this);
+	}	
+	
+	public static <
+		X extends Attribute,
+		T extends Entity<X, ?, ?, T>
+	>
+	CharKey<X, T> get(EntityMetaData<X, ?, ?, T> meta, X a) {
+		CharKey<X, T> k = meta.getCharKey(a);
+		
+		if (k == null) {
+			PrimitiveType<?> t = meta.getAttributeType(a);
+			
+			if (t != null && t.getSqlType() == PrimitiveType.CHAR) {
+				k = new CharKey<X, T>(meta, a);
+			}
+		}
+				
+		return k;
+	}	
 
 	@Override
 	public CharType type() {
@@ -37,7 +57,7 @@ public class CharKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	}
 	
 	public CharHolder get(E e) {
-		return e.get(this);
+		return e.getChar(this);
 	}
 
 	@Override
@@ -45,13 +65,8 @@ public class CharKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		return CharHolder.valueOf(newValue);
 	}
 	
-
-//	@Override
-//	public CharValue<A, E> newValue() {
-//		return new CharValue<A, E>(this);
-//	}
-
-//	public Value<A, String, CharType, CharHolder, E, CharKey<A,E>> value(E e) {
-//		return e.value(this);
-//	}
+	@Override
+	public CharKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
+		return meta.getCharKey(name());
+	}		
 }

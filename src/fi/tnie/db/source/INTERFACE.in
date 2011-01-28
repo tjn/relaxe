@@ -1,6 +1,7 @@
 package {{package-name}};
 
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.types.*;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.rpc.ReferenceHolder;
 
@@ -39,14 +40,14 @@ public interface {{table-interface}}
 		}
 	}
 	
-	{{attribute-key-list}}
+{{attribute-key-list}}
         
-    {{attribute-name-type}}    
-    {{reference-name-type}}    
-    {{query-name-type}}
+{{attribute-name-type}}    
+{{reference-name-type}}    
+{{query-name-type}}
     
-    {{value-accessor-list}}
+{{value-accessor-list}}
     
-    {{abstract-accessor-list}}
+{{abstract-accessor-list}}
 } 
 

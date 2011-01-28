@@ -95,7 +95,9 @@ public abstract class AbstractEntity<
 	 *  
 	 * @return
 	 */
-	protected abstract E self();
+	public abstract E self();
+	
+	
 	public EntityDiff<A, R, T, E> diff(E another) {
 		final E self = self();
 								
@@ -128,7 +130,7 @@ public abstract class AbstractEntity<
 	}
 	
 	@Override
-	public String toString() {
+	public final String toString() {
 		StringBuffer buf = new StringBuffer();
 		
 		EntityMetaData<A, R, T, E> meta = getMetaData();
@@ -136,7 +138,17 @@ public abstract class AbstractEntity<
 		buf.append(super.toString());
 		buf.append(":");
 		
-		for (A a : meta.attributes()) {
+		if (meta == null) {
+			throw new NullPointerException("getMetaData()");
+		}
+		
+		Set<A> as = meta.attributes();
+		
+		if (as == null) {
+			throw new NullPointerException("getMetaData().attributes()");
+		}
+				
+		for (A a : as) {
 			Key<A, ?, ?, ?, E, ?> key = meta.getKey(a);
 			PrimitiveHolder<?, ?> v = key.get(self());	
 			buf.append(key.name());
