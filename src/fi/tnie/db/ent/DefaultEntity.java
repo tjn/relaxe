@@ -68,12 +68,12 @@ public abstract class DefaultEntity<
 	 * 
 	 */
 	
-	private Map<VarcharKey<A, E>, VarcharHolder> varcharValueMap;
-	private Map<IntegerKey<A, E>, IntegerHolder> intValueMap;
-	private Map<CharKey<A, E>, CharHolder> charValueMap;
-	private Map<DateKey<A, E>, DateHolder> dateValueMap;
-	private Map<TimestampKey<A, E>, TimestampHolder> timestampValueMap;
-	private Map<DoubleKey<A, E>, DoubleHolder> doubleValueMap;
+	private Map<A, VarcharHolder> varcharValueMap;
+	private Map<A, IntegerHolder> intValueMap;
+	private Map<A, CharHolder> charValueMap;
+	private Map<A, DateHolder> dateValueMap;
+	private Map<A, TimestampHolder> timestampValueMap;
+	private Map<A, DoubleHolder> doubleValueMap;
 	
 	
 	
@@ -92,25 +92,25 @@ public abstract class DefaultEntity<
 		return refs;
 	}
 
-	private Map<IntegerKey<A, E>, IntegerHolder> getIntValueMap() {
+	private Map<A, IntegerHolder> getIntValueMap() {
 		if (intValueMap == null) {
-			intValueMap = new HashMap<IntegerKey<A, E>, IntegerHolder>();
+			intValueMap = new HashMap<A, IntegerHolder>();
 		}
 
 		return intValueMap;
 	}
 
-	public Map<VarcharKey<A, E>, VarcharHolder> getVarcharValueMap() {
+	public Map<A, VarcharHolder> getVarcharValueMap() {
 		if (varcharValueMap == null) {
-			varcharValueMap = new HashMap<VarcharKey<A, E>, VarcharHolder>();
+			varcharValueMap = new HashMap<A, VarcharHolder>();
 		}
 
 		return varcharValueMap;
 	}
 
-	private Map<DateKey<A, E>, DateHolder> getDateValueMap() {
+	private Map<A, DateHolder> getDateValueMap() {
 		if (dateValueMap == null) {
-			dateValueMap = new HashMap<DateKey<A, E>, DateHolder>();
+			dateValueMap = new HashMap<A, DateHolder>();
 		}
 
 		return dateValueMap;
@@ -121,9 +121,9 @@ public abstract class DefaultEntity<
 		return getDateValueMap().get(k);	
 	}
 
-	private Map<DoubleKey<A, E>, DoubleHolder> getDoubleValueMap() {
+	private Map<A, DoubleHolder> getDoubleValueMap() {
 		if (doubleValueMap == null) {
-			doubleValueMap = new HashMap<DoubleKey<A, E>, DoubleHolder>();
+			doubleValueMap = new HashMap<A, DoubleHolder>();
 		}
 
 		return doubleValueMap;
@@ -131,22 +131,22 @@ public abstract class DefaultEntity<
 
 	@Override
 	public DoubleHolder getDouble(DoubleKey<A, E> k) {
-		return getDoubleValueMap().get(k);	
+		return getDoubleValueMap().get(k.name());	
 	}	
 
 	@Override
 	public IntegerHolder getInteger(IntegerKey<A, E> k) {
-		return getIntValueMap().get(k);
+		return getIntValueMap().get(k.name());
 	}
 
 	@Override
 	public VarcharHolder getVarchar(VarcharKey<A, E> k) {
-		return getVarcharValueMap().get(k);
+		return getVarcharValueMap().get(k.name());
 	}
 
-	private Map<TimestampKey<A, E>, TimestampHolder> getTimestampValueMap() {
+	private Map<A, TimestampHolder> getTimestampValueMap() {
 		if (timestampValueMap == null) {
-			timestampValueMap = new HashMap<TimestampKey<A, E>, TimestampHolder>();
+			timestampValueMap = new HashMap<A, TimestampHolder>();
 		}
 
 		return timestampValueMap;
@@ -154,12 +154,12 @@ public abstract class DefaultEntity<
 
 	@Override
 	public TimestampHolder getTimestamp(TimestampKey<A, E> k) {
-		return getTimestampValueMap().get(k);
+		return getTimestampValueMap().get(k.name());
 	}
 	
-	private Map<CharKey<A, E>, CharHolder> getCharValueMap() {
+	private Map<A, CharHolder> getCharValueMap() {
 		if (charValueMap == null) {
-			charValueMap = new HashMap<CharKey<A, E>, CharHolder>();
+			charValueMap = new HashMap<A, CharHolder>();
 		}
 
 		return charValueMap;
@@ -176,7 +176,7 @@ public abstract class DefaultEntity<
 
 	@Override
 	public CharHolder getChar(CharKey<A, E> k) {
-		return getCharValueMap().get(k);
+		return getCharValueMap().get(k.name());
 	}
 
 	public PrimitiveHolder<?, ?> get(A attribute) {
@@ -185,32 +185,32 @@ public abstract class DefaultEntity<
 
 	@Override
 	public void setInteger(IntegerKey<A, E> k, IntegerHolder newValue) {
-		getIntValueMap().put(k, newValue);		
+		getIntValueMap().put(k.name(), newValue);		
 	}
 
 	@Override
 	public void setVarchar(VarcharKey<A, E> k, VarcharHolder newValue) {
-		getVarcharValueMap().put(k, newValue);		
+		getVarcharValueMap().put(k.name(), newValue);		
 	}
 
 	@Override
 	public void setChar(CharKey<A, E> k, CharHolder newValue) {
-		getCharValueMap().put(k, newValue);		
+		getCharValueMap().put(k.name(), newValue);		
 	}
 
 	@Override
 	public void setDate(DateKey<A, E> k, DateHolder newValue) {
-		getDateValueMap().put(k, newValue);		
+		getDateValueMap().put(k.name(), newValue);		
 	}
 
 	@Override
 	public void setDouble(DoubleKey<A, E> k, DoubleHolder newValue) {
-		getDoubleValueMap().put(k, newValue);		
+		getDoubleValueMap().put(k.name(), newValue);		
 	}
 
 	@Override
 	public void setTimestamp(TimestampKey<A, E> k, TimestampHolder newValue) {
-		getTimestampValueMap().put(k, newValue);		
+		getTimestampValueMap().put(k.name(), newValue);		
 	};
 	
 	public fi.tnie.db.rpc.PrimitiveHolder<?,?> value(A attribute) {
