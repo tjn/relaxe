@@ -15,7 +15,7 @@ public class OtherType
 	
 	@Override
 	public int getSqlType() {
-		return Type.OTHER;
+		return PrimitiveType.OTHER;
 	}
 	
 	@Override

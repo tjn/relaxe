@@ -4,7 +4,7 @@
 package fi.tnie.db.rpc;
 
 import fi.tnie.db.types.DoubleType;
-import fi.tnie.db.types.Type;
+import fi.tnie.db.types.PrimitiveType;
 
 
 public class DoubleHolder
@@ -52,6 +52,6 @@ public class DoubleHolder
 
 	@Override
 	public int getSqlType() {
-		return Type.INTEGER;
+		return PrimitiveType.INTEGER;
 	}
 }

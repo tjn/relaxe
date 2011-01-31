@@ -11,7 +11,6 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.TimestampType;
-import fi.tnie.db.types.Type;
 
 public final class TimestampKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	extends PrimitiveKey<A, Date, TimestampType, TimestampHolder, E, TimestampKey<A, E>>
@@ -42,7 +41,7 @@ public final class TimestampKey<A extends Attribute, E extends Entity<A, ?, ?, E
 		if (k == null) {
 			PrimitiveType<?> t = meta.getAttributeType(a);
 			
-			if (t != null && t.getSqlType() == Type.TIMESTAMP) {
+			if (t != null && t.getSqlType() == PrimitiveType.TIMESTAMP) {
 				k = new TimestampKey<X, T>(meta, a);
 			}			
 		}

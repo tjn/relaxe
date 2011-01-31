@@ -16,7 +16,7 @@ public class IntegerType
 	
 	@Override
 	public int getSqlType() {
-		return Type.INTEGER;
+		return PrimitiveType.INTEGER;
 	}
 	
 	@Override

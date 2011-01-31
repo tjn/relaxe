@@ -15,7 +15,7 @@ public class DecimalType
 	
 	@Override
 	public int getSqlType() {
-		return Type.DECIMAL;
+		return PrimitiveType.DECIMAL;
 	}
 
 	@Override

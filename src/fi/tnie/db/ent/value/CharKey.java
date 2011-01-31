@@ -9,7 +9,6 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.types.CharType;
 import fi.tnie.db.types.PrimitiveType;
-import fi.tnie.db.types.Type;
 
 public final class CharKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	extends PrimitiveKey<A, String, CharType, CharHolder, E, CharKey<A, E>>
@@ -40,7 +39,7 @@ public final class CharKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		if (k == null) {
 			PrimitiveType<?> t = meta.getAttributeType(a);
 			
-			if (t != null && t.getSqlType() == Type.CHAR) {
+			if (t != null && t.getSqlType() == PrimitiveType.CHAR) {
 				k = new CharKey<X, T>(meta, a);
 			}
 		}

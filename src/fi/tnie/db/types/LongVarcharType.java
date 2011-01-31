@@ -15,7 +15,7 @@ public class LongVarcharType
 	
 	@Override
 	public int getSqlType() {
-		return Type.LONGNVARCHAR;
+		return PrimitiveType.LONGNVARCHAR;
 	}
 	
 	@Override

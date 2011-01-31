@@ -6,7 +6,7 @@ package fi.tnie.db.rpc;
 import java.util.Date;
 
 import fi.tnie.db.types.DateType;
-import fi.tnie.db.types.Type;
+import fi.tnie.db.types.PrimitiveType;
 
 
 public class DateHolder
@@ -43,6 +43,6 @@ public class DateHolder
 	
 	@Override
 	public int getSqlType() {
-		return Type.DATE;
+		return PrimitiveType.DATE;
 	}
 }

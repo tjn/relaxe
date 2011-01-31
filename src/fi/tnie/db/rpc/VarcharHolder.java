@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.rpc;
 
-import fi.tnie.db.types.Type;
+import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.VarcharType;
 
 public class VarcharHolder
@@ -42,7 +42,7 @@ public class VarcharHolder
 	
 	@Override
 	public int getSqlType() {
-		return Type.VARCHAR;
+		return PrimitiveType.VARCHAR;
 	}
 
 }

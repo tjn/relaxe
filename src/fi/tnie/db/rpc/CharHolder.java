@@ -5,7 +5,7 @@ package fi.tnie.db.rpc;
 
 
 import fi.tnie.db.types.CharType;
-import fi.tnie.db.types.Type;
+import fi.tnie.db.types.PrimitiveType;
 
 public class CharHolder
 	extends StringHolder<CharType> {
@@ -43,6 +43,6 @@ public class CharHolder
 	
 	@Override
 	public int getSqlType() {
-		return Type.CHAR;
+		return PrimitiveType.CHAR;
 	}
 }

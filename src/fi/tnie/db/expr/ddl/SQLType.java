@@ -7,7 +7,7 @@ import fi.tnie.db.expr.Element;
 import fi.tnie.db.expr.ElementVisitor;
 import fi.tnie.db.expr.Keyword;
 import fi.tnie.db.expr.VisitContext;
-import fi.tnie.db.types.Type;
+import fi.tnie.db.types.PrimitiveType;
 
 public abstract class SQLType
     extends DataTypeDefinition {
@@ -22,37 +22,37 @@ public abstract class SQLType
     
     public static boolean isTextType(int sqltype) {
         return 
-            (sqltype == Type.CHAR) || 
-            (sqltype == Type.VARCHAR) ||            
-            (sqltype == Type.LONGVARCHAR) ||
-            (sqltype == Type.NCHAR) ||
-            (sqltype == Type.NVARCHAR) ||
-            (sqltype == Type.LONGNVARCHAR) ||            
-            (sqltype == Type.CLOB)
+            (sqltype == PrimitiveType.CHAR) || 
+            (sqltype == PrimitiveType.VARCHAR) ||            
+            (sqltype == PrimitiveType.LONGVARCHAR) ||
+            (sqltype == PrimitiveType.NCHAR) ||
+            (sqltype == PrimitiveType.NVARCHAR) ||
+            (sqltype == PrimitiveType.LONGNVARCHAR) ||            
+            (sqltype == PrimitiveType.CLOB)
            ;        
     }
     
     public static boolean isIntegralType(int sqltype) {
         return 
-        (sqltype == Type.TINYINT) || 
-        (sqltype == Type.INTEGER) ||            
-        (sqltype == Type.SMALLINT) ||
-        (sqltype == Type.BIGINT)    
+        (sqltype == PrimitiveType.TINYINT) || 
+        (sqltype == PrimitiveType.INTEGER) ||            
+        (sqltype == PrimitiveType.SMALLINT) ||
+        (sqltype == PrimitiveType.BIGINT)    
        ;        
     }
     
     public static boolean isFixedNumeric(int sqltype) {
         return 
-        (sqltype == Type.NUMERIC) || 
-        (sqltype == Type.DECIMAL)    
+        (sqltype == PrimitiveType.NUMERIC) || 
+        (sqltype == PrimitiveType.DECIMAL)    
        ;        
     }    
     
     public static boolean isFloatingPoint(int sqltype) {
         return 
-        (sqltype == Type.REAL) || 
-        (sqltype == Type.FLOAT) ||
-        (sqltype == Type.DOUBLE)    
+        (sqltype == PrimitiveType.REAL) || 
+        (sqltype == PrimitiveType.FLOAT) ||
+        (sqltype == PrimitiveType.DOUBLE)    
        ;        
     }        
     
@@ -60,23 +60,23 @@ public abstract class SQLType
     enum Name
     	implements Element {
         
-    CHAR(Type.CHAR, Keyword.CHARACTER),
-    VARCHAR(Type.VARCHAR, Keyword.VARCHAR),
-    CLOB(Type.CLOB, Keyword.CLOB),
-    BIGINT(Type.BIGINT, Keyword.BIGINT),
-    BIT(Type.BIT, Keyword.BIT),    
+    CHAR(PrimitiveType.CHAR, Keyword.CHARACTER),
+    VARCHAR(PrimitiveType.VARCHAR, Keyword.VARCHAR),
+    CLOB(PrimitiveType.CLOB, Keyword.CLOB),
+    BIGINT(PrimitiveType.BIGINT, Keyword.BIGINT),
+    BIT(PrimitiveType.BIT, Keyword.BIT),    
     // BIT_VARYING(Type.BITV, Keyword.BIT, Keyword.VARYING),
-    BLOB(Type.BLOB, Keyword.BLOB),
-    NUMERIC(Type.NUMERIC, Keyword.NUMERIC), 
-    DECIMAL(Type.DECIMAL, Keyword.DECIMAL),
-    INTEGER(Type.INTEGER, Keyword.INTEGER),
+    BLOB(PrimitiveType.BLOB, Keyword.BLOB),
+    NUMERIC(PrimitiveType.NUMERIC, Keyword.NUMERIC), 
+    DECIMAL(PrimitiveType.DECIMAL, Keyword.DECIMAL),
+    INTEGER(PrimitiveType.INTEGER, Keyword.INTEGER),
     // INT(Type.INTEGER, Keyword.INT),
-    SMALLINT(Type.SMALLINT, Keyword.SMALLINT),
-    TINYINT(Type.TINYINT, Keyword.TINYINT),
-    FLOAT(Type.FLOAT, Keyword.FLOAT),
-    DATE(Type.DATE, Keyword.DATE),
-    TIME(Type.TIME, Keyword.TIME),
-    TIMESTAMP(Type.TIMESTAMP, Keyword.TIMESTAMP),
+    SMALLINT(PrimitiveType.SMALLINT, Keyword.SMALLINT),
+    TINYINT(PrimitiveType.TINYINT, Keyword.TINYINT),
+    FLOAT(PrimitiveType.FLOAT, Keyword.FLOAT),
+    DATE(PrimitiveType.DATE, Keyword.DATE),
+    TIME(PrimitiveType.TIME, Keyword.TIME),
+    TIMESTAMP(PrimitiveType.TIMESTAMP, Keyword.TIMESTAMP),
     ;
                 
     private Name(int type, Keyword... kws) {

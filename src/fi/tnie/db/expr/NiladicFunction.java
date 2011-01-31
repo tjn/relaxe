@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.expr;
 
-import fi.tnie.db.types.Type;
+import fi.tnie.db.types.PrimitiveType;
 
 public class NiladicFunction    
     implements ValueExpression {
@@ -17,25 +17,25 @@ public class NiladicFunction
      * That may not be generally "right", but good enough. 
      */
     public static final NiladicFunction CURRENT_USER = 
-        new NiladicFunction(Keyword.CURRENT_USER, Type.VARCHAR);
+        new NiladicFunction(Keyword.CURRENT_USER, PrimitiveType.VARCHAR);
 
     /** Niladic function CURRENT_DATE. 
      *  Type of this value expression is Types.DATE  
      */
     public static final NiladicFunction CURRENT_DATE = 
-        new NiladicFunction(Keyword.CURRENT_USER, Type.DATE);
+        new NiladicFunction(Keyword.CURRENT_USER, PrimitiveType.DATE);
     
     /** Niladic function CURRENT_TIME. 
      *  Type of this value expression is Types.TIME  
      */    
     public static final NiladicFunction CURRENT_TIME = 
-        new NiladicFunction(Keyword.CURRENT_TIME, Type.TIME);
+        new NiladicFunction(Keyword.CURRENT_TIME, PrimitiveType.TIME);
     
     /** Niladic function CURRENT_TIMESTAMP. 
      *  Type of this value expression is Types.TIMESTAMP  
      */        
     public static final NiladicFunction CURRENT_TIMESTAMP = 
-        new NiladicFunction(Keyword.CURRENT_TIMESTAMP, Type.TIMESTAMP);    
+        new NiladicFunction(Keyword.CURRENT_TIMESTAMP, PrimitiveType.TIMESTAMP);    
     
     private NiladicFunction(Keyword name, int dataType) {
         this.name = name;

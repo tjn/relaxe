@@ -4,7 +4,7 @@
 package fi.tnie.db.rpc;
 
 import fi.tnie.db.types.IntegerType;
-import fi.tnie.db.types.Type;
+import fi.tnie.db.types.PrimitiveType;
 
 
 public class IntegerHolder
@@ -49,6 +49,6 @@ public class IntegerHolder
 
 	@Override
 	public int getSqlType() {
-		return Type.INTEGER;
+		return PrimitiveType.INTEGER;
 	}
 }

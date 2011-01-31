@@ -5,8 +5,8 @@ package fi.tnie.db.rpc;
 
 import java.util.Date;
 
+import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.TimestampType;
-import fi.tnie.db.types.Type;
 
 
 public class TimestampHolder
@@ -47,6 +47,6 @@ public class TimestampHolder
 	
 	@Override
 	public int getSqlType() {
-		return Type.TIMESTAMP;
+		return PrimitiveType.TIMESTAMP;
 	}
 }

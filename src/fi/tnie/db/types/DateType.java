@@ -16,7 +16,7 @@ public class DateType
 	
 	@Override
 	public int getSqlType() {
-		return Type.DATE;
+		return PrimitiveType.DATE;
 	}
 
 	@Override
