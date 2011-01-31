@@ -9,6 +9,7 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.types.DoubleType;
 import fi.tnie.db.types.PrimitiveType;
+import fi.tnie.db.types.Type;
 
 public final class DoubleKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	extends PrimitiveKey<A, Double, DoubleType, DoubleHolder, E, DoubleKey<A, E>>
@@ -39,7 +40,7 @@ public final class DoubleKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		if (k == null) {
 			PrimitiveType<?> t = meta.getAttributeType(a);
 			
-			if (t != null && t.getSqlType() == PrimitiveType.DOUBLE) {
+			if (t != null && t.getSqlType() == Type.DOUBLE) {
 				k = new DoubleKey<X, T>(meta, a);
 			}			
 		}

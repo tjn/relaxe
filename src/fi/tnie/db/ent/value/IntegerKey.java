@@ -9,6 +9,7 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.types.IntegerType;
 import fi.tnie.db.types.PrimitiveType;
+import fi.tnie.db.types.Type;
 
 public final class IntegerKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	extends PrimitiveKey<A, Integer, IntegerType, IntegerHolder, E, IntegerKey<A, E>>
@@ -39,7 +40,7 @@ public final class IntegerKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		if (k == null) {
 			PrimitiveType<?> t = a.type();
 			
-			if (t != null && t.getSqlType() == PrimitiveType.INTEGER) {
+			if (t != null && t.getSqlType() == Type.INTEGER) {
 				k = new IntegerKey<X, T>(meta, a);
 			}			
 		}

@@ -14,7 +14,6 @@ import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -25,12 +24,6 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.QueryException;
-import fi.tnie.db.ent.value.CharKey;
-import fi.tnie.db.ent.value.DateKey;
-import fi.tnie.db.ent.value.DoubleKey;
-import fi.tnie.db.ent.value.IntegerKey;
-import fi.tnie.db.ent.value.TimestampKey;
-import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.map.AttributeInfo;
@@ -195,10 +188,7 @@ public class SourceGenerator {
 	
 	private File defaultSourceDir;	
 	private EnumMap<Part, File> sourceDirMap;
-
-	private Map<Class<?>, Class<?>> wrapperMap;
-	
-	private List<Class<?>> keyTypes;
+	private Map<Class<?>, Class<?>> wrapperMap;	
 
 	@SuppressWarnings("serial")
     private static class TypeInfo
@@ -214,15 +204,15 @@ public class SourceGenerator {
         this.defaultSourceDir = defaultSourceDir;
     }
 
-	private static boolean knownAbbr(String t) {
-		return t.equals("url") || t.equals("http") || t.equals("xml");
-	}
-
-	private static boolean knownProposition(String t) {
-		return
-			t.equals("of") || t.equals("in") || t.equals("with") ||
-			t.equals("at") || t.equals("for");
-	}
+//	private static boolean knownAbbr(String t) {
+//		return t.equals("url") || t.equals("http") || t.equals("xml");
+//	}
+//
+//	private static boolean knownProposition(String t) {
+//		return
+//			t.equals("of") || t.equals("in") || t.equals("with") ||
+//			t.equals("at") || t.equals("for");
+//	}
 
 	private static Logger logger() {
 		return SourceGenerator.logger;
@@ -479,26 +469,26 @@ public class SourceGenerator {
 		return buf.toString();	
 	}
 	
-	private String generateColumnList(Table t) {
-		StringBuffer buf = new StringBuffer();
-			
-		Identifier sn = t.getSchema().getUnqualifiedName();
-		Identifier tn = t.getUnqualifiedName();
-		String ce = name(sn.getName()) + name(tn.getName());			
-		
-		buf.append("enum ");
-		buf.append(ce);
-		buf.append(" {");
-		buf.append("\n");
-		
-		EnumSet<NameQualification> fq = EnumSet.allOf(NameQualification.class);		
-		generateColumnListElements(t, buf, fq);
-		
-		buf.append("\n");
-		buf.append("}");
-		
-		return buf.toString();
-	}
+//	private String generateColumnList(Table t) {
+//		StringBuffer buf = new StringBuffer();
+//			
+//		Identifier sn = t.getSchema().getUnqualifiedName();
+//		Identifier tn = t.getUnqualifiedName();
+//		String ce = name(sn.getName()) + name(tn.getName());			
+//		
+//		buf.append("enum ");
+//		buf.append(ce);
+//		buf.append(" {");
+//		buf.append("\n");
+//		
+//		EnumSet<NameQualification> fq = EnumSet.allOf(NameQualification.class);		
+//		generateColumnListElements(t, buf, fq);
+//		
+//		buf.append("\n");
+//		buf.append("}");
+//		
+//		return buf.toString();
+//	}
 	
 	enum NameQualification {
 		SCHEMA,
@@ -727,16 +717,8 @@ public class SourceGenerator {
         return read("LITERAL_INNER_TABLE.in");
     }
     
-    private String getTemplateForLiteralTable() throws IOException {
-        return read("LITERAL_TABLE_ENUM.in");
-    }
-
     private String getTemplateForTableEnumInit() throws IOException {
         return read("TABLE_ENUM_INIT.in");
-    }
-    
-    private String getTemplateForKeyImplementation() throws IOException {
-        return read("KEY_IMPLEMENTATION.in");
     }
 
     private void process(Schema s, final TableMapper tm, Collection<JavaType> ccil, Map<JavaType, CharSequence> factories, Properties generated, Map<File, String> gm) 
@@ -983,28 +965,6 @@ public class SourceGenerator {
 
        return src;
    }
-
-    private CharSequence generateAnonymousFactoryImplementation(Schema s, TableMapper tm, Collection<TypeInfo> types)
-        throws IOException {
-
-        JavaType intf = tm.factoryType(s, Part.INTERFACE);
-        String src = getAnonymousFactoryTemplate();
-
-        src = replaceAll(src, "{{schema-factory}}", intf.getUnqualifiedName());
-
-        StringBuffer code = new StringBuffer();
-
-        for (TypeInfo t : types) {
-            String m = formatFactoryMethod(t, true);
-            a(code, m, 1);
-        }
-
-        src = replaceAll(src, "{{factory-method-list}}", code.toString());
-
-        logger().debug("factory impl: " + src);
-
-        return src;
-    }
     
 	private CharSequence generateSchemaFactoryMethodImplementation(Schema s, TableMapper tm, Collection<TypeInfo> types)
 	    throws IOException {
@@ -1111,11 +1071,6 @@ public class SourceGenerator {
     private String getFactoryTemplateFor(Part p)
 	    throws IOException {
         return read("FACTORY_" + p.toString() + ".in");
-    }
-
-    private String getAnonymousFactoryTemplate()
-        throws IOException {
-        return read("ANONYMOUS_FACTORY_IMPLEMENTATION.in");
     }
 
 	private String read(String resource)
@@ -1288,28 +1243,6 @@ public class SourceGenerator {
         }
 
         return src;
-	}
-	
-	private String keyAccessorList(BaseTable t, TableMapper tm) {
-		Map<Class<?>, Integer> tom = keyTypeOccurenceMap(t, tm);		
-		StringBuffer content = new StringBuffer();
-		
-		List<Class<?>> ktl = getKeyTypes();
-		
-		logger().debug("type-count: " + ktl.size());
-		
-		for (Class<?> kt : ktl) {
-			Integer v = tom.get(kt);
-			int occurences = (v == null) ? 0 : v.intValue();
-			
-			logger().debug("keyAccessorList: kt=" + occurences);
-			String ka = metaDataKeyAccessor(kt, occurences, t, tm);
-			logger().debug("keyAccessorList: ka=" + ka);						
-			content.append(ka);			
-		}
-				
-		
-		return content.toString();
 	}
 	
 	private String valueVariableList(BaseTable t, TableMapper tm) {
@@ -1498,21 +1431,6 @@ public class SourceGenerator {
 		content.append("}\n");
 				
 		return content.toString();
-	}
-
-	private List<Class<?>> getKeyTypes() {
-		if (keyTypes == null) {
-			keyTypes = new ArrayList<Class<?>>();
-			
-			keyTypes.add(VarcharKey.class);
-			keyTypes.add(CharKey.class);
-			keyTypes.add(IntegerKey.class);						
-			keyTypes.add(DoubleKey.class);
-			keyTypes.add(DateKey.class);
-			keyTypes.add(TimestampKey.class);			
-		}
-
-		return keyTypes;
 	}
 
 	private String metaDataInitialization(BaseTable t, TableMapper tm) {
@@ -1776,7 +1694,7 @@ public class SourceGenerator {
     }
 
     private String formatAccessors(Table table, Column c, AttributeInfo info, boolean impl) {
-        final String attributeName = attr(c);
+//        final String attributeName = attr(c);
         Class<?> attributeType = info.getAttributeType();
         Class<?> holderType = info.getHolderType();
         
@@ -1810,54 +1728,6 @@ public class SourceGenerator {
             a(nb, "return ");
             a(nb, vv);
             a(nb, "().get();", 1);            
-
-//            if (!attributeType.isPrimitive()) {
-//                a(nb, "return ");
-//                // call super & cast:
-////                expr(nb, attributeType, attributeName);
-//                
-//                nb.append(prefix);
-//                
-//                String tn = getSimpleName(attributeType);
-//                
-//                nb.append(tn);
-//                nb.append("(");
-//                nb.append(getAttributeType());
-//                nb.append(".");
-//                nb.append(attributeName);                                                
-//                a(nb, ");", 1);
-//            }
-//            else {
-//                Class<?> wt = wrapper(attributeType);
-//                a(nb, wt.getName());
-//                
-//                a(nb, " o = ");
-//                // call super & cast:
-////                expr(nb, attributeType, attributeName);
-//                a(nb, prefix);
-//                a(nb, getSimpleName(wt));                
-//                a(nb, "(");
-//                a(nb, getAttributeType());
-//                a(nb, ".");
-//                a(nb, attributeName);                
-//                a(nb, ");", 2);
-//
-//                a(nb, "return (o == null) ? ");
-//
-//                // default value:
-//                if (attributeType.equals(Boolean.TYPE)) {
-//                    a(nb, " false ");
-//                }
-//                else {
-//                    // TODO: should we try to parse the column default value here?
-//                    a(nb, " 0 ");
-//                }
-//
-//                a(nb, " : ");
-//                a(nb, "o.intValue()");
-//                a(nb, ";", 1);
-//            }
-
             a(nb, "}", 2);
         }
         
@@ -1926,18 +1796,6 @@ public class SourceGenerator {
 		decapitalize(n, buf);
 		return buf.toString();
 	}
-
-    private void expr(StringBuffer sb, Class<?> attributeType, String attributeName) {
-        Class<?> castTo = attributeType.isPrimitive() ?
-                wrapper(attributeType) :
-                attributeType;
-
-        sb.append(" getString(");
-        sb.append(getAttributeType());
-        sb.append(".");
-        sb.append(attributeName);
-        sb.append(").value()");
-    }
     
     /**
      * Converts SQL style name to camel case 
@@ -2161,18 +2019,6 @@ public class SourceGenerator {
 
 	public String getQueryType() {
 		return "Query";
-	}
-
-	private Class<?> wrapper(Class<?> primitiveType) {
-	    if (primitiveType == null) {
-            throw new NullPointerException();
-        }
-
-	    if (!primitiveType.isPrimitive()) {
-	        throw new IllegalArgumentException("primitive type expected");
-	    }
-
-	    return getWrapperMap().get(primitiveType);
 	}
 
 	public Map<Class<?>, Class<?>> getWrapperMap() {

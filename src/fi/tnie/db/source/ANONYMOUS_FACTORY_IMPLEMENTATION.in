@@ -1,4 +1,0 @@
-
-new {{schema-factory}}() {
-    {{factory-method-list}}
-};

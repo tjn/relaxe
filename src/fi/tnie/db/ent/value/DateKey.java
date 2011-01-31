@@ -11,6 +11,7 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.types.DateType;
 import fi.tnie.db.types.PrimitiveType;
+import fi.tnie.db.types.Type;
 
 public final class DateKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	extends PrimitiveKey<A, Date, DateType, DateHolder, E, DateKey<A, E>>
@@ -41,7 +42,7 @@ public final class DateKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		if (k == null) {
 			PrimitiveType<?> t = meta.getAttributeType(a);
 			
-			if (t != null && t.getSqlType() == PrimitiveType.DATE) {
+			if (t != null && t.getSqlType() == Type.DATE) {
 				k = new DateKey<X, T>(meta, a);
 			}			
 		}

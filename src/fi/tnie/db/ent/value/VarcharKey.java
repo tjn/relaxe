@@ -8,6 +8,7 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.PrimitiveType;
+import fi.tnie.db.types.Type;
 import fi.tnie.db.types.VarcharType;
 
 public final class VarcharKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
@@ -39,7 +40,7 @@ public final class VarcharKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		if (k == null) {
 			PrimitiveType<?> t = meta.getAttributeType(a);
 			
-			if (t != null && t.getSqlType() == PrimitiveType.VARCHAR) {
+			if (t != null && t.getSqlType() == Type.VARCHAR) {
 				k = new VarcharKey<X, T>(meta, a);
 			}			
 		}

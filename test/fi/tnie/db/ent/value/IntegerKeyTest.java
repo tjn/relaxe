@@ -7,12 +7,10 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.gen.ent.LiteralCatalog;
-import fi.tnie.db.gen.ent.personal.LiteralPerson;
 import fi.tnie.db.gen.ent.personal.Person;
 import fi.tnie.db.gen.ent.personal.Person.Reference;
 import fi.tnie.db.gen.ent.personal.Person.Type;
 import fi.tnie.db.types.IntegerType;
-import fi.tnie.db.types.PrimitiveType;
 import junit.framework.TestCase;
 
 public class IntegerKeyTest extends TestCase {
