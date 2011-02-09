@@ -4,8 +4,6 @@
 package fi.tnie.db;
 
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import fi.tnie.db.rpc.PrimitiveHolder;

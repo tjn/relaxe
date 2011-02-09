@@ -15,10 +15,7 @@ import fi.tnie.db.expr.ElementVisitorAdapter;
 import fi.tnie.db.expr.Parameter;
 import fi.tnie.db.expr.VisitContext;
 import fi.tnie.db.expr.VisitException;
-import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
-import fi.tnie.db.rpc.Interval.DayTime;
-import fi.tnie.db.types.IntervalType;
 import fi.tnie.db.types.PrimitiveType;
 
 public class AssignmentVisitor extends ElementVisitorAdapter {

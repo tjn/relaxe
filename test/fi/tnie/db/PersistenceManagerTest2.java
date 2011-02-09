@@ -14,7 +14,6 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.value.DateKey;
-import fi.tnie.db.env.GeneratedKeyHandler;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.gen.ent.LiteralCatalog;

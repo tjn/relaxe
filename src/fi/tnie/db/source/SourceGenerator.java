@@ -1462,22 +1462,6 @@ public class SourceGenerator {
         return tom;
 	}
 	
-	private Column getFirstWithKeyType(BaseTable t, TableMapper tm, Class<?> keyType) {
-		List<Column> acl = getAttributeColumnList(t, tm);
-		
-		for (Column column : acl) {
-			AttributeInfo a = tm.getAttributeInfo(t, column);
-			Class<?> akt = a.getKeyType();
-			
-			if (akt != null && akt.equals(keyType)) {
-				return column;
-			}
-		}
-		
-		return null;
-	}
-	
-
     // only non-fk-columns are included in attributes.
     // fk-columns  are not intended to be set individually,
     // but atomically with ref -methods
