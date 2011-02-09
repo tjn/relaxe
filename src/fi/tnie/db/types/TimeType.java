@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.types;
 
-import fi.tnie.db.rpc.PrimitiveHolder;
-
 public class TimeType
 	extends PrimitiveType<TimeType> {
 	
@@ -16,10 +14,5 @@ public class TimeType
 	@Override
 	public int getSqlType() {
 		return PrimitiveType.TIME;
-	}
-
-	@Override
-	public PrimitiveHolder<?, TimeType> nil() {
-		return null; // TODO: implement TimeHolder		
 	}
 }

@@ -3,9 +3,6 @@
  */
 package fi.tnie.db.types;
 
-import fi.tnie.db.rpc.DateHolder;
-import fi.tnie.db.rpc.PrimitiveHolder;
-
 public class DateType
 	extends PrimitiveType<DateType> {
 	
@@ -17,10 +14,5 @@ public class DateType
 	@Override
 	public int getSqlType() {
 		return PrimitiveType.DATE;
-	}
-
-	@Override
-	public PrimitiveHolder<?, DateType> nil() {
-		return DateHolder.NULL_HOLDER;
 	}
 }

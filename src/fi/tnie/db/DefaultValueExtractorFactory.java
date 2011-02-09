@@ -78,10 +78,24 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 	public TimestampExtractor createTimestampExtractor(int col) {
 		return new TimestampExtractor(col);
 	}
-
+	
 	
 		private static Logger logger() {
 			return DefaultValueExtractorFactory.logger;
+		}
+		
+		/**
+		 * Returns <code>null</code>. Default factory  
+		 */
+		@Override
+		public IntervalExtractor.DayTime createDayTimeIntervalExtractor(int col) {
+			return new SQLIntervalExtractor.DayTime(col);
+		}
+
+
+		@Override
+		public IntervalExtractor.YearMonth createYearMonthIntervalExtractor(int col) {
+			return new SQLIntervalExtractor.YearMonth(col);
 		}
 
 

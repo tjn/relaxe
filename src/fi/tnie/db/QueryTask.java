@@ -42,7 +42,7 @@ public class QueryTask
 			String qs = qe.generate();
 			
 			ps = c.prepareStatement(qs);                
-			qe.traverse(null, new ParameterAssignment(ps));
+			qe.traverse(null, new AssignmentVisitor(null, ps));
 			
 			DataObjectReader qp = new DataObjectReader(qe, content);			
 			qp.prepare();

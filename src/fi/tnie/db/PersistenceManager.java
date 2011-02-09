@@ -19,6 +19,7 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.env.GeneratedKeyHandler;
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.expr.Assignment;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.DeleteStatement;
@@ -38,6 +39,7 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
+import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
 
@@ -58,17 +60,13 @@ public class PersistenceManager<
 
     private E target;
     private Query query = null;
-    private GeneratedKeyHandler keyHandler = null;
-    private SQLSyntax syntax = null;
+    private Implementation implementation = null;
 
     private static Logger logger = Logger.getLogger(PersistenceManager.class);
 
     public DeleteStatement createDeleteStatement() throws EntityException {
         E pe = getTarget();
         final EntityMetaData<?, ?, ?, ?> meta = pe.getMetaData();
-
-//        Environment env = meta.getCatalog().getEnvironment();
-//		SQLSyntax stx = env.getSyntax();
 
     	TableReference tref = new TableReference(meta.getBaseTable());
     	Predicate pkp = getPKPredicate(tref, pe);
@@ -77,7 +75,7 @@ public class PersistenceManager<
     		return null;
     	}
 
-    	return syntax.newDeleteStatement(tref, pkp);
+    	return getSyntax().newDeleteStatement(tref, pkp);
     }
 
 
@@ -91,8 +89,9 @@ public class PersistenceManager<
     	ElementList<ColumnName> names = new ElementList<ColumnName>();
 
     	for (A a : meta.attributes()) {
-    		Column col = meta.getColumn(a);
+    		logger().debug("createInsertStatement: a=" + a);
     		
+    		Column col = meta.getColumn(a);    		
     		PrimitiveHolder<?, ?> holder = pe.value(a);
     		
     		if (holder == null) {
@@ -112,14 +111,19 @@ public class PersistenceManager<
 
 
     	for (R r : meta.relationships()) {
-            ForeignKey fk = meta.getForeignKey(r);
+            ForeignKey fk = meta.getForeignKey(r);                        
+            ReferenceHolder<?, ?, ?, ?> rh = pe.ref(r);
+            
+            if (rh == null) {
+            	continue;
+            }
+            
             Entity<?, ?, ?, ?> ref = pe.ref(r).value();
 
             if (ref == null) {
-                for (Column c : fk.columns().keySet()) {
-                	PrimitiveType<?> p = PrimitiveType.get(c.getDataType().getDataType());
-                	PrimitiveHolder<?, ?> h = p.nil();                	
-                	ValueParameter<?, ?> vp = createParameter(c, h);
+                for (Column c : fk.columns().keySet()) {                	
+                	PrimitiveHolder<?, ?> nh = PrimitiveType.nullHolder(c.getDataType().getDataType());                	                	
+                	ValueParameter<?, ?> vp = createParameter(c, nh);
                     newRow.add(vp);
                     names.add(c.getColumnName());
                 }
@@ -166,11 +170,12 @@ public class PersistenceManager<
 
     	for (A a : meta.attributes()) {
     		Column col = meta.getColumn(a);
-    		PrimitiveHolder<?, ?> h = pe.value(a);
-//    		Object value = pe.value(a).value();
-//    		ValueParameter vp = new ValueParameter(col, value);
-    		ValueParameter<?, ?> vp = createParameter(col, h);
-    		assignments.add(new Assignment(col.getColumnName(), vp));
+    		PrimitiveHolder<?, ?> ph = pe.value(a);
+    		
+    		if (ph != null) {    		    		    		
+	    		ValueParameter<?, ?> vp = createParameter(col, ph);    		
+	    		assignments.add(new Assignment(col.getColumnName(), vp));
+    		}
     	}
 
 
@@ -207,7 +212,7 @@ public class PersistenceManager<
     			String qs = ds.generate();
     			logger().debug("qs: " + qs);
     			final PreparedStatement ps = c.prepareStatement(qs);
-    			ds.traverse(null, new ParameterAssignment(ps));
+    			ds.traverse(null, createAssignmentVisitor(ps));
     			int deleted = ps.executeUpdate();
     			logger().debug("deleted: " + deleted);
     		}
@@ -234,7 +239,7 @@ public class PersistenceManager<
 			logger().debug("JDBC-support-get-gen:" + c.getMetaData().supportsGetGeneratedKeys());
 
 			ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);
-			q.traverse(null, new ParameterAssignment(ps));
+			q.traverse(null, createAssignmentVisitor(ps));
 
 			logger().debug("q: " + qs);
 			int ins = ps.executeUpdate();
@@ -266,7 +271,7 @@ public class PersistenceManager<
         TableReference tref = pq.getTableRef();
 
         DefaultEntityQueryTask<A, R, T, E> qt =
-        	new DefaultEntityQueryTask<A, R, T, E>(pq);
+        	new DefaultEntityQueryTask<A, R, T, E>(pq, getImplementation());
 
     	Predicate pkp = getPKPredicate(tref, getTarget());
     	E stored = null;
@@ -301,7 +306,7 @@ public class PersistenceManager<
     			String qs = q.generate();
     			logger().debug("qs: " + qs);
     			ps = c.prepareStatement(qs);
-    			q.traverse(null, new ParameterAssignment(ps));
+    			q.traverse(null, createAssignmentVisitor(ps));
     			int ins = ps.executeUpdate();
     			logger().debug("updated: " + ins);
     		}
@@ -316,6 +321,11 @@ public class PersistenceManager<
     }
 
 
+	private AssignmentVisitor createAssignmentVisitor(PreparedStatement ps) {
+		return new AssignmentVisitor(getImplementation().getValueAssignerFactory(), ps);
+	}
+
+
     private Predicate getPKPredicate() throws EntityException {
         E pe = getTarget();
     	EntityMetaData<A, R, T, ?> meta = pe.getMetaData();
@@ -328,16 +338,19 @@ public class PersistenceManager<
         return PersistenceManager.logger;
     }
 
-    public PersistenceManager(E target, GeneratedKeyHandler keyHandler, SQLSyntax syntax) {
+    public PersistenceManager(E target, Implementation implementation) {
         super();
 
         if (target == null) {
             throw new NullPointerException("'target' must not be null");
         }
-
-        setTarget(target);
-        setKeyHandler(keyHandler);
-        setSyntax(syntax);
+        
+        if (implementation == null) {
+			throw new NullPointerException("implementation");
+		}
+        
+        setImplementation(implementation);
+        setTarget(target);        
     }
 
     public E getTarget() {
@@ -360,7 +373,7 @@ public class PersistenceManager<
         Set<Column> pkcols = meta.getPKDefinition();
 
         if (pkcols.isEmpty()) {
-            throw new EntityException("no pk-attributes available");
+            throw new EntityException("no pk-columns available for entity type " + pe.getType());
         }
 
         Predicate p = null;
@@ -439,25 +452,22 @@ public class PersistenceManager<
         return this.query;
     }
 
-
 	public GeneratedKeyHandler getKeyHandler() {
-		return keyHandler;
+		return getImplementation().generatedKeyHandler();
 	}
-
-
-	private void setKeyHandler(GeneratedKeyHandler keyHandler) {
-		this.keyHandler = keyHandler;
-	}
-
 
 	public SQLSyntax getSyntax() {
-		return syntax;
+		return getImplementation().getSyntax();
 	}
 
-	private void setSyntax(SQLSyntax syntax) {
-		this.syntax = syntax;
+
+	public Implementation getImplementation() {
+		return implementation;
+	}
+
+
+	public void setImplementation(Implementation implementation) {
+		this.implementation = implementation;
 	}
 	
-	
-
 }

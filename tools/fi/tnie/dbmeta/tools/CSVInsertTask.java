@@ -17,8 +17,9 @@ import java.util.List;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVStrategy;
 
-import fi.tnie.db.ParameterAssignment;
+import fi.tnie.db.AssignmentVisitor;
 import fi.tnie.db.QueryHelper;
+import fi.tnie.db.ValueAssignerFactory;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.ElementList;
 import fi.tnie.db.expr.InsertStatement;
@@ -74,7 +75,7 @@ class CSVInsertTask
             ColumnMap cm = table.columnMap();
             ElementList<ColumnName> names = new ElementList<ColumnName>();  
             List<Column> columnList = new ArrayList<Column>();
-                                            
+                                                                    
             for (String n : line) {
                 Column column = cm.get(n);
                 
@@ -97,9 +98,10 @@ class CSVInsertTask
             InsertStatement ins = new InsertStatement(table, names, vr);
             PreparedStatement ps = null;
             
-            VarcharParameter[] params = new VarcharParameter[expectedColumnCount];
+            VarcharParameter[] params = new VarcharParameter[expectedColumnCount];            
+            ValueAssignerFactory vaf = getImplementation().getValueAssignerFactory();
             
-            ParameterAssignment pa = null;
+            AssignmentVisitor pa = null;
                                     
             while ((line = p.getLine()) != null) {
                 recno++;
@@ -122,7 +124,7 @@ class CSVInsertTask
                     
                     String q = ins.generate();
                     ps = connection.prepareStatement(q);
-                    pa = new ParameterAssignment(ps);
+                    pa = new AssignmentVisitor(vaf, ps);
                     
     //                System.err.println("lineno: " + lineno);
     //                System.err.println("record: " + recno);

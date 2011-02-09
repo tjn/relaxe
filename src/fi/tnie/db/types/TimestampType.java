@@ -3,9 +3,6 @@
  */
 package fi.tnie.db.types;
 
-import fi.tnie.db.rpc.PrimitiveHolder;
-import fi.tnie.db.rpc.TimestampHolder;
-
 public class TimestampType
 	extends PrimitiveType<TimestampType> {
 	
@@ -17,11 +14,5 @@ public class TimestampType
 	@Override
 	public int getSqlType() {
 		return PrimitiveType.TIMESTAMP;
-	}
-	
-	@Override
-	public PrimitiveHolder<?, TimestampType> nil() {
-		return TimestampHolder.NULL_HOLDER;
-	}
-	
+	}	
 }

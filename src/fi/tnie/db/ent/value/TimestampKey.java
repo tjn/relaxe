@@ -67,9 +67,9 @@ public final class TimestampKey<A extends Attribute, E extends Entity<A, ?, ?, E
 		return TimestampHolder.valueOf(newValue);
 	}
 	
-	@Override
-	public TimestampKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
-		return meta.getTimestampKey(name());
-	}
+//	@Override
+//	public TimestampKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
+//		return meta.getTimestampKey(name());
+//	}
 	
 }

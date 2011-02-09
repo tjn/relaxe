@@ -65,8 +65,8 @@ public final class CharKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		return CharHolder.valueOf(newValue);
 	}
 	
-	@Override
-	public CharKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
-		return meta.getCharKey(name());
-	}		
+//	@Override
+//	public CharKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
+//		return meta.getCharKey(name());
+//	}		
 }

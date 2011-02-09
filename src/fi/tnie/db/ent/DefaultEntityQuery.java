@@ -151,7 +151,8 @@ public class DefaultEntityQuery<
 			for (A a : meta.attributes()) {
 				Column c = meta.getColumn(a);
 				ColumnReference cr = new ColumnReference(tref, c);
-				p.add(new ValueElement(cr, cr.getColumnName()));
+//				p.add(new ValueElement(cr, cr.getColumnName()));
+				p.add(new ValueElement(cr));
 			}
 
 
@@ -163,10 +164,12 @@ public class DefaultEntityQuery<
 			for (R r : meta.relationships()) {
 				ForeignKey fk = meta.getForeignKey(r);
 				kc.addAll(fk.columns().keySet());
-			}
+			}		
+			
 
-			for (Column c : kc) {
-				p.add(new ValueElement(new ColumnReference(tref, c)));
+			for (Column c : kc) {				
+				ColumnReference cr = new ColumnReference(tref, c);
+				p.add(new ValueElement(cr));
 			}
 
 //			logger().debug("projection: " + p);

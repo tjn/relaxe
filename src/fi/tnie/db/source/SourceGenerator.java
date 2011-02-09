@@ -886,6 +886,8 @@ public class SourceGenerator {
 	    
         {
             String code = attributeKeyList(t, tm);
+            logger().debug("generateInterface: code=" + code);
+            
             src = replaceAll(src, Tag.ATTRIBUTE_KEY_LIST, code);
         }
 
@@ -1081,6 +1083,7 @@ public class SourceGenerator {
 	}
 
     private String createAttributeType(String template, String name, String constants) {
+    	
         String src = replaceAll(template, "{{attribute-type}}", name);
         src = replaceAll(src, "{{attribute-constants}}", constants);
         return src;
@@ -1213,6 +1216,7 @@ public class SourceGenerator {
 
         {
             String code = attributeKeyMapList(t, tm);
+            logger().debug("generateImplementation: code=" + code);            
             src = replaceAll(src, Tag.ATTRIBUTE_KEY_MAP_LIST, code);
         }
                 
@@ -1238,7 +1242,8 @@ public class SourceGenerator {
         }
         
         {
-            String code = valueAccessorList(t, tm, true);     
+            String code = valueAccessorList(t, tm, true);
+            logger().debug("generateImplementation: code=" + code);
             src = replaceAll(src, Tag.VALUE_ACCESSOR_LIST, code);
         }
 
@@ -1287,7 +1292,7 @@ public class SourceGenerator {
         JavaType intf = tm.entityType(t, Part.INTERFACE);
         
         buf.append("private transient ");
-        buf.append(at.getName());
+        buf.append(at.getCanonicalName());
         buf.append("<");
         buf.append("Attribute");        
         buf.append(", ");
@@ -1332,7 +1337,7 @@ public class SourceGenerator {
         	buf.append("public ");
         }
         
-        buf.append(at.getName());
+        buf.append(at.getCanonicalName());
         buf.append("<");
         buf.append("Attribute");        
         buf.append(", ");
@@ -1352,7 +1357,7 @@ public class SourceGenerator {
 	        buf.append("this.");
 	        buf.append(vv);
 	        buf.append(" = new ");
-	        buf.append(getSimpleName(at));
+	        buf.append(at.getCanonicalName());
 	        buf.append("<Attribute, ");
 	        buf.append(intf.getUnqualifiedName());
 	        buf.append(">(self(), ");
@@ -1371,73 +1376,9 @@ public class SourceGenerator {
 		return decapitalize(name(c.getColumnName().getName()));
 	}
 
-	private String metaDataKeyAccessor(Class<?> kt, int occurences, BaseTable table, TableMapper tm) {
-		StringBuffer content = new StringBuffer();
-		JavaType intf = tm.entityType(table, Part.INTERFACE);
-
-//      Example of desired output:
-//		==============================================================
-//		@Override
-//		public IntegerKey<Attribute, Person> getIntegerKey(Attribute attribute) {
-//			return key(fi.tnie.db.gen.ent.personal.Person.CREATED_AT, name);
-//				throw new NullPointerException("attribute");
-//			}
-//			
-//			return integerKeyMap.get(attribute);
-//		}
-//  
-//      or (if there is only one attribute of the type:)
-//		
-//		@Override
-//		public IntegerKey<Attribute, Person> getIntegerKey(Attribute name) {
-//			return key(fi.tnie.db.gen.ent.personal.Person.ID, name);
-//		}
-		
-		content.append("@Override public ");		
-		content.append(kt.getName());
-		content.append("<Attribute, ");
-		content.append(intf.getUnqualifiedName());
-		content.append("> get");
-		content.append(getSimpleName(kt));
-		content.append("(Attribute name) {\n");		
-		
-		if (occurences == 0) {
-			content.append("if (name == null) {\n");
-			content.append("throw new NullPointerException(\"name\");\n}\n\n");
-			
-			content.append("return null;\n");
-		}
-		
-		if (occurences == 1) {
-			// we expect only to find a single column in this case:			
-			Column col = getFirstWithKeyType(table, tm, kt);
-						
-			if (col == null) {
-				content.append("return null;\n");
-			}
-			else {
-				content.append("return key(");
-				content.append(keyConstantExpression(table, col, intf));				
-				content.append(", name);\n");				
-			}			
-		}
-		
-		if (occurences > 1) {			
-			content.append("return ");
-			content.append(getKeyMapVariable(kt));			
-			content.append(".get(name);\n");
-		}
-				
-		content.append("}\n");
-				
-		return content.toString();
-	}
-
 	private String metaDataInitialization(BaseTable t, TableMapper tm) {
 		List<Column> acl = getAttributeColumnList(t, tm);        
         StringBuffer content = new StringBuffer();        
-//        Map<Class<?>, Integer> tom = keyTypeOccurenceMap(t, tm);        
-//        JavaType intf = tm.entityType(t, Part.INTERFACE);
         
         for (Column c : acl) {
         	AttributeInfo a = tm.getAttributeInfo(t, c);
@@ -1448,7 +1389,7 @@ public class SourceGenerator {
         		logger().warn("no key type for column " + c.getUnqualifiedName());
         	}
         	else {
-	        	content.append(kt.getName());
+	        	content.append(kt.getCanonicalName());
 	        	content.append(".get(this, Attribute.");        	
 	        	content.append(attr(c));
 	        	content.append(");\n");
@@ -1507,7 +1448,9 @@ public class SourceGenerator {
         	Class<?> k = a.getKeyType();
         	
         	if (k == null) {
-        		logger().warn("no key type for column-type : " + c.getDataType().getTypeName());        		
+        		logger().warn("no key type for column : " + c.getColumnName().getName());
+        		logger().warn("column-data-type : " + c.getDataType().getDataType());
+        		logger().warn("column-type-name : " + c.getDataType().getTypeName());        		
         	}
         	else {
             	Integer o = tom.get(k);
@@ -1575,7 +1518,7 @@ public class SourceGenerator {
         buf.append("private java.util.Map<");
         buf.append("Attribute");
         buf.append(", ");
-        buf.append(keyType.getName());
+        buf.append(keyType.getCanonicalName());
         buf.append("<");
         buf.append("Attribute");
         buf.append(", ");        
@@ -1585,25 +1528,35 @@ public class SourceGenerator {
         buf.append(" = new java.util.HashMap<");
         buf.append("Attribute");
         buf.append(", ");
-        buf.append(keyType.getName());
+        buf.append(keyType.getCanonicalName());
         buf.append("<");
         buf.append("Attribute");
         buf.append(", ");        
         buf.append(intf.getUnqualifiedName());        
         buf.append(">>();\n");
+
         
         
-        buf.append("@Override ");
+        String kt = null;
+        
+        if (keyType.getEnclosingClass() == null) {
+        	kt = getSimpleName(keyType);
+        }
+        else {
+        	kt = getSimpleName(keyType, true) + getSimpleName(keyType.getEnclosingClass());
+        }
+        
+        buf.append("@Override\n");
         buf.append("protected java.util.Map<");
         buf.append("Attribute");
         buf.append(", ");
-        buf.append(keyType.getName());
+        buf.append(keyType.getCanonicalName());
         buf.append("<");
         buf.append("Attribute");
         buf.append(", ");        
         buf.append(intf.getUnqualifiedName());        
         buf.append(">> get");
-        buf.append(getSimpleName(keyType));
+        buf.append(kt);
         buf.append("Map() {");
         buf.append("return this.");
         buf.append(getKeyMapVariable(keyType));
@@ -1617,20 +1570,29 @@ public class SourceGenerator {
 		StringBuffer buf = new StringBuffer();
 
 		AttributeInfo a = tm.getAttributeInfo(t, c);		
-        Class<?> kt = a.getKeyType();
+        Class<?> kc = a.getKeyType();
         
         JavaType intf = tm.entityType(t, Part.INTERFACE);
                         
-        if (kt == null) {
+        if (kc == null) {
         	return "";
         }
         
         JavaType impl = tm.entityType(t, Part.IMPLEMENTATION);
         
+        String n = null;
+        
+        if (kc.getEnclosingClass() == null) {
+        	n = getSimpleName(kc);
+        }
+        else {
+        	n = getSimpleName(kc, true) + getSimpleName(kc.getEnclosingClass());
+        }
+        
         // public static final IntegerKey<Attribute, Person> ID = new IntegerKey<Attribute, Person>(Attribute.ID);"
         
         buf.append("public static final ");
-        buf.append(kt.getName());
+        buf.append(kc.getCanonicalName());
         buf.append("<");
         buf.append("Attribute");        
         buf.append(", ");
@@ -1642,7 +1604,7 @@ public class SourceGenerator {
         buf.append(".");
         buf.append(intf.getUnqualifiedName());
         buf.append("MetaData.getInstance().get");        
-        buf.append(getSimpleName(kt));
+        buf.append(n);
         buf.append("(");
         buf.append("Attribute");
         buf.append(".");
@@ -1698,7 +1660,7 @@ public class SourceGenerator {
         Class<?> attributeType = info.getAttributeType();
         Class<?> holderType = info.getHolderType();
         
-        final String type = attributeType.getName();
+        final String type = attributeType.getCanonicalName();
 
         StringBuffer nb = new StringBuffer();
         final String n = name(c.getColumnName().getName());
@@ -1781,9 +1743,13 @@ public class SourceGenerator {
 
         return nb.toString();
     }
+    
+    private String getSimpleName(Class<?> attributeType) {
+    	return getSimpleName(attributeType, false);
+    }
 
-	private String getSimpleName(Class<?> attributeType) {
-		String tn = attributeType.getName();
+	private String getSimpleName(Class<?> attributeType, boolean canon) {
+		String tn = canon ? attributeType.getCanonicalName() : attributeType.getName(); 
 		int pos = tn.lastIndexOf(".");                
 		tn = tn.substring(pos < 0 ? 0 : pos + 1);
 		return tn;
@@ -1792,7 +1758,12 @@ public class SourceGenerator {
 	
 	private String getKeyMapVariable(Class<?> keyType) {
 		StringBuffer buf = new StringBuffer();
+		
 		String n = getSimpleName(keyType) + "Map";
+		
+		n = n.replace("$", "");		
+//		n = n.replace('$', '_');		
+		
 		decapitalize(n, buf);
 		return buf.toString();
 	}
@@ -1845,7 +1816,16 @@ public class SourceGenerator {
  
 		
 		for (Column c : cols) {
-			AttributeInfo ai = tm.getAttributeInfo(t, c);			
+			AttributeInfo ai = tm.getAttributeInfo(t, c);
+			
+			
+			if (ai.getKeyType() == null) {
+	    		logger().warn("no key type for column : " + c.getColumnName().getName());
+	    		logger().warn("column-data-type : " + c.getDataType().getDataType());
+	    		logger().warn("column-type-name : " + c.getDataType().getTypeName());
+			}
+			
+			
 			content.append(attr(c));
 			content.append("(");			
 			PrimitiveType<?> pt = ai.getPrimitiveType();
@@ -1854,7 +1834,7 @@ public class SourceGenerator {
 				content.append("null");
 			}
 			else {
-				content.append(pt.getClass().getName());
+				content.append(pt.getClass().getCanonicalName());
 				content.append(".TYPE");
 			}
 			

@@ -65,8 +65,8 @@ public final class IntegerKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		return IntegerHolder.valueOf(newValue);
 	}
 	
-	@Override
-	public IntegerKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
-		return meta.getIntegerKey(name());
-	}
+//	@Override
+//	public IntegerKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
+//		return meta.getIntegerKey(name());
+//	}
 }

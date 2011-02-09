@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.ent;
 
-
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,15 +11,19 @@ import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.IntegerKey;
+import fi.tnie.db.ent.value.IntervalKey;
 import fi.tnie.db.ent.value.Key;
+import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.rpc.IntegerHolder;
+import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
+import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.ReferenceType;
@@ -73,7 +75,11 @@ public abstract class DefaultEntity<
 	private Map<A, CharHolder> charValueMap;
 	private Map<A, DateHolder> dateValueMap;
 	private Map<A, TimestampHolder> timestampValueMap;
+	private Map<A, TimeHolder> timeValueMap;
 	private Map<A, DoubleHolder> doubleValueMap;
+	
+	private Map<A, IntervalHolder.YearMonth> yearMonthIntervalValueMap;
+	private Map<A, IntervalHolder.DayTime> dayTimeIntervalValueMap;
 	
 	
 	
@@ -118,7 +124,7 @@ public abstract class DefaultEntity<
 
 	@Override
 	public DateHolder getDate(DateKey<A, E> k) {
-		return getDateValueMap().get(k);	
+		return getDateValueMap().get(k.name());	
 	}
 
 	private Map<A, DoubleHolder> getDoubleValueMap() {
@@ -138,6 +144,18 @@ public abstract class DefaultEntity<
 	public IntegerHolder getInteger(IntegerKey<A, E> k) {
 		return getIntValueMap().get(k.name());
 	}
+	
+	@Override
+	public fi.tnie.db.rpc.IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, E> k) {
+		return getDayTimeIntervalValueMap().get(k.name());
+	}
+	
+	@Override
+	public fi.tnie.db.rpc.IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, E> k) {
+		return getYearMonthIntervalValueMap().get(k.name());
+	}
+	
+	
 
 	@Override
 	public VarcharHolder getVarchar(VarcharKey<A, E> k) {
@@ -151,10 +169,23 @@ public abstract class DefaultEntity<
 
 		return timestampValueMap;
 	}
+	
+	private Map<A, TimeHolder> getTimeValueMap() {
+		if (timeValueMap == null) {
+			timeValueMap = new HashMap<A, TimeHolder>();
+		}
+
+		return timeValueMap;
+	}
 
 	@Override
 	public TimestampHolder getTimestamp(TimestampKey<A, E> k) {
 		return getTimestampValueMap().get(k.name());
+	}
+	
+	@Override
+	public TimeHolder getTime(TimeKey<A, E> k) {
+		return getTimeValueMap().get(k.name());
 	}
 	
 	private Map<A, CharHolder> getCharValueMap() {
@@ -211,15 +242,49 @@ public abstract class DefaultEntity<
 	@Override
 	public void setTimestamp(TimestampKey<A, E> k, TimestampHolder newValue) {
 		getTimestampValueMap().put(k.name(), newValue);		
-	};
+	}
+	
+	@Override
+	public void setTime(TimeKey<A, E> k, TimeHolder newValue) {
+		getTimeValueMap().put(k.name(), newValue);		
+	}
+	
+	@Override
+	public void setInterval(IntervalKey.DayTime<A, E> k,
+			fi.tnie.db.rpc.IntervalHolder.DayTime newValue) {
+		getDayTimeIntervalValueMap().put(k.name(), newValue);
+	}
+	
+	@Override
+	public void setInterval(IntervalKey.YearMonth<A, E> k,
+			fi.tnie.db.rpc.IntervalHolder.YearMonth newValue) {
+		getYearMonthIntervalValueMap().put(k.name(), newValue);		
+	}
 	
 	public fi.tnie.db.rpc.PrimitiveHolder<?,?> value(A attribute) {
 		Key<A, ?, ?, ?, E, ?> key = getMetaData().getKey(attribute);
-		return key.get(self());		
+		return key.get(self());
 	};
 
 	public <S extends Serializable, P extends fi.tnie.db.types.PrimitiveType<P>, H extends fi.tnie.db.rpc.PrimitiveHolder<S,P>, K extends fi.tnie.db.ent.value.Key<A,S,P,H,E,K>> H get(K k) {
 		return k.get(self());		
+	}
+
+	private Map<A, IntervalHolder.YearMonth> getYearMonthIntervalValueMap() {
+		if (yearMonthIntervalValueMap == null) {
+			yearMonthIntervalValueMap = new HashMap<A, IntervalHolder.YearMonth>();			
+		}
+
+		return yearMonthIntervalValueMap;
+	}
+
+	private Map<A, IntervalHolder.DayTime> getDayTimeIntervalValueMap() {
+		if (dayTimeIntervalValueMap == null) {
+			dayTimeIntervalValueMap = new HashMap<A, IntervalHolder.DayTime>();
+			
+		}
+
+		return dayTimeIntervalValueMap;
 	};
 
 

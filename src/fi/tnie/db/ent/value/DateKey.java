@@ -41,7 +41,7 @@ public final class DateKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		if (k == null) {
 			PrimitiveType<?> t = meta.getAttributeType(a);
 			
-			if (t != null && t.getSqlType() == PrimitiveType.DATE) {
+			if (t == DateType.TYPE) {
 				k = new DateKey<X, T>(meta, a);
 			}			
 		}
@@ -67,9 +67,9 @@ public final class DateKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		return DateHolder.valueOf(newValue);
 	}
 
-	@Override
-	public DateKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {		
-		return meta.getDateKey(name());
-	}
+//	@Override
+//	public DateKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {		
+//		return meta.getDateKey(name());
+//	}
 
 }

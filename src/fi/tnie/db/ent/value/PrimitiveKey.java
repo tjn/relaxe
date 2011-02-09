@@ -90,7 +90,5 @@ public abstract class PrimitiveKey<
 	private boolean nameEquals(PrimitiveKey<?, ?, ?, ?, ?, ?> pk) {		
 		return name().equals(pk.name());
 	}
-
-	public abstract K normalize(EntityMetaData<A, ?, ?, E> meta);
 	
 }

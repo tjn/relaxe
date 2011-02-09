@@ -27,6 +27,7 @@ import fi.tnie.db.ent.EntityQueryException;
 import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.MultipleEntityQueryResult;
 import fi.tnie.db.ent.SingleEntityQueryResult;
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.exec.QueryFilter;
 import fi.tnie.db.exec.QueryOffsetProcessor;
 import fi.tnie.db.exec.QueryProcessor;
@@ -49,13 +50,15 @@ public class DefaultEntityQueryTask<
 
 	private EntityQuery<A, R, T, E> entityQuery;
 	private EntityFactory<A, R, T, E> factory;
+	private Implementation implementation;
 
 	private static Logger logger = Logger.getLogger(DefaultEntityQueryTask.class);
 
-	public DefaultEntityQueryTask(EntityQuery<A, R, T, E> query) {
+	public DefaultEntityQueryTask(EntityQuery<A, R, T, E> query, Implementation implementation) {
 		super();
 		this.entityQuery = query;
 		this.factory = query.getMetaData().getFactory();
+		this.implementation = implementation;
 	}
 
 
@@ -99,9 +102,11 @@ public class DefaultEntityQueryTask<
 			DefaultTableExpression qo = this.entityQuery.getQuery();
 
 			String qs = qo.generate();
+			logger().debug("exec: qs=" + qs);
 
 			ps = c.prepareStatement(qs);
-			qo.traverse(null, new ParameterAssignment(ps));
+			
+			qo.traverse(null, new AssignmentVisitor(implementation.getValueAssignerFactory(), ps));
 
 			final EntityQueryProcessor ep = new EntityQueryProcessor(entityQuery, qo);
 
@@ -195,10 +200,11 @@ public class DefaultEntityQueryTask<
 			List<? extends ColumnName> cl = qo.getSelect().getColumnNameList().getContent();
 
 			Extractor[] xa = new Extractor[cl.size()];
-//			List<AttributeExtractor<A, R, T, E>> awl = new ArrayList<AttributeExtractor<A, R, T, E>>();
 			List<AttributeExtractor<?, ?, ?, A, E, ?>> awl = new ArrayList<AttributeExtractor<?, ?, ?, A, E, ?>>();
 
 			DefaultValueExtractorFactory vef = new DefaultValueExtractorFactory();
+			
+			logger().debug("EntityQueryProcessor: qo.getSelect().getColumnNameList().getContent()=" + qo.getSelect().getColumnNameList().getContent());
 
 			for (ColumnName n : qo.getSelect().getColumnNameList().getContent()) {
 				colno++;
@@ -212,8 +218,12 @@ public class DefaultEntityQueryTask<
 				ValueExtractor<?, ?, ?> e = null;
 
 				A a = meta.getAttribute(column);
+				
+				if (a == null) {
+					continue;
+				}				
+				
 				AttributeExtractor<?, ?, ?, A, E, ?> ae = null;
-
 
 				switch (sqltype) {
 					case Types.INTEGER:

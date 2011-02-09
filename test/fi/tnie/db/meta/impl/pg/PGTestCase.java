@@ -144,6 +144,5 @@ public abstract class PGTestCase
     public void createDatabase()
         throws IOException, InterruptedException {        
         pg().createDatabase();        
-     }
-	
+    }	
 }

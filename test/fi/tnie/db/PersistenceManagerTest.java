@@ -7,15 +7,24 @@ import java.sql.Connection;
 
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.gen.ent.personal.DefaultPerson;
 import fi.tnie.db.gen.ent.personal.PersonalFactory;
-import fi.tnie.db.genctx.CatalogContext;
 import fi.tnie.db.map.TableMapper;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.DBMetaTestCase;
 
 public class PersistenceManagerTest extends DBMetaTestCase  {
+	
+	@Override
+	protected void setUp() throws Exception {
+	
+//		PGImplementation impl = new PGImplementation();		
+//		new SimpleTestContext(impl, driver, jdbcURL, driverConfig)		
+//		init(ctx)		
+//		super.setUp();
+	}
 
     public void testPersistenceManager() 
         throws Exception {
@@ -30,22 +39,24 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
         
         // ClassLoader gcl = createClassLoaderForGenerated();
         ClassLoader gcl = null;
+        
+        LiteralCatalog cc = LiteralCatalog.getInstance();
                 
-        CatalogContext cc = new CatalogContext(cat, gcl, tm);
+//        CatalogContext cc = new CatalogContext(cat, gcl, tm);
                         
-        assertEquals(cat, cc.boundTo());                
-        assertFalse(cc.getMetaMap().isEmpty());
+//        assertEquals(cat, cc.boundTo());                
+//        assertFalse(cc.getMetaMap().isEmpty());
                        
         BaseTable ct = getContinentTable(cat);
         assertNotNull(ct);
         
-        logger().debug("bound tables: " + cc.getMetaMap().keySet());
-        logger().debug("key-table: " + ct);
-        logger().debug("key-table-loader: " + ct.getClass().getClassLoader());
-        
-        logger().debug("bound-table-loader: " + cc.getMetaMap().keySet().iterator().next().getClass().getClassLoader());
-        
-        assertTrue(cc.getMetaMap().containsKey(ct));               
+//        logger().debug("bound tables: " + cc.getMetaMap().keySet());
+//        logger().debug("key-table: " + ct);
+//        logger().debug("key-table-loader: " + ct.getClass().getClassLoader());
+//        
+//        logger().debug("bound-table-loader: " + cc.getMetaMap().keySet().iterator().next().getClass().getClassLoader());
+                
+//        assertTrue(cc.getMetaMap().containsKey(ct));               
                         
         EntityMetaData<?, ?, ?, ?> meta = cc.getMetaData(ct);
         assertNotNull(meta);

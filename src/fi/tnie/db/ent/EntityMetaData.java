@@ -10,7 +10,9 @@ import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.IntegerKey;
+import fi.tnie.db.ent.value.IntervalKey;
 import fi.tnie.db.ent.value.Key;
+import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.meta.BaseTable;
@@ -82,6 +84,10 @@ public interface EntityMetaData<
 	DoubleKey<A, E> getDoubleKey(A a);
 	CharKey<A, E> getCharKey(A a);
 	TimestampKey<A, E> getTimestampKey(A a);
+	TimeKey<A, E> getTimeKey(A a);
+	
+	IntervalKey.YearMonth<A, E> getYearMonthIntervalKey(A a);
+	IntervalKey.DayTime<A, E> getDayTimeIntervalKey(A a);
 
 	ForeignKey getForeignKey(R r);
 	Set<Column> getPKDefinition();
@@ -110,6 +116,9 @@ public interface EntityMetaData<
 	void addKey(CharKey<A, E> key);
 	void addKey(DateKey<A, E> key);
 	void addKey(VarcharKey<A, E> key);
-	void addKey(TimestampKey<A, E> key);
+	void addKey(TimestampKey<A, E> key);	
+	void addKey(TimeKey<A, E> key);
+	void addKey(IntervalKey.YearMonth<A, E> key);
+	void addKey(IntervalKey.DayTime<A, E> key);
 	
 }

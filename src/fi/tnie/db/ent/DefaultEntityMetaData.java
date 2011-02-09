@@ -14,7 +14,9 @@ import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.IntegerKey;
+import fi.tnie.db.ent.value.IntervalKey;
 import fi.tnie.db.ent.value.Key;
+import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.meta.BaseTable;
@@ -262,6 +264,14 @@ public abstract class DefaultEntityMetaData<
 	public fi.tnie.db.ent.value.IntegerKey<A, E> getIntegerKey(A name) {		
 		return key(name, getIntegerKeyMap());		
 	}
+	
+	public fi.tnie.db.ent.value.IntervalKey.YearMonth<A, E> getYearMonthIntervalKey(A name) {		
+		return key(name, getYearMonthIntervalKeyMap());		
+	}
+	
+	public fi.tnie.db.ent.value.IntervalKey.DayTime<A, E> getDayTimeIntervalKey(A name) {		
+		return key(name, getDayTimeIntervalKeyMap());		
+	}	
 
 	public fi.tnie.db.ent.value.VarcharKey<A, E> getVarcharKey(A name) {		 
 		return key(name, getVarcharKeyMap());
@@ -269,6 +279,10 @@ public abstract class DefaultEntityMetaData<
 	
 	public fi.tnie.db.ent.value.TimestampKey<A, E> getTimestampKey(A name) {		
 		return key(name, getTimestampKeyMap());
+	}
+
+	public fi.tnie.db.ent.value.TimeKey<A, E> getTimeKey(A name) {		
+		return key(name, getTimeKeyMap());
 	}
 	
 	public fi.tnie.db.ent.value.DateKey<A, E> getDateKey(A name) {		
@@ -284,7 +298,18 @@ public abstract class DefaultEntityMetaData<
 		return key(name, getCharKeyMap());
 	}
 	
+		
 	protected java.util.Map<A, IntegerKey<A, E>> getIntegerKeyMap() {
+		return null;
+	}
+
+	
+	
+	protected java.util.Map<A, IntervalKey.YearMonth<A, E>> getYearMonthIntervalKeyMap() {
+		return null;
+	}
+	
+	protected java.util.Map<A, IntervalKey.DayTime<A, E>> getDayTimeIntervalKeyMap() {
 		return null;
 	}
 		
@@ -302,6 +327,10 @@ public abstract class DefaultEntityMetaData<
 	protected java.util.Map<A, TimestampKey<A, E>> getTimestampKeyMap() {
 		return null;
 	}
+
+	protected Map<A, TimeKey<A, E>> getTimeKeyMap() {
+		return null;
+	}	
 	
 	protected java.util.Map<A, DoubleKey<A, E>> getDoubleKeyMap() {
 		return null;
@@ -337,6 +366,21 @@ public abstract class DefaultEntityMetaData<
     	addAttributeKey(key, getTimestampKeyMap());    	
     }
 
+    @Override
+    public void addKey(TimeKey<A, E> key) {        	
+    	addAttributeKey(key, getTimeKeyMap());    	
+    }
+
+    @Override
+    public void addKey(IntervalKey.YearMonth<A, E> key) {        	
+    	addAttributeKey(key, getYearMonthIntervalKeyMap());    	
+    }
+
+    @Override
+    public void addKey(IntervalKey.DayTime<A, E> key) {        	
+    	addAttributeKey(key, getDayTimeIntervalKeyMap());    	
+    }    
+
 	private Map<A, Key<A, ?, ?, ?, E, ?>> getKeyMap() {
 		if (keyMap == null) {
 			keyMap = createKeyMap();
@@ -346,7 +390,7 @@ public abstract class DefaultEntityMetaData<
 			}
 		}
 
-		return keyMap;		
+		return keyMap;
 	}
 	
 	protected Map<A, Key<A, ?, ?, ?, E, ?>> createKeyMap() {
@@ -411,5 +455,6 @@ public abstract class DefaultEntityMetaData<
 				
 		return (src == null) ? null : src.get(name);
 	}
+
 
 }

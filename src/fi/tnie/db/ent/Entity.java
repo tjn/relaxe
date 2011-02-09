@@ -10,8 +10,10 @@ import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.rpc.IntegerHolder;
+import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
+import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.PrimitiveType;
@@ -20,7 +22,9 @@ import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.IntegerKey;
+import fi.tnie.db.ent.value.IntervalKey;
 import fi.tnie.db.ent.value.Key;
+import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.meta.Column;
@@ -118,8 +122,13 @@ public interface Entity<
 	VarcharHolder getVarchar(VarcharKey<A, E> k);
 	DateHolder getDate(DateKey<A, E> k);
 	TimestampHolder getTimestamp(TimestampKey<A, E> k);
+	
+	TimeHolder getTime(TimeKey<A, E> k);
 	CharHolder getChar(CharKey<A, E> k);
 	DoubleHolder getDouble(DoubleKey<A, E> k);
+	
+	IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, E> k);
+	IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, E> k);
 	
 //	Map<VarcharKey<A, E>, VarcharHolder> getVarcharValueMap();
 	
@@ -129,7 +138,12 @@ public interface Entity<
 	void setChar(CharKey<A, E> k, CharHolder newValue);
 	void setDate(DateKey<A, E> k, DateHolder newValue);
 	void setTimestamp(TimestampKey<A, E> k, TimestampHolder newValue);
+	void setTime(TimeKey<A, E> k, TimeHolder newValue);
 	void setDouble(DoubleKey<A, E> k, DoubleHolder newValue);
+	
+	void setInterval(IntervalKey.YearMonth<A, E> k, IntervalHolder.YearMonth newValue);
+	void setInterval(IntervalKey.DayTime<A, E> k, IntervalHolder.DayTime newValue);
+	
 			
 	/**
 	 * TODO: EntityQueryTask should be also rewritten to use DataObjectReader

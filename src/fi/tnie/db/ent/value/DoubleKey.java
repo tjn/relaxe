@@ -65,9 +65,9 @@ public final class DoubleKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		return DoubleHolder.valueOf(newValue);
 	}
 	
-	@Override
-	public DoubleKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
-		return meta.getDoubleKey(name());
-	}
-		
+//	@Override
+//	public DoubleKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
+//		return meta.getDoubleKey(name());
+//	}
+//		
 }

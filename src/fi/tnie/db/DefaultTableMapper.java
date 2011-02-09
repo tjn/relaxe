@@ -16,6 +16,10 @@ import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.DoubleAccessor;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntegerAccessor;
+import fi.tnie.db.ent.value.IntervalAccessor;
+import fi.tnie.db.ent.value.IntervalKey;
+import fi.tnie.db.ent.value.TimeAccessor;
+import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.TimestampAccessor;
 import fi.tnie.db.ent.value.VarcharKey;
@@ -31,6 +35,9 @@ import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.rpc.IntegerHolder;
+import fi.tnie.db.rpc.Interval;
+import fi.tnie.db.rpc.IntervalHolder;
+import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.source.DefaultAttributeInfo;
@@ -38,6 +45,8 @@ import fi.tnie.db.types.CharType;
 import fi.tnie.db.types.DateType;
 import fi.tnie.db.types.DoubleType;
 import fi.tnie.db.types.IntegerType;
+import fi.tnie.db.types.IntervalType;
+import fi.tnie.db.types.TimeType;
 import fi.tnie.db.types.TimestampType;
 import fi.tnie.db.types.VarcharType;
 
@@ -217,6 +226,15 @@ public class DefaultTableMapper
         	a.setAccessorType(DateAccessor.class);
         	a.setPrimitiveType(DateType.TYPE);
             break;
+            
+        case Types.TIME:            
+        	a.setAttributeType(Date.class);
+        	a.setHolderType(TimeHolder.class);
+        	a.setKeyType(TimeKey.class);
+        	a.setAccessorType(TimeAccessor.class);
+        	a.setPrimitiveType(TimeType.TYPE);
+            break;
+            
         case Types.TIMESTAMP:
         	a.setAttributeType(Date.class);
         	a.setHolderType(TimestampHolder.class);
@@ -224,6 +242,36 @@ public class DefaultTableMapper
         	a.setAccessorType(TimestampAccessor.class);
         	a.setPrimitiveType(TimestampType.TYPE);
             break;
+            
+        case Types.DISTINCT:
+	        {
+	        	String tn = c.getDataType().getTypeName();
+	        	
+	        	if (tn.equals("interval_ym")) {        	
+		        	a.setAttributeType(Interval.YearMonth.class);
+		        	a.setHolderType(IntervalHolder.YearMonth.class);
+		        	a.setKeyType(IntervalKey.YearMonth.class);
+		        	a.setAccessorType(IntervalAccessor.YearMonth.class);
+		        	a.setPrimitiveType(IntervalType.YearMonth.TYPE);
+	        	}
+	        }
+         	
+        	break;
+            
+        case Types.OTHER:
+	        {
+	        	String tn = c.getDataType().getTypeName();
+	        	
+	        	if (tn.equals("interval")) {        	
+		        	a.setAttributeType(Interval.DayTime.class);
+		        	a.setHolderType(IntervalHolder.DayTime.class);
+		        	a.setKeyType(IntervalKey.DayTime.class);
+		        	a.setAccessorType(IntervalAccessor.DayTime.class);
+		        	a.setPrimitiveType(IntervalType.DayTime.TYPE);
+	        	}
+	        }
+        	break;
+            
         default:                
             break;
     }

@@ -28,6 +28,11 @@ public class DateHolder
 		return (value == null) ? NULL_HOLDER : new DateHolder(value);
 	}
 	
+	public static DateHolder currentDate() {
+		return new DateHolder(new Date());
+	}
+	
+	
 	private DateHolder() {		
 	}
 	

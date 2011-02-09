@@ -8,6 +8,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Comparator;
 
+import fi.tnie.db.DefaultValueExtractorFactory;
 import fi.tnie.db.ExtractorMap;
 import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.Attribute;
@@ -115,5 +116,10 @@ public class PGImplementation
 
 	public PGEnvironment getEnvironment() {
 		return environment;
+	}
+	
+	@Override
+	protected DefaultValueExtractorFactory createValueExtractorFactory() {
+		return new PGValueExtractorFactory();
 	}
 }

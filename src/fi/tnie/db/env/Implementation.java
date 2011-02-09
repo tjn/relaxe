@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.env;
 
+import fi.tnie.db.ValueAssignerFactory;
 import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.meta.Environment;
@@ -20,6 +21,7 @@ public interface Implementation
 
 	
 	GeneratedKeyHandler generatedKeyHandler();
-	ValueExtractorFactory getValueExtractorFactory();
-
+	ValueExtractorFactory getValueExtractorFactory();			
+	ValueAssignerFactory getValueAssignerFactory(); 
+		
 }

@@ -25,4 +25,7 @@ public interface ValueExtractorFactory {
 	CharExtractor createCharExtractor(int col);
 	DoubleExtractor createDoubleExtractor(int col);
 	TimestampExtractor createTimestampExtractor(int col);
+	
+	IntervalExtractor.YearMonth createYearMonthIntervalExtractor(int col);
+	IntervalExtractor.DayTime createDayTimeIntervalExtractor(int col);
 }

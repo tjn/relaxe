@@ -35,6 +35,10 @@ public class ValueElement
 		this(expr, new ColumnName(newName));		
 	}
 	
+	public ValueElement(ColumnReference cr) {
+		this(cr, cr.getColumnName());
+	}
+	
 	public ValueElement(ValueExpression expr, final ColumnName newName) {		
 		super();
 		

@@ -65,8 +65,8 @@ public final class VarcharKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 		return VarcharHolder.valueOf(newValue);
 	}
 	
-	@Override
-	public VarcharKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
-		return meta.getVarcharKey(name());
-	}
+//	@Override
+//	public VarcharKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
+//		return meta.getVarcharKey(name());
+//	}
 }

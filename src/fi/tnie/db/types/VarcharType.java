@@ -3,9 +3,6 @@
  */
 package fi.tnie.db.types;
 
-import fi.tnie.db.rpc.PrimitiveHolder;
-import fi.tnie.db.rpc.VarcharHolder;
-
 public class VarcharType
 	extends PrimitiveType<VarcharType> {
 
@@ -18,9 +15,4 @@ public class VarcharType
 	public int getSqlType() {
 		return PrimitiveType.VARCHAR;
 	}
-
-	@Override
-	public PrimitiveHolder<?, VarcharType> nil() {
-		return VarcharHolder.NULL_HOLDER;
-	}	
 }

@@ -3,24 +3,14 @@
  */
 package fi.tnie.db.types;
 
-import fi.tnie.db.rpc.PrimitiveHolder;
-
-public class OtherType
-	extends PrimitiveType<OtherType> {
+public abstract class OtherType<T extends OtherType<T>>
+	extends PrimitiveType<T> {
 	
-	public static final OtherType TYPE = new OtherType();
-	
-	private OtherType() {		
+	protected OtherType() {		
 	}
 	
 	@Override
-	public int getSqlType() {
+	public final int getSqlType() {
 		return PrimitiveType.OTHER;
 	}
-	
-	@Override
-	public PrimitiveHolder<?, OtherType> nil() {
-		return null; // TODO: implement OtherHolder		
-	}
-	
 }
