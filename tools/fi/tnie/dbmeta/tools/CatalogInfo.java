@@ -4,6 +4,8 @@
 package fi.tnie.dbmeta.tools;
 
 import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.meta.Schema;
+import fi.tnie.db.meta.SchemaMap;
 import fi.tnie.util.cli.Parser;
 
 public class CatalogInfo
@@ -19,8 +21,20 @@ public class CatalogInfo
     @Override
     public void run() {
         Identifier n = getCatalog().getName();
-        String cat = (n == null) ? null : n.getName();        
+        String cat = (n == null) ? null : n.getName();
         message("Catalog loaded: " + ((cat == null) ? "<unnamed>" : cat));
+        
+        SchemaMap sm = getCatalog().schemas();
+        
+        message("schemas (" + sm.values().size() + ") {");
+        
+        for (Schema s : sm.values()) {
+        	message(s.getUnqualifiedName().getName());        		
+		}
+        
+        message("}");
+        
+        
     }
     
     @Override
