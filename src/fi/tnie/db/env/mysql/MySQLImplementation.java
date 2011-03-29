@@ -33,7 +33,7 @@ import fi.tnie.db.types.ReferenceType;
  * @author Administrator
  *
  */
-public class MySQLEnvironment
+public class MySQLImplementation
 	extends DefaultImplementation {
 
     private MySQLSyntax syntax;

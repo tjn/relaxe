@@ -23,7 +23,7 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
 	
 //	private String schema;	
 		
-	public MySQLCatalogFactory(MySQLEnvironment env) {
+	public MySQLCatalogFactory(MySQLImplementation env) {
 		super(env);	
 	}
 
