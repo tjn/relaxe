@@ -13,7 +13,7 @@ import java.util.List;
 
 import fi.tnie.db.QueryException;
 import fi.tnie.db.env.CatalogFactory;
-import fi.tnie.db.env.mysql.MySQLEnvironment;
+import fi.tnie.db.env.mysql.MySQLImplementation;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.meta.BaseTable;
@@ -108,8 +108,8 @@ public abstract class MySQLTestCase
 		}
 	}
 
-	protected MySQLEnvironment newEnv() {
-		return new MySQLEnvironment();
+	protected MySQLImplementation newEnv() {
+		return new MySQLImplementation();
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public abstract class MySQLTestCase
 		throws QueryException, SQLException {
 	
 		if (catalog == null) {
-			MySQLEnvironment env = newEnv();
+			MySQLImplementation env = newEnv();
 			
 			CatalogFactory cf = env.catalogFactory();
 			

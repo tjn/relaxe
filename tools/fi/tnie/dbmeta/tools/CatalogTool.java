@@ -15,7 +15,7 @@ import fi.tnie.db.QueryException;
 import fi.tnie.db.QueryHelper;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;
-import fi.tnie.db.env.mysql.MySQLEnvironment;
+import fi.tnie.db.env.mysql.MySQLImplementation;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.util.cli.Argument;
@@ -179,8 +179,7 @@ public abstract class CatalogTool {
             setVerbose(cl.has(OPTION_VERBOSE));                        
             
             String jdbcURL = cl.value(require(cl, OPTION_JDBC_URL));
-            // setJdbcURL(jdbcURL);            
-                        
+            // setJdbcURL(jdbcURL);
              
             String environmentTypeName = cl.value(OPTION_ENV);
             
@@ -215,7 +214,7 @@ public abstract class CatalogTool {
         }
      }
     
-     public void init(String jdbcURL, Properties jdbcConfig, Implementation env)
+     public void init(String jdbcURL, Properties jdbcConfig, Implementation impl)
          throws ToolConfigurationException, ToolException {
 
          try {
@@ -227,35 +226,35 @@ public abstract class CatalogTool {
                 throw new NullPointerException("'jdbcConfig' must not be null");
              }
              
-             String environmentTypeName = null;
+             String implementationTypeName = null;
              
-             if (env == null) {
-                 if (jdbcURL.startsWith("jdbc:postgres:")) {
-                     environmentTypeName = PGImplementation.class.getName();
+             if (impl == null) {
+                 if (jdbcURL.toLowerCase().startsWith("jdbc:postgresql:")) {
+                     implementationTypeName = PGImplementation.class.getName();
                  }
                  
-                 if (jdbcURL.startsWith("jdbc:mysql:")) {
-                     environmentTypeName = MySQLEnvironment.class.getName();
+                 if (jdbcURL.toLowerCase().startsWith("jdbc:mysql:")) {
+                     implementationTypeName = MySQLImplementation.class.getName();
                  }
                  
-                 if (environmentTypeName == null) {
+                 if (implementationTypeName == null) {
                      throw new ToolConfigurationException(
                              "Environment-type is not set and " +
                              "can not be determined from jdbc-url: " + jdbcURL);
                  }  
                  
-                 Class<?> environmentType = Class.forName(environmentTypeName);
-                 env = (Implementation) environmentType.newInstance();                 
+                 Class<?> implementationType = Class.forName(implementationTypeName);
+                 impl = (Implementation) implementationType.newInstance();                 
              }
              
              setJdbcURL(jdbcURL);
              setJdbcConfig(jdbcConfig);
-             setImplementation(env);             
+             setImplementation(impl);             
                                                   
-             Class.forName(env.driverClassName());                        
+             Class.forName(impl.driverClassName());                        
              Connection c = createConnection();
              
-             CatalogFactory cf = env.catalogFactory();
+             CatalogFactory cf = impl.catalogFactory();
              final Catalog cat = cf.create(c);
              setConnection(c);
              setCatalog(cat);            

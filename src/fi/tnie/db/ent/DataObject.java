@@ -13,15 +13,7 @@ import fi.tnie.db.rpc.PrimitiveHolder;
 public interface DataObject	
 	extends Serializable
 {	
-	PrimitiveHolder<?, ?> get(int index);
-	
-	/**
-	 * May return null if data object is not read from result-set 
-	 * or value does not map to table column. 
-	 *  
-	 * @param a
-	 * @return
-	 */
+	PrimitiveHolder<?, ?> get(int index);	
 	MetaData meta();
 	
 	public interface MetaData {		
@@ -30,5 +22,4 @@ public interface DataObject
 		public ColumnExpr column(int index);
 		public ValueExpression expr(int index);
 	}
-
 }

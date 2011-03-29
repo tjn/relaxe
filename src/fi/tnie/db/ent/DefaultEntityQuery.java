@@ -7,6 +7,7 @@ package fi.tnie.db.ent;
 import java.util.HashSet;
 import java.util.Set;
 
+import fi.tnie.db.EntityCompositor;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.expr.AbstractTableReference;
@@ -32,14 +33,14 @@ public class DefaultEntityQuery<
 {
 	private EntityMetaData<A, R, T, E> meta;
 	private DefaultTableExpression query;
-
 	private TableReference tableRef;
-
+	private EntityCompositor compositor;
+	
 //	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class);
 
 	public DefaultEntityQuery(EntityMetaData<A, R, T, E> meta) {
 		super();
-		this.meta = meta;
+		this.meta = meta;		
 	}
 
 	public DefaultEntityQuery(E root)
@@ -71,16 +72,17 @@ public class DefaultEntityQuery<
 
 	private
 	<TA extends Attribute, TR>
-	AbstractTableReference fromTemplate(Entity<TA,TR,?,?> template, AbstractTableReference qref, ForeignKey fk, DefaultTableExpression q, Set<Entity<?,?,?,?>> visited)
-		throws CyclicTemplateException
-	{
+	AbstractTableReference fromTemplate(
+			Entity<TA,TR,?,?> template, 
+			AbstractTableReference qref, ForeignKey fk, 
+			DefaultTableExpression q, Set<Entity<?,?,?,?>> visited)
+		throws CyclicTemplateException {
 		if (visited.contains(template)) {
 			throw new CyclicTemplateException(template);
 		}
 		else {
 			visited.add(template);
 		}
-
 
 		Select s = q.getSelect();
 
@@ -89,7 +91,6 @@ public class DefaultEntityQuery<
 		}
 
 		EntityMetaData<TA,TR,?,?> meta = template.getMetaData();
-
 		TableReference tref = null;
 
 		if (qref == null) {
@@ -117,7 +118,6 @@ public class DefaultEntityQuery<
 		}
 
 		// TODO check:
-
 //		Set<TR> rs = meta.relationships();
 //
 //		for (TR r : rs) {

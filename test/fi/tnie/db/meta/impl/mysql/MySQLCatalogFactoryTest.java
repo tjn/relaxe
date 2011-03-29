@@ -14,7 +14,7 @@ import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.DefaultCatalogFactory;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.mysql.MySQLCatalogFactory;
-import fi.tnie.db.env.mysql.MySQLEnvironment;
+import fi.tnie.db.env.mysql.MySQLImplementation;
 import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.meta.impl.DefaultCatalogMap;
 import fi.tnie.db.meta.impl.DefaultMutableCatalog;
@@ -155,7 +155,7 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase {
     
     @Override
 	public MySQLCatalogFactory factory() {        
-        return new MySQLCatalogFactory(new MySQLEnvironment());        
+        return new MySQLCatalogFactory(new MySQLImplementation());        
     }
 
 }

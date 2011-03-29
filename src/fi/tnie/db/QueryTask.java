@@ -3,7 +3,6 @@
  */
 package fi.tnie.db;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.rpc.PrimitiveHolder;
-import fi.tnie.db.types.VarcharType;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.expr.QueryExpression;
 
@@ -21,10 +18,12 @@ public class QueryTask
 {		
 	private static Logger logger = Logger.getLogger(QueryTask.class);	
 	private Query query;
+	private ValueExtractorFactory valueExtractorFactory;
 									
-	public QueryTask(Query q) {
+	public QueryTask(Query q, ValueExtractorFactory valueExtractorFactory) {
 		super();
 		this.query = q;
+		this.valueExtractorFactory = valueExtractorFactory;
 	}
 
 	public QueryResult<DataObject> exec(Connection c) 
@@ -44,7 +43,7 @@ public class QueryTask
 			ps = c.prepareStatement(qs);                
 			qe.traverse(null, new AssignmentVisitor(null, ps));
 			
-			DataObjectReader qp = new DataObjectReader(qe, content);			
+			DataObjectReader qp = new DataObjectReader(valueExtractorFactory, qe, content);			
 			qp.prepare();
 			
 			long ordinal = 0;
@@ -93,20 +92,6 @@ public class QueryTask
 		return qr;
 	}
 
-	static class ObjectExtractor
-		extends ValueExtractor<Serializable, VarcharType, PrimitiveHolder<Serializable, VarcharType>>
-	{
-		public ObjectExtractor(int column) {
-			super(column);			
-		}
-		
-		@Override
-		public PrimitiveHolder<Serializable, VarcharType> extractValue(ResultSet rs) throws SQLException {
-//			return rs.getObject(getColumn());
-			throw new UnsupportedOperationException("unsupported: " + getClass() + ".extractValue()");
-		}
-	}
-	
 	private static Logger logger() {
 		return QueryTask.logger;
 	}

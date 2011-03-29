@@ -4,7 +4,6 @@
 package fi.tnie.db.env;
 
 import java.io.File;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -23,7 +22,6 @@ import java.sql.DatabaseMetaData;
 
 import fi.tnie.db.QueryException;
 import fi.tnie.db.QueryHelper;
-import fi.tnie.db.env.mysql.MySQLEnvironment;
 import fi.tnie.db.env.util.AbstractQueryProcessor;
 import fi.tnie.db.env.util.IdentifierReader;
 import fi.tnie.db.env.util.StringListReader;
@@ -378,8 +376,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			
 			logger().debug("pksch: " + pksch);			
 			logger().debug("pktab: " + pktab);
-			logger().debug("pkcol: " + pkcol);
-			logger().debug("pkcol: " + pkcol);
+			logger().debug("pkcol: " + pkcol);			
 
 			DefaultMutableBaseTable pkt = (DefaultMutableBaseTable) pks.tables().get(pktab);
 			
@@ -516,11 +513,6 @@ public class DefaultCatalogFactory implements CatalogFactory {
 		}
 	}
 
-	private void dumpResultSet(ResultSet schemas) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public String getCatalogNameFromSchemas(DatabaseMetaData meta, ResultSet schemas) throws SQLException {		
 		return schemas.getString(2);
 	}	
@@ -589,7 +581,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			String url = args[1];
 			String cfg = args[2];
 
-			PrintWriter out = new PrintWriter(System.out);
+//			PrintWriter out = new PrintWriter(System.out);
 
 			logger().debug("loading " + driverName);
 			Class<?> driverClass = Class.forName(driverName);
@@ -613,8 +605,8 @@ public class DefaultCatalogFactory implements CatalogFactory {
 
 			// DefaultCatalogFactory cf = new DefaultCatalogFactory();
 //			DefaultCatalogFactory cf = new MySQLCatalogFactory();
-			Implementation impl = new MySQLEnvironment();			
-			CatalogFactory cf = impl.catalogFactory();
+//			Implementation impl = new MySQLImplementation();			
+//			CatalogFactory cf = impl.catalogFactory();
 
 			logger().debug("loading config: " + new File(cfg).getAbsolutePath());
 			Properties info = IOHelper.doLoad(cfg);
@@ -854,8 +846,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 						logger().debug(
 								"query imported keys for: " + t.getQualifiedName() + " / "
 										+ s.getUnqualifiedName());
-						ResultSet rs = meta.getImportedKeys(cp, sp, t.getUnqualifiedName()
-								.getName());
+						ResultSet rs = meta.getImportedKeys(cp, sp, t.getUnqualifiedName().getName());
 						process(rs, new ForeignKeyReader((DefaultMutableBaseTable) t, meta), true);
 					}
 				}

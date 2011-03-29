@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db;
+package fi.tnie.db.ent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.expr.ColumnExpr;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.QueryExpression;

@@ -8,24 +8,30 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.DefaultEntityQuery;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityContext;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.env.GeneratedKeyHandler;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.expr.Assignment;
 import fi.tnie.db.expr.ColumnName;
+import fi.tnie.db.expr.DefaultTableExpression;
 import fi.tnie.db.expr.DeleteStatement;
 import fi.tnie.db.expr.ElementList;
 import fi.tnie.db.expr.InsertStatement;
 import fi.tnie.db.expr.Predicate;
+import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.expr.ColumnReference;
 import fi.tnie.db.expr.TableReference;
@@ -48,8 +54,7 @@ public class PersistenceManager<
     R,
     T extends ReferenceType<T>,
     E extends Entity<A, R, T, E>>
-{
-
+{	
     private class Query
         extends DefaultEntityQuery<A, R, T, E>
     {
@@ -470,4 +475,28 @@ public class PersistenceManager<
 		this.implementation = implementation;
 	}
 	
+	
+	public QueryResult<E> execute(EntityQuery<A, R, T, E> query, EntityContext ctx, Connection c) 
+		throws SQLException {
+		StatementExecutor st = new StatementExecutor();
+		
+		DefaultTableExpression qo = query.getQuery();
+		QueryExpression e = qo;
+		ValueExtractorFactory vef = getImplementation().getValueExtractorFactory();
+		ArrayList<DataObject> content = new ArrayList<DataObject>();		
+		
+		// DataObjectReader r = new DataObjectReader(vef, qo, content);
+		EntityCompositor cmp = new EntityCompositor(ctx, vef, e);
+		
+				
+		st.execute(qo, c, cmp);		
+				
+		
+		
+		
+		
+		
+		return null;
+		
+	}
 }

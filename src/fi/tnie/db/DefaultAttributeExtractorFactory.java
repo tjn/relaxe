@@ -8,6 +8,7 @@ import java.sql.Types;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.EntityMetaData;
 
 public class DefaultAttributeExtractorFactory implements AttributeExtractorFactory {
 
@@ -15,7 +16,7 @@ public class DefaultAttributeExtractorFactory implements AttributeExtractorFacto
 
 	public
 	<A extends Attribute, E extends fi.tnie.db.ent.Entity<A,?,?,E>>
-	AttributeExtractor<?,?,?,A,E,?> createExtractor(A attribute, fi.tnie.db.ent.EntityMetaData<A,?,?,E> meta, int sqltype, int col, ValueExtractorFactory vef) {
+	AttributeExtractor<?,?,?,A,E,?> createExtractor(A attribute, EntityMetaData<A,?,?,E> meta, int sqltype, int col, ValueExtractorFactory vef) {
 		AttributeExtractor<?, ?, ?, A, E, ?> e = null;
 
 		switch (sqltype) {
