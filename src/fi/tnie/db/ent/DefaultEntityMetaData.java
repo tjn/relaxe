@@ -12,6 +12,7 @@ import java.util.Set;
 
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
+import fi.tnie.db.ent.value.DecimalKey;
 import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalKey;
@@ -293,6 +294,9 @@ public abstract class DefaultEntityMetaData<
 		return key(name, getDoubleKeyMap());
 	}
 	
+	public fi.tnie.db.ent.value.DecimalKey<A, E> getDecimalKey(A name) {		
+		return key(name, getDecimalKeyMap());
+	}	
 	
 	public fi.tnie.db.ent.value.CharKey<A, E> getCharKey(A name) {		
 		return key(name, getCharKeyMap());
@@ -336,9 +340,18 @@ public abstract class DefaultEntityMetaData<
 		return null;
 	}
 	
+	protected java.util.Map<A, DecimalKey<A, E>> getDecimalKeyMap() {
+		return null;
+	}
+	
     @Override
     public void addKey(DoubleKey<A, E> key) {
     	addAttributeKey(key, getDoubleKeyMap());    	
+    }
+    
+    @Override
+    public void addKey(DecimalKey<A, E> key) {
+    	addAttributeKey(key, getDecimalKeyMap());    	
     }
 		
     @Override

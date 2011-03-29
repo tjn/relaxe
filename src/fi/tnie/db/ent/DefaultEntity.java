@@ -9,6 +9,7 @@ import java.util.Map;
 
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
+import fi.tnie.db.ent.value.DecimalKey;
 import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalKey;
@@ -18,6 +19,7 @@ import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
+import fi.tnie.db.rpc.DecimalHolder;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.IntervalHolder;
@@ -77,6 +79,7 @@ public abstract class DefaultEntity<
 	private Map<A, TimestampHolder> timestampValueMap;
 	private Map<A, TimeHolder> timeValueMap;
 	private Map<A, DoubleHolder> doubleValueMap;
+	private Map<A, DecimalHolder> decimalValueMap;
 	
 	private Map<A, IntervalHolder.YearMonth> yearMonthIntervalValueMap;
 	private Map<A, IntervalHolder.DayTime> dayTimeIntervalValueMap;
@@ -106,7 +109,7 @@ public abstract class DefaultEntity<
 		return intValueMap;
 	}
 
-	public Map<A, VarcharHolder> getVarcharValueMap() {
+	private Map<A, VarcharHolder> getVarcharValueMap() {
 		if (varcharValueMap == null) {
 			varcharValueMap = new HashMap<A, VarcharHolder>();
 		}
@@ -134,10 +137,23 @@ public abstract class DefaultEntity<
 
 		return doubleValueMap;
 	}
+	
+	private Map<A, DecimalHolder> getDecimalValueMap() {
+		if (decimalValueMap == null) {
+			decimalValueMap = new HashMap<A, DecimalHolder>();
+		}
+
+		return decimalValueMap;
+	}
 
 	@Override
 	public DoubleHolder getDouble(DoubleKey<A, E> k) {
 		return getDoubleValueMap().get(k.name());	
+	}	
+
+	@Override
+	public DecimalHolder getDecimal(DecimalKey<A, E> k) {
+		return getDecimalValueMap().get(k.name());	
 	}	
 
 	@Override
@@ -237,6 +253,11 @@ public abstract class DefaultEntity<
 	@Override
 	public void setDouble(DoubleKey<A, E> k, DoubleHolder newValue) {
 		getDoubleValueMap().put(k.name(), newValue);		
+	}
+
+	@Override
+	public void setDecimal(DecimalKey<A, E> k, DecimalHolder newValue) {
+		getDecimalValueMap().put(k.name(), newValue);		
 	}
 
 	@Override

@@ -12,6 +12,8 @@ import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.CharAccessor;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.ent.value.DateAccessor;
+import fi.tnie.db.ent.value.DecimalAccessor;
+import fi.tnie.db.ent.value.DecimalKey;
 import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.DoubleAccessor;
 import fi.tnie.db.ent.value.IntegerKey;
@@ -33,6 +35,8 @@ import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
+import fi.tnie.db.rpc.Decimal;
+import fi.tnie.db.rpc.DecimalHolder;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.Interval;
@@ -43,6 +47,7 @@ import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.source.DefaultAttributeInfo;
 import fi.tnie.db.types.CharType;
 import fi.tnie.db.types.DateType;
+import fi.tnie.db.types.DecimalType;
 import fi.tnie.db.types.DoubleType;
 import fi.tnie.db.types.IntegerType;
 import fi.tnie.db.types.IntervalType;
@@ -216,9 +221,15 @@ public class DefaultTableMapper
         	a.setKeyType(DoubleKey.class);
         	a.setAccessorType(DoubleAccessor.class);
         	a.setPrimitiveType(DoubleType.TYPE);
-            break;                
-        case Types.NUMERIC:                
             break;
+        case Types.DECIMAL:
+        case Types.NUMERIC:
+        	a.setAttributeType(Decimal.class);
+        	a.setHolderType(DecimalHolder.class);
+        	a.setKeyType(DecimalKey.class);
+        	a.setAccessorType(DecimalAccessor.class);
+        	a.setPrimitiveType(DecimalType.TYPE);
+            break;        	
         case Types.DATE:            
         	a.setAttributeType(Date.class);
         	a.setHolderType(DateHolder.class);

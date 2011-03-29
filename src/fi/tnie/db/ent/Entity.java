@@ -8,6 +8,7 @@ import java.util.Map;
 
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
+import fi.tnie.db.rpc.DecimalHolder;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.IntervalHolder;
@@ -20,6 +21,7 @@ import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
+import fi.tnie.db.ent.value.DecimalKey;
 import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalKey;
@@ -45,7 +47,7 @@ public interface Entity<
 		H extends PrimitiveHolder<S, P>,
 		K extends Key<A, S, P, H, E, K>
 	>	
-	H get(K k);	
+	H get(K k);
 	
 	<
 		S extends Serializable,
@@ -126,6 +128,7 @@ public interface Entity<
 	TimeHolder getTime(TimeKey<A, E> k);
 	CharHolder getChar(CharKey<A, E> k);
 	DoubleHolder getDouble(DoubleKey<A, E> k);
+	DecimalHolder getDecimal(DecimalKey<A, E> k);
 	
 	IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, E> k);
 	IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, E> k);
@@ -139,6 +142,7 @@ public interface Entity<
 	void setDate(DateKey<A, E> k, DateHolder newValue);
 	void setTimestamp(TimestampKey<A, E> k, TimestampHolder newValue);
 	void setTime(TimeKey<A, E> k, TimeHolder newValue);
+	void setDecimal(DecimalKey<A, E> k, DecimalHolder newValue);
 	void setDouble(DoubleKey<A, E> k, DoubleHolder newValue);
 	
 	void setInterval(IntervalKey.YearMonth<A, E> k, IntervalHolder.YearMonth newValue);

@@ -8,6 +8,7 @@ import java.util.Set;
 
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
+import fi.tnie.db.ent.value.DecimalKey;
 import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalKey;
@@ -81,6 +82,7 @@ public interface EntityMetaData<
 	IntegerKey<A, E> getIntegerKey(A a);
 	VarcharKey<A, E> getVarcharKey(A a);
 	DateKey<A, E> getDateKey(A a);
+	DecimalKey<A, E> getDecimalKey(A a);
 	DoubleKey<A, E> getDoubleKey(A a);
 	CharKey<A, E> getCharKey(A a);
 	TimestampKey<A, E> getTimestampKey(A a);
@@ -111,6 +113,7 @@ public interface EntityMetaData<
 
 	T getType();
 
+	void addKey(DecimalKey<A, E> key);
 	void addKey(DoubleKey<A, E> key);
 	void addKey(IntegerKey<A, E> key);
 	void addKey(CharKey<A, E> key);
