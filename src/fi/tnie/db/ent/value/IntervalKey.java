@@ -22,7 +22,6 @@ public abstract class IntervalKey<
 	>
 	extends PrimitiveKey<A, V, P, H, E, K>
 {
-
 	/**
 	 * 
 	 */

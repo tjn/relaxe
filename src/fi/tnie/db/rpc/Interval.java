@@ -132,6 +132,17 @@ public abstract class Interval<T extends Interval<T>>
 		public int hashCode() {		
 			return (12 * this.year) + this.month;
 		}
+		
+		@Override
+		public String toString() {
+			StringBuffer buf = new StringBuffer();
+						
+			buf.append(signum() < 0 ? "-" : "+");
+			buf.append(super.abs(year));
+			buf.append("-");
+			buf.append(super.abs(month));			
+			return buf.toString();
+		}		
 	}
 		
 	public static class DayTime

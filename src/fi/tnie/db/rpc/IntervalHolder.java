@@ -39,6 +39,10 @@ public abstract class IntervalHolder<V extends Interval<?>, T extends PrimitiveT
 		public fi.tnie.db.types.IntervalType.YearMonth getType() {
 			return IntervalType.YearMonth.TYPE;
 		}
+		
+		public static IntervalHolder.YearMonth valueOf(Interval.YearMonth value) {
+			return (value == null) ? NULL : new YearMonth(value);
+		}
 	}
 	
 	
@@ -64,6 +68,10 @@ public abstract class IntervalHolder<V extends Interval<?>, T extends PrimitiveT
 		public fi.tnie.db.types.IntervalType.DayTime getType() {
 			return IntervalType.DayTime.TYPE;
 		}
+		
+		public static IntervalHolder.DayTime valueOf(Interval.DayTime value) {
+			return (value == null) ? NULL : new DayTime(value);
+		}		
 	}	
 	
 	/**

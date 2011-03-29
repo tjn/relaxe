@@ -4,6 +4,8 @@
 package fi.tnie.db.types;
 
 import java.io.Serializable;
+
+import fi.tnie.db.rpc.HolderFactory;
 import fi.tnie.db.rpc.PrimitiveHolder;
 
 public abstract class PrimitiveType<T extends PrimitiveType<T>>
@@ -320,5 +322,5 @@ public abstract class PrimitiveType<T extends PrimitiveType<T>>
 		}		
 		
 		return nh;
-	}
+	}	
 }

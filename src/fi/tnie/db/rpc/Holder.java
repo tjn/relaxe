@@ -10,7 +10,7 @@ import fi.tnie.db.types.Type;
 /** 
  * @author Topi Nieminen <topi.nieminen@gmail.com>
  */
-public abstract class Holder<V extends Serializable, T extends Type<?>>
+public abstract class Holder<V extends Serializable, T extends Type<T>>
 	implements Serializable {
 	
 	/**
@@ -43,5 +43,5 @@ public abstract class Holder<V extends Serializable, T extends Type<?>>
 				(b == null) ? false : a.equals(b);
 				
 		return result;
-	}
+	}	
 }
