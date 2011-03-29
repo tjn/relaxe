@@ -11,11 +11,17 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.types.DateType;
+import fi.tnie.db.types.ReferenceType;
 
-public class DateAttributeExtractor<A extends Attribute, E extends Entity<A,?,?,E>>
-	extends AttributeExtractor<Date, DateType, DateHolder, A, E, DateKey<A, E>> {
+public class DateAttributeExtractor<
+	A extends Attribute, 
+	R,
+	T extends ReferenceType<T>,
+	E extends Entity<A, R, T, E>
+>
+	extends AttributeExtractor<A, R, T, E, Date, DateType, DateHolder, DateKey<A, R, T, E>> {
 
-	public DateAttributeExtractor(A attribute, EntityMetaData<A, ?, ?, E> meta, ValueExtractorFactory vef, int col) {
+	public DateAttributeExtractor(A attribute, EntityMetaData<A, R, T, E> meta, ValueExtractorFactory vef, int col) {
 		super(vef, attribute, meta.getDateKey(attribute), col);
 	}
 

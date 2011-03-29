@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import fi.tnie.db.ent.value.Key;
+import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
@@ -41,7 +41,7 @@ public abstract class AbstractEntity<
 		
 		A a = m.getAttribute(column);
 				
-		Key<A, ?, ?, ?, E, ?> k = m.getKey(a);
+		PrimitiveKey<A, ?, ?, E, ?, ?, ?, ?> k = m.getKey(a);
 				
 		if (k != null) {
 			return k.get(self());			
@@ -149,7 +149,7 @@ public abstract class AbstractEntity<
 		}
 				
 		for (A a : as) {
-			Key<A, ?, ?, ?, E, ?> key = meta.getKey(a);
+			PrimitiveKey<A, ?, ?, E, ?, ?, ?, ?> key = meta.getKey(a);
 			PrimitiveHolder<?, ?> v = key.get(self());	
 			buf.append(key.name());
 			buf.append("=");

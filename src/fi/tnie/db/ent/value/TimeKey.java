@@ -10,10 +10,16 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.types.PrimitiveType;
+import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.types.TimeType;
 
-public final class TimeKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends PrimitiveKey<A, Date, TimeType, TimeHolder, E, TimeKey<A, E>>
+public final class TimeKey<
+	A extends Attribute, 
+	R,
+	T extends ReferenceType<T>,
+	E extends Entity<A, R, T, E>
+>
+	extends AbstractPrimitiveKey<A, R, T, E, Date, TimeType, TimeHolder, TimeKey<A, R, T, E>>
 {
 	/**
 	 *
@@ -26,23 +32,25 @@ public final class TimeKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private TimeKey() {
 	}
 
-	private TimeKey(EntityMetaData<A, ?, ?, E> meta, A name) {
+	private TimeKey(EntityMetaData<A, R, T, E> meta, A name) {
 		super(meta, name);
 		meta.addKey(this);
 	}
 	
 	public static <
 		X extends Attribute,
-		T extends Entity<X, ?, ?, T>
+		Y, 
+		Z extends ReferenceType<Z>,		
+		T extends Entity<X, Y, Z, T>
 	>
-	TimeKey<X, T> get(EntityMetaData<X, ?, ?, T> meta, X a) {
-		TimeKey<X, T> k = meta.getTimeKey(a);
+	TimeKey<X, Y, Z, T> get(EntityMetaData<X, Y, Z, T> meta, X a) {
+		TimeKey<X, Y, Z, T> k = meta.getTimeKey(a);
 		
 		if (k == null) {
 			PrimitiveType<?> t = meta.getAttributeType(a);
 			
 			if (t != null && t.getSqlType() == PrimitiveType.TIME) {
-				k = new TimeKey<X, T>(meta, a);
+				k = new TimeKey<X, Y, Z, T>(meta, a);
 			}			
 		}
 				

@@ -12,7 +12,7 @@ import fi.tnie.db.ent.value.DecimalKey;
 import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalKey;
-import fi.tnie.db.ent.value.Key;
+import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
@@ -77,19 +77,19 @@ public interface EntityMetaData<
 	PrimitiveType<?> getAttributeType(A name);
 
 //	Key<A, ?, ?, ?, E, ?> getKey(Column c);
-	Key<A, ?, ?, ?, E, ?> getKey(A a);
+	PrimitiveKey<A, R, T, E, ?, ?, ?, ?> getKey(A a);
 
-	IntegerKey<A, E> getIntegerKey(A a);
-	VarcharKey<A, E> getVarcharKey(A a);
-	DateKey<A, E> getDateKey(A a);
-	DecimalKey<A, E> getDecimalKey(A a);
-	DoubleKey<A, E> getDoubleKey(A a);
-	CharKey<A, E> getCharKey(A a);
-	TimestampKey<A, E> getTimestampKey(A a);
-	TimeKey<A, E> getTimeKey(A a);
+	IntegerKey<A, R, T, E> getIntegerKey(A a);
+	VarcharKey<A, R, T, E> getVarcharKey(A a);
+	DateKey<A, R, T, E> getDateKey(A a);
+	DecimalKey<A, R, T, E> getDecimalKey(A a);
+	DoubleKey<A, R, T, E> getDoubleKey(A a);
+	CharKey<A, R, T, E> getCharKey(A a);
+	TimestampKey<A, R, T, E> getTimestampKey(A a);
+	TimeKey<A, R, T, E> getTimeKey(A a);
 	
-	IntervalKey.YearMonth<A, E> getYearMonthIntervalKey(A a);
-	IntervalKey.DayTime<A, E> getDayTimeIntervalKey(A a);
+	IntervalKey.YearMonth<A, R, T, E> getYearMonthIntervalKey(A a);
+	IntervalKey.DayTime<A, R, T, E> getDayTimeIntervalKey(A a);
 
 	ForeignKey getForeignKey(R r);
 	Set<Column> getPKDefinition();
@@ -113,15 +113,15 @@ public interface EntityMetaData<
 
 	T getType();
 
-	void addKey(DecimalKey<A, E> key);
-	void addKey(DoubleKey<A, E> key);
-	void addKey(IntegerKey<A, E> key);
-	void addKey(CharKey<A, E> key);
-	void addKey(DateKey<A, E> key);
-	void addKey(VarcharKey<A, E> key);
-	void addKey(TimestampKey<A, E> key);	
-	void addKey(TimeKey<A, E> key);
-	void addKey(IntervalKey.YearMonth<A, E> key);
-	void addKey(IntervalKey.DayTime<A, E> key);
+	void addKey(DecimalKey<A, R, T, E> key);
+	void addKey(DoubleKey<A, R, T, E> key);
+	void addKey(IntegerKey<A, R, T, E> key);
+	void addKey(CharKey<A, R, T, E> key);
+	void addKey(DateKey<A, R, T, E> key);
+	void addKey(VarcharKey<A, R, T, E> key);
+	void addKey(TimestampKey<A, R, T, E> key);	
+	void addKey(TimeKey<A, R, T, E> key);
+	void addKey(IntervalKey.YearMonth<A, R, T, E> key);
+	void addKey(IntervalKey.DayTime<A, R, T, E> key);
 	
 }

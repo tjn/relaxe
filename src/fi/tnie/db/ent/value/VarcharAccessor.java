@@ -6,10 +6,16 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.VarcharHolder;
+import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.types.VarcharType;
 
-public class VarcharAccessor<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends PrimitiveAccessor<A, String, VarcharType, VarcharHolder, E, VarcharKey<A, E>> {
+public class VarcharAccessor<
+	A extends Attribute,
+	R,
+	T extends ReferenceType<T>,	
+	E extends Entity<A, R, T, E>
+>
+	extends AbstractPrimitiveAccessor<A, R, T, E, String, VarcharType, VarcharHolder, VarcharKey<A, R, T, E>> {
 
 	/**
 	 *
@@ -23,7 +29,7 @@ public class VarcharAccessor<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private VarcharAccessor() {
 	}
 
-	public VarcharAccessor(E target, VarcharKey<A, E> k) {
+	public VarcharAccessor(E target, VarcharKey<A, R, T, E> k) {
 		super(target, k); 
 	}
 }

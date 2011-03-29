@@ -7,9 +7,15 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.types.DoubleType;
+import fi.tnie.db.types.ReferenceType;
 
-public class DoubleAccessor<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends PrimitiveAccessor<A, Double, DoubleType, DoubleHolder, E, DoubleKey<A, E>> {
+public class DoubleAccessor<
+	A extends Attribute,
+	R,
+	T extends ReferenceType<T>,	
+	E extends Entity<A, R, T, E>
+>
+	extends AbstractPrimitiveAccessor<A, R, T, E, Double, DoubleType, DoubleHolder, DoubleKey<A, R, T, E>> {
 
 	/**
 	 *
@@ -23,7 +29,7 @@ public class DoubleAccessor<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private DoubleAccessor() {
 	}
 
-	public DoubleAccessor(E target, DoubleKey<A, E> k) {
+	public DoubleAccessor(E target, DoubleKey<A, R, T, E> k) {
 		super(target, k);
 	}
 }

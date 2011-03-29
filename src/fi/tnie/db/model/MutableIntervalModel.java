@@ -4,7 +4,6 @@
 package fi.tnie.db.model;
 
 import fi.tnie.db.rpc.Interval;
-import fi.tnie.db.rpc.Interval.YearMonth;
 
 public abstract class MutableIntervalModel<T extends Interval<T>>
 	extends DefaultMutableValueModel<T> {

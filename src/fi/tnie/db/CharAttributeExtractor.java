@@ -9,11 +9,17 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.types.CharType;
+import fi.tnie.db.types.ReferenceType;
 
-public class CharAttributeExtractor<A extends Attribute, E extends Entity<A,?,?,E>>
-	extends AttributeExtractor<String, CharType, CharHolder, A, E, CharKey<A, E>> {
+public class CharAttributeExtractor<
+	A extends Attribute, 
+	R,
+	T extends ReferenceType<T>,
+	E extends Entity<A, R, T, E>
+>
+	extends AttributeExtractor<A, R, T, E, String, CharType, CharHolder, CharKey<A, R, T, E>> {
 
-	public CharAttributeExtractor(A attribute, EntityMetaData<A, ?, ?, E> meta, ValueExtractorFactory vef, int col) {
+	public CharAttributeExtractor(A attribute, EntityMetaData<A, R, T, E> meta, ValueExtractorFactory vef, int col) {
 		super(vef, attribute, meta.getCharKey(attribute), col);
 	}
 

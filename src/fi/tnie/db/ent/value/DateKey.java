@@ -11,9 +11,14 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.types.DateType;
 import fi.tnie.db.types.PrimitiveType;
+import fi.tnie.db.types.ReferenceType;
 
-public final class DateKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends PrimitiveKey<A, Date, DateType, DateHolder, E, DateKey<A, E>>
+public final class DateKey<	
+	A extends Attribute, 
+	R,
+	T extends ReferenceType<T>,
+	E extends Entity<A, R, T, E>>
+	extends AbstractPrimitiveKey<A, R, T, E, Date, DateType, DateHolder, DateKey<A, R, T, E>>
 {
 	/**
 	 *
@@ -26,23 +31,25 @@ public final class DateKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private DateKey() {
 	}
 
-	private DateKey(EntityMetaData<A, ?, ?, E> meta, A name) {
+	private DateKey(EntityMetaData<A, R, T, E> meta, A name) {
 		super(meta, name);
 		meta.addKey(this);
 	}
 	
 	public static <
 		X extends Attribute,
-		T extends Entity<X, ?, ?, T>
+		Y, 
+		Z extends ReferenceType<Z>,
+		T extends Entity<X, Y, Z, T>
 	>
-	DateKey<X, T> get(EntityMetaData<X, ?, ?, T> meta, X a) {
-		DateKey<X, T> k = meta.getDateKey(a);
+	DateKey<X, Y, Z, T> get(EntityMetaData<X, Y, Z, T> meta, X a) {
+		DateKey<X, Y, Z, T> k = meta.getDateKey(a);
 		
 		if (k == null) {
 			PrimitiveType<?> t = meta.getAttributeType(a);
 			
 			if (t == DateType.TYPE) {
-				k = new DateKey<X, T>(meta, a);
+				k = new DateKey<X, Y, Z, T>(meta, a);
 			}			
 		}
 				

@@ -9,9 +9,15 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.types.IntegerType;
 import fi.tnie.db.types.PrimitiveType;
+import fi.tnie.db.types.ReferenceType;
 
-public final class IntegerKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends PrimitiveKey<A, Integer, IntegerType, IntegerHolder, E, IntegerKey<A, E>>
+public final class IntegerKey<
+	A extends Attribute,
+	R,
+	T extends ReferenceType<T>,
+	E extends Entity<A, R, T, E>
+>
+	extends AbstractPrimitiveKey<A, R, T, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, R, T, E>>
 {	
 	/**
 	 *
@@ -24,23 +30,25 @@ public final class IntegerKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private IntegerKey() {
 	}
 
-	private IntegerKey(EntityMetaData<A, ?, ?, E> meta, A name) {
+	private IntegerKey(EntityMetaData<A, R, T, E> meta, A name) {
 		super(meta, name);
 		meta.addKey(this);
 	}
 	
 	public static <
 		X extends Attribute,
-		T extends Entity<X, ?, ?, T>
+		Y, 
+		Z extends ReferenceType<Z>,
+		T extends Entity<X, Y, Z, T>
 	>
-	IntegerKey<X, T> get(EntityMetaData<X, ?, ?, T> meta, X a) {
-		IntegerKey<X, T> k = meta.getIntegerKey(a);
+	IntegerKey<X, Y, Z, T> get(EntityMetaData<X, Y, Z, T> meta, X a) {
+		IntegerKey<X, Y, Z, T> k = meta.getIntegerKey(a);
 		
 		if (k == null) {
 			PrimitiveType<?> t = a.type();
 			
 			if (t != null && t.getSqlType() == PrimitiveType.INTEGER) {
-				k = new IntegerKey<X, T>(meta, a);
+				k = new IntegerKey<X, Y, Z, T>(meta, a);
 			}			
 		}
 				

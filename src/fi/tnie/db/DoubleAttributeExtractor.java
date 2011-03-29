@@ -9,11 +9,17 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.types.DoubleType;
+import fi.tnie.db.types.ReferenceType;
 
-public class DoubleAttributeExtractor<A extends Attribute, E extends Entity<A,?,?,E>>
-	extends AttributeExtractor<Double, DoubleType, DoubleHolder, A, E, DoubleKey<A, E>> {
+public class DoubleAttributeExtractor<
+	A extends Attribute, 
+	R,
+	T extends ReferenceType<T>,
+	E extends Entity<A, R, T, E>
+>
+	extends AttributeExtractor<A, R, T, E, Double, DoubleType, DoubleHolder, DoubleKey<A, R, T, E>> {
 
-	public DoubleAttributeExtractor(A attribute, EntityMetaData<A, ?, ?, E> meta, ValueExtractorFactory vef, int col) {
+	public DoubleAttributeExtractor(A attribute, EntityMetaData<A, R, T, E> meta, ValueExtractorFactory vef, int col) {
 		super(vef, attribute, meta.getDoubleKey(attribute), col);
 	}
 

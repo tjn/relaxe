@@ -12,17 +12,20 @@ import java.sql.SQLException;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.value.Key;
+import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
+import fi.tnie.db.types.ReferenceType;
 
 public class AttributeExtractor<
+		A extends Attribute,
+		R,
+		T extends ReferenceType<T>,
+		E extends Entity<A, R, T, E>,
 		V extends Serializable,
 		P extends PrimitiveType<P>,
 		H extends PrimitiveHolder<V, P>,
-		A extends Attribute,
-		E extends Entity<A, ?, ?, E>,
-		K extends Key<A, V, P, H, E, K>>
+		K extends PrimitiveKey<A, R, T, E, V, P, H, K>>
 	{
 		private ValueExtractor<V, P, H> extractor;
 		private K key = null;

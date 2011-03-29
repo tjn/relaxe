@@ -182,7 +182,7 @@ public class DefaultEntityQueryTask<
 		extends QueryProcessorAdapter {
 
 //		private Extractor[] extractors = null;
-		private List<AttributeExtractor<?, ?, ?, A, E, ?>> attributeWriterList;
+		private List<AttributeExtractor<A, R, T, E, ?, ?, ?, ?>> attributeWriterList;
 		private int attrs;
 		private List<E> content;
 		private E first;
@@ -200,7 +200,7 @@ public class DefaultEntityQueryTask<
 			List<? extends ColumnName> cl = qo.getSelect().getColumnNameList().getContent();
 
 			Extractor[] xa = new Extractor[cl.size()];
-			List<AttributeExtractor<?, ?, ?, A, E, ?>> awl = new ArrayList<AttributeExtractor<?, ?, ?, A, E, ?>>();
+			List<AttributeExtractor<A, R, T, E, ?, ?, ?, ?>> awl = new ArrayList<AttributeExtractor<A, R, T, E, ?, ?, ?, ?>>();
 
 			DefaultValueExtractorFactory vef = new DefaultValueExtractorFactory();
 			
@@ -223,13 +223,13 @@ public class DefaultEntityQueryTask<
 					continue;
 				}				
 				
-				AttributeExtractor<?, ?, ?, A, E, ?> ae = null;
+				AttributeExtractor<A, R, T, E, ?, ?, ?, ?> ae = null;
 
 				switch (sqltype) {
 					case Types.INTEGER:
 					case Types.SMALLINT:
 					case Types.TINYINT:
-						ae = new IntegerAttributeExtractor<A, E>(a, meta, vef, colno);
+						ae = new IntegerAttributeExtractor<A, R, T, E>(a, meta, vef, colno);
 						break;
 					case Types.VARCHAR:
 					case Types.CHAR:
@@ -302,7 +302,7 @@ public class DefaultEntityQueryTask<
 //				}
 
 				for (int i = 0; i < attrs; i++) {
-					AttributeExtractor<?, ?, ?, A, E, ?> ax = this.attributeWriterList.get(i);
+					AttributeExtractor<A, R, T, E, ?, ?, ?, ?> ax = this.attributeWriterList.get(i);
 					ax.extract(rs, e);
 				}
 

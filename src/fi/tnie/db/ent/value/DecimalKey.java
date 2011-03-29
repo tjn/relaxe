@@ -10,9 +10,15 @@ import fi.tnie.db.rpc.Decimal;
 import fi.tnie.db.rpc.DecimalHolder;
 import fi.tnie.db.types.DecimalType;
 import fi.tnie.db.types.PrimitiveType;
+import fi.tnie.db.types.ReferenceType;
 
-public final class DecimalKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends PrimitiveKey<A, Decimal, DecimalType, DecimalHolder, E, DecimalKey<A, E>>
+public final class DecimalKey<
+	A extends Attribute, 
+	R,
+	T extends ReferenceType<T>,
+	E extends Entity<A, R, T, E>
+>
+	extends AbstractPrimitiveKey<A, R, T, E, Decimal, DecimalType, DecimalHolder, DecimalKey<A, R, T, E>>
 {
 
 	/**
@@ -26,23 +32,25 @@ public final class DecimalKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private DecimalKey() {
 	}
 
-	private DecimalKey(EntityMetaData<A, ?, ?, E> meta, A name) {
+	private DecimalKey(EntityMetaData<A, R, T, E> meta, A name) {
 		super(meta, name);
 		meta.addKey(this);
 	}
 	
 	public static <
 		X extends Attribute,
-		T extends Entity<X, ?, ?, T>
+		Y, 
+		Z extends ReferenceType<Z>,
+		T extends Entity<X, Y, Z, T>
 	>
-	DecimalKey<X, T> get(EntityMetaData<X, ?, ?, T> meta, X a) {
-		DecimalKey<X, T> k = meta.getDecimalKey(a);
+	DecimalKey<X, Y, Z, T> get(EntityMetaData<X, Y, Z, T> meta, X a) {
+		DecimalKey<X, Y, Z, T> k = meta.getDecimalKey(a);
 		
 		if (k == null) {
 			PrimitiveType<?> t = meta.getAttributeType(a);
 			
 			if (t != null && t.getSqlType() == PrimitiveType.DOUBLE) {
-				k = new DecimalKey<X, T>(meta, a);
+				k = new DecimalKey<X, Y, Z, T>(meta, a);
 			}			
 		}
 				

@@ -7,23 +7,18 @@ import java.io.Serializable;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
-import fi.tnie.db.rpc.PrimitiveHolder;
-import fi.tnie.db.types.PrimitiveType;
+import fi.tnie.db.types.ReferenceType;
+import fi.tnie.db.types.Type;
 
 public interface Key<
 	A extends Attribute,
-	V extends Serializable,
-	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<V, P>,
-	E extends Entity<A, ?, ?, E>,
-	K extends Key<A, V, P, H, E, K>
+	R,
+	T extends ReferenceType<T>,	
+	E extends Entity<A, R, T, E>,
+	V extends Type<V>,
+	K extends Key<A, R, T, E, V, K>
 >
 	extends Serializable
 {
-	P type();
-	A name();	
-	H newHolder(V newValue);	
-	H get(E e);
-	void set(E e, H newValue);
-	
+	V type();
 }

@@ -28,7 +28,7 @@ public class ExtractorMap<
 	E extends Entity<A, R, T, E>
 > {
 
-	private List<AttributeExtractor<?, ?, ?, A, E, ?>> attributeExctractorList;
+	private List<AttributeExtractor<A, ?, ?, E, ?, ?, ?, ?>> attributeExctractorList;
 
 	private static Logger logger = Logger.getLogger(ExtractorMap.class);
 
@@ -44,7 +44,7 @@ public class ExtractorMap<
 			ValueExtractorFactory vef) throws SQLException {
 		int cc = rsmd.getColumnCount();
 		this.attributeExctractorList =
-			new ArrayList<AttributeExtractor<?, ?, ?, A, E, ?>>(cc);
+			new ArrayList<AttributeExtractor<A, ?, ?, E, ?, ?, ?, ?>>(cc);
 
 		ColumnMap cm = em.getBaseTable().columnMap();
 
@@ -53,7 +53,7 @@ public class ExtractorMap<
 			Column col = cm.get(cl);
 			int t = col.getDataType().getDataType();
 
-			AttributeExtractor<?, ?, ?, A, E, ?> ae = createAttributeExtractor(t, c, col, em, vef);
+			AttributeExtractor<A, ?, ?, E, ?, ?, ?, ?> ae = createAttributeExtractor(t, c, col, em, vef);
 
 			if (ae != null) {
 				this.attributeExctractorList.add(ae);
@@ -82,17 +82,17 @@ public class ExtractorMap<
 		}
 	}
 
-	public AttributeExtractor<?, ?, ?, A, E, ?> createAttributeExtractor(int sqltype, int c, Column col, EntityMetaData<A, R, T, E> em, ValueExtractorFactory vef)
+	public AttributeExtractor<A, ?, ?, E, ?, ?, ?, ?> createAttributeExtractor(int sqltype, int c, Column col, EntityMetaData<A, R, T, E> em, ValueExtractorFactory vef)
 				throws SQLException {
 
 		final A attribute = em.getAttribute(col);
-		AttributeExtractor<?, ?, ?, A, E, ?> ae = null;
+		AttributeExtractor<A, ?, ?, E, ?, ?, ?, ?> ae = null;
 
 		switch (sqltype) {
 			case Types.INTEGER:
 			case Types.SMALLINT:
 			case Types.TINYINT:
-				ae = new IntegerAttributeExtractor<A, E>(attribute, em, vef, c);
+				ae = new IntegerAttributeExtractor<A, R, T, E>(attribute, em, vef, c);
 				break;
 			case Types.VARCHAR:
 //				e = new VarcharExtractor(col);

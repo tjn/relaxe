@@ -9,29 +9,34 @@ import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.types.ReferenceType;
 
 public class DefaultAttributeExtractorFactory implements AttributeExtractorFactory {
 
 	private static Logger logger = Logger.getLogger(DefaultAttributeExtractorFactory.class);
 
-	public
-	<A extends Attribute, E extends fi.tnie.db.ent.Entity<A,?,?,E>>
-	AttributeExtractor<?,?,?,A,E,?> createExtractor(A attribute, EntityMetaData<A,?,?,E> meta, int sqltype, int col, ValueExtractorFactory vef) {
-		AttributeExtractor<?, ?, ?, A, E, ?> e = null;
+	public <
+		A extends Attribute,
+		R,
+		T extends ReferenceType<T>,
+		E extends fi.tnie.db.ent.Entity<A, R, T, E>
+	>
+	AttributeExtractor<A, R, T, E, ?, ?, ?, ?> createExtractor(A attribute, EntityMetaData<A, R, T, E> meta, int sqltype, int col, ValueExtractorFactory vef) {
+		AttributeExtractor<A, R, T, E, ?, ?, ?, ?> e = null;
 
 		switch (sqltype) {
 			case Types.INTEGER:
 			case Types.SMALLINT:
 			case Types.TINYINT:
-				e = new IntegerAttributeExtractor<A, E>(attribute, meta, vef, col);
+				e = new IntegerAttributeExtractor<A, R, T, E>(attribute, meta, vef, col);
 				break;
 			case Types.VARCHAR:
-				e = new VarcharAttributeExtractor<A, E>(attribute, meta, vef, col);
+				e = new VarcharAttributeExtractor<A, R, T, E>(attribute, meta, vef, col);
 			case Types.CHAR:
-				e = new CharAttributeExtractor<A, E>(attribute, meta, vef, col);
+				e = new CharAttributeExtractor<A, R, T, E>(attribute, meta, vef, col);
 				break;
 			case Types.DATE:
-				e = new DateAttributeExtractor<A, E>(attribute, meta, vef, col);
+				e = new DateAttributeExtractor<A, R, T, E>(attribute, meta, vef, col);
 				break;
 //			case Types.TIMESTAMP:
 //				e = new TimestampExtractor(col);

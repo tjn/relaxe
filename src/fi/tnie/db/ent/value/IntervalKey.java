@@ -11,16 +11,19 @@ import fi.tnie.db.rpc.Interval;
 import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.types.IntervalType;
 import fi.tnie.db.types.PrimitiveType;
+import fi.tnie.db.types.ReferenceType;
 
 public abstract class IntervalKey<
+	A extends Attribute, 
+	R,
+	T extends ReferenceType<T>,
+	E extends Entity<A, R, T, E>,
 	V extends Interval<V>, 
 	P extends PrimitiveType<P>, 
 	H extends IntervalHolder<V, P>, 
-	A extends Attribute, 
-	E extends Entity<A, ?, ?, E>,
-	K extends IntervalKey<V, P, H, A, E, K>
+	K extends IntervalKey<A, R, T, E, V, P, H, K>
 	>
-	extends PrimitiveKey<A, V, P, H, E, K>
+	extends AbstractPrimitiveKey<A, R, T, E, V, P, H, K>
 {
 	/**
 	 * 
@@ -38,9 +41,12 @@ public abstract class IntervalKey<
 	}
 	
 
-	public static final class YearMonth<A extends Attribute, E extends Entity<A, ?, ?, E>>
-		extends IntervalKey<Interval.YearMonth, IntervalType.YearMonth, IntervalHolder.YearMonth, A, E, 
-			IntervalKey.YearMonth<A, E>> {
+	public static final class YearMonth<
+		A extends Attribute,
+		R,
+		T extends ReferenceType<T>,
+		E extends Entity<A, R, T, E>>
+		extends IntervalKey<A, R, T, E, Interval.YearMonth, IntervalType.YearMonth, IntervalHolder.YearMonth, IntervalKey.YearMonth<A, R, T, E>> {
 	
 		/**
 		 * 
@@ -54,23 +60,25 @@ public abstract class IntervalKey<
 		private YearMonth() {
 		}
 
-		protected YearMonth(EntityMetaData<A, ?, ?, E> meta, A name) {
+		protected YearMonth(EntityMetaData<A, R, T, E> meta, A name) {
 			super(meta, name);
 			meta.addKey(this);
 		}
 		
 		public static <
 			X extends Attribute,
-			T extends Entity<X, ?, ?, T>
+			Y,
+			Z extends ReferenceType<Z>,
+			T extends Entity<X, Y, Z, T>
 		>
-		YearMonth<X, T> get(EntityMetaData<X, ?, ?, T> meta, X a) {
-			YearMonth<X, T> k = meta.getYearMonthIntervalKey(a);
+		YearMonth<X, Y, Z, T> get(EntityMetaData<X, Y, Z, T> meta, X a) {
+			YearMonth<X, Y, Z, T> k = meta.getYearMonthIntervalKey(a);
 		
 			if (k == null) {
 				PrimitiveType<?> t = a.type();
 				
 				if (t == IntervalType.YearMonth.TYPE) {
-					k = new YearMonth<X, T>(meta, a);
+					k = new YearMonth<X, Y, Z, T>(meta, a);
 				}
 			}
 					
@@ -100,32 +108,38 @@ public abstract class IntervalKey<
 		
 	}
 	
-	public static final class DayTime<A extends Attribute, E extends Entity<A, ?, ?, E>>
-		extends IntervalKey<Interval.DayTime, IntervalType.DayTime, IntervalHolder.DayTime, A, E, 
-			IntervalKey.DayTime<A, E>> {
+	public static final class DayTime<
+		A extends Attribute, 
+		R,
+		T extends ReferenceType<T>,		
+		E extends Entity<A, R, T, E>>
+		extends IntervalKey<A, R, T, E, Interval.DayTime, IntervalType.DayTime, IntervalHolder.DayTime, 
+			IntervalKey.DayTime<A, R, T, E>> {
 
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1349100151581333245L;
 		
-		public DayTime(EntityMetaData<A, ?, ?, E> meta, A a) {
+		public DayTime(EntityMetaData<A, R, T, E> meta, A a) {
 			super(meta, a);
 			meta.addKey(this);
 		}
 
 		public static <
 			X extends Attribute,
-			T extends Entity<X, ?, ?, T>
+			Y,
+			Z extends ReferenceType<Z>,
+			T extends Entity<X, Y, Z, T>
 		>
-		IntervalKey.DayTime<X, T> get(EntityMetaData<X, ?, ?, T> meta, X a) {			
-			IntervalKey.DayTime<X, T> k = meta.getDayTimeIntervalKey(a);
+		IntervalKey.DayTime<X, Y, Z, T> get(EntityMetaData<X, Y, Z, T> meta, X a) {			
+			IntervalKey.DayTime<X, Y, Z, T> k = meta.getDayTimeIntervalKey(a);
 			
 			if (k == null) {
 				PrimitiveType<?> t = meta.getAttributeType(a);
 				
 				if (t == IntervalType.DayTime.TYPE) {
-					k = new IntervalKey.DayTime<X, T>(meta, a);
+					k = new IntervalKey.DayTime<X, Y, Z, T>(meta, a);
 				}			
 			}
 					

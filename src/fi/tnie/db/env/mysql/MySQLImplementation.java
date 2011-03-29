@@ -108,7 +108,7 @@ public class MySQLImplementation
 			A a = em.getAttribute(col);
 
 			AttributeExtractorFactory aef = new DefaultAttributeExtractorFactory();
-			AttributeExtractor<?, ?, ?, A, E, ?> ae = aef.createExtractor(a, em, col.getDataType().getDataType(), 1, vef);
+			AttributeExtractor<A, ?, ?, E, ?, ?, ?, ?> ae = aef.createExtractor(a, em, col.getDataType().getDataType(), 1, vef);
 
 			if (rs.next()) {
 				ae.extract(rs, target);

@@ -25,7 +25,7 @@ import fi.tnie.db.ent.value.DecimalKey;
 import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalKey;
-import fi.tnie.db.ent.value.Key;
+import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
@@ -45,7 +45,7 @@ public interface Entity<
 		S extends Serializable,
 		P extends PrimitiveType<P>,
 		H extends PrimitiveHolder<S, P>,
-		K extends Key<A, S, P, H, E, K>
+		K extends PrimitiveKey<A, R, T, E, S, P, H, K>
 	>	
 	H get(K k);
 	
@@ -53,7 +53,7 @@ public interface Entity<
 		S extends Serializable,
 		P extends PrimitiveType<P>,
 		H extends PrimitiveHolder<S, P>,
-		K extends Key<A, S, P, H, E, K> 
+		K extends PrimitiveKey<A, R, T, E, S, P, H, K> 
 	>	
 	void set(K k, H newValue);
 	
@@ -120,33 +120,33 @@ public interface Entity<
 	
 	ReferenceHolder<A, R, T, E> ref();
 	
-	IntegerHolder getInteger(IntegerKey<A, E> k);
-	VarcharHolder getVarchar(VarcharKey<A, E> k);
-	DateHolder getDate(DateKey<A, E> k);
-	TimestampHolder getTimestamp(TimestampKey<A, E> k);
+	IntegerHolder getInteger(IntegerKey<A, R, T, E> k);
+	VarcharHolder getVarchar(VarcharKey<A, R, T, E> k);
+	DateHolder getDate(DateKey<A, R, T, E> k);
+	TimestampHolder getTimestamp(TimestampKey<A, R, T, E> k);
 	
-	TimeHolder getTime(TimeKey<A, E> k);
-	CharHolder getChar(CharKey<A, E> k);
-	DoubleHolder getDouble(DoubleKey<A, E> k);
-	DecimalHolder getDecimal(DecimalKey<A, E> k);
+	TimeHolder getTime(TimeKey<A, R, T, E> k);
+	CharHolder getChar(CharKey<A, R, T, E> k);
+	DoubleHolder getDouble(DoubleKey<A, R, T, E> k);
+	DecimalHolder getDecimal(DecimalKey<A, R, T, E> k);
 	
-	IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, E> k);
-	IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, E> k);
+	IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, R, T, E> k);
+	IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, R, T, E> k);
 	
-//	Map<VarcharKey<A, E>, VarcharHolder> getVarcharValueMap();
+//	Map<VarcharKey<A, R, T, E>, VarcharHolder> getVarcharValueMap();
 	
 	
-	void setInteger(IntegerKey<A, E> k, IntegerHolder newValue);
-	void setVarchar(VarcharKey<A, E> k, VarcharHolder newValue);
-	void setChar(CharKey<A, E> k, CharHolder newValue);
-	void setDate(DateKey<A, E> k, DateHolder newValue);
-	void setTimestamp(TimestampKey<A, E> k, TimestampHolder newValue);
-	void setTime(TimeKey<A, E> k, TimeHolder newValue);
-	void setDecimal(DecimalKey<A, E> k, DecimalHolder newValue);
-	void setDouble(DoubleKey<A, E> k, DoubleHolder newValue);
+	void setInteger(IntegerKey<A, R, T, E> k, IntegerHolder newValue);
+	void setVarchar(VarcharKey<A, R, T, E> k, VarcharHolder newValue);
+	void setChar(CharKey<A, R, T, E> k, CharHolder newValue);
+	void setDate(DateKey<A, R, T, E> k, DateHolder newValue);
+	void setTimestamp(TimestampKey<A, R, T, E> k, TimestampHolder newValue);
+	void setTime(TimeKey<A, R, T, E> k, TimeHolder newValue);
+	void setDecimal(DecimalKey<A, R, T, E> k, DecimalHolder newValue);
+	void setDouble(DoubleKey<A, R, T, E> k, DoubleHolder newValue);
 	
-	void setInterval(IntervalKey.YearMonth<A, E> k, IntervalHolder.YearMonth newValue);
-	void setInterval(IntervalKey.DayTime<A, E> k, IntervalHolder.DayTime newValue);
+	void setInterval(IntervalKey.YearMonth<A, R, T, E> k, IntervalHolder.YearMonth newValue);
+	void setInterval(IntervalKey.DayTime<A, R, T, E> k, IntervalHolder.DayTime newValue);
 	
 			
 	/**

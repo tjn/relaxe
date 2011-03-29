@@ -892,12 +892,12 @@ public class SourceGenerator {
         }
 
 	    {
-    	    String type = createAttributeType(getAttributeTemplate(), "Attribute", attrs(t, tm));
+    	    String type = createAttributeType(getAttributeTemplate(), getAttributeType(), attrs(t, tm));
     	    src = replaceAll(src, "{{attribute-name-type}}", type);
 	    }
 
         {
-            String type = createEnumType(getEnumTemplate(), "Reference", refs(t));
+            String type = createEnumType(getEnumTemplate(), getReferenceType(), refs(t));
             src = replaceAll(src, "{{reference-name-type}}", type);
         }
 
@@ -1289,19 +1289,31 @@ public class SourceGenerator {
         	return "";
         }
         
-        JavaType intf = tm.entityType(t, Part.INTERFACE);
+//        JavaType intf = tm.entityType(t, Part.INTERFACE);
         
         buf.append("private transient ");
         buf.append(at.getCanonicalName());
         buf.append("<");
-        buf.append("Attribute");        
-        buf.append(", ");
-        buf.append(intf.getUnqualifiedName());        
-        buf.append("> ");
+        buf.append(keyTypeArgs(tm, t));
+        buf.append(">");
+        buf.append(" ");
         buf.append(valueVariableName(t, c));
         buf.append(" = null;\n");
 
 		return buf.toString();
+	}
+
+	private String keyTypeArgs(TableMapper tm, BaseTable t) {
+		JavaType intf = tm.entityType(t, Part.INTERFACE);
+		StringBuffer buf = new StringBuffer();
+		buf.append(getAttributeType());        
+        buf.append(", ");
+        buf.append(getReferenceType());        
+        buf.append(", ");        
+        buf.append("Type");        
+        buf.append(", ");        
+        buf.append(intf.getUnqualifiedName());
+        return buf.toString();
 	}
 	
 	
@@ -1337,11 +1349,11 @@ public class SourceGenerator {
         	buf.append("public ");
         }
         
+        String ktargs = keyTypeArgs(tm, t);
+        
         buf.append(at.getCanonicalName());
-        buf.append("<");
-        buf.append("Attribute");        
-        buf.append(", ");
-        buf.append(intf.getUnqualifiedName());        
+        buf.append("<");        
+        buf.append(ktargs);                
         buf.append("> ");
         buf.append(vv);
         buf.append("()");
@@ -1358,8 +1370,8 @@ public class SourceGenerator {
 	        buf.append(vv);
 	        buf.append(" = new ");
 	        buf.append(at.getCanonicalName());
-	        buf.append("<Attribute, ");
-	        buf.append(intf.getUnqualifiedName());
+	        buf.append("<");
+	        buf.append(ktargs);
 	        buf.append(">(self(), ");
 	        buf.append(ke);
 	        buf.append(");\n}\n");        
@@ -1499,24 +1511,22 @@ public class SourceGenerator {
         // goal:
         // private Map<Attribute, IntegerKey<Attribute, Person>> integerKeyMap = new HashMap<Attribute, IntegerKey<Attribute,Person>>();
         
+        String ktargs = keyTypeArgs(tm, t);
+        
         buf.append("private java.util.Map<");
         buf.append("Attribute");
         buf.append(", ");
         buf.append(keyType.getCanonicalName());
         buf.append("<");
-        buf.append("Attribute");
-        buf.append(", ");        
-        buf.append(intf.getUnqualifiedName());        
+        buf.append(ktargs);
         buf.append(">> ");
         buf.append(getKeyMapVariable(keyType));        
         buf.append(" = new java.util.HashMap<");
         buf.append("Attribute");
         buf.append(", ");
         buf.append(keyType.getCanonicalName());
-        buf.append("<");
-        buf.append("Attribute");
-        buf.append(", ");        
-        buf.append(intf.getUnqualifiedName());        
+        buf.append("<");        
+        buf.append(ktargs);
         buf.append(">>();\n");
 
         
@@ -1529,16 +1539,14 @@ public class SourceGenerator {
         else {
         	kt = getSimpleName(keyType, true) + getSimpleName(keyType.getEnclosingClass());
         }
-        
+                
         buf.append("@Override\n");
         buf.append("protected java.util.Map<");
         buf.append("Attribute");
         buf.append(", ");
         buf.append(keyType.getCanonicalName());
         buf.append("<");
-        buf.append("Attribute");
-        buf.append(", ");        
-        buf.append(intf.getUnqualifiedName());        
+        buf.append(ktargs);        
         buf.append(">> get");
         buf.append(kt);
         buf.append("Map() {");
@@ -1578,9 +1586,7 @@ public class SourceGenerator {
         buf.append("public static final ");
         buf.append(kc.getCanonicalName());
         buf.append("<");
-        buf.append("Attribute");        
-        buf.append(", ");
-        buf.append(intf.getUnqualifiedName());        
+        buf.append(keyTypeArgs(tm, t));
         buf.append("> ");
         buf.append(keyConstantVariable(t, c));
         buf.append(" = ");
@@ -1979,7 +1985,6 @@ public class SourceGenerator {
 	public String getReferenceType() {
 		return "Reference";
 	}
-
 
 	public String getQueryType() {
 		return "Query";

@@ -11,6 +11,7 @@ import fi.tnie.db.gen.ent.personal.Person;
 import fi.tnie.db.gen.ent.personal.Person.Reference;
 import fi.tnie.db.gen.ent.personal.Person.Type;
 import fi.tnie.db.types.IntegerType;
+import fi.tnie.db.types.ReferenceType;
 import junit.framework.TestCase;
 
 public class IntegerKeyTest extends TestCase {
@@ -26,15 +27,15 @@ public class IntegerKeyTest extends TestCase {
 	private 
 	<
 		A extends Attribute,
-		E extends Entity<A, ?, ?, E>
+		Y, 
+		Z extends ReferenceType<Z>,		
+		E extends Entity<A, Y, Z, E>
 	>
-	void test(EntityMetaData<A, ?, ?, E> meta, A name) {
-		IntegerKey<A, E> ik1 = IntegerKey.get(meta, name);
+	void test(EntityMetaData<A, Y, Z, E> meta, A name) {
+		IntegerKey<A, Y, Z, E> ik1 = IntegerKey.get(meta, name);
 		assertNotNull(ik1);
 		assertSame(IntegerType.TYPE, ik1.type());
-		IntegerKey<A, E> ik2 = IntegerKey.get(meta, name);
-		assertSame(ik1, ik2);
-				
-	}
-	
+		IntegerKey<A, Y, Z, E> ik2 = IntegerKey.get(meta, name);
+		assertSame(ik1, ik2);				
+	}	
 }

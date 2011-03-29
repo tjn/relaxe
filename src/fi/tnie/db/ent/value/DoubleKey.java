@@ -9,9 +9,14 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.types.DoubleType;
 import fi.tnie.db.types.PrimitiveType;
+import fi.tnie.db.types.ReferenceType;
 
-public final class DoubleKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends PrimitiveKey<A, Double, DoubleType, DoubleHolder, E, DoubleKey<A, E>>
+public final class DoubleKey<	
+	A extends Attribute, 
+	R,
+	T extends ReferenceType<T>,
+	E extends Entity<A, R, T, E>>
+	extends AbstractPrimitiveKey<A, R, T, E, Double, DoubleType, DoubleHolder, DoubleKey<A, R, T, E>>
 {
 	/**
 	 *
@@ -24,23 +29,25 @@ public final class DoubleKey<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private DoubleKey() {
 	}
 
-	private DoubleKey(EntityMetaData<A, ?, ?, E> meta, A name) {
+	private DoubleKey(EntityMetaData<A, R, T, E> meta, A name) {
 		super(meta, name);
 		meta.addKey(this);
 	}
 	
 	public static <
 		X extends Attribute,
-		T extends Entity<X, ?, ?, T>
+		Y, 
+		Z extends ReferenceType<Z>,		
+		T extends Entity<X, Y, Z, T>
 	>
-	DoubleKey<X, T> get(EntityMetaData<X, ?, ?, T> meta, X a) {
-		DoubleKey<X, T> k = meta.getDoubleKey(a);
+	DoubleKey<X, Y, Z, T> get(EntityMetaData<X, Y, Z, T> meta, X a) {
+		DoubleKey<X, Y, Z, T> k = meta.getDoubleKey(a);
 		
 		if (k == null) {
 			PrimitiveType<?> t = meta.getAttributeType(a);
 			
 			if (t != null && t.getSqlType() == PrimitiveType.DOUBLE) {
-				k = new DoubleKey<X, T>(meta, a);
+				k = new DoubleKey<X, Y, Z, T>(meta, a);
 			}			
 		}
 				

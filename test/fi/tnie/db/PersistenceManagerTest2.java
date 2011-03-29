@@ -124,7 +124,8 @@ public class PersistenceManagerTest2 extends TestCase  {
         
         DefaultOrganization org = pf.newOrganization();
         
-        DateKey<HourReport.Attribute, HourReport> dk = hr.getMetaData().getDateKey(HourReport.Attribute.REPORT_DATE);
+        DateKey<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport> dk = 
+        	hr.getMetaData().getDateKey(HourReport.Attribute.REPORT_DATE);
         
         hr.setDate(dk, DateHolder.currentDate());                
         assertNotNull(hr.reportDate().get());
@@ -134,8 +135,7 @@ public class PersistenceManagerTest2 extends TestCase  {
         hr.setFinishedAt(new Date());
 //        hr.ref(HourReport.Reference.FK_HHR_EMPLOYER). org);
         
-        hr.id().set(null);
-               
+        hr.id().set(null);               
         
         PersistenceManager<fi.tnie.db.gen.ent.personal.HourReport.Attribute, 
         	fi.tnie.db.gen.ent.personal.HourReport.Reference, 

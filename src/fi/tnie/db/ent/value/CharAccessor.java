@@ -7,9 +7,15 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.types.CharType;
+import fi.tnie.db.types.ReferenceType;
 
-public class CharAccessor<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends PrimitiveAccessor<A, String, CharType, CharHolder, E, CharKey<A, E>> {
+public class CharAccessor<
+	A extends Attribute,
+	R,
+	T extends ReferenceType<T>,	
+	E extends Entity<A, R, T, E>
+>
+	extends AbstractPrimitiveAccessor<A, R, T, E, String, CharType, CharHolder, CharKey<A, R, T, E>> {
 
 	/**
 	 *
@@ -23,7 +29,7 @@ public class CharAccessor<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private CharAccessor() {
 	}
 
-	public CharAccessor(E target, CharKey<A, E> k) {
+	public CharAccessor(E target, CharKey<A, R, T, E> k) {
 		super(target, k);
 	}
 }

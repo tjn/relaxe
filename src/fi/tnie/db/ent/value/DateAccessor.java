@@ -9,9 +9,15 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.types.DateType;
+import fi.tnie.db.types.ReferenceType;
 
-public class DateAccessor<A extends Attribute, E extends Entity<A, ?, ?, E>>
-	extends PrimitiveAccessor<A, Date, DateType, DateHolder, E, DateKey<A, E>> {
+public class DateAccessor<
+	A extends Attribute,
+	R,
+	T extends ReferenceType<T>,	
+	E extends Entity<A, R, T, E>
+	>
+	extends AbstractPrimitiveAccessor<A, R, T, E, Date, DateType, DateHolder, DateKey<A, R, T, E>> {
 
 	/**
 	 *
@@ -25,7 +31,7 @@ public class DateAccessor<A extends Attribute, E extends Entity<A, ?, ?, E>>
 	private DateAccessor() {
 	}
 
-	public DateAccessor(E target, DateKey<A, E> k) {
+	public DateAccessor(E target, DateKey<A, R, T, E> k) {
 		super(target, k);
 	}
 }
