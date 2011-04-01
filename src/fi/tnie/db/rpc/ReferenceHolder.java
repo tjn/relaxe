@@ -43,4 +43,5 @@ public abstract class ReferenceHolder<
 	public V value() {
 		return this.value;
 	}
+	
 }

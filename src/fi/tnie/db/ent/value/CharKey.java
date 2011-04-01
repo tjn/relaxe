@@ -71,9 +71,14 @@ public final class CharKey<
 	public CharHolder newHolder(String newValue) {
 		return CharHolder.valueOf(newValue);
 	}
+
+	@Override
+	public void copy(E src, E dest) {
+		dest.setChar(this, src.getChar(this));
+	}
 	
-//	@Override
-//	public CharKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
-//		return meta.getCharKey(name());
-//	}		
+	@Override
+	public CharKey<A, R, T, E> self() {	
+		return this;
+	}
 }

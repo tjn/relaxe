@@ -10,6 +10,7 @@ import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.ent.value.DecimalKey;
 import fi.tnie.db.ent.value.DoubleKey;
+import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
@@ -60,7 +61,7 @@ public interface EntityMetaData<
 
 
 	/**
-	 * Unmodifiable set containing the names of the attributes which are applicable to entities this object describes.
+	 * Unmodifiable set containing the names of the attributes which are applicable to entities this object represents.
 	 * @return
 	 */
 	Set<A> attributes();
@@ -78,6 +79,8 @@ public interface EntityMetaData<
 
 //	Key<A, ?, ?, ?, E, ?> getKey(Column c);
 	PrimitiveKey<A, R, T, E, ?, ?, ?, ?> getKey(A a);
+		
+	EntityKey<A, R, T, E, ?, ?, ?, ?> getEntityKey(R ref);
 
 	IntegerKey<A, R, T, E> getIntegerKey(A a);
 	VarcharKey<A, R, T, E> getVarcharKey(A a);
@@ -87,10 +90,8 @@ public interface EntityMetaData<
 	CharKey<A, R, T, E> getCharKey(A a);
 	TimestampKey<A, R, T, E> getTimestampKey(A a);
 	TimeKey<A, R, T, E> getTimeKey(A a);
-	
 	IntervalKey.YearMonth<A, R, T, E> getYearMonthIntervalKey(A a);
 	IntervalKey.DayTime<A, R, T, E> getDayTimeIntervalKey(A a);
-
 	ForeignKey getForeignKey(R r);
 	Set<Column> getPKDefinition();
 

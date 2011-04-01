@@ -15,10 +15,13 @@ public interface Key<
 	R,
 	T extends ReferenceType<T>,	
 	E extends Entity<A, R, T, E>,
-	V extends Type<V>,
-	K extends Key<A, R, T, E, V, K>
+	V extends Type<V>,	
+	K extends Key<A, R, T, E, V, ? extends K>
 >
 	extends Serializable
 {
 	V type();
+	void copy(E src, E dest);
+	void clear(E src);	
+	K self();
 }

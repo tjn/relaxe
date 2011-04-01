@@ -1,6 +1,8 @@
 package {{package-name}};
 
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.value.AbstractEntityKey;
 import fi.tnie.db.types.*;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.rpc.ReferenceHolder;
@@ -11,7 +13,7 @@ public interface {{table-interface}}
         {{table-interface}}.Reference,        
         {{table-interface}}.Type,
         {{table-interface}}
-    > {
+    > {{reference-list}} {
     
 	class Type extends ReferenceType<Type> {	
 	}
@@ -39,11 +41,49 @@ public interface {{table-interface}}
 			return {{table-interface}}.TYPE;
 		}
 	}
+		
+	public static abstract class Key<
+		A extends fi.tnie.db.ent.Attribute, 
+		R, 
+		T extends ReferenceType<T>, 
+		E extends Entity<A, R, T, E>,
+		K extends Key<A, R, T, E, K>>
+		extends AbstractEntityKey<A, R, T, E, Type, {{table-interface}}, Holder, K> {
+			
+		private static final long serialVersionUID = 1L;
+		
+		protected Key(EntityMetaData<A, R, T, E> meta, R name) {
+			super(meta, name);
+		}		
+
+		@Override
+		public Holder newHolder({{table-interface}} o) {
+			return (o == null) ? {{table-interface}}.Holder.NULL : o.ref();
+		}
+
+		@Override
+		public Type type() {
+			return {{table-interface}}.TYPE;
+		}
+	}
+	
+// public static interface ReferenceKeys {
+	// Organization.Key<Attribute, Reference, Type, Person, ?> EMP = fi.tnie.db.gen.ent.personal.PersonImpl.PersonMetaData.getInstance().getOrganizationKey(Reference.EMPLOYER);	
+// }
+
+
+	@Override
+	public Holder ref();
 	
 {{attribute-key-list}}
+{{reference-key-list}}
         
 {{attribute-name-type}}    
-{{reference-name-type}}    
+{{reference-name-type}}
+
+
+
+    
 {{query-name-type}}
     
 {{value-accessor-list}}

@@ -486,10 +486,10 @@ public class PersistenceManager<
 		ArrayList<DataObject> content = new ArrayList<DataObject>();		
 		
 		// DataObjectReader r = new DataObjectReader(vef, qo, content);
-		EntityCompositor cmp = new EntityCompositor(ctx, vef, e);
+//		EntityCompositor cmp = new EntityCompositor(ctx, vef, e);
 		
 				
-		st.execute(qo, c, cmp);		
+//		st.execute(qo, c, cmp);		
 				
 		
 		

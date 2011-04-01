@@ -73,10 +73,14 @@ public final class TimestampKey<
 	public TimestampHolder newHolder(Date newValue) {
 		return TimestampHolder.valueOf(newValue);
 	}
-	
-//	@Override
-//	public TimestampKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
-//		return meta.getTimestampKey(name());
-//	}
-	
+
+	@Override
+	public void copy(E src, E dest) {
+		dest.setTimestamp(this, src.getTimestamp(this));		
+	}
+
+	@Override
+	public TimestampKey<A, R, T, E> self() {
+		return this;
+	}
 }

@@ -122,4 +122,20 @@ public class PGImplementation
 	protected DefaultValueExtractorFactory createValueExtractorFactory() {
 		return new PGValueExtractorFactory();
 	}
+	
+	public String createJdbcUrl(String host, String database) {
+		return createJdbcUrl(host, 5432, database);		
+	}
+	
+	public String createJdbcUrl(String host, int port, String database) {
+		if (database == null) {
+			throw new NullPointerException("database");
+		}
+		
+		if (host == null) {
+			host = "127.0.0.1"; 
+		}
+		
+		return "jdbc:postgresql://" + host + ":" + port + "/" + database;				
+	}
 }

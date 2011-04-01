@@ -105,7 +105,16 @@ public abstract class IntervalKey<
 		public fi.tnie.db.types.IntervalType.YearMonth type() {
 			return IntervalType.YearMonth.TYPE;
 		}
+
+		@Override
+		public void copy(E src, E dest) {
+			dest.setInterval(this, src.getInterval(this));
+		}
 		
+		@Override
+		public YearMonth<A, R, T, E> self() {
+			return this;
+		}
 	}
 	
 	public static final class DayTime<
@@ -165,6 +174,16 @@ public abstract class IntervalKey<
 		public fi.tnie.db.types.IntervalType.DayTime type() {
 			return IntervalType.DayTime.TYPE;
 		}
+
+		@Override
+		public void copy(E src, E dest) {
+			dest.setInterval(this, src.getInterval(this));
+		}
+		
+		@Override
+		public DayTime<A, R, T, E> self() {
+			return this;
+		}
 	}
 
 	
@@ -209,5 +228,6 @@ public abstract class IntervalKey<
 //	public IntervalKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
 //		return meta.getTimestampKey(name());
 //	}
-	
+
+
 }

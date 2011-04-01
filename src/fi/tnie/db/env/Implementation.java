@@ -22,6 +22,9 @@ public interface Implementation
 	
 	GeneratedKeyHandler generatedKeyHandler();
 	ValueExtractorFactory getValueExtractorFactory();			
-	ValueAssignerFactory getValueAssignerFactory(); 
+	ValueAssignerFactory getValueAssignerFactory();
+	
+	String createJdbcUrl(String host, String database);
+	String createJdbcUrl(String host, int port, String database);
 		
 }

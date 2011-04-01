@@ -98,6 +98,10 @@ public class DefaultTableMapper
             return "Default" + name;
         }
         
+        if (p == Part.REF) {
+            return name + "Ref";
+        }
+        
         if (p == Part.LITERAL_TABLE_ENUM) {
             return "Literal" + name;
         }

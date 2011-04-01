@@ -5,7 +5,10 @@ package fi.tnie.db;
 
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -34,6 +37,23 @@ public class SimpleTestContext
         this.driver = driver;
         this.jdbcURL = jdbcURL;
         this.driverConfig = driverConfig;
+    }
+    public SimpleTestContext(Implementation impl) {
+    	this(impl, "test", "test", "password");
+    }
+    
+    public SimpleTestContext(Implementation impl, String database, String user, String passwd) {            
+        super();                
+		Driver d = load(impl.driverClassName());
+		String url = impl.createJdbcUrl(null, database);		
+		Properties drvcfg = new Properties();
+		drvcfg.setProperty("user", user);		
+		drvcfg.setProperty("password", passwd);
+        this.implementation = impl;            
+        this.driver = d;
+        this.jdbcURL = url;
+        this.driverConfig = drvcfg;
+
     }
     
     public Catalog getCatalog() {
@@ -88,4 +108,29 @@ public class SimpleTestContext
     private static Logger logger() {
 		return SimpleTestContext.logger;
 	}
+    
+    public Driver load(String driverName) {
+    	try {
+	    	logger().debug("loading " + driverName);
+	    	Class<?> driverClass = Class.forName(driverName);
+	    	logger().debug("driver loaded.");
+	    	
+	    	Driver selected = null;
+	    	
+	    	List<Driver> loaded = Collections.list(DriverManager.getDrivers());
+	    	
+	    	for(Driver d : loaded) {
+	    		if (d.getClass().equals(driverClass)) {
+	    			selected = d;
+	    			break;
+	    		}				
+	    	}    	
+	    	
+	    	return selected;
+    	}
+    	catch (ClassNotFoundException e) {
+    		logger().error(e.getMessage(), e);
+    		throw new RuntimeException(e);
+		}
+    }
 }

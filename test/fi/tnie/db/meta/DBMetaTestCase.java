@@ -22,10 +22,13 @@ import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.EnvironmentTestContext;
 import fi.tnie.db.QueryException;
 import fi.tnie.db.QueryHelper;
+import fi.tnie.db.SimpleTestContext;
 import fi.tnie.db.env.CatalogFactory;
+import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.pg.PGImplementation;
 import junit.framework.TestCase;
 
-public class DBMetaTestCase
+public abstract class DBMetaTestCase
     extends TestCase
     implements DBMetaTest {
     
@@ -40,7 +43,7 @@ public class DBMetaTestCase
     private DefaultTableMapper tableMapper;
     
     private ClassLoader classLoaderForGenerated = null;
-    
+          
     protected int read(ResultSet rs, int col, Collection<String> dest) 
         throws SQLException {
         int count = 0;
@@ -123,6 +126,9 @@ public class DBMetaTestCase
         return DBMetaTestCase.logger;
     }
 
+    public void init(Implementation impl) {
+    	init(new SimpleTestContext(impl));
+    }
     @Override
     public void init(EnvironmentTestContext ctx) {
         
@@ -154,13 +160,20 @@ public class DBMetaTestCase
     
     
     @Override
-    protected void setUp() throws Exception {        
+    protected void setUp() throws Exception {
+    	init(implementation());
+    	
         super.setUp();
         this.connection = connect();
         this.connection.setAutoCommit(false);
     }
     
-    @Override
+    protected Implementation implementation() {
+    	return new PGImplementation();
+    }
+    
+    
+	@Override
     protected void tearDown() throws Exception {
         this.connection = QueryHelper.doClose(this.connection);
         super.tearDown();

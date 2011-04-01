@@ -69,9 +69,19 @@ public final class DecimalKey<
 	public DecimalHolder get(E e) {
 		return e.getDecimal(this);
 	}
+	
+	@Override
+	public void copy(E src, E dest) {
+		dest.setDecimal(this, src.getDecimal(this));
+	}
 
 	@Override
 	public DecimalHolder newHolder(Decimal newValue) {
 		return DecimalHolder.valueOf(newValue);
-	}	
+	}
+	
+	@Override
+	public DecimalKey<A, R, T, E> self() {
+		return this;
+	}
 }

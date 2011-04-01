@@ -95,6 +95,9 @@ public class PersistenceManagerTest2 extends TestCase  {
         PGImplementation impl = new PGImplementation();        
         PersistenceManager<fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person> pm = 
        		create(p.self(), impl);
+        
+        
+        
                         
 //        PersistenceManager<Attribute, Reference, Query, 
 //        	Entity<Attribute, Reference, Query, Person.Type, ? extends Person>> pm = p.createPersistentManager();

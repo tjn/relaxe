@@ -1,0 +1,10 @@
+package {{package-name}};
+
+{{imports}}
+
+/**
+	Interface for entity types which hold references to entities type of .
+*/	
+public interface {{table-interface}}Ref {
+	public {{table-interface}}.Holder get{{table-interface}}({{table-interface}}.Key<?, ?, ?, ?, ?> key);
+}

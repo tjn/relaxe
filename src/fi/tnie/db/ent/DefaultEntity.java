@@ -11,6 +11,7 @@ import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.ent.value.DecimalKey;
 import fi.tnie.db.ent.value.DoubleKey;
+import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
@@ -70,8 +71,7 @@ public abstract class DefaultEntity<
 	 * TODO: 
 	 * Consider having simple A as key here.  
 	 * 
-	 */
-	
+	 */	
 	private Map<A, VarcharHolder> varcharValueMap;
 	private Map<A, IntegerHolder> intValueMap;
 	private Map<A, CharHolder> charValueMap;
@@ -84,6 +84,7 @@ public abstract class DefaultEntity<
 	private Map<A, IntervalHolder.YearMonth> yearMonthIntervalValueMap;
 	private Map<A, IntervalHolder.DayTime> dayTimeIntervalValueMap;
 	
+	private Map<R, ReferenceHolder<?, ?, ?, ?>> referenceHolderMap;
 	
 	
 //	private static Logger logger = Logger.getLogger(DefaultEntity.class);
@@ -212,6 +213,7 @@ public abstract class DefaultEntity<
 		return charValueMap;
 	}
 	
+	
 	public <
 	S extends Serializable, 
 	P extends fi.tnie.db.types.PrimitiveType<P>, 
@@ -295,6 +297,11 @@ public abstract class DefaultEntity<
 	> H get(K k) {
 		return k.get(self());		
 	}
+	
+	
+	public <P extends fi.tnie.db.types.ReferenceType<P>, G extends fi.tnie.db.ent.Entity<?,?,P,G>, H extends fi.tnie.db.rpc.ReferenceHolder<?,?,P,G>, K extends fi.tnie.db.ent.value.EntityKey<A,R,T,E,P,G,H,? extends K>> H getRef(K k) {
+		return k.get(self());
+	}
 
 	private Map<A, IntervalHolder.YearMonth> getYearMonthIntervalValueMap() {
 		if (yearMonthIntervalValueMap == null) {
@@ -312,6 +319,43 @@ public abstract class DefaultEntity<
 
 		return dayTimeIntervalValueMap;
 	};
+	
+	private Map<R, ReferenceHolder<?, ?, ?, ?>> getRefs() {
+		if (refs == null) {
+			refs = new HashMap<R, ReferenceHolder<?, ?, ?, ?>>();			
+		}
 
-
+		return refs;
+	};
+	
+	public <P extends fi.tnie.db.types.ReferenceType<P>, G extends fi.tnie.db.ent.Entity<?,?,P,G>, H extends fi.tnie.db.rpc.ReferenceHolder<?,?,P,G>, K extends fi.tnie.db.ent.value.EntityKey<A,R,T,E,P,G,H,? extends K>> void setRef(K k, H newValue) {
+		getRefs().put(k.name(), newValue);
+	}
+	
+	public Entity<?, ?, ?, ?> getRef(R k) {
+		ReferenceHolder<?, ?, ?, ?> rh = getRefs().get(k);				
+		return (rh == null) ? null : rh.value();		
+	}
+	
+	public E clone() {
+		EntityMetaData<A, R, T, E> meta = getMetaData();
+		EntityFactory<A, R, T, E> ef = meta.getFactory();
+				
+		E src = self(); 
+		E dest = ef.newInstance();
+		
+		for (A a : meta.attributes()) {
+			PrimitiveKey<A, R, T, E, ?, ?, ?, ?> pk = meta.getKey(a);
+			pk.copy(src, dest);
+		}
+		
+		for (R r : meta.relationships()) {
+			EntityKey<A, R, T, E, ?, ?, ?, ?> ek = meta.getEntityKey(r);
+			ek.copy(src, dest);			
+		}
+		
+		return dest;				
+	}
+	
+	
 }

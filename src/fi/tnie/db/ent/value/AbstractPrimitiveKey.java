@@ -5,6 +5,8 @@ package fi.tnie.db.ent.value;
 
 import java.io.Serializable;
 
+import com.sun.org.apache.xpath.internal.axes.SelfIteratorNoPredicate;
+
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
@@ -97,4 +99,7 @@ public abstract class AbstractPrimitiveKey<
 		return name().equals(pk.name());
 	}
 	
+	public void clear(E src) {
+		src.set(self(), newHolder(null));
+	}
 }

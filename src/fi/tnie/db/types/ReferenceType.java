@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.types;
 
-public class ReferenceType<R extends ReferenceType<R>>
+public abstract class ReferenceType<R extends ReferenceType<R>>
 	extends Type<R> {
 
 	@Override

@@ -28,5 +28,5 @@ public interface PrimitiveKey<
 	H newHolder(V newValue);	
 	H get(E e);
 	void set(E e, H newValue);
-	
+	void copy(E src, E dest);
 }

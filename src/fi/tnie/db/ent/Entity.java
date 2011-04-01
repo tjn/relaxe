@@ -23,6 +23,7 @@ import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.ent.value.DecimalKey;
 import fi.tnie.db.ent.value.DoubleKey;
+import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
@@ -47,7 +48,16 @@ public interface Entity<
 		H extends PrimitiveHolder<S, P>,
 		K extends PrimitiveKey<A, R, T, E, S, P, H, K>
 	>	
-	H get(K k);
+	H get(K k);	
+
+
+	<			
+		P extends ReferenceType<P>,
+		G extends Entity<?, ?, P, G>,
+		H extends ReferenceHolder<?, ?, P, G>,
+		K extends EntityKey<A, R, T, E, P, G, H, ? extends K>
+	>	
+	H getRef(K k);
 	
 	<
 		S extends Serializable,
@@ -56,6 +66,18 @@ public interface Entity<
 		K extends PrimitiveKey<A, R, T, E, S, P, H, K> 
 	>	
 	void set(K k, H newValue);
+	
+
+	
+	public Entity<?, ?, ?, ?> getRef(R k);
+	
+	<			
+		P extends ReferenceType<P>,
+		G extends Entity<?, ?, P, G>,
+		H extends ReferenceHolder<?, ?, P, G>,
+		K extends EntityKey<A, R, T, E, P, G, H, ? extends K>
+	>		
+	void setRef(K k, H newValue);	
 	
 	PrimitiveHolder<?, ?> value(A attribute);
 			
@@ -131,10 +153,7 @@ public interface Entity<
 	DecimalHolder getDecimal(DecimalKey<A, R, T, E> k);
 	
 	IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, R, T, E> k);
-	IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, R, T, E> k);
-	
-//	Map<VarcharKey<A, R, T, E>, VarcharHolder> getVarcharValueMap();
-	
+	IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, R, T, E> k);	
 	
 	void setInteger(IntegerKey<A, R, T, E> k, IntegerHolder newValue);
 	void setVarchar(VarcharKey<A, R, T, E> k, VarcharHolder newValue);
@@ -153,4 +172,7 @@ public interface Entity<
 	 * TODO: EntityQueryTask should be also rewritten to use DataObjectReader
 	 */
 	// DataObject getSource();
+	
+	public E self();
+	
 }

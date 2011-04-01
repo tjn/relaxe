@@ -72,9 +72,14 @@ public final class DoubleKey<
 		return DoubleHolder.valueOf(newValue);
 	}
 	
-//	@Override
-//	public DoubleKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
-//		return meta.getDoubleKey(name());
-//	}
-//		
+	@Override
+	public void copy(E src, E dest) {
+		dest.setDouble(this, src.getDouble(this));
+	}
+	
+	@Override
+	public DoubleKey<A, R, T, E> self() {
+		return this;
+	}
+
 }

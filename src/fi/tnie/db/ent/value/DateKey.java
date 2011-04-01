@@ -73,10 +73,14 @@ public final class DateKey<
 	public DateHolder newHolder(Date newValue) {
 		return DateHolder.valueOf(newValue);
 	}
+	
+	@Override
+	public void copy(E src, E dest) {
+		dest.setDate(this, src.getDate(this));
+	}
 
-//	@Override
-//	public DateKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {		
-//		return meta.getDateKey(name());
-//	}
-
+	@Override
+	public DateKey<A, R, T, E> self() {
+		return this;		
+	}
 }

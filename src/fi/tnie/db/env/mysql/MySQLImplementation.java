@@ -131,4 +131,18 @@ public class MySQLImplementation
 
 	}
 
+	@Override
+	public String createJdbcUrl(String host, String database) {
+		host = (host == null) ? "" : host;
+		return "jdbc:mysql://" + host + "/" + database;
+
+	}
+
+	@Override
+	public String createJdbcUrl(String host, int port, String database) {
+		host = (host == null) ? "" : host;
+		return "jdbc:mysql://" + host + ":" + port + "/" + database;
+	}
+		
+
 }

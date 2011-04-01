@@ -74,10 +74,14 @@ public final class TimeKey<
 	public TimeHolder newHolder(Date newValue) {
 		return TimeHolder.valueOf(newValue);
 	}
-	
-//	@Override
-//	public TimeKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
-//		return meta.getTimeKey(name());
-//	}
-	
+
+	@Override
+	public void copy(E src, E dest) {
+		dest.setTime(this, src.getTime(this));		
+	}
+
+	@Override
+	public TimeKey<A, R, T, E> self() {
+		return this;
+	}
 }

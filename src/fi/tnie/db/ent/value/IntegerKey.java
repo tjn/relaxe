@@ -72,9 +72,14 @@ public final class IntegerKey<
 	public IntegerHolder newHolder(Integer newValue) {
 		return IntegerHolder.valueOf(newValue);
 	}
-	
-//	@Override
-//	public IntegerKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
-//		return meta.getIntegerKey(name());
-//	}
+
+	@Override
+	public void copy(E src, E dest) {
+		dest.setInteger(this, src.getInteger(this));
+	}
+
+	@Override
+	public IntegerKey<A, R, T, E> self() {
+		return this;
+	}
 }

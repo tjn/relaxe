@@ -5,11 +5,21 @@ package fi.tnie.db;
 
 import java.sql.Connection;
 
+import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.gen.ent.LiteralCatalog;
+import fi.tnie.db.gen.ent.personal.DefaultHourReport;
+import fi.tnie.db.gen.ent.personal.DefaultOrganization;
 import fi.tnie.db.gen.ent.personal.DefaultPerson;
+import fi.tnie.db.gen.ent.personal.HourReport;
+import fi.tnie.db.gen.ent.personal.Organization;
+import fi.tnie.db.gen.ent.personal.OrganizationImpl;
 import fi.tnie.db.gen.ent.personal.PersonalFactory;
+import fi.tnie.db.gen.ent.personal.HourReport.Reference;
+import fi.tnie.db.gen.ent.personal.HourReport.Type;
+import fi.tnie.db.gen.ent.personal.Organization.Key;
 import fi.tnie.db.map.TableMapper;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
@@ -66,6 +76,22 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
                 
         PersonalFactory pf = cc.newPersonalFactory();
         DefaultPerson p = pf.newPerson();
+        
+        
+        PGImplementation pgi = new PGImplementation();
+        
+        DefaultHourReport hr = pf.newHourReport();
+        Key<fi.tnie.db.gen.ent.personal.HourReport.Attribute, Reference, Type, HourReport, ?> ok = HourReport.FK_HHR_EMPLOYER;
+                       
+        Organization org = pf.newOrganization();        
+        ok.set(hr, org);
+                
+//        hr.setRef(HourReport.FK_HHR_EMPLOYER, new OrganizationImpl().ref());
+        
+        
+        
+                
+        
                 
 //        PersistenceManager<Attribute, Reference, Query, 
 //        	Entity<Attribute, Reference, Query, Person.Type, ? extends Person>> pm = p.createPersistentManager();

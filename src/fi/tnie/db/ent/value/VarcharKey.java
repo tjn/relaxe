@@ -72,9 +72,14 @@ public final class VarcharKey<
 	public VarcharHolder newHolder(String newValue) {
 		return VarcharHolder.valueOf(newValue);
 	}
+
+	@Override
+	public void copy(E src, E dest) {
+		dest.setVarchar(this, src.getVarchar(this));		
+	}
 	
-//	@Override
-//	public VarcharKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
-//		return meta.getVarcharKey(name());
-//	}
+	@Override
+	public VarcharKey<A, R, T, E> self() {
+		return this;
+	}
 }

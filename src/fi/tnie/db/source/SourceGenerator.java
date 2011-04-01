@@ -19,13 +19,16 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.QueryException;
+import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.map.AttributeInfo;
 import fi.tnie.db.map.JavaType;
 import fi.tnie.db.map.TableMapper;
@@ -52,6 +55,7 @@ public class SourceGenerator {
 	     * Pattern which is replaced with the simple name of the table interface in template files.
 	     */		
 		TABLE_INTERFACE,
+		TABLE_INTERFACE_REF,
 	    /**
 	     * Pattern which is replaced with the simple name of the abstract class in template files.
 	     */		
@@ -89,15 +93,29 @@ public class SourceGenerator {
 		ACCESSOR_LIST,		
 		
 		/**
-		 * static attribute keys in meta-data implementation
+		 * static attribute key declarations in interface
 		 */
 		ATTRIBUTE_KEY_LIST,
 		
+		REFERENCE_KEY_LIST,
+
+		/**
+		 * Class declarations for reference keys
+		 */
+		REFERENCE_KEY_CLASS_LIST,		
 
 		/**
 		 * 
 		 */
 		ATTRIBUTE_KEY_MAP_LIST,
+		REFERENCE_KEY_MAP_LIST,
+		
+		/*
+		 * Implements ... list for table interface. 
+		 */
+		REFERENCE_LIST,
+		
+		REFERENCE_MAP_LIST,
 	    /**
 	     * Pattern which is replaced with the simple name of the catalog context class in template files.
 	     */		
@@ -732,6 +750,7 @@ public class SourceGenerator {
 		    final JavaType hp = tm.entityType(t, Part.HOOK);
 		    final JavaType impl = tm.entityType(t, Part.IMPLEMENTATION);
 		    final JavaType te = tm.entityType(t, Part.LITERAL_TABLE_ENUM);
+		    final JavaType ref = tm.entityType(t, Part.REF);
 		    
 		    if (intf == null || impl == null) {
 		        continue;
@@ -744,6 +763,13 @@ public class SourceGenerator {
                     File root = getSourceDir(schema, Part.INTERFACE);
 //                    logger().debug("interface: " + source);                   
                     write(root, intf, source, generated, gm);
+		        }
+		        
+		        {	
+                    CharSequence source = generateRef(t, ref, intf, tm);                    
+                    File root = getSourceDir(schema, Part.REF);
+                    logger().debug("ref: " + source);                   
+                    write(root, ref, source, generated, gm);
 		        }
 
                 if (at != null) {
@@ -820,7 +846,16 @@ public class SourceGenerator {
         }
 	}
 
-    private File getSourceDir(Schema s, Part part) {
+    private CharSequence generateRef(BaseTable t, JavaType ref, JavaType intf, TableMapper tm) 
+    	throws IOException {
+    	String src = getTemplateFor(Part.REF);
+    	src = replaceAll(src, Tag.TABLE_INTERFACE_REF, ref.getUnqualifiedName());    	
+	    src = replacePackageAndImports(src, intf);
+	    src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());    	
+		return src;
+	}
+
+	private File getSourceDir(Schema s, Part part) {
         return getSourceDir(part);
     }
 
@@ -886,8 +921,7 @@ public class SourceGenerator {
 	    
         {
             String code = attributeKeyList(t, tm);
-            logger().debug("generateInterface: code=" + code);
-            
+            logger().debug("generateInterface: attributeKeyList=" + code);            
             src = replaceAll(src, Tag.ATTRIBUTE_KEY_LIST, code);
         }
 
@@ -899,6 +933,11 @@ public class SourceGenerator {
         {
             String type = createEnumType(getEnumTemplate(), getReferenceType(), refs(t));
             src = replaceAll(src, "{{reference-name-type}}", type);
+        }
+        
+        {
+            String type = referenceKeyList(t, tm);
+            src = replaceAll(src, Tag.REFERENCE_KEY_LIST, type);
         }
 
         {
@@ -915,10 +954,37 @@ public class SourceGenerator {
             String code = valueAccessorList(t, tm, false);     
             src = replaceAll(src, Tag.VALUE_ACCESSOR_LIST, code);
         }
+
         
+        {
+        	String code = referenceList(t, tm);        	                 
+            src = replaceAll(src, Tag.REFERENCE_LIST, code);
+        }
         
 
 	    return src;
+	}
+
+    /**
+     * Returns a comma separated list of the Ref -interfaces 
+     * which the table interface for <code>t</code> implements.  
+     * @param t
+     * @param tm
+     * @return
+     */
+    
+	private String referenceList(BaseTable t, TableMapper tm) {
+		StringBuffer buf = new StringBuffer();
+		Collection<JavaType> rl = referenced(t, tm).values();
+		
+		for (JavaType jt : rl) {
+			buf.append(", ");
+			buf.append(jt.getQualifiedName());
+			buf.append("Ref");
+		}        	
+		
+		String code = buf.toString();
+		return code;
 	}
     
     public CharSequence generateTableEnum(BaseTable t, JavaType mt, TableMapper tm)
@@ -1208,22 +1274,45 @@ public class SourceGenerator {
         src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
         src = replaceAll(src, Tag.TABLE_IMPL_CLASS, impl.getUnqualifiedName());
         src = replaceAll(src, Tag.TABLE_IMPL_BASE, base.getUnqualifiedName());
+                                
+        boolean qualify = hasAmbiguousSimpleNamesForReferenceKeys(t, tm);
         
         {
             String code = accessors(t, tm, true);
             src = replaceAll(src, Tag.ACCESSOR_LIST, code);
         }
+        
+        {
+            String code = referenceKeyClassList(t, tm, qualify);
+            logger().debug("generateImplementation: referenceKeyClassList=" + code);            
+            src = replaceAll(src, Tag.REFERENCE_KEY_CLASS_LIST, code);
+        }        
 
         {
             String code = attributeKeyMapList(t, tm);
             logger().debug("generateImplementation: code=" + code);            
             src = replaceAll(src, Tag.ATTRIBUTE_KEY_MAP_LIST, code);
         }
+        
+        {
+            String code = referenceKeyMapList(t, tm, qualify);
+            logger().debug("generateImplementation: code=" + code);            
+            src = replaceAll(src, Tag.REFERENCE_KEY_MAP_LIST, code);        	
+        }
+        
+        
+        {
+            String code = referenceMapList(t, tm, qualify);
+            logger().debug("generateImplementation: code=" + code);            
+            src = replaceAll(src, Tag.REFERENCE_MAP_LIST, code);        	
+        }
+
                 
         {
-            String code = metaDataInitialization(t, tm);
+            String code = metaDataInitialization(t, tm, qualify);
             src = replaceAll(src, Tag.META_DATA_INITIALIZATION, code);
-        }
+        }        
+        
         
         
 //        {
@@ -1250,6 +1339,254 @@ public class SourceGenerator {
         return src;
 	}
 	
+	private String referenceMapList(BaseTable t, TableMapper tm, boolean qualify) {
+		StringBuffer buf = new StringBuffer();
+		
+		Map<BaseTable, JavaType> map = referenced(t, tm);
+		
+		for (Entry<BaseTable, JavaType> e : map.entrySet()) {
+			String c = formatReferenceValueMap(t, e.getKey(), e.getValue(), tm, qualify);
+			buf.append(c);			
+		}
+		
+		
+		return buf.toString();
+	}
+
+	private String formatReferenceValueMap(BaseTable t, BaseTable referenced,
+			JavaType target, TableMapper tm, boolean qualify) {
+		
+		
+//		private Map<Reference, Organization.Holder> om = new HashMap<Reference, Organization.Holder>(); 
+//
+//		@Override
+//		public fi.tnie.db.gen.ent.personal.Organization.Holder getOrganization(
+//				fi.tnie.db.gen.ent.personal.Organization.Key<?, ?, ?, ?, ?> ok) {
+//			return om.get(ok.name());
+//		}		
+		
+		StringBuffer buf = new StringBuffer();
+		
+		String vm = referenceValueMapVariable(referenced, target, qualify);
+		
+		String hn = target.getQualifiedName() + ".Holder";
+						
+		buf.append("private java.util.Map<");
+		buf.append(getReferenceType());
+		buf.append(", ");
+		buf.append(hn);		
+		buf.append(">");
+		buf.append(" ");
+		buf.append(vm);		
+		buf.append(" = new java.util.HashMap<");
+		buf.append(getReferenceType());
+		buf.append(", ");
+		buf.append(hn);		
+		buf.append(">();\n\n");
+		
+		buf.append("@Override public ");
+		buf.append(hn);
+		buf.append(" get");
+		buf.append(target.getUnqualifiedName());
+		buf.append("(");
+		buf.append(target.getUnqualifiedName());
+		buf.append(".Key<?, ?, ?, ?, ?> key) {\n");
+		buf.append("return this.");
+		buf.append(vm);
+		buf.append(".get(key.name());\n");
+		buf.append("}\n\n");		
+		
+		return buf.toString();
+	}
+
+	/***  
+	 * @param table
+	 * @return
+	 */	
+	private boolean hasAmbiguousSimpleNamesForReferenceKeys(BaseTable table, TableMapper tm) {
+		boolean ambiguous = false;
+		
+		Map<String, String> names = new HashMap<String, String>();
+		
+		for (ForeignKey k : table.foreignKeys().values()) {
+			BaseTable referenced = k.getReferenced();			
+			JavaType t = tm.entityType(referenced, Part.INTERFACE);
+			
+			if (t != null) {
+				String uin = t.getUnqualifiedName();								
+				String qtbl = names.get(uin);
+				
+				if (qtbl == null) {
+					names.put(uin, referenced.getQualifiedName());
+				}
+				else {
+					String tn = referenced.getQualifiedName();
+					
+					if (!tn.equals(qtbl)) {
+						ambiguous = true;
+						break;
+					}
+				}				
+			}			
+		}		
+		
+		return ambiguous;
+	}
+	
+	
+	private Map<BaseTable, JavaType> referenced(BaseTable table, TableMapper tm) {			
+		Map<BaseTable, JavaType> map = new HashMap<BaseTable, JavaType>();
+		
+		for (ForeignKey k : table.foreignKeys().values()) {
+			BaseTable referenced = k.getReferenced();
+						
+			if (!map.containsKey(referenced)) {
+				JavaType t = tm.entityType(referenced, Part.INTERFACE);
+												
+				if (t != null) {					
+					map.put(referenced, t);
+				}
+			}
+		}
+		
+		return map;
+	}	
+	
+	private String referenceKeyClassList(BaseTable table, TableMapper tm, boolean qualify) {
+		StringBuffer buf = new StringBuffer();		
+		Map<BaseTable, JavaType> map = referenced(table, tm);
+		
+		for (Entry<BaseTable, JavaType> r : map.entrySet()) {
+			buf.append(formatReferenceKeyClass(table, r.getKey(), qualify, tm));
+		}
+				
+		return buf.toString();
+	}
+
+	private String formatReferenceKeyClass(BaseTable referencing, BaseTable referenced, boolean qualify, TableMapper tm) {
+
+//		// Sample output:
+//		private static class OrganizationKey
+//		extends Organization.Key<Person.Attribute, Person.Reference, Person.Type, Person, OrganizationKey> {
+//
+//		private static final long serialVersionUID = 1L;
+//
+//		protected OrganizationKey(
+//				EntityMetaData<fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person> meta, Reference name) {
+//			super(meta, name);
+//		}
+		
+		// TODO: implement get()
+//		@Override
+//		public fi.tnie.db.gen.ent.personal.Organization.Holder get(Person e) {
+//			return e.getOrganization(this);
+//		}
+
+//
+//		@Override
+//		public OrganizationKey self() {
+//			return this;		
+//		}	
+//	}		
+		
+		JavaType src = tm.entityType(referencing, Part.INTERFACE);		
+		JavaType target = tm.entityType(referenced, Part.INTERFACE);
+				
+		StringBuffer buf = new StringBuffer();
+		buf.append("private static class ");
+		
+		String n = referenceKeyImplementationName(referenced, target, qualify);
+		
+		String kta = keyTypeArgs(tm, referencing);
+				
+		buf.append(n);
+		buf.append(" extends ");
+		buf.append(target.getQualifiedName());
+		buf.append(".Key<");
+		buf.append(kta);
+		buf.append(", ");
+		buf.append(n);
+		buf.append("> {\n");
+		buf.append("private static final long serialVersionUID = 1L;\n");		
+		buf.append("private ");		
+		buf.append(n);
+		buf.append("(");
+		buf.append(EntityMetaData.class.getCanonicalName());
+		buf.append("<");
+		buf.append(kta);		
+		buf.append("> meta, ");
+		buf.append(getReferenceType());
+		buf.append(" name) {\n");
+		buf.append("super(meta, name);");
+		buf.append("}\n\n");
+		
+		buf.append("@Override\n");
+		buf.append("public ");
+		buf.append(target.getQualifiedName());
+		buf.append(".Holder get(");
+		buf.append(src.getUnqualifiedName());
+		buf.append(" e) {\n");		
+		buf.append("return e.get");
+		buf.append(target.getUnqualifiedName());		
+		buf.append("(this);");
+		buf.append("}\n");
+		
+		buf.append("@Override\n");
+		buf.append("public ");
+		buf.append(n);
+		buf.append(" self() {\n");
+		buf.append("return this;\n");
+		buf.append("}\n");
+		buf.append("}");
+		
+		return buf.toString();
+	}
+
+	private String referenceKeyImplementationName(BaseTable referenced, JavaType target, boolean qualify) {
+		StringBuffer nb = new StringBuffer();
+		
+		if (qualify) {
+			Schema s = referenced.getSchema();
+			String prefix = (s == null) ? "" : name(s.getUnqualifiedName().getName());
+			nb.append(prefix);
+		}
+		
+		nb.append(target.getUnqualifiedName());
+		nb.append("Key");
+		
+		return nb.toString();
+	}
+	
+	private String referenceKeyMapVariable(BaseTable referenced, JavaType target, boolean qualify) {
+		StringBuffer nb = new StringBuffer();
+		
+		if (qualify) {
+			Schema s = referenced.getSchema();
+			String prefix = (s == null) ? "" : name(s.getUnqualifiedName().getName());
+			nb.append(prefix);
+		}
+		
+		nb.append(decapitalize(target.getUnqualifiedName()));
+		nb.append("KeyMap");		
+				
+		return nb.toString();
+	}
+	
+	private String referenceValueMapVariable(BaseTable referenced, JavaType target, boolean qualify) {
+		StringBuffer nb = new StringBuffer();
+		
+		if (qualify) {
+			Schema s = referenced.getSchema();
+			String prefix = (s == null) ? "" : name(s.getUnqualifiedName().getName());
+			nb.append(prefix);
+		}
+		
+		nb.append(decapitalize(target.getUnqualifiedName()));
+		nb.append("Map");		
+				
+		return nb.toString();
+	}
+
 	private String valueVariableList(BaseTable t, TableMapper tm) {
 		List<Column> acl = getAttributeColumnList(t, tm);        
         StringBuffer content = new StringBuffer();
@@ -1388,7 +1725,14 @@ public class SourceGenerator {
 		return decapitalize(name(c.getColumnName().getName()));
 	}
 
-	private String metaDataInitialization(BaseTable t, TableMapper tm) {
+	private String metaDataInitialization(BaseTable t, TableMapper tm, boolean qualify) {
+		StringBuffer buf = new StringBuffer();		
+		buf.append(attributeKeyInitialization(t, tm));		
+		buf.append(referenceKeyInitialization(t, tm, qualify));		
+        return buf.toString();	
+     }
+
+	private String attributeKeyInitialization(BaseTable t, TableMapper tm) {
 		List<Column> acl = getAttributeColumnList(t, tm);        
         StringBuffer content = new StringBuffer();        
         
@@ -1406,21 +1750,10 @@ public class SourceGenerator {
 	        	content.append(attr(c));
 	        	content.append(");\n");
         	}
-//        	
-//        	Integer v = tom.get(kt);
-//        	int occurences = (v == null) ? 0 : v.intValue();
-//        	
-//        	if (occurences >= 1) {            	            	
-//            	content.append("addAttributeKey(");
-//            	content.append(keyConstantExpression(t, c, intf));
-//            	content.append(", ");
-//            	content.append(occurences > 1 ? getKeyMapVariable(kt) : "null");
-//            	content.append(");\n");            	        		
-//        	}        	
         }
         
-        return content.toString();	
-     }
+		return content.toString();
+	}
 
 	private String attributeKeyMapList(BaseTable t, TableMapper tm) {
 		StringBuffer buf = new StringBuffer();
@@ -1442,6 +1775,21 @@ public class SourceGenerator {
 				String c = formatAttributeKeyMap(t, k, o.intValue(), tm);
 				buf.append(c);
 			}
+		}
+		
+		
+		return buf.toString();
+	}
+	
+	
+	private String referenceKeyMapList(BaseTable referencing, TableMapper tm, boolean qualify) {
+		StringBuffer buf = new StringBuffer();
+		
+		Map<BaseTable, JavaType> map = referenced(referencing, tm);
+		
+		for (Entry<BaseTable, JavaType> e : map.entrySet()) {
+			String c = formatReferenceKeyMap(referencing, e.getKey(), e.getValue(), tm, qualify);
+			buf.append(c);			
 		}
 		
 		
@@ -1503,10 +1851,104 @@ public class SourceGenerator {
         return content.toString();
     }
 	
+	private String referenceKeyList(BaseTable t, TableMapper tm) {
+		StringBuffer content = new StringBuffer();
+		
+		for (ForeignKey fk : t.foreignKeys().values()) {
+		    String r = formatReferenceKey(fk, tm);
+		    
+		    if (r == null || r.equals("")) {
+		        continue;
+		    }
+		    
+		    content.append(r);		    
+		}
+
+		return content.toString();
+    }	
+	
+	private String referenceKeyInitialization(BaseTable t, TableMapper tm, boolean qualify) {
+		StringBuffer content = new StringBuffer();
+		
+//		// sample output:
+//		{
+//			ProjectKey pk = new ProjectKey(this, HourReport.Reference.FK_HHR_PROJECT);
+//			projectKeyMap.put(pk.name(), pk);
+//			entityKeyMap.put(pk.name(), pk);
+//		}
+		
+		JavaType jt = tm.entityType(t, Part.INTERFACE);
+		
+		for (ForeignKey fk : t.foreignKeys().values()) {
+			content.append("{\n");
+			
+			BaseTable r = fk.getReferenced();			
+			JavaType kt = tm.entityType(r, Part.INTERFACE);
+			
+			String n = referenceKeyImplementationName(r, kt, qualify);
+			content.append(n);
+			content.append(" k = new ");
+			content.append(n);
+			content.append("(this, ");
+			content.append(jt.getQualifiedName());
+			content.append(".");
+			content.append(getReferenceType());
+			content.append(".");
+			content.append(referenceName(fk));
+			content.append(");\n");
+			
+			String mv = referenceKeyMapVariable(t, kt, qualify);
+			content.append(mv);
+			content.append(".put(k.name(), k);\n");
+			content.append("entityKeyMap.put(k.name(), k);\n");			
+									
+		    content.append("}\n");	    
+		}
+
+		return content.toString();
+    }	
+	
+	private String formatReferenceKey(ForeignKey fk, TableMapper tm) {
+		
+		// Organization.Key<Attribute, Reference, Type, Person, ?> EMPLOYER = fi.tnie.db.gen.ent.personal.PersonImpl.PersonMetaData.getInstance().getOrganizationKey(Reference.EMPLOYER);
+		String referenceName = referenceName(fk);
+				
+		JavaType tt = tm.entityType(fk.getReferenced(), Part.INTERFACE);
+		JavaType rt = tm.entityType(fk.getReferencing(), Part.INTERFACE);
+		JavaType it = tm.entityType(fk.getReferencing(), Part.IMPLEMENTATION);
+		
+		StringBuffer buf = new StringBuffer();
+		
+		buf.append("public static final ");
+		buf.append(tt.getQualifiedName());
+		buf.append(".Key");
+		buf.append("<");
+		buf.append(getAttributeType());
+		buf.append(", ");
+		buf.append(getReferenceType());
+		buf.append(", Type, ");
+		buf.append(rt.getUnqualifiedName());
+		buf.append(", ?> ");
+		buf.append(referenceName);
+		buf.append(" = ");
+		buf.append(it.getQualifiedName());
+		buf.append(".");
+		buf.append(rt.getUnqualifiedName());
+		buf.append("MetaData.getInstance().get");
+		buf.append(tt.getUnqualifiedName());
+		buf.append("Key(");
+		buf.append(getReferenceType());
+		buf.append(".");
+		buf.append(referenceName);	
+		buf.append(");\n");
+		
+		return buf.toString();
+	}
+
 	private String formatAttributeKeyMap(BaseTable t, Class<?> keyType, int occurences, TableMapper tm) {
 		StringBuffer buf = new StringBuffer();
 		
-        JavaType intf = tm.entityType(t, Part.INTERFACE);
+//        JavaType intf = tm.entityType(t, Part.INTERFACE);
                         
         // goal:
         // private Map<Attribute, IntegerKey<Attribute, Person>> integerKeyMap = new HashMap<Attribute, IntegerKey<Attribute,Person>>();
@@ -1556,6 +1998,69 @@ public class SourceGenerator {
                 
         return buf.toString();		
 	}
+	
+	private String formatReferenceKeyMap(BaseTable t, BaseTable referenced, JavaType target, TableMapper tm, boolean qualify) {
+		StringBuffer buf = new StringBuffer();
+		
+        JavaType intf = tm.entityType(t, Part.INTERFACE);
+        
+
+// sample output:
+// private java.util.Map<HourReport.Reference, ProjectKey> projectKeyMap = new java.util.HashMap<HourReport.Reference, ProjectKey>();
+
+//		private java.util.Map<HourReport.Reference, ProjectKey> projectKeyMap = new java.util.HashMap<HourReport.Reference, ProjectKey>();
+//
+//		public fi.tnie.db.gen.ent.personal.Project.Key<Attribute, Reference, Type, HourReport, ?> getProjectKey(Reference ref) {
+//			if (ref == null) {
+//				throw new NullPointerException("ref");
+//			}
+//			
+//			return this.projectKeyMap.get(ref);
+//		}
+        
+        String rki = referenceKeyImplementationName(referenced, target, qualify);
+        String rkv = referenceKeyMapVariable(referenced, target, qualify);
+                        
+        buf.append("private java.util.Map<");
+        buf.append(intf.getUnqualifiedName());
+        buf.append(".");
+        buf.append(getReferenceType());
+        buf.append(", ");
+        buf.append(rki);
+        buf.append("> ");
+        buf.append(rkv);
+        buf.append(" = new java.util.HashMap<");
+        buf.append(intf.getUnqualifiedName());
+        buf.append(".");
+        buf.append(getReferenceType());
+        buf.append(", ");
+        buf.append(rki);
+        buf.append(">();\n\n");
+        
+        buf.append("public ");
+        buf.append(target.getQualifiedName());
+        buf.append(".Key<");
+        buf.append(getAttributeType());
+        buf.append(", ");
+        buf.append(getReferenceType());
+        buf.append(", Type, ");
+        buf.append(intf.getUnqualifiedName());
+        buf.append(", ?>");
+        buf.append(" get");
+        buf.append(rki);        
+        buf.append("( ");
+        buf.append(getReferenceType());
+        buf.append(" ref) {\n");
+        buf.append("if (ref == null) {\n");
+        buf.append("throw new NullPointerException(\"ref\");");
+        buf.append("}\n");        
+        buf.append("return this.");
+        buf.append(rkv);
+        buf.append(".get(ref);\n");
+        buf.append("}\n\n");
+                
+        return buf.toString();		
+	}	
 	
 
 	private String formatAttributeKey(BaseTable t, Column c, TableMapper tm) {
@@ -1764,7 +2269,7 @@ public class SourceGenerator {
      * @param identifier
      * @return
      */
-    public String name(String identifier) {
+    public String name(CharSequence identifier) {
         int len = identifier.length();
         StringBuffer nb = new StringBuffer(len);
         boolean upper = true;
@@ -1856,14 +2361,8 @@ public class SourceGenerator {
 
 	private String format(ForeignKey fk) {
 		final String kn = fk.getUnqualifiedName().getName();
-		String t = fk.getReferencing().getUnqualifiedName().getName().toUpperCase();
-
-		String p = "^(FK_)?(" + Pattern.quote(t) + "_)";
-
-		logger().debug("input {" + kn.toUpperCase() + "}");
-		logger().debug("p {" + p + "}");
-
-		String n = kn.toUpperCase().replaceFirst(p, "");
+		
+		String n = referenceName(fk);
 
 		String expr;
 
@@ -1882,6 +2381,16 @@ public class SourceGenerator {
 		}
 
 		return expr;
+	}
+
+	private String referenceName(ForeignKey fk) {
+		final String kn = fk.getUnqualifiedName().getName();
+		String t = fk.getReferencing().getUnqualifiedName().getName().toUpperCase();
+		String p = "^(FK_)?(" + Pattern.quote(t) + "_)";
+		logger().debug("input {" + kn.toUpperCase() + "}");
+		logger().debug("p {" + p + "}");
+		String n = kn.toUpperCase().replaceFirst(p, "");
+		return n;
 	}
 
 

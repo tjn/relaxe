@@ -10,11 +10,12 @@ import fi.tnie.db.meta.Table;
 public interface TableMapper {
 	
 	enum Part {
-		INTERFACE,
+		INTERFACE,		
 		LITERAL_TABLE_ENUM,
 		ABSTRACT,		
-		HOOK,
+		HOOK,		
 		IMPLEMENTATION,
+		REF,
 		FACTORY,
 		METADATA
 	}
