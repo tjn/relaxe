@@ -172,7 +172,6 @@ public class PersistenceManager<
 
     	ElementList<Assignment> assignments = new ElementList<Assignment>();
 
-
     	for (A a : meta.attributes()) {
     		Column col = meta.getColumn(a);
     		PrimitiveHolder<?, ?> ph = pe.value(a);
@@ -183,28 +182,33 @@ public class PersistenceManager<
     		}
     	}
 
+        for (R r : meta.relationships()) {
+        	// TODO: Should order matter here? 
+        	// Foreign keys consisting of the columns which are 
+        	// subset of some other foreign key should be treated specially, no?        	
+        	
+            ForeignKey fk = meta.getForeignKey(r);
+            Entity<?,?,?,?> ref = pe.getRef(r);
 
-    	// TODO: check
-
-//        for (R r : meta.relationships()) {
-//            ForeignKey fk = meta.getForeignKey(r);
-//            Entity<?,?,?,?,?> ref = pe.get(r);
-//
-//            if (ref == null) {
-//                for (Column c : fk.columns().keySet()) {
-//                    assignments.add(new Assignment(c.getColumnName(), null));
-//                }
-//            }
-//            else {
-//                for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
-//                    Column fc = ce.getValue();
-//                    Object o = ref.get(fc);
-//                    Column column = ce.getKey();
-//                    ValueParameter vp = new ValueParameter(column, o);
-//                    assignments.add(new Assignment(column.getColumnName(), vp));
-//                }
-//            }
-//        }
+            if (ref == null) {
+                for (Column c : fk.columns().keySet()) {
+                    assignments.add(new Assignment(c.getColumnName(), null));
+                }
+            }
+            else {
+                for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
+                    Column fc = ce.getValue();
+                    PrimitiveHolder<?, ?> ph = ref.get(fc);
+                    
+                    Column column = ce.getKey();
+                    
+            		if (ph != null) {    		    		    		
+        	    		ValueParameter<?, ?> vp = createParameter(column, ph);    		
+        	    		assignments.add(new Assignment(column.getColumnName(), vp));
+            		}                    
+                }
+            }
+        }
 
     	return new UpdateStatement(tref, assignments, p);
     }
