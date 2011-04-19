@@ -28,7 +28,6 @@ import fi.tnie.db.QueryException;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.map.AttributeInfo;
 import fi.tnie.db.map.JavaType;
 import fi.tnie.db.map.TableMapper;

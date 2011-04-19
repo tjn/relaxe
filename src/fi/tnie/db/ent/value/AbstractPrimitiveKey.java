@@ -5,8 +5,6 @@ package fi.tnie.db.ent.value;
 
 import java.io.Serializable;
 
-import com.sun.org.apache.xpath.internal.axes.SelfIteratorNoPredicate;
-
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
@@ -52,23 +50,6 @@ public abstract class AbstractPrimitiveKey<
 		
 		this.name = name;
 	}
-
-//	protected PrimitiveKey(EntityMetaData<A, ?, ?, E> meta, A name)
-////		throws AttributeTypeException 
-//		{
-//		
-//		setName(name);
-//		
-//		if (meta == null) {
-//			throw new NullPointerException("meta");
-//		}
-//		
-//		PrimitiveType<?> t = meta.getAttributeType(name);
-//		
-//		if (t != type()) {
-//			throw new AttributeTypeException(name(), t, type()); 
-//		}
-//	}
 
 	@Override
 	public A name() {

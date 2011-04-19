@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.ent.value;
 
-import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
-
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
