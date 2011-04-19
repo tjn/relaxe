@@ -92,18 +92,19 @@ public class ExtractorMap<
 			case Types.INTEGER:
 			case Types.SMALLINT:
 			case Types.TINYINT:
-				ae = new IntegerAttributeExtractor<A, R, T, E>(attribute, em, vef, c);
+				ae = new IntegerAttributeExtractor<A, R, T, E>(a, em, vef, c);
 				break;
 			case Types.VARCHAR:
-//				e = new VarcharExtractor(col);
+				ae = new VarcharAttributeExtractor<A, R, T, E>(a, em, vef, c);
+				break;
 			case Types.CHAR:
-//				e = new CharExtractor(col);
+				ae = new CharAttributeExtractor<A, R, T, E>(a, em, vef, c);
 				break;
 			case Types.DATE:
-//				e = new DateExtractor(col);
+				ae = new DateAttributeExtractor<A, R, T, E>(a, em, vef, c);
 				break;
 			case Types.TIMESTAMP:
-//				e = new TimestampExtractor(col);
+				ae = new TimestampAttributeExtractor<A, R, T, E>(a, em, vef, c);				
 				break;
 			default:
 				//
