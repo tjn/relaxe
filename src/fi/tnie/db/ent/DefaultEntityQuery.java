@@ -34,6 +34,7 @@ public class DefaultEntityQuery<
 	private TableReference tableRef;
 		
 //	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class.get);
+		
 	
 	public DefaultEntityQuery(EntityMetaData<A, R, T, E> meta) {		
 		try {
@@ -101,41 +102,17 @@ public class DefaultEntityQuery<
 			AbstractTableReference qref, ForeignKey fk, 
 			DefaultTableExpression q, Set<Entity<?,?,?,?>> visited)
 		throws CyclicTemplateException {
+		
 		if (visited.contains(template)) {
 			throw new CyclicTemplateException(template);
 		}
 		else {
 			visited.add(template);
 		}
-
-		Select s = q.getSelect();
-
-		if (s == null) {
-			q.setSelect(s = new Select());
-		}
-
-		EntityMetaData<MA, MR, ?, M> meta = template.getMetaData();
-				
-		TableReference tref = null;
-
-		if (qref == null) {
-			tref = getTableRef();
-			qref = tref;
-		}
-		else {
-			tref = new TableReference(meta.getBaseTable());			
-			ForeignKeyJoinCondition jc = new ForeignKeyJoinCondition(fk, qref, tref);
-			qref = qref.leftJoin(tref, jc);
-		}
-				
-		Set<Column> pkcols = meta.getPKDefinition();
 		
-		for (Column c : pkcols) {
-			s.add(new ColumnReference(tref, c));
-		}		
-
-		addAttributes(template, s, tref);
+		qref = processAttributes(template, qref, fk, q);
 		
+		EntityMetaData<MA, MR, ?, M> meta = template.getMetaData();		
 		Set<MR> rs = meta.relationships();
 						
 		for (MR r : rs) {			
@@ -151,7 +128,7 @@ public class DefaultEntityQuery<
 				Entity<?, ?, ?, ?> ne = h.value();
 								
 				if (ne == null) {
-					// add case 2 here:										
+					// add case 2 here:
 				}
 				else {
 					fk = meta.getForeignKey(r);
@@ -168,6 +145,50 @@ public class DefaultEntityQuery<
 		return qref;
 	}
 
+	 
+	private 
+	<
+		MA extends Attribute,
+		MR,
+		M extends Entity<MA, MR, ?, M>>
+	AbstractTableReference processAttributes(
+			M template, AbstractTableReference qref, ForeignKey fk, DefaultTableExpression q) {
+		
+		Select s = getSelect(q);
+		EntityMetaData<MA, MR, ?, M> meta = template.getMetaData();				
+		TableReference tref = null;
+
+		if (qref == null) {
+			tref = getTableRef();
+			qref = tref;
+		}
+		else {
+			tref = new TableReference(meta.getBaseTable());			
+			ForeignKeyJoinCondition jc = new ForeignKeyJoinCondition(fk, qref, tref);
+			qref = qref.leftJoin(tref, jc);
+		}
+				
+		Set<Column> pkcols = meta.getPKDefinition();
+		
+		for (Column c : pkcols) {
+			s.add(new ColumnReference(tref, c));
+		}
+
+		addAttributes(template, s, tref);
+		
+		return qref;
+	}
+
+	private Select getSelect(DefaultTableExpression q) {
+		Select s = q.getSelect();
+
+		if (s == null) {
+			q.setSelect(s = new Select());
+		}
+		
+		return s;
+	}
+
 	private 
 	<
 		MA extends Attribute,
@@ -182,6 +203,7 @@ public class DefaultEntityQuery<
 			if (h != null) {
 				Column c = meta.getColumn(a);
 				
+				// primary column are added separately:				
 				if (c != null && c.isPrimaryKeyColumn() == false) {
 					s.add(new ColumnReference(tref, c));
 				}
@@ -191,47 +213,6 @@ public class DefaultEntityQuery<
 
 	public DefaultTableExpression getQuery() {
 		return this.query;
-		
-//		if (query == null) {
-//			DefaultTableExpression q = new DefaultTableExpression();
-//			TableReference tref = getTableRef();
-//			q.setFrom(new From(tref));
-//
-//			Select s = new Select();
-//
-//			ElementList<SelectListElement> p = s.getSelectList();
-//
-//			for (A a : meta.attributes()) {
-//				Column c = meta.getColumn(a);
-//				ColumnReference cr = new ColumnReference(tref, c);
-////				p.add(new ValueElement(cr, cr.getColumnName()));
-//				p.add(new ValueElement(cr));
-//			}
-//
-//
-//			// get columns from foreign keys,
-//			// but remove duplicates
-//
-//			Set<Column> kc = new HashSet<Column>();
-//
-//			for (R r : meta.relationships()) {
-//				ForeignKey fk = meta.getForeignKey(r);
-//				kc.addAll(fk.columns().keySet());
-//			}		
-//			
-//
-//			for (Column c : kc) {				
-//				ColumnReference cr = new ColumnReference(tref, c);
-//				p.add(new ValueElement(cr));
-//			}
-//
-////			logger().debug("projection: " + p);
-//
-//			q.setSelect(s);
-//			this.query = q;
-//		}
-//
-//		return this.query;
 	}
 
     public TableReference getTableRef() {
@@ -244,13 +225,11 @@ public class DefaultEntityQuery<
 
 	@Override
 	public Long getLimit() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public int getOffset() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
