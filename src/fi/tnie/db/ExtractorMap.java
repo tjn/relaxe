@@ -85,7 +85,18 @@ public class ExtractorMap<
 	public AttributeExtractor<A, ?, ?, E, ?, ?, ?, ?> createAttributeExtractor(int sqltype, int c, Column col, EntityMetaData<A, R, T, E> em, ValueExtractorFactory vef)
 				throws SQLException {
 
-		final A attribute = em.getAttribute(col);
+		if (col == null) {
+			throw new NullPointerException("col");
+		}
+		
+		final A a = em.getAttribute(col);
+		
+		if (a == null) {
+//			throw new NullPointerException("no attribute for column: " + col);
+			return null;
+		} 
+						
+		
 		AttributeExtractor<A, ?, ?, E, ?, ?, ?, ?> ae = null;
 
 		switch (sqltype) {
