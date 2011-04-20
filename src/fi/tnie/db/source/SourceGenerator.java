@@ -933,11 +933,16 @@ public class SourceGenerator {
     	    String type = createAttributeType(getAttributeTemplate(), getAttributeType(), attrs(t, tm));
     	    src = replaceAll(src, "{{attribute-name-type}}", type);
 	    }
-
+	    
         {
-            String type = createEnumType(getEnumTemplate(), getReferenceType(), refs(t));
+            String type = createReferenceType(getReferenceTemplate(), getReferenceType(), refs(t, tm));
             src = replaceAll(src, "{{reference-name-type}}", type);
-        }
+        }	    
+
+//        {
+//            String type = createEnumType(getEnumTemplate(), getReferenceType(), refs(t));
+//            src = replaceAll(src, "{{reference-name-type}}", type);
+//        }
         
         {
             String type = referenceKeyList(t, tm);
@@ -1152,10 +1157,15 @@ public class SourceGenerator {
         return src;
 	}
 
-    private String createAttributeType(String template, String name, String constants) {
-    	
+    private String createAttributeType(String template, String name, String constants) {    	
         String src = replaceAll(template, "{{attribute-type}}", name);
         src = replaceAll(src, "{{attribute-constants}}", constants);
+        return src;
+	}
+    
+    private String createReferenceType(String template, String name, String constants) {    	
+        String src = replaceAll(template, "{{reference-type}}", name);
+        src = replaceAll(src, "{{reference-constants}}", constants);
         return src;
 	}	
 
@@ -1168,6 +1178,12 @@ public class SourceGenerator {
 	private String getAttributeTemplate() throws IOException {
 	       return read("attribute-type.in");
 	}
+	
+	private String getReferenceTemplate() throws IOException {
+	       return read("reference-type.in");
+	}
+	
+	
 	private String getEnumTemplate() throws IOException {
        return read("enum-type.in");
    }
@@ -2406,17 +2422,19 @@ public class SourceGenerator {
 		}
 	}
 
-	private String refs(BaseTable t) {
+	private String refs(BaseTable t, TableMapper tm) {
 	    StringBuffer content = new StringBuffer();
-	    refs(t, content);
+	    refs(t, content, tm);
 	    return content.toString();
 	}
 
-	private void refs(BaseTable t, StringBuffer content) {
+	private void refs(BaseTable t, StringBuffer content, TableMapper tm) {
 //		List<String> elements = new ArrayList<String>();
-
+		
+		
 		for (ForeignKey fk : t.foreignKeys().values()) {
-		    String r = format(fk);
+		    String r = formatReferenceConstant(fk, tm);
+		    
 		    if (r == null || r.equals("")) {
 		        continue;
 		    }
@@ -2428,10 +2446,16 @@ public class SourceGenerator {
 //		content.append(enumMember(getReferenceType(), elements));
 	}
 
-	private String format(ForeignKey fk) {
+	private String formatReferenceConstant(ForeignKey fk, TableMapper tm) {
 		final String kn = fk.getUnqualifiedName().getName();
 		
 		String n = referenceName(fk);
+						
+		JavaType ref = tm.entityType(fk.getReferenced(), Part.INTERFACE);
+		
+		if (ref == null) {
+			return null;
+		}
 
 		String expr;
 
@@ -2444,6 +2468,9 @@ public class SourceGenerator {
 			buf.append('"');
 			buf.append(kn);
 			buf.append('"');
+			buf.append(", ");
+			buf.append(ref.getQualifiedName());
+			buf.append(".TYPE");
 			buf.append(")");
 
 			expr = buf.toString();
