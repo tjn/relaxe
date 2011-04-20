@@ -4,6 +4,8 @@
 package fi.tnie.db.ent;
 
 import fi.tnie.db.expr.DefaultTableExpression;
+import fi.tnie.db.expr.TableReference;
+import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.types.ReferenceType;
 
 public interface EntityQuery<
@@ -24,4 +26,14 @@ public interface EntityQuery<
 	 * @return
 	 */
 	EntityMetaData<A, R, T, E> getMetaData();
+	
+	/**
+	 * 
+	 * @param column
+	 * @return
+	 */	
+	public TableReference getOrigin(int column);
+	public EntityMetaData<?, ?, ?, ?> getMetaData(TableReference tr);
+	public TableReference getReferenced(TableReference referencing, ForeignKey fk);
+	
 }

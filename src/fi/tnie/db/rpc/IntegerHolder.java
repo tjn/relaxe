@@ -65,4 +65,12 @@ public class IntegerHolder
 			return IntegerHolder.valueOf(value);
 		}
 	}
+	
+	/**
+	 * Returns <code>this</code>
+	 */	
+	@Override
+	public IntegerHolder asIntegerHolder() {
+		return this;
+	}
 }

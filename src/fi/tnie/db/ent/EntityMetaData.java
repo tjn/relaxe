@@ -6,6 +6,7 @@ package fi.tnie.db.ent;
 
 import java.util.Set;
 
+import fi.tnie.db.ent.im.EntityIdentityMap;
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.ent.value.DecimalKey;
@@ -28,7 +29,7 @@ public interface EntityMetaData<
 	A extends Attribute,
 	R,
 	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>
+	E extends Entity<A, R, T, E>	
 > {
 
 	Class<A> getAttributeNameType();
@@ -44,7 +45,11 @@ public interface EntityMetaData<
 	BaseTable getBaseTable();
 
 	EntityFactory<A, R, T, E> getFactory();
-
+		
+	EntityIdentityMap<A, R, T, E> getIdentityMap(IdentityContext ctx);
+	E unify(IdentityContext ctx, E e);
+	void dispose(IdentityContext ctx);
+		
 //	PrimitiveKey<A, ?, ?, ?, E> key(A a);
 
 
@@ -124,5 +129,7 @@ public interface EntityMetaData<
 	void addKey(TimeKey<A, R, T, E> key);
 	void addKey(IntervalKey.YearMonth<A, R, T, E> key);
 	void addKey(IntervalKey.DayTime<A, R, T, E> key);
+
+	// IdentityContext createIdentityContext();
 	
 }

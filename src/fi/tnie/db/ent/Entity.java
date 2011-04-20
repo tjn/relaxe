@@ -121,7 +121,7 @@ public interface Entity<
 	ReferenceHolder<?, ?, ?, ?> ref(R ref);
 	
 	/**
-	 * Set the value of the attribute <code>a</code>
+	 * Set the value of the reference <code>r</code>. TODO: this does not look safe.
 	 * 
 	 * @param a
 	 * @param value
@@ -174,5 +174,8 @@ public interface Entity<
 	// DataObject getSource();
 	
 	public E self();
-	
+
+	E unify(IdentityContext ctx);
+		
+	boolean isIdentified();
 }

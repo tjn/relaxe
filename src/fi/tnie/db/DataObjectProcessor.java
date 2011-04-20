@@ -20,7 +20,7 @@ public abstract class DataObjectProcessor
 
 	private static Logger logger = Logger.getLogger(DataObjectProcessor.class);
 				
-	private DefaultDataObject.MetaData meta;
+	protected DefaultDataObject.MetaData meta;
 	private ValueExtractor<?, ?, ?>[] extractors;
 	private ValueExtractorFactory valueExtractorFactory;
 		

@@ -15,6 +15,7 @@ public interface AttributeInfo {
 	Class<?> getKeyType();
 	Class<?> getAccessorType();
 	Class<?> getAttributeType();
+	Class<?> getIdentityMapType();
 	PrimitiveType<?> getPrimitiveType();
 
 	

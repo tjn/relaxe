@@ -22,4 +22,14 @@ public abstract class PrimitiveHolder<V extends Serializable, T extends Primitiv
 	public String toString() {
 		return super.toString() + "[" + getSqlType() + "]: " + this.value();
 	}
+	
+//	/**
+//	 * If this holder is an IntegerHolder, returns itself as such. Otherwise returns, <code>null</code>
+//	 * 
+//	 * @return
+//	 */		
+	public IntegerHolder asIntegerHolder() {
+		return null;
+	}	
+	
 }

@@ -20,6 +20,7 @@ public class DefaultAttributeInfo
 	private Class<?> holderType;
 	private Class<?> keyType;
 	private Class<?> accessorType;
+	private Class<?> identityMapType;
 //	private Class<PrimitiveType<?>> primitiveType;
 	private PrimitiveType<?> primitiveType;
 	
@@ -99,5 +100,13 @@ public class DefaultAttributeInfo
 
 	public void setPrimitiveType(PrimitiveType<?> primitiveType) {
 		this.primitiveType = primitiveType;
+	}
+
+	public Class<?> getIdentityMapType() {
+		return identityMapType;
+	}
+
+	public void setIdentityMapType(Class<?> identityMapType) {
+		this.identityMapType = identityMapType;
 	}	
 }

@@ -17,9 +17,9 @@ import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.gen.ent.LiteralCatalog;
-import fi.tnie.db.gen.ent.personal.DefaultOrganization;
 import fi.tnie.db.gen.ent.personal.DefaultPerson;
 import fi.tnie.db.gen.ent.personal.HourReport;
+import fi.tnie.db.gen.ent.personal.Organization;
 import fi.tnie.db.gen.ent.personal.Person;
 import fi.tnie.db.gen.ent.personal.PersonalFactory;
 import fi.tnie.db.gen.ent.personal.Person.Reference;
@@ -56,22 +56,9 @@ public class PersistenceManagerTest2 extends TestCase  {
         Connection c = getConnection();
         
         assertFalse(c.getAutoCommit());
-        
-        Catalog cat = getCatalog();
-        
-//        testCatalog(cat, c);        
-//        TableMapper tm = getTableMapper();
-        
-        // ClassLoader gcl = createClassLoaderForGenerated();
-        ClassLoader gcl = null;
-        
+                        
         LiteralCatalog cc = LiteralCatalog.getInstance();
                 
-//        CatalogContext cc = new CatalogContext(cat, gcl, tm);
-                        
-//        assertEquals(cat, cc.boundTo());                
-//        assertFalse(cc.getMetaMap().isEmpty());
-                       
         BaseTable ct = LiteralCatalog.LiteralBaseTable.PUBLIC_CONTINENT;
         assertNotNull(ct);
         
@@ -92,13 +79,11 @@ public class PersistenceManagerTest2 extends TestCase  {
         PersonalFactory pf = cc.newPersonalFactory();
         DefaultPerson p = pf.newPerson();
                 
-        PGImplementation impl = new PGImplementation();        
+        PGImplementation impl = new PGImplementation();
+        
         PersistenceManager<fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person> pm = 
        		create(p.self(), impl);
-        
-        
-        
-                        
+                                
 //        PersistenceManager<Attribute, Reference, Query, 
 //        	Entity<Attribute, Reference, Query, Person.Type, ? extends Person>> pm = p.createPersistentManager();
                 
@@ -125,7 +110,7 @@ public class PersistenceManagerTest2 extends TestCase  {
         HourReport hr = pf.newHourReport();
         assertNotNull(hr.reportDate());
         
-        DefaultOrganization org = pf.newOrganization();
+        Organization org = pf.newOrganization();
         
         DateKey<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport> dk = 
         	hr.getMetaData().getDateKey(HourReport.Attribute.REPORT_DATE);
@@ -136,7 +121,20 @@ public class PersistenceManagerTest2 extends TestCase  {
         hr.setComment("asdfasd");
         hr.setStartedAt(new Date());
         hr.setFinishedAt(new Date());
-//        hr.ref(HourReport.Reference.FK_HHR_EMPLOYER). org);
+        
+        org.setRef(Organization.FK_COMPANY_CEO, p.ref());
+        org.setName("Ab Firma Oy " + ((int) (Math.random() * 1000)));
+        
+        PersistenceManager<?, ?, ?, ?> om = create(org, impl);
+        
+        om.merge(c);
+        c.commit();
+                
+                
+        
+//       hr.ref(HourReport.Reference.FK_HHR_EMPLOYER). org);        
+//        Organization.Key<Attribute, R, ReferenceType<T>, Entity<A,R,T,E>, ?>        
+//        hr.setRef(HourReport.FK_HHR_EMPLOYER, org);
         
         hr.id().set(null);               
         

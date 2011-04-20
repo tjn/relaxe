@@ -3,9 +3,12 @@
  */
 package fi.tnie.db.ent;
 
-
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
+
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
@@ -31,10 +34,16 @@ public class DefaultEntityQuery<
 {
 	private EntityMetaData<A, R, T, E> meta;
 	private DefaultTableExpression query;
-	private TableReference tableRef;
-		
-//	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class.get);
-		
+	private TableReference rootRef;
+	
+	private Map<TableReference, EntityMetaData<?, ?, ?, ?>> metaDataMap;
+	
+	private LinkedHashMap<Integer, TableReference> originMap = new LinkedHashMap<Integer, TableReference>();	
+	private Map<JoinKey, TableReference> referenceMap = new HashMap<JoinKey, TableReference>();
+	
+	
+			
+//	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class.get);		
 	
 	public DefaultEntityQuery(EntityMetaData<A, R, T, E> meta) {		
 		try {
@@ -85,7 +94,7 @@ public class DefaultEntityQuery<
 		DefaultTableExpression q = new DefaultTableExpression();
 		HashSet<Entity<?,?,?,?>> visited = new HashSet<Entity<?,?,?,?>>();
 
-		AbstractTableReference tref = fromTemplate(root, null, null, q, visited);
+		AbstractTableReference tref = fromTemplate(root, null, null, null, q, visited);
 		q.setFrom(new From(tref));
 
 		this.query = q;
@@ -99,7 +108,7 @@ public class DefaultEntityQuery<
 		M extends Entity<MA, MR, ?, M>>
 	AbstractTableReference fromTemplate(
 			M template, 
-			AbstractTableReference qref, ForeignKey fk, 
+			AbstractTableReference qref, ForeignKey fk, TableReference referencing, 
 			DefaultTableExpression q, Set<Entity<?,?,?,?>> visited)
 		throws CyclicTemplateException {
 		
@@ -108,62 +117,21 @@ public class DefaultEntityQuery<
 		}
 		else {
 			visited.add(template);
-		}
-		
-		qref = processAttributes(template, qref, fk, q);
-		
-		EntityMetaData<MA, MR, ?, M> meta = template.getMetaData();		
-		Set<MR> rs = meta.relationships();
-						
-		for (MR r : rs) {			
-			EntityKey<?, ?, ?, M, ?, ?, ?, ?> k = meta.getEntityKey(r);			
-			ReferenceHolder<?, ?, ?, ?> h = k.get(template);
-			
-			// There is three cases:
-			// 1) if the reference value does not exist, skip the relationship
-			// 2) if the reference value exists, but is null, add the foreign key columns, but do not traverse
-			// 3) if there is reference is not null, traverse
-			
-			if (h != null) {
-				Entity<?, ?, ?, ?> ne = h.value();
-								
-				if (ne == null) {
-					// add case 2 here:
-				}
-				else {
-					fk = meta.getForeignKey(r);
-	
-					if (fk == null) {
-						throw new NullPointerException();
-					}
-	
-					qref = fromTemplate(ne.self(), qref, fk, q, visited);
-				}
-			}
-		}
-
-		return qref;
-	}
-
-	 
-	private 
-	<
-		MA extends Attribute,
-		MR,
-		M extends Entity<MA, MR, ?, M>>
-	AbstractTableReference processAttributes(
-			M template, AbstractTableReference qref, ForeignKey fk, DefaultTableExpression q) {
+		}		
 		
 		Select s = getSelect(q);
 		EntityMetaData<MA, MR, ?, M> meta = template.getMetaData();				
-		TableReference tref = null;
-
+		final TableReference tref = (qref == null) ? getTableRef() : new TableReference(meta.getBaseTable());
+				
+		if (referencing != null) {
+			JoinKey j = new JoinKey(referencing, fk);
+			referenceMap.put(j, tref);
+		}		
+		
 		if (qref == null) {
-			tref = getTableRef();
 			qref = tref;
 		}
 		else {
-			tref = new TableReference(meta.getBaseTable());			
 			ForeignKeyJoinCondition jc = new ForeignKeyJoinCondition(fk, qref, tref);
 			qref = qref.leftJoin(tref, jc);
 		}
@@ -173,9 +141,58 @@ public class DefaultEntityQuery<
 		for (Column c : pkcols) {
 			s.add(new ColumnReference(tref, c));
 		}
+						
+		Set<MR> rs = meta.relationships();
 
-		addAttributes(template, s, tref);
+		// There are three cases:
+		// 1) if the reference value does not exist, skip the relationship
+		// 2) if the reference value exists, but is null, add the foreign key columns, but do not traverse
+		// 3) if there is reference is not null, traverse
+
+//		for (MR r : rs) {
+//			EntityKey<?, ?, ?, M, ?, ?, ?, ?> k = meta.getEntityKey(r);			
+//			ReferenceHolder<?, ?, ?, ?> h = k.get(template);
+//			
+//			if (h == null) {
+//				// skip
+//			}
+//			else {
+//				fk = meta.getForeignKey(r);
+//				
+//				for (Column c : fk.columns().keySet()) {
+//					s.add(new ColumnReference(tref, c));
+//				}
+//			}
+//		}
+
+		addAttributes(template, s, tref);				
+		originMap.put(Integer.valueOf(s.getColumnCount()), tref);			
+						
+		for (MR r : rs) {
+			EntityKey<?, ?, ?, M, ?, ?, ?, ?> k = meta.getEntityKey(r);			
+			ReferenceHolder<?, ?, ?, ?> h = k.get(template);
 		
+			if (h == null) {
+				// skip
+			}
+			else {
+				Entity<?, ?, ?, ?> ne = h.value();
+								
+				if (ne == null) {
+					// do not traverse
+				}
+				else {
+					fk = meta.getForeignKey(r);
+	
+					if (fk == null) {
+						throw new NullPointerException("can not find fk by relationship: " + r);
+					}
+	
+					qref = fromTemplate(ne.self(), qref, fk, tref, q, visited);
+				}
+			}
+		}
+
 		return qref;
 	}
 
@@ -189,11 +206,11 @@ public class DefaultEntityQuery<
 		return s;
 	}
 
-	private 
-	<
+	private <
 		MA extends Attribute,
 		M extends Entity<MA, ?, ?, M>
-	> void addAttributes(M template, Select s, TableReference tref) {
+	> 
+	void addAttributes(M template, Select s, TableReference tref) {
 		EntityMetaData<MA, ?, ?, M> meta = template.getMetaData();
 		Set<MA> as = meta.attributes();
 		
@@ -214,13 +231,17 @@ public class DefaultEntityQuery<
 	public DefaultTableExpression getQuery() {
 		return this.query;
 	}
-
+	
+	/**
+	 * Returns the root table-reference for this query.
+	 * @return
+	 */
     public TableReference getTableRef() {
-        if (this.tableRef == null) {
-            this.tableRef = new TableReference(meta.getBaseTable());
+        if (this.rootRef == null) {
+            this.rootRef = new TableReference(meta.getBaseTable());
         }
 
-        return this.tableRef;
+        return this.rootRef;
     }
 
 	@Override
@@ -237,4 +258,72 @@ public class DefaultEntityQuery<
 	public EntityMetaData<A, R, T, E> getMetaData() {
 		return this.meta;
 	}
+
+	@Override
+	public EntityMetaData<?, ?, ?, ?> getMetaData(TableReference tref) {
+		if (tref == null) {
+			throw new NullPointerException("tref");
+		}
+		
+		return getMetaDataMap().get(tref);
+	}
+
+	@Override
+	public TableReference getOrigin(int column) {	
+		if (column < 1) {
+			throw new IndexOutOfBoundsException();
+		}
+
+		for (Integer k : originMap.keySet()) {
+			if (column <= k.intValue()) {
+				return originMap.get(k);
+			}
+		}	
+		
+		return null;
+	}
+
+	private Map<TableReference, EntityMetaData<?, ?, ?, ?>> getMetaDataMap() {
+		if (metaDataMap == null) {
+			metaDataMap = new HashMap<TableReference, EntityMetaData<?,?,?,?>>();			
+		}
+
+		return metaDataMap;
+	}
+		
+	public TableReference getReferenced(TableReference referencing, ForeignKey fk) {
+		JoinKey k = new JoinKey(referencing, fk);
+		TableReference r = this.referenceMap.get(k);
+		return r;
+	}
+
+	private static class JoinKey {
+		private TableReference referencing;	
+		private ForeignKey foreignKey;
+		
+		public JoinKey(TableReference referencing, ForeignKey foreignKey) {
+			super();
+			this.referencing = referencing;			
+			this.foreignKey = foreignKey;
+		}
+		
+		@Override
+		public int hashCode() {		
+			return referencing.hashCode() ^ foreignKey.hashCode();
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == null) {
+				throw new NullPointerException("obj");
+			}
+						
+			JoinKey j = (JoinKey) obj;
+			
+			return 
+				this.referencing.equals(j.referencing) &&
+				this.foreignKey.equals(j.foreignKey);
+		}
+	}
+
 }

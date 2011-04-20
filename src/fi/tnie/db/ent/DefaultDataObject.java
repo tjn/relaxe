@@ -98,7 +98,7 @@ public class DefaultDataObject
 	
 	public void set(int index, PrimitiveHolder<?, ?> value) {
 		this.content.set(index, value);
-	}
+	}	
 
 	public List<PrimitiveHolder<?, ?>> getContent() {		
 		return content;
@@ -118,6 +118,7 @@ public class DefaultDataObject
 		int index = this.metaData.index(a);
 		return this.content.get(index);
 	}
+	
 	
 	
 }

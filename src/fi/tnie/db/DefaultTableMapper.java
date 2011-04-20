@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.EnumMap;
 import java.util.Map;
 
+import fi.tnie.db.ent.VarcharIdentityMap;
+import fi.tnie.db.ent.im.IntegerIdentityMap;
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.CharAccessor;
 import fi.tnie.db.ent.value.DateKey;
@@ -200,7 +202,8 @@ public class DefaultTableMapper
         	a.setHolderType(VarcharHolder.class);
         	a.setKeyType(VarcharKey.class);
         	a.setAccessorType(VarcharAccessor.class);
-        	a.setPrimitiveType(VarcharType.TYPE);
+        	a.setPrimitiveType(VarcharType.TYPE);        	
+        	a.setIdentityMapType(VarcharIdentityMap.class);
             break;            	
         case Types.LONGNVARCHAR:
         	break;
@@ -210,6 +213,7 @@ public class DefaultTableMapper
         	a.setKeyType(IntegerKey.class);
         	a.setAccessorType(IntegerAccessor.class);
         	a.setPrimitiveType(IntegerType.TYPE);
+        	a.setIdentityMapType(IntegerIdentityMap.class);
             break;
         case Types.TINYINT:            
             break;

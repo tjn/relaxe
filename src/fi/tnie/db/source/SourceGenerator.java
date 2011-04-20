@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 
 import fi.tnie.db.QueryException;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.im.EntityIdentityMap;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.map.AttributeInfo;
@@ -134,7 +135,11 @@ public class SourceGenerator {
 	     * Pattern which is replaced with the package name of the type being generated in template files.
 	     */
 		PACKAGE_NAME_LITERAL,
-		
+
+	    /**
+	     * 
+	     */
+		CREATE_IDENTITY_MAP_METHOD,
 		/**
 	     * Pattern which is replaced with the package name of the type being generated in template files.
 	     */
@@ -1299,6 +1304,12 @@ public class SourceGenerator {
             src = replaceAll(src, Tag.REFERENCE_KEY_MAP_LIST, code);        	
         }
         
+        {
+            String code = generateCreateIdentityMapMethod(t, tm);
+            logger().debug("generateCreateIdentityMapMethod: code=" + code);            
+            src = replaceAll(src, Tag.CREATE_IDENTITY_MAP_METHOD, code);        	
+        }
+        
         
         {
             String code = referenceMapList(t, tm, qualify);
@@ -1338,6 +1349,65 @@ public class SourceGenerator {
         return src;
 	}
 	
+	private String generateCreateIdentityMapMethod(BaseTable t, TableMapper tm) {
+		PrimaryKey pk = t.getPrimaryKey();
+		
+		StringBuffer buf = new StringBuffer();
+		
+		if (pk != null) {
+			List<? extends Column> cl = pk.columns();
+			
+			if (cl.size() == 1) {
+				Column col = cl.get(0);				
+				AttributeInfo ai = tm.getAttributeInfo(t, col);
+
+				
+//				Sample output: 
+//				@Override
+//				public IdentityMap<Attribute, Reference, Type, TestGeneratedKey> createIdentityMap() {
+//					return new IntIdentityMap<Attribute, Reference, Type, TestGeneratedKey>(TestGeneratedKey.ABC);
+//				} 
+				
+				Class<?> aim = ai.getIdentityMapType();
+								
+				if (aim != null) {
+					JavaType intf = tm.entityType(t, Part.INTERFACE);
+					
+					String kv = keyConstantVariable(t, col);
+															
+					buf.append("@Override\n");
+					buf.append("public ");
+					buf.append(EntityIdentityMap.class.getCanonicalName());
+					buf.append("<");
+					buf.append(getAttributeType());
+					buf.append(", ");
+					buf.append(getReferenceType());
+					buf.append(", Type, ");
+					buf.append(intf.getUnqualifiedName());
+					buf.append("> createIdentityMap() {\n");
+					buf.append("return new ");
+					buf.append(aim.getCanonicalName());
+					buf.append("<");
+					buf.append(getAttributeType());
+					buf.append(", ");
+					buf.append(getReferenceType());
+					buf.append(", Type, ");
+					buf.append(intf.getUnqualifiedName());
+					buf.append(">(");
+					buf.append(intf.getUnqualifiedName());
+					buf.append(".");
+					buf.append(kv);					
+					buf.append(");\n");					
+					buf.append("}\n");							
+				}				
+			}			
+		}
+		
+		
+				
+		return buf.toString();
+	}
+
 	private String referenceMapList(BaseTable t, TableMapper tm, boolean qualify) {
 		StringBuffer buf = new StringBuffer();
 		
@@ -2612,3 +2682,4 @@ public class SourceGenerator {
 		dest.append(t.substring(1));		
 	}
 }
+

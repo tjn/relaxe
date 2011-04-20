@@ -22,6 +22,11 @@ public interface Key<
 {
 	V type();
 	void copy(E src, E dest);
+	
+	/**
+	 * TODO: Is this name sane?
+	 * @param src
+	 */
 	void clear(E src);	
 	K self();
 }

@@ -84,9 +84,6 @@ public abstract class DefaultEntity<
 	private Map<A, IntervalHolder.YearMonth> yearMonthIntervalValueMap;
 	private Map<A, IntervalHolder.DayTime> dayTimeIntervalValueMap;
 	
-	private Map<R, ReferenceHolder<?, ?, ?, ?>> referenceHolderMap;
-	
-	
 //	private static Logger logger = Logger.getLogger(DefaultEntity.class);
 
 	protected DefaultEntity() {
@@ -337,6 +334,7 @@ public abstract class DefaultEntity<
 		return (rh == null) ? null : rh.value();		
 	}
 	
+	@Override
 	public E clone() {
 		EntityMetaData<A, R, T, E> meta = getMetaData();
 		EntityFactory<A, R, T, E> ef = meta.getFactory();
@@ -357,5 +355,9 @@ public abstract class DefaultEntity<
 		return dest;				
 	}
 	
+	@Override
+	public E unify(IdentityContext ctx) {	
+		return getMetaData().unify(ctx, self());
+	}
 	
 }

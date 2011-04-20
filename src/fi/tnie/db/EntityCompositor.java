@@ -5,14 +5,9 @@ package fi.tnie.db;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.List;
-
 import fi.tnie.db.ent.DefaultDataObject;
 import fi.tnie.db.ent.DefaultEntityQuery;
-import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityContext;
-import fi.tnie.db.expr.QueryExpression;
-import fi.tnie.db.expr.SelectListElement;
 
 public class EntityCompositor
 	extends DataObjectProcessor {

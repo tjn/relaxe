@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import fi.tnie.db.ent.im.EntityIdentityMap;
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.ent.value.DecimalKey;
@@ -45,9 +46,10 @@ public abstract class DefaultEntityMetaData<
 
 	private Set<R> relationships;
 	private Map<R, ForeignKey> referenceMap;
-	private Map<Column, Set<R>> columnReferenceMap;
-		
+	private Map<Column, Set<R>> columnReferenceMap;		
 	private Map<A, PrimitiveKey<A, R, T, E, ?, ?, ?, ?>> keyMap;
+	
+	private Map<IdentityContext, EntityIdentityMap<A, R, T, E>> identityContextMap;
 	
 //	private Map<Column, Key<A, ?, ?, ?, E, ?>> columnKeyMap;
 
@@ -468,6 +470,65 @@ public abstract class DefaultEntityMetaData<
 				
 		return (src == null) ? null : src.get(name);
 	}
+	
+	protected EntityIdentityMap<A, R, T, E> createIdentityMap() {
+		return new DefaultIdentityMap();
+	}
 
+	@Override
+	public EntityIdentityMap<A, R, T, E> getIdentityMap(final IdentityContext ctx) {
+		if (ctx == null) {
+			throw new NullPointerException("ctx");
+		}
+				
+		final Map<IdentityContext, EntityIdentityMap<A, R, T, E>> icm = getIdentityContextMap();
+		EntityIdentityMap<A, R, T, E> im = icm.get(ctx);
+		
+		if (im == null) {
+			im = createIdentityMap();			
+			icm.put(ctx, im);
+			ctx.add(new ContextRegistration() {				
+				@Override
+				public void remove() {
+					icm.remove(ctx);
+				}
+			});
+		}
+				
+		return im;
+	}
+	
+	
+	private Map<IdentityContext, EntityIdentityMap<A, R, T, E>> getIdentityContextMap() {
+		if (identityContextMap == null) {
+			identityContextMap = new HashMap<IdentityContext, EntityIdentityMap<A,R,T,E>>();			
+		}
 
+		return identityContextMap;
+	}
+
+	
+	private class DefaultIdentityMap
+		implements EntityIdentityMap<A, R, T, E> {
+
+		@Override
+		public E get(E v) {
+			return v;
+		}
+		
+	}
+	
+	public E unify(IdentityContext ctx, E e) {
+		EntityIdentityMap<A, R, T, E> im = getIdentityMap(ctx);
+		return im.get(e);
+	}
+	
+	@Override
+	public void dispose(IdentityContext ctx) {
+		if (ctx == null) {
+			throw new NullPointerException("ctx");
+		}
+		
+		getIdentityContextMap().remove(ctx);
+	}
 }

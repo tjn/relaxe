@@ -79,9 +79,6 @@ public abstract class AbstractEntity<
 		Column fkcol = fk.columns().get(column);		
 		return ref.get(fkcol);
 	}
-//	public void set(A a, PrimitiveHolder<?, ?> value) {
-//		values().put(a, value);		
-//	}
 	
 	public void set(R r, ReferenceHolder<?, ?, ?, ?> value) {
 		references().put(r, value);		
@@ -114,7 +111,7 @@ public abstract class AbstractEntity<
 		for (Column pkcol : getMetaData().getPKDefinition()) {
 			PrimitiveHolder<?,?> v = get(pkcol);
 			
-			if (v == null) {
+			if ((v == null) || v.isNull()) {
 				return null;
 			}
 			
@@ -159,7 +156,13 @@ public abstract class AbstractEntity<
 		
 		return buf.toString();
 	}
-	
 
+	/**
+	 * Returns true if the primary key of this entity has not null components.
+	 */	
+	@Override
+	public boolean isIdentified() {
+		return getPrimaryKey() != null;
+	}
 }
  

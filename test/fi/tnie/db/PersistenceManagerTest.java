@@ -5,17 +5,14 @@ package fi.tnie.db;
 
 import java.sql.Connection;
 
-import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.gen.ent.personal.DefaultHourReport;
-import fi.tnie.db.gen.ent.personal.DefaultOrganization;
 import fi.tnie.db.gen.ent.personal.DefaultPerson;
 import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
-import fi.tnie.db.gen.ent.personal.OrganizationImpl;
 import fi.tnie.db.gen.ent.personal.PersonalFactory;
 import fi.tnie.db.gen.ent.personal.HourReport.Reference;
 import fi.tnie.db.gen.ent.personal.HourReport.Type;

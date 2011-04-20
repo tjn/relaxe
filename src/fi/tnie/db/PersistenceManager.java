@@ -8,17 +8,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.DefaultEntityQuery;
 import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.EntityContext;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
@@ -31,7 +28,6 @@ import fi.tnie.db.expr.DeleteStatement;
 import fi.tnie.db.expr.ElementList;
 import fi.tnie.db.expr.InsertStatement;
 import fi.tnie.db.expr.Predicate;
-import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.expr.ColumnReference;
 import fi.tnie.db.expr.TableReference;
@@ -480,24 +476,17 @@ public class PersistenceManager<
 	}
 	
 	
-	public QueryResult<E> execute(EntityQuery<A, R, T, E> query, EntityContext ctx, Connection c) 
+	public QueryResult<E> execute(EntityQuery<A, R, T, E> query, Connection c) 
 		throws SQLException {
-		StatementExecutor st = new StatementExecutor();
 		
-		DefaultTableExpression qo = query.getQuery();
-		QueryExpression e = qo;
+		DefaultTableExpression qo = query.getQuery();		
 		ValueExtractorFactory vef = getImplementation().getValueExtractorFactory();
-		ArrayList<DataObject> content = new ArrayList<DataObject>();		
+//		ArrayList<DataObject> content = new ArrayList<DataObject>();			
+//		DataObjectReader r = new DataObjectReader(vef, qo, content);
 		
-		// DataObjectReader r = new DataObjectReader(vef, qo, content);
-//		EntityCompositor cmp = new EntityCompositor(ctx, vef, e);
-		
-				
-//		st.execute(qo, c, cmp);		
-				
-		
-		
-		
+		EntityBuilder eb = new EntityBuilder(vef, query, getImplementation());
+		StatementExecutor sx = new StatementExecutor();				
+		sx.execute(qo, c, eb);
 		
 		
 		return null;

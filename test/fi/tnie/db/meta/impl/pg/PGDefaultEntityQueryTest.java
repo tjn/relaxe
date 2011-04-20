@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.meta.impl.pg;
 
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,11 +17,9 @@ import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.gen.ent.personal.DefaultOrganization;
 import fi.tnie.db.gen.ent.personal.DefaultProject;
 import fi.tnie.db.gen.ent.personal.HourReport;
-import fi.tnie.db.gen.ent.personal.Organization;
 import fi.tnie.db.gen.ent.personal.PersonalFactory;
 import fi.tnie.db.gen.ent.personal.Project;
 import fi.tnie.db.meta.DBMetaTestCase;
-import fi.tnie.db.meta.Table;
 
 public class PGDefaultEntityQueryTest extends DBMetaTestCase {
 

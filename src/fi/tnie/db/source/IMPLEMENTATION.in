@@ -60,6 +60,8 @@ public class {{table-impl-class}}
 			return factory;       
         }
         
+        {{create-identity-map-method}}
+        
         public static {{table-interface}}MetaData getInstance() {
         	if ({{table-interface}}MetaData.instance == null) {
         		{{table-interface}}MetaData.instance = new {{table-interface}}MetaData();
@@ -114,7 +116,12 @@ public class {{table-impl-class}}
         @Override
         public {{table-impl-base}} newInstance() {
            return new {{table-impl-class}}();
-        }       
+        }
+        
+        @Override
+		public {{table-interface}}.Holder newHolder({{table-interface}} value) {
+			return {{table-interface}}.Holder.valueOf(value);
+		}       
     }
     
     @Override       

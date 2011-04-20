@@ -40,6 +40,10 @@ public interface {{table-interface}}
 		public Type getType() {
 			return {{table-interface}}.TYPE;
 		}
+		
+		public static {{table-interface}}.Holder valueOf({{table-interface}} value) {
+			return (value == null) ? {{table-interface}}.Holder.NULL : new {{table-interface}}.Holder(value);
+		}
 	}
 		
 	public static abstract class Key<
