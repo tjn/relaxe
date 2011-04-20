@@ -31,7 +31,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public abstract class DefaultEntityMetaData<
 	A extends Attribute,
-	R,
+	R extends Reference,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>
 >

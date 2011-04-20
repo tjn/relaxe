@@ -12,6 +12,7 @@ import java.sql.SQLException;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
@@ -19,7 +20,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public class AttributeExtractor<
 		A extends Attribute,
-		R,
+		R extends Reference,
 		T extends ReferenceType<T>,
 		E extends Entity<A, R, T, E>,
 		V extends Serializable,

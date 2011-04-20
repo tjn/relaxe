@@ -48,7 +48,7 @@ public interface {{table-interface}}
 		
 	public static abstract class Key<
 		A extends fi.tnie.db.ent.Attribute, 
-		R, 
+		R extends fi.tnie.db.ent.Reference, 
 		T extends ReferenceType<T>, 
 		E extends Entity<A, R, T, E>,
 		K extends Key<A, R, T, E, K>>

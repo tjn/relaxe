@@ -14,6 +14,7 @@ import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.DefaultImplementation;
 import fi.tnie.db.env.GeneratedKeyHandler;
@@ -62,7 +63,7 @@ public class PGImplementation
 		@Override
 		public <
 			A extends Attribute,
-			R,
+			R extends Reference,
 			T extends ReferenceType<T>,
 			E extends Entity<A, R, T, E>
 		>

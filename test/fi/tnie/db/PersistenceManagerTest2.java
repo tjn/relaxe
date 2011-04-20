@@ -156,8 +156,10 @@ public class PersistenceManagerTest2 extends TestCase  {
 		return connection;
 	}
 	
-	private 
-	<A extends Attribute, R, T extends ReferenceType<T>, E extends Entity<A, R, T, E>>
+	private <
+		A extends Attribute, 
+		R extends fi.tnie.db.ent.Reference, 
+		T extends ReferenceType<T>, E extends Entity<A, R, T, E>>
 	PersistenceManager<A, R, T, E> create(E e, Implementation impl) {
 		PersistenceManager<A, R, T, E> pm = new PersistenceManager<A, R, T, E>(e, impl);
 		return pm;

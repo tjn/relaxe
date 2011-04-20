@@ -6,6 +6,7 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.Decimal;
 import fi.tnie.db.rpc.DecimalHolder;
 import fi.tnie.db.types.DecimalType;
@@ -14,7 +15,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public final class DecimalKey<
 	A extends Attribute, 
-	R,
+	R extends Reference,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>
 >
@@ -39,7 +40,7 @@ public final class DecimalKey<
 	
 	public static <
 		X extends Attribute,
-		Y, 
+		Y extends Reference, 
 		Z extends ReferenceType<Z>,
 		T extends Entity<X, Y, Z, T>
 	>

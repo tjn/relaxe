@@ -8,6 +8,7 @@ import java.util.Date;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.types.DateType;
 import fi.tnie.db.types.PrimitiveType;
@@ -15,7 +16,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public final class DateKey<	
 	A extends Attribute, 
-	R,
+	R extends Reference,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>>
 	extends AbstractPrimitiveKey<A, R, T, E, Date, DateType, DateHolder, DateKey<A, R, T, E>>
@@ -38,7 +39,7 @@ public final class DateKey<
 	
 	public static <
 		X extends Attribute,
-		Y, 
+		Y extends Reference, 
 		Z extends ReferenceType<Z>,
 		T extends Entity<X, Y, Z, T>
 	>

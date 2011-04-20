@@ -6,9 +6,9 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.gen.ent.personal.Person;
-import fi.tnie.db.gen.ent.personal.Person.Reference;
 import fi.tnie.db.gen.ent.personal.Person.Type;
 import fi.tnie.db.types.IntegerType;
 import fi.tnie.db.types.ReferenceType;
@@ -19,15 +19,14 @@ public class IntegerKeyTest extends TestCase {
 	public void testEquals() {
 		
 		LiteralCatalog litcat = LiteralCatalog.getInstance();
-		EntityMetaData<fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person> meta = litcat.newPersonalFactory().newPerson().getMetaData();
-		
+		EntityMetaData<fi.tnie.db.gen.ent.personal.Person.Attribute, fi.tnie.db.gen.ent.personal.Person.Reference, Type, Person> meta = litcat.newPersonalFactory().newPerson().getMetaData();		
 		test(meta, Person.Attribute.ID);
 	}
 	
 	private 
 	<
 		A extends Attribute,
-		Y, 
+		Y extends Reference, 
 		Z extends ReferenceType<Z>,		
 		E extends Entity<A, Y, Z, E>
 	>

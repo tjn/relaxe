@@ -26,6 +26,7 @@ import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.EntityQueryException;
 import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.MultipleEntityQueryResult;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.SingleEntityQueryResult;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.exec.QueryFilter;
@@ -41,7 +42,7 @@ import fi.tnie.db.meta.DataType;
 
 public class DefaultEntityQueryTask<
 	A extends Attribute,
-	R,
+	R extends Reference,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>
 >

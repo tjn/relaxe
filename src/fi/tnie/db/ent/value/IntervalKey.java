@@ -7,6 +7,7 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.Interval;
 import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.types.IntervalType;
@@ -15,7 +16,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public abstract class IntervalKey<
 	A extends Attribute, 
-	R,
+	R extends Reference,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>,
 	V extends Interval<V>, 
@@ -43,7 +44,7 @@ public abstract class IntervalKey<
 
 	public static final class YearMonth<
 		A extends Attribute,
-		R,
+		R extends Reference,
 		T extends ReferenceType<T>,
 		E extends Entity<A, R, T, E>>
 		extends IntervalKey<A, R, T, E, Interval.YearMonth, IntervalType.YearMonth, IntervalHolder.YearMonth, IntervalKey.YearMonth<A, R, T, E>> {
@@ -67,7 +68,7 @@ public abstract class IntervalKey<
 		
 		public static <
 			X extends Attribute,
-			Y,
+			Y extends Reference,
 			Z extends ReferenceType<Z>,
 			T extends Entity<X, Y, Z, T>
 		>
@@ -119,7 +120,7 @@ public abstract class IntervalKey<
 	
 	public static final class DayTime<
 		A extends Attribute, 
-		R,
+		R extends Reference,
 		T extends ReferenceType<T>,		
 		E extends Entity<A, R, T, E>>
 		extends IntervalKey<A, R, T, E, Interval.DayTime, IntervalType.DayTime, IntervalHolder.DayTime, 
@@ -137,7 +138,7 @@ public abstract class IntervalKey<
 
 		public static <
 			X extends Attribute,
-			Y,
+			Y extends Reference,
 			Z extends ReferenceType<Z>,
 			T extends Entity<X, Y, Z, T>
 		>

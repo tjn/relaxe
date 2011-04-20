@@ -5,6 +5,7 @@ package fi.tnie.db.ent.value;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.Interval;
 import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.types.IntervalType;
@@ -12,7 +13,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public class IntervalAccessor<
 	A extends Attribute,
-	R,
+	R extends Reference,
 	T extends ReferenceType<T>,	
 	E extends Entity<A, R, T, E>,
 	V extends Interval<V>, 
@@ -39,7 +40,7 @@ public class IntervalAccessor<
 	
 	public static class DayTime<
 		A extends Attribute, 
-		R,
+		R extends Reference,
 		T extends ReferenceType<T>,
 		E extends Entity<A, R, T, E>>
 		extends IntervalAccessor<A, R, T, E, Interval.DayTime, IntervalType.DayTime, IntervalHolder.DayTime, IntervalKey.DayTime<A, R, T, E>> {
@@ -64,7 +65,7 @@ public class IntervalAccessor<
 
 	public static class YearMonth<
 		A extends Attribute, 
-		R,
+		R extends Reference,
 		T extends ReferenceType<T>,
 		E extends Entity<A, R, T, E>>
 		extends IntervalAccessor<A, R, T, E, Interval.YearMonth, IntervalType.YearMonth, IntervalHolder.YearMonth, IntervalKey.YearMonth<A, R, T, E>> {

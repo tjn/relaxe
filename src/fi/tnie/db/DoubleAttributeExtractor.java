@@ -6,6 +6,7 @@ package fi.tnie.db;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.types.DoubleType;
@@ -13,7 +14,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public class DoubleAttributeExtractor<
 	A extends Attribute, 
-	R,
+	R extends Reference,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>
 >

@@ -6,6 +6,7 @@ package fi.tnie.db;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.ReferenceType;
@@ -13,7 +14,7 @@ import fi.tnie.db.types.VarcharType;
 
 public class VarcharAttributeExtractor<
 	A extends Attribute, 
-	R,
+	R extends Reference,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>
 >

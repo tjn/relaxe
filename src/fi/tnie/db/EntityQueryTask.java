@@ -9,12 +9,13 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityQueryException;
 import fi.tnie.db.ent.EntityQueryResult;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.exec.QueryFilter;
 import fi.tnie.db.types.ReferenceType;
 
 public interface EntityQueryTask<
 	A extends Attribute,
-	R,
+	R extends Reference,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>
 >

@@ -27,7 +27,7 @@ import fi.tnie.db.meta.ForeignKey;
 
 public class DefaultEntityQuery<
 	A extends Attribute,
-	R,
+	R extends Reference,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>
 	> implements EntityQuery<A, R, T, E>
@@ -104,7 +104,7 @@ public class DefaultEntityQuery<
 	private 
 	<
 		MA extends Attribute,
-		MR,
+		MR extends Reference,
 		M extends Entity<MA, MR, ?, M>>
 	AbstractTableReference fromTemplate(
 			M template, 

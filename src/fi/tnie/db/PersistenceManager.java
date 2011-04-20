@@ -14,6 +14,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.DefaultEntityQuery;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
@@ -47,7 +48,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public class PersistenceManager<
     A extends Attribute,
-    R,
+    R extends Reference,
     T extends ReferenceType<T>,
     E extends Entity<A, R, T, E>>
 {	

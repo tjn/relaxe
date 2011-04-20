@@ -34,7 +34,7 @@ import fi.tnie.db.meta.Column;
 	
 public interface Entity<
 	A extends Attribute,
-	R,
+	R extends Reference,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>
 > 

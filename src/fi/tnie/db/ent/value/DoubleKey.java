@@ -6,6 +6,7 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.types.DoubleType;
 import fi.tnie.db.types.PrimitiveType;
@@ -13,7 +14,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public final class DoubleKey<	
 	A extends Attribute, 
-	R,
+	R extends Reference,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>>
 	extends AbstractPrimitiveKey<A, R, T, E, Double, DoubleType, DoubleHolder, DoubleKey<A, R, T, E>>
@@ -36,7 +37,7 @@ public final class DoubleKey<
 	
 	public static <
 		X extends Attribute,
-		Y, 
+		Y extends Reference, 
 		Z extends ReferenceType<Z>,		
 		T extends Entity<X, Y, Z, T>
 	>

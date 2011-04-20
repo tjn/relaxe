@@ -16,6 +16,7 @@ import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.IdentityContext;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.DefaultDataObject.MetaData;
 import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.env.Implementation;
@@ -111,7 +112,7 @@ public class EntityBuilder
 
 	private	<
 		A extends Attribute,
-		R,
+		R extends Reference,
 		T extends ReferenceType<T>,
 		E extends Entity<A, R, T, E>
 	>
@@ -143,7 +144,7 @@ public class EntityBuilder
 
 	private class Source<
 		A extends Attribute,
-		R,
+		R extends Reference,
 		T extends ReferenceType<T>,
 		E extends Entity<A, R, T, E>
 	>

@@ -12,7 +12,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public abstract class EnumMetaData<
 	A extends Enum<A> & Attribute,
-	R extends Enum<R> & Identifiable,
+	R extends Enum<R> & Reference,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>> 
 	extends DefaultEntityMetaData<A, R, T, E> {

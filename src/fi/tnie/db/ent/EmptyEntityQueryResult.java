@@ -11,7 +11,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public class EmptyEntityQueryResult<
 	A extends Attribute,
-	R,
+	R extends Reference,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>
 > extends AbstractEntityQueryResult<A, R, T, E> {

@@ -5,6 +5,7 @@ package fi.tnie.db.ent.im;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.types.IntegerType;
@@ -12,7 +13,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public class IntegerIdentityMap<
 	A extends Attribute,
-	R,
+	R extends Reference,
 	T extends ReferenceType<T>,
 	E extends Entity<A, R, T, E>	
 	>
