@@ -61,7 +61,7 @@ public class Select
 		for(SelectListElement e : getSelectList().getContent()) {
 			int cc = e.getColumnCount();
 			
-			for (int i = 1; i <= cc; i++) {
+			for (int i = 1; i <= cc; i++) {								
 				el.add(e.getTableColumnExpr(i));
 			}
 		}		
@@ -88,7 +88,14 @@ public class Select
 	
 	public ColumnReference add(ColumnReference expr) {		
 		// avoid renaming by passing null:
-		add(expr, (ColumnName) null);
+//		add(expr, (ColumnName) null);
+		
+		if (expr == null) {
+			throw new NullPointerException("'expr' must not be null");
+		}
+				
+		getSelectList().add(expr);
+		
 		return expr;
 	}
 	

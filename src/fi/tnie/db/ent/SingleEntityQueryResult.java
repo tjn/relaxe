@@ -12,14 +12,15 @@ import fi.tnie.db.types.ReferenceType;
 public class SingleEntityQueryResult<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>
->	extends AbstractEntityQueryResult<A, R, T, E>
+	T extends ReferenceType<T, M>,
+	E extends Entity<A, R, T, E, ?, ?, M>,
+	M extends EntityMetaData<A, R, T, E, ?, ?, M>
+>	extends AbstractEntityQueryResult<A, R, T, E, M>
 {
 	private List<E> content;
 	private E result;
 
-	public SingleEntityQueryResult(EntityQuery<A, R, T, E> source, E result, long available) {
+	public SingleEntityQueryResult(EntityQuery<A, R, T, E, M> source, E result, long available) {
 		super(source, available);
 
 		if (result == null) {

@@ -4,13 +4,13 @@ enum {{reference-type}} implements fi.tnie.db.ent.Reference {
     ;
     
     private String identifier;
-    private ReferenceType<?> type;
+    private ReferenceType<?, ?> type;
         
-    {{reference-type}}(ReferenceType<?> type) {    
+    {{reference-type}}(ReferenceType<?, ?> type) {    
     	this.type = type;
     }
     
-    {{reference-type}}(String identifier, ReferenceType<?> type) {
+    {{reference-type}}(String identifier, ReferenceType<?, ?> type) {
     	this(type);
         this.identifier = identifier;
     }    
@@ -20,7 +20,7 @@ enum {{reference-type}} implements fi.tnie.db.ent.Reference {
         return (identifier == null) ? name() : identifier;
     }
 
-    public ReferenceType<?> type() {
+    public ReferenceType<?, ?> type() {
     	return this.type;
     }    
 }    

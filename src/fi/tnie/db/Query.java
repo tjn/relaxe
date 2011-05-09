@@ -6,7 +6,7 @@ package fi.tnie.db;
 import fi.tnie.db.expr.QueryExpression;
 
 public class Query
-	extends Request {
+	extends AbstractRequest {
 		
 	/**
 	 * 

@@ -5,6 +5,7 @@ package fi.tnie.db.rpc;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.types.ReferenceType;
 
@@ -21,8 +22,11 @@ import fi.tnie.db.types.ReferenceType;
 public abstract class ReferenceHolder<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T>,
-	V extends Entity<A, R, T, V>>
+	T extends ReferenceType<T, M>,
+	V extends Entity<A, R, T, V, H, ?, M>,
+	H extends ReferenceHolder<A, R, T, V, H, M>,
+	M extends EntityMetaData<A, R, T, V, H, ?, M>
+>
 	extends Holder<V, T> {
 
 	/**

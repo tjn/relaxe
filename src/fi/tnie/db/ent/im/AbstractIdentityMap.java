@@ -14,8 +14,8 @@ import fi.tnie.db.types.ReferenceType;
 public abstract class AbstractIdentityMap<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>,
+	T extends ReferenceType<T, ?>,
+	E extends Entity<A, R, T, E, ?, ?, ?>,
 	K
 >
 	implements EntityIdentityMap<A, R, T, E> {
@@ -30,7 +30,7 @@ public abstract class AbstractIdentityMap<
 		K k = identify(e);
 		
 		if (k == null) {
-			throw new NullPointerException("k");
+			return null;
 		}
 		
 		Map<K, E> m = getEntityMap();		

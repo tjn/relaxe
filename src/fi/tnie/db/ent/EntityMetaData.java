@@ -22,14 +22,18 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
 
 public interface EntityMetaData<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>	
+	T extends ReferenceType<T, M>,	
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>
 > {
 
 	Class<A> getAttributeNameType();
@@ -44,7 +48,7 @@ public interface EntityMetaData<
 	 */
 	BaseTable getBaseTable();
 
-	EntityFactory<A, R, T, E> getFactory();
+	F getFactory();
 		
 	EntityIdentityMap<A, R, T, E> getIdentityMap(IdentityContext ctx);
 	E unify(IdentityContext ctx, E e);
@@ -83,20 +87,48 @@ public interface EntityMetaData<
 	PrimitiveType<?> getAttributeType(A name);
 
 //	Key<A, ?, ?, ?, E, ?> getKey(Column c);
-	PrimitiveKey<A, R, T, E, ?, ?, ?, ?> getKey(A a);
+	PrimitiveKey<A, T, E, ?, ?, ?, ?> getKey(A a);
 		
-	EntityKey<A, R, T, E, ?, ?, ?, ?> getEntityKey(R ref);
+	EntityKey<R, T, E, M, ?, ?, ?, ?, ?> getEntityKey(R ref);
+	
 
-	IntegerKey<A, R, T, E> getIntegerKey(A a);
-	VarcharKey<A, R, T, E> getVarcharKey(A a);
-	DateKey<A, R, T, E> getDateKey(A a);
-	DecimalKey<A, R, T, E> getDecimalKey(A a);
-	DoubleKey<A, R, T, E> getDoubleKey(A a);
-	CharKey<A, R, T, E> getCharKey(A a);
-	TimestampKey<A, R, T, E> getTimestampKey(A a);
-	TimeKey<A, R, T, E> getTimeKey(A a);
-	IntervalKey.YearMonth<A, R, T, E> getYearMonthIntervalKey(A a);
-	IntervalKey.DayTime<A, R, T, E> getDayTimeIntervalKey(A a);
+	<
+		X extends fi.tnie.db.ent.Attribute,
+		Y extends fi.tnie.db.ent.Reference,		
+		Z extends ReferenceType<Z, O>,
+		V extends Entity<X, Y, Z, V, ?, ?, O>,
+		O extends EntityMetaData<X, Y, Z, V, ?, ?, O>		
+	>		
+	EntityKey<R, T, E, M, Z, V, ?, O, ?> getEntityKey(R ref, O target);
+	
+//	<
+//		X extends Attribute,
+//		Y extends Reference,
+//		Z extends ReferenceType<Z>,
+//		V extends Entity<X, Y, Z, V>,
+//		W extends ReferenceHolder<X, Y, Z, V>
+//	>
+//	EntityKey<A, R, T, E, Z, V, ?, ?> getEntityKey(R ref, EntityMetaData<X, Y, Z, V, W> target);
+	
+//	<
+//		X extends ReferenceType<X>,
+//		W extends Entity<?, ?, X, W>
+//	>
+//	EntityKey<A, R, T, E, X, W, ?, ?> getEntityKey(R ref, X type, W value);
+	
+
+	IntegerKey<A, T, E> getIntegerKey(A a);
+	VarcharKey<A, T, E> getVarcharKey(A a);
+	DateKey<A, T, E> getDateKey(A a);
+	DecimalKey<A, T, E> getDecimalKey(A a);
+	DoubleKey<A, T, E> getDoubleKey(A a);
+	CharKey<A, T, E> getCharKey(A a);
+	TimestampKey<A, T, E> getTimestampKey(A a);
+	TimeKey<A, T, E> getTimeKey(A a);
+	IntervalKey.YearMonth<A, T, E> getYearMonthIntervalKey(A a);
+	IntervalKey.DayTime<A, T, E> getDayTimeIntervalKey(A a);
+	
+	
 	ForeignKey getForeignKey(R r);
 	Set<Column> getPKDefinition();
 
@@ -119,17 +151,39 @@ public interface EntityMetaData<
 
 	T getType();
 
-	void addKey(DecimalKey<A, R, T, E> key);
-	void addKey(DoubleKey<A, R, T, E> key);
-	void addKey(IntegerKey<A, R, T, E> key);
-	void addKey(CharKey<A, R, T, E> key);
-	void addKey(DateKey<A, R, T, E> key);
-	void addKey(VarcharKey<A, R, T, E> key);
-	void addKey(TimestampKey<A, R, T, E> key);	
-	void addKey(TimeKey<A, R, T, E> key);
-	void addKey(IntervalKey.YearMonth<A, R, T, E> key);
-	void addKey(IntervalKey.DayTime<A, R, T, E> key);
+	void addKey(DecimalKey<A, T, E> key);
+	void addKey(DoubleKey<A, T, E> key);
+	void addKey(IntegerKey<A, T, E> key);
+	void addKey(CharKey<A, T, E> key);
+	void addKey(DateKey<A, T, E> key);
+	void addKey(VarcharKey<A, T, E> key);
+	void addKey(TimestampKey<A, T, E> key);	
+	void addKey(TimeKey<A, T, E> key);
+	void addKey(IntervalKey.YearMonth<A, T, E> key);
+	void addKey(IntervalKey.DayTime<A, T, E> key);
+
+//	<
+//		X extends fi.tnie.db.ent.Attribute,
+//		Y extends fi.tnie.db.ent.Reference,
+//		Z extends ReferenceType<Z>,
+//		V extends Entity<X, Y, Z, V>,
+//		W extends ReferenceHolder<X, Y, Z, V>,
+//		O extends EntityMetaData<X, Y, Z, V, W, O>
+//	>	
+//	EntityKey<X, Y, Z, V, T, E, ?, ?> newKey(Y ref, O target);
 
 	// IdentityContext createIdentityContext();
+	
+	M self();
+	
+	<
+		X extends Attribute,		
+		Y extends Reference,
+		Z extends ReferenceType<Z, S>,
+		VH extends ReferenceHolder<X, Y, Z, V, VH, S>,
+		V extends Entity<X, Y, Z, V, VH, ?, S>,
+		S extends EntityMetaData<X, Y, Z, V, VH, ?, S>
+	>	
+	EntityKey<Y, Z, V, S, T, E, H, M, ?> newKey(Y ref, S source);
 	
 }

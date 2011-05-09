@@ -5,17 +5,24 @@ package fi.tnie.db.ent;
 
 import java.util.List;
 
+import fi.tnie.db.Response;
 import fi.tnie.db.types.ReferenceType;
 
 public interface EntityQueryResult<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>
-> {
+	T extends ReferenceType<T, M>,
+	E extends Entity<A, R, T, E, ?, ?, M>,
+	M extends EntityMetaData<A, R, T, E, ?, ?, M>
+> 
+	extends Response<EntityQuery<A, R, T, E, M>>
+{
 	E first();
 	long getAvailable();
 	List<E> getContent();
 	boolean isEmpty();
-	EntityQuery<A, R, T, E> getSource();
+	
+	@Override
+	public EntityQuery<A, R, T, E, M> getRequest();
+	
 }

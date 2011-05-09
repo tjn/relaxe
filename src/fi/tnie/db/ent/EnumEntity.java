@@ -12,10 +12,13 @@ import fi.tnie.db.types.ReferenceType;
 public abstract class EnumEntity<
 	A extends Enum<A> & Attribute,
 	R extends Enum<R> & Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>
-	>
-	extends DefaultEntity<A, R, T, E>
+	T extends ReferenceType<T, M>,
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>	
+>
+	extends DefaultEntity<A, R, T, E, H, F, M>
 {
 	
 	/**
@@ -23,13 +26,13 @@ public abstract class EnumEntity<
 	 */
 	private static final long serialVersionUID = -4951609635150994535L;
 	
-	private Map<R, ReferenceHolder<?, ?, ?, ?>> refs;
+	private Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> refs;
 
 	@Override
-	protected Map<R, ReferenceHolder<?, ?, ?, ?>> references() {
+	protected Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> references() {
 		if (refs == null) {
 			Class<R> nt = getMetaData().getReferenceNameType();
-			refs = new EnumMap<R, ReferenceHolder<?, ?, ?, ?>>(nt); 
+			refs = new EnumMap<R, ReferenceHolder<?, ?, ?, ?, ?, ?>>(nt); 
 		}
 		
 		return refs;		

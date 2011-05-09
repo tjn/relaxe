@@ -16,12 +16,12 @@ import fi.tnie.db.types.ReferenceType;
 public class AbstractKeyIdentityMap<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>,
+	T extends ReferenceType<T, ?>,
+	E extends Entity<A, R, T, E, ?, ?, ?>,
 	V extends Serializable,
 	P extends PrimitiveType<P>,
 	H extends PrimitiveHolder<V, P>,	
-	K extends AbstractPrimitiveKey<A, R, T, E, V, P, H, K>
+	K extends AbstractPrimitiveKey<A, T, E, V, P, H, K>
 	>
 	extends AbstractIdentityMap<A, R, T, E, V>
 {

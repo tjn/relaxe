@@ -55,16 +55,19 @@ import fi.tnie.db.types.ReferenceType;
 public abstract class DefaultEntity<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>
+	T extends ReferenceType<T, M>,	
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>, 
+	M extends EntityMetaData<A, R, T, E, H, F, M>
 >
-	extends AbstractEntity<A, R, T, E> {
+	extends AbstractEntity<A, R, T, E, H, F, M> {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 3498823449580706161L;
-	private Map<R, ReferenceHolder<?, ?, ?, ?>> refs;
+	private Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> refs;
 	
 	
 	/**
@@ -91,9 +94,9 @@ public abstract class DefaultEntity<
 	}
 
 	@Override
-	protected Map<R, ReferenceHolder<?, ?, ?, ?>> references() {
+	protected Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> references() {
 		if (refs == null) {
-			refs = new HashMap<R, ReferenceHolder<?,?,?,?>>();
+			refs = new HashMap<R, ReferenceHolder<?,?,?,?,?,?>>();
 		}
 
 		return refs;
@@ -124,7 +127,7 @@ public abstract class DefaultEntity<
 	}
 
 	@Override
-	public DateHolder getDate(DateKey<A, R, T, E> k) {
+	public DateHolder getDate(DateKey<A, T, E> k) {
 		return getDateValueMap().get(k.name());	
 	}
 
@@ -145,34 +148,34 @@ public abstract class DefaultEntity<
 	}
 
 	@Override
-	public DoubleHolder getDouble(DoubleKey<A, R, T, E> k) {
+	public DoubleHolder getDouble(DoubleKey<A, T, E> k) {
 		return getDoubleValueMap().get(k.name());	
 	}	
 
 	@Override
-	public DecimalHolder getDecimal(DecimalKey<A, R, T, E> k) {
+	public DecimalHolder getDecimal(DecimalKey<A, T, E> k) {
 		return getDecimalValueMap().get(k.name());	
 	}	
 
 	@Override
-	public IntegerHolder getInteger(IntegerKey<A, R, T, E> k) {
+	public IntegerHolder getInteger(IntegerKey<A, T, E> k) {
 		return getIntValueMap().get(k.name());
 	}
 	
 	@Override
-	public fi.tnie.db.rpc.IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, R, T, E> k) {
+	public fi.tnie.db.rpc.IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, T, E> k) {
 		return getDayTimeIntervalValueMap().get(k.name());
 	}
 	
 	@Override
-	public fi.tnie.db.rpc.IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, R, T, E> k) {
+	public fi.tnie.db.rpc.IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, T, E> k) {
 		return getYearMonthIntervalValueMap().get(k.name());
 	}
 	
 	
 
 	@Override
-	public VarcharHolder getVarchar(VarcharKey<A, R, T, E> k) {
+	public VarcharHolder getVarchar(VarcharKey<A, T, E> k) {
 		return getVarcharValueMap().get(k.name());
 	}
 
@@ -193,12 +196,12 @@ public abstract class DefaultEntity<
 	}
 
 	@Override
-	public TimestampHolder getTimestamp(TimestampKey<A, R, T, E> k) {
+	public TimestampHolder getTimestamp(TimestampKey<A, T, E> k) {
 		return getTimestampValueMap().get(k.name());
 	}
 	
 	@Override
-	public TimeHolder getTime(TimeKey<A, R, T, E> k) {
+	public TimeHolder getTime(TimeKey<A, T, E> k) {
 		return getTimeValueMap().get(k.name());
 	}
 	
@@ -214,14 +217,14 @@ public abstract class DefaultEntity<
 	public <
 	S extends Serializable, 
 	P extends fi.tnie.db.types.PrimitiveType<P>, 
-	H extends fi.tnie.db.rpc.PrimitiveHolder<S, P>, 
-	K extends fi.tnie.db.ent.value.PrimitiveKey<A, R, T, E, S, P, H, K>> 
-	void set(K k, H newValue) {
+	PH extends fi.tnie.db.rpc.PrimitiveHolder<S, P>, 
+	K extends fi.tnie.db.ent.value.PrimitiveKey<A, T, E, S, P, PH, K>> 
+	void set(K k, PH newValue) {
 		k.set(self(), newValue);		
 	};
 
 	@Override
-	public CharHolder getChar(CharKey<A, R, T, E> k) {
+	public CharHolder getChar(CharKey<A, T, E> k) {
 		return getCharValueMap().get(k.name());
 	}
 
@@ -230,75 +233,82 @@ public abstract class DefaultEntity<
 	}
 
 	@Override
-	public void setInteger(IntegerKey<A, R, T, E> k, IntegerHolder newValue) {
+	public void setInteger(IntegerKey<A, T, E> k, IntegerHolder newValue) {
 		getIntValueMap().put(k.name(), newValue);		
 	}
 
 	@Override
-	public void setVarchar(VarcharKey<A, R, T, E> k, VarcharHolder newValue) {
+	public void setVarchar(VarcharKey<A, T, E> k, VarcharHolder newValue) {
 		getVarcharValueMap().put(k.name(), newValue);		
 	}
 
 	@Override
-	public void setChar(CharKey<A, R, T, E> k, CharHolder newValue) {
+	public void setChar(CharKey<A, T, E> k, CharHolder newValue) {
 		getCharValueMap().put(k.name(), newValue);		
 	}
 
 	@Override
-	public void setDate(DateKey<A, R, T, E> k, DateHolder newValue) {
+	public void setDate(DateKey<A, T, E> k, DateHolder newValue) {
 		getDateValueMap().put(k.name(), newValue);		
 	}
 
 	@Override
-	public void setDouble(DoubleKey<A, R, T, E> k, DoubleHolder newValue) {
+	public void setDouble(DoubleKey<A, T, E> k, DoubleHolder newValue) {
 		getDoubleValueMap().put(k.name(), newValue);		
 	}
 
 	@Override
-	public void setDecimal(DecimalKey<A, R, T, E> k, DecimalHolder newValue) {
+	public void setDecimal(DecimalKey<A, T, E> k, DecimalHolder newValue) {
 		getDecimalValueMap().put(k.name(), newValue);		
 	}
 
 	@Override
-	public void setTimestamp(TimestampKey<A, R, T, E> k, TimestampHolder newValue) {
+	public void setTimestamp(TimestampKey<A, T, E> k, TimestampHolder newValue) {
 		getTimestampValueMap().put(k.name(), newValue);		
 	}
 	
 	@Override
-	public void setTime(TimeKey<A, R, T, E> k, TimeHolder newValue) {
+	public void setTime(TimeKey<A, T, E> k, TimeHolder newValue) {
 		getTimeValueMap().put(k.name(), newValue);		
 	}
 	
 	@Override
-	public void setInterval(IntervalKey.DayTime<A, R, T, E> k,
+	public void setInterval(IntervalKey.DayTime<A, T, E> k,
 			fi.tnie.db.rpc.IntervalHolder.DayTime newValue) {
 		getDayTimeIntervalValueMap().put(k.name(), newValue);
 	}
 	
 	@Override
-	public void setInterval(IntervalKey.YearMonth<A, R, T, E> k,
+	public void setInterval(IntervalKey.YearMonth<A, T, E> k,
 			fi.tnie.db.rpc.IntervalHolder.YearMonth newValue) {
 		getYearMonthIntervalValueMap().put(k.name(), newValue);		
 	}
 	
 	public fi.tnie.db.rpc.PrimitiveHolder<?,?> value(A attribute) {
-		PrimitiveKey<A, R, T, E, ?, ?, ?, ?> key = getMetaData().getKey(attribute);
+		PrimitiveKey<A, T, E, ?, ?, ?, ?> key = getMetaData().getKey(attribute);
 		return key.get(self());
 	};
 
 	public <
 		S extends Serializable, 
 		P extends fi.tnie.db.types.PrimitiveType<P>, 
-		H extends fi.tnie.db.rpc.PrimitiveHolder<S, P>, 
-		K extends fi.tnie.db.ent.value.PrimitiveKey<A, R, T, E, S, P, H, K>
-	> H get(K k) {
+		PH extends fi.tnie.db.rpc.PrimitiveHolder<S, P>, 
+		K extends fi.tnie.db.ent.value.PrimitiveKey<A, T, E, S, P, PH, K>
+	> PH get(K k) {
 		return k.get(self());		
 	}
 	
-	
-	public <P extends fi.tnie.db.types.ReferenceType<P>, G extends fi.tnie.db.ent.Entity<?,?,P,G>, H extends fi.tnie.db.rpc.ReferenceHolder<?,?,P,G>, K extends fi.tnie.db.ent.value.EntityKey<A,R,T,E,P,G,H,? extends K>> H getRef(K k) {
+		
+	public <
+		P extends fi.tnie.db.types.ReferenceType<P, D>, 
+		G extends fi.tnie.db.ent.Entity<?,?,P,G,RH,?,D>, 
+		RH extends fi.tnie.db.rpc.ReferenceHolder<?,?,P,G, RH, D>, 
+		D extends fi.tnie.db.ent.EntityMetaData<?,?,P,G,RH,?,D>, 
+		K extends fi.tnie.db.ent.value.EntityKey<R,T,E,M,P,G,RH,D,K>
+	> RH getRef(K k) {
 		return k.get(self());
-	}
+	};
+	
 
 	private Map<A, IntervalHolder.YearMonth> getYearMonthIntervalValueMap() {
 		if (yearMonthIntervalValueMap == null) {
@@ -317,38 +327,48 @@ public abstract class DefaultEntity<
 		return dayTimeIntervalValueMap;
 	};
 	
-	private Map<R, ReferenceHolder<?, ?, ?, ?>> getRefs() {
+	private Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> getRefs() {
 		if (refs == null) {
-			refs = new HashMap<R, ReferenceHolder<?, ?, ?, ?>>();			
+			refs = new HashMap<R, ReferenceHolder<?, ?, ?, ?, ?, ?>>();			
 		}
 
 		return refs;
 	};
 	
-	public <P extends fi.tnie.db.types.ReferenceType<P>, G extends fi.tnie.db.ent.Entity<?,?,P,G>, H extends fi.tnie.db.rpc.ReferenceHolder<?,?,P,G>, K extends fi.tnie.db.ent.value.EntityKey<A,R,T,E,P,G,H,? extends K>> void setRef(K k, H newValue) {
-		getRefs().put(k.name(), newValue);
-	}
+//	public <P extends fi.tnie.db.types.ReferenceType<P>, G extends fi.tnie.db.ent.Entity<?,?,P,G>, H extends fi.tnie.db.rpc.ReferenceHolder<?,?,P,G>, K extends fi.tnie.db.ent.value.EntityKey<A,R,T,E,P,G,H,? extends K>> void setRef(K k, H newValue) {
+//		getRefs().put(k.name(), newValue);
+//	}
 	
-	public Entity<?, ?, ?, ?> getRef(R k) {
-		ReferenceHolder<?, ?, ?, ?> rh = getRefs().get(k);				
+	public <
+		P extends fi.tnie.db.types.ReferenceType<P, D>, 
+		G extends fi.tnie.db.ent.Entity<?,?,P,G,RH,?, D>, 
+		RH extends fi.tnie.db.rpc.ReferenceHolder<?,?,P,G, RH, D>, 
+		D extends fi.tnie.db.ent.EntityMetaData<?,?,P,G,RH,?,D>, K extends fi.tnie.db.ent.value.EntityKey<R,T,E,M,P,G,RH,D,K>> void setRef(K k, RH newValue) {
+		
+		k.set(self(), newValue);	
+
+	};
+	
+	public Entity<?, ?, ?, ?, ?, ?, ?> getRef(R k) {
+		ReferenceHolder<?, ?, ?, ?, ?, ?> rh = getRefs().get(k);				
 		return (rh == null) ? null : rh.value();		
 	}
 	
 	@Override
 	public E clone() {
-		EntityMetaData<A, R, T, E> meta = getMetaData();
-		EntityFactory<A, R, T, E> ef = meta.getFactory();
+		M meta = getMetaData();
+		EntityFactory<E, H, M, ?> ef = meta.getFactory();
 				
 		E src = self(); 
 		E dest = ef.newInstance();
 		
 		for (A a : meta.attributes()) {
-			PrimitiveKey<A, R, T, E, ?, ?, ?, ?> pk = meta.getKey(a);
+			PrimitiveKey<A, T, E, ?, ?, ?, ?> pk = meta.getKey(a);
 			pk.copy(src, dest);
 		}
 		
-		for (R r : meta.relationships()) {
-			EntityKey<A, R, T, E, ?, ?, ?, ?> ek = meta.getEntityKey(r);
+		for (R r : meta.relationships()) {						
+			EntityKey<R, T, E, M, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
 			ek.copy(src, dest);			
 		}
 		

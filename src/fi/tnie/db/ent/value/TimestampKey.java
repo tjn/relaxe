@@ -8,7 +8,6 @@ import java.util.Date;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
@@ -16,10 +15,10 @@ import fi.tnie.db.types.TimestampType;
 
 public final class TimestampKey<	
 	A extends Attribute, 
-	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>>
-	extends AbstractPrimitiveKey<A, R, T, E, Date, TimestampType, TimestampHolder, TimestampKey<A, R, T, E>>
+	T extends ReferenceType<T, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?>
+>
+	extends AbstractPrimitiveKey<A, T, E, Date, TimestampType, TimestampHolder, TimestampKey<A, T, E>>
 {
 	/**
 	 *
@@ -32,25 +31,24 @@ public final class TimestampKey<
 	private TimestampKey() {
 	}
 
-	private TimestampKey(EntityMetaData<A, R, T, E> meta, A name) {
+	private TimestampKey(EntityMetaData<A, ?, T, E, ?, ?, ?> meta, A name) {
 		super(meta, name);
 		meta.addKey(this);
 	}
 	
 	public static <
-		X extends Attribute,
-		Y extends Reference, 
-		Z extends ReferenceType<Z>,		
-		T extends Entity<X, Y, Z, T>
+		X extends Attribute,		 
+		Z extends ReferenceType<Z, ?>,		
+		T extends Entity<X, ?, Z, T, ?, ?, ?>
 	>
-	TimestampKey<X, Y, Z, T> get(EntityMetaData<X, Y, Z, T> meta, X a) {
-		TimestampKey<X, Y, Z, T> k = meta.getTimestampKey(a);
+	TimestampKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?> meta, X a) {
+		TimestampKey<X, Z, T> k = meta.getTimestampKey(a);
 		
 		if (k == null) {
 			PrimitiveType<?> t = meta.getAttributeType(a);
 			
 			if (t != null && t.getSqlType() == PrimitiveType.TIMESTAMP) {
-				k = new TimestampKey<X, Y, Z, T>(meta, a);
+				k = new TimestampKey<X, Z, T>(meta, a);
 			}			
 		}
 				
@@ -81,7 +79,7 @@ public final class TimestampKey<
 	}
 
 	@Override
-	public TimestampKey<A, R, T, E> self() {
+	public TimestampKey<A, T, E> self() {
 		return this;
 	}
 }

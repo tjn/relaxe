@@ -4,11 +4,12 @@
 package fi.tnie.db;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
@@ -16,18 +17,18 @@ import fi.tnie.db.types.ReferenceType;
 
 public abstract class AbstractAttributeWriter<
 	A extends Attribute,
-	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>,
+	T extends ReferenceType<T, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?>,
 	V extends Serializable,
 	P extends PrimitiveType<P>,
 	H extends PrimitiveHolder<V, P>,
-	K extends PrimitiveKey<A, R, T, E, V, P, H, K>>
-	implements AttributeWriter<A, R, T, E, V, P, H, K> {
+	K extends PrimitiveKey<A, T, E, V, P, H, K>>
+	implements AttributeWriter<A, T, E, V, P, H, K> {
 
 	private K key;
 	private int index;
 	
+		
 	public AbstractAttributeWriter(K key, int index) {
 		super();
 		this.key = key;
@@ -57,4 +58,14 @@ public abstract class AbstractAttributeWriter<
 		dest.set(getKey(), h);
 		return h;
 	}
+	
+	@Override
+	public H write(ResultSet src, E dest) throws SQLException {
+		PrimitiveHolder<?, ?> ph = extract(src);
+		H h = as(ph);
+		dest.set(getKey(), h);
+		return h;
+	}
+	
+	protected abstract H extract(ResultSet src) throws SQLException;
 }

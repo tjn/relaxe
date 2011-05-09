@@ -6,18 +6,17 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.types.CharType;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
 
 public final class CharKey<
-	A extends Attribute, 
-	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>>
-	extends AbstractPrimitiveKey<A, R, T, E, String, CharType, CharHolder, CharKey<A, R, T, E>>
+	A extends Attribute,
+	T extends ReferenceType<T, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?>
+>
+	extends AbstractPrimitiveKey<A, T, E, String, CharType, CharHolder, CharKey<A, T, E>>
 {
 	/**
 	 *
@@ -30,25 +29,24 @@ public final class CharKey<
 	private CharKey() {
 	}
 	
-	private CharKey(EntityMetaData<A, R, T, E> meta, A name) {
+	private CharKey(EntityMetaData<A, ?, T, E, ?, ?, ?> meta, A name) {
 		super(meta, name);
 		meta.addKey(this);
 	}	
 	
 	public static <
-		X extends Attribute,
-		Y extends Reference, 
-		Z extends ReferenceType<Z>,
-		T extends Entity<X, Y, Z, T>
+		X extends Attribute,	
+		Z extends ReferenceType<Z, ?>,
+		T extends Entity<X, ?, Z, T, ?, ?, ?>
 	>
-	CharKey<X, Y, Z, T> get(EntityMetaData<X, Y, Z, T> meta, X a) {
-		CharKey<X, Y, Z, T> k = meta.getCharKey(a);
+	CharKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?> meta, X a) {
+		CharKey<X, Z, T> k = meta.getCharKey(a);
 		
 		if (k == null) {
 			PrimitiveType<?> t = meta.getAttributeType(a);
 			
 			if (t != null && t.getSqlType() == PrimitiveType.CHAR) {
-				k = new CharKey<X, Y, Z, T>(meta, a);
+				k = new CharKey<X, Z, T>(meta, a);
 			}
 		}
 				
@@ -79,7 +77,7 @@ public final class CharKey<
 	}
 	
 	@Override
-	public CharKey<A, R, T, E> self() {	
+	public CharKey<A, T, E> self() {	
 		return this;
 	}
 }

@@ -18,10 +18,13 @@ import fi.tnie.db.types.ReferenceType;
 public abstract class AbstractEntity<
 	A extends Attribute,
 	R extends Reference, 
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>
+	T extends ReferenceType<T, M>,	
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>, 
+	M extends EntityMetaData<A, R, T, E, H, F, M>
 > 
-	implements Entity<A, R, T, E>
+	implements Entity<A, R, T, E, H, F, M>
 {
 	/**
 	 * 
@@ -29,7 +32,7 @@ public abstract class AbstractEntity<
 	private static final long serialVersionUID = -1538787348338709153L;	
 
 //	public abstract Map<A, PrimitiveHolder<?, ?>> values();		
-	protected abstract Map<R, ReferenceHolder<?, ?, ?, ?>> references();
+	protected abstract Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> references();
 	
 	public PrimitiveHolder<?, ?> get(Column column) throws NullPointerException {
 		
@@ -37,11 +40,11 @@ public abstract class AbstractEntity<
 			throw new NullPointerException("column");
 		}
 		
-		EntityMetaData<A, R, T, E> m = getMetaData();
+		M m = getMetaData();
 		
 		A a = m.getAttribute(column);
 				
-		PrimitiveKey<A, ?, ?, E, ?, ?, ?, ?> k = m.getKey(a);
+		PrimitiveKey<A, ?, E, ?, ?, ?, ?> k = m.getKey(a);
 				
 		if (k != null) {
 			return k.get(self());			
@@ -55,11 +58,11 @@ public abstract class AbstractEntity<
 			return null;
 		}
 	
-		Entity<?, ?, ?, ?> ref = null;
+		Entity<?, ?, ?, ?, ?, ?, ?> ref = null;
 		R r = null;
 		
 		for (R ri : rs) {			
-			ReferenceHolder<?, ?, ?, ?> rh = ref(ri);
+			ReferenceHolder<?, ?, ?, ?, ?, ?> rh = ref(ri);
 			
 			if (rh != null) {
 				ref = rh.value();
@@ -80,10 +83,24 @@ public abstract class AbstractEntity<
 		return ref.get(fkcol);
 	}
 	
-	public void set(R r, ReferenceHolder<?, ?, ?, ?> value) {
-		references().put(r, value);		
-	}
-	public ReferenceHolder<?, ?, ?, ?> ref(R ref) {    	
+//	public void set(R r, ReferenceHolder<?, ?, ?, ?, ?, ?> value) {
+//		if (r == null) {
+//			throw new NullPointerException("r");
+//		}
+//		
+//		if (value == null) {
+//			throw new NullPointerException("value");
+//		}
+//		
+//		if (r.type() != value.getType()) {
+//			throw new IllegalArgumentException("type mismatch: expected:" + r.type() + ", argument:" + value.getType());
+//		}		
+//		
+//		references().put(r, value);		
+//	}
+	
+	
+	public ReferenceHolder<?, ?, ?, ?, ?, ?> ref(R ref) {    	
 		return references().get(ref);    	
 	}
 
@@ -130,7 +147,7 @@ public abstract class AbstractEntity<
 	public final String toString() {
 		StringBuffer buf = new StringBuffer();
 		
-		EntityMetaData<A, R, T, E> meta = getMetaData();
+		M meta = getMetaData();
 		
 		buf.append(super.toString());
 		buf.append(":");
@@ -146,7 +163,7 @@ public abstract class AbstractEntity<
 		}
 				
 		for (A a : as) {
-			PrimitiveKey<A, ?, ?, E, ?, ?, ?, ?> key = meta.getKey(a);
+			PrimitiveKey<A, ?, E, ?, ?, ?, ?> key = meta.getKey(a);
 			PrimitiveHolder<?, ?> v = key.get(self());	
 			buf.append(key.name());
 			buf.append("=");

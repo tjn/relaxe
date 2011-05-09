@@ -10,7 +10,7 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class ReferenceMap<
 	K extends Enum<K>, 
-	V extends Entity<?,?,?,?>>
+	V extends Entity<?, ?, ?, ?, ?, ?, ?>>
 	extends EnumMap<K, V> {
 
 	public ReferenceMap(Class<K> arg0) {

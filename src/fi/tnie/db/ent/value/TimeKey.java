@@ -8,7 +8,6 @@ import java.util.Date;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
@@ -16,11 +15,10 @@ import fi.tnie.db.types.TimeType;
 
 public final class TimeKey<
 	A extends Attribute, 
-	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>
+	T extends ReferenceType<T, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
-	extends AbstractPrimitiveKey<A, R, T, E, Date, TimeType, TimeHolder, TimeKey<A, R, T, E>>
+	extends AbstractPrimitiveKey<A, T, E, Date, TimeType, TimeHolder, TimeKey<A, T, E>>
 {
 	/**
 	 *
@@ -33,25 +31,24 @@ public final class TimeKey<
 	private TimeKey() {
 	}
 
-	private TimeKey(EntityMetaData<A, R, T, E> meta, A name) {
+	private TimeKey(EntityMetaData<A, ?, T, E, ?, ?, ?> meta, A name) {
 		super(meta, name);
 		meta.addKey(this);
 	}
 	
 	public static <
 		X extends Attribute,
-		Y extends Reference, 
-		Z extends ReferenceType<Z>,		
-		T extends Entity<X, Y, Z, T>
+		Z extends ReferenceType<Z, ?>,
+		T extends Entity<X, ?, Z, T, ?, ?, ?>
 	>
-	TimeKey<X, Y, Z, T> get(EntityMetaData<X, Y, Z, T> meta, X a) {
-		TimeKey<X, Y, Z, T> k = meta.getTimeKey(a);
+	TimeKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?> meta, X a) {
+		TimeKey<X, Z, T> k = meta.getTimeKey(a);
 		
 		if (k == null) {
 			PrimitiveType<?> t = meta.getAttributeType(a);
 			
 			if (t != null && t.getSqlType() == PrimitiveType.TIME) {
-				k = new TimeKey<X, Y, Z, T>(meta, a);
+				k = new TimeKey<X, Z, T>(meta, a);
 			}			
 		}
 				
@@ -82,7 +79,7 @@ public final class TimeKey<
 	}
 
 	@Override
-	public TimeKey<A, R, T, E> self() {
+	public TimeKey<A, T, E> self() {
 		return this;
 	}
 }

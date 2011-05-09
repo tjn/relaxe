@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,13 +51,15 @@ import fi.tnie.db.types.ReferenceType;
 public class PersistenceManager<
     A extends Attribute,
     R extends Reference,
-    T extends ReferenceType<T>,
-    E extends Entity<A, R, T, E>>
+    T extends ReferenceType<T, M>,
+    E extends Entity<A, R, T, E, ?, ?, M>,
+    M extends EntityMetaData<A, R, T, E, ?, ?, M>
+>
 {	
     private class Query
-        extends DefaultEntityQuery<A, R, T, E>
+        extends DefaultEntityQuery<A, R, T, E, M>
     {
-        public Query(EntityMetaData<A, R, T, E> meta) {
+        public Query(M meta) {
             super(meta);
         }
     }
@@ -68,7 +72,7 @@ public class PersistenceManager<
 
     public DeleteStatement createDeleteStatement() throws EntityException {
         E pe = getTarget();
-        final EntityMetaData<?, ?, ?, ?> meta = pe.getMetaData();
+        final EntityMetaData<?, ?, ?, ?, ?, ?, ?> meta = pe.getMetaData();
 
     	TableReference tref = new TableReference(meta.getBaseTable());
     	Predicate pkp = getPKPredicate(tref, pe);
@@ -85,7 +89,7 @@ public class PersistenceManager<
         E pe = getTarget();
     	ValueRow newRow = new ValueRow();
 
-    	final EntityMetaData<A, R, T, E> meta = pe.getMetaData();
+    	final EntityMetaData<A, R, T, E, ?, ?, ?> meta = pe.getMetaData();
     	BaseTable t = meta.getBaseTable();
 
     	ElementList<ColumnName> names = new ElementList<ColumnName>();
@@ -114,13 +118,13 @@ public class PersistenceManager<
 
     	for (R r : meta.relationships()) {
             ForeignKey fk = meta.getForeignKey(r);                        
-            ReferenceHolder<?, ?, ?, ?> rh = pe.ref(r);
+            ReferenceHolder<?, ?, ?, ?, ?, ?> rh = pe.ref(r);
             
             if (rh == null) {
             	continue;
             }
             
-            Entity<?, ?, ?, ?> ref = pe.ref(r).value();
+            Entity<?, ?, ?, ?, ?, ?, ?> ref = pe.ref(r).value();
 
             if (ref == null) {
                 for (Column c : fk.columns().keySet()) {                	
@@ -157,7 +161,7 @@ public class PersistenceManager<
     public UpdateStatement createUpdateStatement() throws EntityException {
         E pe = getTarget();
 
-    	final EntityMetaData<A, R, T, ?> meta = pe.getMetaData();
+    	final EntityMetaData<A, R, T, E, ?, ?, ?> meta = pe.getMetaData();
     	// TableReference tref = meta.createTableRef();
     	TableReference tref = new TableReference(meta.getBaseTable());
 
@@ -185,7 +189,7 @@ public class PersistenceManager<
         	// subset of some other foreign key should be treated specially, no?        	
         	
             ForeignKey fk = meta.getForeignKey(r);
-            Entity<?,?,?,?> ref = pe.getRef(r);
+            Entity<?,?,?,?,?,?,?> ref = pe.getRef(r);
 
             if (ref == null) {
                 for (Column c : fk.columns().keySet()) {
@@ -275,16 +279,21 @@ public class PersistenceManager<
     public void merge(Connection c) throws EntityException {
         Query pq = getQuery();
         TableReference tref = pq.getTableRef();
+        
 
-        DefaultEntityQueryTask<A, R, T, E> qt =
-        	new DefaultEntityQueryTask<A, R, T, E>(pq, getImplementation());
+        
+        // TODO: reimplement:
+        
+//        DefaultEntityQueryTask<A, R, T, E> qt =
+//        	new DefaultEntityQueryTask<A, R, T, E>(pq, getImplementation());
 
     	Predicate pkp = getPKPredicate(tref, getTarget());
     	E stored = null;
 
     	if (pkp != null) {
             pq.getQuery().getWhere().setSearchCondition(pkp);
-            stored = qt.exec(c).first();
+         // TODO: reimplement:
+//            stored = qt.exec(c).first();
     	}
 
     	if (stored == null) {
@@ -334,7 +343,7 @@ public class PersistenceManager<
 
     private Predicate getPKPredicate() throws EntityException {
         E pe = getTarget();
-    	EntityMetaData<A, R, T, ?> meta = pe.getMetaData();
+    	EntityMetaData<A, R, T, E, ?, ?, ?> meta = pe.getMetaData();
     	TableReference tref = new TableReference(meta.getBaseTable());
     	Predicate pkp = getPKPredicate(tref, pe);
         return pkp;
@@ -375,7 +384,7 @@ public class PersistenceManager<
             throw new NullPointerException();
         }
 
-        EntityMetaData<A, R, T, ?> meta = pe.getMetaData();
+        EntityMetaData<A, R, T, E, ?, ?, ?> meta = pe.getMetaData();
         Set<Column> pkcols = meta.getPKDefinition();
 
         if (pkcols.isEmpty()) {
@@ -400,50 +409,6 @@ public class PersistenceManager<
 
         return p;
     }
-
-
-    public Object get(Entity<A, R, T, ?> pe, Column column)
-        throws NullPointerException {
-        if (column == null) {
-            throw new NullPointerException("'c' must not be null");
-        }
-
-        EntityMetaData<A, R, T, ?> m = pe.getMetaData();
-
-        A a = m.getAttribute(column);
-
-        if (a != null) {
-            return pe.value(a);
-        }
-
-        // column may be part of multiple
-        // overlapping foreign-keys:
-        Set<R> rs = m.getReferences(column);
-
-        if (rs == null) {
-            return null;
-        }
-
-        Entity<?, ?, ?, ?> ref = null;
-        R r = null;
-
-        for (R ri : rs) {
-            ref = pe.ref(r).value();
-
-            if (ref != null) {
-                r = ri;
-                break;
-            }
-        }
-
-        if (ref == null) {
-            return null;
-        }
-
-        ForeignKey fk = m.getForeignKey(r);
-        Column fkcol = fk.columns().get(column);
-        return ref.get(fkcol);
-    };
 
     private Eq eq(ValueExpression a, ValueExpression b) {
         return new Eq(a, b);
@@ -477,20 +442,21 @@ public class PersistenceManager<
 	}
 	
 	
-	public QueryResult<E> execute(EntityQuery<A, R, T, E> query, Connection c) 
-		throws SQLException {
+	public QueryResult<E> execute(EntityQuery<A, R, T, E, M> query, Connection c) 
+		throws SQLException, QueryException {
 		
 		DefaultTableExpression qo = query.getQuery();		
 		ValueExtractorFactory vef = getImplementation().getValueExtractorFactory();
-//		ArrayList<DataObject> content = new ArrayList<DataObject>();			
-//		DataObjectReader r = new DataObjectReader(vef, qo, content);
 		
-		EntityBuilder eb = new EntityBuilder(vef, query, getImplementation());
+		List<E> content = new ArrayList<E>();		
+		EntityReader<?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, M>(vef, query, content);
 		StatementExecutor sx = new StatementExecutor();				
 		sx.execute(qo, c, eb);
+					
+//		new QueryResult<T>(query, content);
 		
-		
+//		new MultipleEntityQueryResult<A, R, T, E, M>(source, content, available);
+				
 		return null;
-		
 	}
 }

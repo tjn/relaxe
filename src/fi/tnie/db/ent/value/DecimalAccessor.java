@@ -5,19 +5,17 @@ package fi.tnie.db.ent.value;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.Decimal;
 import fi.tnie.db.rpc.DecimalHolder;
 import fi.tnie.db.types.DecimalType;
 import fi.tnie.db.types.ReferenceType;
 
 public class DecimalAccessor<
-	A extends Attribute,
-	R extends Reference,
-	T extends ReferenceType<T>,	
-	E extends Entity<A, R, T, E>
+	A extends Attribute,	
+	T extends ReferenceType<T, ?>,	
+	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
-	extends AbstractPrimitiveAccessor<A, R, T, E, Decimal, DecimalType, DecimalHolder, DecimalKey<A, R, T, E>> {
+	extends AbstractPrimitiveAccessor<A, T, E, Decimal, DecimalType, DecimalHolder, DecimalKey<A, T, E>> {
 
 	/**
 	 * 
@@ -31,7 +29,7 @@ public class DecimalAccessor<
 	private DecimalAccessor() {
 	}
 
-	public DecimalAccessor(E target, DecimalKey<A, R, T, E> k) {
+	public DecimalAccessor(E target, DecimalKey<A, T, E> k) {
 		super(target, k);
 	}
 }

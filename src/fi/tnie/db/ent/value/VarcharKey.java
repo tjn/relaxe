@@ -6,19 +6,17 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.types.VarcharType;
 
 public final class VarcharKey<
-	A extends Attribute, 
-	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>
+	A extends Attribute,	
+	T extends ReferenceType<T, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
-	extends AbstractPrimitiveKey<A, R, T, E, String, VarcharType, VarcharHolder, VarcharKey<A, R, T, E>>
+	extends AbstractPrimitiveKey<A, T, E, String, VarcharType, VarcharHolder, VarcharKey<A, T, E>>
 {
 	/**
 	 *
@@ -31,25 +29,24 @@ public final class VarcharKey<
 	private VarcharKey() {
 	}
 
-	private VarcharKey(EntityMetaData<A, R, T, E> meta, A name) {
+	private VarcharKey(EntityMetaData<A, ?, T, E, ?, ?, ?> meta, A name) {
 		super(meta, name);
 		meta.addKey(this);
 	}
 	
 	public static <
-		X extends Attribute,
-		Y extends Reference,
-		Z extends ReferenceType<Z>,
-		T extends Entity<X, Y, Z, T>
+		X extends Attribute,		
+		Z extends ReferenceType<Z, ?>,
+		T extends Entity<X, ?, Z, T, ?, ?, ?>
 	>
-	VarcharKey<X, Y, Z, T> get(EntityMetaData<X, Y, Z, T> meta, X a) {
-		VarcharKey<X, Y, Z, T> k = meta.getVarcharKey(a);
+	VarcharKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?> meta, X a) {
+		VarcharKey<X, Z, T> k = meta.getVarcharKey(a);
 		
 		if (k == null) {
 			PrimitiveType<?> t = meta.getAttributeType(a);
 			
 			if (t != null && t.getSqlType() == PrimitiveType.VARCHAR) {
-				k = new VarcharKey<X, Y, Z, T>(meta, a);
+				k = new VarcharKey<X, Z, T>(meta, a);
 			}			
 		}
 				
@@ -80,7 +77,7 @@ public final class VarcharKey<
 	}
 	
 	@Override
-	public VarcharKey<A, R, T, E> self() {
+	public VarcharKey<A, T, E> self() {
 		return this;
 	}
 }

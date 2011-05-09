@@ -6,9 +6,9 @@ package fi.tnie.db.env.mysql;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import fi.tnie.db.AttributeExtractor;
-import fi.tnie.db.AttributeExtractorFactory;
-import fi.tnie.db.DefaultAttributeExtractorFactory;
+import fi.tnie.db.AttributeWriter;
+import fi.tnie.db.ConstantColumnResolver;
+import fi.tnie.db.DefaultAttributeWriterFactory;
 import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
@@ -82,17 +82,19 @@ public class MySQLImplementation
 
     private final class MySQLGeneratedKeyHandler implements GeneratedKeyHandler {
 		@Override
-		public <
-			A extends Attribute,
-			R extends Reference,
-			T extends ReferenceType<T>,
-			E extends Entity<A, R, T, E>
+		public
+		<
+		    A extends Attribute,
+		    R extends Reference,
+		    T extends ReferenceType<T, M>,
+		    E extends Entity<A, R, T, E, ?, ?, M>,
+			M extends EntityMetaData<A, R, T, E, ?, ?, M>
 		>
 		void processGeneratedKeys(
 			InsertStatement ins, E target, ResultSet rs)
 			throws EntityException, SQLException {
 
-			EntityMetaData<A, R, T, E> em = target.getMetaData();
+			M em = target.getMetaData();
 			ValueExtractorFactory vef = getValueExtractorFactory();
 
 //			ResultSet is expected to contain single column: GENERATED_KEY
@@ -105,19 +107,17 @@ public class MySQLImplementation
 						"unable to find AUTO_INCREMENT column from table " +
 						em.getBaseTable());
 			}
-
-			A a = em.getAttribute(col);
-
-			AttributeExtractorFactory aef = new DefaultAttributeExtractorFactory();
-			AttributeExtractor<A, ?, ?, E, ?, ?, ?, ?> ae = aef.createExtractor(a, em, col.getDataType().getDataType(), 1, vef);
-
-			if (rs.next()) {
-				ae.extract(rs, target);
+									
+			if (rs.next()) {				
+				DefaultAttributeWriterFactory wf = new DefaultAttributeWriterFactory();				
+				ConstantColumnResolver cr = new ConstantColumnResolver(col);				
+				AttributeWriter<A, T, E, ?, ?, ?, ?> aw = wf.createWriter(em, cr, 1);				
+				aw.write(rs, target);
 			}
-			else {
-				String cn = em.getBaseTable().getQualifiedName() + "." + col.getUnqualifiedName();
-				throw new EntityException("can not get auto-increment key (" + cn + ")");
-			}
+//			else {
+//				String cn = em.getBaseTable().getQualifiedName() + "." + col.getUnqualifiedName();
+//				throw new EntityException("can not get auto-increment key (" + cn + ")");
+//			}
 		}
 
 		private Column findAutoIncrementColumn(BaseTable tbl) {

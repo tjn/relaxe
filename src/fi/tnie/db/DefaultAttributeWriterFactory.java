@@ -6,14 +6,8 @@ package fi.tnie.db;
 import java.sql.Types;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.Reference;
-import fi.tnie.db.ent.value.IntegerKey;
-import fi.tnie.db.ent.value.PrimitiveKey;
-import fi.tnie.db.expr.ColumnExpr;
-import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.types.ReferenceType;
 
@@ -23,27 +17,33 @@ public class DefaultAttributeWriterFactory
 	@Override
 	public <
 		A extends Attribute, 
-		R extends Reference, 
-		T extends ReferenceType<T>, 
-		E extends Entity<A, R, T, E>> 
-	AttributeWriter<A, R, T, E, ?, ?, ?, ?> createWriter(EntityMetaData<A, R, T, E> em, DataObject.MetaData meta, int index) {
-		AttributeWriter<A, R, T, E, ?, ?, ?, ?> w = null;
+		T extends ReferenceType<T, M>,
+		E extends Entity<A, ?, T, E, ?, ?, M>,
+		M extends EntityMetaData<A, ?, T, E, ?, ?, M>
+	> 
+	AttributeWriter<A, T, E, ?, ?, ?, ?> createWriter(M em, ColumnResolver cr, int index) {
+		AttributeWriter<A, T, E, ?, ?, ?, ?> w = null;
 		
-		ColumnExpr ce = meta.column(index);		
-		ColumnName cn = ce.getColumnName();
+//		ColumnExpr ce = meta.column(index);
+//		ColumnName cn = ce.getColumnName();
+//		Column col = em.getBaseTable().columnMap().get(cn);
 		
-		Column col = em.getBaseTable().columnMap().get(cn);
+		Column col = cr.getColumn(index);		
 		A a = em.getAttribute(col);
+		
+		if (a == null) {
+			return null;
+		}		
+		
 		int sqltype = col.getDataType().getDataType();
 		
-		PrimitiveKey<A, R, T, E, ?, ?, ?, ?> pk = em.getKey(a);
+//		PrimitiveKey<A, ?, E, ?, ?, ?, ?> pk = em.getKey(a);
 
 		switch (sqltype) {
 			case Types.INTEGER:
 			case Types.SMALLINT:
-			case Types.TINYINT:
-				IntegerKey<A, R, T, E> k = em.getIntegerKey(a);
-				w = new IntegerAttributeWriter<A, R, T, E>(em.getIntegerKey(a), index);
+			case Types.TINYINT:				
+				w = new IntegerAttributeWriter<A, T, E>(em.getIntegerKey(a), index);
 				break;
 			case Types.VARCHAR:
 //				e = new VarcharAttributeExtractor<A, R, T, E>(attribute, meta, vef, col);

@@ -17,7 +17,6 @@ import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.gen.ent.LiteralCatalog;
-import fi.tnie.db.gen.ent.personal.DefaultPerson;
 import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
 import fi.tnie.db.gen.ent.personal.Person;
@@ -70,18 +69,18 @@ public class PersistenceManagerTest2 extends TestCase  {
                 
 //        assertTrue(cc.getMetaMap().containsKey(ct));               
                         
-        EntityMetaData<?, ?, ?, ?> meta = cc.getMetaData(ct);
+        EntityMetaData<?, ?, ?, ?, ?, ?, ?> meta = cc.getMetaData(ct);
         assertNotNull(meta);
                 
         EntityFactory<?, ?, ?, ?> ef = meta.getFactory();
         assertNotNull(ef);
                 
         PersonalFactory pf = cc.newPersonalFactory();
-        DefaultPerson p = pf.newPerson();
+        Person p = pf.newPerson();
                 
         PGImplementation impl = new PGImplementation();
         
-        PersistenceManager<fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person> pm = 
+        PersistenceManager<fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person, Person.MetaData> pm = 
        		create(p.self(), impl);
                                 
 //        PersistenceManager<Attribute, Reference, Query, 
@@ -112,7 +111,7 @@ public class PersistenceManagerTest2 extends TestCase  {
         
         Organization org = pf.newOrganization();
         
-        DateKey<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport> dk = 
+        DateKey<HourReport.Attribute, HourReport.Type, HourReport> dk = 
         	hr.getMetaData().getDateKey(HourReport.Attribute.REPORT_DATE);
         
         hr.setDate(dk, DateHolder.currentDate());                
@@ -125,7 +124,7 @@ public class PersistenceManagerTest2 extends TestCase  {
         org.setRef(Organization.FK_COMPANY_CEO, p.ref());
         org.setName("Ab Firma Oy " + ((int) (Math.random() * 1000)));
         
-        PersistenceManager<?, ?, ?, ?> om = create(org, impl);
+        PersistenceManager<?, ?, ?, ?, ?> om = create(org, impl);
         
         om.merge(c);
         c.commit();
@@ -136,11 +135,13 @@ public class PersistenceManagerTest2 extends TestCase  {
 //        Organization.Key<Attribute, R, ReferenceType<T>, Entity<A,R,T,E>, ?>        
 //        hr.setRef(HourReport.FK_HHR_EMPLOYER, org);
         
-        hr.id().set(null);               
+        hr.id().set(null);
+        hr.setRef(HourReport.FK_HHR_EMPLOYER, org.ref());
         
         PersistenceManager<fi.tnie.db.gen.ent.personal.HourReport.Attribute, 
         	fi.tnie.db.gen.ent.personal.HourReport.Reference, 
-        	fi.tnie.db.gen.ent.personal.HourReport.Type, HourReport> hrm =
+        	fi.tnie.db.gen.ent.personal.HourReport.Type, HourReport,
+        	HourReport.MetaData> hrm =
         	create(hr, impl);
         
                 
@@ -159,9 +160,12 @@ public class PersistenceManagerTest2 extends TestCase  {
 	private <
 		A extends Attribute, 
 		R extends fi.tnie.db.ent.Reference, 
-		T extends ReferenceType<T>, E extends Entity<A, R, T, E>>
-	PersistenceManager<A, R, T, E> create(E e, Implementation impl) {
-		PersistenceManager<A, R, T, E> pm = new PersistenceManager<A, R, T, E>(e, impl);
+		T extends ReferenceType<T, M>, 
+		E extends Entity<A, R, T, E, ?, ?, M>,
+		M extends EntityMetaData<A, R, T, E, ?, ?, M>
+	>
+	PersistenceManager<A, R, T, E, M> create(E e, Implementation impl) {
+		PersistenceManager<A, R, T, E, M> pm = new PersistenceManager<A, R, T, E, M>(e, impl);
 		return pm;
 	}
 

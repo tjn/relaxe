@@ -1,10 +1,16 @@
 package {{package-name}};
 
+import fi.tnie.db.ent.Reference;
+
 {{imports}}
 
 /**
 	Interface for entity types which hold references to entities type of .
-*/	
-public interface {{table-interface}}Ref {
-	public {{table-interface}}.Holder get{{table-interface}}({{table-interface}}.Key<?, ?, ?, ?, ?> key);
+*/
+	
+public interface {{table-interface}}Ref<
+	R extends Reference
+> {
+	public {{table-interface}}.Holder get{{table-interface}}({{table-interface}}.Key<R, ?, ?, ?> key);
+	public void set{{table-interface}}({{table-interface}}.Key<R, ?, ?, ?> key, {{table-interface}}.Holder newValue);	
 }

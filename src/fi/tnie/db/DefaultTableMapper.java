@@ -8,8 +8,8 @@ import java.util.Date;
 import java.util.EnumMap;
 import java.util.Map;
 
-import fi.tnie.db.ent.VarcharIdentityMap;
 import fi.tnie.db.ent.im.IntegerIdentityMap;
+import fi.tnie.db.ent.im.VarcharIdentityMap;
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.CharAccessor;
 import fi.tnie.db.ent.value.DateKey;

@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
@@ -28,15 +30,24 @@ import fi.tnie.db.meta.ForeignKey;
 public class DefaultEntityQuery<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>
-	> implements EntityQuery<A, R, T, E>
+	T extends ReferenceType<T, M>,
+	E extends Entity<A, R, T, E, ?, ?, M>,
+	M extends EntityMetaData<A, R, T, E, ?, ?, M>
+	> 
+	implements EntityQuery<A, R, T, E, M>
 {
-	private EntityMetaData<A, R, T, E> meta;
+	
+	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class);
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5505364328412305185L;
+	private M meta;
 	private DefaultTableExpression query;
 	private TableReference rootRef;
 	
-	private Map<TableReference, EntityMetaData<?, ?, ?, ?>> metaDataMap;
+	private Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> metaDataMap;
 	
 	private LinkedHashMap<Integer, TableReference> originMap = new LinkedHashMap<Integer, TableReference>();	
 	private Map<JoinKey, TableReference> referenceMap = new HashMap<JoinKey, TableReference>();
@@ -45,7 +56,7 @@ public class DefaultEntityQuery<
 			
 //	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class.get);		
 	
-	public DefaultEntityQuery(EntityMetaData<A, R, T, E> meta) {		
+	public DefaultEntityQuery(M meta) {		
 		try {
 			init(createPrototype(meta));
 		} 
@@ -55,16 +66,16 @@ public class DefaultEntityQuery<
 		}		
 	}
 
-	private E createPrototype(EntityMetaData<A, R, T, E> meta) {
+	private E createPrototype(M meta) {
 		E p = meta.getFactory().newInstance();
 		
 		for (A a : meta.attributes()) {
-			PrimitiveKey<A, R, T, E, ?, ?, ?, ?> k = meta.getKey(a);
+			PrimitiveKey<A, T, E, ?, ?, ?, ?> k = meta.getKey(a);
 			k.clear(p);
 		}
 		
 		for (R a : meta.relationships()) {
-			EntityKey<A, R, T, E, ?, ?, ?, ?> k = meta.getEntityKey(a);
+			EntityKey<R, T, E, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(a);
 			k.clear(p);
 		}		
 		
@@ -81,8 +92,8 @@ public class DefaultEntityQuery<
 		if (root == null) {
 			throw new NullPointerException();
 		}
-
-		EntityMetaData<A, R, T, E> meta = root.getMetaData();
+				
+		M meta = root.getMetaData();
 		BaseTable table = meta.getBaseTable();
 
 		if (table == null) {
@@ -92,7 +103,7 @@ public class DefaultEntityQuery<
 		this.meta = meta;
 
 		DefaultTableExpression q = new DefaultTableExpression();
-		HashSet<Entity<?,?,?,?>> visited = new HashSet<Entity<?,?,?,?>>();
+		HashSet<Entity<?,?,?,?,?,?,?>> visited = new HashSet<Entity<?,?,?,?,?,?,?>>();
 
 		AbstractTableReference tref = fromTemplate(root, null, null, null, q, visited);
 		q.setFrom(new From(tref));
@@ -105,11 +116,11 @@ public class DefaultEntityQuery<
 	<
 		MA extends Attribute,
 		MR extends Reference,
-		M extends Entity<MA, MR, ?, M>>
+		ME extends Entity<MA, MR, ?, ME, ?, ?, ?>>
 	AbstractTableReference fromTemplate(
-			M template, 
+			ME template, 
 			AbstractTableReference qref, ForeignKey fk, TableReference referencing, 
-			DefaultTableExpression q, Set<Entity<?,?,?,?>> visited)
+			DefaultTableExpression q, Set<Entity<?,?,?,?,?,?,?>> visited)
 		throws CyclicTemplateException {
 		
 		if (visited.contains(template)) {
@@ -120,8 +131,9 @@ public class DefaultEntityQuery<
 		}		
 		
 		Select s = getSelect(q);
-		EntityMetaData<MA, MR, ?, M> meta = template.getMetaData();				
-		final TableReference tref = (qref == null) ? getTableRef() : new TableReference(meta.getBaseTable());
+		EntityMetaData<MA, MR, ?, ME, ?, ?, ?> meta = template.getMetaData();				
+		final TableReference tref = (qref == null) ? getTableRef() : new TableReference(meta.getBaseTable());		
+		getMetaDataMap().put(tref, meta);
 				
 		if (referencing != null) {
 			JoinKey j = new JoinKey(referencing, fk);
@@ -135,6 +147,8 @@ public class DefaultEntityQuery<
 			ForeignKeyJoinCondition jc = new ForeignKeyJoinCondition(fk, qref, tref);
 			qref = qref.leftJoin(tref, jc);
 		}
+				
+		
 				
 		Set<Column> pkcols = meta.getPKDefinition();
 		
@@ -169,14 +183,16 @@ public class DefaultEntityQuery<
 		originMap.put(Integer.valueOf(s.getColumnCount()), tref);			
 						
 		for (MR r : rs) {
-			EntityKey<?, ?, ?, M, ?, ?, ?, ?> k = meta.getEntityKey(r);			
-			ReferenceHolder<?, ?, ?, ?> h = k.get(template);
-		
+			logger().info("fromTemplate: r=" + r);
+			EntityKey<?, ?, ME, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);	
+			
+			ReferenceHolder<?, ?, ?, ?, ?, ?> h = k.get(template);
+					
 			if (h == null) {
 				// skip
 			}
 			else {
-				Entity<?, ?, ?, ?> ne = h.value();
+				Entity<?, ?, ?, ?, ?, ?, ?> ne = h.value();
 								
 				if (ne == null) {
 					// do not traverse
@@ -208,10 +224,10 @@ public class DefaultEntityQuery<
 
 	private <
 		MA extends Attribute,
-		M extends Entity<MA, ?, ?, M>
+		D extends Entity<MA, ?, ?, D, ?, ?, ?>
 	> 
-	void addAttributes(M template, Select s, TableReference tref) {
-		EntityMetaData<MA, ?, ?, M> meta = template.getMetaData();
+	void addAttributes(D template, Select s, TableReference tref) {
+		EntityMetaData<MA, ?, ?, D, ?, ?, ?> meta = template.getMetaData();
 		Set<MA> as = meta.attributes();
 		
 		for (MA a : as) {
@@ -255,12 +271,12 @@ public class DefaultEntityQuery<
 	}
 
 	@Override
-	public EntityMetaData<A, R, T, E> getMetaData() {
+	public M getMetaData() {
 		return this.meta;
 	}
 
 	@Override
-	public EntityMetaData<?, ?, ?, ?> getMetaData(TableReference tref) {
+	public EntityMetaData<?, ?, ?, ?, ?, ?, ?> getMetaData(TableReference tref) {
 		if (tref == null) {
 			throw new NullPointerException("tref");
 		}
@@ -283,9 +299,9 @@ public class DefaultEntityQuery<
 		return null;
 	}
 
-	private Map<TableReference, EntityMetaData<?, ?, ?, ?>> getMetaDataMap() {
+	private Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> getMetaDataMap() {
 		if (metaDataMap == null) {
-			metaDataMap = new HashMap<TableReference, EntityMetaData<?,?,?,?>>();			
+			metaDataMap = new HashMap<TableReference, EntityMetaData<?,?,?,?, ?, ?, ?>>();			
 		}
 
 		return metaDataMap;
@@ -326,4 +342,7 @@ public class DefaultEntityQuery<
 		}
 	}
 
+	private static Logger logger() {
+		return DefaultEntityQuery.logger;
+	}
 }

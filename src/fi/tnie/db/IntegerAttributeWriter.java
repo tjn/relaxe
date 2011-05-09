@@ -3,9 +3,11 @@
  */
 package fi.tnie.db;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
@@ -14,14 +16,16 @@ import fi.tnie.db.types.ReferenceType;
 
 public class IntegerAttributeWriter<
 	A extends Attribute,
-	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>
+	T extends ReferenceType<T, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
-	extends AbstractAttributeWriter<A, R, T, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, R, T, E>>
+	extends AbstractAttributeWriter<A, T, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, T, E>>
 {
-	public IntegerAttributeWriter(IntegerKey<A, R, T, E> key, int index) {
+	private IntegerExtractor extractor;
+	
+	public IntegerAttributeWriter(IntegerKey<A, T, E> key, int index) {
 		super(key, index);
+		this.extractor = new IntegerExtractor(index);
 	}
 	
 	/**
@@ -31,4 +35,18 @@ public class IntegerAttributeWriter<
 	protected IntegerHolder as(PrimitiveHolder<?, ?> ph) {
 		return ph.asIntegerHolder();
 	}
+	
+	
+	@Override
+	protected IntegerHolder extract(ResultSet src) 
+		throws SQLException {
+		return this.extractor.extractValue(src);
+	}
+	
+//	@Override
+//	protected PrimitiveHolder<?, ?> extract(ResultSet src, int index) 
+//		throws SQLException {	
+//		IntegerHolder h = this.extractor.extractValue(src);
+//		return h;
+//	}
 }

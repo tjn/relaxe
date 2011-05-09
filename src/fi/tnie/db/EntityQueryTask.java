@@ -16,16 +16,16 @@ import fi.tnie.db.types.ReferenceType;
 public interface EntityQueryTask<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>
+	T extends ReferenceType<T, ?>,
+	E extends Entity<A, R, T, E, ?, ?, ?>	
 >
 {
-	EntityQueryResult<A, R, T, E> exec(Connection c)
+	EntityQueryResult<A, R, T, E, ?> exec(Connection c)
 			throws EntityQueryException;
 
-	EntityQueryResult<A, R, T, E> exec(long offset, Long limit,
+	EntityQueryResult<A, R, T, E, ?> exec(long offset, Long limit,
 			Connection c) throws EntityQueryException;
 
-	EntityQueryResult<A, R, T, E> exec(QueryFilter qf, Connection c)
+	EntityQueryResult<A, R, T, E, ?> exec(QueryFilter qf, Connection c)
 			throws EntityQueryException;
 }

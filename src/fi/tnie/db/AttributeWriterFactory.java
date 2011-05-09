@@ -6,10 +6,8 @@ package fi.tnie.db;
 import java.sql.SQLException;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.Reference;
 import fi.tnie.db.types.ReferenceType;
 
 public interface AttributeWriterFactory {
@@ -22,9 +20,9 @@ public interface AttributeWriterFactory {
 	 */
 	<
 		A extends Attribute, 
-		R extends Reference,
-		T extends ReferenceType<T>,		
-		E extends Entity<A, R, T, E>
+		T extends ReferenceType<T, M>,
+		E extends Entity<A, ?, T, E, ?, ?, M>,
+		M extends EntityMetaData<A, ?, T, E, ?, ?, M> 
 	>
-	AttributeWriter<A, R, T, E, ?, ?, ?, ?> createWriter(EntityMetaData<A, R, T, E> em, DataObject.MetaData meta, int index);
+	AttributeWriter<A, T, E, ?, ?, ?, ?> createWriter(M em, ColumnResolver cr, int index);
 }

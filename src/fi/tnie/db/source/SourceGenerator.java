@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.QueryException;
-import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.im.EntityIdentityMap;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
@@ -949,10 +948,10 @@ public class SourceGenerator {
             src = replaceAll(src, Tag.REFERENCE_KEY_LIST, type);
         }
 
-        {
-            String type = createEnumType(getEnumTemplate(), "Query", queries(t));
-            src = replaceAll(src, "{{query-name-type}}", type);
-        }
+//        {
+//            String type = createEnumType(getEnumTemplate(), "Query", queries(t));
+//            src = replaceAll(src, "{{query-name-type}}", type);
+//        }
 
         {
             String code = accessors(t, tm, false);
@@ -986,10 +985,17 @@ public class SourceGenerator {
 		StringBuffer buf = new StringBuffer();
 		Collection<JavaType> rl = referenced(t, tm).values();
 		
+		JavaType intf = tm.entityType(t, Part.INTERFACE);
+		
 		for (JavaType jt : rl) {
 			buf.append(", ");
-			buf.append(jt.getQualifiedName());
+			buf.append(jt.getQualifiedName());			
 			buf.append("Ref");
+			buf.append("<");
+			buf.append(intf.getUnqualifiedName());
+			buf.append(".");
+			buf.append(getReferenceType());
+			buf.append(">");
 		}        	
 		
 		String code = buf.toString();
@@ -1108,11 +1114,14 @@ public class SourceGenerator {
 
 
     private JavaType getFactoryMethodReturnType(TypeInfo info) {
-        JavaType hp = info.get(Part.HOOK);
+//        JavaType hp = info.get(Part.HOOK);
+//        JavaType itfp = info.get(Part.INTERFACE);
+//        JavaType at = info.get(Part.ABSTRACT);
+//
+//        return (hp != null) ? hp : (at != null) ? at : itfp;
+        
         JavaType itfp = info.get(Part.INTERFACE);
-        JavaType at = info.get(Part.ABSTRACT);
-
-        return (hp != null) ? hp : (at != null) ? at : itfp;
+        return itfp;
     }
 
     /**
@@ -1469,16 +1478,33 @@ public class SourceGenerator {
 		buf.append(hn);		
 		buf.append(">();\n\n");
 		
-		buf.append("@Override public ");
+		buf.append("@Override\npublic ");
 		buf.append(hn);
 		buf.append(" get");
 		buf.append(target.getUnqualifiedName());
 		buf.append("(");
 		buf.append(target.getUnqualifiedName());
-		buf.append(".Key<?, ?, ?, ?, ?> key) {\n");
-		buf.append("return this.");
+		buf.append(".Key<");
+		buf.append(getReferenceType());
+		buf.append(", ?, ?, ?> key) {\n");
+		buf.append("\treturn this.");
 		buf.append(vm);
 		buf.append(".get(key.name());\n");
+		buf.append("}\n\n");
+		
+		buf.append("@Override\npublic void ");
+		buf.append("set");
+		buf.append(target.getUnqualifiedName());
+		buf.append("(");
+		buf.append(target.getQualifiedName());
+		buf.append(".Key<");
+		buf.append(getReferenceType());
+		buf.append(", ?, ?, ?> key, ");
+		buf.append(target.getQualifiedName());
+		buf.append(".Holder newValue) {\n");		
+		buf.append("\tthis.");
+		buf.append(vm);
+		buf.append(".put(key.name(), newValue);\n");
 		buf.append("}\n\n");		
 		
 		return buf.toString();
@@ -1552,7 +1578,7 @@ public class SourceGenerator {
 
 //		// Sample output:
 //		private static class OrganizationKey
-//		extends Organization.Key<Person.Attribute, Person.Reference, Person.Type, Person, OrganizationKey> {
+//		extends Organization.Key<Person.Reference, Person.Type, Person, Person.MetaData> {
 //
 //		private static final long serialVersionUID = 1L;
 //
@@ -1572,6 +1598,12 @@ public class SourceGenerator {
 //		public OrganizationKey self() {
 //			return this;		
 //		}	
+
+//		@Override
+//		public void set(Person e, fi.tnie.db.gen.ent.personal.Organization.Holder newValue) {		
+//			e.setOrganization(self(), newValue);
+//		}		
+//		
 //	}		
 		
 		JavaType src = tm.entityType(referencing, Part.INTERFACE);		
@@ -1582,24 +1614,22 @@ public class SourceGenerator {
 		
 		String n = referenceKeyImplementationName(referenced, target, qualify);
 		
-		String kta = keyTypeArgs(tm, referencing);
+//		String kta = keyTypeArgs(tm, referencing, true);
+		String kta = referenceKeyTypeArgs(tm, referencing, true);
 				
 		buf.append(n);
 		buf.append(" extends ");
 		buf.append(target.getQualifiedName());
 		buf.append(".Key<");
 		buf.append(kta);
-		buf.append(", ");
-		buf.append(n);
 		buf.append("> {\n");
 		buf.append("private static final long serialVersionUID = 1L;\n");		
 		buf.append("private ");		
 		buf.append(n);
 		buf.append("(");
-		buf.append(EntityMetaData.class.getCanonicalName());
-		buf.append("<");
-		buf.append(kta);		
-		buf.append("> meta, ");
+		buf.append(src.getUnqualifiedName());
+		buf.append(".MetaData");
+		buf.append(" meta, ");
 		buf.append(getReferenceType());
 		buf.append(" name) {\n");
 		buf.append("super(meta, name);");
@@ -1622,10 +1652,58 @@ public class SourceGenerator {
 		buf.append(" self() {\n");
 		buf.append("return this;\n");
 		buf.append("}\n");
+				
+		buf.append("@Override\n");
+		buf.append("public void ");
+		buf.append("set(");
+		buf.append(src.getUnqualifiedName());
+		buf.append(" e, ");		
+		buf.append(target.getQualifiedName());
+		buf.append(".Holder newValue");
+		buf.append(" ) {\n");
+		buf.append("\te.set");
+		buf.append(target.getUnqualifiedName());
+		buf.append("(self(), newValue);");
+		buf.append("}\n");		
+		
 		buf.append("}");
 		
 		return buf.toString();
 	}
+	
+	private String referenceKeyReferenceTypeName(BaseTable referencing, BaseTable referenced, TableMapper tm, boolean qualify) {
+		StringBuffer nb = new StringBuffer();
+		
+		if (qualify) {
+			Schema s = referenced.getSchema();
+			String prefix = (s == null) ? "" : name(s.getUnqualifiedName().getName());
+			nb.append(prefix);
+		}
+		
+		// Project.Key<HourReport.Reference, Type, HourReport, HourReport.MetaData, ?>
+		
+		JavaType source = tm.entityType(referencing, Part.INTERFACE);
+		JavaType target = tm.entityType(referenced, Part.INTERFACE);
+		
+		nb.append(target.getUnqualifiedName());
+		nb.append(".");
+		nb.append("Key<");
+		nb.append(source.getUnqualifiedName());
+		nb.append(".");
+		nb.append(getReferenceType());
+		nb.append(", ");
+		nb.append(source.getUnqualifiedName());
+		nb.append(".Type, ");
+		nb.append(source.getUnqualifiedName());
+		nb.append(", ");
+		nb.append(source.getUnqualifiedName());
+		nb.append(".MetaData");		
+		nb.append(">");
+		
+		return nb.toString();
+	}
+	
+		
 
 	private String referenceKeyImplementationName(BaseTable referenced, JavaType target, boolean qualify) {
 		StringBuffer nb = new StringBuffer();
@@ -1716,7 +1794,7 @@ public class SourceGenerator {
         buf.append("private transient ");
         buf.append(at.getCanonicalName());
         buf.append("<");
-        buf.append(keyTypeArgs(tm, t));
+        buf.append(keyTypeArgs(tm, t, false));
         buf.append(">");
         buf.append(" ");
         buf.append(valueVariableName(t, c));
@@ -1725,16 +1803,30 @@ public class SourceGenerator {
 		return buf.toString();
 	}
 
-	private String keyTypeArgs(TableMapper tm, BaseTable t) {
+	private String keyTypeArgs(TableMapper tm, BaseTable t, boolean reference) {
 		JavaType intf = tm.entityType(t, Part.INTERFACE);
-		StringBuffer buf = new StringBuffer();
-		buf.append(getAttributeType());        
+		StringBuffer buf = new StringBuffer();		
+		buf.append(reference ? getReferenceType() : getAttributeType());        
         buf.append(", ");
-        buf.append(getReferenceType());        
-        buf.append(", ");        
+//        buf.append(getReferenceType());        
+//        buf.append(", ");        
         buf.append("Type");        
         buf.append(", ");        
         buf.append(intf.getUnqualifiedName());
+        return buf.toString();
+	}
+	
+	private String referenceKeyTypeArgs(TableMapper tm, BaseTable t, boolean reference) {
+		JavaType intf = tm.entityType(t, Part.INTERFACE);
+		StringBuffer buf = new StringBuffer();		
+		buf.append(getReferenceType());        
+        buf.append(", ");
+        buf.append("Type");        
+        buf.append(", ");        
+        buf.append(intf.getUnqualifiedName());
+        buf.append(", ");        
+        buf.append(intf.getUnqualifiedName());
+        buf.append(".MetaData");
         return buf.toString();
 	}
 	
@@ -1771,7 +1863,7 @@ public class SourceGenerator {
         	buf.append("public ");
         }
         
-        String ktargs = keyTypeArgs(tm, t);
+        String ktargs = keyTypeArgs(tm, t, false);
         
         buf.append(at.getCanonicalName());
         buf.append("<");        
@@ -2003,17 +2095,23 @@ public class SourceGenerator {
 		JavaType it = tm.entityType(fk.getReferencing(), Part.IMPLEMENTATION);
 		
 		StringBuffer buf = new StringBuffer();
-		
+						
 		buf.append("public static final ");
 		buf.append(tt.getQualifiedName());
 		buf.append(".Key");
 		buf.append("<");
-		buf.append(getAttributeType());
-		buf.append(", ");
+		buf.append(it.getUnqualifiedName());		
+		buf.append(".");
 		buf.append(getReferenceType());
-		buf.append(", Type, ");
+		buf.append(", ");
+		buf.append(it.getUnqualifiedName());		
+		buf.append(".");
+		buf.append("Type, ");
 		buf.append(rt.getUnqualifiedName());
-		buf.append(", ?> ");
+		buf.append(", ");
+		buf.append(rt.getUnqualifiedName());
+		buf.append(".MetaData");
+		buf.append("> ");
 		buf.append(referenceName);
 		buf.append(" = ");
 		buf.append(it.getQualifiedName());
@@ -2038,7 +2136,7 @@ public class SourceGenerator {
         // goal:
         // private Map<Attribute, IntegerKey<Attribute, Person>> integerKeyMap = new HashMap<Attribute, IntegerKey<Attribute,Person>>();
         
-        String ktargs = keyTypeArgs(tm, t);
+        String ktargs = keyTypeArgs(tm, t, false);
         
         buf.append("private java.util.Map<");
         buf.append("Attribute");
@@ -2103,7 +2201,20 @@ public class SourceGenerator {
 //			return this.projectKeyMap.get(ref);
 //		}
         
-        String rki = referenceKeyImplementationName(referenced, target, qualify);
+//        private java.util.Map<HourReport.Reference, Project.Key<Reference, Type, HourReport, HourReport.MetaData, ?>> projectKeyMap = 
+//        	new java.util.HashMap<HourReport.Reference, Project.Key<Reference, Type, HourReport, HourReport.MetaData, ?>>();
+//
+//        public fi.tnie.db.gen.ent.personal.Project.Key<Reference, Type, HourReport, HourReport.MetaData, ?> getProjectKey( Reference ref) {
+//        	if (ref == null) {
+//        		throw new NullPointerException("ref");
+//        	}
+//        	
+//        	return this.projectKeyMap.get(ref);
+//        }
+        
+        
+        String rki = referenceKeyReferenceTypeName(t, referenced, tm, qualify);
+        String rkimp = referenceKeyImplementationName(referenced, target, qualify);
         String rkv = referenceKeyMapVariable(referenced, target, qualify);
                         
         buf.append("private java.util.Map<");
@@ -2125,14 +2236,15 @@ public class SourceGenerator {
         buf.append("public ");
         buf.append(target.getQualifiedName());
         buf.append(".Key<");
-        buf.append(getAttributeType());
-        buf.append(", ");
         buf.append(getReferenceType());
         buf.append(", Type, ");
         buf.append(intf.getUnqualifiedName());
-        buf.append(", ?>");
+        buf.append(", ");
+        buf.append(intf.getUnqualifiedName());
+        buf.append(".MetaData");
+        buf.append(">");
         buf.append(" get");
-        buf.append(rki);        
+        buf.append(rkimp);        
         buf.append("( ");
         buf.append(getReferenceType());
         buf.append(" ref) {\n");
@@ -2176,7 +2288,7 @@ public class SourceGenerator {
         buf.append("public static final ");
         buf.append(kc.getCanonicalName());
         buf.append("<");
-        buf.append(keyTypeArgs(tm, t));
+        buf.append(keyTypeArgs(tm, t, false));
         buf.append("> ");
         buf.append(keyConstantVariable(t, c));
         buf.append(" = ");

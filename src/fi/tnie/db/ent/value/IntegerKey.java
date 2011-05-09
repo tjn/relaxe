@@ -6,19 +6,17 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.types.IntegerType;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
 
 public final class IntegerKey<
-	A extends Attribute,
-	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>
+	A extends Attribute,	
+	T extends ReferenceType<T, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
-	extends AbstractPrimitiveKey<A, R, T, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, R, T, E>>
+	extends AbstractPrimitiveKey<A, T, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, T, E>>
 {	
 	/**
 	 *
@@ -31,25 +29,24 @@ public final class IntegerKey<
 	private IntegerKey() {
 	}
 
-	private IntegerKey(EntityMetaData<A, R, T, E> meta, A name) {
+	private IntegerKey(EntityMetaData<A, ?, T, E, ?, ?, ?> meta, A name) {
 		super(meta, name);
 		meta.addKey(this);
 	}
 	
 	public static <
-		X extends Attribute,
-		Y extends Reference, 
-		Z extends ReferenceType<Z>,
-		T extends Entity<X, Y, Z, T>
+		X extends Attribute,		 
+		Z extends ReferenceType<Z, ?>,
+		T extends Entity<X, ?, Z, T, ?, ?, ?>
 	>
-	IntegerKey<X, Y, Z, T> get(EntityMetaData<X, Y, Z, T> meta, X a) {
-		IntegerKey<X, Y, Z, T> k = meta.getIntegerKey(a);
+	IntegerKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?> meta, X a) {
+		IntegerKey<X, Z, T> k = meta.getIntegerKey(a);
 		
 		if (k == null) {
 			PrimitiveType<?> t = a.type();
 			
 			if (t != null && t.getSqlType() == PrimitiveType.INTEGER) {
-				k = new IntegerKey<X, Y, Z, T>(meta, a);
+				k = new IntegerKey<X, Z, T>(meta, a);
 			}			
 		}
 				
@@ -80,7 +77,7 @@ public final class IntegerKey<
 	}
 
 	@Override
-	public IntegerKey<A, R, T, E> self() {
+	public IntegerKey<A, T, E> self() {
 		return this;
 	}
 }

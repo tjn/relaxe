@@ -35,8 +35,11 @@ import fi.tnie.db.meta.Column;
 public interface Entity<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>
+	T extends ReferenceType<T, M>,
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>	
 > 
 	extends
 	Serializable
@@ -45,39 +48,40 @@ public interface Entity<
 	<	
 		S extends Serializable,
 		P extends PrimitiveType<P>,
-		H extends PrimitiveHolder<S, P>,
-		K extends PrimitiveKey<A, R, T, E, S, P, H, K>
+		PH extends PrimitiveHolder<S, P>,
+		K extends PrimitiveKey<A, T, E, S, P, PH, K>
 	>	
-	H get(K k);	
-
+	PH get(K k);	
 
 	<			
-		P extends ReferenceType<P>,
-		G extends Entity<?, ?, P, G>,
-		H extends ReferenceHolder<?, ?, P, G>,
-		K extends EntityKey<A, R, T, E, P, G, H, ? extends K>
+		P extends ReferenceType<P, D>,
+		G extends Entity<?, ?, P, G, RH, ?, D>,
+		RH extends ReferenceHolder<?, ?, P, G, RH, D>,
+		D extends EntityMetaData<?, ?, P, G, RH, ?, D>,
+		K extends EntityKey<R, T, E, M, P, G, RH, D, K>
 	>	
-	H getRef(K k);
+	RH getRef(K k);
 	
 	<
 		S extends Serializable,
 		P extends PrimitiveType<P>,
-		H extends PrimitiveHolder<S, P>,
-		K extends PrimitiveKey<A, R, T, E, S, P, H, K> 
+		RH extends PrimitiveHolder<S, P>,
+		K extends PrimitiveKey<A, T, E, S, P, RH, K> 
 	>	
-	void set(K k, H newValue);
+	void set(K k, RH newValue);
 	
 
 	
-	public Entity<?, ?, ?, ?> getRef(R k);
+	public Entity<?, ?, ?, ?, ?, ?, ?> getRef(R k);
 	
 	<			
-		P extends ReferenceType<P>,
-		G extends Entity<?, ?, P, G>,
-		H extends ReferenceHolder<?, ?, P, G>,
-		K extends EntityKey<A, R, T, E, P, G, H, ? extends K>
+		P extends ReferenceType<P, D>,
+		G extends Entity<?, ?, P, G, RH, ?, D>,
+		RH extends ReferenceHolder<?, ?, P, G, RH, D>,
+		D extends EntityMetaData<?, ?, P, G, RH, ?, D>,
+		K extends EntityKey<R, T, E, M, P, G, RH, D, K>
 	>		
-	void setRef(K k, H newValue);	
+	void setRef(K k, RH newValue);	
 	
 	PrimitiveHolder<?, ?> value(A attribute);
 			
@@ -116,17 +120,16 @@ public interface Entity<
 	 * @param column
 	 * @return Scalar value or <code>null</code>, if the value is not set
 	 * @throws NullPointerException If <code>c</code> is <code>null</code>.	 
-	 */
-		
-	ReferenceHolder<?, ?, ?, ?> ref(R ref);
+	 */		
+	ReferenceHolder<?, ?, ?, ?, ?, ?> ref(R ref);
 	
-	/**
-	 * Set the value of the reference <code>r</code>. TODO: this does not look safe.
-	 * 
-	 * @param a
-	 * @param value
-	 */
-	void set(R r, ReferenceHolder<?, ?, ?, ?> value);
+//	/**
+//	 * Set the value of the reference <code>r</code>. TODO: this does not look safe.
+//	 * 
+//	 * @param a
+//	 * @param value
+//	 */
+//	void set(R r, ReferenceHolder<?, ?, ?, ?, ?, ?> value);
 			
 	EntityDiff<A, R, T, E> diff(E another);
 		
@@ -136,36 +139,37 @@ public interface Entity<
 	 * Returns the meta-data object which describes the structure of this object.
 	 * @return
 	 */	
-	EntityMetaData<A, R, T, E> getMetaData();
+	// EntityMetaData<A, R, T, E> getMetaData();
+	M getMetaData();
 		
 	T getType();
 	
-	ReferenceHolder<A, R, T, E> ref();
+	H ref();
 	
-	IntegerHolder getInteger(IntegerKey<A, R, T, E> k);
-	VarcharHolder getVarchar(VarcharKey<A, R, T, E> k);
-	DateHolder getDate(DateKey<A, R, T, E> k);
-	TimestampHolder getTimestamp(TimestampKey<A, R, T, E> k);
+	IntegerHolder getInteger(IntegerKey<A, T, E> k);
+	VarcharHolder getVarchar(VarcharKey<A, T, E> k);
+	DateHolder getDate(DateKey<A, T, E> k);
+	TimestampHolder getTimestamp(TimestampKey<A, T, E> k);
 	
-	TimeHolder getTime(TimeKey<A, R, T, E> k);
-	CharHolder getChar(CharKey<A, R, T, E> k);
-	DoubleHolder getDouble(DoubleKey<A, R, T, E> k);
-	DecimalHolder getDecimal(DecimalKey<A, R, T, E> k);
+	TimeHolder getTime(TimeKey<A, T, E> k);
+	CharHolder getChar(CharKey<A, T, E> k);
+	DoubleHolder getDouble(DoubleKey<A, T, E> k);
+	DecimalHolder getDecimal(DecimalKey<A, T, E> k);
 	
-	IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, R, T, E> k);
-	IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, R, T, E> k);	
+	IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, T, E> k);
+	IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, T, E> k);	
 	
-	void setInteger(IntegerKey<A, R, T, E> k, IntegerHolder newValue);
-	void setVarchar(VarcharKey<A, R, T, E> k, VarcharHolder newValue);
-	void setChar(CharKey<A, R, T, E> k, CharHolder newValue);
-	void setDate(DateKey<A, R, T, E> k, DateHolder newValue);
-	void setTimestamp(TimestampKey<A, R, T, E> k, TimestampHolder newValue);
-	void setTime(TimeKey<A, R, T, E> k, TimeHolder newValue);
-	void setDecimal(DecimalKey<A, R, T, E> k, DecimalHolder newValue);
-	void setDouble(DoubleKey<A, R, T, E> k, DoubleHolder newValue);
+	void setInteger(IntegerKey<A, T, E> k, IntegerHolder newValue);
+	void setVarchar(VarcharKey<A, T, E> k, VarcharHolder newValue);
+	void setChar(CharKey<A, T, E> k, CharHolder newValue);
+	void setDate(DateKey<A, T, E> k, DateHolder newValue);
+	void setTimestamp(TimestampKey<A, T, E> k, TimestampHolder newValue);
+	void setTime(TimeKey<A, T, E> k, TimeHolder newValue);
+	void setDecimal(DecimalKey<A, T, E> k, DecimalHolder newValue);
+	void setDouble(DoubleKey<A, T, E> k, DoubleHolder newValue);
 	
-	void setInterval(IntervalKey.YearMonth<A, R, T, E> k, IntervalHolder.YearMonth newValue);
-	void setInterval(IntervalKey.DayTime<A, R, T, E> k, IntervalHolder.DayTime newValue);
+	void setInterval(IntervalKey.YearMonth<A, T, E> k, IntervalHolder.YearMonth newValue);
+	void setInterval(IntervalKey.DayTime<A, T, E> k, IntervalHolder.DayTime newValue);
 	
 			
 	/**

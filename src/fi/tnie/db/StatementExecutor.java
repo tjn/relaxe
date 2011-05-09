@@ -18,7 +18,7 @@ public class StatementExecutor {
 	private static Logger logger = Logger.getLogger(StatementExecutor.class);
 	
 	public void execute(Statement statement, Connection c, QueryProcessor qp)
-		throws SQLException {
+		throws SQLException, QueryException {
 
 	    if (statement == null) {
             throw new NullPointerException("'statement' must not be null");
@@ -44,8 +44,19 @@ public class StatementExecutor {
 				ResultSet rs = null;
 				
 				try {
+					qp.prepare();
+					
 					rs = ps.executeQuery();
 					
+					qp.startQuery(rs.getMetaData());
+					
+					long ordinal = 1;
+					
+					while(rs.next()) {
+						qp.process(rs, ordinal++);
+					}
+					
+					qp.endQuery();
 				}
 				finally {
 					doClose(rs);

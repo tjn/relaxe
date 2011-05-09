@@ -9,10 +9,9 @@ import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.gen.ent.LiteralCatalog;
-import fi.tnie.db.gen.ent.personal.DefaultHourReport;
-import fi.tnie.db.gen.ent.personal.DefaultPerson;
 import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
+import fi.tnie.db.gen.ent.personal.Person;
 import fi.tnie.db.gen.ent.personal.PersonalFactory;
 import fi.tnie.db.gen.ent.personal.HourReport.Reference;
 import fi.tnie.db.gen.ent.personal.HourReport.Type;
@@ -65,20 +64,20 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
                 
 //        assertTrue(cc.getMetaMap().containsKey(ct));               
                         
-        EntityMetaData<?, ?, ?, ?> meta = cc.getMetaData(ct);
+        EntityMetaData<?, ?, ?, ?, ?, ?, ?> meta = cc.getMetaData(ct);
         assertNotNull(meta);
                 
         EntityFactory<?, ?, ?, ?> ef = meta.getFactory();
         assertNotNull(ef);
                 
         PersonalFactory pf = cc.newPersonalFactory();
-        DefaultPerson p = pf.newPerson();
+        Person p = pf.newPerson();
         
         
         PGImplementation pgi = new PGImplementation();
         
-        DefaultHourReport hr = pf.newHourReport();
-        Key<fi.tnie.db.gen.ent.personal.HourReport.Attribute, Reference, Type, HourReport, ?> ok = HourReport.FK_HHR_EMPLOYER;
+        HourReport hr = pf.newHourReport();
+        Key<Reference, Type, HourReport, ?> ok = HourReport.FK_HHR_EMPLOYER;
                        
         Organization org = pf.newOrganization();        
         ok.set(hr, org);

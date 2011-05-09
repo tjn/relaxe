@@ -3,24 +3,24 @@
  */
 package fi.tnie.db.ent.value;
 
-import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
-public abstract class AbstractEntityKey<
-	A extends Attribute,
+public abstract class AbstractEntityKey<	
 	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>,	
-	P extends ReferenceType<P>,	
-	V extends Entity<?, ?, P, V>,
-	H extends ReferenceHolder<?, ?, P, V>,	
-	K extends EntityKey<A, R, T, E, P, V, H, ? extends K>
+	T extends ReferenceType<T, S>,
+	E extends Entity<?, R, T, E, ?, ?, S>,
+	S extends EntityMetaData<?, R, T, E, ?, ?, S>,
+	P extends ReferenceType<P, D>,	
+	V extends Entity<?, ?, P, V, H, ?, D>,
+	H extends ReferenceHolder<?, ?, P, V, H, D>,
+	D extends EntityMetaData<?, ?, P, V, H, ?, D>,
+	K extends EntityKey<R, T, E, S, P, V, H, D, K>
 >
-	implements EntityKey<A, R, T, E, P, V, H, K> {
+	implements EntityKey<R, T, E, S, P, V, H, D, K> {
 	
 	/**
 	 * 
@@ -30,6 +30,7 @@ public abstract class AbstractEntityKey<
 	 *
 	 */
 	private R name;
+	private S meta;
 	
 //	protected AbstractEntityKey() {		
 //	}	
@@ -38,9 +39,12 @@ public abstract class AbstractEntityKey<
 	public abstract H get(E e);
 	
 	@Override
-	public void set(E e, H newValue) {		
-		e.setRef(self(), newValue);
-	}
+	public abstract void set(E e, H newValue);
+	
+//	@Override
+//	public void set(E e, H newValue) {		
+//		e.setRef(self(), newValue);
+//	}
 		
 	@Override
 	public void set(E e, V newValue) {
@@ -50,7 +54,7 @@ public abstract class AbstractEntityKey<
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */	
-	protected AbstractEntityKey(EntityMetaData<A, R, T, E> meta, R name) {
+	protected AbstractEntityKey(S meta, R name) {
 		setName(name);
 		
 		if (meta == null) {
@@ -87,11 +91,11 @@ public abstract class AbstractEntityKey<
 		
 		// Since getClass().equals(o.getClass()) implies t.type().getSqlType() == type().getSqlType()
 		// we only need to check the name:		
-		AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?> t = (AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?>) o;								
+		AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?> t = (AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?>) o;								
 		return nameEquals(t);
 	}
 	
-	private boolean nameEquals(AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?> pk) {		
+	private boolean nameEquals(AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?> pk) {		
 		return name().equals(pk.name());
 	}
 //	
@@ -120,5 +124,11 @@ public abstract class AbstractEntityKey<
 	
 	public void clear(E src) {
 		src.setRef(self(), newHolder(null));
+	}
+
+	
+	@Override
+	public S getSource() {	
+		return this.meta;
 	}
 }

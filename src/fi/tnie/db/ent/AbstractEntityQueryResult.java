@@ -3,30 +3,29 @@
  */
 package fi.tnie.db.ent;
 
+import fi.tnie.db.AbstractResponse;
 import fi.tnie.db.types.ReferenceType;
 
 public abstract class AbstractEntityQueryResult <
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>>
-	implements EntityQueryResult<A, R, T, E>
+	T extends ReferenceType<T, M>,
+	E extends Entity<A, R, T, E, ?, ?, M>,
+	M extends EntityMetaData<A, R, T, E, ?, ?, M>
+>
+	extends AbstractResponse<EntityQuery<A, R, T, E, M>>
+	implements EntityQueryResult<A, R, T, E, M>
+	 
 {
-	private EntityQuery<A, R, T, E> source;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4702982201316758878L;
 	private long available;
 
-	protected AbstractEntityQueryResult(EntityQuery<A, R, T, E> source, long available) {
-		if (source == null) {
-			throw new NullPointerException("'source' must not be null");
-		}
-
-		this.source = source;
+	protected AbstractEntityQueryResult(EntityQuery<A, R, T, E, M> request, long available) {		
+		super(request);
 		this.available = available;
-	}
-
-	@Override
-	public EntityQuery<A, R, T, E> getSource() {
-		return this.source;
 	}
 
 	@Override

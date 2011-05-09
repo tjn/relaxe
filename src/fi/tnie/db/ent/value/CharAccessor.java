@@ -5,18 +5,16 @@ package fi.tnie.db.ent.value;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.types.CharType;
 import fi.tnie.db.types.ReferenceType;
 
 public class CharAccessor<
-	A extends Attribute,
-	R extends Reference,
-	T extends ReferenceType<T>,	
-	E extends Entity<A, R, T, E>
+	A extends Attribute,	
+	T extends ReferenceType<T, ?>,	
+	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
-	extends AbstractPrimitiveAccessor<A, R, T, E, String, CharType, CharHolder, CharKey<A, R, T, E>> {
+	extends AbstractPrimitiveAccessor<A, T, E, String, CharType, CharHolder, CharKey<A, T, E>> {
 
 	/**
 	 *
@@ -30,7 +28,7 @@ public class CharAccessor<
 	private CharAccessor() {
 	}
 
-	public CharAccessor(E target, CharKey<A, R, T, E> k) {
+	public CharAccessor(E target, CharKey<A, T, E> k) {
 		super(target, k);
 	}
 }

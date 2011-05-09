@@ -11,15 +11,16 @@ import fi.tnie.db.types.ReferenceType;
 
 public class EmptyEntityQueryResult<
 	A extends Attribute,
-	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, E>
-> extends AbstractEntityQueryResult<A, R, T, E> {
+	R extends Reference,	
+	T extends ReferenceType<T, M>,
+	E extends Entity<A, R, T, E, ?, ?, M>,
+	M extends EntityMetaData<A, R, T, E, ?, ?, M>
+> extends AbstractEntityQueryResult<A, R, T, E, M> {
 
 	private List<E> content;
 
-	public EmptyEntityQueryResult(EntityQuery<A, R, T, E> source, long available) {
-		super(source, available);
+	public EmptyEntityQueryResult(EntityQuery<A, R, T, E, M> request, long available) {
+		super(request, available);
 		this.content = Collections.emptyList();
 	}
 

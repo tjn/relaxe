@@ -8,20 +8,28 @@ import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.rpc.ReferenceHolder;
 
 public interface {{table-interface}}
-    extends Entity<
+    extends fi.tnie.db.ent.Entity<
         {{table-interface}}.Attribute,
         {{table-interface}}.Reference,        
         {{table-interface}}.Type,
-        {{table-interface}}
+        {{table-interface}},
+        {{table-interface}}.Holder,		
+        {{table-interface}}.Factory,
+        {{table-interface}}.MetaData
     > {{reference-list}} {
     
-	class Type extends ReferenceType<Type> {	
+	class Type extends ReferenceType<Type, MetaData> {
+		@Override
+		public MetaData getMetaData() {		
+			return {{table-interface}}Impl.{{table-interface}}MetaData.getInstance();
+		}
 	}
+	
 
 	Type TYPE = new Type();
 	
 	public static class Holder
-		extends ReferenceHolder<Attribute, Reference, Type, {{table-interface}}> {
+		extends ReferenceHolder<Attribute, Reference, Type, {{table-interface}}, Holder, MetaData> {
 		
 		/**
 		 * 
@@ -45,36 +53,50 @@ public interface {{table-interface}}
 			return (value == null) ? {{table-interface}}.Holder.NULL : new {{table-interface}}.Holder(value);
 		}
 	}
+	
+	interface Factory
+		extends fi.tnie.db.ent.EntityFactory<{{table-interface}}, Holder, MetaData, Factory> {
+		
+	}
+	
+	interface MetaData
+		extends fi.tnie.db.ent.EntityMetaData<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData> {		
+	}	
 		
 	public static abstract class Key<
-		A extends fi.tnie.db.ent.Attribute, 
 		R extends fi.tnie.db.ent.Reference, 
-		T extends ReferenceType<T>, 
-		E extends Entity<A, R, T, E>,
-		K extends Key<A, R, T, E, K>>
-		extends AbstractEntityKey<A, R, T, E, Type, {{table-interface}}, Holder, K> {
-			
+		T extends ReferenceType<T, S>,
+		E extends Entity<?, R, T, E, ?, ?, S>,
+		S extends EntityMetaData<?, R, T, E, ?, ?, S>		
+	>
+		extends AbstractEntityKey<R, T, E, S, {{table-interface}}.Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.MetaData, {{table-interface}}.Key<R, T, E, S>> {
+
 		private static final long serialVersionUID = 1L;
-		
-		protected Key(EntityMetaData<A, R, T, E> meta, R name) {
+
+		protected Key(S meta, R name) {
 			super(meta, name);
 		}		
 
 		@Override
-		public Holder newHolder({{table-interface}} o) {
-			return (o == null) ? {{table-interface}}.Holder.NULL : o.ref();
+		public {{table-interface}}.Holder newHolder({{table-interface}} o) {
+			return {{table-interface}}.Holder.valueOf(o);
+		}
+		
+		@Override
+		public {{table-interface}}.MetaData getTarget() {		
+			return {{table-interface}}Impl.{{table-interface}}MetaData.getInstance();
 		}
 
 		@Override
-		public Type type() {
+		public {{table-interface}}.Type type() {
 			return {{table-interface}}.TYPE;
 		}
+		
+		@Override
+		public {{table-interface}}.Key<R, T, E, S> self() {		
+			return this;
+		}
 	}
-	
-// public static interface ReferenceKeys {
-	// Organization.Key<Attribute, Reference, Type, Person, ?> EMP = fi.tnie.db.gen.ent.personal.PersonImpl.PersonMetaData.getInstance().getOrganizationKey(Reference.EMPLOYER);	
-// }
-
 
 	@Override
 	public Holder ref();
@@ -86,9 +108,22 @@ public interface {{table-interface}}
 {{reference-name-type}}
 
 
-
-    
-{{query-name-type}}
+		public static class Query
+			extends fi.tnie.db.ent.DefaultEntityQuery<Attribute, Reference, Type, {{table-interface}}, MetaData> {
+		
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+		
+			public Query({{table-interface}} root) throws fi.tnie.db.ent.CyclicTemplateException {
+				super(root);
+			}
+		
+			public Query(MetaData meta) {
+				super(meta);
+			}
+		}
     
 {{value-accessor-list}}
     

@@ -8,7 +8,7 @@ import java.util.List;
 
 
 public class QueryResult<T>
-	extends Response<Query> {
+	extends AbstractResponse<Query> {
 	
 	/**
 	 * 

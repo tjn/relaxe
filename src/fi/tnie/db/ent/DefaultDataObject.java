@@ -62,7 +62,7 @@ public class DefaultDataObject
 			
 			for (ValueExpression e : this.valueList) {
 				ColumnName cn = e.getColumnName();
-				xm.put(cn, Integer.valueOf(i++));
+				xm.put(cn, Integer.valueOf(i++));								
 			}			
 		}
 
@@ -93,7 +93,14 @@ public class DefaultDataObject
 	public DefaultDataObject(MetaData m) {
 		super();
 		this.metaData = m;
-		this.content = new ArrayList<PrimitiveHolder<?,?>>(m.getColumnCount());
+		
+		int cc = m.getColumnCount();
+		
+		this.content = new ArrayList<PrimitiveHolder<?,?>>(cc);
+		
+		for (int i = 0; i < cc; i++) {
+			this.content.add(null);
+		}
 	}
 	
 	public void set(int index, PrimitiveHolder<?, ?> value) {

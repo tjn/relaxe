@@ -11,8 +11,8 @@ import fi.tnie.db.types.ReferenceType;
 public class EmptyEntityDiff<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T>,
-	E extends Entity<A, R, T, ? extends E>
+	T extends ReferenceType<T, ?>,
+	E extends Entity<A, R, T, E, ?, ?, ?>
 >
 	extends AbstractEntityDiff<A, R, T, E>
 {

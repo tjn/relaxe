@@ -63,8 +63,7 @@ public class ValueElement
 	
 //		logger().debug("column-name: " + cn);
 		return cn;
-	}
-	
+	}	
 	
 	public ValueExpression getValue() {
 		return this.expr;
@@ -103,7 +102,7 @@ public class ValueElement
 		if (column != 1) {
 			throw new IndexOutOfBoundsException(Integer.toString(column));
 		}
-		
+						
 		return null;
 	}
 	

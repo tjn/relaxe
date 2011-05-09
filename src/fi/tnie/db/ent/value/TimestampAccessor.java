@@ -7,18 +7,16 @@ import java.util.Date;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.types.TimestampType;
 
 public class TimestampAccessor<
 	A extends Attribute,
-	R extends Reference,
-	T extends ReferenceType<T>,	
-	E extends Entity<A, R, T, E>
+	T extends ReferenceType<T, ?>,	
+	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
-	extends AbstractPrimitiveAccessor<A, R, T, E, Date, TimestampType, TimestampHolder, TimestampKey<A, R, T, E>> {
+	extends AbstractPrimitiveAccessor<A, T, E, Date, TimestampType, TimestampHolder, TimestampKey<A, T, E>> {
 
 	/**
 	 *
@@ -32,7 +30,7 @@ public class TimestampAccessor<
 	private TimestampAccessor() {
 	}
 
-	public TimestampAccessor(E target, TimestampKey<A, R, T, E> k) {
+	public TimestampAccessor(E target, TimestampKey<A, T, E> k) {
 		super(target, k);
 	}
 }

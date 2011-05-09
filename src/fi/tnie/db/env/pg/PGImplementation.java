@@ -8,9 +8,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Comparator;
 
+import fi.tnie.db.AttributeWriter;
+import fi.tnie.db.DefaultAttributeWriterFactory;
 import fi.tnie.db.DefaultValueExtractorFactory;
-import fi.tnie.db.ExtractorMap;
-import fi.tnie.db.ValueExtractorFactory;
+import fi.tnie.db.ResultSetColumnResolver;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
@@ -53,34 +54,43 @@ public class PGImplementation
     }
 
     private final class PGGeneratedKeyHandler implements GeneratedKeyHandler {
-    	private ValueExtractorFactory extractorFactory;
-
-		public PGGeneratedKeyHandler(ValueExtractorFactory vef) {
-			super();
-			this.extractorFactory = vef;
+    	
+		public PGGeneratedKeyHandler() {
+			super();			
 		}
 
 		@Override
 		public <
 			A extends Attribute,
 			R extends Reference,
-			T extends ReferenceType<T>,
-			E extends Entity<A, R, T, E>
+			T extends ReferenceType<T, M>,
+			E extends Entity<A, R, T, E, ?, ?, M>,
+			M extends EntityMetaData<A, R, T, E, ?, ?, M>
 		>
 		void processGeneratedKeys(
 				InsertStatement ins, E target, ResultSet rs) throws SQLException {
 //				int cc = rs.getMetaData().getColumnCount();
 //
 ////				logger().debug("getGeneratedKeys: ");
-//
-			ResultSetMetaData meta = rs.getMetaData();
-			EntityMetaData<A, R, T, E> em = target.getMetaData();
-
-			ExtractorMap<A, R, T, E> xm =
-				new ExtractorMap<A, R, T, E>(meta, em, extractorFactory);
-//			List<A> keys = new ArrayList<A>();
-
-			xm.extract(rs, target);
+//		
+//			if (rs.next()) {
+				ResultSetMetaData meta = rs.getMetaData();
+				M em = target.getMetaData();
+											
+				ResultSetMetaData rsmd = rs.getMetaData();
+				
+				int cc = rsmd.getColumnCount();
+				DefaultAttributeWriterFactory wf = new DefaultAttributeWriterFactory();				
+				ResultSetColumnResolver cr = new ResultSetColumnResolver(em.getBaseTable(), meta);
+																												
+				for (int i = 1; i <= cc; i++) {
+					AttributeWriter<A, T, E, ?, ?, ?, ?> w = wf.createWriter(em, cr, i);
+					
+					if (w != null) {
+						w.write(rs, target);
+					}
+				}
+//			}
 		}
 	}
 
@@ -107,9 +117,8 @@ public class PGImplementation
 
 	@Override
 	public GeneratedKeyHandler generatedKeyHandler() {
-		if (generatedKeyHandler == null) {
-			ValueExtractorFactory vef = getValueExtractorFactory();
-			generatedKeyHandler = new PGGeneratedKeyHandler(vef);
+		if (generatedKeyHandler == null) {			
+			generatedKeyHandler = new PGGeneratedKeyHandler();
 		}
 
 		return generatedKeyHandler;
