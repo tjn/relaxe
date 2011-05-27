@@ -55,6 +55,11 @@ public abstract class AbstractAttributeWriter<
 	public H write(DataObject src, E dest) {
 		PrimitiveHolder<?, ?> ph = src.get(getIndex());
 		H h = as(ph);
+		
+		if (h == null) {
+			throw new NullPointerException(ph.getClass().getName() + ".as(ph) returned null");
+		}
+		
 		dest.set(getKey(), h);
 		return h;
 	}
