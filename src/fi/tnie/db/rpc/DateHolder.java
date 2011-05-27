@@ -50,4 +50,9 @@ public class DateHolder
 	public int getSqlType() {
 		return PrimitiveType.DATE;
 	}
+	
+	@Override
+	public DateHolder asDateHolder() {
+		return this;
+	}
 }

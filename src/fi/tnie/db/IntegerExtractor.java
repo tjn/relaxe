@@ -23,6 +23,5 @@ public class IntegerExtractor
 	public IntegerHolder extractValue(ResultSet rs) throws SQLException {
 		int v = rs.getInt(getColumn());
 		return rs.wasNull() ? IntegerHolder.NULL_HOLDER : IntegerHolder.valueOf(v);			
-	}
-	
+	}	
 }

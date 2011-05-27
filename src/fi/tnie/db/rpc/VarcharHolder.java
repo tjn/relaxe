@@ -44,5 +44,9 @@ public class VarcharHolder
 	public int getSqlType() {
 		return PrimitiveType.VARCHAR;
 	}
-
+	
+	@Override
+	public VarcharHolder asVarcharHolder() {	
+		return this;
+	}
 }

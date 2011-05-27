@@ -1,12 +1,15 @@
 package {{package-name}};
 
-// import java.util.Date;
-import fi.tnie.db.DefaultEntityKey;
+
+import java.util.ArrayList;
+import java.util.List;
+import fi.tnie.db.ent.EntityBuildContext;
 import fi.tnie.db.ent.EnumMetaData;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.ent.value.*;
+import fi.tnie.db.expr.TableReference;
 {{imports}}
 
 
@@ -20,56 +23,6 @@ public class {{table-impl-class}}
     extends {{table-impl-base}} {
         
     private {{table-interface}}.Holder holder;
-    
-	private static class KeyBase <
-		X extends fi.tnie.db.ent.Attribute, 
-		Y extends fi.tnie.db.ent.Reference, 
-		Z extends fi.tnie.db.types.ReferenceType<Z,S>, 
-		VH extends fi.tnie.db.rpc.ReferenceHolder<X,Y,Z,V,VH,S>, 
-		V extends fi.tnie.db.ent.Entity<X,Y,Z,V,VH,?,S>, 
-		S extends fi.tnie.db.ent.EntityMetaData<X,Y,Z,V,VH,?,S>		
-	>	
-		extends DefaultEntityKey<Y, Z, V, S, Attribute, Reference, Type, {{table-interface}}, Holder, MetaData, KeyBase<X, Y, Z, VH, V, S>> {
-		
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
-		/**
-		 * No-argument constructor for GWT Serialization
-		 */
-		@SuppressWarnings("unused")
-		private KeyBase() {	
-		}		
-				
-		public KeyBase(S source, Y name) {
-			super(source, {{table-interface}}MetaData.getInstance(), name);
-		}
-		
-		@Override
-		public KeyBase<X, Y, Z, VH, V, S> self() {		
-			return this;
-		}
-
-		@Override
-		public Holder newHolder({{table-interface}} newValue) {
-			return Holder.valueOf(newValue);
-		}
-
-		@Override
-		public void clear(V src) {
-			src.setRef(self(), Holder.valueOf(null));
-		}
-		
-		public void set(V src, {{table-interface}} newValue) {
-			set(src, Holder.valueOf(newValue));
-		}
-		
-		public void set(V src, {{table-interface}}.Holder newValue) {
-			src.setRef(self(), newValue);
-		}
-	}    
     
     /**
      * generated value variable list below: 
@@ -148,51 +101,53 @@ public class {{table-impl-class}}
 			return this;
 		}		
 		
+		public static class BuilderImpl
+			extends fi.tnie.db.ent.DefaultEntityBuilder<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData>
+			implements Builder {
+			
+			private Linker[] linkerList = {};
+									
+			private interface Linker {
+				void link(fi.tnie.db.ent.DataObject src, {{table-interface}} dest);
+			}
+			
+			public BuilderImpl(fi.tnie.db.expr.TableReference tableRef, fi.tnie.db.ent.EntityBuildContext ctx) {
+				super(tableRef, ctx);
+				
+				MetaData m = getMetaData();
+				
+				List<Linker> ll = new ArrayList<Linker>();				
+				
+				// {{builder-linker-init}}
+				
+				this.linkerList = ll.toArray(this.linkerList);
+			}
+
+			@Override
+			public MetaData getMetaData() {			
+				return {{table-interface}}MetaData.getInstance();
+			}
+			
+			@Override
+			public {{table-interface}} read(fi.tnie.db.ent.DataObject src) {			
+				{{table-interface}} e = super.read(src);
+				
+				for (Linker lnk : linkerList) {
+					lnk.link(src, e);
+				}								
+				
+				return e;
+			}
+		}		
+		
 			
 		// {{key-accessor-list}}
 		
-		
-//		public <
-//			X extends fi.tnie.db.ent.Attribute, 
-//			Y extends fi.tnie.db.ent.Reference, 
-// 			Z extends fi.tnie.db.types.ReferenceType<Z>, 
-// 			V extends fi.tnie.db.ent.Entity<X,Y,Z,V,?,O>, 
-// 			O extends fi.tnie.db.ent.EntityMetaData<X,Y,Z,V,?,?,O>> 
-// 		fi.tnie.db.ent.value.EntityKey<
-// 			{{table-interface}}.Reference,
-// 			{{table-interface}}.Type,
-// 			{{table-interface}},
-// 			{{table-interface}}.MetaData,
-// 			Z,V,?,O,?>
-// 		getEntityKey({{table-interface}}.Reference ref, O target) {			
-// 			return target.newKey(self());			
-// 		}
-		
-		
-		public <X extends fi.tnie.db.ent.Attribute, Y extends fi.tnie.db.ent.Reference, Z extends fi.tnie.db.types.ReferenceType<Z,O>, V extends fi.tnie.db.ent.Entity<X,Y,Z,V,?,?,O>, O extends fi.tnie.db.ent.EntityMetaData<X,Y,Z,V,?,?,O>> fi.tnie.db.ent.value.EntityKey<{{table-interface}}.Reference, {{table-interface}}.Type, {{table-interface}}, {{table-interface}}.MetaData,Z,V,?,O,?> getEntityKey({{table-interface}}.Reference ref, O target) {
-			EntityKey<Reference, Type, {{table-interface}}, MetaData, Z, V, ?, O, ?> k = target.newKey(ref, self());
-			return k;
-		}
-		
-		public <
-			X extends fi.tnie.db.ent.Attribute, 
-			Y extends fi.tnie.db.ent.Reference, 
-			Z extends fi.tnie.db.types.ReferenceType<Z,S>, 
-			VH extends fi.tnie.db.rpc.ReferenceHolder<X,Y,Z,V,VH,S>, 
-			V extends fi.tnie.db.ent.Entity<X,Y,Z,V,VH,?,S>, 
-			S extends fi.tnie.db.ent.EntityMetaData<X,Y,Z,V,VH,?,S>
-		> 
-		fi.tnie.db.ent.value.EntityKey<
-			Y, Z, V, S, 
-			{{table-interface}}.Type,
-			{{table-interface}},
-			{{table-interface}}.Holder,
-			{{table-interface}}.MetaData, 
-			?>		
-		newKey(Y ref, S source) {		
-			KeyBase<X, Y, Z, VH, V, S> b = new KeyBase<X, Y, Z, VH, V, S>(source, ref);			
-			return b;			
-		}
+
+		@Override
+		public Builder newBuilder(TableReference tableRef, EntityBuildContext ctx) {
+			return new BuilderImpl(tableRef, ctx);
+		}	
 
 		@Override
 		public EntityKey<Reference, Type, {{table-interface}}, {{table-interface}}.MetaData, ?, ?, ?, ?, ?> getEntityKey(Reference ref) {			

@@ -46,13 +46,21 @@ public class DefaultAttributeWriterFactory
 				w = new IntegerAttributeWriter<A, T, E>(em.getIntegerKey(a), index);
 				break;
 			case Types.VARCHAR:
-//				e = new VarcharAttributeExtractor<A, R, T, E>(attribute, meta, vef, col);
+				w = new VarcharAttributeWriter<A, T, E>(em.getVarcharKey(a), index);
+				break;
 			case Types.CHAR:
-//				e = new CharAttributeExtractor<A, R, T, E>(attribute, meta, vef, col);
+				w = new CharAttributeWriter<A, T, E>(em.getCharKey(a), index);
 				break;
 			case Types.DATE:
-//				e = new DateAttributeExtractor<A, R, T, E>(attribute, meta, vef, col);
+				w = new DateAttributeWriter<A, T, E>(em.getDateKey(a), index);				
 				break;
+			case Types.TIMESTAMP:
+				w = new TimestampAttributeWriter<A, T, E>(em.getTimestampKey(a), index);				
+				break;
+			case Types.TIME:
+				w = new TimeAttributeWriter<A, T, E>(em.getTimeKey(a), index);				
+				break;
+				
 //			case Types.TIMESTAMP:
 //				e = new TimestampExtractor(col);
 //				break;

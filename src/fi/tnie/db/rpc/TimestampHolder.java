@@ -49,4 +49,9 @@ public class TimestampHolder
 	public int getSqlType() {
 		return PrimitiveType.TIMESTAMP;
 	}
+	
+	@Override
+	public TimestampHolder asTimestampHolder() {
+		return this;
+	}
 }

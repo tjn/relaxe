@@ -1,0 +1,19 @@
+
+{	
+	final {{referenced-table-interface-qualified}}.Key<Reference, Type, {{table-interface}}, {{table-interface}}.MetaData> pk = {{reference-key-variable}};					
+	fi.tnie.db.meta.ForeignKey fk = m.getForeignKey(pk.name());				
+	fi.tnie.db.expr.TableReference tref = ctx.getQuery().getReferenced(tableRef, fk);
+
+	if (tref != null) {
+		{{referenced-table-interface-qualified}}.MetaData pm = pk.getTarget();
+		final {{referenced-table-interface-qualified}}.Builder nb = pm.newBuilder(tref, ctx);						
+
+		ll.add(new Linker() {							
+			@Override
+			public void link(fi.tnie.db.ent.DataObject src, {{table-interface}} dest) {
+				{{referenced-table-interface-qualified}} np = nb.read(src);								
+				pk.set(dest, np);
+			}
+		});
+	} 
+}

@@ -14,16 +14,18 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.Reference;
+import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
 public class EntityReader<
 	A extends Attribute,
 	R extends Reference,
 	T extends ReferenceType<T, M>,
-	E extends Entity<A, R, T, E, ?, ?, M>,
-	M extends EntityMetaData<A, R, T, E, ?, ?, M>
+	E extends Entity<A, R, T, E, H, ?, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	M extends EntityMetaData<A, R, T, E, H, ?, M>
 >
-	extends EntityBuilder<A, R, T, E, M> {
+	extends EntityBuilderManager<A, R, T, E, H, M> {
 	
 	private List<E> content;
 	

@@ -45,8 +45,16 @@ public abstract class DataObjectProcessor
 		int cc = m.getColumnCount();
 		ValueExtractor<?, ?, ?>[] xa = new ValueExtractor<?, ?, ?>[cc];
 		
-		for (int i = 1; i <= cc; i++) {							
-			xa[i - 1] = vef.createExtractor(m, i);
+		for (int i = 1; i <= cc; i++) {
+			String col = m.getColumnLabel(i);
+			
+			ValueExtractor<?, ?, ?> ve = vef.createExtractor(m, i);
+			
+			if (ve == null) {
+				throw new NullPointerException("no extractor for column " + col + ":" + m.getColumnType(i)); 
+			}
+			
+			xa[i - 1] = ve;
 		}
 						
 		this.extractors = xa;	

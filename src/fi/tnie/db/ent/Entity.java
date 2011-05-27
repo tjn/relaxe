@@ -30,6 +30,7 @@ import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
+import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.meta.Column;
 	
 public interface Entity<
@@ -84,7 +85,8 @@ public interface Entity<
 	void setRef(K k, RH newValue);	
 	
 	PrimitiveHolder<?, ?> value(A attribute);
-			
+	
+				
 	
 	/***
 	 * Returns the value of the corresponding column.
@@ -182,4 +184,5 @@ public interface Entity<
 	E unify(IdentityContext ctx);
 		
 	boolean isIdentified();
+		
 }

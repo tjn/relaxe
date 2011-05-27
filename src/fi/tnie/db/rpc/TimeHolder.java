@@ -48,4 +48,9 @@ public class TimeHolder
 	public int getSqlType() {
 		return PrimitiveType.TIME;
 	}
+	
+	@Override
+	public TimeHolder asTimeHolder() {
+		return this;
+	}
 }

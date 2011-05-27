@@ -1,10 +1,13 @@
 package {{package-name}};
 
+import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityBuildContext;
+import fi.tnie.db.ent.EntityBuilder;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.value.AbstractEntityKey;
+import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.types.*;
-import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.rpc.ReferenceHolder;
 
 public interface {{table-interface}}
@@ -59,9 +62,19 @@ public interface {{table-interface}}
 		
 	}
 	
+		
 	interface MetaData
-		extends fi.tnie.db.ent.EntityMetaData<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData> {		
+		extends fi.tnie.db.ent.EntityMetaData<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData>
+		{{implemented-has-key-list}}	
+	{		
+		@Override
+		public Builder newBuilder(TableReference tableRef, EntityBuildContext ctx);
+	}
+	
+	interface Builder extends EntityBuilder<{{table-interface}}> {
+		{{table-interface}} read(DataObject src);	
 	}	
+		
 		
 	public static abstract class Key<
 		R extends fi.tnie.db.ent.Reference, 

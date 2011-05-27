@@ -104,6 +104,10 @@ public class DefaultTableMapper
             return name + "Ref";
         }
         
+        if (p == Part.HAS_KEY) {
+            return "Has" + name + "Key";
+        }        
+        
         if (p == Part.LITERAL_TABLE_ENUM) {
             return "Literal" + name;
         }

@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import fi.tnie.db.EntityBuilder;
+import fi.tnie.db.EntityBuilderManager;
 import fi.tnie.db.EntityReader;
 import fi.tnie.db.PersistenceManager;
 import fi.tnie.db.PersistenceManagerTest;
@@ -32,6 +32,8 @@ import fi.tnie.db.gen.ent.personal.HourReport.Type;
 import fi.tnie.db.gen.ent.personal.Project.Holder;
 import fi.tnie.db.gen.ent.personal.Project.Key;
 import fi.tnie.db.meta.DBMetaTestCase;
+import fi.tnie.db.rpc.DateHolder;
+import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.rpc.VarcharHolder;
 
@@ -66,6 +68,11 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	proj.setName("project name");
     	org.name().set("org name");
     	hr.setRef(HourReport.FK_HHR_PROJECT, proj.ref());
+    	// hr.setTravelTime();
+    	hr.setStartedAt(new java.util.Date());
+    	hr.set(HourReport.REPORT_DATE, DateHolder.NULL_HOLDER);
+    	hr.set(HourReport.CREATED_AT, TimestampHolder.NULL_HOLDER);
+    	
     	proj.setRef(Project.FK_SUPPLIER, org.ref());
     	
     	Key<Reference, Type, HourReport, MetaData> k = HourReport.FK_HHR_PROJECT;
@@ -86,8 +93,8 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	
     	ValueExtractorFactory vef = imp.getValueExtractorFactory();
     	    	    	    	
-    	EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.MetaData> eb
-    		= new EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.MetaData>(vef, e);
+    	EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.MetaData> eb
+    		= new EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.MetaData>(vef, e);
     	    	    	    	
     	StatementExecutor se = new StatementExecutor();
     	se.execute(eb.getQuery().getQuery(), c, eb);
@@ -98,6 +105,11 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
 //    	rs.next();
 //    	rs.close();
     	st.close();   	
+    	    	
+    	for (HourReport rpt : eb.getContent()) {
+			logger().info("testConstructor: rpt=" + rpt);
+			logger().info("testConstructor: rpt.project=" + rpt.getProject(HourReport.FK_HHR_PROJECT).value());    		
+		}
     }
     
     

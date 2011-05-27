@@ -45,4 +45,10 @@ public class CharHolder
 	public int getSqlType() {
 		return PrimitiveType.CHAR;
 	}
+	
+	@Override
+	public CharHolder asCharHolder() {
+		return this;
+	}
+	
 }

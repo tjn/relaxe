@@ -1,0 +1,21 @@
+package {{package-name}};
+
+/**
+	Interface for meta-data types which represent the type referencing to the {{table-interface}} type.  
+*/
+// {{table-interface}}
+	
+import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.types.ReferenceType;
+
+public interface {{has-key-interface}}<
+	R extends fi.tnie.db.ent.Reference,
+	T extends ReferenceType<T, S>,
+	E extends Entity<?, R, T, E, ?, ?, S>,
+	S extends EntityMetaData<?, R, T, E, ?, ?, S>	
+	>
+{
+	public {{table-interface}}.Key<R, T, E, S> get{{table-interface}}Key(R ref);
+}
+	

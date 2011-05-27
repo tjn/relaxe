@@ -6,6 +6,8 @@ package fi.tnie.db.ent;
 
 import java.util.Set;
 
+import fi.tnie.db.AttributeWriterFactory;
+import fi.tnie.db.ColumnResolver;
 import fi.tnie.db.ent.im.EntityIdentityMap;
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
@@ -18,6 +20,7 @@ import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
+import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
@@ -49,6 +52,8 @@ public interface EntityMetaData<
 	BaseTable getBaseTable();
 
 	F getFactory();
+	
+	EntityBuilder<E> newBuilder(TableReference tableRef, EntityBuildContext ctx);
 		
 	EntityIdentityMap<A, R, T, E> getIdentityMap(IdentityContext ctx);
 	E unify(IdentityContext ctx, E e);
@@ -91,15 +96,17 @@ public interface EntityMetaData<
 		
 	EntityKey<R, T, E, M, ?, ?, ?, ?, ?> getEntityKey(R ref);
 	
+//	<
+//		X extends fi.tnie.db.ent.Attribute,
+//		Y extends fi.tnie.db.ent.Reference,		
+//		Z extends ReferenceType<Z, O>,
+//		V extends Entity<X, Y, Z, V, VH, ?, O>,
+//		VH extends ReferenceHolder<X, Y, Z, V, VH, O>,
+//		O extends EntityMetaData<X, Y, Z, V, VH, ?, O>
+//	>		
+//	EntityKey<R, T, E, M, Z, V, VH, O, ?> getEntityKey(R ref, O target);
 
-	<
-		X extends fi.tnie.db.ent.Attribute,
-		Y extends fi.tnie.db.ent.Reference,		
-		Z extends ReferenceType<Z, O>,
-		V extends Entity<X, Y, Z, V, ?, ?, O>,
-		O extends EntityMetaData<X, Y, Z, V, ?, ?, O>		
-	>		
-	EntityKey<R, T, E, M, Z, V, ?, O, ?> getEntityKey(R ref, O target);
+	
 	
 //	<
 //		X extends Attribute,
@@ -150,6 +157,8 @@ public interface EntityMetaData<
 	Catalog getCatalog();
 
 	T getType();
+	
+//	public EntityBuilder<E> newBuilder();
 
 	void addKey(DecimalKey<A, T, E> key);
 	void addKey(DoubleKey<A, T, E> key);
@@ -176,14 +185,14 @@ public interface EntityMetaData<
 	
 	M self();
 	
-	<
-		X extends Attribute,		
-		Y extends Reference,
-		Z extends ReferenceType<Z, S>,
-		VH extends ReferenceHolder<X, Y, Z, V, VH, S>,
-		V extends Entity<X, Y, Z, V, VH, ?, S>,
-		S extends EntityMetaData<X, Y, Z, V, VH, ?, S>
-	>	
-	EntityKey<Y, Z, V, S, T, E, H, M, ?> newKey(Y ref, S source);
+//	<
+//		X extends Attribute,		
+//		Y extends Reference,
+//		Z extends ReferenceType<Z, S>,
+//		VH extends ReferenceHolder<X, Y, Z, V, VH, S>,
+//		V extends Entity<X, Y, Z, V, VH, ?, S>,
+//		S extends EntityMetaData<X, Y, Z, V, VH, ?, S>
+//	>	
+//	EntityKey<Y, Z, V, S, T, E, H, M, ?> newKey(Y ref, S source);
 	
 }

@@ -52,8 +52,9 @@ public class PersistenceManager<
     A extends Attribute,
     R extends Reference,
     T extends ReferenceType<T, M>,
-    E extends Entity<A, R, T, E, ?, ?, M>,
-    M extends EntityMetaData<A, R, T, E, ?, ?, M>
+    E extends Entity<A, R, T, E, H, ?, M>,
+    H extends ReferenceHolder<A, R, T, E, H, M>,
+    M extends EntityMetaData<A, R, T, E, H, ?, M>
 >
 {	
     private class Query
@@ -449,7 +450,7 @@ public class PersistenceManager<
 		ValueExtractorFactory vef = getImplementation().getValueExtractorFactory();
 		
 		List<E> content = new ArrayList<E>();		
-		EntityReader<?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, M>(vef, query, content);
+		EntityReader<?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, M>(vef, query, content);
 		StatementExecutor sx = new StatementExecutor();				
 		sx.execute(qo, c, eb);
 					

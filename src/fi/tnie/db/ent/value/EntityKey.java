@@ -8,6 +8,10 @@ import java.io.Serializable;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.Reference;
+import fi.tnie.db.gen.ent.personal.HourReport;
+import fi.tnie.db.gen.ent.personal.Project;
+import fi.tnie.db.gen.ent.personal.HourReport.MetaData;
+import fi.tnie.db.gen.ent.personal.HourReport.Type;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
@@ -48,4 +52,9 @@ public interface EntityKey<
 	
 	S getSource();	
 	D getTarget();
+	
+//	void link(E referencing, R ref, V newValue);
+//	EntityKey<fi.tnie.db.gen.ent.personal.HourReport.Reference, Type, HourReport, MetaData, Z, V, VH, O, ?> newKey();
+	
+	
 }

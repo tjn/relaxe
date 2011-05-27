@@ -27,6 +27,7 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.rpc.Interval;
+import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
 public class PersistenceManagerTest2 extends TestCase  {
@@ -80,7 +81,7 @@ public class PersistenceManagerTest2 extends TestCase  {
                 
         PGImplementation impl = new PGImplementation();
         
-        PersistenceManager<fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person, Person.MetaData> pm = 
+        PersistenceManager<fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person, Person.Holder, Person.MetaData> pm = 
        		create(p.self(), impl);
                                 
 //        PersistenceManager<Attribute, Reference, Query, 
@@ -124,7 +125,7 @@ public class PersistenceManagerTest2 extends TestCase  {
         org.setRef(Organization.FK_COMPANY_CEO, p.ref());
         org.setName("Ab Firma Oy " + ((int) (Math.random() * 1000)));
         
-        PersistenceManager<?, ?, ?, ?, ?> om = create(org, impl);
+        PersistenceManager<?, ?, ?, ?, ?, ?> om = create(org, impl);
         
         om.merge(c);
         c.commit();
@@ -140,7 +141,9 @@ public class PersistenceManagerTest2 extends TestCase  {
         
         PersistenceManager<fi.tnie.db.gen.ent.personal.HourReport.Attribute, 
         	fi.tnie.db.gen.ent.personal.HourReport.Reference, 
-        	fi.tnie.db.gen.ent.personal.HourReport.Type, HourReport,
+        	fi.tnie.db.gen.ent.personal.HourReport.Type, 
+        	HourReport,
+        	fi.tnie.db.gen.ent.personal.HourReport.Holder,
         	HourReport.MetaData> hrm =
         	create(hr, impl);
         
@@ -161,11 +164,12 @@ public class PersistenceManagerTest2 extends TestCase  {
 		A extends Attribute, 
 		R extends fi.tnie.db.ent.Reference, 
 		T extends ReferenceType<T, M>, 
-		E extends Entity<A, R, T, E, ?, ?, M>,
-		M extends EntityMetaData<A, R, T, E, ?, ?, M>
+		E extends Entity<A, R, T, E, H, ?, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		M extends EntityMetaData<A, R, T, E, H, ?, M>
 	>
-	PersistenceManager<A, R, T, E, M> create(E e, Implementation impl) {
-		PersistenceManager<A, R, T, E, M> pm = new PersistenceManager<A, R, T, E, M>(e, impl);
+	PersistenceManager<A, R, T, E, H, M> create(E e, Implementation impl) {
+		PersistenceManager<A, R, T, E, H, M> pm = new PersistenceManager<A, R, T, E, H, M>(e, impl);
 		return pm;
 	}
 

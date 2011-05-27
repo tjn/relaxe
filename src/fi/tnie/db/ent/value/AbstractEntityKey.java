@@ -30,8 +30,8 @@ public abstract class AbstractEntityKey<
 	 *
 	 */
 	private R name;
-	private S meta;
-	
+	private S source;
+		
 //	protected AbstractEntityKey() {		
 //	}	
 	
@@ -54,12 +54,17 @@ public abstract class AbstractEntityKey<
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */	
-	protected AbstractEntityKey(S meta, R name) {
+	protected AbstractEntityKey(S source, R name) {
 		setName(name);
 		
-		if (meta == null) {
-			throw new NullPointerException("meta");
-		}		
+		if (source == null) {
+			throw new NullPointerException("source");
+		}
+		
+		this.source = source;
+		
+		
+		// meta.addEntityKey(self());
 	}
 
 	private void setName(R name) {
@@ -129,6 +134,9 @@ public abstract class AbstractEntityKey<
 	
 	@Override
 	public S getSource() {	
-		return this.meta;
+		return this.source;
 	}
+	
+	
+	
 }

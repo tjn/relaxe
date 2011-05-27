@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -54,6 +55,9 @@ public class SourceGenerator {
 	     * Pattern which is replaced with the simple name of the table interface in template files.
 	     */		
 		TABLE_INTERFACE,
+		HAS_KEY_INTERFACE,
+		
+		REFERENCED_TABLE_INTERFACE_QUALIFIED,
 		TABLE_INTERFACE_REF,
 	    /**
 	     * Pattern which is replaced with the simple name of the abstract class in template files.
@@ -95,8 +99,14 @@ public class SourceGenerator {
 		 * static attribute key declarations in interface
 		 */
 		ATTRIBUTE_KEY_LIST,
+		REFERENCE_KEY_VARIABLE,
 		
 		REFERENCE_KEY_LIST,
+		
+		IMPLEMENTED_HAS_KEY_LIST,
+		
+		
+		BUILDER_LINKER_INIT,
 
 		/**
 		 * Class declarations for reference keys
@@ -251,6 +261,20 @@ public class SourceGenerator {
         for (Schema s : cat.schemas().values()) {
             process(s, tm, ccil, fm, generated, gm);
         }
+        
+		Set<BaseTable> tts = new HashSet<BaseTable>();
+		
+		for (Schema s : cat.schemas().values()) {
+			for (ForeignKey fk : s.foreignKeys().values()) {			
+				tts.add(fk.getReferenced());			
+			}			
+		}
+		
+		for (BaseTable t : tts) {
+			JavaType hki = tm.entityType(t, Part.HAS_KEY);
+			String src = generateHasKeyInterface(hki, t, tm);			
+			writeIfGenerated(getSourceDir(), hki, src, generated, gm);			
+		}
 
         List<String> il = new ArrayList<String>();
 
@@ -277,7 +301,31 @@ public class SourceGenerator {
         return generated;
     }
 
-    private CharSequence generateLiteralContext(JavaType lc, Catalog cat, TableMapper tm, List<String> il, Map<JavaType, CharSequence> fm) throws IOException {
+    private String generateHasKeyInterface(JavaType hki, BaseTable t, TableMapper tm) throws IOException {
+    	if (hki == null) {
+    		return null;
+    	}
+    	
+    	JavaType intf = tm.entityType(t, Part.INTERFACE);
+    	
+    	if (intf == null) {
+    		return null;
+    	}
+    	    	
+    	String src = getTemplateForHasKeyInterface();
+    	
+    	logger().info("generateHasKeyInterface: src 1=" + src);
+    	
+    	src = replaceAllWithComment(src, Tag.PACKAGE_NAME, hki.getPackageName());
+    	src = replaceAll(src, Tag.HAS_KEY_INTERFACE, hki.getUnqualifiedName());    	
+    	src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
+    	
+    	logger().info("generateHasKeyInterface: src 2=" + src);
+    	
+    	return src;
+	}
+
+	private CharSequence generateLiteralContext(JavaType lc, Catalog cat, TableMapper tm, List<String> il, Map<JavaType, CharSequence> fm) throws IOException {
     	   	
     	logger().debug("generateLiteralContext - enter");
     	String src = getTemplateForLiteralCatalog();    	
@@ -734,6 +782,15 @@ public class SourceGenerator {
         return read("LITERAL_CATALOG.in");
     }
     
+    private String getTemplateForHasKeyInterface() throws IOException {
+        return read("HAS_KEY.in");
+    }
+
+    private String getTemplateForBuilderLinkerInit() throws IOException {
+        return read("BUILDER_LINKER_INIT.in");
+    }
+
+    
     private String getTemplateForLiteralInnerTable() throws IOException {
         return read("LITERAL_INNER_TABLE.in");
     }
@@ -816,6 +873,7 @@ public class SourceGenerator {
                 types.add(info);
 		    }
 		}
+		
 
 		{
             final JavaType intf = tm.factoryType(s, Part.INTERFACE);
@@ -847,6 +905,9 @@ public class SourceGenerator {
                 }
             }
         }
+		
+		
+		
 	}
 
     private CharSequence generateRef(BaseTable t, JavaType ref, JavaType intf, TableMapper tm) 
@@ -869,7 +930,7 @@ public class SourceGenerator {
 	    return getSourceFile(pd, type.getUnqualifiedName());
 	}
     
-    private void writeIfGenerated(File root, JavaType type, CharSequence source, Properties dest, Map<File, String> files) 
+	private void writeIfGenerated(File root, JavaType type, CharSequence source, Properties dest, Map<File, String> files) 
     	throws IOException {
     	
 		if (source == null) {
@@ -947,6 +1008,12 @@ public class SourceGenerator {
             String type = referenceKeyList(t, tm);
             src = replaceAll(src, Tag.REFERENCE_KEY_LIST, type);
         }
+        
+
+        {
+            String hkl = implementedHasKeyList(t, tm);
+            src = replaceAll(src, Tag.IMPLEMENTED_HAS_KEY_LIST, hkl);
+        }
 
 //        {
 //            String type = createEnumType(getEnumTemplate(), "Query", queries(t));
@@ -973,7 +1040,37 @@ public class SourceGenerator {
 	    return src;
 	}
 
-    /**
+    private String implementedHasKeyList(BaseTable t, TableMapper tm) {    	    	
+    	SchemaElementMap<ForeignKey> fkm = t.foreignKeys();
+    	Set<BaseTable> ts = new HashSet<BaseTable>();
+    	
+    	for (ForeignKey k : fkm.values()) {
+    		ts.add(k.getReferenced());    		
+		}
+    	
+    	StringBuffer buf = new StringBuffer();
+    	
+    	JavaType intf = tm.entityType(t, Part.INTERFACE);
+    	
+    	// HasProjectKey<Reference, Type, HourReport, MetaData>, HasOrganizationKey<Reference, Type, HourReport, MetaData>
+    	   	
+    	
+    	for (BaseTable r : ts) {
+    		buf.append(", ");    		
+    		JavaType kt = tm.entityType(r, Part.HAS_KEY);    		
+    		buf.append(kt.getQualifiedName());
+    		buf.append("<");
+    		buf.append(getReferenceType());
+    		buf.append(", Type, ");
+    		buf.append(intf.getUnqualifiedName());
+    		buf.append(", MetaData");
+    		buf.append("> ");
+		}
+    	
+		return buf.toString();
+	}
+
+	/**
      * Returns a comma separated list of the Ref -interfaces 
      * which the table interface for <code>t</code> implements.  
      * @param t
@@ -1330,6 +1427,12 @@ public class SourceGenerator {
         }
         
         {
+            String code = builderLinkerInitList(t, tm, qualify);
+            logger().debug("builderLinkerInitList: code=" + code);            
+            src = replaceAll(src, Tag.BUILDER_LINKER_INIT, code);        	
+        }
+        
+        {
             String code = generateCreateIdentityMapMethod(t, tm);
             logger().debug("generateCreateIdentityMapMethod: code=" + code);            
             src = replaceAll(src, Tag.CREATE_IDENTITY_MAP_METHOD, code);        	
@@ -1374,6 +1477,20 @@ public class SourceGenerator {
         return src;
 	}
 	
+	private String builderLinkerInitList(BaseTable referencing, TableMapper tm,
+			boolean qualify) throws IOException {
+		StringBuffer buf = new StringBuffer();
+				
+		for (ForeignKey fk : referencing.foreignKeys().values()) {			
+			String c = formatBuilderLinkerInit(fk, tm);
+			buf.append(c);			
+			buf.append("\n\n");
+		}
+		
+		
+		return buf.toString();			
+	}
+
 	private String generateCreateIdentityMapMethod(BaseTable t, TableMapper tm) {
 		PrimaryKey pk = t.getPrimaryKey();
 		
@@ -2097,6 +2214,8 @@ public class SourceGenerator {
 		StringBuffer buf = new StringBuffer();
 						
 		buf.append("public static final ");
+			
+		
 		buf.append(tt.getQualifiedName());
 		buf.append(".Key");
 		buf.append("<");
@@ -2259,6 +2378,41 @@ public class SourceGenerator {
         return buf.toString();		
 	}	
 	
+	private String formatBuilderLinkerInit(ForeignKey fk, TableMapper tm) 
+		throws IOException {
+		
+		// sample output:
+//      {
+//      	final Project.Key<Reference, Type, HourReport, HourReport.MetaData> pk = FK_HHR_PROJECT;					
+//      	ForeignKey fk = m.getForeignKey(pk.name());				
+//      	TableReference tref = ctx.getQuery().getReferenced(tableRef, fk);
+//
+//      	if (tref != null) {
+//      		Project.MetaData pm = ProjectImpl.ProjectMetaData.getInstance();
+//      		final fi.tnie.db.gen.ent.personal.Project.Builder nb = pm.newBuilder();						
+//
+//      		ll.add(new Linker() {							
+//      			@Override
+//      			public void link(DataObject src, HourReport dest) {
+//      				Project np = nb.read(src);								
+//      				pk.set(dest, np);
+//      			}
+//      		});
+//      	} 
+//      }
+		
+        JavaType intf = tm.entityType(fk.getReferencing(), Part.INTERFACE);
+        JavaType ritf = tm.entityType(fk.getReferenced(), Part.INTERFACE);
+        
+        String src = getTemplateForBuilderLinkerInit();
+                
+        src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());        
+        src = replaceAll(src, Tag.REFERENCED_TABLE_INTERFACE_QUALIFIED, ritf.getQualifiedName());
+        
+        src = replaceAll(src, Tag.REFERENCE_KEY_VARIABLE, referenceName(fk));
+                        
+        return src;		
+	}	
 
 	private String formatAttributeKey(BaseTable t, Column c, TableMapper tm) {
 		StringBuffer buf = new StringBuffer();

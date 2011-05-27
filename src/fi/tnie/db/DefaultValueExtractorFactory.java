@@ -27,7 +27,8 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 				e = createIntegerExtractor(col);	
 				break;
 			case Types.VARCHAR:
-				e = createVarcharExtractor(col);				
+				e = createVarcharExtractor(col);
+				break;
 			case Types.CHAR:
 				e = createCharExtractor(col);
 				break;
@@ -37,7 +38,10 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 			case Types.TIMESTAMP:
 				e = createTimestampExtractor(col);
 				break;
-			case Types.FLOAT:				
+			case Types.TIME:
+				e = createTimeExtractor(col);
+				break;				
+			case Types.FLOAT:
 			case Types.DOUBLE:
 				e = createDoubleExtractor(col);
 				break;				
@@ -77,6 +81,10 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 	
 	public TimestampExtractor createTimestampExtractor(int col) {
 		return new TimestampExtractor(col);
+	}
+	
+	public TimeExtractor createTimeExtractor(int col) {
+		return new TimeExtractor(col);
 	}
 	
 	

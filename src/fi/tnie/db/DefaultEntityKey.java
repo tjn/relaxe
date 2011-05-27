@@ -26,6 +26,10 @@ public abstract class DefaultEntityKey<
 >
 	implements EntityKey<R, T, E, S, Z, V, H, D, K> {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4023544205660547860L;
 	private S source;
 	private D destination;		
 	private R name;
