@@ -25,11 +25,12 @@ public abstract class Holder<V extends Serializable, T extends Type<T>>
 	
 	public abstract T getType();
 	
-	public boolean equals(Holder<?, ?> another) {
-		if (another == null) {
-			throw new NullPointerException();
-		}
-		
+	/**
+	 * 
+	 * @param another
+	 * @return
+	 */
+	public boolean contentEquals(Holder<?, ?> another) {
 		if (another == this) {
 			return true;
 		}
@@ -43,5 +44,27 @@ public abstract class Holder<V extends Serializable, T extends Type<T>>
 				(b == null) ? false : a.equals(b);
 				
 		return result;
-	}	
+	}
+	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			throw new NullPointerException("obj");
+		}
+		
+		if (!getClass().equals(obj.getClass())) {
+			return false; 
+		}
+	
+		return contentEquals((Holder<?, ?>) obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		V v = value();
+		int vh = (v == null) ? 0 : v.hashCode();
+		int th = getType().hashCode();		
+		return vh ^ th;
+	}
 }

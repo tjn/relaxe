@@ -89,7 +89,7 @@ public abstract class AbstractEntityDiff<
 			}
 
 			try {
-				if (!o.equals(m)) {
+				if (!o.contentEquals(m)) {
 					cm.put(a, Change.MODIFICATION);
 				}
 			}

@@ -30,11 +30,6 @@ public abstract class DefaultEntityModel<
 	
 	public DefaultEntityModel(E target) {
 		super();
-		
-		if (target == null) {
-			throw new NullPointerException("target");
-		}
-		
 		this.target = target;
 	}
 
