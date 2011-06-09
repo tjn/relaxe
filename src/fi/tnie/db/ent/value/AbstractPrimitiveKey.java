@@ -71,7 +71,7 @@ public abstract class AbstractPrimitiveKey<
 		
 		// Since getClass().equals(o.getClass()) implies t.type().getSqlType() == type().getSqlType()
 		// we only need to check the name:		
-		AbstractPrimitiveKey<?, ?, ?, ?, ?, ?, ?> t = (AbstractPrimitiveKey<?, ?, ?, ?, ?, ?, ?>) o;								
+		AbstractPrimitiveKey<?, ?, ?, ?, ?, ?, ?> t = (AbstractPrimitiveKey<?, ?, ?, ?, ?, ?, ?>) o;				
 		return nameEquals(t);
 	}
 	

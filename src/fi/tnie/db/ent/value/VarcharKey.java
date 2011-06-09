@@ -6,6 +6,8 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.model.ValueModel;
+import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
@@ -80,4 +82,9 @@ public final class VarcharKey<
 	public VarcharKey<A, T, E> self() {
 		return this;
 	}
+	
+	public ValueModel<VarcharHolder> getAttributeModel(EntityModel<A, T, E, ?> m) {
+		return m.getVarcharModel(self());		
+	}
+	
 }

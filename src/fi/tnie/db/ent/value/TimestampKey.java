@@ -8,6 +8,8 @@ import java.util.Date;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.model.ValueModel;
+import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
@@ -81,5 +83,10 @@ public final class TimestampKey<
 	@Override
 	public TimestampKey<A, T, E> self() {
 		return this;
+	}
+	
+	@Override
+	public ValueModel<TimestampHolder> getAttributeModel(EntityModel<A, T, E, ?> m) {
+		return m.getTimestampModel(this);
 	}
 }

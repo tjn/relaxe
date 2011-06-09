@@ -8,10 +8,6 @@ import java.io.Serializable;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.Reference;
-import fi.tnie.db.gen.ent.personal.HourReport;
-import fi.tnie.db.gen.ent.personal.Project;
-import fi.tnie.db.gen.ent.personal.HourReport.MetaData;
-import fi.tnie.db.gen.ent.personal.HourReport.Type;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 

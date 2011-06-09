@@ -20,15 +20,15 @@ public interface ValueModel<V> {
 	V get();
 	
 	/**
-	 * Registers a listener for value changes.   
+	 * Registers a listener for value changes.
+	 *    
 	 * @param ch
 	 * @return
 	 */
 	Registration addChangeHandler(ChangeListener<V> ch);
 
 	/**
-	 * If this model is mutable, returns 
-	 * a model by which this model can be manipulated (typically <code>this</code>)
+	 * If this model is mutable, returns model by which this model can be manipulated (typically <code>this</code>)
 	 * 
 	 * Returns <code>null</code> if this model is read-only. 
 	 *   
@@ -44,8 +44,7 @@ public interface ValueModel<V> {
 	boolean isMutable();
 	
 	/**
-	 * If this model is immutable, returns itself. 
-	 * If this model is mutable, wraps itself in immutable model and returns the immutable view. 
+	 * If this model is immutable, returns itself, otherwise, wraps itself in immutable model and returns the immutable view. 
 	 *   
 	 * @return
 	 */	

@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.model.ValueModel;
+import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
@@ -24,8 +26,16 @@ public interface PrimitiveKey<
 {
 	P type();
 	A name();	
-	H newHolder(V newValue);	
+	H newHolder(V newValue);
 	H get(E e);
 	void set(E e, H newValue);
 	void copy(E src, E dest);
+	
+	/**
+	 * TODO: ?
+	 * 
+	 * @param m
+	 * @return
+	 */
+	public ValueModel<H> getAttributeModel(EntityModel<A, T, E, ?> m);
 }

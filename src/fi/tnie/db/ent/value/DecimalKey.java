@@ -6,6 +6,8 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.model.ValueModel;
+import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.Decimal;
 import fi.tnie.db.rpc.DecimalHolder;
 import fi.tnie.db.types.DecimalType;
@@ -81,5 +83,11 @@ public final class DecimalKey<
 	@Override
 	public DecimalKey<A, T, E> self() {
 		return this;
+	}
+	
+	@Override
+	public ValueModel<DecimalHolder> getAttributeModel(EntityModel<A, T, E, ?> m) {
+		// TODO:
+		return null;
 	}
 }

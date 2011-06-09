@@ -8,6 +8,8 @@ import java.util.Date;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.model.ValueModel;
+import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.types.DateType;
 import fi.tnie.db.types.PrimitiveType;
@@ -81,5 +83,10 @@ public final class DateKey<
 	@Override
 	public DateKey<A, T, E> self() {
 		return this;		
+	}
+	
+	@Override
+	public ValueModel<DateHolder> getAttributeModel(EntityModel<A, T, E, ?> m) {
+		return m.getDateModel(this);
 	}
 }
