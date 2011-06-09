@@ -11,16 +11,19 @@ import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.ent.value.IntegerKey;
+import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.model.ValueModel;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.rpc.IntegerHolder;
+import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.CharType;
 import fi.tnie.db.types.DateType;
 import fi.tnie.db.types.IntegerType;
 import fi.tnie.db.types.ReferenceType;
+import fi.tnie.db.types.TimestampType;
 import fi.tnie.db.types.VarcharType;
 
 public abstract class DefaultEntityModel<
@@ -207,7 +210,43 @@ public abstract class DefaultEntityModel<
 		}
 
 		return dateAttributeModel;
-	}	
+	}
 
+	// next type	
+	private TimestampAttributeModel timestampAttributeModel;
+	
+	private class TimestampAttributeModel 
+		extends DefaultAttributeModelMap<A, T, E, Date, TimestampType, TimestampHolder, TimestampAttributeModel>
+	{
+		@Override
+		public E getTarget() {		
+			return target;
+		}
+		
+		@Override
+		public TimestampAttributeModel self() {
+			return this;
+		}		
+	}
+	
+	public ValueModel<TimestampHolder> getTimestampModel(A a) {
+		final TimestampKey<A, T, E> k = TimestampKey.get(target.getMetaData(), a);
+		return (k == null) ? null : getTimestampModel(k);
+	}
+	
+	public ValueModel<TimestampHolder> getTimestampModel(TimestampKey<A, T, E> key) {
+		if (key == null) {
+			throw new NullPointerException("key");
+		}
+						
+		return getTimestampAttributeModel().attr(key);
+	}
 
+	private TimestampAttributeModel getTimestampAttributeModel() {
+		if (timestampAttributeModel == null) {
+			timestampAttributeModel = new TimestampAttributeModel();			
+		}
+
+		return timestampAttributeModel;
+	}
 }
