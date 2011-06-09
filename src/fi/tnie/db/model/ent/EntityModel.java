@@ -27,16 +27,15 @@ public interface EntityModel<
 	T extends ReferenceType<T, ?>,	
 	E extends Entity<A, ?, T, E, ?, ?, ?>,	
 	D extends EntityModel<A, T, E, D>
-> {
-	
+> {		
 	<
 		V extends Serializable,
 		P extends PrimitiveType<P>,
 		H extends PrimitiveHolder<V, P>,
-		K extends PrimitiveKey<A, T, E, V, P, H, K>,
-		AM extends AttributeModelMap<A, V, P, H, T, E, AM>
+		K extends PrimitiveKey<A, T, E, V, P, H, K>
 	>
-	AM get(K k);
+	ValueModel<H> getValueModel(K k);
+	
 
 	ValueModel<VarcharHolder> getVarcharModel(VarcharKey<A, T, E> key);
 	ValueModel<CharHolder> getCharModel(CharKey<A, T, E> key);

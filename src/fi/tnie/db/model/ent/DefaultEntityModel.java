@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.model.ent;
 
-import java.io.Serializable;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.Reference;
@@ -30,6 +29,11 @@ public abstract class DefaultEntityModel<
 	
 	public DefaultEntityModel(E target) {
 		super();
+		
+		if (target == null) {
+			throw new NullPointerException("target");
+		}
+		
 		this.target = target;
 	}
 
@@ -61,66 +65,20 @@ public abstract class DefaultEntityModel<
 		}		
 	}		
 	
-//	private Map<PrimitiveType<?>, AttributeModel<A, T, E, ?, ?>> modelMap;
 	
 	private VarcharAttributeModel varcharAttributeModel;
 	private IntegerAttributeModel integerAttributeModel;
-			
-//	<
-//		P extends PrimitiveType<P>		
-//	>	
-//	AttributeModel<A, T, E, ?, ?> getAttributeModel(P type) {		
-//		AttributeModel<A, T, E, ?, ?> mm = modelMap.get(type);
-//		
-//		if (mm == null) {
-//			if (type == IntegerType.TYPE) {
-//				modelMap.put(type, mm = new IntegerAttributeModel());			
-//			}
-//			if (type == VarcharType.TYPE) {
-//				modelMap.put(type, mm = getVarcharAttributeModel());			
-//			}			
-//		}
-//						
-//		return mm;
-//	}
+	
 		
 	public <
-		H extends PrimitiveHolder<?, ?>, 
-		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,?,?,H,K>
+		V extends java.io.Serializable, 
+		P extends fi.tnie.db.types.PrimitiveType<P>, 
+		H extends fi.tnie.db.rpc.PrimitiveHolder<V,P>, 
+		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,V,P,H,K>
 	> 
-	ValueModel<H> get(K k) {
-		return k.getAttributeModel(this);		
+	ValueModel<H> getValueModel(K k) {				
+		return k.getAttributeModel(self());
 	};
-	
-	
-//	public <
-//		V extends Serializable, 
-//		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,V,?,?,K>, 
-//		AM extends AttributeModel<A, T, E, V, AM>
-//	>		
-//	AM get(K k) {
-//		D d = self();
-//		
-//		EntityModel<A, T, E, ?> s = self();
-//				
-//		k.getAttributeModel(self());
-//	};
-	
-	
-//	public <
-//		V extends Serializable,
-//		P extends PrimitiveType<P>,
-//		K extends PrimitiveKey<A, T, E, V, P, ?, K>
-//	> 
-//	
-//	ValueModel<V> getValueModel(K key) {
-//		AttributeModel<A, R, T, E, ?, ?> am = getAttributeModel(key.type());
-//		D m = key.attributeModel(self());
-//		
-////		am.attr(key);
-//				
-//		return m.;		
-//	}
 		
 	public ValueModel<VarcharHolder> getVarcharModel(A a) {
 		final VarcharKey<A, T, E> k = VarcharKey.get(target.getMetaData(), a);
@@ -159,9 +117,9 @@ public abstract class DefaultEntityModel<
 
 		return integerAttributeModel;
 	}
-
 	
-	
-
+	public E getTarget() {
+		return target;
+	}
 
 }
