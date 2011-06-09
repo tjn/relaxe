@@ -8,10 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import fi.tnie.db.EntityBuilderManager;
 import fi.tnie.db.EntityReader;
-import fi.tnie.db.PersistenceManager;
-import fi.tnie.db.PersistenceManagerTest;
 import fi.tnie.db.QueryException;
 import fi.tnie.db.StatementExecutor;
 import fi.tnie.db.ValueExtractorFactory;
@@ -20,7 +17,6 @@ import fi.tnie.db.ent.DefaultEntityQuery;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGCatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
-import fi.tnie.db.exec.QueryProcessor;
 import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
@@ -33,9 +29,7 @@ import fi.tnie.db.gen.ent.personal.Project.Holder;
 import fi.tnie.db.gen.ent.personal.Project.Key;
 import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.rpc.DateHolder;
-import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.rpc.TimestampHolder;
-import fi.tnie.db.rpc.VarcharHolder;
 
 public class PGDefaultEntityQueryTest extends DBMetaTestCase {
 

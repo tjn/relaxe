@@ -8,9 +8,7 @@ import java.util.List;
 
 import fi.tnie.db.AttributeWriter;
 import fi.tnie.db.AttributeWriterFactory;
-import fi.tnie.db.ColumnResolver;
 import fi.tnie.db.ConstantColumnResolver;
-import fi.tnie.db.ent.DataObject.MetaData;
 import fi.tnie.db.expr.ColumnExpr;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.TableReference;

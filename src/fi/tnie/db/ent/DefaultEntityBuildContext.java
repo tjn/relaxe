@@ -6,7 +6,6 @@ package fi.tnie.db.ent;
 import fi.tnie.db.AttributeWriterFactory;
 import fi.tnie.db.ColumnResolver;
 import fi.tnie.db.ent.DataObject.MetaData;
-import fi.tnie.db.expr.TableReference;
 
 public class DefaultEntityBuildContext 
 	implements EntityBuildContext {

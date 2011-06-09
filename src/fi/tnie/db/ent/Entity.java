@@ -30,7 +30,6 @@ import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
-import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.meta.Column;
 	
 public interface Entity<

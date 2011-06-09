@@ -6,8 +6,6 @@ package fi.tnie.db.ent;
 
 import java.util.Set;
 
-import fi.tnie.db.AttributeWriterFactory;
-import fi.tnie.db.ColumnResolver;
 import fi.tnie.db.ent.im.EntityIdentityMap;
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
