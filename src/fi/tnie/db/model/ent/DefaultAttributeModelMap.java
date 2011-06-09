@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.model.ChangeListener;
 import fi.tnie.db.model.DefaultMutableValueModel;
