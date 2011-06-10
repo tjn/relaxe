@@ -8,7 +8,7 @@ import java.util.Date;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.model.ValueModel;
+import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.types.PrimitiveType;
@@ -86,7 +86,7 @@ public final class TimeKey<
 	}
 	
 	@Override
-	public ValueModel<TimeHolder> getAttributeModel(EntityModel<A, T, E, ?> m) {
+	public MutableValueModel<TimeHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) {
 		// TODO Auto-generated method stub
 		return null;
 	}

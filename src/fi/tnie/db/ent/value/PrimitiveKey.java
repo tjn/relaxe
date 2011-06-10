@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
-import fi.tnie.db.model.ValueModel;
+import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
@@ -37,5 +37,5 @@ public interface PrimitiveKey<
 	 * @param m
 	 * @return
 	 */
-	public ValueModel<H> getAttributeModel(EntityModel<A, T, E, ?> m);
+	public MutableValueModel<H> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m);
 }

@@ -4,19 +4,33 @@
 package fi.tnie.db.model.ent;
 
 import java.util.Date;
+import java.util.Map;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityDiff;
+import fi.tnie.db.ent.EntityFactory;
+import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.IdentityContext;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.ent.value.IntegerKey;
+import fi.tnie.db.ent.value.IntervalAccessor;
+import fi.tnie.db.ent.value.IntervalKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
+import fi.tnie.db.ent.value.IntervalAccessor.DayTime;
+import fi.tnie.db.gen.ent.personal.Person;
+import fi.tnie.db.gen.ent.personal.Person.Type;
+import fi.tnie.db.meta.Column;
+import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ValueModel;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.rpc.IntegerHolder;
+import fi.tnie.db.rpc.PrimitiveHolder;
+import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.CharType;
@@ -29,17 +43,21 @@ import fi.tnie.db.types.VarcharType;
 public abstract class DefaultEntityModel<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T, ?>,	
-	E extends Entity<A, R, T, E, ?, ?, ?>,	
-	D extends EntityModel<A, T, E, D>
+	T extends ReferenceType<T, M>,
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>,
+	D extends EntityModel<A, R, T, E, H, F, M, D>
 >
-	implements EntityModel<A, T, E, D> {	
+	implements EntityModel<A, R, T, E, H, F, M, D> {	
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6797576262563930996L;
 	
 	private E target;
-	
-	public E getTarget() {
-		return target;
-	}
 	
 	public DefaultEntityModel(E target) {
 		super();
@@ -51,18 +69,51 @@ public abstract class DefaultEntityModel<
 		this.target = target;
 	}
 	
+	@Override
+	public H ref() {
+		return target.ref();
+	}
+	
+	@Override
+	public EntityDiff<A, R, T, E> diff(E another) {
+		return target.diff(another);
+	}
+	
+	@Override
+	public E unify(IdentityContext ctx) {
+		return target.unify(ctx);
+	}
+	
+	public fi.tnie.db.rpc.PrimitiveHolder<?,?> value(A attribute) {
+		return target.value(attribute);		
+	}
+
+	@Override
+	public boolean isIdentified() {
+		return target.isIdentified();
+	}
+	
+	@Override
+	public M getMetaData() {
+		return target.getMetaData();
+	}
+	
+	@Override
+	public Map<Column, PrimitiveHolder<?, ?>> getPrimaryKey() {
+		return target.getPrimaryKey();
+	}
+	
 	public <
 		V extends java.io.Serializable, 
 		P extends fi.tnie.db.types.PrimitiveType<P>, 
-		H extends fi.tnie.db.rpc.PrimitiveHolder<V,P>, 
-		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,V,P,H,K>
+		VH extends fi.tnie.db.rpc.PrimitiveHolder<V,P>, 
+		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,V,P,VH,K>
 	> 
-	ValueModel<H> getValueModel(K k) {				
-		return k.getAttributeModel(self());
+	MutableValueModel<VH> getValueModel(K k) {				
+		return k.getAttributeModel(asModel());
 	};
-		
-
 	
+		
 	private IntegerAttributeModel integerAttributeModel;
 
 	private class IntegerAttributeModel 
@@ -79,7 +130,7 @@ public abstract class DefaultEntityModel<
 		}		
 	}
 
-	public ValueModel<IntegerHolder> getIntegerModel(IntegerKey<A, T, E> key) {
+	public MutableValueModel<IntegerHolder> getIntegerModel(IntegerKey<A, T, E> key) {
 		if (key == null) {
 			throw new NullPointerException("key");
 		}
@@ -97,6 +148,10 @@ public abstract class DefaultEntityModel<
 		return integerAttributeModel;
 	}
 	
+	@Override
+	public IntegerHolder getInteger(IntegerKey<A, T, E> k) {
+		return getValueModel(k).get();
+	}
 	
 	// next type	
 	private VarcharAttributeModel varcharAttributeModel;
@@ -120,13 +175,23 @@ public abstract class DefaultEntityModel<
 		return (k == null) ? null : getVarcharModel(k);
 	}
 	
-	public ValueModel<VarcharHolder> getVarcharModel(VarcharKey<A, T, E> key) {
+	public MutableValueModel<VarcharHolder> getVarcharModel(VarcharKey<A, T, E> key) {
 		if (key == null) {
 			throw new NullPointerException("key");
 		}
 						
 		return getVarcharAttributeModel().attr(key);
 	}
+	
+	public VarcharHolder getVarchar(VarcharKey<A, T, E> key) {		
+		return getValueModel(key).get();
+	}
+	
+	@Override
+	public void setVarchar(VarcharKey<A, T, E> k, VarcharHolder newValue) {
+		getValueModel(k).set(newValue);
+	}
+	
 
 	private VarcharAttributeModel getVarcharAttributeModel() {
 		if (varcharAttributeModel == null) {
@@ -158,7 +223,7 @@ public abstract class DefaultEntityModel<
 		return (k == null) ? null : getCharModel(k);
 	}
 	
-	public ValueModel<CharHolder> getCharModel(CharKey<A, T, E> key) {
+	public MutableValueModel<CharHolder> getCharModel(CharKey<A, T, E> key) {
 		if (key == null) {
 			throw new NullPointerException("key");
 		}
@@ -173,6 +238,17 @@ public abstract class DefaultEntityModel<
 
 		return charAttributeModel;
 	}
+	
+	@Override
+	public CharHolder getChar(CharKey<A, T, E> k) {
+		return getValueModel(k).get();
+	}
+	
+	@Override
+	public void setChar(CharKey<A, T, E> k, CharHolder newValue) {
+		getValueModel(k).set(newValue);
+	}
+
 
 	// next type	
 	private DateAttributeModel dateAttributeModel;
@@ -196,7 +272,7 @@ public abstract class DefaultEntityModel<
 		return (k == null) ? null : getDateModel(k);
 	}
 	
-	public ValueModel<DateHolder> getDateModel(DateKey<A, T, E> key) {
+	public MutableValueModel<DateHolder> getDateModel(DateKey<A, T, E> key) {
 		if (key == null) {
 			throw new NullPointerException("key");
 		}
@@ -210,6 +286,11 @@ public abstract class DefaultEntityModel<
 		}
 
 		return dateAttributeModel;
+	}
+	
+	@Override
+	public DateHolder getDate(DateKey<A, T, E> k) {
+		return getValueModel(k).get();
 	}
 
 	// next type	
@@ -234,7 +315,7 @@ public abstract class DefaultEntityModel<
 		return (k == null) ? null : getTimestampModel(k);
 	}
 	
-	public ValueModel<TimestampHolder> getTimestampModel(TimestampKey<A, T, E> key) {
+	public MutableValueModel<TimestampHolder> getTimestampModel(TimestampKey<A, T, E> key) {
 		if (key == null) {
 			throw new NullPointerException("key");
 		}
@@ -249,4 +330,16 @@ public abstract class DefaultEntityModel<
 
 		return timestampAttributeModel;
 	}
+	
+	@Override
+	public TimestampHolder getTimestamp(TimestampKey<A, T, E> k) {
+		return getValueModel(k).get();
+	}
+	
+	
+	public IntervalAccessor.DayTime<A, T, E> getIntervalAccessor(IntervalKey.DayTime<A, T, E> k) {
+		DayTime<A, T, E> ia = new IntervalAccessor.DayTime<A, T, E>(self(), k);
+		return ia;
+	}
+	
 }

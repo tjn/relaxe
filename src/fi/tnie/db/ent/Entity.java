@@ -139,8 +139,8 @@ public interface Entity<
 	/**
 	 * Returns the meta-data object which describes the structure of this object.
 	 * @return
-	 */	
-	// EntityMetaData<A, R, T, E> getMetaData();
+	 */
+	
 	M getMetaData();
 		
 	T getType();
@@ -171,13 +171,7 @@ public interface Entity<
 	
 	void setInterval(IntervalKey.YearMonth<A, T, E> k, IntervalHolder.YearMonth newValue);
 	void setInterval(IntervalKey.DayTime<A, T, E> k, IntervalHolder.DayTime newValue);
-	
-			
-	/**
-	 * TODO: EntityQueryTask should be also rewritten to use DataObjectReader
-	 */
-	// DataObject getSource();
-	
+		
 	public E self();
 
 	E unify(IdentityContext ctx);

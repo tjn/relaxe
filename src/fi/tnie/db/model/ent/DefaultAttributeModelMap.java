@@ -11,7 +11,7 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.model.ChangeListener;
 import fi.tnie.db.model.DefaultMutableValueModel;
-import fi.tnie.db.model.ValueModel;
+import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
@@ -31,11 +31,11 @@ public abstract class DefaultAttributeModelMap<
 	public DefaultAttributeModelMap() {		
 	}	
 
-	private Map<A, ValueModel<H>> modelMap;
+	private Map<A, MutableValueModel<H>> modelMap;
 
-	private Map<A, ValueModel<H>> getValueModelMap() {
+	private Map<A, MutableValueModel<H>> getValueModelMap() {
 		if (modelMap == null) {
-			modelMap = new HashMap<A, ValueModel<H>>();			
+			modelMap = new HashMap<A, MutableValueModel<H>>();			
 		}
 
 		return modelMap;
@@ -55,17 +55,17 @@ public abstract class DefaultAttributeModelMap<
 	public <
 		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,V,P,H,K>
 	> 
-	ValueModel<H> attr(final K k) {
+	MutableValueModel<H> attr(final K k) {
 		if (k == null) {
 			throw new NullPointerException("key");
 		}
 		
-		Map<A, ValueModel<H>> mm = getValueModelMap();		
-		ValueModel<H> m = mm.get(k.name());
+		Map<A, MutableValueModel<H>> mm = getValueModelMap();		
+		MutableValueModel<H> m = mm.get(k.name());
 		
 		if (m == null) {
 			H h = k.get(getTarget());
-			ValueModel<H> nm = createValueModel(k, h);
+			MutableValueModel<H> nm = createValueModel(k, h);
 									
 			nm.addChangeHandler(new ChangeListener<H>() {				
 				@Override
@@ -84,8 +84,8 @@ public abstract class DefaultAttributeModelMap<
 	public <		 
 		K extends PrimitiveKey<A, T, E, V, P, H, K>
 	> 
-	ValueModel<H> createValueModel(K k, H v) {
-		ValueModel<H> nm = new DefaultMutableValueModel<H>(v);
+	MutableValueModel<H> createValueModel(K k, H v) {
+		MutableValueModel<H> nm = new DefaultMutableValueModel<H>(v);
 		return nm;
 	}
 	

@@ -7,7 +7,7 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.model.ValueModel;
+import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.Interval;
 import fi.tnie.db.rpc.IntervalHolder;
@@ -117,7 +117,7 @@ public abstract class IntervalKey<
 		}
 		
 		@Override
-		public ValueModel<fi.tnie.db.rpc.IntervalHolder.YearMonth> getAttributeModel(EntityModel<A, T, E, ?> m) {
+		public MutableValueModel<fi.tnie.db.rpc.IntervalHolder.YearMonth> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -191,8 +191,7 @@ public abstract class IntervalKey<
 		}
 		
 		@Override
-		public ValueModel<fi.tnie.db.rpc.IntervalHolder.DayTime> getAttributeModel(
-				EntityModel<A, T, E, ?> m) {
+		public MutableValueModel<fi.tnie.db.rpc.IntervalHolder.DayTime> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) {
 			// TODO Auto-generated method stub
 			return null;
 		}

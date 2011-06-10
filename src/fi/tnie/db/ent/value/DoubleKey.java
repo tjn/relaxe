@@ -6,7 +6,7 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.model.ValueModel;
+import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.types.DoubleType;
@@ -84,7 +84,7 @@ public final class DoubleKey<
 	}
 	
 	@Override
-	public ValueModel<DoubleHolder> getAttributeModel(EntityModel<A, T, E, ?> m) {
+	public MutableValueModel<DoubleHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) {
 		// TODO:
 		return null;
 	}
