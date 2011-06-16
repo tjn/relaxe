@@ -60,7 +60,12 @@ public class PersistenceManager<
     private class Query
         extends DefaultEntityQuery<A, R, T, E, M>
     {
-        public Query(M meta) throws EntityException {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -1285004174865437785L;
+
+		public Query(M meta) throws EntityException {
             super(meta);
         }
     }
