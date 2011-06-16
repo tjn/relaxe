@@ -522,7 +522,7 @@ public abstract class DefaultEntityMetaData<
 		
 	}
 	
-	public E unify(IdentityContext ctx, E e) {
+	public E unify(IdentityContext ctx, E e) throws EntityRuntimeException {
 		EntityIdentityMap<A, R, T, E> im = getIdentityMap(ctx);
 		return im.get(e);
 	}

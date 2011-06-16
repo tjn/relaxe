@@ -54,7 +54,7 @@ public interface EntityMetaData<
 	EntityBuilder<E> newBuilder(TableReference tableRef, EntityBuildContext ctx);
 		
 	EntityIdentityMap<A, R, T, E> getIdentityMap(IdentityContext ctx);
-	E unify(IdentityContext ctx, E e);
+	E unify(IdentityContext ctx, E e) throws EntityRuntimeException;
 	void dispose(IdentityContext ctx);
 		
 //	PrimitiveKey<A, ?, ?, ?, E> key(A a);

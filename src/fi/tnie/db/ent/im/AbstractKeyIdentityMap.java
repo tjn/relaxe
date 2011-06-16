@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.AbstractPrimitiveKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
@@ -38,7 +39,8 @@ public class AbstractKeyIdentityMap<
 	}
 	
 	@Override
-	protected V identify(E src) {
+	protected V identify(E src) 
+		throws EntityRuntimeException {
 		H h = src.get(this.key);
 		return (h == null) ? null : h.value();
 	}

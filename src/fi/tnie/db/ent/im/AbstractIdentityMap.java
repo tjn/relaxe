@@ -8,6 +8,7 @@ import java.util.Map;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.types.ReferenceType;
 
@@ -22,7 +23,8 @@ public abstract class AbstractIdentityMap<
 		
 	private Map<K, E> entityMap;
 	
-	public E get(E e) {
+	public E get(E e) 
+		throws EntityRuntimeException {
 		if (e == null) {
 			throw new NullPointerException("e");
 		}
@@ -53,6 +55,7 @@ public abstract class AbstractIdentityMap<
 	}
 	
 	
-	protected abstract K identify(E src);
+	protected abstract K identify(E src) 
+		throws EntityRuntimeException;
 
 }

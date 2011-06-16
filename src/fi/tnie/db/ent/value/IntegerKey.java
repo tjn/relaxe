@@ -6,6 +6,7 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.IntegerHolder;
@@ -60,11 +61,13 @@ public final class IntegerKey<
 		return IntegerType.TYPE;
 	}
 	
-	public void set(E e, IntegerHolder newValue) {
+	public void set(E e, IntegerHolder newValue) 
+		throws EntityRuntimeException {
 		e.setInteger(this, newValue);
 	}
 	
-	public IntegerHolder get(E e) {
+	public IntegerHolder get(E e) 
+		throws EntityRuntimeException {
 		return e.getInteger(this);
 	}
 	
@@ -74,7 +77,8 @@ public final class IntegerKey<
 	}
 
 	@Override
-	public void copy(E src, E dest) {
+	public void copy(E src, E dest) 
+		throws EntityRuntimeException {
 		dest.setInteger(this, src.getInteger(this));
 	}
 
@@ -84,7 +88,7 @@ public final class IntegerKey<
 	}
 		
 	@Override
-	public MutableValueModel<IntegerHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) {	
+	public MutableValueModel<IntegerHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException {	
 		return m.getIntegerModel(this);
 	}
 }

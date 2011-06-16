@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.model.ValueModel;
 import fi.tnie.db.rpc.PrimitiveHolder;
@@ -28,5 +29,5 @@ public interface AttributeModelMap<
 	<			
 		K extends PrimitiveKey<A, T, E, V, P, H, K>
 	>	
-	ValueModel<H> attr(K k);		
+	ValueModel<H> attr(K k) throws EntityRuntimeException;		
 }

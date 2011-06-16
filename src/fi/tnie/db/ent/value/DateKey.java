@@ -8,6 +8,7 @@ import java.util.Date;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.DateHolder;
@@ -62,11 +63,13 @@ public final class DateKey<
 		return DateType.TYPE;
 	}
 
-	public void set(E e, DateHolder newValue) {
+	public void set(E e, DateHolder newValue) 
+		throws EntityRuntimeException {
 		e.setDate(this, newValue);
 	}
 	
-	public DateHolder get(E e) {
+	public DateHolder get(E e) 
+		throws EntityRuntimeException {
 		return e.getDate(this);
 	}
 	
@@ -76,7 +79,8 @@ public final class DateKey<
 	}
 	
 	@Override
-	public void copy(E src, E dest) {
+	public void copy(E src, E dest)
+		throws EntityRuntimeException {
 		dest.setDate(this, src.getDate(this));
 	}
 
@@ -86,7 +90,7 @@ public final class DateKey<
 	}
 	
 	@Override
-	public MutableValueModel<DateHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) {
+	public MutableValueModel<DateHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException {
 		return m.getDateModel(this);
 	}
 }

@@ -11,6 +11,7 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityDiff;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.IdentityContext;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.CharKey;
@@ -73,7 +74,7 @@ public abstract class DefaultEntityModel<
 	}
 	
 	@Override
-	public EntityDiff<A, R, T, E> diff(E another) {
+	public EntityDiff<A, R, T, E> diff(E another) throws EntityRuntimeException {
 		return target.diff(another);
 	}
 	
@@ -82,12 +83,12 @@ public abstract class DefaultEntityModel<
 		return target.unify(ctx);
 	}
 	
-	public fi.tnie.db.rpc.PrimitiveHolder<?,?> value(A attribute) {
+	public fi.tnie.db.rpc.PrimitiveHolder<?,?> value(A attribute) throws EntityRuntimeException {
 		return target.value(attribute);		
 	}
 
 	@Override
-	public boolean isIdentified() {
+	public boolean isIdentified() throws EntityRuntimeException {
 		return target.isIdentified();
 	}
 	
@@ -97,7 +98,7 @@ public abstract class DefaultEntityModel<
 	}
 	
 	@Override
-	public Map<Column, PrimitiveHolder<?, ?>> getPrimaryKey() {
+	public Map<Column, PrimitiveHolder<?, ?>> getPrimaryKey() throws EntityRuntimeException {
 		return target.getPrimaryKey();
 	}
 	
@@ -128,7 +129,7 @@ public abstract class DefaultEntityModel<
 		}		
 	}
 
-	public MutableValueModel<IntegerHolder> getIntegerModel(IntegerKey<A, T, E> key) {
+	public MutableValueModel<IntegerHolder> getIntegerModel(IntegerKey<A, T, E> key) throws EntityRuntimeException {
 		if (key == null) {
 			throw new NullPointerException("key");
 		}
@@ -173,7 +174,7 @@ public abstract class DefaultEntityModel<
 		return (k == null) ? null : getVarcharModel(k);
 	}
 	
-	public MutableValueModel<VarcharHolder> getVarcharModel(VarcharKey<A, T, E> key) {
+	public MutableValueModel<VarcharHolder> getVarcharModel(VarcharKey<A, T, E> key) throws EntityRuntimeException {
 		if (key == null) {
 			throw new NullPointerException("key");
 		}
@@ -221,7 +222,7 @@ public abstract class DefaultEntityModel<
 		return (k == null) ? null : getCharModel(k);
 	}
 	
-	public MutableValueModel<CharHolder> getCharModel(CharKey<A, T, E> key) {
+	public MutableValueModel<CharHolder> getCharModel(CharKey<A, T, E> key) throws EntityRuntimeException {
 		if (key == null) {
 			throw new NullPointerException("key");
 		}

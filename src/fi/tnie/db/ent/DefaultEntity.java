@@ -219,7 +219,7 @@ public abstract class DefaultEntity<
 	P extends fi.tnie.db.types.PrimitiveType<P>, 
 	PH extends fi.tnie.db.rpc.PrimitiveHolder<S, P>, 
 	K extends fi.tnie.db.ent.value.PrimitiveKey<A, T, E, S, P, PH, K>> 
-	void set(K k, PH newValue) {
+	void set(K k, PH newValue) throws EntityRuntimeException {
 		k.set(self(), newValue);		
 	};
 
@@ -228,7 +228,7 @@ public abstract class DefaultEntity<
 		return getCharValueMap().get(k.name());
 	}
 
-	public PrimitiveHolder<?, ?> get(A attribute) {
+	public PrimitiveHolder<?, ?> get(A attribute) throws EntityRuntimeException {
 		return getMetaData().getKey(attribute).get(self());
 	}
 
@@ -284,7 +284,7 @@ public abstract class DefaultEntity<
 		getYearMonthIntervalValueMap().put(k.name(), newValue);		
 	}
 	
-	public fi.tnie.db.rpc.PrimitiveHolder<?,?> value(A attribute) {
+	public fi.tnie.db.rpc.PrimitiveHolder<?,?> value(A attribute) throws EntityRuntimeException {
 		PrimitiveKey<A, T, E, ?, ?, ?, ?> key = getMetaData().getKey(attribute);
 		return key.get(self());
 	};
@@ -294,8 +294,8 @@ public abstract class DefaultEntity<
 		P extends fi.tnie.db.types.PrimitiveType<P>, 
 		PH extends fi.tnie.db.rpc.PrimitiveHolder<S, P>, 
 		K extends fi.tnie.db.ent.value.PrimitiveKey<A, T, E, S, P, PH, K>
-	> PH get(K k) {
-		return k.get(self());		
+	> PH get(K k) throws EntityRuntimeException {
+		return k.get(self());
 	}
 	
 		

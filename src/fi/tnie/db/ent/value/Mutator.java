@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
@@ -22,6 +23,8 @@ public interface Mutator<
 >
 	extends PrimitiveAccessor<A, T, E, S, P, H, K>
 {
-	void set(S newValue);
-	void setHolder(H newHolder);
+	void set(S newValue)
+		throws EntityException;
+	void setHolder(H newHolder)
+		throws EntityException;
 }

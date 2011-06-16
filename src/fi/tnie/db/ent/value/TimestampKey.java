@@ -8,6 +8,7 @@ import java.util.Date;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.TimestampHolder;
@@ -62,11 +63,13 @@ public final class TimestampKey<
 		return TimestampType.TYPE;
 	}
 
-	public void set(E e, TimestampHolder newValue) {
+	public void set(E e, TimestampHolder newValue) 
+		throws EntityRuntimeException {
 		e.setTimestamp(this, newValue);
 	}
 	
-	public TimestampHolder get(E e) {
+	public TimestampHolder get(E e) 
+		throws EntityRuntimeException {
 		return e.getTimestamp(this);
 	}
 	
@@ -76,7 +79,8 @@ public final class TimestampKey<
 	}
 
 	@Override
-	public void copy(E src, E dest) {
+	public void copy(E src, E dest) 
+		throws EntityRuntimeException {
 		dest.setTimestamp(this, src.getTimestamp(this));		
 	}
 
@@ -86,7 +90,7 @@ public final class TimestampKey<
 	}
 	
 	@Override
-	public MutableValueModel<TimestampHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) {
+	public MutableValueModel<TimestampHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException {
 		return m.getTimestampModel(this);
 	}
 }

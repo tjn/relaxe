@@ -6,6 +6,7 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.VarcharHolder;
@@ -60,11 +61,13 @@ public final class VarcharKey<
 		return VarcharType.TYPE;
 	}
 	
-	public void set(E e, VarcharHolder newValue) {
+	public void set(E e, VarcharHolder newValue) 
+		throws EntityRuntimeException {
 		e.setVarchar(this, newValue);
 	}
 	
-	public VarcharHolder get(E e) {
+	public VarcharHolder get(E e) 
+		throws EntityRuntimeException {
 		return e.getVarchar(this);
 	}
 	
@@ -74,7 +77,8 @@ public final class VarcharKey<
 	}
 
 	@Override
-	public void copy(E src, E dest) {
+	public void copy(E src, E dest) 
+		throws EntityRuntimeException {
 		dest.setVarchar(this, src.getVarchar(this));		
 	}
 	
@@ -83,8 +87,8 @@ public final class VarcharKey<
 		return this;
 	}
 	
-	public MutableValueModel<VarcharHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) {
-		return m.getVarcharModel(self());		
+	public MutableValueModel<VarcharHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException {
+		return m.getVarcharModel(self());
 	}
 	
 }

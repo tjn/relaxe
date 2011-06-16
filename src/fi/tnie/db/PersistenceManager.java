@@ -60,7 +60,7 @@ public class PersistenceManager<
     private class Query
         extends DefaultEntityQuery<A, R, T, E, M>
     {
-        public Query(M meta) {
+        public Query(M meta) throws EntityException {
             super(meta);
         }
     }
@@ -86,7 +86,7 @@ public class PersistenceManager<
     }
 
 
-    public InsertStatement createInsertStatement() {
+    public InsertStatement createInsertStatement() throws EntityException {
         E pe = getTarget();
     	ValueRow newRow = new ValueRow();
 
@@ -418,7 +418,7 @@ public class PersistenceManager<
     }
 
 
-    private Query getQuery() {
+    private Query getQuery() throws EntityException {
         if (this.query == null) {
             this.query = new Query(getTarget().getMetaData());
         }

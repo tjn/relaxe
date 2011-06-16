@@ -3,6 +3,9 @@
  */
 package fi.tnie.db;
 
+import fi.tnie.db.ent.EntityRuntimeException;
+
 public interface IdentityMap<V> {
-	V get(V v);
+	V get(V v)
+		throws EntityRuntimeException;
 }

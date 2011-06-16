@@ -6,6 +6,7 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.Decimal;
@@ -62,16 +63,19 @@ public final class DecimalKey<
 		return DecimalType.TYPE;
 	}
 
-	public void set(E e, DecimalHolder newValue) {
+	public void set(E e, DecimalHolder newValue)
+		throws EntityRuntimeException {
 		e.setDecimal(this, newValue);
 	}
 	
-	public DecimalHolder get(E e) {
+	public DecimalHolder get(E e) 
+		throws EntityRuntimeException {
 		return e.getDecimal(this);
 	}
 	
 	@Override
-	public void copy(E src, E dest) {
+	public void copy(E src, E dest) 
+		throws EntityRuntimeException {
 		dest.setDecimal(this, src.getDecimal(this));
 	}
 

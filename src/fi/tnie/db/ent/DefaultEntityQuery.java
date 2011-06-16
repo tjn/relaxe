@@ -56,7 +56,8 @@ public class DefaultEntityQuery<
 			
 //	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class.get);		
 	
-	public DefaultEntityQuery(M meta) {		
+	public DefaultEntityQuery(M meta)
+		throws EntityRuntimeException {		
 		try {
 			init(createPrototype(meta));
 		} 
@@ -66,7 +67,7 @@ public class DefaultEntityQuery<
 		}		
 	}
 
-	private E createPrototype(M meta) {
+	private E createPrototype(M meta) throws EntityRuntimeException {
 		E p = meta.getFactory().newInstance();
 		
 		for (A a : meta.attributes()) {
@@ -83,12 +84,12 @@ public class DefaultEntityQuery<
 	}	
 
 	public DefaultEntityQuery(E root)
-		throws CyclicTemplateException {
+		throws CyclicTemplateException, EntityRuntimeException {
 		super();
 		init(root);
 	}
 
-	private void init(E root) throws CyclicTemplateException {
+	private void init(E root) throws CyclicTemplateException, EntityRuntimeException {
 		if (root == null) {
 			throw new NullPointerException();
 		}
@@ -121,7 +122,7 @@ public class DefaultEntityQuery<
 			ME template, 
 			AbstractTableReference qref, ForeignKey fk, TableReference referencing, 
 			DefaultTableExpression q, Set<Entity<?,?,?,?,?,?,?>> visited)
-		throws CyclicTemplateException {
+		throws CyclicTemplateException, EntityRuntimeException {
 		
 		if (visited.contains(template)) {
 			throw new CyclicTemplateException(template);
@@ -226,7 +227,7 @@ public class DefaultEntityQuery<
 		MA extends Attribute,
 		D extends Entity<MA, ?, ?, D, ?, ?, ?>
 	> 
-	void addAttributes(D template, Select s, TableReference tref) {
+	void addAttributes(D template, Select s, TableReference tref) throws EntityRuntimeException {
 		EntityMetaData<MA, ?, ?, D, ?, ?, ?> meta = template.getMetaData();
 		Set<MA> as = meta.attributes();
 		

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.model.ChangeListener;
 import fi.tnie.db.model.DefaultMutableValueModel;
@@ -55,7 +56,7 @@ public abstract class DefaultAttributeModelMap<
 	public <
 		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,V,P,H,K>
 	> 
-	MutableValueModel<H> attr(final K k) {
+	MutableValueModel<H> attr(final K k) throws EntityRuntimeException {
 		if (k == null) {
 			throw new NullPointerException("key");
 		}
@@ -84,8 +85,8 @@ public abstract class DefaultAttributeModelMap<
 	public <		 
 		K extends PrimitiveKey<A, T, E, V, P, H, K>
 	> 
-	MutableValueModel<H> createValueModel(K k, H v) {
-		MutableValueModel<H> nm = new DefaultMutableValueModel<H>(v);
+	MutableValueModel<H> createValueModel(K k, H initialValue) {
+		MutableValueModel<H> nm = new DefaultMutableValueModel<H>(initialValue);
 		return nm;
 	}
 	

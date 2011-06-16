@@ -34,7 +34,7 @@ public abstract class AbstractEntity<
 //	public abstract Map<A, PrimitiveHolder<?, ?>> values();		
 	protected abstract Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> references();
 	
-	public PrimitiveHolder<?, ?> get(Column column) throws NullPointerException {
+	public PrimitiveHolder<?, ?> get(Column column) throws NullPointerException, EntityRuntimeException {
 		
 		if (column == null) {
 			throw new NullPointerException("column");
@@ -112,7 +112,7 @@ public abstract class AbstractEntity<
 	public abstract E self();
 	
 	
-	public EntityDiff<A, R, T, E> diff(E another) {
+	public EntityDiff<A, R, T, E> diff(E another) throws EntityRuntimeException {
 		final E self = self();
 								
 		if (this == another || another == null) {
@@ -122,7 +122,7 @@ public abstract class AbstractEntity<
 		return new EntitySnapshotDiff<A, R, T, E>(self, another);
 	}
 	
-	public Map<Column, PrimitiveHolder<?,?>> getPrimaryKey() {
+	public Map<Column, PrimitiveHolder<?,?>> getPrimaryKey() throws EntityRuntimeException {
 		Map<Column, PrimitiveHolder<?,?>> pk = new HashMap<Column, PrimitiveHolder<?,?>>(); 
 		
 		for (Column pkcol : getMetaData().getPKDefinition()) {
@@ -164,10 +164,20 @@ public abstract class AbstractEntity<
 				
 		for (A a : as) {
 			PrimitiveKey<A, ?, E, ?, ?, ?, ?> key = meta.getKey(a);
-			PrimitiveHolder<?, ?> v = key.get(self());	
+			PrimitiveHolder<?, ?> v = null;
 			buf.append(key.name());
 			buf.append("=");
-			buf.append(v);
+			
+			try {
+				v = key.get(self());
+				buf.append(v);
+			}
+			catch (EntityRuntimeException e) {
+				buf.append("[ERROR: ");
+				buf.append(e.getMessage());
+				buf.append("]");
+			}
+			
 			buf.append("; ");
 		}
 		
@@ -176,9 +186,10 @@ public abstract class AbstractEntity<
 
 	/**
 	 * Returns true if the primary key of this entity has not null components.
+	 * @throws EntityRuntimeException 
 	 */	
 	@Override
-	public boolean isIdentified() {
+	public boolean isIdentified() throws EntityRuntimeException {
 		return getPrimaryKey() != null;
 	}
 }

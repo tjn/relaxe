@@ -8,6 +8,7 @@ import java.io.Serializable;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
@@ -79,7 +80,8 @@ public abstract class AbstractPrimitiveKey<
 		return name().equals(pk.name());
 	}
 	
-	public void clear(E src) {
+	public void clear(E src)	
+		throws EntityRuntimeException {
 		src.set(self(), newHolder(null));
 	}
 }

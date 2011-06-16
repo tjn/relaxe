@@ -12,9 +12,9 @@ public class DefaultMutableValueModel<V>
 		super();
 	}
 
-	public DefaultMutableValueModel(V value) {
+	public DefaultMutableValueModel(V initialValue) {
 		super();
-		this.value = value;
+		this.value = initialValue;
 	}
 	
 	@Override

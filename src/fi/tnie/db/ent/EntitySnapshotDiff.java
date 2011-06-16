@@ -19,7 +19,7 @@ public class EntitySnapshotDiff <
 	private Map<A, Change> attributes = null;
 	private Map<R, Change> references = null;
 
-	public EntitySnapshotDiff(E original, E modified) {
+	public EntitySnapshotDiff(E original, E modified) throws EntityRuntimeException {
 		super(original, modified);
 		this.attributes = Collections.unmodifiableMap(super.attributes(original, modified));
 		this.references = Collections.unmodifiableMap(super.references(original, modified));

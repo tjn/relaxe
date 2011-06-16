@@ -6,6 +6,7 @@ package fi.tnie.db.ent.value;
 import java.io.Serializable;
 
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.types.Type;
 
@@ -18,12 +19,15 @@ public interface Key<
 	extends Serializable
 {
 	V type();
-	void copy(E src, E dest);
+	void copy(E src, E dest)
+		throws EntityRuntimeException;
 	
 	/**
 	 * TODO: Is this name sane?
 	 * @param src
 	 */
-	void clear(E src);	
+	void clear(E src)
+		throws EntityRuntimeException;
+	
 	K self();
 }

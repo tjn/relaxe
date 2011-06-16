@@ -51,7 +51,8 @@ public interface Entity<
 		PH extends PrimitiveHolder<S, P>,
 		K extends PrimitiveKey<A, T, E, S, P, PH, K>
 	>	
-	PH get(K k);	
+	PH get(K k)
+		throws EntityRuntimeException;	
 
 	<			
 		P extends ReferenceType<P, D>,
@@ -68,7 +69,8 @@ public interface Entity<
 		RH extends PrimitiveHolder<S, P>,
 		K extends PrimitiveKey<A, T, E, S, P, RH, K> 
 	>	
-	void set(K k, RH newValue);
+	void set(K k, RH newValue)
+		throws EntityRuntimeException;
 	
 
 	
@@ -83,7 +85,7 @@ public interface Entity<
 	>		
 	void setRef(K k, RH newValue);	
 	
-	PrimitiveHolder<?, ?> value(A attribute);
+	PrimitiveHolder<?, ?> value(A attribute) throws EntityRuntimeException;
 	
 				
 	
@@ -101,10 +103,11 @@ public interface Entity<
 	 *       
 	 * @param column
 	 * @return Scalar value or <code>null</code>, if the value is not set
+	 * @throws EntityRuntimeException
 	 * @throws NullPointerException If <code>c</code> is <code>null</code>.	 
 	 */
 	
-	PrimitiveHolder<?, ?> get(Column c);	
+	PrimitiveHolder<?, ?> get(Column c) throws NullPointerException, EntityRuntimeException;	
 	
 	/***
 	 * Returns the value of the corresponding column.
@@ -132,9 +135,9 @@ public interface Entity<
 //	 */
 //	void set(R r, ReferenceHolder<?, ?, ?, ?, ?, ?> value);
 			
-	EntityDiff<A, R, T, E> diff(E another);
+	EntityDiff<A, R, T, E> diff(E another) throws EntityRuntimeException;
 		
-	Map<Column, PrimitiveHolder<?, ?>> getPrimaryKey();
+	Map<Column, PrimitiveHolder<?, ?>> getPrimaryKey() throws EntityRuntimeException;
 	
 	/**
 	 * Returns the meta-data object which describes the structure of this object.
@@ -147,35 +150,51 @@ public interface Entity<
 	
 	H ref();
 	
-	IntegerHolder getInteger(IntegerKey<A, T, E> k);
-	VarcharHolder getVarchar(VarcharKey<A, T, E> k);
-	DateHolder getDate(DateKey<A, T, E> k);
-	TimestampHolder getTimestamp(TimestampKey<A, T, E> k);
-	
-	TimeHolder getTime(TimeKey<A, T, E> k);
-	CharHolder getChar(CharKey<A, T, E> k);
-	DoubleHolder getDouble(DoubleKey<A, T, E> k);
-	DecimalHolder getDecimal(DecimalKey<A, T, E> k);
+	IntegerHolder getInteger(IntegerKey<A, T, E> k)
+		throws EntityRuntimeException;
+	VarcharHolder getVarchar(VarcharKey<A, T, E> k)
+		throws EntityRuntimeException;
+	DateHolder getDate(DateKey<A, T, E> k)
+		throws EntityRuntimeException;
+	TimestampHolder getTimestamp(TimestampKey<A, T, E> k)
+		throws EntityRuntimeException;	
+	TimeHolder getTime(TimeKey<A, T, E> k)
+		throws EntityRuntimeException;
+	CharHolder getChar(CharKey<A, T, E> k)
+		throws EntityRuntimeException;
+	DoubleHolder getDouble(DoubleKey<A, T, E> k)
+		throws EntityRuntimeException;
+	DecimalHolder getDecimal(DecimalKey<A, T, E> k)
+		throws EntityRuntimeException;
 	
 	IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, T, E> k);
 	IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, T, E> k);	
 	
-	void setInteger(IntegerKey<A, T, E> k, IntegerHolder newValue);
-	void setVarchar(VarcharKey<A, T, E> k, VarcharHolder newValue);
-	void setChar(CharKey<A, T, E> k, CharHolder newValue);
-	void setDate(DateKey<A, T, E> k, DateHolder newValue);
-	void setTimestamp(TimestampKey<A, T, E> k, TimestampHolder newValue);
-	void setTime(TimeKey<A, T, E> k, TimeHolder newValue);
-	void setDecimal(DecimalKey<A, T, E> k, DecimalHolder newValue);
-	void setDouble(DoubleKey<A, T, E> k, DoubleHolder newValue);
-	
-	void setInterval(IntervalKey.YearMonth<A, T, E> k, IntervalHolder.YearMonth newValue);
-	void setInterval(IntervalKey.DayTime<A, T, E> k, IntervalHolder.DayTime newValue);
+	void setInteger(IntegerKey<A, T, E> k, IntegerHolder newValue)
+		throws EntityRuntimeException;
+	void setVarchar(VarcharKey<A, T, E> k, VarcharHolder newValue)
+		throws EntityRuntimeException;
+	void setChar(CharKey<A, T, E> k, CharHolder newValue)
+		throws EntityRuntimeException;
+	void setDate(DateKey<A, T, E> k, DateHolder newValue)	
+		throws EntityRuntimeException;
+	void setTimestamp(TimestampKey<A, T, E> k, TimestampHolder newValue)
+		throws EntityRuntimeException;	
+	void setTime(TimeKey<A, T, E> k, TimeHolder newValue)
+		throws EntityRuntimeException;
+	void setDecimal(DecimalKey<A, T, E> k, DecimalHolder newValue)
+		throws EntityRuntimeException;
+	void setDouble(DoubleKey<A, T, E> k, DoubleHolder newValue)
+		throws EntityRuntimeException;	
+	void setInterval(IntervalKey.YearMonth<A, T, E> k, IntervalHolder.YearMonth newValue)
+		throws EntityRuntimeException;
+	void setInterval(IntervalKey.DayTime<A, T, E> k, IntervalHolder.DayTime newValue)
+		throws EntityRuntimeException;
 		
 	public E self();
 
 	E unify(IdentityContext ctx);
 		
-	boolean isIdentified();
+	boolean isIdentified() throws EntityRuntimeException;
 		
 }

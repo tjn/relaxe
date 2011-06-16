@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityException;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.PrimitiveHolder;
@@ -27,15 +29,16 @@ public interface PrimitiveKey<
 	P type();
 	A name();	
 	H newHolder(V newValue);
-	H get(E e);
-	void set(E e, H newValue);
-	void copy(E src, E dest);
+	H get(E e) throws EntityRuntimeException;
+	void set(E e, H newValue) throws EntityRuntimeException;	
+	void copy(E src, E dest) throws EntityRuntimeException;
 	
 	/**
 	 * TODO: ?
 	 * 
 	 * @param m
 	 * @return
+	 * @throws EntityException 
 	 */
-	public MutableValueModel<H> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m);
+	public MutableValueModel<H> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException;
 }

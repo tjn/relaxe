@@ -64,9 +64,10 @@ public abstract class AbstractEntityDiff<
 	 * @param original
 	 * @param modified
 	 * @return
+	 * @throws EntityException 
 	 */
 
-	protected Map<A, Change> attributes(E original, E modified) {
+	protected Map<A, Change> attributes(E original, E modified) throws EntityRuntimeException {
 		EntityMetaData<A, R, T, E, ?, ?, ?> meta = original.getMetaData();
 		Map<A, Change> cm = new HashMap<A, Change>();
 
@@ -103,7 +104,7 @@ public abstract class AbstractEntityDiff<
 		return cm;
 	}
 
-	protected Map<R, Change> references(E original, E modified) {
+	protected Map<R, Change> references(E original, E modified) throws EntityRuntimeException {
 		EntityMetaData<A, R, T, E, ?, ?, ?> meta = original.getMetaData();
 		Map<R, Change> cm = new HashMap<R, Change>();
 
@@ -136,7 +137,7 @@ public abstract class AbstractEntityDiff<
 
 	private
 	<P extends Entity<?, ?, ?, ?, ?, ?, ?>>
-	boolean primaryKeyDiffers(P o, P m) {
+	boolean primaryKeyDiffers(P o, P m) throws EntityRuntimeException {
 		Map<Column, PrimitiveHolder<?,?>> a = o.getPrimaryKey();
 		Map<Column, PrimitiveHolder<?,?>> b = m.getPrimaryKey();
 

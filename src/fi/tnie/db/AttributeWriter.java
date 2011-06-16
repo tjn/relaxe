@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
@@ -24,8 +25,8 @@ public interface AttributeWriter<
 	H extends PrimitiveHolder<V, P>,
 	K extends PrimitiveKey<A, T, E, V, P, H, K>> {
 	
-	public H write(DataObject src, E dest);
+	public H write(DataObject src, E dest) throws EntityRuntimeException;
 	
 	public H write(ResultSet src, E dest)
-		throws SQLException;
+		throws SQLException, EntityRuntimeException;
 }

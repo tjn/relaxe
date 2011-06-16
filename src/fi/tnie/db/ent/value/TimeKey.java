@@ -8,6 +8,7 @@ import java.util.Date;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.TimeHolder;
@@ -62,11 +63,13 @@ public final class TimeKey<
 		return TimeType.TYPE;
 	}
 
-	public void set(E e, TimeHolder newValue) {
+	public void set(E e, TimeHolder newValue) 
+		throws EntityRuntimeException {
 		e.setTime(this, newValue);
 	}
 	
-	public TimeHolder get(E e) {
+	public TimeHolder get(E e) 
+		throws EntityRuntimeException {
 		return e.getTime(this);
 	}
 	
@@ -76,7 +79,8 @@ public final class TimeKey<
 	}
 
 	@Override
-	public void copy(E src, E dest) {
+	public void copy(E src, E dest) 
+		throws EntityRuntimeException {
 		dest.setTime(this, src.getTime(this));		
 	}
 

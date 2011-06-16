@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
@@ -52,7 +53,7 @@ public abstract class AbstractAttributeWriter<
 	protected abstract H as(PrimitiveHolder<?, ?> ph);
 	
 	@Override
-	public H write(DataObject src, E dest) {
+	public H write(DataObject src, E dest) throws EntityRuntimeException {
 		PrimitiveHolder<?, ?> ph = src.get(getIndex());
 		H h = as(ph);
 		
@@ -65,7 +66,7 @@ public abstract class AbstractAttributeWriter<
 	}
 	
 	@Override
-	public H write(ResultSet src, E dest) throws SQLException {
+	public H write(ResultSet src, E dest) throws SQLException, EntityRuntimeException {
 		PrimitiveHolder<?, ?> ph = extract(src);
 		H h = as(ph);
 		dest.set(getKey(), h);

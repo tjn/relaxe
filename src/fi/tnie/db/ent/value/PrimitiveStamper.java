@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
@@ -41,12 +42,14 @@ public class PrimitiveStamper<
 
 
 	@Override
-	public void setHolder(H newHolder) {
+	public void setHolder(H newHolder) 
+		throws EntityRuntimeException {
 		getTarget().set(key(), newHolder);
 	}
 
 	@Override
-	public void set(S newValue) {		
+	public void set(S newValue) 
+		throws EntityRuntimeException {		
 		setHolder(key().newHolder(newValue));
 	}		
 }

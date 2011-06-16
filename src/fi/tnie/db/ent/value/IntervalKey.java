@@ -7,6 +7,7 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.Interval;
@@ -97,7 +98,8 @@ public abstract class IntervalKey<
 		}
 
 		@Override
-		public void set(E e, fi.tnie.db.rpc.IntervalHolder.YearMonth newValue) {
+		public void set(E e, fi.tnie.db.rpc.IntervalHolder.YearMonth newValue) 
+			throws EntityRuntimeException {
 			e.setInterval(this, newValue);	
 		}
 
@@ -107,7 +109,8 @@ public abstract class IntervalKey<
 		}
 
 		@Override
-		public void copy(E src, E dest) {
+		public void copy(E src, E dest) 
+			throws EntityRuntimeException {
 			dest.setInterval(this, src.getInterval(this));
 		}
 		
@@ -171,7 +174,8 @@ public abstract class IntervalKey<
 		}
 
 		@Override
-		public void set(E e, fi.tnie.db.rpc.IntervalHolder.DayTime newValue) {
+		public void set(E e, fi.tnie.db.rpc.IntervalHolder.DayTime newValue) 
+			throws EntityRuntimeException {
 			e.setInterval(this, newValue);			
 		}
 
@@ -181,7 +185,8 @@ public abstract class IntervalKey<
 		}
 
 		@Override
-		public void copy(E src, E dest) {
+		public void copy(E src, E dest) 
+			throws EntityRuntimeException {
 			dest.setInterval(this, src.getInterval(this));
 		}
 		

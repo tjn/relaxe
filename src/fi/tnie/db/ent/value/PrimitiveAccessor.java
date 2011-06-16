@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
@@ -23,6 +24,8 @@ public interface PrimitiveAccessor<
 	extends Serializable
 {
 	K key();	
-	S get();
-	public H getHolder();
+	S get()
+		throws EntityException;
+	public H getHolder()
+		throws EntityException;
 }

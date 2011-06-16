@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
@@ -59,19 +60,23 @@ public class AbstractPrimitiveAccessor<
 		return this.key;
 	}
 
-	public void setHolder(H newHolder) {
+	public void setHolder(H newHolder)
+		throws EntityRuntimeException {
 		getTarget().set(this.key, newHolder);
 	}
 
-	public H getHolder() {
+	public H getHolder() 
+		throws EntityRuntimeException {
 		return getTarget().get(this.key);		
 	}
 
-	public void set(S newValue) {
+	public void set(S newValue) 
+		throws EntityRuntimeException {
 		setHolder(this.key.newHolder(newValue));
 	}
 		
-	public S get() {
+	public S get() 
+		throws EntityRuntimeException {
 		return getHolder().value();
 	}
 

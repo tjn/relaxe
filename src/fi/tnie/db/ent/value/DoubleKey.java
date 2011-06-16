@@ -6,6 +6,7 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.DoubleHolder;
@@ -60,11 +61,13 @@ public final class DoubleKey<
 		return DoubleType.TYPE;
 	}
 
-	public void set(E e, DoubleHolder newValue) {
+	public void set(E e, DoubleHolder newValue) 
+		throws EntityRuntimeException {
 		e.setDouble(this, newValue);
 	}
 	
-	public DoubleHolder get(E e) {
+	public DoubleHolder get(E e) 
+		throws EntityRuntimeException {
 		return e.getDouble(this);
 	}
 
@@ -74,7 +77,8 @@ public final class DoubleKey<
 	}
 	
 	@Override
-	public void copy(E src, E dest) {
+	public void copy(E src, E dest) 
+		throws EntityRuntimeException {
 		dest.setDouble(this, src.getDouble(this));
 	}
 	

@@ -6,6 +6,7 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.CharHolder;
@@ -60,11 +61,13 @@ public final class CharKey<
 		return CharType.TYPE;
 	}
 	
-	public void set(E e, CharHolder newValue) {
+	public void set(E e, CharHolder newValue)
+		throws EntityRuntimeException {
 		e.setChar(this, newValue);
 	}
 	
-	public CharHolder get(E e) {
+	public CharHolder get(E e)
+		throws EntityRuntimeException {
 		return e.getChar(this);
 	}
 
@@ -74,7 +77,8 @@ public final class CharKey<
 	}
 
 	@Override
-	public void copy(E src, E dest) {
+	public void copy(E src, E dest)
+		throws EntityRuntimeException {
 		dest.setChar(this, src.getChar(this));
 	}
 	
@@ -84,7 +88,7 @@ public final class CharKey<
 	}
 	
 	@Override
-	public MutableValueModel<CharHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) {
+	public MutableValueModel<CharHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException {
 		return m.getCharModel(this);
 	}
 }
