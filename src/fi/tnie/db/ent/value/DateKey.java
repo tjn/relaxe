@@ -9,7 +9,7 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
-import fi.tnie.db.model.MutableValueModel;
+import fi.tnie.db.model.ValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.types.DateType;
@@ -90,7 +90,7 @@ public final class DateKey<
 	}
 	
 	@Override
-	public MutableValueModel<DateHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException {
+	public ValueModel<DateHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException {
 		return m.getDateModel(this);
 	}
 }

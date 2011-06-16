@@ -9,7 +9,7 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityRuntimeException;
-import fi.tnie.db.model.MutableValueModel;
+import fi.tnie.db.model.ValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
@@ -40,5 +40,5 @@ public interface PrimitiveKey<
 	 * @return
 	 * @throws EntityException 
 	 */
-	public MutableValueModel<H> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException;
+	public ValueModel<H> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException;
 }

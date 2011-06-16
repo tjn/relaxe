@@ -16,7 +16,7 @@ import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
-import fi.tnie.db.model.MutableValueModel;
+import fi.tnie.db.model.ValueModel;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.rpc.IntegerHolder;
@@ -45,13 +45,13 @@ public interface EntityModel<
 		PH extends PrimitiveHolder<V, P>,
 		K extends PrimitiveKey<A, T, E, V, P, PH, K>
 	>
-	MutableValueModel<PH> getValueModel(K k) throws EntityRuntimeException;	
+	ValueModel<PH> getValueModel(K k) throws EntityRuntimeException;	
 
-	MutableValueModel<VarcharHolder> getVarcharModel(VarcharKey<A, T, E> key) throws EntityRuntimeException;
-	MutableValueModel<CharHolder> getCharModel(CharKey<A, T, E> key) throws EntityRuntimeException;
-	MutableValueModel<DateHolder> getDateModel(DateKey<A, T, E> key) throws EntityRuntimeException;
-	MutableValueModel<TimestampHolder> getTimestampModel(TimestampKey<A, T, E> key) throws EntityRuntimeException;	
-	MutableValueModel<IntegerHolder> getIntegerModel(IntegerKey<A, T, E> key) throws EntityRuntimeException;
+	ValueModel<VarcharHolder> getVarcharModel(VarcharKey<A, T, E> key) throws EntityRuntimeException;
+	ValueModel<CharHolder> getCharModel(CharKey<A, T, E> key) throws EntityRuntimeException;
+	ValueModel<DateHolder> getDateModel(DateKey<A, T, E> key) throws EntityRuntimeException;
+	ValueModel<TimestampHolder> getTimestampModel(TimestampKey<A, T, E> key) throws EntityRuntimeException;	
+	ValueModel<IntegerHolder> getIntegerModel(IntegerKey<A, T, E> key) throws EntityRuntimeException;
 	
 	D asModel();
 }

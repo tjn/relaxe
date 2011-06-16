@@ -9,7 +9,7 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
-import fi.tnie.db.model.MutableValueModel;
+import fi.tnie.db.model.ValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.types.PrimitiveType;
@@ -90,7 +90,7 @@ public final class TimestampKey<
 	}
 	
 	@Override
-	public MutableValueModel<TimestampHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException {
+	public ValueModel<TimestampHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException {
 		return m.getTimestampModel(this);
 	}
 }

@@ -7,7 +7,7 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
-import fi.tnie.db.model.MutableValueModel;
+import fi.tnie.db.model.ValueModel;
 import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.types.IntegerType;
@@ -88,7 +88,7 @@ public final class IntegerKey<
 	}
 		
 	@Override
-	public MutableValueModel<IntegerHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException {	
+	public ValueModel<IntegerHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException {	
 		return m.getIntegerModel(this);
 	}
 }

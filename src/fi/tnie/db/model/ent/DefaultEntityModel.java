@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.model.ent;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
@@ -19,10 +20,12 @@ import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalAccessor;
 import fi.tnie.db.ent.value.IntervalKey;
+import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.ent.value.IntervalAccessor.DayTime;
 import fi.tnie.db.meta.Column;
+// import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ValueModel;
 import fi.tnie.db.rpc.CharHolder;
@@ -35,6 +38,7 @@ import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.CharType;
 import fi.tnie.db.types.DateType;
 import fi.tnie.db.types.IntegerType;
+import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.types.TimestampType;
 import fi.tnie.db.types.VarcharType;
@@ -108,7 +112,7 @@ public abstract class DefaultEntityModel<
 		VH extends fi.tnie.db.rpc.PrimitiveHolder<V,P>, 
 		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,V,P,VH,K>
 	> 
-	MutableValueModel<VH> getValueModel(K k) {				
+	ValueModel<VH> getValueModel(K k) {				
 		return k.getAttributeModel(asModel());
 	};
 	
@@ -129,7 +133,7 @@ public abstract class DefaultEntityModel<
 		}		
 	}
 
-	public MutableValueModel<IntegerHolder> getIntegerModel(IntegerKey<A, T, E> key) throws EntityRuntimeException {
+	public ValueModel<IntegerHolder> getIntegerModel(IntegerKey<A, T, E> key) throws EntityRuntimeException {
 		if (key == null) {
 			throw new NullPointerException("key");
 		}
@@ -174,7 +178,7 @@ public abstract class DefaultEntityModel<
 		return (k == null) ? null : getVarcharModel(k);
 	}
 	
-	public MutableValueModel<VarcharHolder> getVarcharModel(VarcharKey<A, T, E> key) throws EntityRuntimeException {
+	public ValueModel<VarcharHolder> getVarcharModel(VarcharKey<A, T, E> key) throws EntityRuntimeException {
 		if (key == null) {
 			throw new NullPointerException("key");
 		}
@@ -187,8 +191,27 @@ public abstract class DefaultEntityModel<
 	}
 	
 	@Override
-	public void setVarchar(VarcharKey<A, T, E> k, VarcharHolder newValue) {
-		getValueModel(k).set(newValue);
+	public void setVarchar(VarcharKey<A, T, E> k, VarcharHolder newValue) 
+		throws EntityRuntimeException {
+		assign(k, newValue);		
+	}
+	
+	
+	private <
+		K extends PrimitiveKey<A, T, E, V, PT, PH, K>,
+		V extends Serializable,
+		PT extends PrimitiveType<PT>,
+		PH extends PrimitiveHolder<V, PT>
+	>	
+	void assign(K k, PH newValue)
+		throws EntityRuntimeException {
+		MutableValueModel<PH> mm = getValueModel(k).asMutable();		
+		
+		if (mm == null) {
+			throw new EntityRuntimeException();
+		}
+		
+		mm.set(newValue);
 	}
 	
 
@@ -222,7 +245,7 @@ public abstract class DefaultEntityModel<
 		return (k == null) ? null : getCharModel(k);
 	}
 	
-	public MutableValueModel<CharHolder> getCharModel(CharKey<A, T, E> key) throws EntityRuntimeException {
+	public ValueModel<CharHolder> getCharModel(CharKey<A, T, E> key) throws EntityRuntimeException {
 		if (key == null) {
 			throw new NullPointerException("key");
 		}
@@ -245,7 +268,7 @@ public abstract class DefaultEntityModel<
 	
 	@Override
 	public void setChar(CharKey<A, T, E> k, CharHolder newValue) {
-		getValueModel(k).set(newValue);
+		assign(k, newValue);		
 	}
 
 
@@ -271,7 +294,7 @@ public abstract class DefaultEntityModel<
 		return (k == null) ? null : getDateModel(k);
 	}
 	
-	public MutableValueModel<DateHolder> getDateModel(DateKey<A, T, E> key) {
+	public ValueModel<DateHolder> getDateModel(DateKey<A, T, E> key) {
 		if (key == null) {
 			throw new NullPointerException("key");
 		}
@@ -314,7 +337,7 @@ public abstract class DefaultEntityModel<
 		return (k == null) ? null : getTimestampModel(k);
 	}
 	
-	public MutableValueModel<TimestampHolder> getTimestampModel(TimestampKey<A, T, E> key) {
+	public ValueModel<TimestampHolder> getTimestampModel(TimestampKey<A, T, E> key) {
 		if (key == null) {
 			throw new NullPointerException("key");
 		}
