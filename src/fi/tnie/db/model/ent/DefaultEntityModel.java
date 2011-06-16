@@ -156,6 +156,13 @@ public abstract class DefaultEntityModel<
 		return getValueModel(k).get();
 	}
 	
+	@Override
+	public void setInteger(IntegerKey<A, T, E> k, IntegerHolder newValue)
+			throws EntityRuntimeException {
+		assign(k, newValue);
+	}
+	
+	
 	// next type	
 	private VarcharAttributeModel varcharAttributeModel;
 	
