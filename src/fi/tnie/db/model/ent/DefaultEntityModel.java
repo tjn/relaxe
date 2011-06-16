@@ -321,6 +321,12 @@ public abstract class DefaultEntityModel<
 	public DateHolder getDate(DateKey<A, T, E> k) {
 		return getValueModel(k).get();
 	}
+	
+	@Override
+	public void setDate(DateKey<A, T, E> k, DateHolder newValue)
+			throws EntityRuntimeException {
+		assign(k, newValue);		
+	}
 
 	// next type	
 	private TimestampAttributeModel timestampAttributeModel;
