@@ -371,6 +371,12 @@ public abstract class DefaultEntityModel<
 		return getValueModel(k).get();
 	}
 	
+	@Override
+	public void setTimestamp(TimestampKey<A, T, E> k, TimestampHolder newValue)
+			throws EntityRuntimeException {
+		assign(k, newValue);
+	}
+	
 	
 	public IntervalAccessor.DayTime<A, T, E> getIntervalAccessor(IntervalKey.DayTime<A, T, E> k) {
 		DayTime<A, T, E> ia = new IntervalAccessor.DayTime<A, T, E>(self(), k);
