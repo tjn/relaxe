@@ -194,7 +194,7 @@ public abstract class JDBCTestCase
 		
 		fi.tnie.db.env.util.ResultSetWriter rw = new ResultSetWriter(System.out, false);		
 		
-		final int jdbcMajor = meta.getJDBCMajorVersion();
+//		final int jdbcMajor = meta.getJDBCMajorVersion();
 		
 		rw.println("URL\t" + meta.getURL());
 		rw.println("user\t" + meta.getUserName());

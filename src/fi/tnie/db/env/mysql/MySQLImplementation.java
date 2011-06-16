@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import fi.tnie.db.AttributeWriter;
 import fi.tnie.db.ConstantColumnResolver;
 import fi.tnie.db.DefaultAttributeWriterFactory;
-import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
@@ -45,8 +44,7 @@ public class MySQLImplementation
 	}
 
     @Override
-    public ColumnDefinition serialColumnDefinition(String columnName,
-            boolean big) {
+    public ColumnDefinition serialColumnDefinition(String columnName, boolean big) {
         // TODO add support (subclass ColumnDefinition to put AUTO_INCREMENT in the right spot)
         return null;
     }
@@ -95,7 +93,6 @@ public class MySQLImplementation
 			throws EntityException, SQLException {
 
 			M em = target.getMetaData();
-			ValueExtractorFactory vef = getValueExtractorFactory();
 
 //			ResultSet is expected to contain single column: GENERATED_KEY
 

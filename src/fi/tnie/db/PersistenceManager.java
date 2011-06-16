@@ -153,10 +153,12 @@ public class PersistenceManager<
     }
 
 
-	private
-	<P extends PrimitiveType<P>, H extends PrimitiveHolder<?, P>>
-	ValueParameter<P, H> createParameter(Column col, H holder) {
-		return new ValueParameter<P, H>(col, holder);
+	private <
+		P extends PrimitiveType<P>, 
+		PH extends PrimitiveHolder<?, P>
+	>
+	ValueParameter<P, PH> createParameter(Column col, PH holder) {
+		return new ValueParameter<P, PH>(col, holder);
 	}
 
     public UpdateStatement createUpdateStatement() throws EntityException {

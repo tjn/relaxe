@@ -21,8 +21,6 @@ import fi.tnie.db.ent.value.IntervalKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.ent.value.IntervalAccessor.DayTime;
-import fi.tnie.db.gen.ent.personal.Person;
-import fi.tnie.db.gen.ent.personal.Person.Type;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ValueModel;

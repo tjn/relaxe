@@ -1275,12 +1275,6 @@ public class SourceGenerator {
         return src;
 	}	
 
-    private String createEnumType(String template, String name, String constants) {
-        String src = replaceAll(template, "{{enum-type}}", name);
-        src = replaceAll(src, "{{enum-constants}}", constants);
-        return src;
-	}
-
 	private String getAttributeTemplate() throws IOException {
 	       return read("attribute-type.in");
 	}
@@ -1289,11 +1283,6 @@ public class SourceGenerator {
 	       return read("reference-type.in");
 	}
 	
-	
-	private String getEnumTemplate() throws IOException {
-       return read("enum-type.in");
-   }
-
 	private String getTemplateFor(Part p)
 	    throws IOException {
         return read(p.toString() + ".in");
@@ -2756,22 +2745,12 @@ public class SourceGenerator {
 	}
 
 
-	private String queries(BaseTable t) {
-	    StringBuffer content = new StringBuffer();
-	    queries(t, content);
-	    return content.toString();
-	}
+//	private String queries(BaseTable t) {
+//	    StringBuffer content = new StringBuffer();
+//	    queries(t, content);
+//	    return content.toString();
+//	}
 
-	private void queries(BaseTable t, StringBuffer content) {
-//		List<String> elements = new ArrayList<String>();
-
-		// TODO:
-//		for (ForeignKey fk : t.foreignKeys().values()) {
-//			elements.add(fk.getUnqualifiedName().getName());
-//		}
-//
-//		content.append(enumMember(getQueryType(), elements));
-	}
 
 
 	private Set<Identifier> foreignKeyColumns(BaseTable t) {

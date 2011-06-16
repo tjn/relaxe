@@ -419,8 +419,8 @@ public abstract class DefaultEntityMetaData<
 	protected <
 		V extends Serializable, 
 		P extends PrimitiveType<P>,
-		H extends PrimitiveHolder<V, P>,
-		K extends PrimitiveKey<A, T, E, V, P, H, K>
+		PH extends PrimitiveHolder<V, P>,
+		K extends PrimitiveKey<A, T, E, V, P, PH, K>
 	>
 	K key(K key, A name) {
 		if (name == null) {
@@ -464,8 +464,8 @@ public abstract class DefaultEntityMetaData<
 	protected <
 		V extends Serializable, 
 		P extends PrimitiveType<P>,
-		H extends PrimitiveHolder<V, P>,
-		K extends PrimitiveKey<A, T, E, V, P, H, K>
+		PH extends PrimitiveHolder<V, P>,
+		K extends PrimitiveKey<A, T, E, V, P, PH, K>
 	>
 	K key(A name, Map<A, K> src) {
 		if (name == null) {
