@@ -127,13 +127,6 @@ public interface Entity<
 	 */		
 	ReferenceHolder<?, ?, ?, ?, ?, ?> ref(R ref);
 	
-//	/**
-//	 * Set the value of the reference <code>r</code>. TODO: this does not look safe.
-//	 * 
-//	 * @param a
-//	 * @param value
-//	 */
-//	void set(R r, ReferenceHolder<?, ?, ?, ?, ?, ?> value);
 			
 	EntityDiff<A, R, T, E> diff(E another) throws EntityRuntimeException;
 		

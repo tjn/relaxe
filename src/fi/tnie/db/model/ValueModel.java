@@ -28,7 +28,7 @@ public interface ValueModel<V> {
 	Registration addChangeHandler(ChangeListener<V> ch);
 
 	/**
-	 * If this model is mutable, returns model by which this model can be manipulated (typically <code>this</code>)
+	 * If this model is mutable, returns a model by which this model can be manipulated (typically <code>this</code>)
 	 * 
 	 * Returns <code>null</code> if this model is read-only. 
 	 *   
