@@ -58,60 +58,6 @@ public abstract class PrimitiveType<T extends PrimitiveType<T>>
 	
 	public abstract int getSqlType();
 	
-	// public abstract PrimitiveHolder<?, ? extends T> nil();
-	
-	/**
-	 * TODO: This is not a good idea. 
-	 * Type code does not necessarily identify the type. 
-	 * For example type OTHER is/might be shared between several distinct types.
-	 * Since this seems to be actually used only to create null parameters, we should get rid of this quite easily.   
-	 * 
-	 * @param sqltype
-	 * @return
-	 */	
-	@Deprecated
-	public static PrimitiveType<?> get(int sqltype) {
-		PrimitiveType<?> p = null;
-		
-		switch (sqltype) {
-		case PrimitiveType.CHAR:
-			p = CharType.TYPE;
-			break;
-		case PrimitiveType.DATE:
-			p = DateType.TYPE;
-			break;
-		case PrimitiveType.DECIMAL:
-			p = DecimalType.TYPE;
-			break;
-		case PrimitiveType.DOUBLE:
-			p = DoubleType.TYPE;
-			break;
-		case PrimitiveType.FLOAT:
-			p = FloatType.TYPE;
-			break;
-		case PrimitiveType.INTEGER:
-			p = IntegerType.TYPE;
-			break;
-		case PrimitiveType.LONGVARCHAR:
-			p = LongVarcharType.TYPE;
-			break;
-		case PrimitiveType.OTHER:
-			// TODO: 
-//			p = OtherType.TYPE;
-			break;
-		case PrimitiveType.TIMESTAMP:
-			p = TimestampType.TYPE;
-			break;
-		case PrimitiveType.VARCHAR:
-			p = VarcharType.TYPE;
-			break;			
-		default:
-			break;
-		}
-		
-		return p;
-	}
-	
 	public static class SerializableType
 		extends PrimitiveType<SerializableType> {
 		
