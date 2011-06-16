@@ -111,10 +111,10 @@ public class MySQLImplementation
 				AttributeWriter<A, T, E, ?, ?, ?, ?> aw = wf.createWriter(em, cr, 1);				
 				aw.write(rs, target);
 			}
-//			else {
-//				String cn = em.getBaseTable().getQualifiedName() + "." + col.getUnqualifiedName();
-//				throw new EntityException("can not get auto-increment key (" + cn + ")");
-//			}
+			else {
+				String cn = em.getBaseTable().getQualifiedName() + "." + col.getUnqualifiedName();
+				throw new EntityException("can not get auto-increment key for column (" + cn + ")");
+			}
 		}
 
 		private Column findAutoIncrementColumn(BaseTable tbl) {
@@ -126,7 +126,6 @@ public class MySQLImplementation
 
 			return null;
 		}
-
 	}
 
 	@Override
