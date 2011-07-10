@@ -8,8 +8,6 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
-import fi.tnie.db.model.MutableValueModel;
-import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.Interval;
 import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.types.IntervalType;
@@ -117,13 +115,7 @@ public abstract class IntervalKey<
 		@Override
 		public YearMonth<A, T, E> self() {
 			return this;
-		}
-		
-		@Override
-		public MutableValueModel<fi.tnie.db.rpc.IntervalHolder.YearMonth> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) {
-			// TODO Auto-generated method stub
-			return null;
-		}
+		}		
 	}
 	
 	public static final class DayTime<
@@ -193,12 +185,6 @@ public abstract class IntervalKey<
 		@Override
 		public DayTime<A, T, E> self() {
 			return this;
-		}
-		
-		@Override
-		public MutableValueModel<fi.tnie.db.rpc.IntervalHolder.DayTime> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) {
-			// TODO Auto-generated method stub
-			return null;
 		}
 	}
 

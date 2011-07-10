@@ -7,8 +7,6 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
-import fi.tnie.db.model.MutableValueModel;
-import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.types.DoubleType;
 import fi.tnie.db.types.PrimitiveType;
@@ -85,11 +83,5 @@ public final class DoubleKey<
 	@Override
 	public DoubleKey<A, T, E> self() {
 		return this;
-	}
-	
-	@Override
-	public MutableValueModel<DoubleHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) {
-		// TODO:
-		return null;
 	}
 }

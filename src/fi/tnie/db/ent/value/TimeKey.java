@@ -9,8 +9,6 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
-import fi.tnie.db.model.MutableValueModel;
-import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
@@ -87,11 +85,5 @@ public final class TimeKey<
 	@Override
 	public TimeKey<A, T, E> self() {
 		return this;
-	}
-	
-	@Override
-	public MutableValueModel<TimeHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

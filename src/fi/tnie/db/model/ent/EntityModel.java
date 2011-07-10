@@ -53,5 +53,5 @@ public interface EntityModel<
 	ValueModel<TimestampHolder> getTimestampModel(TimestampKey<A, T, E> key) throws EntityRuntimeException;	
 	ValueModel<IntegerHolder> getIntegerModel(IntegerKey<A, T, E> key) throws EntityRuntimeException;
 	
-	D asModel();
+//	D asModel();
 }

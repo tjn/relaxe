@@ -7,8 +7,6 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
-import fi.tnie.db.model.ValueModel;
-import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.types.CharType;
 import fi.tnie.db.types.PrimitiveType;
@@ -85,10 +83,5 @@ public final class CharKey<
 	@Override
 	public CharKey<A, T, E> self() {	
 		return this;
-	}
-	
-	@Override
-	public ValueModel<CharHolder> getAttributeModel(EntityModel<A, ?, T, E, ?, ?, ?, ?> m) throws EntityRuntimeException {
-		return m.getCharModel(this);
 	}
 }

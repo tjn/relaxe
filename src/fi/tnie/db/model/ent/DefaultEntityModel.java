@@ -112,10 +112,11 @@ public abstract class DefaultEntityModel<
 		VH extends fi.tnie.db.rpc.PrimitiveHolder<V,P>, 
 		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,V,P,VH,K>
 	> 
-	ValueModel<VH> getValueModel(K k) {				
-		return k.getAttributeModel(asModel());
-	};
-	
+	ValueModel<VH> getValueModel(K k) {
+		ValueModelKey<A, T, E, V, P, VH, K> mk = new ValueModelKey<A, T, E, V, P, VH, K>(k);		
+//		return mk.getAttributeModel(asModel());
+		return mk.getAttributeModel(this);
+	}
 		
 	private IntegerAttributeModel integerAttributeModel;
 
