@@ -80,7 +80,7 @@ public interface Entity<
 		P extends ReferenceType<P, D>,
 		G extends Entity<?, ?, P, G, RH, ?, D>,
 		RH extends ReferenceHolder<?, ?, P, G, RH, D>,
-		D extends EntityMetaData<?, ?, P, G, RH, ?, D>,
+		D extends EntityMetaData<?, ?, P, G, RH, ?, D>,		
 		K extends EntityKey<R, T, E, M, P, G, RH, D, K>
 	>		
 	void setRef(K k, RH newValue);	

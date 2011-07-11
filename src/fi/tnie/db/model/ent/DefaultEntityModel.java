@@ -16,11 +16,16 @@ import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.IdentityContext;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.CharKey;
+import fi.tnie.db.ent.value.DateAccessor;
 import fi.tnie.db.ent.value.DateKey;
+import fi.tnie.db.ent.value.DecimalKey;
+import fi.tnie.db.ent.value.DoubleKey;
+import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalAccessor;
 import fi.tnie.db.ent.value.IntervalKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
+import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.ent.value.IntervalAccessor.DayTime;
@@ -30,11 +35,15 @@ import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ValueModel;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
+import fi.tnie.db.rpc.DecimalHolder;
+import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
+import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.rpc.VarcharHolder;
+import fi.tnie.db.rpc.IntervalHolder.YearMonth;
 import fi.tnie.db.types.CharType;
 import fi.tnie.db.types.DateType;
 import fi.tnie.db.types.IntegerType;
@@ -72,52 +81,10 @@ public abstract class DefaultEntityModel<
 		this.target = target;
 	}
 	
-	@Override
-	public H ref() {
-		return target.ref();
-	}
-	
-	@Override
-	public EntityDiff<A, R, T, E> diff(E another) throws EntityRuntimeException {
-		return target.diff(another);
-	}
-	
-	@Override
-	public E unify(IdentityContext ctx) {
-		return target.unify(ctx);
-	}
-	
 	public fi.tnie.db.rpc.PrimitiveHolder<?,?> value(A attribute) throws EntityRuntimeException {
 		return target.value(attribute);		
 	}
-
-	@Override
-	public boolean isIdentified() throws EntityRuntimeException {
-		return target.isIdentified();
-	}
 	
-	@Override
-	public M getMetaData() {
-		return target.getMetaData();
-	}
-	
-	@Override
-	public Map<Column, PrimitiveHolder<?, ?>> getPrimaryKey() throws EntityRuntimeException {
-		return target.getPrimaryKey();
-	}
-	
-	public <
-		V extends java.io.Serializable, 
-		P extends fi.tnie.db.types.PrimitiveType<P>, 
-		VH extends fi.tnie.db.rpc.PrimitiveHolder<V,P>, 
-		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,V,P,VH,K>
-	> 
-	ValueModel<VH> getValueModel(K k) {
-		ValueModelKey<A, T, E, V, P, VH, K> mk = new ValueModelKey<A, T, E, V, P, VH, K>(k);		
-//		return mk.getAttributeModel(asModel());
-		return mk.getAttributeModel(this);
-	}
-		
 	private IntegerAttributeModel integerAttributeModel;
 
 	private class IntegerAttributeModel 
@@ -152,16 +119,31 @@ public abstract class DefaultEntityModel<
 		return integerAttributeModel;
 	}
 	
-	@Override
-	public IntegerHolder getInteger(IntegerKey<A, T, E> k) {
-		return getValueModel(k).get();
-	}
 	
-	@Override
-	public void setInteger(IntegerKey<A, T, E> k, IntegerHolder newValue)
-			throws EntityRuntimeException {
-		assign(k, newValue);
-	}
+	public <
+		V extends Serializable, 
+		P extends fi.tnie.db.types.PrimitiveType<P>, 
+		PH extends fi.tnie.db.rpc.PrimitiveHolder<V,P>, 
+		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,V,P,PH,K>
+	> 
+	fi.tnie.db.model.ValueModel<PH> getValueModel(K k) throws EntityRuntimeException {
+		ValueModel<PH> vm = k.getAttributeModel(this);
+		return vm;
+	};
+		
+	
+	public <
+		RT extends fi.tnie.db.types.ReferenceType<RT,RM>, 
+		RH extends fi.tnie.db.rpc.ReferenceHolder<?,?,RT,RE,RH,RM>, 
+		RE extends fi.tnie.db.ent.Entity<?,?,RT,RE,RH,?,RM>, 
+		RM extends fi.tnie.db.ent.EntityMetaData<?,?,RT,RE,RH,?,RM>,
+		
+		K extends fi.tnie.db.ent.value.EntityKey<R,T,E,M,RT,RE,RH,RM,K>
+	> 
+	fi.tnie.db.model.ValueModel<RH> getEntityModel(K k) throws EntityRuntimeException {				
+		ValueModel<RH> vm = k.getReferenceModel(self());
+		return vm;		
+	};
 	
 	
 	// next type	
@@ -198,14 +180,8 @@ public abstract class DefaultEntityModel<
 		return getValueModel(key).get();
 	}
 	
-	@Override
-	public void setVarchar(VarcharKey<A, T, E> k, VarcharHolder newValue) 
-		throws EntityRuntimeException {
-		assign(k, newValue);		
-	}
-	
-	
-	private <
+
+	protected <
 		K extends PrimitiveKey<A, T, E, V, PT, PH, K>,
 		V extends Serializable,
 		PT extends PrimitiveType<PT>,
@@ -222,6 +198,24 @@ public abstract class DefaultEntityModel<
 		mm.set(newValue);
 	}
 	
+	protected <
+		K extends EntityKey<R, T, E, M, VT, VE, VH, VM, K>,
+		VT extends ReferenceType<VT, VM>,
+		VE extends Entity<?, ?, VT, VE, VH, ?, VM>,
+		VH extends ReferenceHolder<?, ?, VT, VE, VH, VM>,
+		VM extends EntityMetaData<?, ?, VT, VE, VH, ?, VM>
+	>	
+	void assign(K k, VH newValue)
+		throws EntityRuntimeException {
+		MutableValueModel<VH> mm = getEntityModel(k).asMutable();
+		
+		if (mm == null) {
+			throw new EntityRuntimeException();
+		}
+		
+		mm.set(newValue);
+	}
+		
 
 	private VarcharAttributeModel getVarcharAttributeModel() {
 		if (varcharAttributeModel == null) {
@@ -268,17 +262,6 @@ public abstract class DefaultEntityModel<
 
 		return charAttributeModel;
 	}
-	
-	@Override
-	public CharHolder getChar(CharKey<A, T, E> k) {
-		return getValueModel(k).get();
-	}
-	
-	@Override
-	public void setChar(CharKey<A, T, E> k, CharHolder newValue) {
-		assign(k, newValue);		
-	}
-
 
 	// next type	
 	private DateAttributeModel dateAttributeModel;
@@ -318,17 +301,6 @@ public abstract class DefaultEntityModel<
 		return dateAttributeModel;
 	}
 	
-	@Override
-	public DateHolder getDate(DateKey<A, T, E> k) {
-		return getValueModel(k).get();
-	}
-	
-	@Override
-	public void setDate(DateKey<A, T, E> k, DateHolder newValue)
-			throws EntityRuntimeException {
-		assign(k, newValue);		
-	}
-
 	// next type	
 	private TimestampAttributeModel timestampAttributeModel;
 	
@@ -366,22 +338,48 @@ public abstract class DefaultEntityModel<
 
 		return timestampAttributeModel;
 	}
-	
-	@Override
-	public TimestampHolder getTimestamp(TimestampKey<A, T, E> k) {
-		return getValueModel(k).get();
-	}
-	
-	@Override
-	public void setTimestamp(TimestampKey<A, T, E> k, TimestampHolder newValue)
-			throws EntityRuntimeException {
-		assign(k, newValue);
-	}
-	
-	
+			
 	public IntervalAccessor.DayTime<A, T, E> getIntervalAccessor(IntervalKey.DayTime<A, T, E> k) {
-		DayTime<A, T, E> ia = new IntervalAccessor.DayTime<A, T, E>(self(), k);
+		DayTime<A, T, E> ia = new IntervalAccessor.DayTime<A, T, E>(asEntity(), k);
 		return ia;
 	}
+
+	public DateAccessor<A, T, E> getDateAccessor(DateKey<A, T, E> k) {
+		DateAccessor<A, T, E> ia = new DateAccessor<A, T, E>(asEntity(), k);
+		return ia;
+	}
+
 	
+//	public <
+//		V extends Serializable, 
+//		P extends fi.tnie.db.types.PrimitiveType<P>, 
+//		PH extends fi.tnie.db.rpc.PrimitiveHolder<V,P>, 
+//		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,V,P,PH,K>
+//	>
+//	fi.tnie.db.model.ValueModel<PH> getValueModel(K k) throws EntityRuntimeException {
+//				
+//		return k.getAttributeModel(this);		
+//	};
+	
+
+//	@Override
+//	public <
+//		V extends Serializable, 
+//		P extends PrimitiveType<P>, 
+//		PH extends PrimitiveHolder<V, P>, 
+//		K extends PrimitiveKey<A, T, E, V, P, PH, K>
+//	> 
+//	ValueModel<PH> getValueModel(K k) throws EntityRuntimeException {
+//				
+//		new ValueModelKey<A, T, E, V, P, PH, K>(k);
+//		
+//		
+//		return mk.getAttributeModel(this);
+//	}
+
+	
+	protected E getTarget() {
+		return target;
+	}
+
 }

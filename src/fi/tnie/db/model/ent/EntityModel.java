@@ -4,6 +4,7 @@
 package fi.tnie.db.model.ent;
 
 import java.io.Serializable;
+
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityFactory;
@@ -12,6 +13,7 @@ import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
+import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.ent.value.TimestampKey;
@@ -36,22 +38,33 @@ public interface EntityModel<
 	F extends EntityFactory<E, H, M, F>,
 	M extends EntityMetaData<A, R, T, E, H, F, M>,
 	D extends EntityModel<A, R, T, E, H, F, M, D>
-> 
-	extends Entity<A, R, T, E, H, F, M>
-	{		
+>
+{		
 	<
 		V extends Serializable,
 		P extends PrimitiveType<P>,
 		PH extends PrimitiveHolder<V, P>,
 		K extends PrimitiveKey<A, T, E, V, P, PH, K>
 	>
-	ValueModel<PH> getValueModel(K k) throws EntityRuntimeException;	
-
+	ValueModel<PH> getValueModel(K k) throws EntityRuntimeException;
+	
+	
+	<
+		RT extends ReferenceType<RT, RM>,
+		RH extends ReferenceHolder<?, ?, RT, RE, RH, RM>,
+		RE extends Entity<?, ?, RT, RE, RH, ?, RM>,
+		RM extends EntityMetaData<?, ?, RT, RE, RH, ?, RM>,		
+		K extends EntityKey<R, T, E, M, RT, RE, RH, RM, K>
+	>
+	ValueModel<RH> getEntityModel(K k) throws EntityRuntimeException;
+	
 	ValueModel<VarcharHolder> getVarcharModel(VarcharKey<A, T, E> key) throws EntityRuntimeException;
 	ValueModel<CharHolder> getCharModel(CharKey<A, T, E> key) throws EntityRuntimeException;
 	ValueModel<DateHolder> getDateModel(DateKey<A, T, E> key) throws EntityRuntimeException;
 	ValueModel<TimestampHolder> getTimestampModel(TimestampKey<A, T, E> key) throws EntityRuntimeException;	
 	ValueModel<IntegerHolder> getIntegerModel(IntegerKey<A, T, E> key) throws EntityRuntimeException;
+
+	D self();
 	
-//	D asModel();
+	E asEntity();
 }

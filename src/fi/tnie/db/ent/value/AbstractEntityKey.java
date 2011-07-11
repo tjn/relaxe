@@ -6,6 +6,7 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.Reference;
+import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
@@ -13,11 +14,11 @@ public abstract class AbstractEntityKey<
 	R extends Reference,
 	T extends ReferenceType<T, S>,
 	E extends Entity<?, R, T, E, ?, ?, S>,
-	S extends EntityMetaData<?, R, T, E, ?, ?, S>,
+	S extends EntityMetaData<?, R, T, E, ?, ?, S>,	
 	P extends ReferenceType<P, D>,	
 	V extends Entity<?, ?, P, V, H, ?, D>,
 	H extends ReferenceHolder<?, ?, P, V, H, D>,
-	D extends EntityMetaData<?, ?, P, V, H, ?, D>,
+	D extends EntityMetaData<?, ?, P, V, H, ?, D>,	
 	K extends EntityKey<R, T, E, S, P, V, H, D, K>
 >
 	implements EntityKey<R, T, E, S, P, V, H, D, K> {
