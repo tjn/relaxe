@@ -5,7 +5,6 @@ package fi.tnie.db.ent;
 
 import java.util.List;
 
-import fi.tnie.db.Response;
 import fi.tnie.db.types.ReferenceType;
 
 public interface EntityQueryResult<

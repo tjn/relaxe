@@ -6,6 +6,8 @@ package fi.tnie.db;
 import java.sql.Types;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.AttributeWriterFactory;
+import fi.tnie.db.ent.ColumnResolver;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.meta.Column;
@@ -21,8 +23,8 @@ public class DefaultAttributeWriterFactory
 		E extends Entity<A, ?, T, E, ?, ?, M>,
 		M extends EntityMetaData<A, ?, T, E, ?, ?, M>
 	> 
-	AttributeWriter<A, T, E, ?, ?, ?, ?> createWriter(M em, ColumnResolver cr, int index) {
-		AttributeWriter<A, T, E, ?, ?, ?, ?> w = null;
+	AbstractAttributeWriter<A, T, E, ?, ?, ?, ?> createWriter(M em, ColumnResolver cr, int index) {
+		AbstractAttributeWriter<A, T, E, ?, ?, ?, ?> w = null;
 		
 //		ColumnExpr ce = meta.column(index);
 //		ColumnName cn = ce.getColumnName();

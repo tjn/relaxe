@@ -81,7 +81,8 @@ public class PersistenceManagerTest2 extends TestCase  {
                 
         PGImplementation impl = new PGImplementation();
         
-        PersistenceManager<fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person, Person.Holder, Person.MetaData> pm = 
+        PersistenceManager<
+        	fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person, Person.Holder, Person.Factory, Person.MetaData> pm = 
        		create(p.self(), impl);
                                 
 //        PersistenceManager<Attribute, Reference, Query, 
@@ -125,7 +126,7 @@ public class PersistenceManagerTest2 extends TestCase  {
         org.setRef(Organization.FK_COMPANY_CEO, p.ref());
         org.setName("Ab Firma Oy " + ((int) (Math.random() * 1000)));
         
-        PersistenceManager<?, ?, ?, ?, ?, ?> om = create(org, impl);
+        PersistenceManager<?, ?, ?, ?, ?, ?, ?> om = create(org, impl);
         
         om.merge(c);
         c.commit();
@@ -144,6 +145,7 @@ public class PersistenceManagerTest2 extends TestCase  {
         	fi.tnie.db.gen.ent.personal.HourReport.Type, 
         	HourReport,
         	fi.tnie.db.gen.ent.personal.HourReport.Holder,
+        	fi.tnie.db.gen.ent.personal.HourReport.Factory,
         	HourReport.MetaData> hrm =
         	create(hr, impl);
         
@@ -164,12 +166,13 @@ public class PersistenceManagerTest2 extends TestCase  {
 		A extends Attribute, 
 		R extends fi.tnie.db.ent.Reference, 
 		T extends ReferenceType<T, M>, 
-		E extends Entity<A, R, T, E, H, ?, M>,
+		E extends Entity<A, R, T, E, H, F, M>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		M extends EntityMetaData<A, R, T, E, H, ?, M>
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
-	PersistenceManager<A, R, T, E, H, M> create(E e, Implementation impl) {
-		PersistenceManager<A, R, T, E, H, M> pm = new PersistenceManager<A, R, T, E, H, M>(e, impl);
+	PersistenceManager<A, R, T, E, H, F, M> create(E e, Implementation impl) {
+		PersistenceManager<A, R, T, E, H, F, M> pm = new PersistenceManager<A, R, T, E, H, F, M>(e, impl);
 		return pm;
 	}
 

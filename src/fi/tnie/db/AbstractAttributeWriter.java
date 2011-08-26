@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.AttributeWriter;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityRuntimeException;
@@ -27,8 +28,7 @@ public abstract class AbstractAttributeWriter<
 	implements AttributeWriter<A, T, E, V, P, H, K> {
 
 	private K key;
-	private int index;
-	
+	private int index;	
 		
 	public AbstractAttributeWriter(K key, int index) {
 		super();
@@ -64,8 +64,7 @@ public abstract class AbstractAttributeWriter<
 		dest.set(getKey(), h);
 		return h;
 	}
-	
-	@Override
+		
 	public H write(ResultSet src, E dest) throws SQLException, EntityRuntimeException {
 		PrimitiveHolder<?, ?> ph = extract(src);
 		H h = as(ph);

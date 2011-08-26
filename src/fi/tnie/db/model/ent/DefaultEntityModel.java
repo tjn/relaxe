@@ -5,45 +5,33 @@ package fi.tnie.db.model.ent;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Map;
-
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.EntityDiff;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
-import fi.tnie.db.ent.IdentityContext;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateAccessor;
 import fi.tnie.db.ent.value.DateKey;
-import fi.tnie.db.ent.value.DecimalKey;
-import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalAccessor;
 import fi.tnie.db.ent.value.IntervalKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
-import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.ent.value.IntervalAccessor.DayTime;
-import fi.tnie.db.meta.Column;
 // import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.MutableValueModel;
 import fi.tnie.db.model.ValueModel;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
-import fi.tnie.db.rpc.DecimalHolder;
-import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
-import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.rpc.VarcharHolder;
-import fi.tnie.db.rpc.IntervalHolder.YearMonth;
 import fi.tnie.db.types.CharType;
 import fi.tnie.db.types.DateType;
 import fi.tnie.db.types.IntegerType;
@@ -130,22 +118,8 @@ public abstract class DefaultEntityModel<
 		ValueModel<PH> vm = k.getAttributeModel(this);
 		return vm;
 	};
+	
 		
-	
-	public <
-		RT extends fi.tnie.db.types.ReferenceType<RT,RM>, 
-		RH extends fi.tnie.db.rpc.ReferenceHolder<?,?,RT,RE,RH,RM>, 
-		RE extends fi.tnie.db.ent.Entity<?,?,RT,RE,RH,?,RM>, 
-		RM extends fi.tnie.db.ent.EntityMetaData<?,?,RT,RE,RH,?,RM>,
-		
-		K extends fi.tnie.db.ent.value.EntityKey<R,T,E,M,RT,RE,RH,RM,K>
-	> 
-	fi.tnie.db.model.ValueModel<RH> getEntityModel(K k) throws EntityRuntimeException {				
-		ValueModel<RH> vm = k.getReferenceModel(self());
-		return vm;		
-	};
-	
-	
 	// next type	
 	private VarcharAttributeModel varcharAttributeModel;
 	

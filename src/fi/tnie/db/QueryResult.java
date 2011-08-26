@@ -6,6 +6,8 @@ package fi.tnie.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.tnie.db.ent.im.AbstractResponse;
+
 
 public class QueryResult<T>
 	extends AbstractResponse<Query> {

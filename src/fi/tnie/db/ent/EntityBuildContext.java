@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.ent;
 
-import fi.tnie.db.AttributeWriterFactory;
-import fi.tnie.db.ColumnResolver;
 
 public interface EntityBuildContext {
 

@@ -1,13 +1,10 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db;
+package fi.tnie.db.ent;
 
-import java.sql.SQLException;
+// import java.sql.SQLException;
 
-import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.types.ReferenceType;
 
 public interface AttributeWriterFactory {

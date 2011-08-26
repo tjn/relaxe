@@ -3,6 +3,7 @@
  */
 package fi.tnie.db;
 
+import fi.tnie.db.ent.ColumnResolver;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.DataObject.MetaData;
 import fi.tnie.db.expr.ColumnExpr;

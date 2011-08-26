@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
@@ -31,13 +31,14 @@ public class DefaultEntityQuery<
 	A extends Attribute,
 	R extends Reference,
 	T extends ReferenceType<T, M>,
-	E extends Entity<A, R, T, E, ?, ?, M>,
-	M extends EntityMetaData<A, R, T, E, ?, ?, M>
+	E extends Entity<A, R, T, E, ?, F, M>,
+	F extends EntityFactory<E, ?, M, F>,
+	M extends EntityMetaData<A, R, T, E, ?, F, M>
 	> 
 	implements EntityQuery<A, R, T, E, M>
 {
 	
-	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class);
+//	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class);
 	
 	/**
 	 * 
@@ -68,7 +69,8 @@ public class DefaultEntityQuery<
 	}
 
 	private E createPrototype(M meta) throws EntityRuntimeException {
-		E p = meta.getFactory().newInstance();
+		F factory = meta.getFactory();
+		E p = factory.newInstance();
 		
 		for (A a : meta.attributes()) {
 			PrimitiveKey<A, T, E, ?, ?, ?, ?> k = meta.getKey(a);
@@ -117,7 +119,9 @@ public class DefaultEntityQuery<
 	<
 		MA extends Attribute,
 		MR extends Reference,
-		ME extends Entity<MA, MR, ?, ME, ?, ?, ?>>
+		ME extends Entity<MA, MR, ?, ME, ?, ?, MM>,
+		MM extends EntityMetaData<MA, MR, ?, ME, ?, ?, MM>
+	>
 	AbstractTableReference fromTemplate(
 			ME template, 
 			AbstractTableReference qref, ForeignKey fk, TableReference referencing, 
@@ -132,7 +136,7 @@ public class DefaultEntityQuery<
 		}		
 		
 		Select s = getSelect(q);
-		EntityMetaData<MA, MR, ?, ME, ?, ?, ?> meta = template.getMetaData();				
+		MM meta = template.getMetaData();				
 		final TableReference tref = (qref == null) ? getTableRef() : new TableReference(meta.getBaseTable());		
 		getMetaDataMap().put(tref, meta);
 				
@@ -184,7 +188,7 @@ public class DefaultEntityQuery<
 		originMap.put(Integer.valueOf(s.getColumnCount()), tref);			
 						
 		for (MR r : rs) {
-			logger().info("fromTemplate: r=" + r);
+//			logger().info("fromTemplate: r=" + r);
 			EntityKey<?, ?, ME, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);	
 			
 			ReferenceHolder<?, ?, ?, ?, ?, ?> h = k.get(template);
@@ -225,10 +229,11 @@ public class DefaultEntityQuery<
 
 	private <
 		MA extends Attribute,
-		D extends Entity<MA, ?, ?, D, ?, ?, ?>
+		D extends Entity<MA, ?, ?, D, ?, ?, DM>,
+		DM extends EntityMetaData<MA, ?, ?, D, ?, ?, DM>
 	> 
 	void addAttributes(D template, Select s, TableReference tref) throws EntityRuntimeException {
-		EntityMetaData<MA, ?, ?, D, ?, ?, ?> meta = template.getMetaData();
+		DM meta = template.getMetaData();
 		Set<MA> as = meta.attributes();
 		
 		for (MA a : as) {
@@ -343,7 +348,7 @@ public class DefaultEntityQuery<
 		}
 	}
 
-	private static Logger logger() {
-		return DefaultEntityQuery.logger;
-	}
+//	private static Logger logger() {
+//		return DefaultEntityQuery.logger;
+//	}
 }

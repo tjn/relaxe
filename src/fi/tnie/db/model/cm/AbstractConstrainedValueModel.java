@@ -50,6 +50,11 @@ public abstract class AbstractConstrainedValueModel<V>
 		return p;
 	}
 	
+	public Proposition propose(V newValue) {
+		ChangeSet cs = new ChangeSet();
+		return propose(cs, newValue, null);
+	}
+	
 	public Proposition propose(ChangeSet cs, final V newValue, Proposition impliedBy) {
 		if (cs == null) {
 			throw new NullPointerException("cs");

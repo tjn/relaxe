@@ -13,8 +13,9 @@ import fi.tnie.db.types.ReferenceType;
 public abstract class AbstractEntityDiff<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T, ?>,
-	E extends Entity<A, R, T, E, ?, ?, ?>
+	T extends ReferenceType<T, M>,
+	E extends Entity<A, R, T, E, ?, ?, M>,
+	M extends EntityMetaData<A, R, T, E, ?, ?, M>
 >
 	implements EntityDiff<A, R, T, E>
 {
@@ -67,7 +68,7 @@ public abstract class AbstractEntityDiff<
 	 * @throws EntityException 
 	 */
 
-	protected Map<A, Change> attributes(E original, E modified) throws EntityRuntimeException {
+	protected Map<A, Change> attributes(E original, E modified) throws EntityRuntimeException {				
 		EntityMetaData<A, R, T, E, ?, ?, ?> meta = original.getMetaData();
 		Map<A, Change> cm = new HashMap<A, Change>();
 
@@ -105,7 +106,7 @@ public abstract class AbstractEntityDiff<
 	}
 
 	protected Map<R, Change> references(E original, E modified) throws EntityRuntimeException {
-		EntityMetaData<A, R, T, E, ?, ?, ?> meta = original.getMetaData();
+		M meta = original.getMetaData();
 		Map<R, Change> cm = new HashMap<R, Change>();
 
 		for (R r : meta.relationships()) {

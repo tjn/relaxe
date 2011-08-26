@@ -35,6 +35,10 @@ public class VarcharHolder
 			new VarcharHolder(s);
 	}
 	
+	public static String toString(VarcharHolder h) {
+		return (h == null) ? null : h.value();
+	}
+	
 	@Override
 	public VarcharType getType() {
 		return VarcharType.TYPE;

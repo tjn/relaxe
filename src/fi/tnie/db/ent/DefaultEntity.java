@@ -354,8 +354,9 @@ public abstract class DefaultEntity<
 		return (rh == null) ? null : rh.value();		
 	}
 	
-	@Override
-	public E clone() {
+
+	
+	public E copy() {
 		M meta = getMetaData();
 		EntityFactory<E, H, M, ?> ef = meta.getFactory();
 				

@@ -1,11 +1,12 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db;
+package fi.tnie.db.ent;
 
 import java.io.Serializable;
 
-public interface Request
+public interface Response<R extends Request> 
 	extends Serializable {
-
+	
+	public R getRequest();
 }

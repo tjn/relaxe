@@ -1,10 +1,13 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.ent;
+package fi.tnie.db;
 
-import fi.tnie.db.AttributeWriterFactory;
-import fi.tnie.db.ColumnResolver;
+import fi.tnie.db.ent.AttributeWriterFactory;
+import fi.tnie.db.ent.ColumnResolver;
+import fi.tnie.db.ent.DataObject;
+import fi.tnie.db.ent.EntityBuildContext;
+import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.DataObject.MetaData;
 
 public class DefaultEntityBuildContext 

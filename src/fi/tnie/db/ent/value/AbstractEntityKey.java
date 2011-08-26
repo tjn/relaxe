@@ -6,7 +6,6 @@ package fi.tnie.db.ent.value;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.Reference;
-import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 

@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.ent;
 
-import fi.tnie.db.AbstractResponse;
+import fi.tnie.db.ent.im.AbstractResponse;
 import fi.tnie.db.types.ReferenceType;
 
 public abstract class AbstractEntityQueryResult <

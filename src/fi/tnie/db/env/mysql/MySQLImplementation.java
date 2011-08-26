@@ -6,10 +6,10 @@ package fi.tnie.db.env.mysql;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import fi.tnie.db.AttributeWriter;
-import fi.tnie.db.ConstantColumnResolver;
+import fi.tnie.db.AbstractAttributeWriter;
 import fi.tnie.db.DefaultAttributeWriterFactory;
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.ConstantColumnResolver;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
@@ -108,7 +108,7 @@ public class MySQLImplementation
 			if (rs.next()) {				
 				DefaultAttributeWriterFactory wf = new DefaultAttributeWriterFactory();				
 				ConstantColumnResolver cr = new ConstantColumnResolver(col);				
-				AttributeWriter<A, T, E, ?, ?, ?, ?> aw = wf.createWriter(em, cr, 1);				
+				AbstractAttributeWriter<A, T, E, ?, ?, ?, ?> aw = wf.createWriter(em, cr, 1);				
 				aw.write(rs, target);
 			}
 			else {

@@ -4,8 +4,8 @@
 package fi.tnie.db;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.AttributeWriterFactory;
 import fi.tnie.db.ent.DefaultDataObject;
-import fi.tnie.db.ent.DefaultEntityBuildContext;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityBuildContext;
 import fi.tnie.db.ent.EntityBuilder;

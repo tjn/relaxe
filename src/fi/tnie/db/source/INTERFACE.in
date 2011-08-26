@@ -122,7 +122,7 @@ public interface {{table-interface}}
 
 
 		public static class Query
-			extends fi.tnie.db.ent.DefaultEntityQuery<Attribute, Reference, Type, {{table-interface}}, MetaData> {
+			extends fi.tnie.db.ent.DefaultEntityQuery<Attribute, Reference, Type, {{table-interface}}, Factory, MetaData> {
 		
 			/**
 			 * 

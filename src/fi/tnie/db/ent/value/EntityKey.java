@@ -7,10 +7,7 @@ import java.io.Serializable;
 
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.Reference;
-import fi.tnie.db.model.ValueModel;
-import fi.tnie.db.model.ent.EntityModel;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
@@ -51,9 +48,5 @@ public interface EntityKey<
 	void set(E e, V newValue);
 	
 	S getSource();	
-	D getTarget();
-	
-	<M extends EntityModel<?, R, T, E, ?, ?, S, M>>
-	ValueModel<H> getReferenceModel(M m) throws EntityRuntimeException;
-		
+	D getTarget();	
 }

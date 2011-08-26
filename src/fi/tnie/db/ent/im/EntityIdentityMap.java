@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.ent.im;
 
-import fi.tnie.db.IdentityMap;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.Reference;

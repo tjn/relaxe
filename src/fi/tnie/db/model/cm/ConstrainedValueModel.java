@@ -28,7 +28,7 @@ public interface ConstrainedValueModel<V>
 	Proposition submit(ChangeSet cs, Proposition p);
 	
 	/**
-	 * If the this model contains a proposition for this model within
+	 * If this model contains a proposition for this model within
 	 * the specified change set, returns the proposed value. 
 	 * Otherwise, returns the current value of the model. 
 	 *   

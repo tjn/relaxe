@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db;
+package fi.tnie.db.ent.im;
 
 import fi.tnie.db.ent.EntityRuntimeException;
 

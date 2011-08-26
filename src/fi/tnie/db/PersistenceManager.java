@@ -16,6 +16,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.DefaultEntityQuery;
 import fi.tnie.db.ent.Entity;
@@ -52,13 +53,14 @@ public class PersistenceManager<
     A extends Attribute,
     R extends Reference,
     T extends ReferenceType<T, M>,
-    E extends Entity<A, R, T, E, H, ?, M>,
+    E extends Entity<A, R, T, E, H, F, M>,
     H extends ReferenceHolder<A, R, T, E, H, M>,
-    M extends EntityMetaData<A, R, T, E, H, ?, M>
+    F extends EntityFactory<E, H, M, F>,
+    M extends EntityMetaData<A, R, T, E, H, F, M>
 >
 {	
     private class Query
-        extends DefaultEntityQuery<A, R, T, E, M>
+        extends DefaultEntityQuery<A, R, T, E, F, M>
     {
         /**
 		 * 
@@ -457,7 +459,7 @@ public class PersistenceManager<
 		ValueExtractorFactory vef = getImplementation().getValueExtractorFactory();
 		
 		List<E> content = new ArrayList<E>();		
-		EntityReader<?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, M>(vef, query, content);
+		EntityReader<?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M>(vef, query, content);
 		StatementExecutor sx = new StatementExecutor();				
 		sx.execute(qo, c, eb);
 					

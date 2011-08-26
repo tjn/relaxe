@@ -5,6 +5,8 @@ package fi.tnie.db;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+
+import fi.tnie.db.ent.ColumnResolver;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Table;
 

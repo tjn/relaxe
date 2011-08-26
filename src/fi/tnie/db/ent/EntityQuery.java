@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.ent;
 
-import fi.tnie.db.Request;
 import fi.tnie.db.expr.DefaultTableExpression;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.meta.ForeignKey;

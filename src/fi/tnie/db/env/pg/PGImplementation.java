@@ -8,7 +8,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Comparator;
 
-import fi.tnie.db.AttributeWriter;
+import fi.tnie.db.AbstractAttributeWriter;
 import fi.tnie.db.DefaultAttributeWriterFactory;
 import fi.tnie.db.DefaultValueExtractorFactory;
 import fi.tnie.db.ResultSetColumnResolver;
@@ -84,7 +84,7 @@ public class PGImplementation
 				ResultSetColumnResolver cr = new ResultSetColumnResolver(em.getBaseTable(), meta);
 																												
 				for (int i = 1; i <= cc; i++) {
-					AttributeWriter<A, T, E, ?, ?, ?, ?> w = wf.createWriter(em, cr, i);
+					AbstractAttributeWriter<A, T, E, ?, ?, ?, ?> w = wf.createWriter(em, cr, i);
 					
 					if (w != null) {
 						w.write(rs, target);

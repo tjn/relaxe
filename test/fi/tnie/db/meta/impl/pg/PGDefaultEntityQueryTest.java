@@ -87,8 +87,8 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	
     	ValueExtractorFactory vef = imp.getValueExtractorFactory();
     	    	    	    	
-    	EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.MetaData> eb
-    		= new EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.MetaData>(vef, e);
+    	EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData> eb
+    		= new EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData>(vef, e);
     	    	    	    	
     	StatementExecutor se = new StatementExecutor();
     	se.execute(eb.getQuery().getQuery(), c, eb);
@@ -116,8 +116,8 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	    	
     	HourReport hr = pf.newHourReport();
     	
-    	DefaultEntityQuery<?, ?, ?, ?, ?> e = 
-    		new DefaultEntityQuery<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.MetaData>(hr.getMetaData());
+    	DefaultEntityQuery<?, ?, ?, ?, ?, ?> e = 
+    		new DefaultEntityQuery<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Factory, HourReport.MetaData>(hr.getMetaData());
 
     	String qs = e.getQuery().generate();
     	

@@ -19,7 +19,7 @@ public class IntegerAttributeWriter<
 	T extends ReferenceType<T, ?>,
 	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
-	extends AbstractAttributeWriter<A, T, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, T, E>>
+	extends AbstractAttributeWriter<A, T, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, T, E>>	
 {
 	private IntegerExtractor extractor;
 	
@@ -42,6 +42,8 @@ public class IntegerAttributeWriter<
 		throws SQLException {
 		return this.extractor.extractValue(src);
 	}
+	
+	
 	
 //	@Override
 //	protected PrimitiveHolder<?, ?> extract(ResultSet src, int index) 

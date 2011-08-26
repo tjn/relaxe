@@ -116,10 +116,10 @@ public abstract class AbstractEntity<
 		final E self = self();
 								
 		if (this == another || another == null) {
-			return new EmptyEntityDiff<A, R, T, E>(self);
+			return new EmptyEntityDiff<A, R, T, E, M>(self);
 		}
 		
-		return new EntitySnapshotDiff<A, R, T, E>(self, another);
+		return new EntitySnapshotDiff<A, R, T, E, M>(self, another);
 	}
 	
 	public Map<Column, PrimitiveHolder<?,?>> getPrimaryKey() throws EntityRuntimeException {

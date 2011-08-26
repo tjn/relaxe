@@ -17,6 +17,10 @@ public class EmptyEntityQueryResult<
 	M extends EntityMetaData<A, R, T, E, ?, ?, M>
 > extends AbstractEntityQueryResult<A, R, T, E, M> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6678574047389644766L;
 	private List<E> content;
 
 	public EmptyEntityQueryResult(EntityQuery<A, R, T, E, M> request, long available) {
