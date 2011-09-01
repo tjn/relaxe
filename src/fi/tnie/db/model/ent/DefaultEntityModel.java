@@ -108,16 +108,16 @@ public abstract class DefaultEntityModel<
 	}
 	
 	
-	public <
-		V extends Serializable, 
-		P extends fi.tnie.db.types.PrimitiveType<P>, 
-		PH extends fi.tnie.db.rpc.PrimitiveHolder<V,P>, 
-		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,V,P,PH,K>
-	> 
-	fi.tnie.db.model.ValueModel<PH> getValueModel(K k) throws EntityRuntimeException {
-		ValueModel<PH> vm = k.getAttributeModel(this);
-		return vm;
-	};
+//	public <
+//		V extends Serializable, 
+//		P extends fi.tnie.db.types.PrimitiveType<P>, 
+//		PH extends fi.tnie.db.rpc.PrimitiveHolder<V,P>, 
+//		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,V,P,PH,K>
+//	> 
+//	fi.tnie.db.model.ValueModel<PH> getValueModel(K k) throws EntityRuntimeException {
+//		ValueModel<PH> vm = k.getAttributeModel(this);
+//		return vm;
+//	};
 	
 		
 	// next type	
