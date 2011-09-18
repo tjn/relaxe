@@ -21,7 +21,7 @@ public interface {{table-interface}}
         {{table-interface}}.MetaData
     > {{reference-list}} {
     
-	class Type extends ReferenceType<Type, MetaData> {
+	class Type extends ReferenceType<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData> {
 		@Override
 		public MetaData getMetaData() {		
 			return {{table-interface}}Impl.{{table-interface}}MetaData.getInstance();
@@ -78,11 +78,11 @@ public interface {{table-interface}}
 		
 	public static abstract class Key<
 		R extends fi.tnie.db.ent.Reference, 
-		T extends ReferenceType<T, S>,
+		T extends ReferenceType<?, R, T, E, ?, ?, S>,
 		E extends Entity<?, R, T, E, ?, ?, S>,
 		S extends EntityMetaData<?, R, T, E, ?, ?, S>		
 	>
-		extends AbstractEntityKey<R, T, E, S, {{table-interface}}.Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.MetaData, {{table-interface}}.Key<R, T, E, S>> {
+		extends AbstractEntityKey<R, T, E, S, {{table-interface}}.Type, {{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Key<R, T, E, S>> {
 
 		private static final long serialVersionUID = 1L;
 

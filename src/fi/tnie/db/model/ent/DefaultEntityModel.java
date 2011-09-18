@@ -43,7 +43,7 @@ import fi.tnie.db.types.VarcharType;
 public abstract class DefaultEntityModel<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T, M>,
+	T extends ReferenceType<A, R, T, E, H, F, M>,
 	E extends Entity<A, R, T, E, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	F extends EntityFactory<E, H, M, F>,
@@ -173,11 +173,14 @@ public abstract class DefaultEntityModel<
 	}
 	
 	protected <
-		K extends EntityKey<R, T, E, M, VT, VE, VH, VM, K>,
-		VT extends ReferenceType<VT, VM>,
-		VE extends Entity<?, ?, VT, VE, VH, ?, VM>,
-		VH extends ReferenceHolder<?, ?, VT, VE, VH, VM>,
-		VM extends EntityMetaData<?, ?, VT, VE, VH, ?, VM>
+		K extends EntityKey<R, T, E, M, VT, VA, VR, VE, VH, VF, VM, K>,
+		VA extends Attribute,
+		VR extends Reference, 
+		VT extends ReferenceType<VA, VR, VT, VE, VH, VF, VM>,
+		VE extends Entity<VA, VR, VT, VE, VH, VF, VM>,
+		VH extends ReferenceHolder<VA, VR, VT, VE, VH, VM>,
+		VF extends EntityFactory<VE, VH, VM, VF>,
+		VM extends EntityMetaData<VA, VR, VT, VE, VH, VF, VM>
 	>	
 	void assign(K k, VH newValue)
 		throws EntityRuntimeException {

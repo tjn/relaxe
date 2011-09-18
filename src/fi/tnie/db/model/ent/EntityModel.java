@@ -32,7 +32,7 @@ import fi.tnie.db.types.ReferenceType;
 public interface EntityModel<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T, M>,
+	T extends ReferenceType<A, R, T, E, H, F, M>,
 	E extends Entity<A, R, T, E, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	F extends EntityFactory<E, H, M, F>,
@@ -50,11 +50,14 @@ public interface EntityModel<
 	
 	
 	<
-		RT extends ReferenceType<RT, RM>,
-		RH extends ReferenceHolder<?, ?, RT, RE, RH, RM>,
-		RE extends Entity<?, ?, RT, RE, RH, ?, RM>,
-		RM extends EntityMetaData<?, ?, RT, RE, RH, ?, RM>,		
-		K extends EntityKey<R, T, E, M, RT, RE, RH, RM, K>
+		VA extends Attribute,
+		VR extends Reference,
+		RT extends ReferenceType<VA, VR, RT, RE, RH, RF, RM>,		
+		RH extends ReferenceHolder<VA, VR, RT, RE, RH, RM>,
+		RE extends Entity<VA, VR, RT, RE, RH, RF, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<VA, VR, RT, RE, RH, RF, RM>,		
+		K extends EntityKey<R, T, E, M, RT, VA, VR, RE, RH, RF, RM, K>
 	>
 	ValueModel<RH> getEntityModel(K k) throws EntityRuntimeException;
 	

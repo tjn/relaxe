@@ -9,7 +9,7 @@ package fi.tnie.db;
 import java.util.List;
 
 import fi.tnie.db.ent.DataObject;
-import fi.tnie.db.ent.DefaultDataObject;
+import fi.tnie.db.ent.MutableDataObject;
 import fi.tnie.db.expr.QueryExpression;
 
 public class DataObjectReader
@@ -28,12 +28,12 @@ public class DataObjectReader
 	}
 
 	@Override
-	protected void put(DefaultDataObject o) {
+	protected void put(MutableDataObject o) {
 		this.content.add(o);
 	}
 
 	@Override
-	protected DefaultDataObject get() {
-		return new DefaultDataObject(getMetaData());
+	protected MutableDataObject get() {
+		return new MutableDataObject(getMetaData());
 	}
 }

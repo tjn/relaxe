@@ -17,7 +17,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public class TimeAttributeWriter<
 	A extends Attribute,
-	T extends ReferenceType<T, ?>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
 	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
 	extends AbstractAttributeWriter<A, T, E, Date, TimeType, TimeHolder, TimeKey<A, T, E>>

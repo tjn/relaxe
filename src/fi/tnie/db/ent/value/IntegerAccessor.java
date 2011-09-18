@@ -11,7 +11,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public class IntegerAccessor<
 	A extends Attribute,	
-	T extends ReferenceType<T, ?>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
 	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
 	extends AbstractPrimitiveAccessor<A, T, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, T, E>> {

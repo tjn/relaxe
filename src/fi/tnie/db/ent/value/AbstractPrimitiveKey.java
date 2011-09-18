@@ -15,7 +15,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public abstract class AbstractPrimitiveKey<
 	A extends Attribute,	
-	T extends ReferenceType<T, ?>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
 	E extends Entity<A, ?, T, E, ?, ?, ?>,
 	V extends Serializable,
 	P extends PrimitiveType<P>,

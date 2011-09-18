@@ -13,7 +13,7 @@ import fi.tnie.db.types.TimestampType;
 
 public class TimestampAccessor<
 	A extends Attribute,
-	T extends ReferenceType<T, ?>,	
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,	
 	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
 	extends AbstractPrimitiveAccessor<A, T, E, Date, TimestampType, TimestampHolder, TimestampKey<A, T, E>> {

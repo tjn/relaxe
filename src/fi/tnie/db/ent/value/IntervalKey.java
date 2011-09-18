@@ -16,7 +16,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public abstract class IntervalKey<
 	A extends Attribute,
-	T extends ReferenceType<T, ?>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
 	E extends Entity<A, ?, T, E, ?, ?, ?>,
 	V extends Interval<V>, 
 	P extends PrimitiveType<P>, 
@@ -43,7 +43,7 @@ public abstract class IntervalKey<
 
 	public static final class YearMonth<
 		A extends Attribute,		
-		T extends ReferenceType<T, ?>,
+		T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
 		E extends Entity<A, ?, T, E, ?, ?, ?>
 	>
 		extends IntervalKey<A, T, E, Interval.YearMonth, IntervalType.YearMonth, IntervalHolder.YearMonth, IntervalKey.YearMonth<A, T, E>> {
@@ -67,7 +67,7 @@ public abstract class IntervalKey<
 		
 		public static <
 			X extends Attribute,		
-			Z extends ReferenceType<Z, ?>,
+			Z extends ReferenceType<X, ?, Z, T, ?, ?, ?>,
 			T extends Entity<X, ?, Z, T, ?, ?, ?>
 		>
 		YearMonth<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?> meta, X a) {
@@ -120,7 +120,7 @@ public abstract class IntervalKey<
 	
 	public static final class DayTime<
 		A extends Attribute,
-		T extends ReferenceType<T, ?>,		
+		T extends ReferenceType<A, ?, T, E, ?, ?, ?>,		
 		E extends Entity<A, ?, T, E, ?, ?, ?>
 	>
 		extends IntervalKey<A, T, E, Interval.DayTime, IntervalType.DayTime, IntervalHolder.DayTime, 
@@ -138,7 +138,7 @@ public abstract class IntervalKey<
 
 		public static <
 			X extends Attribute,
-			Z extends ReferenceType<Z, ?>,
+			Z extends ReferenceType<X, ?, Z, T, ?, ?, ?>,
 			T extends Entity<X, ?, Z, T, ?, ?, ?>
 		>
 		IntervalKey.DayTime<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?> meta, X a) {			

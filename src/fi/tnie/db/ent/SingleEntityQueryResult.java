@@ -12,11 +12,15 @@ import fi.tnie.db.types.ReferenceType;
 public class SingleEntityQueryResult<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T, M>,
+	T extends ReferenceType<A, R, T, E, ?, ?, M>,
 	E extends Entity<A, R, T, E, ?, ?, M>,
 	M extends EntityMetaData<A, R, T, E, ?, ?, M>
 >	extends AbstractEntityQueryResult<A, R, T, E, M>
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5198075251746122614L;
 	private List<E> content;
 	private E result;
 

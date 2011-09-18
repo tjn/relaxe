@@ -58,8 +58,8 @@ public class {{table-impl-class}}
 
 {{reference-key-map-list}}
 
-		private java.util.Map<{{table-interface}}.Reference, EntityKey<Reference, Type, {{table-interface}}, {{table-interface}}.MetaData, ?, ?, ?, ?, ?>> entityKeyMap = 
-			new java.util.HashMap<{{table-interface}}.Reference, EntityKey<Reference, Type, {{table-interface}}, {{table-interface}}.MetaData, ?, ?, ?, ?, ?>>();
+		private java.util.Map<{{table-interface}}.Reference, EntityKey<Reference, Type, {{table-interface}}, {{table-interface}}.MetaData, ?, ?, ?, ?, ?, ?, ?, ?>> entityKeyMap = 
+			new java.util.HashMap<{{table-interface}}.Reference, EntityKey<Reference, Type, {{table-interface}}, {{table-interface}}.MetaData, ?, ?, ?, ?, ?, ?, ?, ?>>();
     
         public {{table-interface}}MetaData() {
             super({{table-interface}}.Attribute.class, {{table-interface}}.Reference.class);
@@ -150,7 +150,7 @@ public class {{table-impl-class}}
 		}	
 
 		@Override
-		public EntityKey<Reference, Type, {{table-interface}}, {{table-interface}}.MetaData, ?, ?, ?, ?, ?> getEntityKey(Reference ref) {			
+		public EntityKey<Reference, Type, {{table-interface}}, {{table-interface}}.MetaData, ?, ?, ?, ?, ?, ?, ?, ?> getEntityKey(Reference ref) {			
 			if (ref == null) {
 				throw new NullPointerException("ref");
 			}

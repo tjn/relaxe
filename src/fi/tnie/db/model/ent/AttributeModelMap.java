@@ -19,7 +19,7 @@ public interface AttributeModelMap<
 	V extends Serializable,
 	P extends PrimitiveType<P>,
 	H extends PrimitiveHolder<V, P>,
-	T extends ReferenceType<T, ?>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
 	E extends Entity<A, ?, T, E, ?, ?, ?>,
 	D extends AttributeModelMap<A, V, P, H, T, E, D>
 >	

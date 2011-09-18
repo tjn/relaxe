@@ -22,7 +22,7 @@ import fi.tnie.db.types.ReferenceType;
 public abstract class ReferenceHolder<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T, M>,
+	T extends ReferenceType<A, R, T, V, H, ?, M>,
 	V extends Entity<A, R, T, V, H, ?, M>,
 	H extends ReferenceHolder<A, R, T, V, H, M>,
 	M extends EntityMetaData<A, R, T, V, H, ?, M>

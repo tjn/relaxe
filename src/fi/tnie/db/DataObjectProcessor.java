@@ -11,7 +11,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.ent.DefaultDataObject;
+import fi.tnie.db.ent.MutableDataObject;
 import fi.tnie.db.exec.QueryProcessorAdapter;
 import fi.tnie.db.expr.QueryExpression;
 
@@ -20,7 +20,7 @@ public abstract class DataObjectProcessor
 
 	private static Logger logger = Logger.getLogger(DataObjectProcessor.class);
 				
-	protected DefaultDataObject.MetaData meta;
+	protected MutableDataObject.MetaData meta;
 	private ValueExtractor<?, ?, ?>[] extractors;
 	private ValueExtractorFactory valueExtractorFactory;
 		
@@ -33,7 +33,7 @@ public abstract class DataObjectProcessor
 			throw new NullPointerException("qo");
 		}
 										
-		this.meta = new DefaultDataObject.MetaData(qo);
+		this.meta = new MutableDataObject.MetaData(qo);
 		this.valueExtractorFactory = vef;
 	}
 
@@ -63,7 +63,7 @@ public abstract class DataObjectProcessor
 	@Override
 	public void process(ResultSet rs, long ordinal) throws QueryException {
 		try {
-			DefaultDataObject o = get();			
+			MutableDataObject o = get();			
 			
 			int count = this.extractors.length;
 			
@@ -80,12 +80,12 @@ public abstract class DataObjectProcessor
 		}
 	}
 
-	protected void put(DefaultDataObject o) {
+	protected void put(MutableDataObject o) {
 	}
 	
-	protected abstract DefaultDataObject get();
+	protected abstract MutableDataObject get();
 
-	protected DefaultDataObject.MetaData getMetaData() {
+	protected MutableDataObject.MetaData getMetaData() {
 		return meta;
 	}
 

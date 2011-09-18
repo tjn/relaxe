@@ -3,13 +3,23 @@
  */
 package fi.tnie.db.types;
 
+import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.Reference;
+import fi.tnie.db.rpc.ReferenceHolder;
 
 public abstract class ReferenceType<
-	R extends ReferenceType<R, M>,
-	M extends EntityMetaData<?, ?, R, ?, ?, ?, M>
+	A extends Attribute,
+	R extends Reference,
+	T extends ReferenceType<A, R, T, E, H, F, M>,
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>	
 >
-	extends Type<R> {
+	extends Type<T> {
 
 	@Override
 	public final boolean isReferenceType() {

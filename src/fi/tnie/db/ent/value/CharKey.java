@@ -14,7 +14,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public final class CharKey<
 	A extends Attribute,
-	T extends ReferenceType<T, ?>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
 	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
 	extends AbstractPrimitiveKey<A, T, E, String, CharType, CharHolder, CharKey<A, T, E>>
@@ -37,7 +37,7 @@ public final class CharKey<
 	
 	public static <
 		X extends Attribute,	
-		Z extends ReferenceType<Z, ?>,
+		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?>,
 		T extends Entity<X, ?, Z, T, ?, ?, ?>
 	>
 	CharKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?> meta, X a) {

@@ -16,7 +16,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public final class DateKey<	
 	A extends Attribute,
-	T extends ReferenceType<T, ?>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
 	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
 	extends AbstractPrimitiveKey<A, T, E, Date, DateType, DateHolder, DateKey<A, T, E>>
@@ -39,7 +39,7 @@ public final class DateKey<
 	
 	public static <
 		X extends Attribute,
-		Z extends ReferenceType<Z, ?>,
+		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?>,
 		T extends Entity<X, ?, Z, T, ?, ?, ?>
 	>
 	DateKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?> meta, X a) {

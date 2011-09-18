@@ -14,7 +14,7 @@ import fi.tnie.db.types.ReferenceType;
 public class IntegerIdentityMap<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T, ?>,
+	T extends ReferenceType<A, R, T, E, ?, ?, ?>,
 	E extends Entity<A, R, T, E, ?, ?, ?>	
 	>
 	extends AbstractKeyIdentityMap<A, R, T, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, T, E>>

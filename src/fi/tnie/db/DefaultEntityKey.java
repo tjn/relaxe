@@ -4,6 +4,7 @@
 package fi.tnie.db;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.Entity;
@@ -13,18 +14,19 @@ import fi.tnie.db.types.ReferenceType;
 
 public abstract class DefaultEntityKey<
 	R extends Reference,
-	T extends ReferenceType<T, S>,
+	T extends ReferenceType<?, R, T, E, ?, ?, S>,
 	E extends Entity<?, R, T, E, ?, ?, S>,
 	S extends EntityMetaData<?, R, T, E, ?, ?, S>,
 	X extends Attribute,
 	Y extends Reference,
-	Z extends ReferenceType<Z, D>,	
-	V extends Entity<X, Y, Z, V, H, ?, D>,
+	Z extends ReferenceType<X, Y, Z, V, H, VF, D>,
+	V extends Entity<X, Y, Z, V, H, VF, D>,
 	H extends ReferenceHolder<X, Y, Z, V, H, D>,
-	D extends EntityMetaData<X, Y, Z, V, H, ?, D>,
-	K extends EntityKey<R, T, E, S, Z, V, H, D, K>	 
+	VF extends EntityFactory<V, H, D, VF>,
+	D extends EntityMetaData<X, Y, Z, V, H, VF, D>,
+	K extends EntityKey<R, T, E, S, Z, X, Y, V, H, VF, D, K>	 
 >
-	implements EntityKey<R, T, E, S, Z, V, H, D, K> {
+	implements EntityKey<R, T, E, S, Z, X, Y, V, H, VF, D, K> {
 	
 	/**
 	 * 
@@ -94,7 +96,11 @@ public abstract class DefaultEntityKey<
 	
 	@Override
 	public abstract K self();
+
 	
+	
+	
+	@Override
 	public void copy(E src, E dest) {
 		H v = src.getRef(self());
 		dest.setRef(self(), v);		

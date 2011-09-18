@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.types;
 
-public abstract class Type<T extends Type<T>> {
+public abstract class Type<T extends Type<? extends T>> {
 	
 	public Type() {
 		super();

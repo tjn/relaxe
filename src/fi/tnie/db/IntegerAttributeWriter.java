@@ -16,7 +16,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public class IntegerAttributeWriter<
 	A extends Attribute,
-	T extends ReferenceType<T, ?>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
 	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
 	extends AbstractAttributeWriter<A, T, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, T, E>>	

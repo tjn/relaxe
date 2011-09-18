@@ -14,7 +14,7 @@ import fi.tnie.db.types.VarcharType;
 public class VarcharIdentityMap<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T, ?>,
+	T extends ReferenceType<A, R, T, E, ?, ?, ?>,
 	E extends Entity<A, R, T, E, ?, ?, ?>	
 	>
 	extends AbstractKeyIdentityMap<A, R, T, E, String, VarcharType, VarcharHolder, VarcharKey<A, T, E>>

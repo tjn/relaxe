@@ -3,7 +3,9 @@
  */
 package fi.tnie.db.ent.value;
 
+import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.ReferenceHolder;
@@ -11,16 +13,19 @@ import fi.tnie.db.types.ReferenceType;
 
 public abstract class AbstractEntityKey<	
 	R extends Reference,
-	T extends ReferenceType<T, S>,
+	T extends ReferenceType<?, R, T, E, ?, ?, S>,
 	E extends Entity<?, R, T, E, ?, ?, S>,
 	S extends EntityMetaData<?, R, T, E, ?, ?, S>,	
-	P extends ReferenceType<P, D>,	
-	V extends Entity<?, ?, P, V, H, ?, D>,
-	H extends ReferenceHolder<?, ?, P, V, H, D>,
-	D extends EntityMetaData<?, ?, P, V, H, ?, D>,	
-	K extends EntityKey<R, T, E, S, P, V, H, D, K>
+	P extends ReferenceType<VA, VR, P, V, H, VF, D>,	
+	VA extends Attribute,
+	VR extends Reference,
+	V extends Entity<VA, VR, P, V, H, VF, D>,
+	H extends ReferenceHolder<VA, VR, P, V, H, D>,
+	VF extends EntityFactory<V, H, D, VF>,
+	D extends EntityMetaData<VA, VR, P, V, H, VF, D>,	
+	K extends EntityKey<R, T, E, S, P, VA, VR, V, H, VF, D, K>
 >
-	implements EntityKey<R, T, E, S, P, V, H, D, K> {
+	implements EntityKey<R, T, E, S, P, VA, VR, V, H, VF, D, K> {
 	
 	/**
 	 * 
@@ -96,11 +101,11 @@ public abstract class AbstractEntityKey<
 		
 		// Since getClass().equals(o.getClass()) implies t.type().getSqlType() == type().getSqlType()
 		// we only need to check the name:		
-		AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?> t = (AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?>) o;								
+		AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> t = (AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?>) o;								
 		return nameEquals(t);
 	}
 	
-	private boolean nameEquals(AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?> pk) {		
+	private boolean nameEquals(AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> pk) {		
 		return name().equals(pk.name());
 	}
 //	

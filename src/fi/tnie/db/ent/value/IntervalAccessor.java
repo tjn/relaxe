@@ -12,7 +12,7 @@ import fi.tnie.db.types.ReferenceType;
 
 public class IntervalAccessor<
 	A extends Attribute,	
-	T extends ReferenceType<T, ?>,	
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,	
 	E extends Entity<A, ?, T, E, ?, ?, ?>,
 	V extends Interval<V>, 
 	P extends IntervalType<P>, 
@@ -38,7 +38,7 @@ public class IntervalAccessor<
 	
 	public static class DayTime<
 		A extends Attribute,
-		T extends ReferenceType<T, ?>,
+		T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
 		E extends Entity<A, ?, T, E, ?, ?, ?>
 	>
 		extends IntervalAccessor<A, T, E, Interval.DayTime, IntervalType.DayTime, IntervalHolder.DayTime, IntervalKey.DayTime<A, T, E>> {
@@ -63,7 +63,7 @@ public class IntervalAccessor<
 
 	public static class YearMonth<
 		A extends Attribute,
-		T extends ReferenceType<T, ?>,
+		T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
 		E extends Entity<A, ?, T, E, ?, ?, ?>
 	>
 		extends IntervalAccessor<A, T, E, Interval.YearMonth, IntervalType.YearMonth, IntervalHolder.YearMonth, IntervalKey.YearMonth<A, T, E>> {

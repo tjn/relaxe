@@ -12,7 +12,7 @@ import fi.tnie.db.types.ReferenceType;
 public abstract class EnumEntity<
 	A extends Enum<A> & Attribute,
 	R extends Enum<R> & Reference,
-	T extends ReferenceType<T, M>,
+	T extends ReferenceType<A, R, T, E, H, F, M>,
 	E extends Entity<A, R, T, E, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	F extends EntityFactory<E, H, M, F>,

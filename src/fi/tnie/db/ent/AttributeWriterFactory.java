@@ -17,7 +17,7 @@ public interface AttributeWriterFactory {
 	 */
 	<
 		A extends Attribute, 
-		T extends ReferenceType<T, M>,
+		T extends ReferenceType<A, ?, T, E, ?, ?, M>,
 		E extends Entity<A, ?, T, E, ?, ?, M>,
 		M extends EntityMetaData<A, ?, T, E, ?, ?, M> 
 	>

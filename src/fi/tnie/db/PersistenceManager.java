@@ -23,10 +23,12 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
+import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.env.GeneratedKeyHandler;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.expr.Assignment;
 import fi.tnie.db.expr.ColumnName;
+import fi.tnie.db.expr.Default;
 import fi.tnie.db.expr.DefaultTableExpression;
 import fi.tnie.db.expr.DeleteStatement;
 import fi.tnie.db.expr.ElementList;
@@ -52,7 +54,7 @@ import fi.tnie.db.types.ReferenceType;
 public class PersistenceManager<
     A extends Attribute,
     R extends Reference,
-    T extends ReferenceType<T, M>,
+    T extends ReferenceType<A, R, T, E, H, F, M>,
     E extends Entity<A, R, T, E, H, F, M>,
     H extends ReferenceHolder<A, R, T, E, H, M>,
     F extends EntityFactory<E, H, M, F>,
@@ -77,7 +79,26 @@ public class PersistenceManager<
     private Implementation implementation = null;
 
     private static Logger logger = Logger.getLogger(PersistenceManager.class);
-
+    
+    /**
+     * Specifies a behavior for merging the dependencies of the entity currently being merged.  
+     * 
+     * @see PersistenceManager#merge(Connection)
+     * @author tnie
+     */    
+    public enum MergeStrategy {
+    	/** 
+    	 * Only the unidentified (non-null) entities the target refers to are merged.
+    	 */    	
+    	UNIDENTIFIED,
+    	/**
+    	 * All the non-null entities the target refers to are also merged.
+    	 */
+    	ALL
+    }
+    
+    private MergeStrategy mergeStrategy;        
+    
     public DeleteStatement createDeleteStatement() throws EntityException {
         E pe = getTarget();
         final EntityMetaData<?, ?, ?, ?, ?, ?, ?> meta = pe.getMetaData();
@@ -95,9 +116,13 @@ public class PersistenceManager<
 
     public InsertStatement createInsertStatement() throws EntityException {
         E pe = getTarget();
+        
+        logger().debug("createInsertStatement: pe=" + pe);
+        
     	ValueRow newRow = new ValueRow();
 
-    	final EntityMetaData<A, R, T, E, ?, ?, ?> meta = pe.getMetaData();
+//    	M meta = pe.getMetaData();
+    	final M meta = pe.getMetaData();
     	BaseTable t = meta.getBaseTable();
 
     	ElementList<ColumnName> names = new ElementList<ColumnName>();
@@ -119,16 +144,21 @@ public class PersistenceManager<
     		names.add(col.getColumnName());
     	}
 
+    	M m = target.getMetaData();
 
     	for (R r : meta.relationships()) {
-            ForeignKey fk = meta.getForeignKey(r);                        
-            ReferenceHolder<?, ?, ?, ?, ?, ?> rh = pe.ref(r);
+            ForeignKey fk = meta.getForeignKey(r);
             
-            if (rh == null) {
+            EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?> ek = m.getEntityKey(r);
+            
+//            ReferenceHolder<?, ?, ?, ?, ?, ?> rh = pe.ref(r);
+            ReferenceHolder<?, ?, ?, ?, ?, ?> rh = ek.get(target);
+                        
+            if (rh == null || rh.isNull()) {
             	continue;
             }
             
-            Entity<?, ?, ?, ?, ?, ?, ?> ref = pe.ref(r).value();
+            Entity<?, ?, ?, ?, ?, ?, ?> ref = rh.value();
 
             if (ref == null) {
                 for (Column c : fk.columns().keySet()) {                	
@@ -151,6 +181,8 @@ public class PersistenceManager<
                 }
             }
         }
+    	
+    	logger().debug("createInsertStatement: has-names=" + (!names.isEmpty()));
 
     	return new InsertStatement(t, names, newRow);
     }
@@ -249,6 +281,8 @@ public class PersistenceManager<
 		ResultSet rs = null;
 
 		try {
+			logger().debug("insert: qs=" + qs);
+			
 			logger().debug("JDBC-driver :" + c.getMetaData().getDriverName());
 			logger().debug("JDBC-driver-maj:" + c.getMetaData().getDriverMajorVersion());
 			logger().debug("JDBC-driver-min:" + c.getMetaData().getDriverMinorVersion());
@@ -286,21 +320,14 @@ public class PersistenceManager<
         Query pq = getQuery();
         TableReference tref = pq.getTableRef();
         
-
-        
-        // TODO: reimplement:
-        
-//        DefaultEntityQueryTask<A, R, T, E> qt =
-//        	new DefaultEntityQueryTask<A, R, T, E>(pq, getImplementation());
-
     	Predicate pkp = getPKPredicate(tref, getTarget());
     	E stored = null;
 
     	if (pkp != null) {
             pq.getQuery().getWhere().setSearchCondition(pkp);
-         // TODO: reimplement:
-//            stored = qt.exec(c).first();
     	}
+
+    	mergeDependencies(getTarget(), c);    	
 
     	if (stored == null) {
     		insert(c);
@@ -310,8 +337,53 @@ public class PersistenceManager<
     	}
     }
 
+    private 
+    <
+    	DA extends Attribute,
+    	DR extends Reference,
+    	DT extends ReferenceType<DA, DR, DT, DE, DH, DF, DM>,	
+		DE extends Entity<DA, DR, DT, DE, DH, DF, DM>,
+		DH extends ReferenceHolder<DA, DR, DT, DE, DH, DM>,
+		DF extends EntityFactory<DE, DH, DM, DF>,
+		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM>  
+    >    
+    void mergeDependencies(DE target, Connection c) throws EntityException {
+    	
+    	logger().debug("mergeDependencies: target=" + target);
+    	
+    	DM m = target.getMetaData();    	
+    	Set<DR> rs = m.relationships();
+    	
+    	final MergeStrategy ms = getMergeStrategy();
+    	
+    	for (DR dr : rs) {
+			EntityKey<DR, DT, DE, DM, ?, ?, ?, ?, ?, ?, ?, ?> ek = m.getEntityKey(dr);
+			
+			String id = ek.name().identifier();
+			logger().debug("mergeDependencies: id=" + id);			
+			
+			ReferenceHolder<?, ?, ?, ?, ?, ?> rh = ek.get(target);
+			
+			if (rh == null || rh.isNull()) {
+				logger().debug("no ref");
+				continue;
+			}
+			
+			Entity<?, ?, ?, ?, ?, ?, ?> rv = rh.value();
+								
+			if (ms == MergeStrategy.ALL || (!rv.isIdentified())) {
+				logger().debug("merging dependency: " + id);
+				PersistenceManager<?, ?, ?, ?, ?, ?, ?> pm = create(rv.self(), getImplementation());
+				pm.merge(c);
+			}
+			else {
+				logger().debug("no merge for " + id);
+			}
+		}
+	}
 
-    public void update(Connection c) throws EntityException {
+
+	public void update(Connection c) throws EntityException {
     	Predicate pkp = getPKPredicate();
 
     	if (pkp == null) {
@@ -358,8 +430,12 @@ public class PersistenceManager<
     public static Logger logger() {
         return PersistenceManager.logger;
     }
-
+    
     public PersistenceManager(E target, Implementation implementation) {
+    	this(target, implementation, MergeStrategy.UNIDENTIFIED);
+    }
+
+    public PersistenceManager(E target, Implementation implementation, MergeStrategy mergeStrategy) {
         super();
 
         if (target == null) {
@@ -370,8 +446,13 @@ public class PersistenceManager<
 			throw new NullPointerException("implementation");
 		}
         
+        if (mergeStrategy == null) {
+			throw new NullPointerException("mergeStrategy");
+		}
+        
         setImplementation(implementation);
         setTarget(target);        
+        setMergeStrategy(mergeStrategy);
     }
 
     public E getTarget() {
@@ -465,4 +546,29 @@ public class PersistenceManager<
 				
 		return null;
 	}
+	
+	
+	private <
+		DA extends Attribute, 
+		DR extends fi.tnie.db.ent.Reference, 
+		DT extends ReferenceType<DA, DR, DT, DE, DH, DF, DM>, 
+		DE extends Entity<DA, DR, DT, DE, DH, DF, DM>,
+		DH extends ReferenceHolder<DA, DR, DT, DE, DH, DM>,
+		DF extends EntityFactory<DE, DH, DM, DF>,		
+		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM>
+	>
+	PersistenceManager<DA, DR, DT, DE, DH, DF, DM> create(DE e, Implementation impl) {
+		PersistenceManager<DA, DR, DT, DE, DH, DF, DM> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM>(e, impl, getMergeStrategy());
+		return pm;
+	}
+
+
+	private MergeStrategy getMergeStrategy() {
+		return mergeStrategy;
+	}
+
+
+	private void setMergeStrategy(MergeStrategy mergeStrategy) {
+		this.mergeStrategy = mergeStrategy;
+	}	
 }

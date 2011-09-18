@@ -5,7 +5,9 @@ package fi.tnie.db.ent.value;
 
 import java.io.Serializable;
 
+import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.ReferenceHolder;
@@ -22,31 +24,34 @@ import fi.tnie.db.types.ReferenceType;
  * @param <E>
  * @param <S>
  * @param <P>
- * @param <V>
- * @param <H>
- * @param <D>
+ * @param <VE>
+ * @param <VH>
+ * @param <VM>
  * @param <K>
  */
 public interface EntityKey<	
 	R extends Reference,
-	T extends ReferenceType<T, S>,
+	T extends ReferenceType<?, R, T, E, ?, ?, S>,
 	E extends Entity<?, R, T, E, ?, ?, S>,	
 	S extends EntityMetaData<?, R, T, E, ?, ?, S>,	
-	P extends ReferenceType<P, D>,
-	V extends Entity<?, ?, P, V, H, ?, D>,
-	H extends ReferenceHolder<?, ?, P, V, H, D>,
-	D extends EntityMetaData<?, ?, P, V, H, ?, D>,	
-	K extends EntityKey<R, T, E, S, P, V, H, D, K>	
+	P extends ReferenceType<VA, VR, P, VE, VH, VF, VM>,
+	VA extends Attribute,
+	VR extends Reference,	
+	VE extends Entity<VA, VR, P, VE, VH, VF, VM>,
+	VH extends ReferenceHolder<VA, VR, P, VE, VH, VM>,
+	VF extends EntityFactory<VE, VH, VM, VF>,
+	VM extends EntityMetaData<VA, VR, P, VE, VH, VF, VM>,	
+	K extends EntityKey<R, T, E, S, P, VA, VR, VE, VH, VF, VM, K>	
 >
 	extends Key<T, E, P, K>, Serializable
 {	
 	R name();	
-	H newHolder(V newValue);	
-	H get(E e);
-	V value(E e);
-	void set(E e, H newValue);
-	void set(E e, V newValue);
+	VH newHolder(VE newValue);	
+	VH get(E e);
+	VE value(E e);
+	void set(E e, VH newValue);
+	void set(E e, VE newValue);
 	
 	S getSource();	
-	D getTarget();	
+	VM getTarget();	
 }

@@ -16,7 +16,7 @@ import fi.tnie.db.types.TimestampType;
 
 public final class TimestampKey<	
 	A extends Attribute, 
-	T extends ReferenceType<T, ?>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
 	E extends Entity<A, ?, T, E, ?, ?, ?>
 >
 	extends AbstractPrimitiveKey<A, T, E, Date, TimestampType, TimestampHolder, TimestampKey<A, T, E>>
@@ -39,7 +39,7 @@ public final class TimestampKey<
 	
 	public static <
 		X extends Attribute,		 
-		Z extends ReferenceType<Z, ?>,		
+		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?>,		
 		T extends Entity<X, ?, Z, T, ?, ?, ?>
 	>
 	TimestampKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?> meta, X a) {

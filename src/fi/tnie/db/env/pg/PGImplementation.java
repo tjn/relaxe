@@ -63,7 +63,7 @@ public class PGImplementation
 		public <
 			A extends Attribute,
 			R extends Reference,
-			T extends ReferenceType<T, M>,
+			T extends ReferenceType<A, R, T, E, ?, ?, M>,
 			E extends Entity<A, R, T, E, ?, ?, M>,
 			M extends EntityMetaData<A, R, T, E, ?, ?, M>
 		>

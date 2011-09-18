@@ -5,7 +5,7 @@ package fi.tnie.db;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.AttributeWriterFactory;
-import fi.tnie.db.ent.DefaultDataObject;
+import fi.tnie.db.ent.MutableDataObject;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityBuildContext;
 import fi.tnie.db.ent.EntityBuilder;
@@ -20,7 +20,7 @@ import fi.tnie.db.types.ReferenceType;
 public class EntityBuilderManager<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T, M>,
+	T extends ReferenceType<A, R, T, E, H, ?, M>,
 	E extends Entity<A, R, T, E, H, ?, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	M extends EntityMetaData<A, R, T, E, H, ?, M>
@@ -71,7 +71,7 @@ public class EntityBuilderManager<
 //	}
 	
 	@Override
-	protected void put(DefaultDataObject o) {
+	protected void put(MutableDataObject o) {
 		E result = rootBuilder.read(o);		
 		process(result);
 	}
@@ -81,8 +81,8 @@ public class EntityBuilderManager<
 	}
 
 	@Override
-	protected DefaultDataObject get() {
-		return new DefaultDataObject(getMetaData());
+	protected MutableDataObject get() {
+		return new MutableDataObject(getMetaData());
 	}	
 
 

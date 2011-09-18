@@ -55,7 +55,7 @@ import fi.tnie.db.types.ReferenceType;
 public abstract class DefaultEntity<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T, M>,	
+	T extends ReferenceType<A, R, T, E, H, F, M>,	
 	E extends Entity<A, R, T, E, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	F extends EntityFactory<E, H, M, F>, 
@@ -300,11 +300,14 @@ public abstract class DefaultEntity<
 	
 		
 	public <
-		P extends fi.tnie.db.types.ReferenceType<P, D>, 
-		G extends fi.tnie.db.ent.Entity<?,?,P,G,RH,?,D>, 
-		RH extends fi.tnie.db.rpc.ReferenceHolder<?,?,P,G, RH, D>, 
-		D extends fi.tnie.db.ent.EntityMetaData<?,?,P,G,RH,?,D>, 
-		K extends fi.tnie.db.ent.value.EntityKey<R,T,E,M,P,G,RH,D,K>
+		P extends ReferenceType<VA, VR, P, G, RH, VF, D>,
+		VA extends Attribute,
+		VR extends Reference,
+		G extends fi.tnie.db.ent.Entity<VA,VR,P,G,RH,VF,D>, 
+		RH extends fi.tnie.db.rpc.ReferenceHolder<VA,VR,P,G, RH, D>, 
+		VF extends EntityFactory<G, RH, D, VF>,
+		D extends fi.tnie.db.ent.EntityMetaData<VA,VR,P,G,RH,VF,D>, 
+		K extends fi.tnie.db.ent.value.EntityKey<R,T,E,M,P,VA,VR,G,RH,VF, D,K>
 	> RH getRef(K k) {
 		return k.get(self());
 	};
@@ -340,10 +343,13 @@ public abstract class DefaultEntity<
 //	}
 	
 	public <
-		P extends fi.tnie.db.types.ReferenceType<P, D>, 
-		G extends fi.tnie.db.ent.Entity<?,?,P,G,RH,?, D>, 
-		RH extends fi.tnie.db.rpc.ReferenceHolder<?,?,P,G, RH, D>, 
-		D extends fi.tnie.db.ent.EntityMetaData<?,?,P,G,RH,?,D>, K extends fi.tnie.db.ent.value.EntityKey<R,T,E,M,P,G,RH,D,K>> void setRef(K k, RH newValue) {
+		P extends ReferenceType<VA, VR, P, G, RH, VF, D>, 
+		VA extends Attribute,
+		VR extends Reference,
+		G extends fi.tnie.db.ent.Entity<VA,VR,P,G,RH,VF, D>,		
+		RH extends fi.tnie.db.rpc.ReferenceHolder<VA,VR,P,G, RH, D>,
+		VF extends EntityFactory<G, RH, D, VF>,
+		D extends fi.tnie.db.ent.EntityMetaData<VA,VR,P,G,RH,VF,D>, K extends fi.tnie.db.ent.value.EntityKey<R,T,E,M,P,VA,VR,G,RH,VF, D,K>> void setRef(K k, RH newValue) {
 		
 		k.set(self(), newValue);	
 
@@ -369,7 +375,7 @@ public abstract class DefaultEntity<
 		}
 		
 		for (R r : meta.relationships()) {						
-			EntityKey<R, T, E, M, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
+			EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
 			ek.copy(src, dest);			
 		}
 		

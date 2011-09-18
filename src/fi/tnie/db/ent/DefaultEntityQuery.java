@@ -30,7 +30,7 @@ import fi.tnie.db.meta.ForeignKey;
 public class DefaultEntityQuery<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<T, M>,
+	T extends ReferenceType<A, R, T, E, ?, F, M>,
 	E extends Entity<A, R, T, E, ?, F, M>,
 	F extends EntityFactory<E, ?, M, F>,
 	M extends EntityMetaData<A, R, T, E, ?, F, M>
@@ -78,7 +78,7 @@ public class DefaultEntityQuery<
 		}
 		
 		for (R a : meta.relationships()) {
-			EntityKey<R, T, E, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(a);
+			EntityKey<R, T, E, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(a);
 			k.clear(p);
 		}		
 		
@@ -189,7 +189,7 @@ public class DefaultEntityQuery<
 						
 		for (MR r : rs) {
 //			logger().info("fromTemplate: r=" + r);
-			EntityKey<?, ?, ME, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);	
+			EntityKey<?, ?, ME, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);	
 			
 			ReferenceHolder<?, ?, ?, ?, ?, ?> h = k.get(template);
 					

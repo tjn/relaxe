@@ -34,8 +34,8 @@ import fi.tnie.db.meta.Column;
 	
 public interface Entity<
 	A extends Attribute,
-	R extends Reference,
-	T extends ReferenceType<T, M>,
+	R extends Reference,	
+	T extends ReferenceType<A, R, T, E, H, F, M>,
 	E extends Entity<A, R, T, E, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	F extends EntityFactory<E, H, M, F>,
@@ -54,12 +54,15 @@ public interface Entity<
 	PH get(K k)
 		throws EntityRuntimeException;	
 
-	<			
-		P extends ReferenceType<P, D>,
-		G extends Entity<?, ?, P, G, RH, ?, D>,
-		RH extends ReferenceHolder<?, ?, P, G, RH, D>,
-		D extends EntityMetaData<?, ?, P, G, RH, ?, D>,
-		K extends EntityKey<R, T, E, M, P, G, RH, D, K>
+	<	
+		VT extends ReferenceType<VA, VR, VT, V, RH, VF, D>,
+		VA extends Attribute,
+		VR extends Reference,		
+		V extends Entity<VA, VR, VT, V, RH, VF, D>,
+		RH extends ReferenceHolder<VA, VR, VT, V, RH, D>,
+		VF extends EntityFactory<V, RH, D, VF>,
+		D extends EntityMetaData<VA, VR, VT, V, RH, VF, D>,
+		K extends EntityKey<R, T, E, M, VT, VA, VR, V, RH, VF, D, K>
 	>	
 	RH getRef(K k);
 	
@@ -77,11 +80,14 @@ public interface Entity<
 	public Entity<?, ?, ?, ?, ?, ?, ?> getRef(R k);
 	
 	<			
-		P extends ReferenceType<P, D>,
-		G extends Entity<?, ?, P, G, RH, ?, D>,
-		RH extends ReferenceHolder<?, ?, P, G, RH, D>,
-		D extends EntityMetaData<?, ?, P, G, RH, ?, D>,		
-		K extends EntityKey<R, T, E, M, P, G, RH, D, K>
+		VT extends ReferenceType<VA, VR, VT, G, RH, VF, D>,
+		VA extends Attribute,
+		VR extends Reference,
+		G extends Entity<VA, VR, VT, G, RH, VF, D>,
+		RH extends ReferenceHolder<VA, VR, VT, G, RH, D>,
+		VF extends EntityFactory<G, RH, D, VF>,
+		D extends EntityMetaData<VA, VR, VT, G, RH, VF, D>,		
+		K extends EntityKey<R, T, E, M, VT, VA, VR, G, RH, VF, D, K>
 	>		
 	void setRef(K k, RH newValue);	
 	
@@ -185,6 +191,8 @@ public interface Entity<
 		throws EntityRuntimeException;
 		
 	public E self();
+	
+	public E copy();
 
 	E unify(IdentityContext ctx);
 		

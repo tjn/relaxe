@@ -26,7 +26,7 @@ public class IntegerKeyTest extends TestCase {
 	<
 		A extends Attribute,
 		Y extends Reference, 
-		Z extends ReferenceType<Z, M>,		
+		Z extends ReferenceType<A, Y, Z, E, ?, ?, M>,		
 		E extends Entity<A, Y, Z, E, ?, ?, M>,
 		M extends EntityMetaData<A, Y, Z, E, ?, ?, M>		
 	>
