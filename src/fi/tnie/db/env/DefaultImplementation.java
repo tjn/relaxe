@@ -3,6 +3,10 @@
  */
 package fi.tnie.db.env;
 
+import java.sql.Driver;
+
+import org.apache.log4j.Logger;
+
 import fi.tnie.db.DefaultValueAssignerFactory;
 import fi.tnie.db.DefaultValueExtractorFactory;
 import fi.tnie.db.ValueAssignerFactory;
@@ -14,7 +18,10 @@ public abstract class DefaultImplementation
 	implements Implementation {
 
 	private ValueExtractorFactory valueExtractorFactory; 
-	private ValueAssignerFactory valueAssignerFactory;
+	private ValueAssignerFactory valueAssignerFactory;	
+	private Driver driver;
+	
+	private static Logger logger = Logger.getLogger(DefaultImplementation.class);
 	
 	@Override
 	public abstract CatalogFactory catalogFactory();
@@ -44,4 +51,29 @@ public abstract class DefaultImplementation
 	protected ValueAssignerFactory createValueAssignerFactory() {
 		return new DefaultValueAssignerFactory();
 	}
+	
+	@Override
+	public Driver getDriver() {
+		if (driver == null) {
+			try {
+				this.driver = createDriver();
+			}
+			catch (Exception e) {
+				logger().error(e.getMessage(), e);
+			}
+		}
+		
+		return this.driver;
+	}
+	
+	private static Logger logger() {
+		return DefaultImplementation.logger;
+	}
+		
+	protected Driver createDriver() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		Class<?> c = Class.forName(driverClassName());
+		Driver d = (Driver) c.newInstance();
+		return d;
+	}
+	
 }

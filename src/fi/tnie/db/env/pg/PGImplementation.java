@@ -33,7 +33,7 @@ public class PGImplementation
     private SQLSyntax syntax;
     private PGGeneratedKeyHandler generatedKeyHandler;
     private PGEnvironment environment;
-
+    
 	public PGImplementation() {
 		environment = new PGEnvironment();
 	}
@@ -148,4 +148,12 @@ public class PGImplementation
 		
 		return "jdbc:postgresql://" + host + ":" + port + "/" + database;				
 	}
+		
+//	public java.sql.Driver getDriver() {		
+//		if (driver == null) {
+//			driver = new org.postgresql.Driver();
+//		}
+//				
+//		return driver;
+//	}
 }

@@ -14,7 +14,8 @@ import fi.tnie.db.meta.FoldingComparator;
 public abstract class DefaultEnvironment 
 	implements Environment {
 
-	private Comparator<Identifier> identifierComp;	
+	private Comparator<Identifier> identifierComp;
+	
 			
 	@Override
 	public Identifier createIdentifier(String name)
@@ -33,5 +34,7 @@ public abstract class DefaultEnvironment
 	
 	protected Comparator<Identifier> createIdentifierComparator() {
 		return new FoldingComparator();
-	}		
+	}
+	
+		
 }

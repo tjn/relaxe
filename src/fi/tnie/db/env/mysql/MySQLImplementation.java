@@ -140,6 +140,5 @@ public class MySQLImplementation
 		host = (host == null) ? "" : host;
 		return "jdbc:mysql://" + host + ":" + port + "/" + database;
 	}
-		
-
+	
 }

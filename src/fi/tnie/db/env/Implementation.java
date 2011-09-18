@@ -3,6 +3,8 @@
  */
 package fi.tnie.db.env;
 
+import java.sql.Driver;
+
 import fi.tnie.db.ValueAssignerFactory;
 import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.expr.SQLSyntax;
@@ -26,5 +28,6 @@ public interface Implementation
 	
 	String createJdbcUrl(String host, String database);
 	String createJdbcUrl(String host, int port, String database);
-		
+	
+	Driver getDriver();		
 }
