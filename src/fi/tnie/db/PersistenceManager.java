@@ -109,18 +109,14 @@ public class PersistenceManager<
     		PrimitiveHolder<?, ?> holder = pe.value(a);
     		
     		if (holder == null) {
-    			continue;
-    		}
-
-    		if (holder.isNull() && col.isPrimaryKeyColumn()) {
-    		    // this might be auto-increment pk-column
-    		    // newRow.add(new ValueExpression());
+    			newRow.add(new Default(col));    		
     		}
     		else {
                 ValueParameter<?, ?> p = createParameter(col, holder);
-                newRow.add(p);
-                names.add(col.getColumnName());
+                newRow.add(p);                    			
     		}
+    		
+    		names.add(col.getColumnName());
     	}
 
 
