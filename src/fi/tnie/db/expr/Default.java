@@ -21,7 +21,7 @@ import fi.tnie.db.meta.Column;
  */
 
 public class Default
-	implements ValueExpression {
+	implements ValuesListElement {
 	
 	private Column column;
 	
@@ -37,18 +37,12 @@ public class Default
 	}
 
 	@Override
-	public ColumnName getColumnName() {
-		return null;
-	}
-
-	@Override
-	public int getType() {
-		return this.column.getDataType().getDataType();
-	}
-
-	@Override
 	public String getTerminalSymbol() {
 		return null;
+	}
+	
+	public Column getColumn() {
+		return column;
 	}
 
 	@Override

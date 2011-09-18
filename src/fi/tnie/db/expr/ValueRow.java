@@ -4,7 +4,7 @@
 package fi.tnie.db.expr;
 
 public class ValueRow
-	extends ElementList<ValueExpression> {
+	extends ElementList<ValuesListElement> {
 
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {

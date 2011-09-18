@@ -4,7 +4,7 @@
 package fi.tnie.db.expr;
 
 public interface ValueExpression 
-	extends Expression {
+	extends Expression, ValuesListElement {
 	/**
 	 * SQL JavaType of the expression
 	 * @return
