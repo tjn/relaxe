@@ -16,7 +16,7 @@ import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.ValueExpression;
 import fi.tnie.db.rpc.PrimitiveHolder;
 
-public class DefaultDataObject
+public class MutableDataObject
 	implements DataObject {
 	
 	/**
@@ -25,7 +25,7 @@ public class DefaultDataObject
 	private static final long serialVersionUID = 5199827695443766073L;
 	
 	private List<PrimitiveHolder<?, ?>> content;
-	private DefaultDataObject.MetaData metaData;
+	private MutableDataObject.MetaData metaData;
 		
 	public static class MetaData
 		implements DataObject.MetaData, Serializable {
@@ -90,7 +90,7 @@ public class DefaultDataObject
 		}
 	}
 		
-	public DefaultDataObject(MetaData m) {
+	public MutableDataObject(MetaData m) {
 		super();
 		this.metaData = m;
 		
