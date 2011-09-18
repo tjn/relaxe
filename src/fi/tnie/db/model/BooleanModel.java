@@ -5,5 +5,8 @@ package fi.tnie.db.model;
 
 public interface BooleanModel
 	extends ValueModel<Boolean> {
+	
+	@Override
+	public MutableBooleanModel asMutable();
 
 }

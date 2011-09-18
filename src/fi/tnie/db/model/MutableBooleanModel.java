@@ -22,4 +22,9 @@ public class MutableBooleanModel
 	public void set(boolean value) {	
 		super.set(Boolean.valueOf(value));
 	}
+	
+	@Override
+	public MutableBooleanModel asMutable() {
+		return this;
+	}
 }

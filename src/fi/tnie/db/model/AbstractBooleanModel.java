@@ -7,4 +7,6 @@ public abstract class AbstractBooleanModel
 	extends AbstractValueModel<Boolean>
 	implements BooleanModel
 {	
+	@Override
+	public abstract MutableBooleanModel asMutable();
 }

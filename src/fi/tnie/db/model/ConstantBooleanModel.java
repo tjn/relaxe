@@ -25,4 +25,9 @@ public class ConstantBooleanModel
 	public ConstantBooleanModel(Boolean value) {
 		super(value);		
 	}
+	
+	@Override
+	public MutableBooleanModel asMutable() {
+		return null;
+	}
 }
