@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ListModel<E>
 	extends ValueModel<List<E>> {
-		
 	
+	boolean isEmpty();
 }
