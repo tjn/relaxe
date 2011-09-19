@@ -31,7 +31,7 @@ public class SetOperator
 		super(operator.name, left, right);
 		
 		if (operator == null) {
-			throw new NullPointerException("'name' must not be null");
+			throw new NullPointerException("'operator' must not be null");
 		}
 		
 		if (left == null) {
