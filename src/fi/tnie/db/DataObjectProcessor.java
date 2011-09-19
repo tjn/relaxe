@@ -16,7 +16,7 @@ import fi.tnie.db.exec.QueryProcessorAdapter;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.query.QueryException;
 
-public abstract class DataObjectProcessor
+public abstract class DataObjectProcessor<O extends MutableDataObject>
 	extends QueryProcessorAdapter {
 
 	private static Logger logger = Logger.getLogger(DataObjectProcessor.class);
@@ -64,7 +64,7 @@ public abstract class DataObjectProcessor
 	@Override
 	public void process(ResultSet rs, long ordinal) throws QueryException {
 		try {
-			MutableDataObject o = get();			
+			O o = get();			
 			
 			int count = this.extractors.length;
 			
@@ -81,10 +81,10 @@ public abstract class DataObjectProcessor
 		}
 	}
 
-	protected void put(MutableDataObject o) {
+	protected void put(O o) {
 	}
 	
-	protected abstract MutableDataObject get();
+	protected abstract O get();
 
 	protected MutableDataObject.MetaData getMetaData() {
 		return meta;

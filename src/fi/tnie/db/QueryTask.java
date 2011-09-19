@@ -37,8 +37,8 @@ public class QueryTask
 		ResultSet rs = null;
 		
 		List<DataObject> content = new ArrayList<DataObject>();
-		QueryResult<DataObject> qr = new QueryResult<DataObject>(this.query, content);
-				
+		QueryTime qt = null;				
+		
 		try {			
 			QueryExpression qe = this.query.getExpression();
 			
@@ -55,13 +55,9 @@ public class QueryTask
 			try {
 			    logger().debug("query: " + qs);
 			    
-			    long start = System.currentTimeMillis();
-			    
-				rs = ps.executeQuery();				
-				
-				long end = System.currentTimeMillis();
-				qr.setQueryTime(end - start);				
-				start = end;
+			    final long s = System.currentTimeMillis();			    
+				rs = ps.executeQuery();							
+				final long e = System.currentTimeMillis();
 								
 				qp.startQuery(rs.getMetaData());
 							
@@ -73,8 +69,8 @@ public class QueryTask
 				
 				qp.endQuery();
 				
-				end = System.currentTimeMillis();
-				qr.setPopulationTime(end - start);
+				final long p = System.currentTimeMillis();
+				qt = new QueryTime(e - s, p - e);
 			}
 			catch (SQLException e) {
 				qp.abort(e);
@@ -92,8 +88,8 @@ public class QueryTask
 			rs = QueryHelper.doClose(rs);
 			ps = QueryHelper.doClose(ps);			
 		}
-		
-		return qr;
+				
+		return new QueryResult<DataObject>(this.query, content, qt);
 	}
 
 	private static Logger logger() {

@@ -16,6 +16,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.DefaultEntityQuery;
@@ -65,7 +66,7 @@ public class PersistenceManager<
     M extends EntityMetaData<A, R, T, E, H, F, M>
 >
 {	
-    private class Query
+    private class PMQuery
         extends DefaultEntityQuery<A, R, T, E, F, M>
     {
         /**
@@ -73,13 +74,13 @@ public class PersistenceManager<
 		 */
 		private static final long serialVersionUID = -1285004174865437785L;
 
-		public Query(M meta) throws EntityException {
+		public PMQuery(M meta) throws EntityException {
             super(meta);
         }
     }
 
     private E target;
-    private Query query = null;
+    private PMQuery query = null;
     private Implementation implementation = null;
 
     private static Logger logger = Logger.getLogger(PersistenceManager.class);
@@ -90,7 +91,7 @@ public class PersistenceManager<
      * @see PersistenceManager#merge(Connection)
      * @author tnie
      */    
-    public enum MergeStrategy {
+    public enum MergeMode {
     	/** 
     	 * Only the unidentified (non-null) entities the target refers to are merged.
     	 */    	
@@ -101,7 +102,7 @@ public class PersistenceManager<
     	ALL
     }
     
-    private MergeStrategy mergeStrategy;        
+    private MergeMode mergeMode;        
     
     public DeleteStatement createDeleteStatement() throws EntityException {
         E pe = getTarget();
@@ -321,7 +322,7 @@ public class PersistenceManager<
 	}
 
     public void merge(Connection c) throws EntityException {
-        Query pq = getQuery();
+        PMQuery pq = getQuery();
         TableReference tref = pq.getTableRef();
         
     	Predicate pkp = getPKPredicate(tref, getTarget());
@@ -358,7 +359,7 @@ public class PersistenceManager<
     	DM m = target.getMetaData();    	
     	Set<DR> rs = m.relationships();
     	
-    	final MergeStrategy ms = getMergeStrategy();
+    	final MergeMode ms = getMergeMode();
     	
     	for (DR dr : rs) {
 			EntityKey<DR, DT, DE, DM, ?, ?, ?, ?, ?, ?, ?, ?> ek = m.getEntityKey(dr);
@@ -375,7 +376,7 @@ public class PersistenceManager<
 			
 			Entity<?, ?, ?, ?, ?, ?, ?> rv = rh.value();
 								
-			if (ms == MergeStrategy.ALL || (!rv.isIdentified())) {
+			if (ms == MergeMode.ALL || (!rv.isIdentified())) {
 				logger().debug("merging dependency: " + id);
 				PersistenceManager<?, ?, ?, ?, ?, ?, ?> pm = create(rv.self(), getImplementation());
 				pm.merge(c);
@@ -436,10 +437,10 @@ public class PersistenceManager<
     }
     
     public PersistenceManager(E target, Implementation implementation) {
-    	this(target, implementation, MergeStrategy.UNIDENTIFIED);
+    	this(target, implementation, MergeMode.UNIDENTIFIED);
     }
 
-    public PersistenceManager(E target, Implementation implementation, MergeStrategy mergeStrategy) {
+    public PersistenceManager(E target, Implementation implementation, MergeMode mergeStrategy) {
         super();
 
         if (target == null) {
@@ -456,7 +457,7 @@ public class PersistenceManager<
         
         setImplementation(implementation);
         setTarget(target);        
-        setMergeStrategy(mergeStrategy);
+        setMergeMode(mergeStrategy);
     }
 
     public E getTarget() {
@@ -506,9 +507,9 @@ public class PersistenceManager<
     }
 
 
-    private Query getQuery() throws EntityException {
+    private PMQuery getQuery() throws EntityException {
         if (this.query == null) {
-            this.query = new Query(getTarget().getMetaData());
+            this.query = new PMQuery(getTarget().getMetaData());
         }
 
         return this.query;
@@ -533,22 +534,19 @@ public class PersistenceManager<
 	}
 	
 	
-	public QueryResult<E> execute(EntityQuery<A, R, T, E, M> query, Connection c) 
+	public QueryResult<EntityDataObject<E>> execute(EntityQuery<A, R, T, E, M> query, Connection c) 
 		throws SQLException, QueryException {
 		
 		DefaultTableExpression qo = query.getQuery();		
 		ValueExtractorFactory vef = getImplementation().getValueExtractorFactory();
 		
-		List<E> content = new ArrayList<E>();		
+		List<EntityDataObject<E>> content = new ArrayList<EntityDataObject<E>>();		
 		EntityReader<?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M>(vef, query, content);
 		StatementExecutor sx = new StatementExecutor();				
-		sx.execute(qo, c, eb);
-					
-//		new QueryResult<T>(query, content);
-		
-//		new MultipleEntityQueryResult<A, R, T, E, M>(source, content, available);
-				
-		return null;
+		Query q = new Query(qo);			
+		QueryTime qt = sx.execute(qo, c, eb);							
+		QueryResult<EntityDataObject<E>> result = new QueryResult<EntityDataObject<E>>(q, content, qt);		
+		return result;
 	}
 	
 	
@@ -562,17 +560,17 @@ public class PersistenceManager<
 		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM>
 	>
 	PersistenceManager<DA, DR, DT, DE, DH, DF, DM> create(DE e, Implementation impl) {
-		PersistenceManager<DA, DR, DT, DE, DH, DF, DM> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM>(e, impl, getMergeStrategy());
+		PersistenceManager<DA, DR, DT, DE, DH, DF, DM> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM>(e, impl, getMergeMode());
 		return pm;
 	}
 
 
-	private MergeStrategy getMergeStrategy() {
-		return mergeStrategy;
+	private MergeMode getMergeMode() {
+		return mergeMode;
 	}
 
 
-	private void setMergeStrategy(MergeStrategy mergeStrategy) {
-		this.mergeStrategy = mergeStrategy;
+	private void setMergeMode(MergeMode mm) {
+		this.mergeMode = mm;
 	}	
 }

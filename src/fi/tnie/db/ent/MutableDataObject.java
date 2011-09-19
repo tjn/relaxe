@@ -41,10 +41,9 @@ public class MutableDataObject
 		private QueryExpression query;
 		
 		/**
-			 * No-argument constructor for GWT Serialization
-			 */
-		@SuppressWarnings("unused")
-		private MetaData() {	
+		 * No-argument constructor for GWT Serialization
+		 */
+		protected MetaData() {	
 		}
 		
 		public MetaData(QueryExpression qe) {
@@ -88,6 +87,12 @@ public class MutableDataObject
 		public QueryExpression getQuery() {
 			return query;
 		}
+	}
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected MutableDataObject() {		
 	}
 		
 	public MutableDataObject(MetaData m) {

@@ -5,12 +5,14 @@ package fi.tnie.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Date;
 
 import junit.framework.TestCase;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.value.DateKey;
@@ -21,6 +23,7 @@ import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
 import fi.tnie.db.gen.ent.personal.Person;
 import fi.tnie.db.gen.ent.personal.PersonalFactory;
+import fi.tnie.db.gen.ent.personal.Project;
 import fi.tnie.db.gen.ent.personal.Person.Reference;
 import fi.tnie.db.gen.ent.personal.Person.Type;
 import fi.tnie.db.meta.BaseTable;
@@ -32,9 +35,8 @@ import fi.tnie.db.types.ReferenceType;
 
 public class PersistenceManagerTest2 extends TestCase  {
 	
-	
 	private Connection connection = null;
-	private Catalog catalog;
+	private LiteralCatalog catalog;
 	
 	
 	@Override
@@ -53,11 +55,9 @@ public class PersistenceManagerTest2 extends TestCase  {
     public void testPersistenceManager() 
         throws Exception {
         
-        Connection c = getConnection();
-        
-        assertFalse(c.getAutoCommit());
-                        
-        LiteralCatalog cc = LiteralCatalog.getInstance();
+        Connection c = getConnection();        
+        assertFalse(c.getAutoCommit());                        
+        LiteralCatalog cc = getCatalog();
                 
         BaseTable ct = LiteralCatalog.LiteralBaseTable.PUBLIC_CONTINENT;
         assertNotNull(ct);
@@ -130,14 +130,12 @@ public class PersistenceManagerTest2 extends TestCase  {
         
         om.merge(c);
         c.commit();
-                
-                
         
 //       hr.ref(HourReport.Reference.FK_HHR_EMPLOYER). org);        
 //        Organization.Key<Attribute, R, ReferenceType<T>, Entity<A,R,T,E>, ?>        
 //        hr.setRef(HourReport.FK_HHR_EMPLOYER, org);
         
-        hr.id().set(null);
+//        hr.id().set(null);
         hr.setRef(HourReport.FK_HHR_EMPLOYER, org.ref());
         
         PersistenceManager<fi.tnie.db.gen.ent.personal.HourReport.Attribute, 
@@ -149,12 +147,96 @@ public class PersistenceManagerTest2 extends TestCase  {
         	HourReport.MetaData> hrm =
         	create(hr, impl);
         
-                
+        hr.setRef(HourReport.FK_HHR_EMPLOYER, org.ref());                
         hrm.merge(c);
+        
         c.commit();        
     }
+    
+    public void testPersistenceManager2() 
+    	throws Exception {
+    
+	    Connection c = getConnection();    
+	    assertFalse(c.getAutoCommit());                    
+	    LiteralCatalog cc = LiteralCatalog.getInstance();
+	            
+	    PersonalFactory pf = cc.newPersonalFactory();
+            
+	    PGImplementation impl = new PGImplementation();
+    
+	    HourReport hr = pf.newHourReport();
+	    assertNotNull(hr.reportDate());
+    
+	    Organization org = pf.newOrganization();
+	    
+	    DateKey<HourReport.Attribute, HourReport.Type, HourReport> dk = 
+	    	hr.getMetaData().getDateKey(HourReport.Attribute.REPORT_DATE);
+    
+	    hr.setDate(dk, DateHolder.currentDate());                
+	    assertNotNull(hr.reportDate().get());
+	    assertNotNull(hr.getReportDate());
+	    hr.setComment("asdfasd");
+	    hr.setStartedAt(new Date());
+	    hr.setFinishedAt(new Date());
+    	    
+	    org.setName("Ab Firma Oy " + ((int) (Math.random() * 1000)));    
+    
+//	    hr.id().set(null);
+	    hr.setInteger(HourReport.ID, null);
+	    
+	    hr.setRef(HourReport.FK_HHR_EMPLOYER, org.ref());
+    
+	    PersistenceManager<fi.tnie.db.gen.ent.personal.HourReport.Attribute, 
+	    	fi.tnie.db.gen.ent.personal.HourReport.Reference, 
+	    	fi.tnie.db.gen.ent.personal.HourReport.Type, 
+	    	HourReport,
+	    	fi.tnie.db.gen.ent.personal.HourReport.Holder,
+	    	fi.tnie.db.gen.ent.personal.HourReport.Factory,
+	    	HourReport.MetaData> hrm =
+	    	create(hr, impl);
+	    
+	    hr.setRef(HourReport.FK_HHR_EMPLOYER, org.ref());                
+	    hrm.merge(c);
+	        
+	    
+	    c.commit();        
+    }
+    
+    public void testMerge() throws EntityException, SQLException {
+        Connection c = getConnection();        
+        assertFalse(c.getAutoCommit());                        
+        PGImplementation impl = new PGImplementation();
 
-	private Catalog getCatalog() {		
+    	HourReport hr = HourReport.TYPE.getMetaData().getFactory().newInstance();
+    	hr.setComment("My Comment");
+    	hr.setReportDate(new Date());
+    	hr.setStartedAt(new Date());
+    	hr.setFinishedAt(new Date());
+    	
+    	long ms = System.currentTimeMillis();
+    	
+		Organization client = Organization.TYPE.getMetaData().getFactory().newInstance();
+		client.setName("Asiakas " + ms);
+		
+		Organization supplier = Organization.TYPE.getMetaData().getFactory().newInstance();
+		supplier.setName("Toimittaja" + ms);
+		
+		Project p = Project.TYPE.getMetaData().getFactory().newInstance();
+		p.setName("Test Project " + ms);
+							
+		p.setOrganization(Project.FK_CLIENT, client.ref());
+		p.setOrganization(Project.FK_SUPPLIER, supplier.ref());
+		
+		hr.setOrganization(HourReport.FK_HHR_EMPLOYER, supplier.ref());
+		hr.setProject(HourReport.FK_HHR_PROJECT, p.ref());
+		
+        PersistenceManager<?, ?, ?, ?, ?, ?, ?> hm = create(hr, impl);
+        
+        hm.merge(c);
+        c.commit();    	
+    }
+
+	private LiteralCatalog getCatalog() {		
 		return this.catalog;
 	}
 
@@ -165,7 +247,7 @@ public class PersistenceManagerTest2 extends TestCase  {
 	private <
 		A extends Attribute, 
 		R extends fi.tnie.db.ent.Reference, 
-		T extends ReferenceType<T, M>, 
+		T extends ReferenceType<A, R, T, E, H, F, M>, 
 		E extends Entity<A, R, T, E, H, F, M>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
 		F extends EntityFactory<E, H, M, F>,		

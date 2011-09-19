@@ -13,7 +13,7 @@ import fi.tnie.db.ent.MutableDataObject;
 import fi.tnie.db.expr.QueryExpression;
 
 public class DataObjectReader
-	extends DataObjectProcessor {
+	extends DataObjectProcessor<MutableDataObject> {
 	
 	private List<DataObject> content;		
 

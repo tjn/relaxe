@@ -13,6 +13,7 @@ import fi.tnie.db.StatementExecutor;
 import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.CyclicTemplateException;
 import fi.tnie.db.ent.DefaultEntityQuery;
+import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGCatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
@@ -100,8 +101,9 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
 //    	rs.close();
     	st.close();   	
     	    	
-    	for (HourReport rpt : eb.getContent()) {
-			logger().info("testConstructor: rpt=" + rpt);
+    	for (EntityDataObject<HourReport> o : eb.getContent()) {
+			logger().info("testConstructor: rpt=" + o);
+			HourReport rpt = o.getRoot();
 			logger().info("testConstructor: rpt.project=" + rpt.getProject(HourReport.FK_HHR_PROJECT).value());    		
 		}
     }

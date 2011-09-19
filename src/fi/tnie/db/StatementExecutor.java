@@ -13,17 +13,20 @@ import fi.tnie.db.exec.QueryProcessor;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.Statement.Name;
 import fi.tnie.db.query.QueryException;
+import fi.tnie.db.query.QueryTime;
 
 public class StatementExecutor {
 
 	private static Logger logger = Logger.getLogger(StatementExecutor.class);
 	
-	public void execute(Statement statement, Connection c, QueryProcessor qp)
+	public QueryTime execute(Statement statement, Connection c, QueryProcessor qp)
 		throws SQLException, QueryException {
 
 	    if (statement == null) {
             throw new NullPointerException("'statement' must not be null");
         }
+	    
+	    QueryTime qt = null;
 
 		try {
 			String qs = statement.generate();
@@ -47,7 +50,9 @@ public class StatementExecutor {
 				try {
 					qp.prepare();
 					
+					final long s = System.currentTimeMillis();										
 					rs = ps.executeQuery();
+					final long f = System.currentTimeMillis();
 					
 					qp.startQuery(rs.getMetaData());
 					
@@ -58,6 +63,9 @@ public class StatementExecutor {
 					}
 					
 					qp.endQuery();
+					
+					final long p = System.currentTimeMillis();					
+					qt = new QueryTime(f - s, p - f);
 				}
 				finally {
 					doClose(rs);
@@ -67,7 +75,11 @@ public class StatementExecutor {
 			    
 			    // org.postgresql.util.PSQLException: Can't use query methods that take a query string on a PreparedStatement.			    
 //				int updated = ps.executeUpdate(java.sql.Statement.RETURN_GENERATED_KEYS);
+				
+				final long s = System.currentTimeMillis();
 				int updated = ps.executeUpdate();
+				final long u = System.currentTimeMillis();				
+				qt = new QueryTime(u - s);
 				
 				qp.updated(updated);
 				
@@ -78,7 +90,9 @@ public class StatementExecutor {
 		}
 		finally {
 			qp.finish();		
-		}		
+		}
+		
+		return qt;		
 	}
 
 	
