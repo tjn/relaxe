@@ -38,6 +38,8 @@ public class DefaultListModel<E extends Comparable<E>>
 
 		@Override
 		public boolean add(I e) {
+			this.model.adding(e);
+			
 			List<I> original = unmodifiable(getCurrent());			
 			boolean changed = getCurrent().add(e);
 			
@@ -48,8 +50,11 @@ public class DefaultListModel<E extends Comparable<E>>
 			return changed;
 		}
 
+
 		@Override
 		public void add(int index, I element) {
+			this.model.adding(element);
+			
 			if (index == size()) {
 				add(element);
 			}
@@ -62,28 +67,59 @@ public class DefaultListModel<E extends Comparable<E>>
 
 		@Override
 		public boolean addAll(Collection<? extends I> c) {
-			List<I> original = unmodifiable(getCurrent());			
-			boolean changed = getCurrent().addAll(c);
+			return addAll(0, c);
 			
-			if (changed) {
-				// added to end => untouched slice is still valid.				
-				model.fireChanged(original, unmodifiable(getCurrent()));
-			}
-			
-			return changed;
+//			if (c == null) {
+//				throw new NullPointerException("c");
+//			}
+//			
+//			if (c.isEmpty()) {
+//				return false;
+//			}
+//			
+//			adding(c);
+//			
+//			List<I> original = unmodifiable(getCurrent());			
+//			boolean changed = getCurrent().addAll(c);
+//			
+//			if (changed) {
+//				// added to end => untouched slice is still valid.				
+//				model.fireChanged(original, unmodifiable(getCurrent()));
+//			}
+//			
+//			return changed;
 		}
-		
-		
+
+		private void adding(Collection<? extends I> c) {
+			DefaultListModel<I> m = this.model;
+			
+			for (I e : c) {
+				m.adding(e);	
+			}
+		}		
+
 		@Override
 		public boolean addAll(int index, Collection<? extends I> c) {
+			if (c == null) {
+				throw new NullPointerException("c");
+			}
+			
 			if (c.isEmpty()) {
 				return false;
 			}
 			
+			adding(c);		
+						
 			boolean changed = false;
 			
 			if (index == size()) {
-				changed = addAll(c);
+				List<I> original = unmodifiable(getCurrent());			
+				changed = getCurrent().addAll(c);
+				
+				if (changed) {
+					// added to end => untouched slice is still valid.				
+					model.fireChanged(original, unmodifiable(getCurrent()));
+				}			
 			}
 			else {
 				List<I> original = unmodifiable(new ArrayList<I>(getCurrent()));			
@@ -116,6 +152,34 @@ public class DefaultListModel<E extends Comparable<E>>
 			getCurrent().remove(index);
 			model.fireChanged(pl, unmodifiable(getCurrent()));			
 			return pe;
+		}
+				
+		public boolean swap(int a, int b) {
+			checkIndex(a);
+			checkIndex(b);
+			
+			if (a == b) {
+				return false;
+			}
+			
+			ArrayList<I> cl = getCurrent();
+			List<I> original = new ArrayList<I>(cl);
+			
+			I ae = cl.get(a);
+			I be = cl.get(b);
+			cl.set(b, ae);
+			cl.set(a, be);
+			
+			model.fireChanged(original, unmodifiable(getCurrent()));
+			return true;
+		}
+
+		private void checkIndex(int index) 
+			throws IndexOutOfBoundsException {
+			
+			if (index < 0 || index >= size())  {
+				throw new ArrayIndexOutOfBoundsException(index);				
+			}
 		}
 
 		@Override
@@ -222,7 +286,7 @@ public class DefaultListModel<E extends Comparable<E>>
 
 		@Override
 		public int size() {
-			return getCurrent().size();
+			return (this.current == null) ? 0 : this.current.size();
 		}
 	}
 	
@@ -231,11 +295,24 @@ public class DefaultListModel<E extends Comparable<E>>
 		return getContent();
 	}
 
-	private List<E> getContent() {
+	private ModelList<E> getContent() {
 		if (content == null) {
 			content = new ModelList<E>(this);
 		}
 
 		return content;
 	}	
+	
+	@Override
+	public boolean isEmpty() {
+		return this.content == null || this.content.isEmpty();
+	}
+	
+	public boolean swap(int a, int b) {		
+		return getContent().swap(a, b);
+	}
+	
+	protected void adding(E e) {
+	}
+
 }
