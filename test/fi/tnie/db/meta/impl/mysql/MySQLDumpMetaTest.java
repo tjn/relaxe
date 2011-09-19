@@ -5,7 +5,8 @@ package fi.tnie.db.meta.impl.mysql;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import fi.tnie.db.QueryException;
+
+import fi.tnie.db.query.QueryException;
 
 public class MySQLDumpMetaTest
 	extends MySQLTestCase {

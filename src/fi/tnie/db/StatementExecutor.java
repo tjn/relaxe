@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.exec.QueryProcessor;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.Statement.Name;
+import fi.tnie.db.query.QueryException;
 
 public class StatementExecutor {
 

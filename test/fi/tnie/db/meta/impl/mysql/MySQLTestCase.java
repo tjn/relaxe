@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import fi.tnie.db.QueryException;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.mysql.MySQLImplementation;
 import fi.tnie.db.expr.Identifier;
@@ -21,6 +20,7 @@ import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaMap;
 import fi.tnie.db.meta.impl.common.JDBCTestCase;
+import fi.tnie.db.query.QueryException;
 import fi.tnie.util.io.Pipe;
 
 public abstract class MySQLTestCase

@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 
 import java.sql.DatabaseMetaData;
 
-import fi.tnie.db.QueryException;
 import fi.tnie.db.QueryHelper;
 import fi.tnie.db.env.util.AbstractQueryProcessor;
 import fi.tnie.db.env.util.IdentifierReader;
@@ -43,6 +42,7 @@ import fi.tnie.db.meta.impl.DefaultMutableColumn;
 import fi.tnie.db.meta.impl.DefaultMutableSchema;
 import fi.tnie.db.meta.impl.DefaultMutableTable;
 import fi.tnie.db.meta.impl.DefaultPrimaryKey;
+import fi.tnie.db.query.QueryException;
 import fi.tnie.util.io.IOHelper;
 
 public class DefaultCatalogFactory implements CatalogFactory {

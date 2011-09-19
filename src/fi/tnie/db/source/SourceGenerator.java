@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.QueryException;
 import fi.tnie.db.ent.im.EntityIdentityMap;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
@@ -44,6 +43,7 @@ import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaElement;
 import fi.tnie.db.meta.SchemaElementMap;
 import fi.tnie.db.meta.Table;
+import fi.tnie.db.query.QueryException;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.util.io.IOHelper;
 

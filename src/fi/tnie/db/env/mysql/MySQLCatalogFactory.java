@@ -9,13 +9,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.QueryException;
 import fi.tnie.db.env.DefaultCatalogFactory;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogMap;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.impl.DefaultCatalogMap;
 import fi.tnie.db.meta.impl.DefaultMutableCatalog;
+import fi.tnie.db.query.QueryException;
 
 public class MySQLCatalogFactory extends DefaultCatalogFactory {
 

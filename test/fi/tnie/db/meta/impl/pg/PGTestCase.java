@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import fi.tnie.db.QueryException;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.Identifier;
@@ -18,6 +17,7 @@ import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaMap;
 import fi.tnie.db.meta.impl.common.JDBCTestCase;
+import fi.tnie.db.query.QueryException;
 import fi.tnie.dbmeta.tools.pg.PGRestore;
 
 public abstract class PGTestCase

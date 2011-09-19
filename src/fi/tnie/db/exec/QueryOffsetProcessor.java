@@ -6,7 +6,7 @@ package fi.tnie.db.exec;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import fi.tnie.db.QueryException;
+import fi.tnie.db.query.QueryException;
 
 public class QueryOffsetProcessor
 	extends QueryFilter {

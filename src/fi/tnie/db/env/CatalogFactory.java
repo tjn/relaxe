@@ -6,9 +6,9 @@ package fi.tnie.db.env;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import fi.tnie.db.QueryException;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogMap;
+import fi.tnie.db.query.QueryException;
 
 public interface CatalogFactory {
 

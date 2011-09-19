@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.ent.MutableDataObject;
 import fi.tnie.db.exec.QueryProcessorAdapter;
 import fi.tnie.db.expr.QueryExpression;
+import fi.tnie.db.query.QueryException;
 
 public abstract class DataObjectProcessor
 	extends QueryProcessorAdapter {

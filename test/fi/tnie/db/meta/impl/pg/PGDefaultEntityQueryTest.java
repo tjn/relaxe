@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import fi.tnie.db.EntityReader;
-import fi.tnie.db.QueryException;
 import fi.tnie.db.StatementExecutor;
 import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.CyclicTemplateException;
@@ -28,6 +27,7 @@ import fi.tnie.db.gen.ent.personal.HourReport.Type;
 import fi.tnie.db.gen.ent.personal.Project.Holder;
 import fi.tnie.db.gen.ent.personal.Project.Key;
 import fi.tnie.db.meta.DBMetaTestCase;
+import fi.tnie.db.query.QueryException;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.rpc.TimestampHolder;
 

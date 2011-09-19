@@ -6,10 +6,10 @@ package fi.tnie.db.meta.impl.pg;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import fi.tnie.db.QueryException;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.query.QueryException;
 
 public class PGWellKnownTableTest
 	extends PGTestCase {

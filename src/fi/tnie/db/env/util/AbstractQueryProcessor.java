@@ -7,9 +7,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-import fi.tnie.db.QueryException;
 import fi.tnie.db.QueryHelper;
 import fi.tnie.db.exec.QueryProcessor;
+import fi.tnie.db.query.QueryException;
 
 public abstract class AbstractQueryProcessor implements QueryProcessor {
 

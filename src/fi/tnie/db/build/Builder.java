@@ -12,12 +12,12 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.DefaultTableMapper;
-import fi.tnie.db.QueryException;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.feature.Features;
 import fi.tnie.db.feature.SQLGenerationException;
 import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.query.QueryException;
 import fi.tnie.db.source.SourceGenerator;
 import fi.tnie.dbmeta.tools.CatalogTool;
 import fi.tnie.dbmeta.tools.ToolConfigurationException;

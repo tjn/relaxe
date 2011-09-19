@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.QueryException;
 import fi.tnie.db.QueryHelper;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.expr.Identifier;
@@ -26,6 +25,7 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.Schema;
+import fi.tnie.db.query.QueryException;
 
 public class Features
     extends AbstractFeature {

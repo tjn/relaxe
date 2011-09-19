@@ -20,12 +20,12 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.DBMetaTest;
 import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.EnvironmentTestContext;
-import fi.tnie.db.QueryException;
 import fi.tnie.db.QueryHelper;
 import fi.tnie.db.SimpleTestContext;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
+import fi.tnie.db.query.QueryException;
 import junit.framework.TestCase;
 
 public abstract class DBMetaTestCase

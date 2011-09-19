@@ -13,6 +13,10 @@ import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.expr.QueryExpression;
+import fi.tnie.db.query.Query;
+import fi.tnie.db.query.QueryException;
+import fi.tnie.db.query.QueryResult;
+import fi.tnie.db.query.QueryTime;
 
 public class QueryTask
 {		

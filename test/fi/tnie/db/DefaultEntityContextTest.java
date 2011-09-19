@@ -11,6 +11,7 @@ import fi.tnie.db.genctx.CatalogContext;
 import fi.tnie.db.map.TableMapper;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.DBMetaTestCase;
+import fi.tnie.db.query.QueryException;
 
 public class DefaultEntityContextTest extends DBMetaTestCase {
 

@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.QueryException;
 import fi.tnie.db.StatementExecutor;
 import fi.tnie.db.exec.QueryProcessor;
 import fi.tnie.db.expr.Statement;
@@ -29,6 +28,7 @@ import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
+import fi.tnie.db.query.QueryException;
 import fi.tnie.db.env.util.ResultSetWriter;
 import fi.tnie.db.env.util.SimpleQueryProcessor;
 import fi.tnie.db.env.util.StringListReader;

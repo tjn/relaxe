@@ -7,11 +7,11 @@ import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.HashSet;
 
-import fi.tnie.db.QueryException;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.expr.DelimitedIdentifier;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
+import fi.tnie.db.query.QueryException;
 
 
 public class CatalogTest 
