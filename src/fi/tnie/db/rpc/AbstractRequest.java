@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.ent.im;
+package fi.tnie.db.rpc;
 
 import fi.tnie.db.ent.Request;
 
