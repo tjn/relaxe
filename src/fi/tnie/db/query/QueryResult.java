@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db;
+package fi.tnie.db.query;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fi.tnie.db.ent.im.AbstractResponse;
+import fi.tnie.db.rpc.AbstractResponse;
 
 
 public class QueryResult<T>
@@ -24,10 +24,14 @@ public class QueryResult<T>
 	private Long available;	
 	
 	private List<? extends T> content;
-	
-	private long queryTime;	 
-	private long populationTime;
 
+	private QueryTime elapsed;
+	
+	public QueryResult(Query request, List<? extends T> content, QueryTime elapsed) {
+		this(request, content);
+		this.elapsed = elapsed;		
+	}
+	
 	public QueryResult(Query request, List<? extends T> content) {
 		super(request);
 		this.content = content;
@@ -42,22 +46,8 @@ public class QueryResult<T>
 		return content;
 	}
 
-	public long getQueryTime() {
-		return queryTime;
-	}
-
-	void setQueryTime(long queryTime) {
-		this.queryTime = queryTime;
-	}
-
-	public long getPopulationTime() {
-		return populationTime;
-	}
-
-	void setPopulationTime(long populationTime) {
-		this.populationTime = populationTime;
-	}
 	
+
 	public Boolean isComplete() {
 		// TODO
 		return null;
@@ -70,5 +60,9 @@ public class QueryResult<T>
 
 	public void setAvailable(Long available) {
 		this.available = available;
+	}
+
+	public QueryTime getElapsed() {
+		return elapsed;
 	}
 }
