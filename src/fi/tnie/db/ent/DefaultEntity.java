@@ -77,12 +77,6 @@ public abstract class DefaultEntity<
 			
 	private List<Map<A, ?>> valueMapList;
 	
-	
-	/**
-	 * TODO: 
-	 * Consider having simple A as key here.  
-	 * 
-	 */	
 	private Map<A, VarcharHolder> varcharValueMap;
 	private Map<A, IntegerHolder> intValueMap;
 	private Map<A, CharHolder> charValueMap;
