@@ -52,6 +52,9 @@ public interface EntityKey<
 	void set(E e, VH newValue);
 	void set(E e, VE newValue);
 	
+//	P getTargetType();
 	S getSource();	
-	VM getTarget();	
+	VM getTarget();
+
+
 }

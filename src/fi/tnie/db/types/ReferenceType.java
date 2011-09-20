@@ -17,7 +17,7 @@ public abstract class ReferenceType<
 	E extends Entity<A, R, T, E, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>	
+	M extends EntityMetaData<A, R, T, E, H, F, M>	 
 >
 	extends Type<T> {
 
@@ -27,4 +27,6 @@ public abstract class ReferenceType<
 	}
 	
 	public abstract M getMetaData();
+	
+	public abstract T self();
 }

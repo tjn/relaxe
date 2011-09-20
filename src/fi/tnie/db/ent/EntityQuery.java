@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.ent;
 
+import fi.tnie.db.expr.DefaultTableExpression;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.meta.ForeignKey;
@@ -20,6 +21,7 @@ public interface EntityQuery<
 //	int getOffset();
 //	Long getLimit();
 
+	public DefaultTableExpression getTableExpression();
 	public QueryExpression getQueryExpression();
 
 	/**

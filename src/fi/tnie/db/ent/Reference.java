@@ -7,7 +7,8 @@ import java.io.Serializable;
 
 import fi.tnie.db.types.ReferenceType;
 
-public interface Reference extends Identifiable, Serializable {
-	ReferenceType<?, ?, ?, ?, ?, ?, ?> type();
+public interface Reference
+	extends Identifiable, Serializable {
 		
+	ReferenceType<?, ?, ?, ?, ?, ?, ?> type();		
 }

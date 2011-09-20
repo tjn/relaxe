@@ -384,7 +384,7 @@ public abstract class DefaultEntity<
 			pk.copy(src, dest);
 		}
 		
-		for (R r : meta.relationships()) {						
+		for (R r : meta.relationships()) {
 			EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
 			ek.copy(src, dest);			
 		}

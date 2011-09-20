@@ -3,23 +3,24 @@
  */
 package fi.tnie.db.ent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 //import org.apache.log4j.Logger;
 
-import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.ent.value.EntityKey;
-import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.expr.AbstractTableReference;
 import fi.tnie.db.expr.DefaultTableExpression;
 import fi.tnie.db.expr.ForeignKeyJoinCondition;
 import fi.tnie.db.expr.From;
+import fi.tnie.db.expr.Predicate;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.ColumnReference;
@@ -28,18 +29,21 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 
-public class DefaultEntityQuery<
+public class DefaultEntityTemplateQuery<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, ?, F, M>,
-	E extends Entity<A, R, T, E, ?, F, M>,
-	F extends EntityFactory<E, ?, M, F>,
-	M extends EntityMetaData<A, R, T, E, ?, F, M>
+	T extends ReferenceType<A, R, T, E, H, F, M>,
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>,
+	Q extends EntityQueryTemplate<A, R, T, E, H, F, M, Q>
 	> 
 	implements EntityQuery<A, R, T, E, M>
 {
 	
 //	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class);
+	
 	
 	/**
 	 * 
@@ -50,50 +54,27 @@ public class DefaultEntityQuery<
 	private QueryExpression queryExpression;
 	private TableReference rootRef;
 	
+	private List<Predicate> predicateList;
+	private List<EntityQuerySortKey> sortKeyList;
+	
 	private Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> metaDataMap;
 	
 	private LinkedHashMap<Integer, TableReference> originMap = new LinkedHashMap<Integer, TableReference>();	
 	private Map<JoinKey, TableReference> referenceMap = new HashMap<JoinKey, TableReference>();
-	
-	
-			
-//	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class.get);		
-	
-	public DefaultEntityQuery(M meta)
-		throws EntityRuntimeException {		
-		try {
-			init(createPrototype(meta));
-		} 
-		catch (CyclicTemplateException e) {
-			// can't happen - prototype does not have any non-null references.			
-//			logger().error(e.getMessage(), e);
-		}		
+				
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DefaultEntityTemplateQuery() {
 	}
 
-	private E createPrototype(M meta) throws EntityRuntimeException {
-		F factory = meta.getFactory();
-		E p = factory.newInstance();
-		
-		for (A a : meta.attributes()) {
-			PrimitiveKey<A, T, E, ?, ?, ?, ?> k = meta.getKey(a);
-			k.clear(p);
-		}
-		
-		for (R a : meta.relationships()) {
-			EntityKey<R, T, E, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(a);
-			k.clear(p);
-		}		
-		
-		return p;
-	}	
-
-	public DefaultEntityQuery(E root)
+	public DefaultEntityTemplateQuery(Q root)
 		throws CyclicTemplateException, EntityRuntimeException {
 		super();
 		init(root);
 	}
 
-	private void init(E root) throws CyclicTemplateException, EntityRuntimeException {
+	private void init(Q root) throws CyclicTemplateException, EntityRuntimeException {
 		if (root == null) {
 			throw new NullPointerException();
 		}
@@ -108,7 +89,7 @@ public class DefaultEntityQuery<
 		this.meta = meta;
 
 		DefaultTableExpression q = new DefaultTableExpression();
-		HashSet<Entity<?,?,?,?,?,?,?>> visited = new HashSet<Entity<?,?,?,?,?,?,?>>();
+		HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?>> visited = new HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?>>();
 
 		AbstractTableReference tref = fromTemplate(root, null, null, null, q, visited);
 		q.setFrom(new From(tref));
@@ -124,13 +105,18 @@ public class DefaultEntityQuery<
 	<
 		MA extends Attribute,
 		MR extends Reference,
-		ME extends Entity<MA, MR, ?, ME, ?, ?, MM>,
-		MM extends EntityMetaData<MA, MR, ?, ME, ?, ?, MM>
+		MT extends ReferenceType<MA, MR, MT, ME, MH, MF, MM>,
+		ME extends Entity<MA, MR, MT, ME, MH, MF, MM>,
+		MH extends ReferenceHolder<MA, MR, MT, ME, MH, MM>,		
+		MF extends EntityFactory<ME, MH, MM, MF>,		
+		MM extends EntityMetaData<MA, MR, MT, ME, MH, MF, MM>,
+		MQ extends EntityQueryTemplate<MA, MR, MT, ME, MH, MF, MM, MQ>
 	>
 	AbstractTableReference fromTemplate(
-			ME template, 
+			MQ template, 
 			AbstractTableReference qref, ForeignKey fk, TableReference referencing, 
-			DefaultTableExpression q, Set<Entity<?,?,?,?,?,?,?>> visited)
+			DefaultTableExpression q,
+			Set<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?>> visited)
 		throws CyclicTemplateException, EntityRuntimeException {
 		
 		if (visited.contains(template)) {
@@ -141,7 +127,8 @@ public class DefaultEntityQuery<
 		}		
 		
 		Select s = getSelect(q);
-		MM meta = template.getMetaData();				
+		MM meta = template.getMetaData();		
+		
 		final TableReference tref = (qref == null) ? getTableRef() : new TableReference(meta.getBaseTable());		
 		getMetaDataMap().put(tref, meta);
 				
@@ -165,12 +152,7 @@ public class DefaultEntityQuery<
 			s.add(cref);
 		}
 						
-		Set<MR> rs = meta.relationships();
-
-		// There are three cases:
-		// 1) if the reference value does not exist, skip the relationship
-		// 2) if the reference value exists, but is null, add the foreign key columns, but do not traverse
-		// 3) if there is reference is not null, traverse
+//		Set<MR> rs = meta.relationships();
 
 //		for (MR r : rs) {
 //			EntityKey<?, ?, ?, M, ?, ?, ?, ?> k = meta.getEntityKey(r);			
@@ -189,36 +171,44 @@ public class DefaultEntityQuery<
 //		}
 
 		addAttributes(template, s, tref);				
-		originMap.put(Integer.valueOf(s.getColumnCount()), tref);			
+		originMap.put(Integer.valueOf(s.getColumnCount()), tref);
+		
+		qref = processReferences(template, qref, tref, q, visited);
 						
-		for (MR r : rs) {
-//			logger().info("fromTemplate: r=" + r);
-			EntityKey<?, ?, ME, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);	
-			
-			ReferenceHolder<?, ?, ?, ?, ?, ?> h = k.get(template);
-					
-			if (h == null) {
-				// skip
-			}
-			else {
-				Entity<?, ?, ?, ?, ?, ?, ?> ne = h.value();
-								
-				if (ne == null) {
-					// do not traverse
-				}
-				else {
-					fk = meta.getForeignKey(r);
-	
-					if (fk == null) {
-						throw new NullPointerException("can not find fk by relationship: " + r);
-					}
-	
-					qref = fromTemplate(ne.self(), qref, fk, tref, q, visited);
-				}
-			}
-		}
-
 		return qref;
+	}
+	
+	private	<
+		KA extends Attribute,
+		KR extends Reference,
+		KT extends ReferenceType<KA, KR, KT, KE, ?, ?, KM>,
+		KE extends Entity<KA, KR, KT, KE, ?, ?, KM>,	
+		KM extends EntityMetaData<KA, KR, KT, KE, ?, ?, KM>,
+		KQ extends EntityQueryTemplate<KA, KR, KT, KE, ?, ?, KM, KQ>		
+	>
+	AbstractTableReference processReferences(KQ template, AbstractTableReference qref, TableReference tref, DefaultTableExpression q, Set<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?>> visited) throws EntityRuntimeException, CyclicTemplateException {
+
+		KM meta = template.getMetaData();
+		
+		Set<KR> rs = meta.relationships();
+		
+		for (KR kr : rs) {
+			EntityKey<KR, KT, KE, KM, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(kr);
+			EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> t = template.getTemplate(ek);
+			
+			if (t != null) {				
+				ForeignKey fk = meta.getForeignKey(kr);
+
+				if (fk == null) {
+					throw new NullPointerException("can not find fk by relationship: " + kr);
+				}							
+				
+				qref = fromTemplate(t.self(), qref, fk, tref, q, visited);
+			}									
+		}
+	
+		return qref;
+	
 	}
 
 	private Select getSelect(DefaultTableExpression q) {
@@ -234,24 +224,52 @@ public class DefaultEntityQuery<
 	private <
 		MA extends Attribute,
 		D extends Entity<MA, ?, ?, D, ?, ?, DM>,
-		DM extends EntityMetaData<MA, ?, ?, D, ?, ?, DM>
+		DM extends EntityMetaData<MA, ?, ?, D, ?, ?, DM>,
+		DQ extends EntityQueryTemplate<MA, ?, ?, D, ?, ?, DM, DQ>
 	> 
-	void addAttributes(D template, Select s, TableReference tref) throws EntityRuntimeException {
+	void addAttributes(DQ template, Select s, TableReference tref) throws EntityRuntimeException {
 		DM meta = template.getMetaData();
 		Set<MA> as = meta.attributes();
-		
-		for (MA a : as) {
-			PrimitiveHolder<?, ?> h = template.value(a);
 						
-			if (h != null) {
-				Column c = meta.getColumn(a);
-				
-				// primary column are added separately:				
-				if (c != null && c.isPrimaryKeyColumn() == false) {
-					s.add(new ColumnReference(tref, c));
-				}
+		for (MA a : as) {
+			EntityQueryTemplateAttribute ta = template.get(a);
+			
+			if (ta == null) {
+				continue;
 			}
+			
+			Column c = meta.getColumn(a);
+			ColumnReference cref = new ColumnReference(tref, c);
+			
+			if (ta.isSelected(cref)) {
+				s.add(cref);
+			}
+			
+			Predicate p = ta.createPredicate(cref);			
+			addPredicate(p);
+						
+			EntityQuerySortKey sk = ta.createSortKey(cref);
+			addSortKey(sk);			
+									
+//			PrimitiveHolder<?, ?> h = template.value(a);
+//						
+//			if (h != null) {
+//				Column c = meta.getColumn(a);
+//				
+//				// primary column are added separately:				
+//				if (c != null && c.isPrimaryKeyColumn() == false) {
+//					s.add(new ColumnReference(tref, c));
+//				}
+//			}
 		}
+	}
+
+	private boolean addPredicate(Predicate p) {
+		if (p == null) {
+			return false;
+		}
+		
+		return getPredicateList().add(p);
 	}
 	
 	public DefaultTableExpression getTableExpression() {
@@ -259,7 +277,7 @@ public class DefaultEntityQuery<
 	}
 
 	public QueryExpression getQueryExpression() {
-		return this.query;
+		return this.queryExpression;
 	}
 	
 	/**
@@ -359,4 +377,32 @@ public class DefaultEntityQuery<
 //	private static Logger logger() {
 //		return DefaultEntityQuery.logger;
 //	}
+	
+
+	private List<Predicate> getPredicateList() {
+		if (predicateList == null) {
+			predicateList = new ArrayList<Predicate>();
+			
+		}
+
+		return predicateList;
+	}
+	
+	
+	private List<EntityQuerySortKey> getSortKeyList() {
+		if (sortKeyList == null) {
+			sortKeyList = new ArrayList<EntityQuerySortKey>();			
+		}
+
+		return sortKeyList;
+	}
+	
+	private boolean addSortKey(EntityQuerySortKey sk) {
+		if (sk == null) {
+			return false;
+		}
+		
+		return getSortKeyList().add(sk);		
+	}
 }
+

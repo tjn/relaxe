@@ -14,9 +14,15 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.CyclicTemplateException;
+import fi.tnie.db.ent.DefaultEntityTemplateQuery;
+import fi.tnie.db.ent.DefaultQueryTemplate;
 import fi.tnie.db.ent.EntityFactory;
+import fi.tnie.db.ent.EntityQuery;
+import fi.tnie.db.ent.EntityQueryTemplate;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.Reference;
-import fi.tnie.db.ent.DefaultEntityQuery;
+//import fi.tnie.db.ent.DefaultEntityQuery;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
@@ -57,21 +63,62 @@ public class PersistenceManager<
     M extends EntityMetaData<A, R, T, E, H, F, M>
 >
 {	
-    private class PMQuery
-        extends DefaultEntityQuery<A, R, T, E, F, M>
-    {
-        /**
+//    private class PMQuery
+//        extends DefaultEntityQuery<A, R, T, E, F, M>
+//    {
+//        /**
+//		 * 
+//		 */
+//		private static final long serialVersionUID = -1285004174865437785L;
+//
+//		public PMQuery(M meta) throws EntityException {
+//            super(meta);
+//        }
+//    }
+    
+    private class PMTemplate
+	    extends DefaultQueryTemplate<A, R, T, E, H, F, M, PMTemplate>
+    	implements EntityQueryTemplate<A, R, T, E, H, F, M, PMTemplate>
+	{
+	    /**
 		 * 
 		 */
 		private static final long serialVersionUID = -1285004174865437785L;
+		
+		private M meta;
+		
+		public PMTemplate(M meta) {
+			super();
+			this.meta = meta;
+			addAllAttributes();
+		}
 
-		public PMQuery(M meta) throws EntityException {
-            super(meta);
-        }
-    }
+		@Override
+		public M getMetaData() {
+			return this.meta;
+		}
+
+		@Override
+		public PMTemplate self() {
+			return this;
+		}
+
+		@Override
+		public EntityQuery<A, R, T, E, M> newQuery() 
+			throws EntityRuntimeException
+		{						
+			try {
+				return new DefaultEntityTemplateQuery<A, R, T, E, H, F, M, PMTemplate>(this);
+			} 
+			catch (CyclicTemplateException e) {
+				throw new EntityRuntimeException(e.getMessage(), e);
+			}
+		}
+	
+	}    
 
     private E target;
-    private PMQuery query = null;
+//    private PMQuery query = null;
     private Implementation implementation = null;
 
     private static Logger logger = Logger.getLogger(PersistenceManager.class);
@@ -313,14 +360,19 @@ public class PersistenceManager<
 	}
 
     public void merge(Connection c) throws EntityException {
-        PMQuery pq = getQuery();
-        TableReference tref = pq.getTableRef();
+    	M meta = getTarget().getMetaData();
+    	
+//        PMQuery pq = getQuery();
+        PMTemplate qt = new PMTemplate(meta);
+        EntityQuery<A, R, T, E, M> eq = qt.newQuery();
+        
+        TableReference tref = eq.getTableRef();
         
     	Predicate pkp = getPKPredicate(tref, getTarget());
     	E stored = null;
 
-    	if (pkp != null) {
-    		pq.getTableExpression().getWhere().setSearchCondition(pkp);
+    	if (pkp != null) {    	
+    		eq.getTableExpression().getWhere().setSearchCondition(pkp);
     	}
 
     	mergeDependencies(getTarget(), c);    	
@@ -457,7 +509,7 @@ public class PersistenceManager<
 
     public void setTarget(E target) {
         this.target = target;
-        this.query = null;
+//        this.query = null;
     }
 
     public Predicate getPKPredicate(TableReference tref, E pe)
@@ -497,14 +549,14 @@ public class PersistenceManager<
         return new Eq(a, b);
     }
 
-
-    private PMQuery getQuery() throws EntityException {
-        if (this.query == null) {
-            this.query = new PMQuery(getTarget().getMetaData());
-        }
-
-        return this.query;
-    }
+//
+//    private PMQuery getQuery() throws EntityException {
+//        if (this.query == null) {
+//            this.query = new PMQuery(getTarget().getMetaData());
+//        }
+//
+//        return this.query;
+//    }
 
 	public GeneratedKeyHandler getKeyHandler() {
 		return getImplementation().generatedKeyHandler();

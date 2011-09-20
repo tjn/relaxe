@@ -75,7 +75,12 @@ public interface EntityMetaData<
 	PrimitiveType<?> getAttributeType(A name);
 	PrimitiveKey<A, T, E, ?, ?, ?, ?> getKey(A a);
 		
-	EntityKey<R, T, E, M, ?, ? ,?, ?, ?, ?, ?, ?> getEntityKey(R ref);
+	/* EntityKey<R, T, E, M, ?, ? ,?, ?, ?, ?, ?, ?> getEntityKey(R ref); *)
+	 * 
+	 */
+	
+	EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?> getEntityKey(R ref);
+
 	
 	IntegerKey<A, T, E> getIntegerKey(A a);
 	VarcharKey<A, T, E> getVarcharKey(A a);

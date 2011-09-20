@@ -5,23 +5,23 @@ package fi.tnie.db.ent;
 
 public class CyclicTemplateException extends Exception {
 
-	private Entity<?, ?, ?, ?, ?, ?, ?> entity; 
+	private EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> template; 
 	
-	public CyclicTemplateException(Entity<?, ?, ?, ?, ?, ?, ?> template) {
-		setEntity(template);
+	public CyclicTemplateException(EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> template) {
+		setTemplate(template);
 	}
-
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8336918826639436436L;
 
-	public Entity<?, ?, ?, ?, ?, ?, ?> getEntity() {
-		return entity;
+	public EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> getEntity() {
+		return template;
 	}
 
-	private void setEntity(Entity<?, ?, ?, ?, ?, ?, ?> entity) {
-		this.entity = entity;
+	private void setTemplate(EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> newTemplate) {
+		this.template = newTemplate;
 	}
 
 }

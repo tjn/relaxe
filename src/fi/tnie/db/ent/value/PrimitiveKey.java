@@ -24,7 +24,7 @@ public interface PrimitiveKey<
 	extends Key<T, E, P, K>, Serializable
 {
 	P type();
-	A name();	
+	A name();
 	H newHolder(V newValue);
 	H get(E e) throws EntityRuntimeException;
 	void set(E e, H newValue) throws EntityRuntimeException;	

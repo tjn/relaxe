@@ -17,15 +17,14 @@ import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.Reference;
-import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
+import fi.tnie.db.gen.ent.personal.Person;
 import fi.tnie.db.gen.ent.personal.PersonalFactory;
-import fi.tnie.db.gen.ent.personal.HourReport.Type;
-import fi.tnie.db.meta.Column;
+import fi.tnie.db.gen.ent.personal.HourReport.Query;
 import fi.tnie.db.query.QueryResult;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
@@ -40,70 +39,7 @@ public class EntityQueryExecutorTest extends TestCase {
 		LiteralCatalog.getInstance();
 	}
 	
-	public void testExecute1() throws Exception {
-		PersonalFactory pf = LiteralCatalog.getInstance().newPersonalFactory();
-		HourReport template = pf.newHourReport();
-		template.addAllAttributes();
-		
-		Organization o = pf.newOrganization();
-		o.addAllAttributes();
-		
-		template.setOrganization(HourReport.FK_HHR_EMPLOYER, o.ref());
-		QueryResult<EntityDataObject<HourReport>> qr = execute(template);
-		
-		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
-		
-		List<? extends EntityDataObject<HourReport>> el = qr.getContent();
-		assertNotNull(el);
-		
-		for (EntityDataObject<HourReport> eo : el) {
-			assertNotNull(eo);
-			HourReport hr = eo.getRoot();
-			assertNotNull(hr);
-			
-			Organization.Holder oh = hr.getOrganization(HourReport.FK_HHR_EMPLOYER);
-			assertNotNull(oh);
-			Organization org = oh.value();
-			assertNotNull(org);
-			assertTrue(org.isIdentified());
-		}
-
-	}
-	
-	public void testExecute2() throws Exception {
-		PersonalFactory pf = LiteralCatalog.getInstance().newPersonalFactory();
-		HourReport template = pf.newHourReport();	
-		QueryResult<EntityDataObject<HourReport>> qr = execute(template);
-		
-		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
-		
-		List<? extends EntityDataObject<HourReport>> el = qr.getContent();
-		assertNotNull(el);
-		
-		HourReport.MetaData meta = template.getMetaData();
-		Set<HourReport.Attribute> as = meta.attributes();
-		Set<Column> pks = meta.getPKDefinition();
-		
-		for (EntityDataObject<HourReport> eo : el) {
-			assertNotNull(eo);
-			HourReport hr = eo.getRoot();
-			assertNotNull(hr);
-		
-			for (HourReport.Attribute a : as) {
-				Column c = meta.getColumn(a);
-				PrimitiveKey<fi.tnie.db.gen.ent.personal.HourReport.Attribute, Type, HourReport, ?, ?, ?, ?> pk = meta.getKey(a);
-				
-				if (pks.contains(c)) {
-					assertNotNull(hr.get(pk.self()));					
-				}
-				else {
-					assertFalse(hr.has(pk.self()));	
-				}				
-			}			
-		}		
-	}
-	
-	private QueryResult<EntityDataObject<HourReport>> execute(HourReport template) throws Exception {
+	private QueryResult<EntityDataObject<HourReport>> execute(HourReport.QueryTemplate template) throws Exception {
 		Implementation imp = new PGImplementation();
 		
 		Properties cfg = new Properties();
@@ -124,11 +60,11 @@ public class EntityQueryExecutorTest extends TestCase {
 				HourReport.Factory, 
 				HourReport.MetaData
 			> qe = createExecutor(HourReport.TYPE.getMetaData(), imp);
+
 			
-			
-			HourReport.Query hq = new HourReport.Query(template);
-			
-			QueryResult<EntityDataObject<HourReport>> qr = qe.execute(hq, c);
+			Query q = new HourReport.Query(template);
+			 
+			QueryResult<EntityDataObject<HourReport>> qr = qe.execute(q, c);
 			assertNotNull(qr);
 			
 			return qr;			
@@ -158,4 +94,132 @@ public class EntityQueryExecutorTest extends TestCase {
 		return EntityQueryExecutorTest.logger;
 	}
 
+	
+	public void testExecute3() throws Exception {
+		PersonalFactory pf = LiteralCatalog.getInstance().newPersonalFactory();
+		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate(); 
+		hrq.addAllAttributes();
+				
+		Organization.QueryTemplate oq = new Organization.QueryTemplate();
+		oq.addAllAttributes();
+				
+		hrq.setTemplate(HourReport.FK_HHR_EMPLOYER, oq);
+		
+		QueryResult<EntityDataObject<HourReport>> qr = execute(hrq);
+		
+		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
+		
+		List<? extends EntityDataObject<HourReport>> el = qr.getContent();
+		assertNotNull(el);
+		
+		for (EntityDataObject<HourReport> eo : el) {
+			assertNotNull(eo);
+			HourReport hr = eo.getRoot();
+			assertNotNull(hr);
+			
+			Organization.Holder oh = hr.getOrganization(HourReport.FK_HHR_EMPLOYER);
+			assertNotNull(oh);
+			Organization org = oh.value();
+			assertNotNull(org);
+			assertTrue(org.isIdentified());
+		}
+
+	}
+
+	public void testExecute4() throws Exception {
+		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate(); 
+		hrq.addAllAttributes();
+				
+		Organization.QueryTemplate oq = new Organization.QueryTemplate();		
+		oq.remove(oq.getMetaData().attributes());					
+		hrq.setTemplate(HourReport.FK_HHR_EMPLOYER, oq);
+		
+		QueryResult<EntityDataObject<HourReport>> qr = execute(hrq);
+		
+		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
+		
+		List<? extends EntityDataObject<HourReport>> el = qr.getContent();
+		assertNotNull(el);
+		
+		for (EntityDataObject<HourReport> eo : el) {
+			assertNotNull(eo);
+			HourReport hr = eo.getRoot();
+			assertNotNull(hr);
+			
+			Organization.Holder oh = hr.getOrganization(HourReport.FK_HHR_EMPLOYER);
+			assertNotNull(oh);
+			Organization org = oh.value();
+			assertNotNull(org);
+			assertTrue(org.isIdentified());
+		}
+	}
+	
+	public void testExecute5() throws Exception {
+		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate(); 
+		hrq.addAllAttributes();
+							
+		hrq.setTemplate(HourReport.FK_HHR_EMPLOYER, (Organization.QueryTemplate) null);
+		
+		QueryResult<EntityDataObject<HourReport>> qr = execute(hrq);
+		
+		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
+		
+		List<? extends EntityDataObject<HourReport>> el = qr.getContent();
+		assertNotNull(el);
+		
+		for (EntityDataObject<HourReport> eo : el) {
+			assertNotNull(eo);
+			HourReport hr = eo.getRoot();
+			assertNotNull(hr);
+			
+			Organization.Holder oh = hr.getOrganization(HourReport.FK_HHR_EMPLOYER);
+			assertNull(oh);
+		}
+	}
+	
+	public void testExecute6() throws Exception {
+		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate(); 
+		hrq.addAllAttributes();
+							
+		Organization.QueryTemplate ot = new Organization.QueryTemplate();
+		ot.remove(ot.getMetaData().attributes());
+		
+		hrq.setTemplate(HourReport.FK_HHR_EMPLOYER, ot);
+		
+		Person.QueryTemplate pt = new Person.QueryTemplate();
+		pt.add(Person.Attribute.DATE_OF_BIRTH, Person.Attribute.LAST_NAME);
+		ot.setTemplate(Organization.FK_COMPANY_CEO, pt);
+		
+		QueryResult<EntityDataObject<HourReport>> qr = execute(hrq);
+		
+		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
+		
+		List<? extends EntityDataObject<HourReport>> el = qr.getContent();
+		assertNotNull(el);
+		
+		for (EntityDataObject<HourReport> eo : el) {
+			assertNotNull(eo);
+			HourReport hr = eo.getRoot();
+			assertNotNull(hr);
+			
+			Organization.Holder oh = hr.getOrganization(HourReport.FK_HHR_EMPLOYER);
+			assertNotNull(oh);
+			Organization org = oh.value();
+			assertNotNull(org);
+			assertTrue(org.isIdentified());
+			Person.Holder ph = org.getPerson(Organization.FK_COMPANY_CEO);
+			assertNotNull(ph);
+			
+			Person p = ph.value();
+			
+			if (p != null) {
+				Set<fi.tnie.db.gen.ent.personal.Person.Attribute> as = p.attributes();
+				assertEquals(3, as.size());
+				assertTrue(as.contains(Person.Attribute.ID));
+				assertTrue(as.contains(Person.Attribute.DATE_OF_BIRTH));
+				assertTrue(as.contains(Person.Attribute.LAST_NAME));
+				
+			}
+		}
+	}	
 }

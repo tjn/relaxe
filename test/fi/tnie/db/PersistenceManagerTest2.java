@@ -27,7 +27,6 @@ import fi.tnie.db.gen.ent.personal.Project;
 import fi.tnie.db.gen.ent.personal.Person.Reference;
 import fi.tnie.db.gen.ent.personal.Person.Type;
 import fi.tnie.db.meta.BaseTable;
-import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.rpc.Interval;
 import fi.tnie.db.rpc.ReferenceHolder;
