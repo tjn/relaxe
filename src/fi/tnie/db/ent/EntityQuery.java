@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.ent;
 
-import fi.tnie.db.expr.DefaultTableExpression;
+import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.types.ReferenceType;
@@ -17,10 +17,10 @@ public interface EntityQuery<
 >
 	extends Request
 {
-	int getOffset();
-	Long getLimit();
+//	int getOffset();
+//	Long getLimit();
 
-	public DefaultTableExpression getQuery();
+	public QueryExpression getQueryExpression();
 
 	/**
 	 * result item meta-data

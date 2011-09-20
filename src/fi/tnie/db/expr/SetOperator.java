@@ -77,4 +77,9 @@ public class SetOperator
 	public Select getSelect() {		
 		return this.left.getSelect();
 	}
+	
+	@Override
+	public Where getWhere() {
+		return null;
+	}
 }

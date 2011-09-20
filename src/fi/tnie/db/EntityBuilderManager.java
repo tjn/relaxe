@@ -43,7 +43,7 @@ public class EntityBuilderManager<
 	private EntityBuilder<E> rootBuilder;
 						
 	public EntityBuilderManager(ValueExtractorFactory vef, EntityQuery<A, R, T, E, M> query) {
-		super(vef, query.getQuery());
+		super(vef, query.getQueryExpression());
 		this.query = query;
 		this.meta = query.getMetaData();		
 	}
@@ -79,7 +79,7 @@ public class EntityBuilderManager<
 	
 	@Override
 	protected void put(MutableEntityDataObject<E> o) {
-		logger().debug("put - enter");				
+//		logger().debug("put - enter");				
 		E result = rootBuilder.read(o);		
 		o.setRoot(result);		
 		process(o);
@@ -90,11 +90,7 @@ public class EntityBuilderManager<
 
 	@Override
 	protected MutableEntityDataObject<E> get() {
-		logger().debug("get - enter");
-		
 		MutableEntityDataObject<E> o = new MutableEntityDataObject<E>(getMetaData());		
-//		E result = rootBuilder.read(o);
-//		o.setRoot(result);		
 		return o;
 	}	
 

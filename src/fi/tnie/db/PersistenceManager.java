@@ -320,7 +320,7 @@ public class PersistenceManager<
     	E stored = null;
 
     	if (pkp != null) {
-            pq.getQuery().getWhere().setSearchCondition(pkp);
+    		pq.getTableExpression().getWhere().setSearchCondition(pkp);
     	}
 
     	mergeDependencies(getTarget(), c);    	

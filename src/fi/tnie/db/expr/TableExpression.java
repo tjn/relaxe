@@ -7,4 +7,6 @@ public interface TableExpression
 	extends Expression {
 	
 	Select getSelect();	
+	
+	Where getWhere();
 }

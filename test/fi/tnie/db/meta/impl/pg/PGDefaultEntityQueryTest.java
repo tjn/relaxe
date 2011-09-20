@@ -80,7 +80,7 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	
     	HourReport.Query e = new HourReport.Query(hr);
     	
-    	String qs = e.getQuery().generate();
+    	String qs = e.getQueryExpression().generate();
     	    	   	
     	logger().info("testThis: qs=" + qs);
     	    	
@@ -92,7 +92,7 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     		= new EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData>(vef, e);
     	    	    	    	
     	StatementExecutor se = new StatementExecutor();
-    	se.execute(eb.getQuery().getQuery(), c, eb);
+    	se.execute(eb.getQuery().getQueryExpression(), c, eb);
     	
     	logger().info("testConstructor: eb.getContent().size()=" + eb.getContent().size());
     	
@@ -121,7 +121,7 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	DefaultEntityQuery<?, ?, ?, ?, ?, ?> e = 
     		new DefaultEntityQuery<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Factory, HourReport.MetaData>(hr.getMetaData());
 
-    	String qs = e.getQuery().generate();
+    	String qs = e.getQueryExpression().generate();
     	
     	logger().info("testConstructor2: qs=" + qs);
     	

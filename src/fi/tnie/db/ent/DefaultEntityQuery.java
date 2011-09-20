@@ -20,6 +20,7 @@ import fi.tnie.db.expr.AbstractTableReference;
 import fi.tnie.db.expr.DefaultTableExpression;
 import fi.tnie.db.expr.ForeignKeyJoinCondition;
 import fi.tnie.db.expr.From;
+import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.ColumnReference;
 import fi.tnie.db.expr.TableReference;
@@ -46,6 +47,7 @@ public class DefaultEntityQuery<
 	private static final long serialVersionUID = -5505364328412305185L;
 	private M meta;
 	private DefaultTableExpression query;
+	private QueryExpression queryExpression;
 	private TableReference rootRef;
 	
 	private Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> metaDataMap;
@@ -110,8 +112,11 @@ public class DefaultEntityQuery<
 
 		AbstractTableReference tref = fromTemplate(root, null, null, null, q, visited);
 		q.setFrom(new From(tref));
-
+				
 		this.query = q;
+		
+		// TODO: decorate with ordering:
+		this.queryExpression = this.query;
 	}
 
 
@@ -152,13 +157,12 @@ public class DefaultEntityQuery<
 			ForeignKeyJoinCondition jc = new ForeignKeyJoinCondition(fk, qref, tref);
 			qref = qref.leftJoin(tref, jc);
 		}
-				
-		
-				
+					
 		Set<Column> pkcols = meta.getPKDefinition();
 		
 		for (Column c : pkcols) {
-			s.add(new ColumnReference(tref, c));
+			ColumnReference cref = new ColumnReference(tref, c);
+			s.add(cref);
 		}
 						
 		Set<MR> rs = meta.relationships();
@@ -249,8 +253,12 @@ public class DefaultEntityQuery<
 			}
 		}
 	}
+	
+	public DefaultTableExpression getTableExpression() {
+		return this.query;
+	}
 
-	public DefaultTableExpression getQuery() {
+	public QueryExpression getQueryExpression() {
 		return this.query;
 	}
 	
@@ -266,15 +274,15 @@ public class DefaultEntityQuery<
         return this.rootRef;
     }
 
-	@Override
-	public Long getLimit() {
-		return null;
-	}
-
-	@Override
-	public int getOffset() {
-		return 0;
-	}
+//	@Override
+//	public Long getLimit() {
+//		return null;
+//	}
+//
+//	@Override
+//	public int getOffset() {
+//		return 0;
+//	}
 
 	@Override
 	public M getMetaData() {

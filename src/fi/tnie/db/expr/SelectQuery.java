@@ -16,7 +16,15 @@ public class SelectQuery
 	private OrderBy orderBy;
 	private Limit limit;
 	private Offset offset;
-	
+		
+	public SelectQuery(TableExpression tableExpr, OrderBy orderBy, Limit limit, Offset offset) {
+		super();
+		this.tableExpr = tableExpr;
+		this.orderBy = orderBy;
+		this.limit = limit;
+		this.offset = offset;
+	}
+
 	@Override
 	public OrderBy getOrderBy() {
 		return orderBy;

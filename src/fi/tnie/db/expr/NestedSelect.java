@@ -47,6 +47,11 @@ public class NestedSelect
 	public Offset getOffset() {	
 		return null;
 	}
+	
+	@Override
+	public Where getWhere() {
+		return null;
+	}
 
 	@Override
 	public TableExpression getTableExpr() {

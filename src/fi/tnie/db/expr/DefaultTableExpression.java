@@ -136,17 +136,17 @@ public class DefaultTableExpression
 	}
 	
 	@Override
-	public OrderBy getOrderBy() {	
+	public final OrderBy getOrderBy() {	
 		return null;
 	}
 	
 	@Override
-	public Limit getLimit() {	
+	public final Limit getLimit() {	
 		return null;
 	}
 	
 	@Override
-	public Offset getOffset() {	
+	public final Offset getOffset() {	
 		return null;
 	}
 	
