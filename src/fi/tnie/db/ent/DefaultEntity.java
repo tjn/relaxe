@@ -4,8 +4,13 @@
 package fi.tnie.db.ent;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.DateKey;
@@ -29,6 +34,7 @@ import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.rpc.VarcharHolder;
+import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
 
 /**
@@ -68,6 +74,8 @@ public abstract class DefaultEntity<
 	 */
 	private static final long serialVersionUID = 3498823449580706161L;
 	private Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> refs;
+			
+	private List<Map<A, ?>> valueMapList;
 	
 	
 	/**
@@ -105,6 +113,7 @@ public abstract class DefaultEntity<
 	private Map<A, IntegerHolder> getIntValueMap() {
 		if (intValueMap == null) {
 			intValueMap = new HashMap<A, IntegerHolder>();
+			getValueMapList().add(intValueMap);
 		}
 
 		return intValueMap;
@@ -113,6 +122,7 @@ public abstract class DefaultEntity<
 	private Map<A, VarcharHolder> getVarcharValueMap() {
 		if (varcharValueMap == null) {
 			varcharValueMap = new HashMap<A, VarcharHolder>();
+			getValueMapList().add(varcharValueMap);
 		}
 
 		return varcharValueMap;
@@ -121,6 +131,7 @@ public abstract class DefaultEntity<
 	private Map<A, DateHolder> getDateValueMap() {
 		if (dateValueMap == null) {
 			dateValueMap = new HashMap<A, DateHolder>();
+			getValueMapList().add(dateValueMap);
 		}
 
 		return dateValueMap;
@@ -134,6 +145,7 @@ public abstract class DefaultEntity<
 	private Map<A, DoubleHolder> getDoubleValueMap() {
 		if (doubleValueMap == null) {
 			doubleValueMap = new HashMap<A, DoubleHolder>();
+			getValueMapList().add(doubleValueMap);
 		}
 
 		return doubleValueMap;
@@ -142,6 +154,7 @@ public abstract class DefaultEntity<
 	private Map<A, DecimalHolder> getDecimalValueMap() {
 		if (decimalValueMap == null) {
 			decimalValueMap = new HashMap<A, DecimalHolder>();
+			getValueMapList().add(decimalValueMap);
 		}
 
 		return decimalValueMap;
@@ -182,6 +195,7 @@ public abstract class DefaultEntity<
 	private Map<A, TimestampHolder> getTimestampValueMap() {
 		if (timestampValueMap == null) {
 			timestampValueMap = new HashMap<A, TimestampHolder>();
+			getValueMapList().add(timestampValueMap);
 		}
 
 		return timestampValueMap;
@@ -208,6 +222,7 @@ public abstract class DefaultEntity<
 	private Map<A, CharHolder> getCharValueMap() {
 		if (charValueMap == null) {
 			charValueMap = new HashMap<A, CharHolder>();
+			getValueMapList().add(charValueMap);
 		}
 
 		return charValueMap;
@@ -315,7 +330,8 @@ public abstract class DefaultEntity<
 
 	private Map<A, IntervalHolder.YearMonth> getYearMonthIntervalValueMap() {
 		if (yearMonthIntervalValueMap == null) {
-			yearMonthIntervalValueMap = new HashMap<A, IntervalHolder.YearMonth>();			
+			yearMonthIntervalValueMap = new HashMap<A, IntervalHolder.YearMonth>();
+			getValueMapList().add(yearMonthIntervalValueMap);
 		}
 
 		return yearMonthIntervalValueMap;
@@ -324,7 +340,7 @@ public abstract class DefaultEntity<
 	private Map<A, IntervalHolder.DayTime> getDayTimeIntervalValueMap() {
 		if (dayTimeIntervalValueMap == null) {
 			dayTimeIntervalValueMap = new HashMap<A, IntervalHolder.DayTime>();
-			
+			getValueMapList().add(dayTimeIntervalValueMap);
 		}
 
 		return dayTimeIntervalValueMap;
@@ -386,5 +402,60 @@ public abstract class DefaultEntity<
 	public E unify(IdentityContext ctx) {	
 		return getMetaData().unify(ctx, self());
 	}
+
+	public <		
+		VV extends Serializable,
+		VT extends PrimitiveType<VT>,
+		VH extends PrimitiveHolder<VV, VT>,	
+		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
+	> 
+	void remove(K key) {		
+		set(key, null);
+	}
 	
+	public <		
+		VV extends Serializable,
+		VT extends PrimitiveType<VT>,
+		VH extends PrimitiveHolder<VV, VT>,	
+		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
+	> 
+	void reset(K key) {
+		VH nh = key.newHolder(null);
+		set(key, nh);
+	}
+	
+	public <
+		VV extends Serializable, 
+		VT extends fi.tnie.db.types.PrimitiveType<VT>, 
+		VH extends fi.tnie.db.rpc.PrimitiveHolder<VV, VT>, 
+		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
+	> 
+	boolean has(K key) {		
+		return (this.get(key) != null);
+	}
+	
+	@Override
+	public Set<A> attributes() {
+		if (this.valueMapList == null) {
+			return Collections.emptySet();
+		}
+		
+		Set<A> as = new HashSet<A>();				
+		
+		for (Map<A, ?> vm : valueMapList) {
+			if (!vm.isEmpty()) {			
+				as.addAll(vm.keySet());
+			}
+		}
+				
+		return as;
+	}
+	
+	private List<Map<A, ?>> getValueMapList() {
+		if (valueMapList == null) {
+			valueMapList = new ArrayList<Map<A, ?>>();			
+		}
+
+		return valueMapList;
+	}
 }

@@ -5,6 +5,7 @@ package fi.tnie.db.ent;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Set;
 
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
@@ -89,7 +90,7 @@ public interface Entity<
 		D extends EntityMetaData<VA, VR, VT, G, RH, VF, D>,		
 		K extends EntityKey<R, T, E, M, VT, VA, VR, G, RH, VF, D, K>
 	>		
-	void setRef(K k, RH newValue);	
+	void setRef(K k, RH newValue);
 	
 	PrimitiveHolder<?, ?> value(A attribute) throws EntityRuntimeException;
 	
@@ -141,8 +142,7 @@ public interface Entity<
 	/**
 	 * Returns the meta-data object which describes the structure of this object.
 	 * @return
-	 */
-	
+	 */	
 	M getMetaData();
 		
 	T getType();
@@ -197,5 +197,64 @@ public interface Entity<
 	E unify(IdentityContext ctx);
 		
 	boolean isIdentified() throws EntityRuntimeException;
-		
+
+	
+	/**
+	 * Set of the attributes currently present within this entity.
+	 * @return
+	 */
+	Set<A> attributes();
+	
+	/**
+	 * Replaces the current value of the attribute addressed by key with null-valued holder 
+	 * @param <VV>
+	 * @param <VT>
+	 * @param <VH>
+	 * @param <K>
+	 * @param key
+	 */
+	public <		
+		VV extends Serializable,
+		VT extends PrimitiveType<VT>,
+		VH extends PrimitiveHolder<VV, VT>,	
+		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
+	> 
+	void remove(K key);
+	
+	/**
+	 * Replaces the current value of the attribute addressed by <code>key</code> with null-valued holder.
+	 * 
+	 * 
+	 *   
+	 * @param <VV>
+	 * @param <VT>
+	 * @param <VH>
+	 * @param <K>
+	 * @param key
+	 */
+	public <		
+		VV extends Serializable,
+		VT extends PrimitiveType<VT>,
+		VH extends PrimitiveHolder<VV, VT>,	
+		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
+	> 
+	void reset(K key);
+	
+	
+	/**
+	 * Returns true if and only if this entity has currently the value holder set for the attribute addressed by <code>key</code>.
+	 *  
+	 * @param <VV>
+	 * @param <VT>
+	 * @param <VH>
+	 * @param <K>
+	 * @param key
+	 */
+	public <		
+		VV extends Serializable,
+		VT extends PrimitiveType<VT>,
+		VH extends PrimitiveHolder<VV, VT>,	
+		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
+	> 
+	boolean has(K key);
 }
