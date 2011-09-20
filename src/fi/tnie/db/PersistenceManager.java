@@ -8,29 +8,24 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.DefaultEntityQuery;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.env.GeneratedKeyHandler;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.expr.Assignment;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Default;
-import fi.tnie.db.expr.DefaultTableExpression;
 import fi.tnie.db.expr.DeleteStatement;
 import fi.tnie.db.expr.ElementList;
 import fi.tnie.db.expr.InsertStatement;
@@ -47,10 +42,6 @@ import fi.tnie.db.expr.op.Eq;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
-import fi.tnie.db.query.Query;
-import fi.tnie.db.query.QueryException;
-import fi.tnie.db.query.QueryResult;
-import fi.tnie.db.query.QueryTime;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.PrimitiveType;
@@ -532,23 +523,6 @@ public class PersistenceManager<
 	public void setImplementation(Implementation implementation) {
 		this.implementation = implementation;
 	}
-	
-	
-	public QueryResult<EntityDataObject<E>> execute(EntityQuery<A, R, T, E, M> query, Connection c) 
-		throws SQLException, QueryException {
-		
-		DefaultTableExpression qo = query.getQuery();		
-		ValueExtractorFactory vef = getImplementation().getValueExtractorFactory();
-		
-		List<EntityDataObject<E>> content = new ArrayList<EntityDataObject<E>>();		
-		EntityReader<?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M>(vef, query, content);
-		StatementExecutor sx = new StatementExecutor();				
-		Query q = new Query(qo);			
-		QueryTime qt = sx.execute(qo, c, eb);							
-		QueryResult<EntityDataObject<E>> result = new QueryResult<EntityDataObject<E>>(q, content, qt);		
-		return result;
-	}
-	
 	
 	private <
 		DA extends Attribute, 
