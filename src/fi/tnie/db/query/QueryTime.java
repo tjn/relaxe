@@ -41,4 +41,17 @@ public class QueryTime
 		return populationTime;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder buf = new StringBuilder();
+		
+		buf.append(super.toString());
+		buf.append(": execution=");
+		buf.append(this.queryExecutionTime);
+		buf.append("ms; population: ");
+		buf.append(this.populationTime);
+		buf.append("ms");		
+		
+		return buf.toString();
+	}
 }
