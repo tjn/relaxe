@@ -61,6 +61,12 @@ public class SelectQuery
 		
 		if (limit != null) {
 			limit.traverse(vc, v);
+			
+			Offset off = getOffset();
+			
+			if (off != null) {
+				off.traverse(vc, v);
+			}			
 		}
 	}
 
