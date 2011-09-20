@@ -102,14 +102,19 @@ public interface {{table-interface}}
 		}		
 
 		@Override
-		public {{table-interface}}.Query newQuery() {			
+		public {{table-interface}}.Query newQuery(long limit, long offset) {			
 			try {
-				return new {{table-interface}}.Query(self());
+				return new {{table-interface}}.Query(self(), limit, offset);
 			}
 			catch (CyclicTemplateException e) {
 				throw new EntityRuntimeException(e.getMessage(), e); 
 			}
-			
+		}
+				
+		@Override
+		public {{table-interface}}.Query newQuery()
+				throws CyclicTemplateException {
+			return newQuery(0, 0);
 		}
 	}
 		
@@ -175,8 +180,9 @@ public interface {{table-interface}}
 			private Query() {				
 			}
 					
-			public Query(QueryTemplate root) throws fi.tnie.db.ent.CyclicTemplateException {
-				super(root);
+			public Query(QueryTemplate root, long limit, long offset) 
+				throws fi.tnie.db.ent.CyclicTemplateException {
+				super(root, limit, offset);
 			}
 		}
     

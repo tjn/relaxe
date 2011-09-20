@@ -83,8 +83,7 @@ public class PersistenceManager<
 	    /**
 		 * 
 		 */
-		private static final long serialVersionUID = -1285004174865437785L;
-		
+		private static final long serialVersionUID = -1285004174865437785L;		
 		private M meta;
 		
 		public PMTemplate(M meta) {
@@ -102,13 +101,13 @@ public class PersistenceManager<
 		public PMTemplate self() {
 			return this;
 		}
-
+		
 		@Override
-		public EntityQuery<A, R, T, E, M> newQuery() 
+		public EntityQuery<A, R, T, E, M> newQuery(long limit, long offset) 
 			throws EntityRuntimeException
 		{						
 			try {
-				return new DefaultEntityTemplateQuery<A, R, T, E, H, F, M, PMTemplate>(this);
+				return new DefaultEntityTemplateQuery<A, R, T, E, H, F, M, PMTemplate>(this, limit, offset);
 			} 
 			catch (CyclicTemplateException e) {
 				throw new EntityRuntimeException(e.getMessage(), e);
@@ -359,10 +358,9 @@ public class PersistenceManager<
 		}
 	}
 
-    public void merge(Connection c) throws EntityException {
-    	M meta = getTarget().getMetaData();
-    	
-//        PMQuery pq = getQuery();
+    public void merge(Connection c) 
+    	throws CyclicTemplateException, EntityException  {    	
+    	M meta = getTarget().getMetaData();    	
         PMTemplate qt = new PMTemplate(meta);
         EntityQuery<A, R, T, E, M> eq = qt.newQuery();
         

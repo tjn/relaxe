@@ -19,4 +19,12 @@ public class Limit
 	public Limit(int value) {
 		super(Keyword.LIMIT, new IntLiteral(value));		
 	}
+	
+	/**
+	 * LIMIT value -clause
+	 * @param value
+	 */	
+	public Limit(long value) {
+		super(Keyword.LIMIT, new LongLiteral(value));		
+	}
 }

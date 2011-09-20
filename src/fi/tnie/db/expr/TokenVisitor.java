@@ -51,7 +51,7 @@ public class TokenVisitor implements ElementVisitor {
 	public VisitContext start(VisitContext vc, Keyword e) {
 		return visit(e);
 	}
-
+	
 	@Override
 	public VisitContext start(VisitContext vc, AbstractTableReference e) {
 		return null;

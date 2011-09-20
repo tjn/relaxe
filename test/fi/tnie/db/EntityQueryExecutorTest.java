@@ -40,6 +40,10 @@ public class EntityQueryExecutorTest extends TestCase {
 	}
 	
 	private QueryResult<EntityDataObject<HourReport>> execute(HourReport.QueryTemplate template) throws Exception {
+		return execute(template, 0, 0);
+	}
+	
+	private QueryResult<EntityDataObject<HourReport>> execute(HourReport.QueryTemplate template, long limit, long offset) throws Exception {
 		Implementation imp = new PGImplementation();
 		
 		Properties cfg = new Properties();
@@ -60,9 +64,9 @@ public class EntityQueryExecutorTest extends TestCase {
 				HourReport.Factory, 
 				HourReport.MetaData
 			> qe = createExecutor(HourReport.TYPE.getMetaData(), imp);
-
 			
-			Query q = new HourReport.Query(template);
+			
+			Query q = template.newQuery(limit, offset);			
 			 
 			QueryResult<EntityDataObject<HourReport>> qr = qe.execute(q, c);
 			assertNotNull(qr);
@@ -95,8 +99,7 @@ public class EntityQueryExecutorTest extends TestCase {
 	}
 
 	
-	public void testExecute3() throws Exception {
-		PersonalFactory pf = LiteralCatalog.getInstance().newPersonalFactory();
+	public void testExecute3() throws Exception {		
 		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate(); 
 		hrq.addAllAttributes();
 				
@@ -221,5 +224,21 @@ public class EntityQueryExecutorTest extends TestCase {
 				
 			}
 		}
+	}
+	
+	public void testExecuteLimits() throws Exception {
+		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate();		
+		hrq.addAllAttributes();
+												
+		QueryResult<EntityDataObject<HourReport>> qr = execute(hrq, 3, 3);
+		
+		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
+		
+		List<? extends EntityDataObject<HourReport>> el = qr.getContent();
+		assertNotNull(el);
+		
+		logger().debug("testExecuteQuery: size=" + el.size());		
+		assertTrue(el.size() <= 3);
 	}	
+	
 }

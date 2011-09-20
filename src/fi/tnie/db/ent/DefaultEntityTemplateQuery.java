@@ -20,11 +20,16 @@ import fi.tnie.db.expr.AbstractTableReference;
 import fi.tnie.db.expr.DefaultTableExpression;
 import fi.tnie.db.expr.ForeignKeyJoinCondition;
 import fi.tnie.db.expr.From;
+import fi.tnie.db.expr.Limit;
+import fi.tnie.db.expr.Offset;
+import fi.tnie.db.expr.OrderBy;
 import fi.tnie.db.expr.Predicate;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.ColumnReference;
+import fi.tnie.db.expr.SelectQuery;
 import fi.tnie.db.expr.TableReference;
+import fi.tnie.db.expr.OrderBy.Order;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
@@ -61,17 +66,31 @@ public class DefaultEntityTemplateQuery<
 	
 	private LinkedHashMap<Integer, TableReference> originMap = new LinkedHashMap<Integer, TableReference>();	
 	private Map<JoinKey, TableReference> referenceMap = new HashMap<JoinKey, TableReference>();
+	
+	private List<ColumnReference> rootPrimaryKey;
+	
+	private long limit;
+	private long offset;
 				
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
 	protected DefaultEntityTemplateQuery() {
 	}
+	
+//	public DefaultEntityTemplateQuery(Q root) 
+//		throws EntityRuntimeException, CyclicTemplateException {
+//		this(root, 0, 0);
+//	}
 
-	public DefaultEntityTemplateQuery(Q root)
+	public DefaultEntityTemplateQuery(Q root, long limit, long offset)
 		throws CyclicTemplateException, EntityRuntimeException {
 		super();
-		init(root);
+		this.limit = limit;
+		this.offset = offset;
+		
+				
+		init(root);		
 	}
 
 	private void init(Q root) throws CyclicTemplateException, EntityRuntimeException {
@@ -95,9 +114,30 @@ public class DefaultEntityTemplateQuery<
 		q.setFrom(new From(tref));
 				
 		this.query = q;
+				
+		if (limit <= 0 && offset <= 0) {
+			this.queryExpression = this.query;
+		}		
+		else {
+			OrderBy ob = q.getOrderBy();
+			
+			if (ob == null) {
+				ob = new OrderBy();				
+			}
+						
+			for (ColumnReference pkcol : getRootPrimaryKey()) {
+				ob.add(pkcol, Order.ASC);
+			}
+			
+			Limit le = (this.limit > 0) ? new Limit(limit) : null;
+			Offset oe = (this.offset > 0) ? new Offset(limit) : null;
+			
+			SelectQuery sq = new SelectQuery(q, ob, le, oe);
+			
+			
+			this.queryExpression = sq;			
+		}
 		
-		// TODO: decorate with ordering:
-		this.queryExpression = this.query;
 	}
 
 
@@ -127,7 +167,9 @@ public class DefaultEntityTemplateQuery<
 		}		
 		
 		Select s = getSelect(q);
-		MM meta = template.getMetaData();		
+		MM meta = template.getMetaData();
+		
+		final boolean root = (qref == null);
 		
 		final TableReference tref = (qref == null) ? getTableRef() : new TableReference(meta.getBaseTable());		
 		getMetaDataMap().put(tref, meta);
@@ -135,7 +177,7 @@ public class DefaultEntityTemplateQuery<
 		if (referencing != null) {
 			JoinKey j = new JoinKey(referencing, fk);
 			referenceMap.put(j, tref);
-		}		
+		}
 		
 		if (qref == null) {
 			qref = tref;
@@ -150,7 +192,12 @@ public class DefaultEntityTemplateQuery<
 		for (Column c : pkcols) {
 			ColumnReference cref = new ColumnReference(tref, c);
 			s.add(cref);
+			
+			if (root) {
+				getRootPrimaryKey().add(cref);
+			}
 		}
+		
 						
 //		Set<MR> rs = meta.relationships();
 
@@ -403,6 +450,14 @@ public class DefaultEntityTemplateQuery<
 		}
 		
 		return getSortKeyList().add(sk);		
+	}
+	
+	private List<ColumnReference> getRootPrimaryKey() {
+		if (rootPrimaryKey == null) {
+			rootPrimaryKey = new ArrayList<ColumnReference>();			
+		}
+
+		return rootPrimaryKey;
 	}
 }
 

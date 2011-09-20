@@ -75,6 +75,12 @@ public abstract class Statement
 		}
 	}	
 	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected Statement() {
+	}
+	
 	@Override
 	public String generate() {
 		StringBuffer dest = new StringBuffer();

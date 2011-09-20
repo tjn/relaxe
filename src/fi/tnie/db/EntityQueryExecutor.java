@@ -71,11 +71,8 @@ public class EntityQueryExecutor<
 	public Implementation getImplementation() {
 		return implementation;
 	}
-
-
 	
 	private static Logger logger() {
 		return EntityQueryExecutor.logger;
-	}
-	
+	}	
 }

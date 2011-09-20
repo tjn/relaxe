@@ -49,7 +49,18 @@ public abstract class DefaultQueryTemplate<
 
 	
 	@Override
-	public <VT extends ReferenceType<VA, VR, VT, V, RH, VF, D>, VA extends Attribute, VR extends Reference, V extends Entity<VA, VR, VT, V, RH, VF, D>, RH extends ReferenceHolder<VA, VR, VT, V, RH, D>, VF extends EntityFactory<V, RH, D, VF>, D extends EntityMetaData<VA, VR, VT, V, RH, VF, D>, K extends EntityKey<R, T, E, M, VT, VA, VR, V, RH, VF, D, K>, VQ extends EntityQueryTemplate<VA, VR, VT, V, RH, VF, D, VQ>> void setTemplate(K k, VQ newTemplate) {
+	public <
+		VT extends ReferenceType<VA, VR, VT, V, RH, VF, D>, 
+		VA extends Attribute, 
+		VR extends Reference, 
+		V extends Entity<VA, VR, VT, V, RH, VF, D>, 
+		RH extends ReferenceHolder<VA, VR, VT, V, RH, D>, 
+		VF extends EntityFactory<V, RH, D, VF>, 
+		D extends EntityMetaData<VA, VR, VT, V, RH, VF, D>, 
+		K extends EntityKey<R, T, E, M, VT, VA, VR, V, RH, VF, D, K>, 
+		VQ extends EntityQueryTemplate<VA, VR, VT, V, RH, VF, D, VQ>
+	> 
+	void setTemplate(K k, VQ newTemplate) {
 		getTemplateMap().put(k, newTemplate);
 	}
 	
@@ -61,9 +72,16 @@ public abstract class DefaultQueryTemplate<
 		return attributeMap;
 	}
 		
-	private Map<EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?>, EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?>> getTemplateMap() {
+	private Map<
+		EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?>, 
+		EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?>
+	> 
+	getTemplateMap() {
 		if (templateMap == null) {
-			templateMap = new HashMap<EntityKey<R,T,E,M,?,?,?,?,?,?,?,?>, EntityQueryTemplate<?,?,?,?,?,?,?,?>>();			
+			templateMap = new HashMap<
+				EntityKey<R,T,E,M,?,?,?,?,?,?,?,?>, 
+				EntityQueryTemplate<?,?,?,?,?,?,?,?>
+			>();			
 		}
 
 		return templateMap;
@@ -118,5 +136,10 @@ public abstract class DefaultQueryTemplate<
 	@Override
 	public void addAllAttributes() {
 		addAll(getMetaData().attributes());		
+	}
+	
+	@Override
+	public EntityQuery<A, R, T, E, M> newQuery() throws CyclicTemplateException {	
+		return newQuery(0, 0);
 	}
 }

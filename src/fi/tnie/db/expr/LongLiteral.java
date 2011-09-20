@@ -6,32 +6,31 @@
  */
 package fi.tnie.db.expr;
 
-public class IntLiteral
+public class LongLiteral
 	extends SimpleElement
 	implements Token {
 
-	private int value;
-	
+	private long value;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
-	 */
-	public IntLiteral() {
+	 */	
+	public LongLiteral() {
 		this(0);
 	}
 	
-	public IntLiteral(int value) {
+	public LongLiteral(long value) {
 		this.value = value;
 	}
 
 	@Override
 	public String getTerminalSymbol() {
-		return Integer.toString(this.value);
+		return Long.toString(this.value);
 	}
 
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {
-		v.start(vc, this);
+		v.start(vc, this);		
 		v.end(this);			
 	}
 

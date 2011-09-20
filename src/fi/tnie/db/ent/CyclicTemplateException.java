@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.ent;
 
-public class CyclicTemplateException extends Exception {
+public class CyclicTemplateException extends EntityException {
 
 	private EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> template; 
 	
