@@ -459,5 +459,19 @@ public class DefaultEntityTemplateQuery<
 
 		return rootPrimaryKey;
 	}
+	
+	@Override
+	public long getLimit() {
+		return this.limit;
+	}
+	
+	@Override
+	public long getOffset() {
+		return this.offset;
+	}
+	
+	public Q getTemplate() {
+		return template;
+	}
 }
 
