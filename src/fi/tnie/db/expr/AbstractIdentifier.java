@@ -10,6 +10,12 @@ public abstract class AbstractIdentifier
 
 	private String name;
 	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected AbstractIdentifier() {
+	}
+	
 	public AbstractIdentifier(String name)
 		throws IllegalIdentifierException {
 		

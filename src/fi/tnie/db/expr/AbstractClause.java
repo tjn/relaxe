@@ -7,6 +7,12 @@ public abstract class AbstractClause extends CompoundElement {
 	
 	private Keyword clause;
 	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected AbstractClause() {
+	}
+	
 	public AbstractClause(Keyword clause) {
 		super();
 		

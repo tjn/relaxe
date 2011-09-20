@@ -9,6 +9,12 @@ public abstract class ColumnExpr
 
 	private AbstractTableReference table;	
 	private ColumnName columnName;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected ColumnExpr() {
+	}
 
 	public ColumnExpr(AbstractTableReference table, ColumnName columnName) {
 		super();

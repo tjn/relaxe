@@ -13,6 +13,12 @@ public class ColumnReference
 	implements ValueExpression {
 
 	private Column column;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected ColumnReference() {
+	}
 		
 	public ColumnReference(AbstractTableReference table, Column column) {
 		super(table, column.getColumnName());

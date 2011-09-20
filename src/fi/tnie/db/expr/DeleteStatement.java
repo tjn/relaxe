@@ -10,6 +10,13 @@ public class DeleteStatement
 	
 	private Where where;
 	
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DeleteStatement() {
+	}
+	
 	public DeleteStatement(TableReference tref, Predicate p) {
 		super(Name.DELETE);		
 		this.target = tref;

@@ -25,7 +25,13 @@ package fi.tnie.db.expr;
 public class ColumnName 
 	implements Identifier {
 	
-	private final Identifier name;
+	private Identifier name;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected ColumnName() {
+	}
 	
 	public ColumnName(String name) 
 		throws IllegalIdentifierException {
