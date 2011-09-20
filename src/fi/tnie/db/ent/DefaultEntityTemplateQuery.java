@@ -69,6 +69,8 @@ public class DefaultEntityTemplateQuery<
 	
 	private List<ColumnReference> rootPrimaryKey;
 	
+	private Q template;
+	
 	private long limit;
 	private long offset;
 				
@@ -88,9 +90,8 @@ public class DefaultEntityTemplateQuery<
 		super();
 		this.limit = limit;
 		this.offset = offset;
-		
-				
-		init(root);		
+		this.template = root;
+		init(root);
 	}
 
 	private void init(Q root) throws CyclicTemplateException, EntityRuntimeException {
