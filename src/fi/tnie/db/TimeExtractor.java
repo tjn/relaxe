@@ -22,7 +22,7 @@ class TimeExtractor
 	
 	@Override
 	public TimeHolder extractValue(ResultSet rs) throws SQLException {
-		Date date = rs.getDate(getColumn());		
+		Date date = rs.getTime(getColumn());		
 		return TimeHolder.valueOf(date);
 	}
 }
