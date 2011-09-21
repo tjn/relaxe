@@ -4,8 +4,17 @@
 package fi.tnie.db.expr;
 
 public class From extends AbstractClause {
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3675394470595921573L;
 	private TableRefList tableReferenceList;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */	
+	protected From() {
+	}
 	
 	public From(TableRefList from) {
 		super(Keyword.FROM);

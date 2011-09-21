@@ -8,6 +8,11 @@ import fi.tnie.db.meta.Table;
 public class InsertStatement
 	extends Statement {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1598811041382537945L;
+
 	private Table target;
 	
 	private ElementList<ValueRow> values;	
@@ -21,6 +26,12 @@ public class InsertStatement
 		}
 		
 		return columnNameList.getContent().size();
+	}
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected InsertStatement() {
 	}
 	
 	public InsertStatement(Table target, ElementList<ColumnName> columnNameList) {

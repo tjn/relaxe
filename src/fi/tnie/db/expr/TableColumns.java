@@ -13,7 +13,17 @@ public class TableColumns
 	extends CompoundElement
 	implements SelectListElement {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8004995546047752690L;
 	private NonJoinedTable tableRef;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected TableColumns() {
+	}
 
 	public TableColumns(NonJoinedTable tableRef) {
 		super();

@@ -16,8 +16,18 @@ import fi.tnie.db.meta.PrimaryKey;
 public class DropConstraint
     extends Statement {
 
-    private SchemaElementName table; 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6604968506968220728L;
+	private SchemaElementName table; 
     private SchemaElementName constraint;
+    
+    /**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DropConstraint() {
+	}
 
     public DropConstraint(PrimaryKey pk) {
         this(pk, pk.getTable());

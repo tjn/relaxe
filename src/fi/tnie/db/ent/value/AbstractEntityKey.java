@@ -55,10 +55,13 @@ public abstract class AbstractEntityKey<
 	public void set(E e, V newValue) {
 		e.setRef(self(), newHolder(newValue));
 	}
-		
+
 	/**
 	 * No-argument constructor for GWT Serialization
-	 */	
+	 */
+	protected AbstractEntityKey() {
+	}
+	
 	protected AbstractEntityKey(S source, R name) {
 		setName(name);
 		

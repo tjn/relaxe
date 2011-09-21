@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.ent.value;
 
-import java.io.Serializable;
-
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityFactory;
@@ -43,7 +41,7 @@ public interface EntityKey<
 	VM extends EntityMetaData<VA, VR, P, VE, VH, VF, VM>,	
 	K extends EntityKey<R, T, E, S, P, VA, VR, VE, VH, VF, VM, K>	
 >
-	extends Key<T, E, P, K>, Serializable
+	extends Key<T, E, P, K>
 {	
 	R name();	
 	VH newHolder(VE newValue);	

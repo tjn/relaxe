@@ -452,4 +452,13 @@ public abstract class DefaultEntity<
 
 		return valueMapList;
 	}
+	
+	public boolean has(R r) {
+		if (r == null || this.refs == null) {
+			return false;
+		}
+		
+		ReferenceHolder<?, ?, ?, ?, ?, ?> rh = this.refs.get(r);		
+		return (rh != null);		
+	};
 }

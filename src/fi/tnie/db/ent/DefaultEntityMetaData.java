@@ -41,6 +41,11 @@ public abstract class DefaultEntityMetaData<
 >
 	extends AbstractEntityMetaData<A, R, T, E, H, F, M>
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8331822446687395204L;
+
 	private BaseTable baseTable;
 
 	private Set<A> attributes;
@@ -53,7 +58,7 @@ public abstract class DefaultEntityMetaData<
 	private Map<Column, Set<R>> columnReferenceMap;		
 	private Map<A, PrimitiveKey<A, T, E, ?, ?, ?, ?>> keyMap;
 	
-	private Map<IdentityContext, EntityIdentityMap<A, R, T, E>> identityContextMap;
+	private transient Map<IdentityContext, EntityIdentityMap<A, R, T, E>> identityContextMap;
 	
 //	private Map<Column, Key<A, ?, ?, ?, E, ?>> columnKeyMap;
 
@@ -68,7 +73,6 @@ public abstract class DefaultEntityMetaData<
 	}
 
 	protected abstract void populateAttributes(BaseTable table);
-
 
 
 	protected void populateAttributes(Set<A> attributes, Map<A, Column> attributeMap, BaseTable table) {
@@ -102,7 +106,7 @@ public abstract class DefaultEntityMetaData<
 			}
 		}
 
-		this.attributes = Collections.unmodifiableSet(attributes);
+		this.attributes = attributes;
 		this.attributeMap = attributeMap;
 		this.pkcols = Collections.unmodifiableSet(pkc);
 		this.columnMap = columnMap;
@@ -170,7 +174,7 @@ public abstract class DefaultEntityMetaData<
 	}
 
 	public Set<A> attributes() {
-		return this.attributes;
+		return Collections.unmodifiableSet(this.attributes);
 	}
 
 	public Set<R> relationships() {

@@ -13,8 +13,7 @@ public class MutableEntityDataObject<
 	 */
 	private static final long serialVersionUID = 6686405887192221961L;
 	private E root;
-	
-	
+		
 	protected MutableEntityDataObject() {
 		super();	
 	}

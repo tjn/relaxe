@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.exec.QueryProcessor;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.Statement.Name;
@@ -19,6 +20,15 @@ public class StatementExecutor {
 
 	private static Logger logger = Logger.getLogger(StatementExecutor.class);
 	
+		
+	private ValueAssignerFactory valueAssignerFactory = null; 
+		
+	public StatementExecutor(Implementation implementation) {
+		super();
+		this.valueAssignerFactory = implementation.getValueAssignerFactory();
+	}
+
+
 	public QueryTime execute(Statement statement, Connection c, QueryProcessor qp)
 		throws SQLException, QueryException {
 
@@ -43,6 +53,10 @@ public class StatementExecutor {
 			        ps = c.prepareStatement(qs);
 			    }
 			}
+			
+			AssignmentVisitor av = new AssignmentVisitor(valueAssignerFactory, ps);
+			statement.traverse(null, av);
+			
 									
 			if (statement.getName().equals(Name.SELECT)) {
 				ResultSet rs = null;

@@ -9,6 +9,10 @@ public class SetOperator
 	extends BinaryOperator
 	implements TableExpression {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1520583086311992257L;
 	private Op operator;
 	private Keyword all;
 	private TableExpression left;
@@ -25,6 +29,12 @@ public class SetOperator
 		private Op(Keyword name) {
 			this.name = name;
 		}
+	}
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected SetOperator() {
 	}
 
 	public SetOperator(Op operator, boolean all, TableExpression left, TableExpression right) {

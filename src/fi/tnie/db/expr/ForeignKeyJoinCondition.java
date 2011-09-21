@@ -16,11 +16,22 @@ import fi.tnie.db.meta.ForeignKey;
 public class ForeignKeyJoinCondition 
 	extends JoinCondition { 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4566688892782028829L;
 	private ForeignKey foreignKey;
 	private AbstractTableReference referencing;		
 	private AbstractTableReference referenced;
 	
 	private Predicate condition;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	@SuppressWarnings("unused")
+	private ForeignKeyJoinCondition() {
+	}
 	
 	public ForeignKeyJoinCondition(ForeignKey foreignKey, AbstractTableReference referencing, AbstractTableReference referenced) {
 		super();

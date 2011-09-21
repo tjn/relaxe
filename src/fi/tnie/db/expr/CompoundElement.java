@@ -5,6 +5,11 @@ package fi.tnie.db.expr;
 
 public abstract class CompoundElement implements Element {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7299007466010084749L;
+
 	@Override
 	public final String getTerminalSymbol() {
 		return null;

@@ -6,6 +6,17 @@ package fi.tnie.db.expr.ddl;
 public class Char 
     extends AbstractCharacterType {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2495916308822328263L;
+
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected Char() {
+	}
+	
     public Char(int length) {
         super(length);
     }

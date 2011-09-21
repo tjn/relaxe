@@ -21,6 +21,11 @@ public abstract class ReferenceType<
 >
 	extends Type<T> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7916062747738467637L;
+
 	@Override
 	public final boolean isReferenceType() {
 		return true;

@@ -16,11 +16,21 @@ public class ValueElement
 	extends CompoundElement
 	implements SelectListElement {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3171506330402365606L;
 	private ValueExpression expr;
 	private ColumnName newName;
 	private ColumnName name;
 	
 //	private static Logger logger = Logger.getLogger(ValueElement.class);
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected ValueElement() {
+	}
 	
 	public ValueElement(ValueElement e) {
 		this(e.getValue(), e.getColumnName());

@@ -21,6 +21,12 @@ public class DefaultColumnMap
 	private Table table;
 	private List<DefaultMutableColumn> columnList;
 	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DefaultColumnMap() {
+	}
+	
 	public DefaultColumnMap(DefaultMutableTable table) {
 		super(table.getEnvironment());
 		this.table = table;

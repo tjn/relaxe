@@ -32,6 +32,7 @@ import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.CatalogMap;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.Schema;
+import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.Table;
 import fi.tnie.db.meta.impl.DataTypeImpl;
 import fi.tnie.db.meta.impl.DefaultCatalogMap;
@@ -50,12 +51,12 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	private static Logger logger = Logger.getLogger(DefaultCatalogFactory.class);
 	private static final int TABLE_NAME_COLUMN = 3;
 
-	private Environment environment;
+	private SerializableEnvironment environment;
 	
 //	TODO: requiring environment as an argument for constructor, makes
 //	instantiating via Class.newInstance() (too) painful 
 //	in Environment -implementations.
-	public DefaultCatalogFactory(Environment environment) {
+	public DefaultCatalogFactory(SerializableEnvironment environment) {
 		super();
 		
 		if (environment == null) {
@@ -439,7 +440,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	private CatalogMap create(Connection c, boolean all)
 			throws QueryException, SQLException {
 						
-		final Environment env = getEnvironment();		
+		final SerializableEnvironment env = getEnvironment();		
 //		logger().debug("enter");								
 		DatabaseMetaData meta = c.getMetaData();		
 						
@@ -889,7 +890,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 //		return this;
 //	}
 
-	public Environment getEnvironment() {
+	public SerializableEnvironment getEnvironment() {
 		return environment;
 	}
 	

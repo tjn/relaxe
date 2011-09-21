@@ -8,12 +8,22 @@ import fi.tnie.db.meta.ForeignKey;
 public class JoinedTable
 	extends AbstractTableReference {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3584757870039445884L;
 	private AbstractTableReference left;
 	private AbstractTableReference right;
 	private JoinType joinType;
 	private JoinCondition joinCondition;
 	
 	private SelectListElement all;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected JoinedTable() {
+	}
 	
 	public JoinedTable(ForeignKey fk) {
 		this(fk, JoinType.INNER);
@@ -184,6 +194,10 @@ public class JoinedTable
 	@Override
 	public SelectListElement getAllColumns() {		 
 		if (all == null) {
+			/**
+			 * TODO: The following does not look like serializable... 
+			 */
+			
 			all = new AllColumns() {
 				@Override
 				protected TableRefList getTableRefs() {				

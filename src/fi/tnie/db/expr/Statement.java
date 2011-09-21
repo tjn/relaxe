@@ -6,6 +6,11 @@ package fi.tnie.db.expr;
 public abstract class Statement
 	extends CompoundElement {
 			
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7451238461402923413L;
+
 	enum Type {
 		/**
 		 * CREATE_SCHEMA/ALTER_TABLE/DROP_SCHEMA/TRUNCATE/COMMENT/RENAME -statement 

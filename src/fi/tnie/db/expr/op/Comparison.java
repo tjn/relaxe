@@ -11,6 +11,11 @@ public class Comparison
 	extends BinaryOperator
 	implements Predicate {
 		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6172456596029288843L;
+
 	public enum Op {
 		EQ(Symbol.EQUALS),
 		LE(Symbol.LESS_OR_EQUAL),
@@ -24,6 +29,12 @@ public class Comparison
 		private Op(Symbol symbol) {
 			this.symbol = symbol;			
 		}
+	}
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected Comparison() {
 	}
 	
 	private Comparison(Op op, ValueExpression a, ValueExpression b) {

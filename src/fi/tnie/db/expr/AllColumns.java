@@ -9,6 +9,10 @@ import java.util.List;
 public abstract class AllColumns 
 	implements SelectListElement, Token {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7004307634380311562L;
 	private Symbol allColumns = Symbol.ASTERISK;	
 	
 	public AllColumns() {

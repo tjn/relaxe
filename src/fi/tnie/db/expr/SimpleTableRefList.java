@@ -7,6 +7,11 @@ public class SimpleTableRefList
 	extends ElementList<AbstractTableReference>
 	implements Element, TableRefList
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1541318396941005713L;
+
 	public SimpleTableRefList() {
 		super();
 	}

@@ -7,8 +7,8 @@ import java.io.Serializable;
 
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.SchemaMap;
+import fi.tnie.db.meta.SerializableEnvironment;
 
 public class DefaultMutableCatalog
 	implements Catalog, Serializable {
@@ -20,7 +20,7 @@ public class DefaultMutableCatalog
 	
 	private Identifier name;	
 //	private Comparator<Identifier> identifierComp;
-	private Environment environment;
+	private SerializableEnvironment environment;
 
 	private DefaultSchemaMap schemaMap;
 		
@@ -31,19 +31,19 @@ public class DefaultMutableCatalog
 	private DefaultMutableCatalog() {
 	}
 	
-	public DefaultMutableCatalog(Environment environment) {
+	public DefaultMutableCatalog(SerializableEnvironment environment) {
 		super();
 		this.environment = environment;
 	}
 	
-	public DefaultMutableCatalog(Environment environment, String name) {
+	public DefaultMutableCatalog(SerializableEnvironment environment, String name) {
 		this(environment, 
 				(name == null) ?
 				 null :
 				 environment.createIdentifier(name));
 	}
 
-	public DefaultMutableCatalog(Environment environment, Identifier name) {
+	public DefaultMutableCatalog(SerializableEnvironment environment, Identifier name) {
 		super();
 		
 		if (environment == null) {
@@ -91,7 +91,18 @@ public class DefaultMutableCatalog
 
 	public static class DefaultSchemaMap
 		extends DefaultElementMap<DefaultMutableSchema> 
-		implements SchemaMap {
+		implements SchemaMap, Serializable {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1826921703346344800L;
+
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		protected DefaultSchemaMap() {	
+		}
 
 		public DefaultSchemaMap(Catalog catalog) {
 			super(catalog.getEnvironment());
@@ -104,7 +115,7 @@ public class DefaultMutableCatalog
 	}
 
 	@Override
-	public Environment getEnvironment() {
+	public SerializableEnvironment getEnvironment() {
 		return this.environment;
 	}
 	

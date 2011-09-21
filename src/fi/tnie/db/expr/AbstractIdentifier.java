@@ -8,6 +8,10 @@ public abstract class AbstractIdentifier
 	extends SimpleElement
 	implements Identifier {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2304652443656237941L;
 	private String name;
 	
 	/**

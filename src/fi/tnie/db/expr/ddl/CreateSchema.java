@@ -12,8 +12,18 @@ import fi.tnie.db.expr.VisitContext;
 public class CreateSchema
 	extends Statement {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7627361956865390823L;
 	private Identifier schemaName;	
 	private Identifier authID;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected CreateSchema() {
+	}
 				
 	public CreateSchema(Identifier name) {
 	    this(name, null);

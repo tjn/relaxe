@@ -12,10 +12,20 @@ package fi.tnie.db.expr;
 public class SelectQuery
 	extends QueryExpression {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 540136231677444030L;
 	private TableExpression tableExpr;
 	private OrderBy orderBy;
 	private Limit limit;
 	private Offset offset;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected SelectQuery() {
+	}
 		
 	public SelectQuery(TableExpression tableExpr, OrderBy orderBy, Limit limit, Offset offset) {
 		super();

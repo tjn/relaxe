@@ -19,5 +19,7 @@ public class MySQLDumpMetaTest
 
 	public void testDumpMetaData() throws QueryException, SQLException {
 		dumpMetaData();
-	}	
+	}
+	
+	
 }

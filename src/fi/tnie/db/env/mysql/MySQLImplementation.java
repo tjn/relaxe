@@ -27,6 +27,7 @@ import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.expr.ddl.ColumnDefinition;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.impl.mysql.MySQLEnvironment;
 import fi.tnie.db.types.ReferenceType;
 
 /**
@@ -37,10 +38,11 @@ public class MySQLImplementation
 	extends DefaultImplementation {
 
     private MySQLSyntax syntax;
-
+    private MySQLEnvironment environment;
+    
 	@Override
 	public CatalogFactory catalogFactory() {
-		return new MySQLCatalogFactory(this);
+		return new MySQLCatalogFactory(this.environment());
 	}
 
     @Override
@@ -139,6 +141,15 @@ public class MySQLImplementation
 	public String createJdbcUrl(String host, int port, String database) {
 		host = (host == null) ? "" : host;
 		return "jdbc:mysql://" + host + ":" + port + "/" + database;
+	}
+
+	@Override
+	public MySQLEnvironment environment() {
+		if (environment == null) {
+			environment = new MySQLEnvironment();			
+		}
+
+		return environment;
 	}
 	
 }

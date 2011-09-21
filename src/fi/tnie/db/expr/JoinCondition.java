@@ -7,6 +7,10 @@ public abstract class JoinCondition
 	extends CompoundElement 
 	implements Predicate {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6371602240694158705L;
 	private AbstractTableReference left;
 	private AbstractTableReference right;
 		

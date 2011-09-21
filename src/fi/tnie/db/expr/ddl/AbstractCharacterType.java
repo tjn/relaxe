@@ -10,7 +10,17 @@ import fi.tnie.db.expr.VisitContext;
 public abstract class AbstractCharacterType
     extends SQLType {
     
-    private Specification length = null; 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7291068267695357641L;
+	private Specification length = null;
+    
+    /**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected AbstractCharacterType() {
+	}
     
     protected AbstractCharacterType(int length) {                        
         if (length < 1) {

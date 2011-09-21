@@ -257,4 +257,15 @@ public interface Entity<
 		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
 	> 
 	boolean has(K key);
+	
+	/**
+	 * Returns true if and only if this entity has currently the value holder set for the reference named by <code>r</code>.
+	 *  
+	 * @param <VV>
+	 * @param <VT>
+	 * @param <VH>
+	 * @param <K>
+	 * @param key
+	 */
+	boolean has(R r);	
 }

@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.ent;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,6 +46,7 @@ public class DefaultEntityTemplateQuery<
 	Q extends EntityQueryTemplate<A, R, T, E, H, F, M, Q>
 	> 
 	implements EntityQuery<A, R, T, E, M>
+	
 {
 	
 //	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class);
@@ -54,21 +56,21 @@ public class DefaultEntityTemplateQuery<
 	 * 
 	 */
 	private static final long serialVersionUID = -5505364328412305185L;
-	private M meta;
-	private DefaultTableExpression query;
-	private QueryExpression queryExpression;
-	private TableReference rootRef;
+	private T type;
 	
-	private List<Predicate> predicateList;
-	private List<EntityQuerySortKey> sortKeyList;
+	private transient DefaultTableExpression query;
+	private transient QueryExpression queryExpression;
+	private transient TableReference rootRef;
+		
+	private transient List<Predicate> predicateList;
+	private transient List<EntityQuerySortKey> sortKeyList;
 	
-	private Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> metaDataMap;
+	private transient Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> metaDataMap;
 	
-	private LinkedHashMap<Integer, TableReference> originMap = new LinkedHashMap<Integer, TableReference>();	
-	private Map<JoinKey, TableReference> referenceMap = new HashMap<JoinKey, TableReference>();
+	private transient LinkedHashMap<Integer, TableReference> originMap;	
+	private transient Map<JoinKey, TableReference> referenceMap;
 	
-	private List<ColumnReference> rootPrimaryKey;
-	
+	private transient List<ColumnReference> rootPrimaryKey; // NS	
 	private Q template;
 	
 	private long limit;
@@ -80,34 +82,45 @@ public class DefaultEntityTemplateQuery<
 	protected DefaultEntityTemplateQuery() {
 	}
 	
-//	public DefaultEntityTemplateQuery(Q root) 
-//		throws EntityRuntimeException, CyclicTemplateException {
-//		this(root, 0, 0);
-//	}
-
-	public DefaultEntityTemplateQuery(Q root, long limit, long offset)
-		throws CyclicTemplateException, EntityRuntimeException {
-		super();
+	public DefaultEntityTemplateQuery(Q root) {
+		this(root, 0, 0);
+	}
+	
+	public DefaultEntityTemplateQuery(Q root, long limit, long offset) {
 		this.limit = limit;
 		this.offset = offset;
-		this.template = root;
-		init(root);
-	}
-
-	private void init(Q root) throws CyclicTemplateException, EntityRuntimeException {
+		
 		if (root == null) {
 			throw new NullPointerException();
 		}
-				
-		M meta = root.getMetaData();
-		BaseTable table = meta.getBaseTable();
+		
+		this.template = root;
+		this.type = root.getMetaData().getType();
+	}
+
+	public DefaultEntityTemplateQuery(Q root, long limit, long offset, boolean init) 
+		throws CyclicTemplateException, EntityRuntimeException {
+		this(root, limit, offset);
+	
+		if (init) {
+			init();
+		}
+	}
+
+	private void init() throws CyclicTemplateException, EntityRuntimeException {
+		if (isInitialized()) {
+			return;
+		}
+		
+		Q root = this.template;
+		
+		BaseTable table = getMetaData().getBaseTable();
 
 		if (table == null) {
 			throw new NullPointerException("EntityMetaData.getBaseTable()");
 		}
-
-		this.meta = meta;
-
+		
+	
 		DefaultTableExpression q = new DefaultTableExpression();
 		HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?>> visited = new HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?>>();
 
@@ -116,14 +129,18 @@ public class DefaultEntityTemplateQuery<
 				
 		this.query = q;
 				
-		if (limit <= 0 && offset <= 0) {
+		if (limit <= 0 && offset <= 0 && getSortKeyList().isEmpty()) {
 			this.queryExpression = this.query;
 		}		
 		else {
 			OrderBy ob = q.getOrderBy();
 			
 			if (ob == null) {
-				ob = new OrderBy();				
+				ob = new OrderBy();
+				
+				for (EntityQuerySortKey sk : getSortKeyList()) {					
+					ob.add(sk.sortKey());					
+				}
 			}
 						
 			for (ColumnReference pkcol : getRootPrimaryKey()) {
@@ -133,12 +150,9 @@ public class DefaultEntityTemplateQuery<
 			Limit le = (this.limit > 0) ? new Limit(limit) : null;
 			Offset oe = (this.offset > 0) ? new Offset(limit) : null;
 			
-			SelectQuery sq = new SelectQuery(q, ob, le, oe);
-			
-			
+			SelectQuery sq = new SelectQuery(q, ob, le, oe);			
 			this.queryExpression = sq;			
 		}
-		
 	}
 
 
@@ -177,7 +191,7 @@ public class DefaultEntityTemplateQuery<
 				
 		if (referencing != null) {
 			JoinKey j = new JoinKey(referencing, fk);
-			referenceMap.put(j, tref);
+			getReferenceMap().put(j, tref);
 		}
 		
 		if (qref == null) {
@@ -219,7 +233,7 @@ public class DefaultEntityTemplateQuery<
 //		}
 
 		addAttributes(template, s, tref);				
-		originMap.put(Integer.valueOf(s.getColumnCount()), tref);
+		getOriginMap().put(Integer.valueOf(s.getColumnCount()), tref);
 		
 		qref = processReferences(template, qref, tref, q, visited);
 						
@@ -320,11 +334,18 @@ public class DefaultEntityTemplateQuery<
 		return getPredicateList().add(p);
 	}
 	
-	public DefaultTableExpression getTableExpression() {
+	@Override
+	public DefaultTableExpression getTableExpression() 
+		throws CyclicTemplateException, EntityRuntimeException {
+		init();		
 		return this.query;
 	}
 
-	public QueryExpression getQueryExpression() {
+	@Override
+	public QueryExpression getQueryExpression() 
+		throws CyclicTemplateException, EntityRuntimeException {
+		init();
+		
 		return this.queryExpression;
 	}
 	
@@ -332,9 +353,10 @@ public class DefaultEntityTemplateQuery<
 	 * Returns the root table-reference for this query.
 	 * @return
 	 */
+	@Override
     public TableReference getTableRef() {
         if (this.rootRef == null) {
-            this.rootRef = new TableReference(meta.getBaseTable());
+            this.rootRef = new TableReference(getMetaData().getBaseTable());
         }
 
         return this.rootRef;
@@ -352,27 +374,35 @@ public class DefaultEntityTemplateQuery<
 
 	@Override
 	public M getMetaData() {
-		return this.meta;
+		return this.type.getMetaData();		
 	}
 
 	@Override
-	public EntityMetaData<?, ?, ?, ?, ?, ?, ?> getMetaData(TableReference tref) {
+	public EntityMetaData<?, ?, ?, ?, ?, ?, ?> getMetaData(TableReference tref) 
+		throws CyclicTemplateException, EntityRuntimeException {
 		if (tref == null) {
 			throw new NullPointerException("tref");
 		}
+		
+		init();
 		
 		return getMetaDataMap().get(tref);
 	}
 
 	@Override
-	public TableReference getOrigin(int column) {	
+	public TableReference getOrigin(int column) 
+		throws CyclicTemplateException, EntityRuntimeException {	
 		if (column < 1) {
 			throw new IndexOutOfBoundsException();
 		}
-
-		for (Integer k : originMap.keySet()) {
+		
+		init();
+		
+		Map<Integer, TableReference> om = getOriginMap();
+				
+		for (Integer k : om.keySet()) {
 			if (column <= k.intValue()) {
-				return originMap.get(k);
+				return om.get(k);
 			}
 		}	
 		
@@ -387,15 +417,28 @@ public class DefaultEntityTemplateQuery<
 		return metaDataMap;
 	}
 		
+	@Override
 	public TableReference getReferenced(TableReference referencing, ForeignKey fk) {
 		JoinKey k = new JoinKey(referencing, fk);
-		TableReference r = this.referenceMap.get(k);
+		TableReference r = getReferenceMap().get(k);
 		return r;
 	}
 
-	private static class JoinKey {
+	private static class JoinKey
+		implements Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2839759478114689320L;
 		private TableReference referencing;	
 		private ForeignKey foreignKey;
+		
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		@SuppressWarnings("unused")
+		private JoinKey() {	
+		}
 		
 		public JoinKey(TableReference referencing, ForeignKey foreignKey) {
 			super();
@@ -450,7 +493,7 @@ public class DefaultEntityTemplateQuery<
 			return false;
 		}
 		
-		return getSortKeyList().add(sk);		
+		return getSortKeyList().add(sk);
 	}
 	
 	private List<ColumnReference> getRootPrimaryKey() {
@@ -473,6 +516,27 @@ public class DefaultEntityTemplateQuery<
 	
 	public Q getTemplate() {
 		return template;
+	}
+	
+	private Map<Integer, TableReference> getOriginMap() {
+		if (originMap == null) {
+			originMap = new LinkedHashMap<Integer, TableReference>();			
+		}
+
+		return originMap;
+	}
+	
+	
+	private Map<JoinKey, TableReference> getReferenceMap() {
+		if (referenceMap == null) {
+			referenceMap = new HashMap<JoinKey, TableReference>();
+		}
+
+		return referenceMap;		
+	}
+	
+	private boolean isInitialized() {
+		return (this.queryExpression != null);
 	}
 }
 

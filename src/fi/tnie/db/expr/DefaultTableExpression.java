@@ -14,6 +14,11 @@ public class DefaultTableExpression
 	extends QueryExpression
 	implements TableExpression {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1839724451652406829L;
+	
 	private Select select;
 	private From from;
 	private Where where;

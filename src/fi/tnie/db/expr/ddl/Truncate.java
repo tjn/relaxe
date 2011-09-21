@@ -13,7 +13,17 @@ import fi.tnie.db.meta.BaseTable;
 public class Truncate
     extends Statement {
 
-    private SchemaElementName table;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2372791261527314160L;
+	private SchemaElementName table;
+    
+    /**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected Truncate() {
+	}
     
     public Truncate(BaseTable table) {
         super(Name.TRUNCATE);

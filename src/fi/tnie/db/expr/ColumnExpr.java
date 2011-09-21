@@ -7,6 +7,10 @@ public abstract class ColumnExpr
 	extends CompoundElement 
 	implements ValueExpression, SelectListElement {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6471819124970538933L;
 	private AbstractTableReference table;	
 	private ColumnName columnName;
 	

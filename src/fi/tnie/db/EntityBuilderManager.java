@@ -8,12 +8,14 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.AttributeWriterFactory;
 import fi.tnie.db.ent.EntityDataObject;
+import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityBuildContext;
 import fi.tnie.db.ent.EntityBuilder;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
+import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.IdentityContext;
 import fi.tnie.db.ent.MutableEntityDataObject;
 import fi.tnie.db.ent.Reference;
@@ -42,18 +44,26 @@ public class EntityBuilderManager<
 	
 	private EntityBuilder<E> rootBuilder;
 						
-	public EntityBuilderManager(ValueExtractorFactory vef, EntityQuery<A, R, T, E, M> query) {
-		super(vef, query.getQueryExpression());
+	public EntityBuilderManager(ValueExtractorFactory vef, EntityQuery<A, R, T, E, M> query) 
+		throws EntityException {
+		super(vef, query);
 		this.query = query;
 		this.meta = query.getMetaData();		
 	}
 	
 	@Override
-	public void prepare() {				
-		AttributeWriterFactory wf = new DefaultAttributeWriterFactory();				
-		context = new DefaultEntityBuildContext(getMetaData(), this.query, wf, null);				
-		TableReference rootRef = query.getTableRef();				
-		this.rootBuilder = this.meta.newBuilder(rootRef, context);
+	public void prepare() 
+		throws EntityRuntimeException {
+		
+		try {		
+			AttributeWriterFactory wf = new DefaultAttributeWriterFactory();				
+			context = new DefaultEntityBuildContext(getMetaData(), this.query, wf, null);				
+			TableReference rootRef = query.getTableRef();				
+			this.rootBuilder = this.meta.newBuilder(rootRef, context);
+		}
+		catch (EntityException e) {
+			throw new EntityRuntimeException(e.getMessage(), e);
+		}
 	}
 	
 	@Override

@@ -6,7 +6,12 @@ package fi.tnie.db.expr.ddl;
 public class Timestamp
     extends SQLType {
         
-    public static Timestamp get() {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 779228554708816888L;
+
+	public static Timestamp get() {
         return new Timestamp();
     }   
     

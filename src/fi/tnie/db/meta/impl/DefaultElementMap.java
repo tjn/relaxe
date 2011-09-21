@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.meta.impl;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -10,15 +11,26 @@ import java.util.TreeMap;
 
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
-import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.MetaObject;
+import fi.tnie.db.meta.SerializableEnvironment;
 
 public class DefaultElementMap<E extends MetaObject>
+	implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4942279888363203444L;
 	private TreeMap<Identifier, E> content = null;
-	private Environment environment;
+	private SerializableEnvironment environment;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DefaultElementMap() {
+	}
 
-	public DefaultElementMap(Environment environment) {
+	public DefaultElementMap(SerializableEnvironment environment) {
 		if (environment == null) {
 			throw new NullPointerException("'environment' must not be null");
 		}

@@ -14,8 +14,18 @@ import fi.tnie.db.expr.VisitContext;
 public class CreateTable
 	extends Statement {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5904813022152304570L;
 	private SchemaElementName tableName;	
 	private ElementList<BaseTableElement> elementList;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected CreateTable() {
+	}
 		
 	public CreateTable(SchemaElementName tableName) {
 		super(Name.CREATE_TABLE);

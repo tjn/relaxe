@@ -7,7 +7,17 @@ public class NestedSelect
 	extends QueryExpression	
 	implements TableExpression {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1754416875449914000L;
 	private QueryExpression inner;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected NestedSelect() {
+	}
 
 	public NestedSelect(QueryExpression inner) {
 		super();

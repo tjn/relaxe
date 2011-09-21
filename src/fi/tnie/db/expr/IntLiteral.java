@@ -10,6 +10,10 @@ public class IntLiteral
 	extends SimpleElement
 	implements Token {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2349786152502099361L;
 	private int value;
 	
 	

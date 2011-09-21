@@ -3,8 +3,16 @@
  */
 package fi.tnie.db.types;
 
-public abstract class Type<T extends Type<? extends T>> {
+import java.io.Serializable;
+
+public abstract class Type<T extends Type<? extends T>>
+	implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8522112079681061065L;
+
 	public Type() {
 		super();
 	}

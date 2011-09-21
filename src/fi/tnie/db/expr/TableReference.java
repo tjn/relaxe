@@ -10,10 +10,20 @@ import fi.tnie.db.meta.Table;
 public class TableReference 
 	extends NonJoinedTable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3388366557843780574L;
 	private Table table;	
 	private ElementList<ColumnName> columnNameList;
 	
 	private SchemaElementName tableName;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected TableReference() {
+	}
 		
 	public TableReference(Table table) {
 		super();

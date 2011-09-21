@@ -20,6 +20,11 @@ public class DefaultMutableSchema
 		
 //	private static Logger logger = Logger.getLogger(DefaultMutableSchema.class);	
 		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3460274773506317380L;
+	
 	private DefaultSchemaElementMap<DefaultMutableTable> tables;
 	private DefaultSchemaElementMap<DefaultPrimaryKey> primaryKeys;
 	private DefaultSchemaElementMap<DefaultForeignKey> foreignKeys;
@@ -29,6 +34,12 @@ public class DefaultMutableSchema
 		
 	private DefaultMutableCatalog catalog;	
 	private Identifier name;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DefaultMutableSchema() {
+	}
 		
 	public DefaultMutableSchema(DefaultMutableCatalog catalog, Identifier name) {
 		super();
@@ -127,10 +138,6 @@ public class DefaultMutableSchema
 //		return tableMap;
 //	}
 
-//	@Override
-//	public Set<Identifier> constraintNames() {
-//		return Collections.unmodifiableSet(getConstraintMap().keySet());
-//	}
 	
 	boolean add(DefaultPrimaryKey pk) {
 		getConstraintMap().add(pk);

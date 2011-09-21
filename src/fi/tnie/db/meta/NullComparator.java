@@ -3,11 +3,17 @@
  */
 package fi.tnie.db.meta;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class NullComparator<T>
-	implements Comparator<T> {
+public abstract class NullComparator<T>
+	implements Comparator<T>, Serializable
+	{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5072519289660021379L;
 	private boolean nullsAtEnd;
 
 	public NullComparator() {
@@ -36,7 +42,20 @@ public class NullComparator<T>
 		return compareNotNull(o1, o2);
 	}
 	
-	public int compareNotNull(T o1, T o2) {
-		return 0;
+	public abstract int compareNotNull(T o1, T o2);
+	
+	
+	public static class String
+		extends NullComparator<java.lang.String> {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 8421830410283422785L;
+
+		@Override
+		public int compareNotNull(java.lang.String o1, java.lang.String o2) {
+			return o1.compareTo(o2);
+		}		
 	}
 }

@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.meta.impl.pg;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import fi.tnie.db.expr.ElementVisitor;
 import fi.tnie.db.expr.Identifier;
@@ -12,22 +13,49 @@ import fi.tnie.db.expr.VisitContext;
 import fi.tnie.db.expr.ddl.ColumnDataType;
 import fi.tnie.db.expr.ddl.ColumnDefinition;
 import fi.tnie.db.meta.FoldingComparator;
+import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.impl.DefaultEnvironment;
 
 public class PGEnvironment
-	extends DefaultEnvironment {
+	extends DefaultEnvironment
+	implements SerializableEnvironment {
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6323320738822722962L;
+
 	public PGEnvironment() {
 	}
 
 	@Override
 	public Comparator<Identifier> createIdentifierComparator() {
-		return new FoldingComparator() {
-			@Override
-			protected String fold(String ordinaryIdentifier) {
-				return ordinaryIdentifier.toLowerCase();
-			}			
-		};
+		return new PGComparator();
+	}	
+	
+	public static class PGComparator
+		extends FoldingComparator
+		implements Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4996134535410852675L;
+		
+
+		public PGComparator() {
+			super();
+		}
+
+
+		@Override
+		protected String fold(String ordinaryIdentifier) {		
+			return ordinaryIdentifier.toLowerCase();
+		}
+		
+		@Override
+		public String toString() {
+			return super.toString() + " version 1" ;
+		}
 	}
 	
     @Override
@@ -41,21 +69,26 @@ public class PGEnvironment
 		extends SimpleElement
 		implements ColumnDataType, Token {
 
-    @Override
-    public String getTerminalSymbol() {
-        return "serial";
-    }
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = -1177806475050170208L;
 
-    @Override
-    public void traverse(VisitContext vc, ElementVisitor v) {
-        v.start(vc, this);
-        v.end(this);
-    }
-
-    @Override
-    public boolean isOrdinary() {
-        return true;
-    }
-}
+		@Override
+	    public String getTerminalSymbol() {
+	        return "serial";
+	    }
+	
+	    @Override
+	    public void traverse(VisitContext vc, ElementVisitor v) {
+	        v.start(vc, this);
+	        v.end(this);
+	    }
+	
+	    @Override
+	    public boolean isOrdinary() {
+	        return true;
+	    }
+	}
 
 }

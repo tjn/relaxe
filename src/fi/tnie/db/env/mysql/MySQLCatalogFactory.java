@@ -15,6 +15,7 @@ import fi.tnie.db.meta.CatalogMap;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.impl.DefaultCatalogMap;
 import fi.tnie.db.meta.impl.DefaultMutableCatalog;
+import fi.tnie.db.meta.impl.mysql.MySQLEnvironment;
 import fi.tnie.db.query.QueryException;
 
 public class MySQLCatalogFactory extends DefaultCatalogFactory {
@@ -23,7 +24,7 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
 	
 //	private String schema;	
 		
-	public MySQLCatalogFactory(MySQLImplementation env) {
+	public MySQLCatalogFactory(MySQLEnvironment env) {
 		super(env);	
 	}
 

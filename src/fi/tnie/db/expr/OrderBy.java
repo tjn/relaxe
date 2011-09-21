@@ -6,6 +6,10 @@ package fi.tnie.db.expr;
 public class OrderBy	
 	extends AbstractClause {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8892530221014201090L;
 	private ElementList<SortKey> sortKeyList;
 			
 	public enum Order implements Element {
@@ -27,6 +31,10 @@ public class OrderBy
 	public abstract static class SortKey	
 		extends CompoundElement {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3707453043715435079L;
 		protected Order order;
 		
 		protected SortKey() {
@@ -42,7 +50,18 @@ public class OrderBy
 	public static class ExprSortKey
 		extends SortKey {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1230384738747966326L;
 		private Expression expression;
+		
+		/**
+		* No-argument constructor for GWT Serialization
+		*/
+		@SuppressWarnings("unused")
+		private ExprSortKey() {	
+		}
 	
 		public ExprSortKey(Expression expression, Order order) {
 			super(order);
@@ -70,7 +89,18 @@ public class OrderBy
 	public static class OrdinalSortKey
 		extends SortKey {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8039564149907068654L;
 		private Ordinal ordinal;
+		
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		@SuppressWarnings("unused")
+		private OrdinalSortKey() {	
+		}
 		
 		public OrdinalSortKey(int ordinal, Order order) {
 			super(order);
@@ -91,7 +121,18 @@ public class OrderBy
 	public static class Ordinal
 		extends SimpleElement {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1184979707913414800L;
 		private int ordinal;
+		
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		@SuppressWarnings("unused")
+		private Ordinal() {	
+		}
 		
 		public Ordinal(int ordinal) {
 			this.ordinal = ordinal;
@@ -111,6 +152,10 @@ public class OrderBy
 
 	public OrderBy() {
 		super(Keyword.ORDER_BY);
+	}
+	
+	public void add(SortKey k) {
+		getSortKeyList().add(k);
 	}
 	
 	public void add(ColumnReference c, Order o) {

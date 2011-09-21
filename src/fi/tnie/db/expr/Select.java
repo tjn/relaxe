@@ -10,6 +10,11 @@ import java.util.List;
 public class Select
 	extends AbstractClause {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8112104453171815591L;
+	
 	private ElementList<SelectListElement> selectList;	
 	private boolean distinct;	
 	

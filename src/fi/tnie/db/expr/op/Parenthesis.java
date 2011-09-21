@@ -13,7 +13,17 @@ public class Parenthesis<E extends Expression>
 	extends CompoundElement
 	implements Expression {
 		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1461089524289963961L;
 	private E content;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected Parenthesis() {
+	}
 	
 	public Parenthesis(E expression) {
 		super();

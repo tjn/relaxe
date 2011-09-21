@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fi.tnie.db.env.CatalogFactory;
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.mysql.MySQLImplementation;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
@@ -30,6 +31,8 @@ public abstract class MySQLTestCase
 	public static final String SCHEMA_PUBLIC = "public";
 	public static final String TABLE_CONTINENT = "continent";
 	public static final String TABLE_COUNTRY = "country";
+	
+	private Implementation implementation;
 
 	public MySQLTestCase() {
 		super("com.mysql.jdbc.Driver", "tester", "password", "dbmeta_test");	
@@ -159,8 +162,15 @@ public abstract class MySQLTestCase
 		return getCatalog().getEnvironment().createIdentifier(name);
 	}	
 	
-
 	
+	@Override
+	protected Implementation getImplementation() {
+		if (implementation == null) {
+			implementation = new MySQLImplementation();			
+		}
+
+		return implementation;
+	}
 	
 	
 }

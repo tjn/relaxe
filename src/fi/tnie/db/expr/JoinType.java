@@ -13,8 +13,8 @@ public enum JoinType
 	RIGHT(Keyword.RIGHT),
 	FULL(Keyword.FULL);
 	
-	private Keyword keyword;	
-
+	private Keyword keyword;
+	
 	private JoinType(Keyword keyword) {
 		this.keyword = keyword;
 	}

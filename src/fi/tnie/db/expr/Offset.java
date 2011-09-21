@@ -7,6 +7,11 @@ public class Offset
 	extends SimpleClause {
 		
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6671391761056533768L;
+
+	/**
 	 * No-argument constructor for GWT Serialization
 	 */	
 	public Offset() {

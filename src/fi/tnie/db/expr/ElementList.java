@@ -10,6 +10,10 @@ import java.util.List;
 public class ElementList<E extends Element>
 	extends CompoundElement {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9070139545586143988L;
 	private Symbol delim;
 	private List<E> content;
 			

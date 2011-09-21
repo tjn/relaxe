@@ -13,6 +13,7 @@ import fi.tnie.db.ValueExtractorFactory;
 
 import fi.tnie.db.ent.CyclicTemplateException;
 import fi.tnie.db.ent.EntityDataObject;
+import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGCatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
@@ -46,7 +47,7 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	return new PGImplementation();
     }
     
-    public void testConstructor() throws SQLException, QueryException, CyclicTemplateException {
+    public void testConstructor() throws Exception {
     	Connection c = getConnection();
     	assertNotNull(c);
     	
@@ -78,7 +79,7 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
 //    		new DefaultEntityQuery<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.MetaData>(hr);
     	
     	HourReport.QueryTemplate t = new HourReport.QueryTemplate();
-    	HourReport.Query e = new HourReport.Query(t);    	
+    	HourReport.Query e = t.newQuery();    	
     	
     	String qs = e.getQueryExpression().generate();
     	    	   	
@@ -91,7 +92,9 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData> eb
     		= new EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData>(vef, e);
     	    	    	    	
-    	StatementExecutor se = new StatementExecutor();
+    	PGImplementation impl = new PGImplementation();
+    	
+    	StatementExecutor se = new StatementExecutor(impl);
     	se.execute(eb.getQuery().getQueryExpression(), c, eb);
     	
     	logger().info("testConstructor: eb.getContent().size()=" + eb.getContent().size());

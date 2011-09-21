@@ -10,6 +10,10 @@ public class LongLiteral
 	extends SimpleElement
 	implements Token {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 190166533024410267L;
 	private long value;
 	
 	/**

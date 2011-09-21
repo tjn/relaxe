@@ -3,8 +3,11 @@
  */
 package fi.tnie.db.expr;
 
+import java.io.Serializable;
 
-public interface Element {
+
+public interface Element
+	extends Serializable {
 	
 	public void traverse(VisitContext vc, ElementVisitor v);	
 	String getTerminalSymbol();	

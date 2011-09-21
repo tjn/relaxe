@@ -26,7 +26,7 @@ public class MutableDataObject
 	
 	private List<PrimitiveHolder<?, ?>> content;
 	private MutableDataObject.MetaData metaData;
-		
+				
 	public static class MetaData
 		implements DataObject.MetaData, Serializable {
 		/**
@@ -38,7 +38,7 @@ public class MutableDataObject
 		private List<ValueExpression> valueList;
 		private List<ColumnExpr> columnList;
 		private Map<ColumnName, Integer> columnIndexMap;
-		private QueryExpression query;
+		private QueryExpressionSource queryExpressionSource;
 		
 		/**
 		 * No-argument constructor for GWT Serialization
@@ -46,8 +46,10 @@ public class MutableDataObject
 		protected MetaData() {	
 		}
 		
-		public MetaData(QueryExpression qe) {
-			this.query = qe;			
+		public MetaData(QueryExpressionSource qes) 
+			throws EntityException {
+			this.queryExpressionSource = qes;
+			QueryExpression qe = qes.getQueryExpression();			
 			Select s = qe.getTableExpr().getSelect();
 			
 			final int cc = s.getColumnCount();			
@@ -84,8 +86,9 @@ public class MutableDataObject
 		}
 
 		@Override
-		public QueryExpression getQuery() {
-			return query;
+		public QueryExpression getQuery() 
+			throws EntityException {
+			return queryExpressionSource.getQueryExpression();
 		}
 	}
 	

@@ -49,4 +49,14 @@ public abstract class ReferenceHolder<
 		return this.value;
 	}
 	
+		
+//	public boolean identityEquals(H h) {
+//		if (h == null) {
+//			throw new NullPointerException("h");
+//		}
+//		
+//		if (this.isNull()) {
+//			return h.isNull();
+//		}
+//	}
 }

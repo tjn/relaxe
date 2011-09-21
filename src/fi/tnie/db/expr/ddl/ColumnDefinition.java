@@ -13,11 +13,21 @@ public class ColumnDefinition
     extends CompoundElement
     implements BaseTableElement {
 
-    private Identifier name;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1225762403113588730L;
+	private Identifier name;
     private ColumnDataType dataType;
     private ElementList<ColumnConstraint> constraintList;
     
     private DefaultDefinition defaultDefinition;
+    
+    /**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected ColumnDefinition() {
+	}
     
     public ColumnDefinition(Identifier name, ColumnDataType dataType) {
         this(name, dataType, null);

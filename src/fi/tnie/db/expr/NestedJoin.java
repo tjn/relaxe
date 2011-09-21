@@ -7,7 +7,18 @@ package fi.tnie.db.expr;
 public class NestedJoin
 	extends AbstractTableReference {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 660240989210616854L;
+	
 	private JoinedTable content;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected NestedJoin() {
+	}
 	
 	public NestedJoin(JoinedTable content) {
 		super();

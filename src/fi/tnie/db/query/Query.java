@@ -14,12 +14,12 @@ public class Query
 	 */
 	private static final long serialVersionUID = 1412811343522826948L;
 	
-	private QueryExpression expression;
+	private transient QueryExpression expression;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected Query() {
+	protected Query() {		
 	}
 	
 	public Query(QueryExpression expression) {

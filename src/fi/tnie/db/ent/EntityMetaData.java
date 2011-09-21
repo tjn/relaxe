@@ -35,11 +35,11 @@ public interface EntityMetaData<
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	F extends EntityFactory<E, H, M, F>,
 	M extends EntityMetaData<A, R, T, E, H, F, M>
-> {
+> 	
+{
 
-	Class<A> getAttributeNameType();
-
-	Class<R> getReferenceNameType();
+//	Class<A> getAttributeNameType();
+//	Class<R> getReferenceNameType();
 
 	/**
 	 * Returns the base table this meta-data is bound to or <code>null</code>
@@ -51,7 +51,8 @@ public interface EntityMetaData<
 
 	F getFactory();
 	
-	EntityBuilder<E> newBuilder(TableReference tableRef, EntityBuildContext ctx);
+	EntityBuilder<E> newBuilder(TableReference tableRef, EntityBuildContext ctx)
+		throws EntityException;
 		
 	EntityIdentityMap<A, R, T, E> getIdentityMap(IdentityContext ctx);
 	E unify(IdentityContext ctx, E e) throws EntityRuntimeException;

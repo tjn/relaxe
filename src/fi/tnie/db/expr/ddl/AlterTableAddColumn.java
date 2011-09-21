@@ -13,9 +13,19 @@ import fi.tnie.db.expr.VisitContext;
 
 public class AlterTableAddColumn
 	extends Statement {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3990587941677143525L;
 	private SchemaElementName tableName;	
 	private Identifier columnName;
 	private DataTypeDefinition dataType;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected AlterTableAddColumn() {
+	}
 		
 	public AlterTableAddColumn(SchemaElementName tableName, Identifier columnName, DataTypeDefinition dataType) {
 		super(Name.ALTER_TABLE);

@@ -6,7 +6,7 @@ package fi.tnie.db.meta.impl;
 import java.io.Serializable;
 
 import fi.tnie.db.meta.CatalogMap;
-import fi.tnie.db.meta.Environment;
+import fi.tnie.db.meta.SerializableEnvironment;
 
 public class DefaultCatalogMap
 	extends DefaultElementMap<DefaultMutableCatalog> 
@@ -16,8 +16,14 @@ public class DefaultCatalogMap
 	 * 
 	 */
 	private static final long serialVersionUID = -5643148376983569446L;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DefaultCatalogMap() {
+	}
 
-	public DefaultCatalogMap(Environment environment) {
+	public DefaultCatalogMap(SerializableEnvironment environment) {
 		super(environment);
 	}	
 }

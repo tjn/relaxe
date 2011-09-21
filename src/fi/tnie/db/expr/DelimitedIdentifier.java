@@ -7,8 +7,18 @@ package fi.tnie.db.expr;
 public class DelimitedIdentifier
 	extends AbstractIdentifier {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4618716859483968962L;
 	private String token;
 		
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DelimitedIdentifier() {
+	}
+	
 	public DelimitedIdentifier(String name) 
 		throws IllegalIdentifierException {
 		super(name);

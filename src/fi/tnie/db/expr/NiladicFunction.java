@@ -8,7 +8,11 @@ import fi.tnie.db.types.PrimitiveType;
 public class NiladicFunction    
     implements ValueExpression {
     
-    private Keyword name;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4927882086659272826L;
+	private Keyword name;
     private int dataType;    
     
     /** Niladic function CURRENT_USER.
@@ -36,6 +40,12 @@ public class NiladicFunction
      */        
     public static final NiladicFunction CURRENT_TIMESTAMP = 
         new NiladicFunction(Keyword.CURRENT_TIMESTAMP, PrimitiveType.TIMESTAMP);    
+    
+    /**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected NiladicFunction() {
+	}
     
     private NiladicFunction(Keyword name, int dataType) {
         this.name = name;

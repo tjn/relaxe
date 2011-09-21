@@ -6,6 +6,11 @@ package fi.tnie.db.expr;
 public class DeleteStatement
 	extends Statement {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7983755125216586175L;
+
 	private TableReference target;		
 	
 	private Where where;

@@ -8,6 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,6 +20,7 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.CyclicTemplateException;
 import fi.tnie.db.ent.DefaultEntityTemplateQuery;
 import fi.tnie.db.ent.DefaultQueryTemplate;
+import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.EntityQueryTemplate;
@@ -48,6 +52,8 @@ import fi.tnie.db.expr.op.Eq;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.query.QueryException;
+import fi.tnie.db.query.QueryResult;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.PrimitiveType;
@@ -106,14 +112,8 @@ public class PersistenceManager<
 		public EntityQuery<A, R, T, E, M> newQuery(long limit, long offset) 
 			throws EntityRuntimeException
 		{						
-			try {
-				return new DefaultEntityTemplateQuery<A, R, T, E, H, F, M, PMTemplate>(this, limit, offset);
-			} 
-			catch (CyclicTemplateException e) {
-				throw new EntityRuntimeException(e.getMessage(), e);
-			}
-		}
-	
+			return new DefaultEntityTemplateQuery<A, R, T, E, H, F, M, PMTemplate>(this, limit, offset);
+		}	
 	}    
 
     private E target;
@@ -159,30 +159,44 @@ public class PersistenceManager<
     public InsertStatement createInsertStatement() throws EntityException {
         E pe = getTarget();
         
-        logger().debug("createInsertStatement: pe=" + pe);
-        
+        logger().debug("createInsertStatement: pe=" + pe);        
     	ValueRow newRow = new ValueRow();
 
 //    	M meta = pe.getMetaData();
     	final M meta = pe.getMetaData();
     	BaseTable t = meta.getBaseTable();
-
+    	
+    	Set<Column> pks = meta.getPKDefinition();
+    	    	
     	ElementList<ColumnName> names = new ElementList<ColumnName>();
 
     	for (A a : meta.attributes()) {
     		logger().debug("createInsertStatement: a=" + a);
     		
-    		Column col = meta.getColumn(a);    		
+    		Column col = meta.getColumn(a);
     		PrimitiveHolder<?, ?> holder = pe.value(a);
     		
     		if (holder == null) {
-    			newRow.add(new Default(col));    		
+    			newRow.add(new Default(col));
+    			names.add(col.getColumnName());
+    			continue;
     		}
-    		else {
-                ValueParameter<?, ?> p = createParameter(col, holder);
-                newRow.add(p);                    			
+
+//   		TODO: 
+//    		boolean nn = col.isDefinitelyNotNullable();
+//    		logger().debug("createInsertStatement: not-nullable ? =" + nn);
+//    		
+//    		We should probably use condition (holder.isNull() && nn), but isDefinitelyNotNullable() 
+//    		does not currently work so well for LiteralColumns:
+    		    		
+    		if (holder.isNull() && pks.contains(col)) {
+    			newRow.add(new Default(col));
+    			names.add(col.getColumnName());
+    			continue;    			
     		}
     		
+    		ValueParameter<?, ?> p = createParameter(col, holder);
+            newRow.add(p);
     		names.add(col.getColumnName());
     	}
 
@@ -242,8 +256,9 @@ public class PersistenceManager<
         E pe = getTarget();
 
     	final EntityMetaData<A, R, T, E, ?, ?, ?> meta = pe.getMetaData();
-    	// TableReference tref = meta.createTableRef();
     	TableReference tref = new TableReference(meta.getBaseTable());
+    	
+    	Set<Column> pkcols = meta.getPKDefinition();
 
     	Predicate p = getPKPredicate(tref, pe);
 
@@ -356,6 +371,8 @@ public class PersistenceManager<
 			logger().debug("JDBC-support-get-gen:" + c.getMetaData().supportsGetGeneratedKeys());
 
 			ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);
+//			logger().debug("ps: " + ps);
+			logger().debug("ps sh: " + System.identityHashCode(ps));
 			q.traverse(null, createAssignmentVisitor(ps));
 
 			logger().debug("q: " + qs);
@@ -370,7 +387,7 @@ public class PersistenceManager<
 				GeneratedKeyHandler kh = getKeyHandler();
 				kh.processGeneratedKeys(q, pe, rs);
 			}
-
+			
 //				logger().debug(buf.toString());
 		}
 		catch (SQLException e) {
@@ -384,19 +401,30 @@ public class PersistenceManager<
 	}
 
     public void merge(Connection c) 
-    	throws CyclicTemplateException, EntityException  {    	
+    	throws CyclicTemplateException, EntityException, SQLException, QueryException  {
+    	
+    	Implementation imp = getImplementation();
     	M meta = getTarget().getMetaData();    	
         PMTemplate qt = new PMTemplate(meta);
-        EntityQuery<A, R, T, E, M> eq = qt.newQuery();
         
-        TableReference tref = eq.getTableRef();
-        
+        EntityQuery<A, R, T, E, M> eq = qt.newQuery();        
+        TableReference tref = eq.getTableRef();        
     	Predicate pkp = getPKPredicate(tref, getTarget());
+    	logger().debug("merge: pkp=" + pkp);
+    	
     	E stored = null;
 
     	if (pkp != null) {    	
     		eq.getTableExpression().getWhere().setSearchCondition(pkp);
+    		EntityQueryExecutor<A, R, T, E, H, F, M> ee = new EntityQueryExecutor<A, R, T, E, H, F, M>(imp);
+    		QueryResult<EntityDataObject<E>> qr = ee.execute(eq, c);
+    		List<? extends EntityDataObject<E>> cl = qr.getContent();
+    		logger().debug("merge: cl.size()=" + cl.size());
+    		
+    		stored = cl.isEmpty() ? null : cl.get(0).getRoot(); 
     	}
+    	
+    	logger().debug("merge: stored=" + stored);
 
     	mergeDependencies(getTarget(), c);    	
 
@@ -418,7 +446,7 @@ public class PersistenceManager<
 		DF extends EntityFactory<DE, DH, DM, DF>,
 		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM>  
     >    
-    void mergeDependencies(DE target, Connection c) throws EntityException {
+    void mergeDependencies(DE target, Connection c) throws EntityException, SQLException, QueryException {
     	
     	logger().debug("mergeDependencies: target=" + target);
     	
@@ -470,6 +498,7 @@ public class PersistenceManager<
     			String qs = q.generate();
     			logger().debug("qs: " + qs);
     			ps = c.prepareStatement(qs);
+    			logger().debug("ps sh: " + System.identityHashCode(ps));
     			q.traverse(null, createAssignmentVisitor(ps));
     			int ins = ps.executeUpdate();
     			logger().debug("updated: " + ins);

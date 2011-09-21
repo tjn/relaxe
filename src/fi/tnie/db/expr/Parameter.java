@@ -19,9 +19,19 @@ public abstract class Parameter<T extends PrimitiveType<T>, H extends PrimitiveH
 	extends SimpleElement
 	implements ValueExpression, SelectListElement, Token {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3615036325774581065L;
 	private String name;
 	private int type;
 	private ColumnName columnName;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected Parameter() {
+	}
 		
 	public Parameter(Column column) {
 		this.columnName = column.getColumnName();

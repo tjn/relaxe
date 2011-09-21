@@ -22,17 +22,33 @@ public abstract class EnumMetaData<
 > 
 	extends DefaultEntityMetaData<A, R, T, E, H, F, M> {
 		
-	private Class<A> attributeType;
-	private Class<R> referenceType;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8574938084185912154L;
+	
+	private String attributeTypeName;
+	private String referenceTypeName;
+	private transient Class<A> attributeType;
+	private transient Class<R> referenceType;
+	
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected EnumMetaData() {
+	}
 		
 	public EnumMetaData(Class<A> attributeType, Class<R> referenceType) {
 		super();
 		this.attributeType = attributeType;
 		this.referenceType = referenceType;
+		this.attributeTypeName = attributeType.getName();
+		this.referenceTypeName = referenceType.getName();
 	}
 
 	@Override
-	protected void populateAttributes(BaseTable table) {
+	protected void populateAttributes(BaseTable table) {		
 		EnumSet<A> as = EnumSet.allOf(attributeType);
 		EnumMap<A, Column> am = new EnumMap<A, Column>(attributeType);		
 		populateAttributes(as, am, table);
@@ -44,13 +60,11 @@ public abstract class EnumMetaData<
 		EnumMap<R, ForeignKey> rm = new EnumMap<R, ForeignKey>(referenceType);		
 		populateReferences(rs, rm, table);		
 	}
-	
-	@Override
+		
 	public Class<A> getAttributeNameType() {
-		return this.attributeType;
-	}
+		return attributeType;
+	}	
 	
-	@Override
 	public Class<R> getReferenceNameType() {	
 		return this.referenceType;
 	}

@@ -8,6 +8,17 @@ import fi.tnie.db.expr.SchemaElementName;
 
 public class DropView
     extends DropSchemaElement {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6834997046796237907L;
+
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DropView() {
+	}
 
     public DropView(SchemaElementName name) {
         this(name, null);

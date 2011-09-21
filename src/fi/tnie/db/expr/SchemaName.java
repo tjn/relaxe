@@ -5,11 +5,21 @@ package fi.tnie.db.expr;
 
 import fi.tnie.db.meta.Schema;
 
-public class SchemaName
+public final class SchemaName
 	extends Name {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 231673251640312834L;
 	private Identifier catalogName;
-	private Identifier schemaName;	
+	private Identifier schemaName;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	public SchemaName() {
+	}
 		
 	public SchemaName(Schema schema) {
 		this(schema, true);		

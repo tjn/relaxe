@@ -12,6 +12,7 @@ import java.util.List;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityDataObject;
+import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
@@ -32,11 +33,12 @@ public class EntityReader<
 	
 	private List<EntityDataObject<E>> content;
 	
-	public EntityReader(ValueExtractorFactory vef, EntityQuery<A, R, T, E, M> query) {
+	public EntityReader(ValueExtractorFactory vef, EntityQuery<A, R, T, E, M> query) throws EntityException {
 		this(vef, query, new ArrayList<EntityDataObject<E>>());
 	}
 
-	public EntityReader(ValueExtractorFactory vef, EntityQuery<A, R, T, E, M> query, List<EntityDataObject<E>> result) {
+	public EntityReader(ValueExtractorFactory vef, EntityQuery<A, R, T, E, M> query, List<EntityDataObject<E>> result) 
+		throws EntityException {
 		super(vef, query);
 		
 		if (result == null) {

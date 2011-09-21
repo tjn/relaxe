@@ -11,7 +11,17 @@ import fi.tnie.db.expr.VisitContext;
 public class NotPredicate
 	implements Predicate {
 		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2494775816356406506L;
 	private Predicate inner;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected NotPredicate() {
+	}
 	
 	public NotPredicate(Predicate inner) {
 		super();		

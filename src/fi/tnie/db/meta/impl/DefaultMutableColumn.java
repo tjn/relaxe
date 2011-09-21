@@ -19,6 +19,11 @@ import fi.tnie.db.meta.PrimaryKey;
 public class DefaultMutableColumn
 	implements Column, MetaObject
 {	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2813449313924403527L;
+
 	private DefaultMutableTable table;
 	
 	private boolean definitelyNotNullable;

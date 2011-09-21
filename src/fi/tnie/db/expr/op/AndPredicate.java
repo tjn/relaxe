@@ -10,6 +10,17 @@ public class AndPredicate
 	extends BinaryOperator
 	implements Predicate {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -13632007707506532L;
+
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected AndPredicate() {
+	}
+	
 	public AndPredicate(Predicate left, Predicate right) {
 		super(Keyword.AND, left, right);
 	}

@@ -16,6 +16,7 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityQueryTemplateAttribute;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
@@ -23,7 +24,6 @@ import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
 import fi.tnie.db.gen.ent.personal.Person;
-import fi.tnie.db.gen.ent.personal.PersonalFactory;
 import fi.tnie.db.gen.ent.personal.HourReport.Query;
 import fi.tnie.db.query.QueryResult;
 import fi.tnie.db.rpc.ReferenceHolder;
@@ -40,10 +40,10 @@ public class EntityQueryExecutorTest extends TestCase {
 	}
 	
 	private QueryResult<EntityDataObject<HourReport>> execute(HourReport.QueryTemplate template) throws Exception {
-		return execute(template, 0, 0);
+		return execute(template.newQuery(0, 0));
 	}
 	
-	private QueryResult<EntityDataObject<HourReport>> execute(HourReport.QueryTemplate template, long limit, long offset) throws Exception {
+	private QueryResult<EntityDataObject<HourReport>> execute(Query q) throws Exception {
 		Implementation imp = new PGImplementation();
 		
 		Properties cfg = new Properties();
@@ -66,7 +66,7 @@ public class EntityQueryExecutorTest extends TestCase {
 			> qe = createExecutor(HourReport.TYPE.getMetaData(), imp);
 			
 			
-			Query q = template.newQuery(limit, offset);			
+			// Query q = template.newQuery(limit, offset);			
 			 
 			QueryResult<EntityDataObject<HourReport>> qr = qe.execute(q, c);
 			assertNotNull(qr);
@@ -227,11 +227,16 @@ public class EntityQueryExecutorTest extends TestCase {
 	}
 	
 	public void testExecuteLimits() throws Exception {
-		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate();		
-		hrq.addAllAttributes();
-												
-		QueryResult<EntityDataObject<HourReport>> qr = execute(hrq, 3, 3);
+		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate();
 		
+		
+		hrq.addAllAttributes();
+		
+		EntityQueryTemplateAttribute rd = hrq.get(HourReport.Attribute.REPORT_DATE);		
+		
+		Query q3 = hrq.newQuery(3, 3);								
+		
+		QueryResult<EntityDataObject<HourReport>> qr = execute(q3);		
 		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
 		
 		List<? extends EntityDataObject<HourReport>> el = qr.getContent();
@@ -239,6 +244,17 @@ public class EntityQueryExecutorTest extends TestCase {
 		
 		logger().debug("testExecuteQuery: size=" + el.size());		
 		assertTrue(el.size() <= 3);
+		
+		Query q36 = q3.getTemplate().newQuery(3, 6);
+		qr = execute(q36);
+		
+		el = qr.getContent();
+		assertNotNull(el);
+		
+		logger().debug("testExecuteQuery: size=" + el.size());		
+		assertTrue(el.size() <= 3);
+		
+		logger().debug("testExecuteLimits: el=" + el);
 	}	
 	
 }

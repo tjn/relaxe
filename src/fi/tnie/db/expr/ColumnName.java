@@ -25,6 +25,10 @@ package fi.tnie.db.expr;
 public class ColumnName 
 	implements Identifier {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6608562374808636631L;
 	private Identifier name;
 	
 	/**

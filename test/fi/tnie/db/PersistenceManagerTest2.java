@@ -28,6 +28,7 @@ import fi.tnie.db.gen.ent.personal.Person.Reference;
 import fi.tnie.db.gen.ent.personal.Person.Type;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.rpc.DateHolder;
+import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.Interval;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
@@ -40,10 +41,15 @@ public class PersistenceManagerTest2 extends TestCase  {
 	
 	@Override
 	protected void setUp() throws Exception {
-		String url = "jdbc:postgresql:test";
-		this.connection = DriverManager.getConnection(url, "test", "password");
-		this.connection.setAutoCommit(false);
+		this.connection = createConnection();		
 		this.catalog = LiteralCatalog.getInstance();
+	}
+	
+	public Connection createConnection() throws SQLException {
+		String url = "jdbc:postgresql:test";
+		Connection c = DriverManager.getConnection(url, "test", "password");
+		c.setAutoCommit(false);
+		return c;
 	}
 	
 	@Override
@@ -201,7 +207,7 @@ public class PersistenceManagerTest2 extends TestCase  {
 	    c.commit();        
     }
     
-    public void testMerge() throws EntityException, SQLException {
+    public void testMerge() throws Exception {
         Connection c = getConnection();        
         assertFalse(c.getAutoCommit());                        
         PGImplementation impl = new PGImplementation();
@@ -232,7 +238,19 @@ public class PersistenceManagerTest2 extends TestCase  {
         PersistenceManager<?, ?, ?, ?, ?, ?, ?> hm = create(hr, impl);
         
         hm.merge(c);
-        c.commit();    	
+        c.commit();
+        
+        hm.merge(c);
+        c.commit();
+        
+        hr.id().setHolder(IntegerHolder.NULL_HOLDER);        
+    	hr.setStartedAt(new Date());
+    	hr.setFinishedAt(new Date());
+    	hm.merge(c);
+        c.commit();
+        
+        
+        c.close();
     }
 
 	private LiteralCatalog getCatalog() {		
@@ -256,5 +274,7 @@ public class PersistenceManagerTest2 extends TestCase  {
 		PersistenceManager<A, R, T, E, H, F, M> pm = new PersistenceManager<A, R, T, E, H, F, M>(e, impl);
 		return pm;
 	}
+	
+	
 
 }

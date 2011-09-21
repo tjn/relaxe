@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.meta.impl;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -12,7 +13,12 @@ import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.SchemaElementMap;
 
 public class EmptyForeignKeyMap
-	implements SchemaElementMap<ForeignKey> {
+	implements SchemaElementMap<ForeignKey>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1716963444087359039L;
 
 	@Override
 	public ForeignKey get(Identifier name) {

@@ -13,7 +13,17 @@ public abstract class DefaultMutableTable
 	extends DefaultSchemaElement
 	implements Table {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4212265255181185118L;
 	private DefaultColumnMap columnMap;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DefaultMutableTable() {
+	}
 			
 	DefaultMutableTable(DefaultMutableSchema s, Identifier name) {
 		super(s, name);		

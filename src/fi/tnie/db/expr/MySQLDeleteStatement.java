@@ -6,8 +6,16 @@ package fi.tnie.db.expr;
 public class MySQLDeleteStatement
 	extends DeleteStatement {
 
-//	private TableReference target;
-//	private Where where;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2492700739356278591L;
+
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected MySQLDeleteStatement() {
+	}
 	
 	public MySQLDeleteStatement(TableReference tref, Predicate p) {
 		super(tref, p);		

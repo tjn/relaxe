@@ -6,7 +6,11 @@ package fi.tnie.db.expr.ddl;
 public class Int
     extends NumericType {
     
-    private SQLType.Name name;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2776206428444898457L;
+	private SQLType.Name name;
     
     enum Type {
         TINY,

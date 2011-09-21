@@ -23,6 +23,10 @@ import fi.tnie.db.meta.Column;
 public class Default
 	implements ValuesListElement {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7419094016483767270L;
 	private Column column;
 	
 	/**

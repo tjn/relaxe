@@ -12,12 +12,17 @@ public class ColumnReference
 	extends ColumnExpr 
 	implements ValueExpression {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1430117431795245443L;
+	
 	private Column column;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected ColumnReference() {
+	public ColumnReference() {
 	}
 		
 	public ColumnReference(AbstractTableReference table, Column column) {

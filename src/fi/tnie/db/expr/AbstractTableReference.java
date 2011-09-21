@@ -9,6 +9,11 @@ public abstract class AbstractTableReference
 	extends CompoundElement
 	implements TableRefList {
 								
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -712700693670065896L;
+
 	public AbstractTableReference() {
 		super();
 	}

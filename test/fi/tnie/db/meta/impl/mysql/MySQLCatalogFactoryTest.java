@@ -16,6 +16,7 @@ import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.mysql.MySQLCatalogFactory;
 import fi.tnie.db.env.mysql.MySQLImplementation;
 import fi.tnie.db.meta.DBMetaTestCase;
+import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.impl.DefaultCatalogMap;
 import fi.tnie.db.meta.impl.DefaultMutableCatalog;
 import fi.tnie.db.meta.impl.DefaultMutableSchema;
@@ -132,17 +133,18 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase {
     
     public void testCreateCatalog() 
         throws Exception {                
-    	Implementation env = getContext().getImplementation();
+    	Implementation impl = getContext().getImplementation();
         DefaultCatalogFactory factory = factory();                
         Connection c = getConnection();        
         String current = c.getCatalog();
         DatabaseMetaData meta = meta();
+        SerializableEnvironment env = impl.environment();
                        
         final DefaultMutableCatalog cat = new DefaultMutableCatalog(env, current);
         final DefaultCatalogMap cm = new DefaultCatalogMap(env);
         cm.add(cat);
                     
-        DefaultMutableSchema schema = factory.createSchema(cat, env.createIdentifier(SCHEMA_PUBLIC), meta);
+        DefaultMutableSchema schema = factory.createSchema(cat, impl.createIdentifier(SCHEMA_PUBLIC), meta);
         assertNotNull(schema);
         
         factory.prepare(meta);
@@ -155,7 +157,7 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase {
     
     @Override
 	public MySQLCatalogFactory factory() {        
-        return new MySQLCatalogFactory(new MySQLImplementation());        
+        return new MySQLCatalogFactory(new MySQLImplementation().environment());        
     }
 
 }

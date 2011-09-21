@@ -29,6 +29,7 @@ import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
 import fi.tnie.db.query.QueryException;
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.util.ResultSetWriter;
 import fi.tnie.db.env.util.SimpleQueryProcessor;
 import fi.tnie.db.env.util.StringListReader;
@@ -507,9 +508,11 @@ public abstract class JDBCTestCase
 	
     public void truncate(Catalog cat) throws QueryException, SQLException {        
         Connection c = getConnection();     
+        
+        
         List<Statement> statements = truncation(cat);
                 
-        StatementExecutor e = new StatementExecutor();
+        StatementExecutor e = new StatementExecutor(getImplementation());
         
         QueryProcessor qp = createQueryProcessor();
         
@@ -544,6 +547,8 @@ public abstract class JDBCTestCase
         throws QueryException, SQLException {
         return null;
     }
+    
+    protected abstract Implementation getImplementation();
 	
 }
 

@@ -3,12 +3,16 @@
  */
 package fi.tnie.db.ent;
 
+import java.io.Serializable;
+
 public class EntityException
-	extends Exception {
+	extends Exception
+	implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3377579961567817185L;
+	
 	public EntityException() {
 		super();
 	}

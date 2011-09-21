@@ -9,6 +9,7 @@ import fi.tnie.db.ValueAssignerFactory;
 import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.meta.Environment;
+import fi.tnie.db.meta.SerializableEnvironment;
 
 public interface Implementation
 	extends Environment {
@@ -28,6 +29,8 @@ public interface Implementation
 	
 	String createJdbcUrl(String host, String database);
 	String createJdbcUrl(String host, int port, String database);
+	
+	SerializableEnvironment environment();
 	
 	Driver getDriver();		
 }

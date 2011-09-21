@@ -15,12 +15,22 @@ public class DefaultPrimaryKey
 	extends DefaultConstraint
 	implements PrimaryKey {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5686752647445943512L;
 	private DefaultMutableBaseTable table;
 	private DefaultColumnMap columnMap = null; 
 
 	@Override
 	public BaseTable getTable() {
 		return this.table;
+	}
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DefaultPrimaryKey() {
 	}
 		
 	public DefaultPrimaryKey(DefaultMutableBaseTable table, Identifier name) {

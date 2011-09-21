@@ -7,4 +7,9 @@ public abstract class Name
 	extends CompoundElement
 	implements Element {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2845794183963688763L;
+
 }

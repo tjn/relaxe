@@ -3,9 +3,18 @@
  */
 package fi.tnie.db.ent;
 
-public class CyclicTemplateException extends EntityException {
+import java.io.Serializable;
 
-	private EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> template; 
+public class CyclicTemplateException extends EntityException
+	implements Serializable {
+
+	private EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> template;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected CyclicTemplateException() {
+	}
 	
 	public CyclicTemplateException(EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> template) {
 		setTemplate(template);

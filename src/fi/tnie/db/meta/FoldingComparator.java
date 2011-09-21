@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.meta;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import fi.tnie.db.expr.Identifier;
@@ -14,14 +15,15 @@ import fi.tnie.db.expr.Identifier;
  */
 
 public class FoldingComparator
-	implements Comparator<Identifier> {
+	implements Comparator<Identifier>, Serializable
+	{
 		
-	private NullComparator<String> nc = new NullComparator<String>() {
-		@Override
-		public int compareNotNull(String o1, String o2) {			
-			return o1.compareTo(o2);
-		}
-	};
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6545832196162079657L;
+	
+	private static final NullComparator.String nc = new NullComparator.String();
 
 	public FoldingComparator() {
 		super();

@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.ent;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,14 +21,15 @@ public abstract class DefaultQueryTemplate<
 	M extends EntityMetaData<A, R, T, E, H, F, M>,
 	Q extends EntityQueryTemplate<A,R,T,E,H,F,M,Q>
 >
-	implements EntityQueryTemplate<A, R, T, E, H, F, M, Q>{
+	implements EntityQueryTemplate<A, R, T, E, H, F, M, Q>, Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5086377201591899922L;
+	
 	private Map<A, EntityQueryTemplateAttribute> attributeMap;
-	private Map<EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?>, EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?>> templateMap;
+	private Map<R, EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?>> templateMap;
 	
 	 
 	
@@ -41,7 +43,7 @@ public abstract class DefaultQueryTemplate<
 
 	@Override
 	public EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> getTemplate(EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?> k) {
-		return getTemplateMap().get(k);
+		return getTemplateMap().get(k.name());
 	}
 
 	@Override
@@ -61,7 +63,7 @@ public abstract class DefaultQueryTemplate<
 		VQ extends EntityQueryTemplate<VA, VR, VT, V, RH, VF, D, VQ>
 	> 
 	void setTemplate(K k, VQ newTemplate) {
-		getTemplateMap().put(k, newTemplate);
+		getTemplateMap().put(k.name(), newTemplate);
 	}
 	
 	private Map<A, EntityQueryTemplateAttribute> getAttributeMap() {
@@ -73,14 +75,12 @@ public abstract class DefaultQueryTemplate<
 	}
 		
 	private Map<
-		EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?>, 
+		R, 
 		EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?>
 	> 
 	getTemplateMap() {
 		if (templateMap == null) {
-			templateMap = new HashMap<
-				EntityKey<R,T,E,M,?,?,?,?,?,?,?,?>, 
-				EntityQueryTemplate<?,?,?,?,?,?,?,?>
+			templateMap = new HashMap<R, EntityQueryTemplate<?,?,?,?,?,?,?,?>
 			>();			
 		}
 

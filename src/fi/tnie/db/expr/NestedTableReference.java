@@ -7,7 +7,17 @@ package fi.tnie.db.expr;
 public class NestedTableReference
 	extends NonJoinedTable {
 
-	private SelectQuery query;			
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8816662022129528101L;
+	private SelectQuery query;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected NestedTableReference() {
+	}
 			
 	public NestedTableReference(SelectQuery query) {
 		super();

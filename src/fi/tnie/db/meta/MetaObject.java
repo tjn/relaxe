@@ -3,9 +3,12 @@
  */
 package fi.tnie.db.meta;
 
+import java.io.Serializable;
+
 import fi.tnie.db.expr.Identifier;
 
-public interface MetaObject {
+public interface MetaObject
+	extends Serializable {
 	public Identifier getUnqualifiedName();
 	
 }

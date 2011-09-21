@@ -25,6 +25,8 @@ public interface {{table-interface}}
     > {{reference-list}} {
     
 	class Type extends ReferenceType<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData> {
+		private static final long serialVersionUID = 1L;
+		
 		@Override
 		public MetaData getMetaData() {		
 			return {{table-interface}}Impl.{{table-interface}}MetaData.getInstance();
@@ -76,7 +78,8 @@ public interface {{table-interface}}
 		{{implemented-has-key-list}}	
 	{		
 		@Override
-		public Builder newBuilder(TableReference tableRef, EntityBuildContext ctx);
+		public Builder newBuilder(TableReference tableRef, EntityBuildContext ctx)
+			throws fi.tnie.db.ent.EntityException;
 	}
 	
 	interface Builder extends EntityBuilder<{{table-interface}}> {
@@ -128,6 +131,12 @@ public interface {{table-interface}}
 		extends AbstractEntityKey<R, T, E, S, {{table-interface}}.Type, {{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Key<R, T, E, S>> {
 
 		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		protected Key() {	
+		}
 
 		protected Key(S meta, R name) {
 			super(meta, name);

@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.meta.impl;
 
-import java.util.Date;
+import java.io.Serializable;
 
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.BaseTable;
@@ -11,8 +11,14 @@ import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.SchemaElementMap;
 
-public class DefaultMutableBaseTable extends DefaultMutableTable 
-	implements BaseTable {
+public class DefaultMutableBaseTable 
+	extends DefaultMutableTable 
+	implements BaseTable, Serializable {
+		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2068511619457910893L;
 	
 	private DefaultSchemaElementMap<ForeignKey> foreignKeys;
 	private DefaultSchemaElementMap<ForeignKey> referencingKeys;	
@@ -20,8 +26,13 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 	
 	private static EmptyForeignKeyMap emptyForeignKeyMap = new EmptyForeignKeyMap();
 	
-	private Date instantiated = new Date();
-//	private static DateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
+//	private Date instantiated = new Date();
+
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DefaultMutableBaseTable() {
+	}
 	
 	public DefaultMutableBaseTable(DefaultMutableSchema s, Identifier name) {
 		super(s, name);
@@ -36,8 +47,7 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 		
 		getForeignKeys().add(k);
 		getMutableSchema().add(k);
-	}
-	
+	}	
 	
 	void ref(DefaultForeignKey k) {
 		if (k.getReferenced() != this) {
@@ -68,9 +78,6 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 		return this.primaryKey;
 	}
 
-	
-
-
 	private DefaultSchemaElementMap<ForeignKey> getForeignKeys() {
 		if (foreignKeys == null) {
 						
@@ -88,15 +95,6 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 		return referencingKeys;
 	}
 
-//	@Override
-//	public Map<String, ForeignKey> foreignKeys() {
-//		if (foreignKeys == null) {
-//			return Collections.emptyMap();
-//		}
-//		
-//		return Collections.unmodifiableMap(foreignKeys);
-//	}
-
 	@Override
 	public String getTableType() {
 		return BASE_TABLE;
@@ -109,13 +107,13 @@ public class DefaultMutableBaseTable extends DefaultMutableTable
 	
 	@Override
 	public String toString() {		
-		return "base table " + getQualifiedName() + "@" + System.identityHashCode(this) + "[" + format(this.instantiated) + "]";
+		return "base table " + getQualifiedName() + "@" + System.identityHashCode(this) + ": schema=" + getSchema() + ": cat=" + getSchema().getCatalog();
 	}
 	
-	private String format(Date d) {
-//	    return timestampFormat.format(d);
-		return d == null ? "" : d.toString();
-	}
+//	private String format(Date d) {
+////	    return timestampFormat.format(d);
+//		return d == null ? "" : d.toString();
+//	}
 
 	@Override
 	public SchemaElementMap<ForeignKey> foreignKeys() {

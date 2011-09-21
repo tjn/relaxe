@@ -12,9 +12,19 @@ import fi.tnie.db.expr.VisitContext;
 public abstract class DropSchemaElement 
     extends Statement
 {
-    private Keyword elementType;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4367840517906725303L;
+	private Keyword elementType;
     private Keyword cascade;
     private SchemaElementName name;
+    
+    /**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DropSchemaElement() {
+	}
     
     protected DropSchemaElement(Name statementName, Keyword elementType, SchemaElementName name, Boolean cascade) {
         super(statementName);

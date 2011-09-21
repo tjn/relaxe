@@ -7,6 +7,17 @@ package fi.tnie.db.expr;
 public class OrdinaryIdentifier
 	extends AbstractIdentifier
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8379767503417798479L;
+
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected OrdinaryIdentifier() {
+	}
+	
 	public OrdinaryIdentifier(String name) 
 		throws IllegalIdentifierException {
 		super(name);

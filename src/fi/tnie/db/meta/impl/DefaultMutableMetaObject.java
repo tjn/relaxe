@@ -3,12 +3,18 @@
  */
 package fi.tnie.db.meta.impl;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class DefaultMutableMetaObject {
+public abstract class DefaultMutableMetaObject
+	implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7461279447486104267L;
 	private String name;
 			
 	public DefaultMutableMetaObject() {

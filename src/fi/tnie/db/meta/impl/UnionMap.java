@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.meta.impl;
 
+import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
 import java.util.Collection;
@@ -14,10 +15,20 @@ import fi.tnie.db.meta.ElementMap;
 import fi.tnie.db.meta.SchemaElement;
 
 public class UnionMap<E extends SchemaElement>
-	implements ElementMap<E> 
+	implements ElementMap<E>, Serializable 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -522365637415786440L;
 	private ElementMap<E> left;
 	private ElementMap<E> right;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected UnionMap() {
+	}
 	
 	public UnionMap(ElementMap<E> left, ElementMap<E> right) {		
 		this.left = left;

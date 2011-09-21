@@ -16,13 +16,16 @@ public interface EntityQuery<
 	E extends Entity<A, R, T, E, ?, ?, M>,
 	M extends EntityMetaData<A, R, T, E, ?, ?, M>
 >
-	extends Request
+	extends Request, QueryExpressionSource	
 {
 	long getOffset();
 	long getLimit();
 
-	public DefaultTableExpression getTableExpression();
-	public QueryExpression getQueryExpression();
+	DefaultTableExpression getTableExpression()
+		throws EntityException;
+	
+	QueryExpression getQueryExpression()
+		throws EntityException;
 
 	/**
 	 * result item meta-data
@@ -32,14 +35,20 @@ public interface EntityQuery<
 	
 	TableReference getTableRef();
 	
+	
 	/**
 	 * 
 	 * @param column
 	 * @return
 	 */
 	
-	public TableReference getOrigin(int column);
-	public EntityMetaData<?, ?, ?, ?, ?, ?, ?> getMetaData(TableReference tr);
-	public TableReference getReferenced(TableReference referencing, ForeignKey fk);
+	public TableReference getOrigin(int column)
+		throws EntityException;
+	
+	public EntityMetaData<?, ?, ?, ?, ?, ?, ?> getMetaData(TableReference tr)
+		throws EntityException;
+	
+	public TableReference getReferenced(TableReference referencing, ForeignKey fk)
+		throws EntityException;
 	
 }

@@ -12,7 +12,13 @@ import fi.tnie.db.types.PrimitiveType;
 public abstract class SQLType
     extends DataTypeDefinition {
 
-    @Override
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8800518543021419377L;
+
+
+	@Override
     public Element getName() {
         return getSQLTypeName();
     }

@@ -16,6 +16,17 @@ public class GroupExpression
 	extends Parenthesis<ValueExpression>
 	implements ValueExpression
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2831127865632365200L;
+
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected GroupExpression() {
+	}
+	
 	public GroupExpression(ValueExpression inner) {
 		super(inner);		
 	}

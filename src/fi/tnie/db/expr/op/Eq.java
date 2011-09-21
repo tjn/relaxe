@@ -10,7 +10,18 @@ import fi.tnie.db.expr.ValueExpression;
 public class Eq
 	extends ValueOperator
 	implements Predicate {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7061494891104384567L;
 
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected Eq() {
+	}
+	
 	public Eq(ValueExpression left, ValueExpression right) {
 		super(Symbol.EQUALS, left, right);
 	}		

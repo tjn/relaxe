@@ -10,6 +10,10 @@ import java.util.Map;
 public abstract class NonJoinedTable
 	extends AbstractTableReference {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5713534855741377091L;
 	private CorrelationClause correlationClause;
 	private SelectListElement all;
 
@@ -28,19 +32,31 @@ public abstract class NonJoinedTable
 		return getCorrelationClause().getNames(); 		
 	}
 
-	public class CorrelationClause
+	public static class CorrelationClause
 		extends CompoundElement
 		implements Clause {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3876482034646951163L;
 		private ElementList<ColumnName> names;
+		private NonJoinedTable nonJoinedTable;
 		
 		/**
 		 * 
 		 */		
 		private Map<ColumnName, ColumnName> columnNameMap;
+		
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		public CorrelationClause() {	
+		}
 			
-		private CorrelationClause() {
+		public CorrelationClause(NonJoinedTable nonJoinedTable) {
 			super();
+			this.nonJoinedTable = nonJoinedTable;
 		}
 		
 		boolean altersColumnNames() {
@@ -57,7 +73,7 @@ public abstract class NonJoinedTable
 			
 //			traverseContent(vc, v);
 			
-			Identifier cn = getCorrelationName(v.getContext());
+			Identifier cn = nonJoinedTable.getCorrelationName(v.getContext());
 			cn.traverse(vc, v);
 
 			
@@ -84,7 +100,7 @@ public abstract class NonJoinedTable
 			}
 			
 			ElementList<SelectListElement> elems = new ElementList<SelectListElement>();				
-			addAll(elems);
+			nonJoinedTable.addAll(elems);
 			
 			List<ColumnName> nl = this.names.getContent();			
 			
@@ -113,7 +129,7 @@ public abstract class NonJoinedTable
 
 	public CorrelationClause getCorrelationClause() {
 		if (correlationClause == null) {
-			correlationClause = new CorrelationClause();			
+			correlationClause = new CorrelationClause(this);			
 		}
 
 		return correlationClause;		

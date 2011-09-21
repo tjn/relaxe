@@ -14,7 +14,11 @@ import fi.tnie.db.expr.VisitContext;
 public class DefaultDefinition
     extends CompoundElement {
 
-    private Element value; 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8408650449581983111L;
+	private Element value; 
     
 //    TODO: DefaultDefinition(Literal) {
 //    }

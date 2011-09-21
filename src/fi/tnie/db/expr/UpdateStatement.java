@@ -6,9 +6,19 @@ package fi.tnie.db.expr;
 public class UpdateStatement
 	extends Statement {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8042322606478948245L;
 	private TableReference target;			
 	private ElementList<Assignment> assignmentClause;
 	private Where where;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected UpdateStatement() {
+	}
 				
 	public UpdateStatement(TableReference tref, ElementList<Assignment> assignmentClause, Predicate p) {
 		super(Name.UPDATE);

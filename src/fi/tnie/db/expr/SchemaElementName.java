@@ -11,8 +11,18 @@ import fi.tnie.db.meta.SchemaElement;
 public final class SchemaElementName
 	extends Name {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5960754158999967085L;
 	private SchemaName qualifier;
 	private Identifier name;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected SchemaElementName() {
+	}
 	
 	public SchemaElementName(SchemaElement e) {
 		this(new SchemaName(e.getSchema()), e.getUnqualifiedName());

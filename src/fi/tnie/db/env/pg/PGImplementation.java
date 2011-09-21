@@ -24,6 +24,7 @@ import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.InsertStatement;
 import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.expr.ddl.ColumnDefinition;
+import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.impl.pg.PGEnvironment;
 import fi.tnie.db.types.ReferenceType;
 
@@ -147,6 +148,11 @@ public class PGImplementation
 		}
 		
 		return "jdbc:postgresql://" + host + ":" + port + "/" + database;				
+	}
+	
+	@Override
+	public SerializableEnvironment environment() {
+		return this.environment;		
 	}
 		
 //	public java.sql.Driver getDriver() {		

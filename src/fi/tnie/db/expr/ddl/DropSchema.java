@@ -12,8 +12,18 @@ import fi.tnie.db.expr.VisitContext;
 public class DropSchema
 	extends Statement {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8328836316629524899L;
 	private Identifier schemaName;
 	private Keyword cascade;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DropSchema() {
+	}
 				
 	public DropSchema(Identifier schemaName) {
 	    this(schemaName, null);

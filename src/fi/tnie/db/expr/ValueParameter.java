@@ -13,7 +13,17 @@ import fi.tnie.db.types.PrimitiveType;
 public class ValueParameter<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T>>
 	extends Parameter<T, H> {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8609263476546435725L;
 	private H value;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected ValueParameter() {
+	}
 	
 	public ValueParameter(Column column, H value) {
 		super(column);

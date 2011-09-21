@@ -9,6 +9,11 @@ import fi.tnie.db.expr.Predicate;
 public class DefaultTemplateAttribute
 	implements EntityQueryTemplateAttribute {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7808021636368072149L;
+	
 	public static EntityQueryTemplateAttribute instance;
 	
 	public static EntityQueryTemplateAttribute getInstance() {

@@ -1729,7 +1729,15 @@ public class SourceGenerator {
 		buf.append(".Key<");
 		buf.append(kta);
 		buf.append("> {\n");
-		buf.append("private static final long serialVersionUID = 1L;\n");		
+		buf.append("private static final long serialVersionUID = 1L;\n");
+
+		// no-arg constructor
+		buf.append("private ");		
+		buf.append(n);		
+		buf.append("() {\n");		
+		buf.append("}\n\n");
+
+		
 		buf.append("private ");		
 		buf.append(n);
 		buf.append("(");

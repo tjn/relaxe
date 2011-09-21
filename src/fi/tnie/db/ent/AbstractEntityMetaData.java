@@ -17,4 +17,9 @@ public abstract class AbstractEntityMetaData<
 >
 	implements EntityMetaData<A, R, T, E, H, F, M>
 {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6871502348354015575L;
 }

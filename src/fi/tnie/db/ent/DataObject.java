@@ -18,7 +18,9 @@ public interface DataObject
 	
 	public interface MetaData {		
 		public int getColumnCount();
-		public QueryExpression getQuery();
+		public QueryExpression getQuery()
+			throws EntityException;
+		
 		public ColumnExpr column(int index);
 		public ValueExpression expr(int index);
 	}

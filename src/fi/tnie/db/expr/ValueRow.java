@@ -6,6 +6,11 @@ package fi.tnie.db.expr;
 public class ValueRow
 	extends ElementList<ValuesListElement> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4622202673145576700L;
+
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {
 		Symbol.PAREN_LEFT.traverse(vc, v);

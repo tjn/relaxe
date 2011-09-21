@@ -17,6 +17,10 @@ public class DefaultForeignKey
 	extends DefaultConstraint
 	implements ForeignKey {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1940589015397468329L;
 	private LinkedHashMap<DefaultMutableColumn, DefaultMutableColumn> columnMap;
 	private Map<Column, Column> columnMapView;
 		
@@ -36,6 +40,13 @@ public class DefaultForeignKey
 			this.referencing = referencing;
 			this.referenced = referenced;
 		}		
+	}
+	
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DefaultForeignKey() {
 	}
 
 	public DefaultForeignKey(DefaultMutableSchema schema, Identifier name, DefaultMutableColumn referencing, DefaultMutableColumn referenced) {		
@@ -86,11 +97,11 @@ public class DefaultForeignKey
 			p.referenced.add(this);
 		}
 		
-		this.columnMapView = Collections.unmodifiableMap(new LinkedHashMap<Column, Column>(cm));
+		this.columnMapView = new LinkedHashMap<Column, Column>(cm);
 	}
 	
 	public Map<Column, Column> columns() {
-		return (columnMap == null) ? null : this.columnMapView;						
+		return (columnMap == null) ? null : Collections.unmodifiableMap(this.columnMapView);						
 	}
 	
 	

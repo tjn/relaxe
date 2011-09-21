@@ -9,6 +9,17 @@ import fi.tnie.db.meta.Constraint;
 public abstract class DefaultConstraint
 	extends DefaultSchemaElement
 	implements Constraint {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1698615492918408242L;
+
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DefaultConstraint() {
+	}
 
 	DefaultConstraint(DefaultMutableSchema schema, Identifier name) {
 		super(schema, name);

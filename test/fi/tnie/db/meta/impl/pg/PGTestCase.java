@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import fi.tnie.db.env.CatalogFactory;
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
@@ -27,6 +28,8 @@ public abstract class PGTestCase
 	public static final String SCHEMA_PUBLIC = "public";
 	public static final String TABLE_CONTINENT = "continent";
 	public static final String TABLE_COUNTRY = "country";
+	
+	private Implementation implementation;
 
 	public PGTestCase() {
 		super("org.postgresql.Driver", "tester", "password", "dbmeta_test");	
@@ -144,5 +147,15 @@ public abstract class PGTestCase
     public void createDatabase()
         throws IOException, InterruptedException {        
         pg().createDatabase();        
-    }	
+    }
+
+    @Override
+    protected Implementation getImplementation() {
+    	if (implementation == null) {
+			implementation = new PGImplementation();			
+		}
+
+		return implementation;
+    }
+    
 }

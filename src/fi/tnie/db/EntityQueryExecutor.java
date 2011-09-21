@@ -4,6 +4,7 @@
 package fi.tnie.db;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityDataObject;
+import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
@@ -47,23 +49,24 @@ public class EntityQueryExecutor<
 
 
 	public QueryResult<EntityDataObject<E>> execute(EntityQuery<A, R, T, E, M> query, Connection c) 
-		throws SQLException, QueryException {
+		throws SQLException, QueryException, EntityException {
 		
-		QueryExpression qe = query.getQueryExpression();
-		
-		ValueExtractorFactory vef = getImplementation().getValueExtractorFactory();
+		Implementation imp = getImplementation();
+		QueryExpression qe = query.getQueryExpression();		
+		ValueExtractorFactory vef = imp.getValueExtractorFactory();
 		
 		List<EntityDataObject<E>> content = new ArrayList<EntityDataObject<E>>();		
 		EntityReader<?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M>(vef, query, content);
-		StatementExecutor sx = new StatementExecutor();
+		StatementExecutor sx = new StatementExecutor(imp);
 	
 		if (logger().isDebugEnabled()) {
 			logger().debug("execute: query=" + qe.generate());
 		}
 		
 		
-		Query q = new Query(qe);			
-		QueryTime qt = sx.execute(qe, c, eb);							
+		Query q = new Query(qe);
+		
+		QueryTime qt = sx.execute(qe, c, eb);
 		QueryResult<EntityDataObject<E>> result = new QueryResult<EntityDataObject<E>>(q, content, qt);		
 		return result;
 	}

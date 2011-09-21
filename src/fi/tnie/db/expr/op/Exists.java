@@ -15,7 +15,17 @@ public class Exists
 	extends CompoundElement
 	implements Predicate {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7282243674920197042L;
 	private SelectQuery query;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected Exists() {
+	}
 
 	public Exists(SelectQuery query) {
 		super();

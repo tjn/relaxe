@@ -11,9 +11,19 @@ import fi.tnie.db.expr.VisitContext;
 
 public class BinaryOperator implements Expression {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7598734497611789621L;
 	private Token symbol;	
 	private Expression left;
 	private Expression right;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected BinaryOperator() {
+	}
 	
 	public BinaryOperator(Token symbol, Expression left, Expression right) {
 		super();

@@ -9,15 +9,17 @@ package fi.tnie.db;
 import java.util.List;
 
 import fi.tnie.db.ent.DataObject;
+import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.MutableDataObject;
-import fi.tnie.db.expr.QueryExpression;
+import fi.tnie.db.ent.QueryExpressionSource;
 
 public class DataObjectReader
 	extends DataObjectProcessor<MutableDataObject> {
 	
 	private List<DataObject> content;		
 
-	public DataObjectReader(ValueExtractorFactory vef, QueryExpression qo, List<DataObject> content) {
+	public DataObjectReader(ValueExtractorFactory vef, QueryExpressionSource qo, List<DataObject> content) 
+		throws EntityException {
 		super(vef, qo);
 		
 		if (content == null) {

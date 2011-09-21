@@ -6,7 +6,17 @@ package fi.tnie.db.expr;
 public abstract class SimpleClause
 	extends AbstractClause {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3193883178079657128L;
 	private Element content;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected SimpleClause() {
+	}
 
 	public SimpleClause(Keyword clause, Element clauseContent) {
 		super(clause);

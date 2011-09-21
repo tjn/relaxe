@@ -5,6 +5,11 @@ package fi.tnie.db.expr;
 
 public abstract class AbstractClause extends CompoundElement {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5454554593152361247L;
+	
 	private Keyword clause;
 	
 	/**

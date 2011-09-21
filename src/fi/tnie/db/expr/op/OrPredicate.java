@@ -10,6 +10,17 @@ public class OrPredicate
 	extends BinaryOperator
 	implements Predicate {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1087029444548580436L;
+
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected OrPredicate() {
+	}
+	
 	public OrPredicate(Predicate left, Predicate right) {
 		super(Keyword.OR, left, right);
 	}

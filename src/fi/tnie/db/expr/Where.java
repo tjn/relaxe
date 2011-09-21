@@ -7,6 +7,10 @@ import fi.tnie.db.expr.op.AndPredicate;
 
 public class Where extends AbstractClause {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3968959510502629791L;
 	private Predicate searchCondition;
 	
 	public Where() {

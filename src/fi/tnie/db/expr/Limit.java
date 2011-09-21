@@ -7,6 +7,11 @@ public class Limit
 	extends SimpleClause {
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -442124021423302569L;
+
+	/**
 	 * LIMIT ALL -clause
 	 */
 	public Limit() {

@@ -34,7 +34,8 @@ public abstract class DefaultEntityBuilder<
 	private List<AttributeWriter<A, T, E, ?, ?, ?, ?>> attributeWriterList = 
 		new ArrayList<AttributeWriter<A, T, E,?,?,?,?>>();
 
-	public DefaultEntityBuilder(TableReference tableRef, EntityBuildContext ctx) {
+	public DefaultEntityBuilder(TableReference tableRef, EntityBuildContext ctx) 
+		throws EntityException {
 		super();
 		this.tableRef = tableRef;
 		
