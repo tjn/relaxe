@@ -262,34 +262,52 @@ public class PersistenceManager<
 	    		assignments.add(new Assignment(col.getColumnName(), vp));
     		}
     	}
-
-        for (R r : meta.relationships()) {
-        	// TODO: Should order matter here? 
-        	// Foreign keys consisting of the columns which are 
-        	// subset of some other foreign key should be treated specially, no?        	
-        	
-            ForeignKey fk = meta.getForeignKey(r);
-            Entity<?,?,?,?,?,?,?> ref = pe.getRef(r);
-
-            if (ref == null) {
-                for (Column c : fk.columns().keySet()) {
-                    assignments.add(new Assignment(c.getColumnName(), null));
-                }
-            }
-            else {
-                for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
-                    Column fc = ce.getValue();
-                    PrimitiveHolder<?, ?> ph = ref.get(fc);
-                    
-                    Column column = ce.getKey();
-                    
-            		if (ph != null) {    		    		    		
-        	    		ValueParameter<?, ?> vp = createParameter(column, ph);    		
-        	    		assignments.add(new Assignment(column.getColumnName(), vp));
-            		}                    
-                }
-            }
-        }
+    	
+    	Map<Column, Assignment> am = new LinkedHashMap<Column, Assignment>();
+    	
+    	for (R r : meta.relationships()) {
+    		
+    		if (!pe.has(r)) {
+    			logger().debug("createUpdateStatement: no ref=" + r);
+    		}
+    		else {
+		        ForeignKey fk = meta.getForeignKey(r);
+		        Entity<?,?,?,?,?,?,?> ref = pe.getRef(r);
+		
+		        if (ref == null) {
+		            for (Column c : fk.columns().keySet()) {
+		            	if (!am.containsKey(c)) {
+		            		am.put(c, null);
+		            	}
+		            }
+		        }
+		        else {
+		            for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
+		                Column fc = ce.getValue();
+		                PrimitiveHolder<?, ?> ph = ref.get(fc);
+		                
+		                Column column = ce.getKey();
+		                
+		        		if (ph != null) {    		    		    		
+		    	    		ValueParameter<?, ?> vp = createParameter(column, ph);    		
+		    	    		am.put(column, new Assignment(column.getColumnName(), vp));
+		        		}                    
+		            }
+		        }
+    		}
+	    }    	
+    	
+    	for (Map.Entry<Column, Assignment> e : am.entrySet()) {
+    		Assignment a = e.getValue();
+    		    		
+			if (a == null) {
+				Column column = e.getKey();				
+				a = new Assignment(column.getColumnName(), null);
+			}
+			
+			assignments.add(a);    	
+    	}
+    	
 
     	return new UpdateStatement(tref, assignments, p);
     }
@@ -298,17 +316,24 @@ public class PersistenceManager<
     	DeleteStatement ds = createDeleteStatement();
 
     	if (ds != null) {
+    		PreparedStatement ps = null;
+    		
     		try {
     			String qs = ds.generate();
     			logger().debug("qs: " + qs);
-    			final PreparedStatement ps = c.prepareStatement(qs);
+    			ps = c.prepareStatement(qs);
+    			logger().debug("ps sh: " + System.identityHashCode(ps));
     			ds.traverse(null, createAssignmentVisitor(ps));
     			int deleted = ps.executeUpdate();
+    		    			
     			logger().debug("deleted: " + deleted);
     		}
     		catch (SQLException e) {
     			logger().error(e.getMessage(), e);
     			throw new EntityException(e.getMessage(), e);
+    		}
+    		finally {
+    			ps = QueryHelper.doClose(ps);
     		}
     	}
     }
