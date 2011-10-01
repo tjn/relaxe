@@ -4,9 +4,7 @@ tstamp
 
 SET ROOT=%~dp0..
 SET JARDIR=%ROOT%\lib
-
 SET GENSRC=%ROOT%\out\src
-REM SET GENSRC=C:\Users\tnie\devel\project\webui\src
 
 MKDIR %ROOT%\gen 2> nul
 MKDIR %GENSRC% 2> nul
