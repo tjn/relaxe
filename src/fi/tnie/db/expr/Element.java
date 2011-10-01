@@ -10,5 +10,7 @@ public interface Element
 	extends Serializable {
 	
 	public void traverse(VisitContext vc, ElementVisitor v);	
-	String getTerminalSymbol();	
+	String getTerminalSymbol();
+	
+	
 }

@@ -112,7 +112,7 @@ public class BuilderTest
         Catalog cat = getCatalog();
         assertNotNull(cat);
         
-        Implementation impl = getContext().getImplementation();
+        Implementation impl = getEnvironmentContext().getImplementation();
         
         Builder b = new Builder();
         b.setImplementation(impl);
@@ -136,7 +136,7 @@ public class BuilderTest
         
         b.getFeatures().addFeature(new MetaData());
         
-        CatalogFactory cf = getContext().getImplementation().catalogFactory();
+        CatalogFactory cf = getEnvironmentContext().getImplementation().catalogFactory();
         
         testGeneration(b, cat, c, bindir);
         

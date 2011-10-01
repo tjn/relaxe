@@ -16,7 +16,7 @@ public interface ElementVisitor {
 	VisitContext start(VisitContext vc, Having e);
 	VisitContext start(VisitContext vc, OrderBy e);	
 	VisitContext start(VisitContext vc, Predicate e);
-	VisitContext start(VisitContext vc, Keyword e);
+	VisitContext start(VisitContext vc, SQLKeyword e);
 	VisitContext start(VisitContext vc, AbstractTableReference e);
 	VisitContext start(VisitContext vc, JoinType e);
 	VisitContext start(VisitContext vc, Name e);

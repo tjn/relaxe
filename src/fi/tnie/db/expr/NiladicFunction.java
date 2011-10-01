@@ -12,7 +12,7 @@ public class NiladicFunction
 	 * 
 	 */
 	private static final long serialVersionUID = 4927882086659272826L;
-	private Keyword name;
+	private SQLKeyword name;
     private int dataType;    
     
     /** Niladic function CURRENT_USER.
@@ -21,25 +21,25 @@ public class NiladicFunction
      * That may not be generally "right", but good enough. 
      */
     public static final NiladicFunction CURRENT_USER = 
-        new NiladicFunction(Keyword.CURRENT_USER, PrimitiveType.VARCHAR);
+        new NiladicFunction(SQLKeyword.CURRENT_USER, PrimitiveType.VARCHAR);
 
     /** Niladic function CURRENT_DATE. 
      *  Type of this value expression is Types.DATE  
      */
     public static final NiladicFunction CURRENT_DATE = 
-        new NiladicFunction(Keyword.CURRENT_USER, PrimitiveType.DATE);
+        new NiladicFunction(SQLKeyword.CURRENT_USER, PrimitiveType.DATE);
     
     /** Niladic function CURRENT_TIME. 
      *  Type of this value expression is Types.TIME  
      */    
     public static final NiladicFunction CURRENT_TIME = 
-        new NiladicFunction(Keyword.CURRENT_TIME, PrimitiveType.TIME);
+        new NiladicFunction(SQLKeyword.CURRENT_TIME, PrimitiveType.TIME);
     
     /** Niladic function CURRENT_TIMESTAMP. 
      *  Type of this value expression is Types.TIMESTAMP  
      */        
     public static final NiladicFunction CURRENT_TIMESTAMP = 
-        new NiladicFunction(Keyword.CURRENT_TIMESTAMP, PrimitiveType.TIMESTAMP);    
+        new NiladicFunction(SQLKeyword.CURRENT_TIMESTAMP, PrimitiveType.TIMESTAMP);    
     
     /**
 	 * No-argument constructor for GWT Serialization
@@ -47,12 +47,12 @@ public class NiladicFunction
 	protected NiladicFunction() {
 	}
     
-    private NiladicFunction(Keyword name, int dataType) {
+    private NiladicFunction(SQLKeyword name, int dataType) {
         this.name = name;
         this.dataType = dataType;
     }
 
-    public Keyword getName() {        
+    public SQLKeyword getName() {        
         return this.name;
     }
 

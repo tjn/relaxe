@@ -25,7 +25,7 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase {
 
     public void testGetCatalogNameFromSchemas() 
         throws SQLException {
-        assertNotNull(getContext());
+        assertNotNull(getEnvironmentContext());
                 
         DatabaseMetaData meta = meta();                
         MySQLCatalogFactory f = factory();
@@ -133,7 +133,7 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase {
     
     public void testCreateCatalog() 
         throws Exception {                
-    	Implementation impl = getContext().getImplementation();
+    	Implementation impl = getEnvironmentContext().getImplementation();
         DefaultCatalogFactory factory = factory();                
         Connection c = getConnection();        
         String current = c.getCatalog();

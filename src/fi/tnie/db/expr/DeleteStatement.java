@@ -43,8 +43,8 @@ public class DeleteStatement
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
-		Keyword.DELETE.traverse(vc, v);		
-		Keyword.FROM.traverse(vc, v);
+		SQLKeyword.DELETE.traverse(vc, v);		
+		SQLKeyword.FROM.traverse(vc, v);
 		getTarget().traverse(vc, v);	
 		getWhere().traverse(vc, v);
 	}

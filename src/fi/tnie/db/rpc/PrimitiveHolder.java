@@ -50,6 +50,10 @@ public abstract class PrimitiveHolder<V extends Serializable, T extends Primitiv
 
 	public TimeHolder asTimeHolder() {
 		return null;
+	}
+	
+	public LongHolder asLongHolder() {
+		return null;
 	}	
 	
 }

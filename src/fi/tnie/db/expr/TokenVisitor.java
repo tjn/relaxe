@@ -48,7 +48,7 @@ public class TokenVisitor implements ElementVisitor {
 	}
 
 	@Override
-	public VisitContext start(VisitContext vc, Keyword e) {
+	public VisitContext start(VisitContext vc, SQLKeyword e) {
 		return visit(e);
 	}
 	

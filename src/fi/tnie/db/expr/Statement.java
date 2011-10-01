@@ -114,12 +114,12 @@ public abstract class Statement
 		return getName().getType();
 	}
 	
-	protected Keyword cascade(Boolean cascade) {
+	protected SQLKeyword cascade(Boolean cascade) {
 	    if (cascade == null) {
 	        return null;
 	    }
 	
-	    return cascade.booleanValue() ? Keyword.CASCADE : Keyword.RESTRICT;
+	    return cascade.booleanValue() ? SQLKeyword.CASCADE : SQLKeyword.RESTRICT;
     }
 	
 

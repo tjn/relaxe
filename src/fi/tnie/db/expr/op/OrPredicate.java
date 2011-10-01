@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.expr.op;
 
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.Predicate;
 
 public class OrPredicate
@@ -22,7 +22,7 @@ public class OrPredicate
 	}
 	
 	public OrPredicate(Predicate left, Predicate right) {
-		super(Keyword.OR, left, right);
+		super(SQLKeyword.OR, left, right);
 	}
 	
 	public static Predicate newOr(Predicate a, Predicate b) {

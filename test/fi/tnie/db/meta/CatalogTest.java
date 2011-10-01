@@ -138,7 +138,7 @@ public class CatalogTest
     public void testIdentifierComparator() 
     	throws SQLException {
     	
-    	Implementation env = getContext().getImplementation();
+    	Implementation env = getEnvironmentContext().getImplementation();
     	Comparator<Identifier> icmp = env.identifierComparator();
     		
     	{

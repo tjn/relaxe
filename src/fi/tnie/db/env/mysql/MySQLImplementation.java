@@ -129,6 +129,10 @@ public class MySQLImplementation
 			return null;
 		}
 	}
+    
+    public String createJdbcUrl(String database) {
+    	return createJdbcUrl(null, database);
+    }
 
 	@Override
 	public String createJdbcUrl(String host, String database) {

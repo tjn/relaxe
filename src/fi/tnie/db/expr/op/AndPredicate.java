@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.expr.op;
 
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.Predicate;
 
 public class AndPredicate
@@ -22,7 +22,7 @@ public class AndPredicate
 	}
 	
 	public AndPredicate(Predicate left, Predicate right) {
-		super(Keyword.AND, left, right);
+		super(SQLKeyword.AND, left, right);
 	}
 	
 	public static Predicate newAnd(Predicate a, Predicate b) {

@@ -19,7 +19,7 @@ public class Select
 	private boolean distinct;	
 	
 	public Select() {
-		super(Keyword.SELECT);
+		super(SQLKeyword.SELECT);
 	}
 
 	public ElementList<SelectListElement> getSelectList() {
@@ -134,7 +134,7 @@ public class Select
 		getClause().traverse(vc, v);
 		
 		if (this.distinct) {
-			Keyword.DISTINCT.traverse(vc, v);
+			SQLKeyword.DISTINCT.traverse(vc, v);
 		}
 		
 		getContent().traverse(vc, v);	

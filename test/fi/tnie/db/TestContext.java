@@ -7,15 +7,14 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Environment;
+import fi.tnie.db.query.QueryException;
 
 public interface TestContext {
 
-    public Environment getEnvironment();
-    public Connection connect() throws SQLException;
-    public Driver getDriver();
-    public Catalog getCatalog();
-    public void setCatalog(Catalog catalog);
-    
+    public Implementation getImplementation();
+    public Connection newConnection() throws SQLException;    
+    public Catalog getCatalog() throws SQLException, QueryException;
 }

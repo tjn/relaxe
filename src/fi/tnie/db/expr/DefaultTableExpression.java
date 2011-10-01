@@ -11,8 +11,8 @@ import fi.tnie.db.expr.SetOperator.Op;
  */
 
 public class DefaultTableExpression
-	extends QueryExpression
-	implements TableExpression {
+	extends AbstractQueryExpression
+	implements TableExpression, QueryExpression {
 
 	/**
 	 * 
@@ -23,13 +23,31 @@ public class DefaultTableExpression
 	private From from;
 	private Where where;
 	private GroupBy groupBy;
-	private Having having;
-	
+	private Having having;	
 	private SelectListElement all = null;
 	
 	public DefaultTableExpression() {
 	}
 	
+	public DefaultTableExpression(TableExpression e) {
+		this(e.getSelect(), e.getFrom(), e.getWhere(), e.getGroupBy());
+	}
+	
+	public DefaultTableExpression(Select select, From from) {
+		this(select, from, null, null);
+	}
+	
+	
+	public DefaultTableExpression(Select select, From from, Where where, GroupBy groupBy) {
+		super();
+		this.select = select;
+		this.from = from;
+		this.where = where;
+		this.groupBy = groupBy;
+	}
+
+
+
 	private void traverse(Element e, VisitContext vc, ElementVisitor v) {
 		if (e != null) {
 			e.traverse(vc, v);

@@ -151,7 +151,7 @@ public class OrderBy
 	}
 
 	public OrderBy() {
-		super(Keyword.ORDER_BY);
+		super(SQLKeyword.ORDER_BY);
 	}
 	
 	public void add(SortKey k) {

@@ -5,7 +5,7 @@ package fi.tnie.db.expr.ddl;
 
 import fi.tnie.db.expr.ElementVisitor;
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.VisitContext;
 
@@ -42,12 +42,12 @@ public class CreateSchema
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
-		Keyword.CREATE.traverse(vc, v);		
-		Keyword.SCHEMA.traverse(vc, v);
+		SQLKeyword.CREATE.traverse(vc, v);		
+		SQLKeyword.SCHEMA.traverse(vc, v);
 		getSchemaName().traverse(vc, v);
 		
 		if (this.authID != null) {
-		    Keyword.AUTHORIZATION.traverse(vc, v);
+		    SQLKeyword.AUTHORIZATION.traverse(vc, v);
 		    this.authID.traverse(vc, v);
 		}
 		

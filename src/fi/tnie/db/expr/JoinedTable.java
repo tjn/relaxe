@@ -157,7 +157,7 @@ public class JoinedTable
 		getLeft().traverse(vc, v);
 		getJoinType().traverse(vc, v);
 		getRight().traverse(vc, v);		
-		Keyword.ON.traverse(vc, v);
+		SQLKeyword.ON.traverse(vc, v);
 		getJoinCondition().traverse(vc, v);	
 	}
 

@@ -4,7 +4,7 @@
 package fi.tnie.db.expr.ddl;
 
 import fi.tnie.db.expr.ElementVisitor;
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.SchemaElementName;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.VisitContext;
@@ -16,8 +16,8 @@ public abstract class DropSchemaElement
 	 * 
 	 */
 	private static final long serialVersionUID = 4367840517906725303L;
-	private Keyword elementType;
-    private Keyword cascade;
+	private SQLKeyword elementType;
+    private SQLKeyword cascade;
     private SchemaElementName name;
     
     /**
@@ -26,7 +26,7 @@ public abstract class DropSchemaElement
 	protected DropSchemaElement() {
 	}
     
-    protected DropSchemaElement(Name statementName, Keyword elementType, SchemaElementName name, Boolean cascade) {
+    protected DropSchemaElement(Name statementName, SQLKeyword elementType, SchemaElementName name, Boolean cascade) {
         super(statementName);
         
         if (name == null) {
@@ -44,7 +44,7 @@ public abstract class DropSchemaElement
     
     @Override
     protected void traverseContent(VisitContext vc, ElementVisitor v) {
-        Keyword.DROP.traverse(vc, v);        
+        SQLKeyword.DROP.traverse(vc, v);        
         this.elementType.traverse(vc, v);                
         this.name.traverse(vc, v);
         traverseNonEmpty(this.cascade, vc, v);

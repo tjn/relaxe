@@ -221,25 +221,29 @@ public interface Entity<
 	> 
 	void remove(K key);
 	
-	/**
-	 * Replaces the current value of the attribute addressed by <code>key</code> with null-valued holder.
-	 * 
-	 * 
-	 *   
-	 * @param <VV>
-	 * @param <VT>
-	 * @param <VH>
-	 * @param <K>
-	 * @param key
-	 */
-	public <		
-		VV extends Serializable,
-		VT extends PrimitiveType<VT>,
-		VH extends PrimitiveHolder<VV, VT>,	
-		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
-	> 
-	void reset(K key);
+//	/**
+//	 * Replaces the current value of the attribute addressed by <code>key</code> with null-valued holder.
+//	 * 
+//	 * 
+//	 *   
+//	 * @param <VV>
+//	 * @param <VT>
+//	 * @param <VH>
+//	 * @param <K>
+//	 * @param key
+//	 */
+//	public <		
+//		VV extends Serializable,
+//		VT extends PrimitiveType<VT>,
+//		VH extends PrimitiveHolder<VV, VT>,	
+//		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
+//	> 
+//	void reset(K key);
 	
+	/**
+	 * * Resets the specified attributes.
+	 */
+	void reset(Iterable<A> attributes);
 	
 	/**
 	 * Returns true if and only if this entity has currently the value holder set for the attribute addressed by <code>key</code>.

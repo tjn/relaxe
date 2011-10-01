@@ -60,7 +60,7 @@ public class OrdinaryIdentifier
 			return fail("token '" + token + "' doesn't match the pattern: " + p, details); 
 		}
 	
-		if (Keyword.isKeyword(token.toUpperCase())) {
+		if (SQLKeyword.isKeyword(token.toUpperCase())) {
 			return fail(
 					"token '" + token + "' is identical to the keyword and " +
 					"can not be used as a ordinary identifier", details);

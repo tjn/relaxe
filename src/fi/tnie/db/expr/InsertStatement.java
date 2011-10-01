@@ -37,7 +37,17 @@ public class InsertStatement
 	public InsertStatement(Table target, ElementList<ColumnName> columnNameList) {
 	    this(target, columnNameList, null);	    
 	}
-			
+
+	protected InsertStatement(Table target) {
+		super(Name.INSERT);
+		
+		if (target == null) {
+			throw new NullPointerException("'target' must not be null");
+		}
+		
+		this.target = target;
+	}
+
 	
 	/**
 	 * Constructs a new  
@@ -47,11 +57,7 @@ public class InsertStatement
 	 * @param valueRow May me null.
 	 */
 	public InsertStatement(Table target, ElementList<ColumnName> columnNameList, ValueRow valueRow) {
-		super(Name.INSERT);
-		
-		if (target == null) {
-			throw new NullPointerException("'target' must not be null");
-		}
+		this(target);
 		
 		if (columnNameList == null) {
 			throw new NullPointerException("'columnNameList' must not be null");
@@ -68,18 +74,20 @@ public class InsertStatement
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {		
-		Keyword.INSERT.traverse(vc, v);
-		Keyword.INTO.traverse(vc, v);
+		SQLKeyword.INSERT.traverse(vc, v);
+		SQLKeyword.INTO.traverse(vc, v);
 			
-		getTableName().traverse(vc, v);		
+		getTableName().traverse(vc, v);
 		
-		if (columnNameList != null) {
+		ElementList<ColumnName> cl = getColumnNameList();
+		
+		if (cl != null) {
 			Symbol.PAREN_LEFT.traverse(vc, v);	
-			columnNameList.traverse(vc, v);
+			cl.traverse(vc, v);
 			Symbol.PAREN_RIGHT.traverse(vc, v);
 		}
 		
-		Keyword.VALUES.traverse(vc, v);		
+		SQLKeyword.VALUES.traverse(vc, v);		
 		getValues().traverse(vc, v);
 	}
 
@@ -87,10 +95,6 @@ public class InsertStatement
 		return target;
 	}
 
-//	private void setTarget(Table target) {
-//		this.target = target;
-//	}
-	
 	public ElementList<ValueRow> getValues() {
 		if (values == null) {
 			values = new ElementList<ValueRow>();					
@@ -103,11 +107,17 @@ public class InsertStatement
 		getValues().add(r);
 	}
 		
-	private SchemaElementName getTableName() {
+	protected SchemaElementName getTableName() {
 		if (tableName == null) {
 			tableName = new SchemaElementName(this.target);
 		}
 
 		return tableName;
 	}
+	
+	protected ElementList<ColumnName> getColumnNameList() {
+		return columnNameList;
+	}
+	
+	
 }

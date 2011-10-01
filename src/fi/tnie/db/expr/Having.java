@@ -11,7 +11,7 @@ public class Having extends AbstractClause {
 	private static final long serialVersionUID = 6829774771176381103L;
 
 	public Having() {
-		super(Keyword.HAVING);
+		super(SQLKeyword.HAVING);
 	}
 
 	private Predicate searchCondition;

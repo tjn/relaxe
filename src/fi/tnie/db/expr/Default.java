@@ -51,7 +51,7 @@ public class Default
 
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {
-		Keyword kw = Keyword.DEFAULT;
+		SQLKeyword kw = SQLKeyword.DEFAULT;
 		kw.traverse(vc, v);
 	}
 	

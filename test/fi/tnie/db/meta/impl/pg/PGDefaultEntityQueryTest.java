@@ -17,6 +17,7 @@ import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGCatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
+import fi.tnie.db.expr.SelectStatement;
 import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
@@ -95,7 +96,9 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	PGImplementation impl = new PGImplementation();
     	
     	StatementExecutor se = new StatementExecutor(impl);
-    	se.execute(eb.getQuery().getQueryExpression(), c, eb);
+    	
+    	SelectStatement ss = new SelectStatement(eb.getQuery().getQueryExpression());
+    	se.execute(ss, c, eb);
     	
     	logger().info("testConstructor: eb.getContent().size()=" + eb.getContent().size());
     	
@@ -106,8 +109,10 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	    	
     	for (EntityDataObject<HourReport> o : eb.getContent()) {
 			logger().info("testConstructor: rpt=" + o);
-			HourReport rpt = o.getRoot();
-			logger().info("testConstructor: rpt.project=" + rpt.getProject(HourReport.FK_HHR_PROJECT).value());    		
+			HourReport root = o.getRoot();			
+			logger().debug("testConstructor: root=" + root);
+			Project.Holder ph = root.getProject(HourReport.FK_HHR_PROJECT);
+			logger().info("testConstructor: rpt.project=" + ph);    		
 		}
     }
     

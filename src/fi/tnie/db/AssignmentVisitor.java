@@ -43,7 +43,7 @@ public class AssignmentVisitor extends ElementVisitorAdapter {
 		
 		this.assignerFactory = assignerFactory;		
 		this.preparedStatement = ps;
-		this.ordinal = 1;		
+		this.ordinal = 1;
 	}	
 
 	@Override
@@ -52,7 +52,10 @@ public class AssignmentVisitor extends ElementVisitorAdapter {
 			assign(ordinal, p.getValue());			
 //			logger().debug(ordinal + ": pname: " + p.getName());
 //			logger().debug(ordinal + ": ph: " + h);
-//			logger().debug(ordinal + ": value: " + ((h == null) ? "" : h.value()));
+			
+			
+			logger().debug(ordinal + ": " + p.getName() + " =>"+ ((p.getValue() == null) ? "<null>" : p.getValue()));
+			
 //			preparedStatement.setObject(ordinal, h.value(), p.getType());
 			ordinal++;
 		} 

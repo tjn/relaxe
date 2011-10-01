@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.expr.ddl;
 
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.SchemaElementName;
 
 public class DropTable
@@ -25,6 +25,6 @@ public class DropTable
     }
     
     public DropTable(SchemaElementName name, Boolean cascade) {
-        super(Name.DROP_TABLE, Keyword.TABLE, name, cascade);        
+        super(Name.DROP_TABLE, SQLKeyword.TABLE, name, cascade);        
     }    
 }

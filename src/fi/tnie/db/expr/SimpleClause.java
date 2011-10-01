@@ -18,7 +18,7 @@ public abstract class SimpleClause
 	protected SimpleClause() {
 	}
 
-	public SimpleClause(Keyword clause, Element clauseContent) {
+	public SimpleClause(SQLKeyword clause, Element clauseContent) {
 		super(clause);
 		
 		if (clauseContent == null) {

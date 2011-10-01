@@ -135,8 +135,8 @@ public abstract class AbstractEntityKey<
 		dest.setRef(k, src.getRef(k));
 	};
 	
-	public void clear(E src) {
-		src.setRef(self(), newHolder(null));
+	public void reset(E dest) {
+		dest.setRef(self(), newHolder(null));
 	}
 
 	

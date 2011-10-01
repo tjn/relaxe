@@ -53,7 +53,7 @@ public class Assignment extends CompoundElement {
 	 * @param name
 	 */	
 	public Assignment(ColumnName name) {
-		this(name, Keyword.DEFAULT);
+		this(name, SQLKeyword.DEFAULT);
 	}
 	
 	private Assignment(ColumnName name, Element value) {
@@ -64,7 +64,7 @@ public class Assignment extends CompoundElement {
 		}
 		
 		this.name = name;		
-		this.value = (value == null) ? Keyword.NULL : value;
+		this.value = (value == null) ? SQLKeyword.NULL : value;
 	}		
 		
 	@Override

@@ -5,7 +5,7 @@ package fi.tnie.db.expr.ddl;
 
 import fi.tnie.db.expr.ElementList;
 import fi.tnie.db.expr.ElementVisitor;
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.SchemaElementName;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.Symbol;
@@ -43,8 +43,8 @@ public class CreateTable
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
-		Keyword.CREATE.traverse(vc, v);		
-		Keyword.TABLE.traverse(vc, v);
+		SQLKeyword.CREATE.traverse(vc, v);		
+		SQLKeyword.TABLE.traverse(vc, v);
 		getTableName().traverse(vc, v);		
 		Symbol.PAREN_LEFT.traverse(vc, v);
 		getElementList().traverseContent(vc, v);

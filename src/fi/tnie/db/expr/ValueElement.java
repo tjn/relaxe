@@ -84,7 +84,7 @@ public class ValueElement
 		this.expr.traverse(vc, v);
 		
 		if (newName != null) {			
-			Keyword.AS.traverse(vc, v);
+			SQLKeyword.AS.traverse(vc, v);
 			newName.traverse(vc, v);			
 		}	
 	}

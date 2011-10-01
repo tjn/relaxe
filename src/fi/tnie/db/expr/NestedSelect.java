@@ -4,7 +4,7 @@
 package fi.tnie.db.expr;
 
 public class NestedSelect
-	extends QueryExpression	
+	extends AbstractQueryExpression	
 	implements TableExpression {
 	
 	/**
@@ -67,4 +67,14 @@ public class NestedSelect
 	public TableExpression getTableExpr() {
 		return this.inner.getTableExpr();
 	}
+
+	@Override
+	public From getFrom() {
+		return null;
+	}
+
+	@Override
+	public GroupBy getGroupBy() {
+		return null;
+	}	
 }

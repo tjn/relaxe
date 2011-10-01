@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.expr.ddl;
 
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.SchemaElementName;
 
 public class DropView
@@ -25,6 +25,6 @@ public class DropView
     }
     
     public DropView(SchemaElementName name, Boolean cascade) {
-        super(Name.DROP_CONSTRAINT, Keyword.CONSTRAINT, name, cascade);        
+        super(Name.DROP_CONSTRAINT, SQLKeyword.CONSTRAINT, name, cascade);        
     }    
 }

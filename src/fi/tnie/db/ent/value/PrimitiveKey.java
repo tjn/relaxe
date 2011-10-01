@@ -29,6 +29,14 @@ public interface PrimitiveKey<
 	H get(E e) throws EntityRuntimeException;
 	void set(E e, H newValue) throws EntityRuntimeException;	
 	void copy(E src, E dest) throws EntityRuntimeException;
+	
+	
+	/**
+	 * Assign the default value (the value of the expression <code>newHolder(null)</code>) for the attribute addressed by this key.
+	 *  
+	 * @param dest
+	 */
+	public void reset(E dest) throws EntityRuntimeException;
 		
 	K self();
 		

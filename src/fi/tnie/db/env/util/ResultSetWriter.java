@@ -28,6 +28,12 @@ public class ResultSetWriter
 		this(new FileOutputStream(f), true);
 	}
 	
+	/**
+	 * 
+	 * @param os
+	 * @param close Whether or not os should be close when the query is processed
+	 */
+	
 	public ResultSetWriter(OutputStream os, boolean close) {
 		super();
 		out = new PrintWriter(new OutputStreamWriter(os));
@@ -207,6 +213,12 @@ public class ResultSetWriter
 		return n;
 	}
 	
+	
+	@Override
+	public void updated(int updateCount) throws SQLException {
+		out.print("updated: ");
+		out.println(updateCount);		
+	}
 	
 		
 	@Override

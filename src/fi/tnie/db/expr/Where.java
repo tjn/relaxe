@@ -14,7 +14,7 @@ public class Where extends AbstractClause {
 	private Predicate searchCondition;
 	
 	public Where() {
-		super(Keyword.WHERE);
+		super(SQLKeyword.WHERE);
 	}
 	
 	public Where(Predicate searchCondition) {

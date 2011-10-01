@@ -14,19 +14,19 @@ public class SetOperator
 	 */
 	private static final long serialVersionUID = 1520583086311992257L;
 	private Op operator;
-	private Keyword all;
+	private SQLKeyword all;
 	private TableExpression left;
 	private TableExpression right;
 	
 	public enum Op {
-		UNION(Keyword.UNION),
-		INTERSECT(Keyword.INTERSECT),
-		EXCEPT(Keyword.EXCEPT),
+		UNION(SQLKeyword.UNION),
+		INTERSECT(SQLKeyword.INTERSECT),
+		EXCEPT(SQLKeyword.EXCEPT),
 		;
 		
-		private Keyword name;
+		private SQLKeyword name;
 		
-		private Op(Keyword name) {
+		private Op(SQLKeyword name) {
 			this.name = name;
 		}
 	}
@@ -55,7 +55,7 @@ public class SetOperator
 		this.operator = operator;
 		this.left = left;
 		this.right = right;
-		this.all = all ? Keyword.ALL : null;
+		this.all = all ? SQLKeyword.ALL : null;
 	}
 
 	public boolean isAll() {
@@ -63,7 +63,7 @@ public class SetOperator
 	}
 
 	public void setAll(boolean all) {
-		this.all = all ? Keyword.ALL : null;
+		this.all = all ? SQLKeyword.ALL : null;
 	}	
 	
 	@Override
@@ -92,4 +92,19 @@ public class SetOperator
 	public Where getWhere() {
 		return null;
 	}
+
+	@Override
+	public From getFrom() {
+		return null;
+	}
+
+	@Override
+	public GroupBy getGroupBy() {
+		return null;
+	}
+	
+//	@Override
+//	public QueryExpression asQueryExpression() {
+////		return new  
+//	}
 }

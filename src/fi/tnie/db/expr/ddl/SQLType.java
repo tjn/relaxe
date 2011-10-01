@@ -5,7 +5,7 @@ package fi.tnie.db.expr.ddl;
 
 import fi.tnie.db.expr.Element;
 import fi.tnie.db.expr.ElementVisitor;
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.VisitContext;
 import fi.tnie.db.types.PrimitiveType;
 
@@ -66,33 +66,33 @@ public abstract class SQLType
     enum Name
     	implements Element {
         
-    CHAR(PrimitiveType.CHAR, Keyword.CHARACTER),
-    VARCHAR(PrimitiveType.VARCHAR, Keyword.VARCHAR),
-    CLOB(PrimitiveType.CLOB, Keyword.CLOB),
-    BIGINT(PrimitiveType.BIGINT, Keyword.BIGINT),
-    BIT(PrimitiveType.BIT, Keyword.BIT),    
+    CHAR(PrimitiveType.CHAR, SQLKeyword.CHARACTER),
+    VARCHAR(PrimitiveType.VARCHAR, SQLKeyword.VARCHAR),
+    CLOB(PrimitiveType.CLOB, SQLKeyword.CLOB),
+    BIGINT(PrimitiveType.BIGINT, SQLKeyword.BIGINT),
+    BIT(PrimitiveType.BIT, SQLKeyword.BIT),    
     // BIT_VARYING(Type.BITV, Keyword.BIT, Keyword.VARYING),
-    BLOB(PrimitiveType.BLOB, Keyword.BLOB),
-    NUMERIC(PrimitiveType.NUMERIC, Keyword.NUMERIC), 
-    DECIMAL(PrimitiveType.DECIMAL, Keyword.DECIMAL),
-    INTEGER(PrimitiveType.INTEGER, Keyword.INTEGER),
+    BLOB(PrimitiveType.BLOB, SQLKeyword.BLOB),
+    NUMERIC(PrimitiveType.NUMERIC, SQLKeyword.NUMERIC), 
+    DECIMAL(PrimitiveType.DECIMAL, SQLKeyword.DECIMAL),
+    INTEGER(PrimitiveType.INTEGER, SQLKeyword.INTEGER),
     // INT(Type.INTEGER, Keyword.INT),
-    SMALLINT(PrimitiveType.SMALLINT, Keyword.SMALLINT),
-    TINYINT(PrimitiveType.TINYINT, Keyword.TINYINT),
-    FLOAT(PrimitiveType.FLOAT, Keyword.FLOAT),
-    DATE(PrimitiveType.DATE, Keyword.DATE),
-    TIME(PrimitiveType.TIME, Keyword.TIME),
-    TIMESTAMP(PrimitiveType.TIMESTAMP, Keyword.TIMESTAMP),
+    SMALLINT(PrimitiveType.SMALLINT, SQLKeyword.SMALLINT),
+    TINYINT(PrimitiveType.TINYINT, SQLKeyword.TINYINT),
+    FLOAT(PrimitiveType.FLOAT, SQLKeyword.FLOAT),
+    DATE(PrimitiveType.DATE, SQLKeyword.DATE),
+    TIME(PrimitiveType.TIME, SQLKeyword.TIME),
+    TIMESTAMP(PrimitiveType.TIMESTAMP, SQLKeyword.TIMESTAMP),
     ;
                 
-    private Name(int type, Keyword... kws) {
+    private Name(int type, SQLKeyword... kws) {
         this.type = type;
         this.keywords = kws;
     }
     
     private int type; 
     
-    private Keyword[] keywords;
+    private SQLKeyword[] keywords;
     
     @Override
     public String getTerminalSymbol() {     
@@ -101,7 +101,7 @@ public abstract class SQLType
 
     @Override
     public void traverse(VisitContext vc, ElementVisitor v) {
-        for (Keyword kw : keywords) {
+        for (SQLKeyword kw : keywords) {
             kw.traverse(vc, v);
         }
     }

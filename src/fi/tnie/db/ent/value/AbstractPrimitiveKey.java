@@ -80,8 +80,8 @@ public abstract class AbstractPrimitiveKey<
 		return name().equals(pk.name());
 	}
 	
-	public void clear(E src)	
+	public void reset(E dest)	
 		throws EntityRuntimeException {
-		src.set(self(), newHolder(null));
+		dest.set(self(), newHolder(null));
 	}
 }

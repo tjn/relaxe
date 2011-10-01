@@ -8,14 +8,14 @@ package fi.tnie.db.expr;
 
 public enum JoinType	
 	implements Element {
-	INNER(Keyword.INNER),
-	LEFT(Keyword.LEFT),
-	RIGHT(Keyword.RIGHT),
-	FULL(Keyword.FULL);
+	INNER(SQLKeyword.INNER),
+	LEFT(SQLKeyword.LEFT),
+	RIGHT(SQLKeyword.RIGHT),
+	FULL(SQLKeyword.FULL);
 	
-	private Keyword keyword;
+	private SQLKeyword keyword;
 	
-	private JoinType(Keyword keyword) {
+	private JoinType(SQLKeyword keyword) {
 		this.keyword = keyword;
 	}
 
@@ -24,7 +24,7 @@ public enum JoinType
 		vc = v.start(vc, this);
 		
 		this.keyword.traverse(vc, v);		
-		Keyword.JOIN.traverse(vc, v);
+		SQLKeyword.JOIN.traverse(vc, v);
 		
 		v.end(this);
 	}

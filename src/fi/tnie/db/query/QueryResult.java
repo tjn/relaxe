@@ -21,10 +21,8 @@ public class QueryResult<T>
 		super();
 	}
 	
-	private Long available;	
-	
+	private Long available;
 	private List<? extends T> content;
-
 	private QueryTime elapsed;
 	
 	public QueryResult(Query request, List<? extends T> content, QueryTime elapsed) {

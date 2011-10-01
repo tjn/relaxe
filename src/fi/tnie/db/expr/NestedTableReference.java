@@ -11,7 +11,7 @@ public class NestedTableReference
 	 * 
 	 */
 	private static final long serialVersionUID = -8816662022129528101L;
-	private SelectQuery query;
+	private QueryExpression query;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -19,16 +19,16 @@ public class NestedTableReference
 	protected NestedTableReference() {
 	}
 			
-	public NestedTableReference(SelectQuery query) {
+	public NestedTableReference(QueryExpression query) {
 		super();
 		setQuery(query);
 	}
 
-	public SelectQuery getQuery() {
+	public QueryExpression getQuery() {
 		return query;
 	}
 
-	public void setQuery(SelectQuery query) {
+	public void setQuery(QueryExpression query) {
 		if (query == null) {
 			throw new NullPointerException("'query' must not be null");
 		}

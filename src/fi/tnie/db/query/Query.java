@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.query;
 
+import fi.tnie.db.expr.AbstractQueryExpression;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.rpc.AbstractRequest;
 
@@ -19,7 +20,7 @@ public class Query
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected Query() {		
+	protected Query() {
 	}
 	
 	public Query(QueryExpression expression) {

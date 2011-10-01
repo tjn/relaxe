@@ -25,10 +25,11 @@ import fi.tnie.db.expr.Limit;
 import fi.tnie.db.expr.Offset;
 import fi.tnie.db.expr.OrderBy;
 import fi.tnie.db.expr.Predicate;
+import fi.tnie.db.expr.AbstractQueryExpression;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.ColumnReference;
-import fi.tnie.db.expr.SelectQuery;
+import fi.tnie.db.expr.SelectStatement;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.expr.OrderBy.Order;
 import fi.tnie.db.meta.BaseTable;
@@ -150,8 +151,8 @@ public class DefaultEntityTemplateQuery<
 			Limit le = (this.limit > 0) ? new Limit(limit) : null;
 			Offset oe = (this.offset > 0) ? new Offset(limit) : null;
 			
-			SelectQuery sq = new SelectQuery(q, ob, le, oe);			
-			this.queryExpression = sq;			
+			SelectStatement sq = new SelectStatement(q, ob, le, oe);			
+			this.queryExpression = sq;
 		}
 	}
 

@@ -6,7 +6,7 @@ package fi.tnie.db.expr.ddl;
 import fi.tnie.db.expr.CompoundElement;
 import fi.tnie.db.expr.Element;
 import fi.tnie.db.expr.ElementVisitor;
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.NiladicFunction;
 
 import fi.tnie.db.expr.VisitContext;
@@ -24,7 +24,7 @@ public class DefaultDefinition
 //    }
     
     public DefaultDefinition() {
-        this.value = Keyword.NULL;
+        this.value = SQLKeyword.NULL;
     }
 
     public DefaultDefinition(NiladicFunction nf) {
@@ -37,7 +37,7 @@ public class DefaultDefinition
     
     @Override
     public void traverse(VisitContext vc, ElementVisitor v) {
-        Keyword.DEFAULT.traverse(vc, v);
+        SQLKeyword.DEFAULT.traverse(vc, v);
         this.value.traverse(vc, v);
     }
 }

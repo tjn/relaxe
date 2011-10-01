@@ -4,7 +4,7 @@
 package fi.tnie.db.expr.ddl;
 
 import fi.tnie.db.expr.ElementVisitor;
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.SchemaElementName;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.VisitContext;
@@ -38,8 +38,8 @@ public class Truncate
     
     @Override
     protected void traverseContent(VisitContext vc, ElementVisitor v) {
-        Keyword.TRUNCATE.traverse(vc, v);        
-        Keyword.TABLE.traverse(vc, v);
+        SQLKeyword.TRUNCATE.traverse(vc, v);        
+        SQLKeyword.TABLE.traverse(vc, v);
         this.table.traverse(vc, v);        
     }
 

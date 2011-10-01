@@ -19,9 +19,12 @@ import org.apache.log4j.Logger;
 
 import fi.tnie.db.DBMetaTest;
 import fi.tnie.db.DefaultTableMapper;
+import fi.tnie.db.DefaultTestContext;
 import fi.tnie.db.EnvironmentTestContext;
+import fi.tnie.db.HasTestContext;
 import fi.tnie.db.QueryHelper;
 import fi.tnie.db.SimpleTestContext;
+import fi.tnie.db.TestContext;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
@@ -30,19 +33,21 @@ import junit.framework.TestCase;
 
 public abstract class DBMetaTestCase
     extends TestCase
-    implements DBMetaTest {
+    implements DBMetaTest, HasTestContext {
     
     public static final String SCHEMA_PUBLIC = "public";
     public static final String TABLE_CONTINENT = "continent";
     public static final String TABLE_COUNTRY = "country";
     
     private static Logger logger = Logger.getLogger(DBMetaTestCase.class);
-    private EnvironmentTestContext context = null;
+    private EnvironmentTestContext environmentContext = null;
     
     private Connection connection = null;    
     private DefaultTableMapper tableMapper;
     
     private ClassLoader classLoaderForGenerated = null;
+    
+    private TestContext testContext;
           
     protected int read(ResultSet rs, int col, Collection<String> dest) 
         throws SQLException {
@@ -55,6 +60,8 @@ public abstract class DBMetaTestCase
         
         return count;
     }
+    
+    
 
     public void testCatalogFactory(CatalogFactory cf, Connection c) throws Exception {    	
     	assertNotNull(cf);		
@@ -129,6 +136,7 @@ public abstract class DBMetaTestCase
     public void init(Implementation impl) {
     	init(new SimpleTestContext(impl));
     }
+    
     @Override
     public void init(EnvironmentTestContext ctx) {
         
@@ -137,12 +145,12 @@ public abstract class DBMetaTestCase
         logger().debug(drv.getClass());
         logger().debug(drv.getMajorVersion() + "." + drv.getMinorVersion());
         logger().debug("\n\n");
-        this.context = ctx;
+        this.environmentContext = ctx;
     }
 
-    public EnvironmentTestContext getContext() {
-        logger().debug("getContext: " + this.context + " for " + id());
-        return context;
+    public EnvironmentTestContext getEnvironmentContext() {
+        logger().debug("getContext: " + this.environmentContext + " for " + id());
+        return environmentContext;
     }
     
     
@@ -152,8 +160,8 @@ public abstract class DBMetaTestCase
     
     private Connection connect() 
         throws SQLException {
-        assertNotNull(this.context);
-        Connection c = this.context.connect();
+        assertNotNull(this.environmentContext);
+        Connection c = this.environmentContext.connect();
         assertNotNull(c);
         return c;
     }
@@ -222,7 +230,7 @@ public abstract class DBMetaTestCase
 
     public CatalogFactory factory() {
         // ClassLoader cl = getClassLoaderForGenerated();
-        return getContext().getImplementation().catalogFactory();        
+        return getEnvironmentContext().getImplementation().catalogFactory();        
     }
     
     public Catalog getCatalog() throws QueryException, SQLException {
@@ -289,4 +297,23 @@ public abstract class DBMetaTestCase
 
         return this.classLoaderForGenerated;
     }
+
+	public TestContext getTestContext(Implementation imp) throws SQLException, QueryException {
+		if (testContext == null) {
+			if (imp == null) {
+				imp = new PGImplementation();
+			}
+			
+			testContext = new DefaultTestContext(imp);			
+		}
+
+		return testContext;
+	}
+
+	public void setTestContext(TestContext testContext) {
+		this.testContext = testContext;
+	}
+	
+	
+
 }

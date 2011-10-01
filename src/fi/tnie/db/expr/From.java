@@ -17,7 +17,7 @@ public class From extends AbstractClause {
 	}
 	
 	public From(TableRefList from) {
-		super(Keyword.FROM);
+		super(SQLKeyword.FROM);
 		
 		if (from == null) {
 			throw new NullPointerException("'from' must not be null");

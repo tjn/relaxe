@@ -417,7 +417,7 @@ public class PersistenceManager<
     	if (pkp != null) {    	
     		eq.getTableExpression().getWhere().setSearchCondition(pkp);
     		EntityQueryExecutor<A, R, T, E, H, F, M> ee = new EntityQueryExecutor<A, R, T, E, H, F, M>(imp);
-    		QueryResult<EntityDataObject<E>> qr = ee.execute(eq, c);
+    		QueryResult<EntityDataObject<E>> qr = ee.execute(eq, false, c);
     		List<? extends EntityDataObject<E>> cl = qr.getContent();
     		logger().debug("merge: cl.size()=" + cl.size());
     		

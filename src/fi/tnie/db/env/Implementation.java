@@ -27,6 +27,7 @@ public interface Implementation
 	ValueExtractorFactory getValueExtractorFactory();			
 	ValueAssignerFactory getValueAssignerFactory();
 	
+	String createJdbcUrl(String database);
 	String createJdbcUrl(String host, String database);
 	String createJdbcUrl(String host, int port, String database);
 	

@@ -6,7 +6,7 @@ package fi.tnie.db.expr.ddl;
 
 import fi.tnie.db.expr.ElementVisitor;
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.SchemaElementName;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.VisitContext;
@@ -49,11 +49,11 @@ public class AlterTableAddColumn
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
-		Keyword.ALTER.traverse(vc, v);		
-		Keyword.TABLE.traverse(vc, v);
+		SQLKeyword.ALTER.traverse(vc, v);		
+		SQLKeyword.TABLE.traverse(vc, v);
 		getTableName().traverse(vc, v);
-		Keyword.ADD.traverse(vc, v);
-		Keyword.COLUMN.traverse(vc, v);
+		SQLKeyword.ADD.traverse(vc, v);
+		SQLKeyword.COLUMN.traverse(vc, v);
 		this.columnName.traverse(vc, v);
 		this.dataType.traverse(vc, v);
 	}

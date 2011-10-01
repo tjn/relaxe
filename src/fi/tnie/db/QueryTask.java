@@ -12,7 +12,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.DataObject;
+import fi.tnie.db.expr.AbstractQueryExpression;
 import fi.tnie.db.expr.QueryExpression;
+import fi.tnie.db.expr.SelectStatement;
 import fi.tnie.db.query.Query;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.query.QueryResult;
@@ -41,13 +43,14 @@ public class QueryTask
 		
 		try {			
 			QueryExpression qe = this.query.getExpression();
+			SelectStatement ss = new SelectStatement(qe);			
 			
 			String qs = qe.generate();
 			
 			ps = c.prepareStatement(qs);                
 			qe.traverse(null, new AssignmentVisitor(null, ps));
 			
-			DataObjectReader qp = new DataObjectReader(valueExtractorFactory, qe, content);			
+			DataObjectReader qp = new DataObjectReader(valueExtractorFactory, ss, content);			
 			qp.prepare();
 			
 			long ordinal = 0;

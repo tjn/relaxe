@@ -23,10 +23,11 @@ public interface Key<
 		throws EntityRuntimeException;
 	
 	/**
-	 * TODO: Is this name sane?
-	 * @param src
+	 * Assign the default value for the attribute or reference addressed by this key. 
+	 * 
+	 * @param dest
 	 */
-	void clear(E src)
+	void reset(E dest)
 		throws EntityRuntimeException;
 	
 	K self();

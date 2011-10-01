@@ -19,7 +19,7 @@ public class PGEnvironmentTest
 	public void testCreateIdentifier() 
 		throws Exception {
 	    
-		Implementation env = getContext().getImplementation();
+		Implementation env = getEnvironmentContext().getImplementation();
 		// PGEnvironment env = newEnv();		
 		 
 		final Identifier a = env.createIdentifier("abc");		
@@ -174,7 +174,7 @@ public class PGEnvironmentTest
 	
 	
 	public void testIllegalIdentifier() throws Exception {
-		Implementation env = getContext().getImplementation();
+		Implementation env = getEnvironmentContext().getImplementation();
 		
 		try {
 			env.createIdentifier("");

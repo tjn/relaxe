@@ -5,9 +5,9 @@ package fi.tnie.db.expr.op;
 
 import fi.tnie.db.expr.CompoundElement;
 import fi.tnie.db.expr.ElementVisitor;
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.Predicate;
-import fi.tnie.db.expr.SelectQuery;
+import fi.tnie.db.expr.SelectStatement;
 import fi.tnie.db.expr.Symbol;
 import fi.tnie.db.expr.VisitContext;
 
@@ -19,7 +19,7 @@ public class Exists
 	 * 
 	 */
 	private static final long serialVersionUID = 7282243674920197042L;
-	private SelectQuery query;
+	private SelectStatement query;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -27,7 +27,7 @@ public class Exists
 	protected Exists() {
 	}
 
-	public Exists(SelectQuery query) {
+	public Exists(SelectStatement query) {
 		super();
 		
 		if (query == null) {
@@ -48,7 +48,7 @@ public class Exists
 	public void traverse(VisitContext vc, ElementVisitor v) {
 		vc = v.start(vc, this);
 		
-		Keyword.EXISTS.traverse(vc, v);		
+		SQLKeyword.EXISTS.traverse(vc, v);		
 		Symbol.PAREN_LEFT.traverse(vc, v);
 		this.query.traverse(vc, v);
 		Symbol.PAREN_RIGHT.traverse(vc, v);

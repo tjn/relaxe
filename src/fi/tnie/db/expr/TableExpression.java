@@ -6,6 +6,29 @@ package fi.tnie.db.expr;
 public interface TableExpression
 	extends Expression {
 	
-	Select getSelect();
+	/**
+	 * Returns the SELECT -clause for this table expression or <code>null</code> if such clause is not currently set.   
+	 *  
+	 * @return
+	 */
+	Select getSelect();	
+	/**
+	 * Returns the FROM -clause for this table expression or <code>null</code> if there is not such clause.   
+	 *  
+	 * @return
+	 */
+	From getFrom();
+	/**
+	 * Returns the WHERE -clause for this table expression or <code>null</code> if there is not such clause.   
+	 *  
+	 * @return
+	 */	
 	Where getWhere();
+	/**
+	 * Returns the GROUP BY -clause for this table expression or <code>null</code> if there is not such clause.   
+	 *  
+	 * @return
+	 */	
+	GroupBy getGroupBy();
+
 }

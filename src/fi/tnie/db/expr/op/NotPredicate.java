@@ -4,7 +4,7 @@
 package fi.tnie.db.expr.op;
 
 import fi.tnie.db.expr.ElementVisitor;
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.Predicate;
 import fi.tnie.db.expr.VisitContext;
 
@@ -48,7 +48,7 @@ public class NotPredicate
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {
 		vc = v.start(vc, this);
-		Keyword.NOT.traverse(vc, v);
+		SQLKeyword.NOT.traverse(vc, v);
 		inner.traverse(vc, v);		
 	}
 }

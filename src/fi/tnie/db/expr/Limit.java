@@ -15,14 +15,14 @@ public class Limit
 	 * LIMIT ALL -clause
 	 */
 	public Limit() {
-		super(Keyword.LIMIT, Keyword.ALL);		
+		super(SQLKeyword.LIMIT, SQLKeyword.ALL);		
 	}
 	/**
 	 * LIMIT value -clause
 	 * @param value
 	 */	
 	public Limit(int value) {
-		super(Keyword.LIMIT, new IntLiteral(value));		
+		super(SQLKeyword.LIMIT, new IntLiteral(value));		
 	}
 	
 	/**
@@ -30,6 +30,6 @@ public class Limit
 	 * @param value
 	 */	
 	public Limit(long value) {
-		super(Keyword.LIMIT, new LongLiteral(value));		
+		super(SQLKeyword.LIMIT, new LongLiteral(value));		
 	}
 }

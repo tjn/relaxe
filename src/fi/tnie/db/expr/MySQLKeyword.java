@@ -19,7 +19,7 @@ public enum MySQLKeyword
     ;
     
 
-    private static EnumSet<Keyword> keywords = EnumSet.allOf(Keyword.class);
+    private static EnumSet<MySQLKeyword> keywords = EnumSet.allOf(MySQLKeyword.class);
     
     public void traverse(VisitContext vc, ElementVisitor v) {
         v.start(vc, this);

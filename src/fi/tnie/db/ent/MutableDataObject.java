@@ -11,6 +11,7 @@ import java.util.Map;
 
 import fi.tnie.db.expr.ColumnExpr;
 import fi.tnie.db.expr.ColumnName;
+import fi.tnie.db.expr.AbstractQueryExpression;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.ValueExpression;

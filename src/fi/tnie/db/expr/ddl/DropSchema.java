@@ -5,7 +5,7 @@ package fi.tnie.db.expr.ddl;
 
 import fi.tnie.db.expr.ElementVisitor;
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.VisitContext;
 
@@ -17,7 +17,7 @@ public class DropSchema
 	 */
 	private static final long serialVersionUID = -8328836316629524899L;
 	private Identifier schemaName;
-	private Keyword cascade;
+	private SQLKeyword cascade;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -42,8 +42,8 @@ public class DropSchema
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
-		Keyword.DROP.traverse(vc, v);		
-		Keyword.SCHEMA.traverse(vc, v);
+		SQLKeyword.DROP.traverse(vc, v);		
+		SQLKeyword.SCHEMA.traverse(vc, v);
 		getSchemaName().traverse(vc, v);		
 		traverseNonEmpty(this.cascade, vc, v);
 	}

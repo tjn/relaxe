@@ -192,5 +192,17 @@ public abstract class AbstractEntity<
 	public boolean isIdentified() throws EntityRuntimeException {
 		return getPrimaryKey() != null;
 	}
+	
+	@Override
+	public void reset(Iterable<A> as) {		
+		M meta = getMetaData();
+		
+		for (A a : as) {
+			PrimitiveKey<A, T, E, ?, ?, ?, ?> pk = meta.getKey(a);
+			pk.reset(self());
+		}		
+	}
+	
+
 }
  

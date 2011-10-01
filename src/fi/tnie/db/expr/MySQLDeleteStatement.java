@@ -23,8 +23,8 @@ public class MySQLDeleteStatement
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
-		Keyword.DELETE.traverse(vc, v);		
-		Keyword.FROM.traverse(vc, v);		
+		SQLKeyword.DELETE.traverse(vc, v);		
+		SQLKeyword.FROM.traverse(vc, v);		
 		TableReference tref = getTarget();				
 		SchemaElementName n = tref.getTableName();
 		n.traverse(vc, v);		

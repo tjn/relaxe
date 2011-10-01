@@ -41,9 +41,9 @@ public class UpdateStatement
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
-		Keyword.UPDATE.traverse(vc, v);		
+		SQLKeyword.UPDATE.traverse(vc, v);		
 		getTarget().traverse(vc, v);		
-		Keyword.SET.traverse(vc, v);
+		SQLKeyword.SET.traverse(vc, v);
 		this.assignmentClause.traverse(vc, v);
 		
 		final Where w = this.where;

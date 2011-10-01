@@ -26,6 +26,9 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 			case Types.TINYINT:
 				e = createIntegerExtractor(col);	
 				break;
+			case Types.BIGINT:
+				e = createLongExtractor(col);
+				break;
 			case Types.VARCHAR:
 				e = createVarcharExtractor(col);
 				break;
@@ -85,6 +88,10 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 	
 	public TimeExtractor createTimeExtractor(int col) {
 		return new TimeExtractor(col);
+	}
+	
+	public LongExtractor createLongExtractor(int col) {
+		return new LongExtractor(col);
 	}
 	
 	

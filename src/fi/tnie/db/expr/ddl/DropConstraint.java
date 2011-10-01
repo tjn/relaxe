@@ -4,7 +4,7 @@
 package fi.tnie.db.expr.ddl;
 
 import fi.tnie.db.expr.ElementVisitor;
-import fi.tnie.db.expr.Keyword;
+import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.SchemaElementName;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.VisitContext;
@@ -45,11 +45,11 @@ public class DropConstraint
     
     @Override
     protected void traverseContent(VisitContext vc, ElementVisitor v) {
-        Keyword.ALTER.traverse(vc, v);
-        Keyword.TABLE.traverse(vc, v);        
+        SQLKeyword.ALTER.traverse(vc, v);
+        SQLKeyword.TABLE.traverse(vc, v);        
         this.table.traverse(vc, v);
-        Keyword.DROP.traverse(vc, v);        
-        Keyword.CONSTRAINT.traverse(vc, v);
+        SQLKeyword.DROP.traverse(vc, v);        
+        SQLKeyword.CONSTRAINT.traverse(vc, v);
         this.constraint.getUnqualifiedName().traverse(vc, v);                
     }
 }

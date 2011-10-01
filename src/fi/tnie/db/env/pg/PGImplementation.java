@@ -134,6 +134,10 @@ public class PGImplementation
 		return new PGValueExtractorFactory();
 	}
 	
+	public String createJdbcUrl(String database) {
+		return createJdbcUrl(null, database);		
+	}
+	
 	public String createJdbcUrl(String host, String database) {
 		return createJdbcUrl(host, 5432, database);		
 	}

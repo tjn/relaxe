@@ -68,7 +68,7 @@ public class EntityQueryExecutorTest extends TestCase {
 			
 			// Query q = template.newQuery(limit, offset);			
 			 
-			QueryResult<EntityDataObject<HourReport>> qr = qe.execute(q, c);
+			QueryResult<EntityDataObject<HourReport>> qr = qe.execute(q, true, c);
 			assertNotNull(qr);
 			
 			return qr;			
@@ -228,8 +228,7 @@ public class EntityQueryExecutorTest extends TestCase {
 	
 	public void testExecuteLimits() throws Exception {
 		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate();
-		
-		
+				
 		hrq.addAllAttributes();
 		
 		EntityQueryTemplateAttribute rd = hrq.get(HourReport.Attribute.REPORT_DATE);		
@@ -247,6 +246,10 @@ public class EntityQueryExecutorTest extends TestCase {
 		
 		Query q36 = q3.getTemplate().newQuery(3, 6);
 		qr = execute(q36);
+		
+		Long a = qr.getAvailable();
+		assertNotNull(a);
+		assertFalse(a.longValue() == 3);
 		
 		el = qr.getContent();
 		assertNotNull(el);

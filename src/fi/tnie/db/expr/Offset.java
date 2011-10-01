@@ -19,10 +19,10 @@ public class Offset
 	}
 	
 	public Offset(int value) {
-		super(Keyword.OFFSET, new IntLiteral(value));		
+		super(SQLKeyword.OFFSET, new IntLiteral(value));		
 	}
 	
 	public Offset(long value) {
-		super(Keyword.OFFSET, new LongLiteral(value));		
+		super(SQLKeyword.OFFSET, new LongLiteral(value));		
 	}
 }
