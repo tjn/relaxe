@@ -17,6 +17,7 @@ import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Constraint;
 // import fi.tnie.db.meta.DataType;
 import fi.tnie.db.meta.Environment;
+import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Column;
@@ -38,7 +39,7 @@ public class LiteralCatalog
 	implements EntityContext, Catalog {
 
 	private Identifier name;
-	private Environment environment;	
+	private SerializableEnvironment environment;	
 	private DefaultMutableCatalog content;
 	private Map<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> metaMap;
 	
@@ -79,7 +80,7 @@ public class LiteralCatalog
 		this.name = name;
 	}
 
-	private void setEnvironment(Environment environment) {
+	private void setEnvironment(SerializableEnvironment environment) {
 		if (environment == null) {
 			throw new NullPointerException("environment must not be null here");
 		}
@@ -87,11 +88,11 @@ public class LiteralCatalog
 		this.environment = environment;
 	}
 
-	public Environment getEnvironment() {
+	public SerializableEnvironment getEnvironment() {
 		return environment;
 	}
 	
-	public Environment env() {
+	public SerializableEnvironment env() {
 		return this.environment;
 	}
 	
@@ -117,7 +118,7 @@ public class LiteralCatalog
 		
 	}
 			
-	protected LiteralCatalog(String name, Environment env) {
+	protected LiteralCatalog(String name, SerializableEnvironment env) {
 		super();
 		setEnvironment(env);
 		setName(env.createIdentifier(name));		
