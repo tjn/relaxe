@@ -2681,7 +2681,7 @@ public class SourceGenerator {
 				content.append(".TYPE");
 			}
 			
-			content.append("),");
+			content.append("),\n");
 		}
 	}
 
@@ -2702,7 +2702,7 @@ public class SourceGenerator {
 		        continue;
 		    }
 		    content.append(r);
-		    content.append(",");
+		    content.append(",\n");
 //			elements.add();
 		}
 
