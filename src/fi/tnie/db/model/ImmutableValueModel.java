@@ -10,5 +10,5 @@ public interface ImmutableValueModel<V>
 	 * Returns <code>null</code>.
 	 */	
 	@Override
-	public MutableValueModel<V> asMutable();
+	public MutableValueModel<V> asMutable();	
 }

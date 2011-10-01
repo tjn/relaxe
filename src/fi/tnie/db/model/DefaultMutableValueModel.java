@@ -13,7 +13,7 @@ public class DefaultMutableValueModel<V>
 	}
 
 	public DefaultMutableValueModel(V initialValue) {
-		super();
+		super();		
 		this.value = initialValue;
 	}
 	

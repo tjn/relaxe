@@ -9,4 +9,6 @@ public abstract class AbstractBooleanModel
 {	
 	@Override
 	public abstract MutableBooleanModel asMutable();
+	
+	
 }

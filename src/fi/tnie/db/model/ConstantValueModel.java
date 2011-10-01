@@ -3,36 +3,15 @@
  */
 package fi.tnie.db.model;
 
-public class ConstantValueModel<V>
-	extends AbstractValueModel<V> {
-	
-	private V value;
+public interface ConstantValueModel<V>
+	extends ImmutableValueModel<V> {
 
-	/**
-	 * No-argument constructor for GWT Serialization
-	 */	
-	protected ConstantValueModel() {
-	}
 	
-	public ConstantValueModel(V value) {
-		super();
-		this.value = value;
-	}
-
-	private static final Registration registration = new Registration() {		
-		@Override
-		public void remove() {			
-		}
-	};
-	
+	/** 
+	 * The value of the model. This is guaranteed to return always the same object reference.
+	 * 
+	 * @return
+	 */
 	@Override
-	public final Registration addChangeHandler(ChangeListener<V> ch) {
-		return registration;
-	}
-
-	@Override
-	public final V get() {
-		return this.value;
-	}
-
+	public V get();
 }

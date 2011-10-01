@@ -4,7 +4,7 @@
 package fi.tnie.db.model;
 
 public class ConstantBooleanModel
-	extends ConstantValueModel<Boolean>
+	extends DefaultConstantValueModel<Boolean>
 	implements BooleanModel
 {
 	public static final BooleanModel NULL = new ConstantBooleanModel(null);

@@ -42,4 +42,15 @@ public class DefaultImmutableModel<V>
 	public boolean isMutable() {	
 		return false;
 	}
+		
+	@Override
+	public boolean isConstant() {
+		return this.inner.isConstant();
+	}
+	
+	@Override
+	public ConstantValueModel<V> asConstant() {
+		ValueModel<V> im = this.inner;		
+		return im.isConstant() ? im.asConstant() : new DefaultConstantValueModel<V>(im.get());
+	}	
 }

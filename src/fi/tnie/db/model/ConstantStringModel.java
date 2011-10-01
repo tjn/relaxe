@@ -4,7 +4,7 @@
 package fi.tnie.db.model;
 
 public class ConstantStringModel
-	extends ConstantValueModel<String>
+	extends DefaultConstantValueModel<String>
 	implements StringModel
 {
 	public static final StringModel NULL = new ConstantStringModel(null);

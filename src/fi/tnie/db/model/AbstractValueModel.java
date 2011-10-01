@@ -115,4 +115,14 @@ public abstract class AbstractValueModel<V>
 	public boolean isMutable() {
 		return (asMutable() != null);
 	}
+	
+	@Override
+	public boolean isConstant() {
+		return false;
+	}
+	
+	@Override
+	public ConstantValueModel<V> asConstant() {
+		return new DefaultConstantValueModel<V>(get());
+	}
 }
