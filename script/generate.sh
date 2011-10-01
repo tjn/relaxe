@@ -1,13 +1,12 @@
 #!/bin/sh
 
-tstamp
 ROOT=$(dirname $0)/..
 JARDIR=$ROOT/lib
 
 GENSRC=$ROOT/out/src
 
-mkdir $ROOT/gen
-mkdir $GENSRC
+mkdir -p $ROOT/gen
+mkdir -p $GENSRC
 
 JDBC_CONFIG=$ROOT/pg.properties
 JDBC_URL=jdbc:postgresql:test
