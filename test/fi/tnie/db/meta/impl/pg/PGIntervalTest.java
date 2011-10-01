@@ -12,8 +12,7 @@ import java.sql.Types;
 
 public class PGIntervalTest
 	extends PGTestCase {
-	
-	
+		
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();

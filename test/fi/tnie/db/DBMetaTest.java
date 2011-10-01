@@ -3,7 +3,7 @@
  */
 package fi.tnie.db;
 
-public interface DBMetaTest {
+public interface DBMetaTest	{
     void init(EnvironmentTestContext ctx);
     String id();
 }

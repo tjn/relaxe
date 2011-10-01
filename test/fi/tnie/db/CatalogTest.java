@@ -3,7 +3,8 @@
  */
 package fi.tnie.db;
 
-public interface CatalogTest {
+public interface CatalogTest
+	{
 
     public void init(EnvironmentTestContext ctx);
 }

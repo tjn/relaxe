@@ -21,7 +21,7 @@ import fi.tnie.db.meta.Catalog;
  *
  */
 public class SimpleTestContext
-    implements EnvironmentTestContext {
+    implements EnvironmentTestContext, TestContext {
 	
 	private static Logger logger = Logger.getLogger(SimpleTestContext.class);
 
@@ -39,13 +39,13 @@ public class SimpleTestContext
         this.driverConfig = driverConfig;
     }
     public SimpleTestContext(Implementation impl) {
-    	this(impl, "test", "test", "password");
+    	this(impl, null, "test", "test", "test");
     }
     
-    public SimpleTestContext(Implementation impl, String database, String user, String passwd) {            
+    public SimpleTestContext(Implementation impl, String host, String database, String user, String passwd) {            
         super();                
 		Driver d = load(impl.driverClassName());
-		String url = impl.createJdbcUrl(null, database);		
+		String url = impl.createJdbcUrl(host, database);		
 		Properties drvcfg = new Properties();
 		drvcfg.setProperty("user", user);		
 		drvcfg.setProperty("password", passwd);
@@ -133,4 +133,11 @@ public class SimpleTestContext
     		throw new RuntimeException(e);
 		}
     }
+	@Override
+	public Connection newConnection() throws SQLException {
+		Driver d = getImplementation().getDriver();		
+		Properties cfg = getDriverConfig();
+		Connection c = d.connect(getJdbcURL(), cfg);				
+		return c;
+	}
 }
