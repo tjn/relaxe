@@ -16,6 +16,7 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplateAttribute;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
@@ -24,7 +25,9 @@ import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
 import fi.tnie.db.gen.ent.personal.Person;
+import fi.tnie.db.gen.ent.personal.HourReport.MetaData;
 import fi.tnie.db.gen.ent.personal.HourReport.Query;
+import fi.tnie.db.gen.ent.personal.HourReport.Type;
 import fi.tnie.db.query.QueryResult;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
@@ -66,9 +69,12 @@ public class EntityQueryExecutorTest extends TestCase {
 			> qe = createExecutor(HourReport.TYPE.getMetaData(), imp);
 			
 			
-			// Query q = template.newQuery(limit, offset);			
-			 
-			QueryResult<EntityDataObject<HourReport>> qr = qe.execute(q, true, c);
+			// Query q = template.newQuery(limit, offset);
+			
+			EntityQueryResult<HourReport.Attribute, HourReport.Reference, Type, HourReport, MetaData> er = qe.execute(q, true, c);
+			assertNotNull(er);
+			QueryResult<EntityDataObject<HourReport>> qr = er.getContent(); 
+			// QueryResult<EntityDataObject<HourReport>> qr = qe.execute(q, true, c);
 			assertNotNull(qr);
 			
 			return qr;			

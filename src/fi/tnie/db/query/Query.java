@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.query;
 
-import fi.tnie.db.expr.AbstractQueryExpression;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.rpc.AbstractRequest;
 

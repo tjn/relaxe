@@ -6,10 +6,10 @@ package fi.tnie.db.rpc;
 import java.io.Serializable;
 
 import fi.tnie.db.ent.Request;
+import fi.tnie.db.ent.Response;
 
-public abstract class AbstractResponse
-	<R extends Request>
-	implements Serializable {
+public abstract class AbstractResponse<R extends Request>
+	implements Response<R>, Serializable {
 
 	/**
 	 * 

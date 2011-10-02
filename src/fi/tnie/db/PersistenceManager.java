@@ -23,6 +23,7 @@ import fi.tnie.db.ent.DefaultQueryTemplate;
 import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityQuery;
+import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.Reference;
@@ -417,7 +418,9 @@ public class PersistenceManager<
     	if (pkp != null) {    	
     		eq.getTableExpression().getWhere().setSearchCondition(pkp);
     		EntityQueryExecutor<A, R, T, E, H, F, M> ee = new EntityQueryExecutor<A, R, T, E, H, F, M>(imp);
-    		QueryResult<EntityDataObject<E>> qr = ee.execute(eq, false, c);
+//    		QueryResult<EntityDataObject<E>> qr = ee.execute(eq, false, c);
+    		EntityQueryResult<A, R, T, E, M> er = ee.execute(eq, false, c);
+    		QueryResult<EntityDataObject<E>> qr = er.getContent();    		
     		List<? extends EntityDataObject<E>> cl = qr.getContent();
     		logger().debug("merge: cl.size()=" + cl.size());
     		

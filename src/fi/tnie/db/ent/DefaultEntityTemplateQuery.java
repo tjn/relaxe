@@ -25,7 +25,6 @@ import fi.tnie.db.expr.Limit;
 import fi.tnie.db.expr.Offset;
 import fi.tnie.db.expr.OrderBy;
 import fi.tnie.db.expr.Predicate;
-import fi.tnie.db.expr.AbstractQueryExpression;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.ColumnReference;
@@ -74,8 +73,8 @@ public class DefaultEntityTemplateQuery<
 	private transient List<ColumnReference> rootPrimaryKey; // NS	
 	private Q template;
 	
-	private long limit;
-	private long offset;
+	private Long limit;
+	private Long offset;
 				
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -84,12 +83,20 @@ public class DefaultEntityTemplateQuery<
 	}
 	
 	public DefaultEntityTemplateQuery(Q root) {
-		this(root, 0, 0);
+		this(root, null, null);
 	}
 	
-	public DefaultEntityTemplateQuery(Q root, long limit, long offset) {
-		this.limit = limit;
+	public DefaultEntityTemplateQuery(Q root, Long limit, Long offset) {
+		this.limit = limit;		
 		this.offset = offset;
+		
+		if (limit != null && limit.longValue() < 0) {
+			throw new IllegalArgumentException("limit must not be negative: " + limit);
+		}
+		
+		if (offset != null && offset.longValue() < 0) {
+			throw new IllegalArgumentException("limit must not be negative: " + offset);
+		}
 		
 		if (root == null) {
 			throw new NullPointerException();
@@ -99,7 +106,7 @@ public class DefaultEntityTemplateQuery<
 		this.type = root.getMetaData().getType();
 	}
 
-	public DefaultEntityTemplateQuery(Q root, long limit, long offset, boolean init) 
+	public DefaultEntityTemplateQuery(Q root, Long limit, long offset, boolean init) 
 		throws CyclicTemplateException, EntityRuntimeException {
 		this(root, limit, offset);
 	
@@ -119,8 +126,7 @@ public class DefaultEntityTemplateQuery<
 
 		if (table == null) {
 			throw new NullPointerException("EntityMetaData.getBaseTable()");
-		}
-		
+		}		
 	
 		DefaultTableExpression q = new DefaultTableExpression();
 		HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?>> visited = new HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?>>();
@@ -130,7 +136,7 @@ public class DefaultEntityTemplateQuery<
 				
 		this.query = q;
 				
-		if (limit <= 0 && offset <= 0 && getSortKeyList().isEmpty()) {
+		if (this.limit == null && offset == null && getSortKeyList().isEmpty()) {
 			this.queryExpression = this.query;
 		}		
 		else {
@@ -143,13 +149,13 @@ public class DefaultEntityTemplateQuery<
 					ob.add(sk.sortKey());					
 				}
 			}
-						
+			
 			for (ColumnReference pkcol : getRootPrimaryKey()) {
 				ob.add(pkcol, Order.ASC);
 			}
-			
-			Limit le = (this.limit > 0) ? new Limit(limit) : null;
-			Offset oe = (this.offset > 0) ? new Offset(limit) : null;
+
+			Limit le = (this.limit == null) ? null : new Limit(limit.longValue());
+			Offset oe = (this.offset == null) ? null : new Offset(this.offset.longValue());
 			
 			SelectStatement sq = new SelectStatement(q, ob, le, oe);			
 			this.queryExpression = sq;
@@ -506,12 +512,12 @@ public class DefaultEntityTemplateQuery<
 	}
 	
 	@Override
-	public long getLimit() {
+	public Long getLimit() {
 		return this.limit;
 	}
 	
 	@Override
-	public long getOffset() {
+	public Long getOffset() {
 		return this.offset;
 	}
 	

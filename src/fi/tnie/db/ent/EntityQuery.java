@@ -18,8 +18,8 @@ public interface EntityQuery<
 >
 	extends Request, QueryExpressionSource	
 {
-	long getOffset();
-	long getLimit();
+	Long getOffset();
+	Long getLimit();
 
 	DefaultTableExpression getTableExpression()
 		throws EntityException;
