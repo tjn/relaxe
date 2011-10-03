@@ -52,8 +52,13 @@ public class DefaultEntityQueryPager<
 		switch (command) {
 		case FIRST:
 			fetch(Command.FIRST, null);
+			break;
+		case CURRENT:
+			fetch(Command.CURRENT, getCurrentOffset());
+			break;
 		case NEXT:
 			fetchNext();
+			break;
 		case PREVIOUS:
 			fetchPrevious();
 			break;		
