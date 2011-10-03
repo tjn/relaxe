@@ -17,6 +17,7 @@ import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQueryResult;
+import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.EntityQueryTemplateAttribute;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
@@ -43,7 +44,7 @@ public class EntityQueryExecutorTest extends TestCase {
 	}
 	
 	private QueryResult<EntityDataObject<HourReport>> execute(HourReport.QueryTemplate template) throws Exception {
-		return execute(template.newQuery(0, 0));
+		return execute(template.newQuery());
 	}
 	
 	private QueryResult<EntityDataObject<HourReport>> execute(Query q) throws Exception {
@@ -65,13 +66,14 @@ public class EntityQueryExecutorTest extends TestCase {
 				HourReport, 
 				HourReport.Holder, 
 				HourReport.Factory, 
-				HourReport.MetaData
+				HourReport.MetaData,
+				HourReport.QueryTemplate				
 			> qe = createExecutor(HourReport.TYPE.getMetaData(), imp);
 			
 			
 			// Query q = template.newQuery(limit, offset);
 			
-			EntityQueryResult<HourReport.Attribute, HourReport.Reference, Type, HourReport, MetaData> er = qe.execute(q, true, c);
+			EntityQueryResult<HourReport.Attribute, HourReport.Reference, Type, HourReport, HourReport.Holder, HourReport.Factory, MetaData, HourReport.QueryTemplate> er = qe.execute(q, true, c);
 			assertNotNull(er);
 			QueryResult<EntityDataObject<HourReport>> qr = er.getContent(); 
 			// QueryResult<EntityDataObject<HourReport>> qr = qe.execute(q, true, c);
@@ -94,10 +96,11 @@ public class EntityQueryExecutorTest extends TestCase {
 		E extends Entity<A, R, T, E, H, F, M>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
 		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>
+		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		QT extends EntityQueryTemplate<A, R, T, E, H, F, M, QT>
 	>
-	EntityQueryExecutor<A, R, T, E, H, F, M> createExecutor(M meta, Implementation imp) {
-		return new EntityQueryExecutor<A, R, T, E, H, F, M>(imp);
+	EntityQueryExecutor<A, R, T, E, H, F, M, QT> createExecutor(M meta, Implementation imp) {
+		return new EntityQueryExecutor<A, R, T, E, H, F, M, QT>(imp);
 	}
 	
 	private static Logger logger() {

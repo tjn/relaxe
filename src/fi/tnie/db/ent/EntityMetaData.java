@@ -33,9 +33,9 @@ public interface EntityMetaData<
 	T extends ReferenceType<A, R, T, E, H, F, M>,	
 	E extends Entity<A, R, T, E, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
+	F extends EntityFactory<E, H, M, F>,	 
 	M extends EntityMetaData<A, R, T, E, H, F, M>
-> 	
+	> 	
 {
 
 //	Class<A> getAttributeNameType();
@@ -128,5 +128,5 @@ public interface EntityMetaData<
 	void addKey(IntervalKey.YearMonth<A, T, E> key);
 	void addKey(IntervalKey.DayTime<A, T, E> key);
 	
-	M self();	
+	M self();
 }

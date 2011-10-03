@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import fi.tnie.db.ent.value.EntityKey;
+import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
@@ -139,7 +140,12 @@ public abstract class DefaultQueryTemplate<
 	}
 	
 	@Override
-	public EntityQuery<A, R, T, E, M> newQuery() throws CyclicTemplateException {	
-		return newQuery(0, 0);
+	public EntityQuery<A, R, T, E, H, F, M, Q> newQuery() throws CyclicTemplateException {	
+		return newQuery(null, null);
+	}
+	
+	public EntityQuery<A, R, T, E, H, F, M, Q> newQuery(long limit, long offset) 
+		throws CyclicTemplateException {
+		return newQuery(Long.valueOf(limit), Long.valueOf(offset));
 	}
 }

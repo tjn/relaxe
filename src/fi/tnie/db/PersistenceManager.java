@@ -110,18 +110,19 @@ public class PersistenceManager<
 		}
 		
 		@Override
-		public EntityQuery<A, R, T, E, M> newQuery(long limit, long offset) 
+		public EntityQuery<A, R, T, E, H, F, M, PMTemplate> newQuery(Long limit, Long offset) 
 			throws EntityRuntimeException
 		{						
 			return new DefaultEntityTemplateQuery<A, R, T, E, H, F, M, PMTemplate>(this, limit, offset);
 		}	
-	}    
+	}
 
-    private E target;
-//    private PMQuery query = null;
+    private E target;    
     private Implementation implementation = null;
 
     private static Logger logger = Logger.getLogger(PersistenceManager.class);
+    
+//    private QT queryTemplate;
     
     /**
      * Specifies a behavior for merging the dependencies of the entity currently being merged.  
@@ -408,7 +409,7 @@ public class PersistenceManager<
     	M meta = getTarget().getMetaData();    	
         PMTemplate qt = new PMTemplate(meta);
         
-        EntityQuery<A, R, T, E, M> eq = qt.newQuery();        
+        EntityQuery<A, R, T, E, H, F, M, PMTemplate> eq = qt.newQuery();        
         TableReference tref = eq.getTableRef();        
     	Predicate pkp = getPKPredicate(tref, getTarget());
     	logger().debug("merge: pkp=" + pkp);
@@ -417,9 +418,9 @@ public class PersistenceManager<
 
     	if (pkp != null) {    	
     		eq.getTableExpression().getWhere().setSearchCondition(pkp);
-    		EntityQueryExecutor<A, R, T, E, H, F, M> ee = new EntityQueryExecutor<A, R, T, E, H, F, M>(imp);
+    		EntityQueryExecutor<A, R, T, E, H, F, M, PMTemplate> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, PMTemplate>(imp);
 //    		QueryResult<EntityDataObject<E>> qr = ee.execute(eq, false, c);
-    		EntityQueryResult<A, R, T, E, M> er = ee.execute(eq, false, c);
+    		EntityQueryResult<A, R, T, E, H, F, M, PMTemplate> er = ee.execute(eq, false, c);
     		QueryResult<EntityDataObject<E>> qr = er.getContent();    		
     		List<? extends EntityDataObject<E>> cl = qr.getContent();
     		logger().debug("merge: cl.size()=" + cl.size());
@@ -428,8 +429,9 @@ public class PersistenceManager<
     	}
     	
     	logger().debug("merge: stored=" + stored);
-
-    	mergeDependencies(getTarget(), c);    	
+    	
+    	    	
+    	mergeDependencies(getTarget(), qt, c);    	
 
     	if (stored == null) {
     		insert(c);
@@ -447,9 +449,10 @@ public class PersistenceManager<
 		DE extends Entity<DA, DR, DT, DE, DH, DF, DM>,
 		DH extends ReferenceHolder<DA, DR, DT, DE, DH, DM>,
 		DF extends EntityFactory<DE, DH, DM, DF>,
-		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM>  
+		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM>,
+		DQ extends EntityQueryTemplate<DA, DR, DT, DE, DH, DF, DM, DQ>
     >    
-    void mergeDependencies(DE target, Connection c) throws EntityException, SQLException, QueryException {
+    void mergeDependencies(DE target, DQ qt, Connection c) throws EntityException, SQLException, QueryException {
     	
     	logger().debug("mergeDependencies: target=" + target);
     	
@@ -535,7 +538,7 @@ public class PersistenceManager<
     }
     
     public PersistenceManager(E target, Implementation implementation) {
-    	this(target, implementation, MergeMode.UNIDENTIFIED);
+    	this(target, implementation, MergeMode.UNIDENTIFIED);    	
     }
 
     public PersistenceManager(E target, Implementation implementation, MergeMode mergeStrategy) {
@@ -637,8 +640,8 @@ public class PersistenceManager<
 		DT extends ReferenceType<DA, DR, DT, DE, DH, DF, DM>, 
 		DE extends Entity<DA, DR, DT, DE, DH, DF, DM>,
 		DH extends ReferenceHolder<DA, DR, DT, DE, DH, DM>,
-		DF extends EntityFactory<DE, DH, DM, DF>,		
-		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM>
+		DF extends EntityFactory<DE, DH, DM, DF>,
+		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM>		
 	>
 	PersistenceManager<DA, DR, DT, DE, DH, DF, DM> create(DE e, Implementation impl) {
 		PersistenceManager<DA, DR, DT, DE, DH, DF, DM> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM>(e, impl, getMergeMode());

@@ -50,12 +50,13 @@ public interface EntityQueryTemplate<
 	public void add(A ... attributes);	
 	public void remove(A ... attributes);
 	
-	EntityQuery<A, R, T, E, M> newQuery()
+	EntityQuery<A, R, T, E, H, F, M, Q> newQuery()
 		throws CyclicTemplateException;
 		
-	EntityQuery<A, R, T, E, M> newQuery(long limit, long offset)
+	EntityQuery<A, R, T, E, H, F, M, Q> newQuery(Long limit, Long offset)
 		throws CyclicTemplateException;
 
+	
 	
 }
 

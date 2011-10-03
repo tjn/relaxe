@@ -34,7 +34,7 @@ public class EntityBuilderManager<
 >
 	extends DataObjectProcessor<MutableEntityDataObject<E>> {
 			
-	private EntityQuery<A, R, T, E, M> query;	
+	private EntityQuery<A, R, T, E, H, F, M, ?> query;	
 	private M meta;
 	
 	private static Logger logger = Logger.getLogger(EntityBuilderManager.class);
@@ -44,7 +44,7 @@ public class EntityBuilderManager<
 	
 	private EntityBuilder<E> rootBuilder;
 						
-	public EntityBuilderManager(ValueExtractorFactory vef, EntityQuery<A, R, T, E, M> query) 
+	public EntityBuilderManager(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, ?> query) 
 		throws EntityException {
 		super(vef, query);
 		this.query = query;
@@ -109,7 +109,7 @@ public class EntityBuilderManager<
 		return identityContext;
 	}
 
-	public EntityQuery<?, ?, ?, ?, ?> getQuery() {
+	public EntityQuery<?, ?, ?, ?, ?, ?, ?, ?> getQuery() {
 		return query;
 	}
 

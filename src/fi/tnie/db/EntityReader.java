@@ -33,11 +33,11 @@ public class EntityReader<
 	
 	private List<EntityDataObject<E>> content;
 	
-	public EntityReader(ValueExtractorFactory vef, EntityQuery<A, R, T, E, M> query) throws EntityException {
+	public EntityReader(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, ?> query) throws EntityException {
 		this(vef, query, new ArrayList<EntityDataObject<E>>());
 	}
 
-	public EntityReader(ValueExtractorFactory vef, EntityQuery<A, R, T, E, M> query, List<EntityDataObject<E>> result) 
+	public EntityReader(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, ?> query, List<EntityDataObject<E>> result) 
 		throws EntityException {
 		super(vef, query);
 		

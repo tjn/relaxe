@@ -20,6 +20,7 @@ import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.EntityQueryResult;
+import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.expr.CountFunction;
@@ -45,7 +46,8 @@ public class EntityQueryExecutor<
 	E extends Entity<A, R, T, E, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>
+	M extends EntityMetaData<A, R, T, E, H, F, M>,
+	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, QT>
 > {	
 	private Implementation implementation;	
 	private static Logger logger = Logger.getLogger(EntityQueryExecutor.class);
@@ -55,7 +57,7 @@ public class EntityQueryExecutor<
 		this.implementation = implementation;
 	}
 
-	public EntityQueryResult<A, R, T, E, M> execute(EntityQuery<A, R, T, E, M> query, boolean rowCount, Connection c) 
+	public EntityQueryResult<A, R, T, E, H, F, M, QT> execute(EntityQuery<A, R, T, E, H, F, M, QT> query, boolean rowCount, Connection c) 
 		throws SQLException, QueryException, EntityException {
 		
 		Implementation imp = getImplementation();
@@ -104,7 +106,7 @@ public class EntityQueryExecutor<
 		QueryResult<EntityDataObject<E>> result = new QueryResult<EntityDataObject<E>>(q, content, qt);
 		result.setAvailable(available);
 		
-		return new DefaultEntityQueryResult<A, R, T, E, M>(query, result);		
+		return new DefaultEntityQueryResult<A, R, T, E, H, F, M, QT>(query, result);		
 	}
 	
 	public Implementation getImplementation() {

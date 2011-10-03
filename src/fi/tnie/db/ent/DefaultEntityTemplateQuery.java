@@ -45,7 +45,7 @@ public class DefaultEntityTemplateQuery<
 	M extends EntityMetaData<A, R, T, E, H, F, M>,
 	Q extends EntityQueryTemplate<A, R, T, E, H, F, M, Q>
 	> 
-	implements EntityQuery<A, R, T, E, M>
+	implements EntityQuery<A, R, T, E, H, F, M, Q>
 	
 {
 	
@@ -545,5 +545,7 @@ public class DefaultEntityTemplateQuery<
 	private boolean isInitialized() {
 		return (this.queryExpression != null);
 	}
+	
+	
 }
 

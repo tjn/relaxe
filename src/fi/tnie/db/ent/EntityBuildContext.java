@@ -7,7 +7,7 @@ package fi.tnie.db.ent;
 public interface EntityBuildContext {
 
 	DataObject.MetaData getInputMetaData();		
-	EntityQuery<?, ?, ?, ?, ?> getQuery();
+	EntityQuery<?, ?, ?, ?, ?, ?, ?, ?> getQuery();
 	AttributeWriterFactory getAttributeWriterFactory();	
 	ColumnResolver getColumnResolver();
 }
