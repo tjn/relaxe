@@ -61,15 +61,14 @@ public abstract class AbstractEntityQueryPager<
 	}
 	
 	public AbstractEntityQueryPager(EntityQueryResult<A, R, T, E, H, F, M, QT> result, EntityFetcher<A, R, T, E, H, F, M, QT> fetcher) {
-		super();
-		
-		if (result == null) {
-			throw new NullPointerException("result");
-		}
-		
+		this(result.getRequest().getTemplate(), fetcher);
 		this.result = result;
-		this.fetcher = fetcher;
-		this.template = result.getRequest().getTemplate();
+	}
+	
+	public AbstractEntityQueryPager(QT template, EntityFetcher<A, R, T, E, H, F, M, QT> fetcher) {
+		super();		
+		this.template = template;
+		this.fetcher = fetcher;		
 	}
 	
 	@Override
@@ -83,12 +82,12 @@ public abstract class AbstractEntityQueryPager<
 	
 
 
-	protected void received(EntityQueryResult<A, R, T, E, H, F, M, QT> result, C a) {		
-		if (result == null) {
-			throw new NullPointerException("result");
+	protected void received(EntityQueryResult<A, R, T, E, H, F, M, QT> newResult, C a) {		
+		if (newResult == null) {
+			throw new NullPointerException("newResult");
 		}
 		
-		this.result = result;
+		this.result = newResult;
 		fireEvent(new PagingEvent<P, C>(self(), a));
 	}	 
 
@@ -105,5 +104,10 @@ public abstract class AbstractEntityQueryPager<
 	protected void fetch(Long limit, Long offset, C command) {
 		ResultReceiver rr = new ResultReceiver(command);		
 		this.fetcher.fetch(getTemplate(), limit, offset, rr);
-	}	
+	}
+	
+//	private static Logger logger() {
+//		return DefaultLogger.getLogger();
+//	}
+	
 }

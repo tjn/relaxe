@@ -30,8 +30,13 @@ public class DefaultEntityQueryPager<
 	public DefaultEntityQueryPager(EntityQueryResult<A, R, T, E, H, F, M, QT> result, EntityFetcher<A, R, T, E, H, F, M, QT> fetcher) {
 		super(result, fetcher);
 	}
+	
+	public DefaultEntityQueryPager(QT template, EntityFetcher<A, R, T, E, H, F, M, QT> fetcher) {
+		super(template, fetcher);	
+	}
 
 	public enum Command {
+		CURRENT,
 		FIRST,
 		PREVIOUS,
 		NEXT
@@ -73,14 +78,14 @@ public class DefaultEntityQueryPager<
 	}
 
 	private void fetchNext() {
-		long co = getCurrentOffset();
+		long co = getCurrentOffset().longValue();
 		int ps = getPageSize().get().intValue();			
 		Long offset = Long.valueOf(co + ps);
 		fetch(Command.NEXT, offset);
 	}
 	
 	private void fetchPrevious() {
-		long co = getCurrentOffset();
+		long co = getCurrentOffset().longValue();
 		
 		if (co == 0) {
 			return;
@@ -98,9 +103,14 @@ public class DefaultEntityQueryPager<
 		return limit;
 	}
 
-	private long getCurrentOffset() {
-		Long off = getResult().getRequest().getOffset();
-		return (off == null) ? 0 : off.longValue();
+	private Long getCurrentOffset() {
+		Long off = null;
+				
+		if (getResult() != null) {
+			off = getResult().getRequest().getOffset();
+		}		
+
+		return (off == null) ? Long.valueOf(0) : off;
 	}
 
 }
