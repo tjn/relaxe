@@ -8,4 +8,6 @@ public interface MutableValueModel<V>
 
 	void set(V newValue);	
 	ImmutableValueModel<V> asImmutable();
+	
+	boolean isNullable();
 }

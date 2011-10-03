@@ -48,4 +48,8 @@ public class DefaultConstrainedMutableValueModel<V>
 		return this;
 	}
 	
+	@Override
+	public boolean isNullable() {
+		return true;
+	}
 }

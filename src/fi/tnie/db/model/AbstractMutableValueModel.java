@@ -30,4 +30,9 @@ public abstract class AbstractMutableValueModel<V>
 	public MutableValueModel<V> asMutable() {	
 		return this;
 	}
+	
+	@Override
+	public boolean isNullable() {
+		return true;
+	}
 }

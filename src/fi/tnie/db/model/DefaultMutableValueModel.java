@@ -13,7 +13,7 @@ public class DefaultMutableValueModel<V>
 	}
 
 	public DefaultMutableValueModel(V initialValue) {
-		super();		
+		super();
 		this.value = initialValue;
 	}
 	
@@ -28,5 +28,4 @@ public class DefaultMutableValueModel<V>
 		this.value = newValue;
 		fireIfChanged(from, this.value);
 	}
-	
 }

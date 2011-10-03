@@ -19,7 +19,7 @@ public class MutableIntegerModel
 		super(Integer.valueOf(value));	
 	}
 		
-	public void set(int value) {	
+	public void set(int value) {
 		super.set(Integer.valueOf(value));
 	}
 }
