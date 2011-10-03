@@ -29,6 +29,8 @@ public abstract class AbstractResponse<R extends Request>
 		if (request == null) {
 			throw new NullPointerException("request");
 		}		
+		
+		this.request = request;
 	}
 
 	public R getRequest() {
