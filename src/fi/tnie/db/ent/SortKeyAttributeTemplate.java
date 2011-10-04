@@ -3,6 +3,8 @@
  */
 package fi.tnie.db.ent;
 
+import java.io.Serializable;
+
 import fi.tnie.db.expr.ColumnReference;
 import fi.tnie.db.expr.OrderBy;
 import fi.tnie.db.expr.OrderBy.Order;
@@ -19,10 +21,11 @@ import fi.tnie.db.expr.OrderBy.SortKey;
 public abstract class SortKeyAttributeTemplate<A extends Attribute>
 	implements EntityQuerySortKey<A> {
 	
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6385231997652964888L;
+	private static final long serialVersionUID = -3079799118698355746L;
 	
 	private A attribute;
 	
@@ -49,13 +52,20 @@ public abstract class SortKeyAttributeTemplate<A extends Attribute>
 
 
 
-	private static class Asc<A extends Attribute>
+	public static class Asc<A extends Attribute>
 		extends SortKeyAttributeTemplate<A> {
 		
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = -8042036745392628822L;
+		private static final long serialVersionUID = -4545159706806621845L;
+
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		@SuppressWarnings("unused")
+		private Asc() {	
+		}
 
 		protected Asc(A attribute) {
 			super(attribute);
@@ -68,15 +78,14 @@ public abstract class SortKeyAttributeTemplate<A extends Attribute>
 	}
 
 	
-	private static class Desc<A extends Attribute>
+	public static class Desc<A extends Attribute>
 		extends SortKeyAttributeTemplate<A> {
-		
+				
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = -8042036745392628822L;
+		private static final long serialVersionUID = 4575239762087833095L;
 
-		
 		/**
 		 * No-argument constructor for GWT Serialization
 		 */
