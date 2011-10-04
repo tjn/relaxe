@@ -13,18 +13,25 @@ public class OrderBy
 	private ElementList<SortKey> sortKeyList;
 			
 	public enum Order implements Element {
-		ASC,
-		DESC;
+		ASC(SQLKeyword.ASC),
+		DESC(SQLKeyword.DESC);
+		
+		private Element keyword;
+		
+		private Order(SQLKeyword keyword) {
+			this.keyword = keyword;
+		}
 
 		@Override
 		public void traverse(VisitContext vc, ElementVisitor v) {
 			v.start(vc, this);
+			this.keyword.traverse(vc, v);
 			v.end(this);
 		}
 
 		@Override
 		public String getTerminalSymbol() {
-			return super.toString();			
+			return null;			
 		}
 	}
 	
@@ -59,12 +66,16 @@ public class OrderBy
 		/**
 		* No-argument constructor for GWT Serialization
 		*/
-		@SuppressWarnings("unused")
-		private ExprSortKey() {	
+		protected ExprSortKey() {	
 		}
 	
 		public ExprSortKey(Expression expression, Order order) {
 			super(order);
+			
+			if (expression == null) {
+				throw new NullPointerException("expression");
+			}
+			
 			this.expression = expression;
 		}
 
@@ -102,6 +113,10 @@ public class OrderBy
 		private OrdinalSortKey() {	
 		}
 		
+		public OrdinalSortKey(int ordinal) {
+			this(ordinal, Order.DESC);
+		}
+		
 		public OrdinalSortKey(int ordinal, Order order) {
 			super(order);
 			this.ordinal = new Ordinal(ordinal);
@@ -113,13 +128,13 @@ public class OrderBy
 		
 		@Override
 		public void traverseContent(VisitContext vc, ElementVisitor v) {
-			this.ordinal.traverse(vc, v);
+			this.ordinal.traverse(vc, v);			
 			this.order.traverse(vc, v);
 		}
 	}
 	
 	public static class Ordinal
-		extends SimpleElement {
+		implements Token {
 		
 		/**
 		 * 
@@ -142,12 +157,19 @@ public class OrderBy
 		public String getTerminalSymbol() {
 			return Integer.toString(this.ordinal);
 		}
+		
 
 		@Override
 		public void traverse(VisitContext vc, ElementVisitor v) {
-			v.start(vc, this);
+			v.start(vc, this);			 
 			v.end(this);			
-		}		
+		}
+
+		@Override
+		public boolean isOrdinary() {
+			return true;
+		}
+
 	}
 
 	public OrderBy() {
@@ -156,6 +178,10 @@ public class OrderBy
 	
 	public void add(SortKey k) {
 		getSortKeyList().add(k);
+	}
+	
+	public static OrderBy.SortKey newSortKey(ColumnReference c, Order o) {
+		return new ExprSortKey(c, o);
 	}
 	
 	public void add(ColumnReference c, Order o) {
