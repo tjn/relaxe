@@ -97,7 +97,7 @@ public abstract class DefaultQueryTemplate<
 	}
 	
 	private void add(A a, Map<A, EntityQueryTemplateAttribute> dest) {
-		dest.put(a, DefaultTemplateAttribute.get(a));
+		dest.put(a, DefaultTemplateAttribute.get());
 	}
 	
 	

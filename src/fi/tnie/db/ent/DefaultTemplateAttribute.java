@@ -14,21 +14,14 @@ public class DefaultTemplateAttribute
 	 */
 	private static final long serialVersionUID = -7808021636368072149L;
 			
-	private Attribute attribute;
-	
-	public static DefaultTemplateAttribute get(Attribute a) {
-		return new DefaultTemplateAttribute(a);
+	public static DefaultTemplateAttribute get() {
+		return new DefaultTemplateAttribute();
 	}
 	
-	public DefaultTemplateAttribute(Attribute attribute) {
-		super();
-		this.attribute = attribute;
-	}
-
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected DefaultTemplateAttribute() {
+	public DefaultTemplateAttribute() {
 	}
 
 
