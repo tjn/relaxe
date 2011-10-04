@@ -13,16 +13,24 @@ public class DefaultTemplateAttribute
 	 * 
 	 */
 	private static final long serialVersionUID = -7808021636368072149L;
+			
+	private Attribute attribute;
 	
-	public static EntityQueryTemplateAttribute instance;
-	
-	public static EntityQueryTemplateAttribute getInstance() {
-		if (instance == null) {
-			instance = new DefaultTemplateAttribute();		
-		}
-
-		return instance;
+	public static DefaultTemplateAttribute get(Attribute a) {
+		return new DefaultTemplateAttribute(a);
 	}
+	
+	public DefaultTemplateAttribute(Attribute attribute) {
+		super();
+		this.attribute = attribute;
+	}
+
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected DefaultTemplateAttribute() {
+	}
+
 
 	@Override
 	public Predicate createPredicate(ColumnReference cref) {
@@ -30,12 +38,12 @@ public class DefaultTemplateAttribute
 	}
 
 	@Override
-	public EntityQuerySortKey createSortKey(ColumnReference cref) {
-		return null;
-	}
-
-	@Override
 	public boolean isSelected(ColumnReference cref) {
 		return true;
 	}
+	
+//	@Override
+//	public EntityQuerySortKey asSortKey() {
+//		return null;
+//	} 
 }

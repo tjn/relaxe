@@ -45,8 +45,7 @@ public class DefaultEntityTemplateQuery<
 	M extends EntityMetaData<A, R, T, E, H, F, M>,
 	Q extends EntityQueryTemplate<A, R, T, E, H, F, M, Q>
 	> 
-	implements EntityQuery<A, R, T, E, H, F, M, Q>
-	
+	implements EntityQuery<A, R, T, E, H, F, M, Q>	
 {
 	
 //	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class);
@@ -63,12 +62,19 @@ public class DefaultEntityTemplateQuery<
 	private transient TableReference rootRef;
 		
 	private transient List<Predicate> predicateList;
-	private transient List<EntityQuerySortKey> sortKeyList;
-	
+
 	private transient Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> metaDataMap;
 	
 	private transient LinkedHashMap<Integer, TableReference> originMap;	
 	private transient Map<JoinKey, TableReference> referenceMap;
+	
+	
+	
+	private transient Map<EntityQueryTemplateAttribute, ColumnReference> columnMap;
+	
+	private transient Map<EntityQuerySortKey<?>, ColumnReference> sortKeyColumnMap = new HashMap<EntityQuerySortKey<?>, ColumnReference>();
+	
+	// private transient Map<Attribute, EntityQueryTemplateAttribute> attributeTemplateMap = new HashMap<Attribute, EntityQueryTemplateAttribute>();
 	
 	private transient List<ColumnReference> rootPrimaryKey; // NS	
 	private Q template;
@@ -82,11 +88,11 @@ public class DefaultEntityTemplateQuery<
 	protected DefaultEntityTemplateQuery() {
 	}
 	
-	public DefaultEntityTemplateQuery(Q root) {
-		this(root, null, null);
+	public DefaultEntityTemplateQuery(Q rootTemplate) {
+		this(rootTemplate, null, null);
 	}
 	
-	public DefaultEntityTemplateQuery(Q root, Long limit, Long offset) {
+	public DefaultEntityTemplateQuery(Q rootTemplate, Long limit, Long offset) {
 		this.limit = limit;		
 		this.offset = offset;
 		
@@ -95,18 +101,18 @@ public class DefaultEntityTemplateQuery<
 		}
 		
 		if (offset != null && offset.longValue() < 0) {
-			throw new IllegalArgumentException("limit must not be negative: " + offset);
+			throw new IllegalArgumentException("offset must not be negative: " + offset);
 		}
 		
-		if (root == null) {
+		if (rootTemplate == null) {
 			throw new NullPointerException();
 		}
 		
-		this.template = root;
-		this.type = root.getMetaData().getType();
+		this.template = rootTemplate;
+		this.type = rootTemplate.getMetaData().getType();
 	}
 
-	public DefaultEntityTemplateQuery(Q root, Long limit, long offset, boolean init) 
+	public DefaultEntityTemplateQuery(Q root, Long limit, Long offset, boolean init) 
 		throws CyclicTemplateException, EntityRuntimeException {
 		this(root, limit, offset);
 	
@@ -121,7 +127,8 @@ public class DefaultEntityTemplateQuery<
 		}
 		
 		Q root = this.template;
-		
+				
+			
 		BaseTable table = getMetaData().getBaseTable();
 
 		if (table == null) {
@@ -135,8 +142,10 @@ public class DefaultEntityTemplateQuery<
 		q.setFrom(new From(tref));
 				
 		this.query = q;
-				
-		if (this.limit == null && offset == null && getSortKeyList().isEmpty()) {
+		
+		List<EntityQuerySortKey<?>> sortKeyList = root.allSortKeys();
+					
+		if (this.limit == null && offset == null && sortKeyList.isEmpty()) {
 			this.queryExpression = this.query;
 		}		
 		else {
@@ -145,8 +154,21 @@ public class DefaultEntityTemplateQuery<
 			if (ob == null) {
 				ob = new OrderBy();
 				
-				for (EntityQuerySortKey sk : getSortKeyList()) {					
-					ob.add(sk.sortKey());					
+				for (EntityQuerySortKey<?> sk : sortKeyList) {
+					/**
+					 * TODO: We could probably do better here.
+					 * If EntityQueryTemplateAttribute hold a EntityQueryTemplate it is currently used with,
+					 * we could instantiate ColumnReference on the fly.
+					 * Now we have to have the column referenced in select list.
+					 */					
+//					EntityQueryTemplateAttribute at = sk.getAttributeTemplate();
+//					ColumnReference cr = getColumnMap().get(at);
+					
+					ColumnReference cr = sortKeyColumnMap.get(sk);
+										
+					// Only template attributes which are used as sort keys have associated column reference.
+					// Other sort keys just do without.					    					
+					ob.add(sk.sortKey(cr));
 				}
 			}
 			
@@ -220,6 +242,9 @@ public class DefaultEntityTemplateQuery<
 			}
 		}
 		
+		
+		
+	
 						
 //		Set<MR> rs = meta.relationships();
 
@@ -240,6 +265,22 @@ public class DefaultEntityTemplateQuery<
 //		}
 
 		addAttributes(template, s, tref);				
+		
+		List<EntityQuerySortKey<MA>> keys = template.sortKeys();
+		
+		for (EntityQuerySortKey<MA> k : keys) {
+			MA a = k.attribute();
+			ColumnReference cref = null;
+			
+			if (a != null) {			
+				Column c = meta.getColumn(a);
+				cref = new ColumnReference(tref, c);
+				sortKeyColumnMap.put(k, cref);
+			}
+		}
+		
+		
+		
 		getOriginMap().put(Integer.valueOf(s.getColumnCount()), tref);
 		
 		qref = processReferences(template, qref, tref, q, visited);
@@ -310,15 +351,14 @@ public class DefaultEntityTemplateQuery<
 			Column c = meta.getColumn(a);
 			ColumnReference cref = new ColumnReference(tref, c);
 			
+			getColumnMap().put(ta, cref);
+			
 			if (ta.isSelected(cref)) {
 				s.add(cref);
 			}
 			
 			Predicate p = ta.createPredicate(cref);			
 			addPredicate(p);
-						
-			EntityQuerySortKey sk = ta.createSortKey(cref);
-			addSortKey(sk);			
 									
 //			PrimitiveHolder<?, ?> h = template.value(a);
 //						
@@ -487,21 +527,21 @@ public class DefaultEntityTemplateQuery<
 	}
 	
 	
-	private List<EntityQuerySortKey> getSortKeyList() {
-		if (sortKeyList == null) {
-			sortKeyList = new ArrayList<EntityQuerySortKey>();			
-		}
-
-		return sortKeyList;
-	}
+//	private List<EntityQuerySortKey> getSortKeyList() {
+//		if (sortKeyList == null) {
+//			sortKeyList = new ArrayList<EntityQuerySortKey>();			
+//		}
+//
+//		return sortKeyList;
+//	}
 	
-	private boolean addSortKey(EntityQuerySortKey sk) {
-		if (sk == null) {
-			return false;
-		}
-		
-		return getSortKeyList().add(sk);
-	}
+//	private boolean addSortKey(EntityQuerySortKey sk) {
+//		if (sk == null) {
+//			return false;
+//		}
+//		
+//		return getSortKeyList().add(sk);
+//	}
 	
 	private List<ColumnReference> getRootPrimaryKey() {
 		if (rootPrimaryKey == null) {
@@ -545,7 +585,13 @@ public class DefaultEntityTemplateQuery<
 	private boolean isInitialized() {
 		return (this.queryExpression != null);
 	}
-	
-	
+		
+	public Map<EntityQueryTemplateAttribute, ColumnReference> getColumnMap() {
+		if (columnMap == null) {
+			columnMap = new HashMap<EntityQueryTemplateAttribute, ColumnReference>();			
+		}
+
+		return columnMap;
+	}	
 }
 

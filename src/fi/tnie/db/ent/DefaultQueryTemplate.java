@@ -4,11 +4,14 @@
 package fi.tnie.db.ent;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import fi.tnie.db.ent.value.EntityKey;
-import fi.tnie.db.gen.ent.personal.HourReport;
+import fi.tnie.db.expr.OrderBy;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
@@ -32,7 +35,8 @@ public abstract class DefaultQueryTemplate<
 	private Map<A, EntityQueryTemplateAttribute> attributeMap;
 	private Map<R, EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?>> templateMap;
 	
-	 
+	private List<EntityQuerySortKey<A>> sortKeyList = null;	
+	private List<EntityQuerySortKey<?>> allSortKeys = null;
 	
 	@Override
 	public EntityQueryTemplateAttribute get(A a) throws EntityRuntimeException {
@@ -88,6 +92,15 @@ public abstract class DefaultQueryTemplate<
 		return templateMap;
 	}
 	
+	public void add(A attribute) {
+		add(attribute, getAttributeMap());
+	}
+	
+	private void add(A a, Map<A, EntityQueryTemplateAttribute> dest) {
+		dest.put(a, DefaultTemplateAttribute.get(a));
+	}
+	
+	
 	@Override
 	public void remove(A ... as) {
 		if (as == null) {
@@ -115,13 +128,17 @@ public abstract class DefaultQueryTemplate<
 
 	private void addAll(Iterable<A> as) {
 		Map<A, EntityQueryTemplateAttribute> am = getAttributeMap();
-		EntityQueryTemplateAttribute marker = DefaultTemplateAttribute.getInstance();
+		// EntityQueryTemplateAttribute marker = DefaultTemplateAttribute.get();
 	
 		for (A a : as) {
 			if (!am.containsKey(a)) {
-				am.put(a, marker);
+				add(a, am);				
 			}
 		}
+	}
+	
+	public void set(A a, EntityQueryTemplateAttribute t) {
+		getAttributeMap().put(a, t);
 	}
 	
 	public void remove(Iterable<A> as) {
@@ -148,4 +165,81 @@ public abstract class DefaultQueryTemplate<
 		throws CyclicTemplateException {
 		return newQuery(Long.valueOf(limit), Long.valueOf(offset));
 	}
+	
+	
+	public void asc(A sk) {
+		addSortKey(SortKeyAttributeTemplate.asc(sk));
+	}
+	
+	public void desc(A sk) {
+		addSortKey(SortKeyAttributeTemplate.desc(sk));
+	}
+	
+	public void addSortKey(EntityQuerySortKey<A> sk) {
+		getSortKeyList().add(sk);
+		getAllSortKeys().add(sk);
+	}	
+	
+	@Override
+	public List<EntityQuerySortKey<A>> sortKeys() {
+		if (this.sortKeyList == null) {
+			return Collections.emptyList();
+		}
+				
+		return Collections.unmodifiableList(this.sortKeyList);
+	}
+	
+	private List<EntityQuerySortKey<A>> getSortKeyList() {
+		if (sortKeyList == null) {
+			sortKeyList = new ArrayList<EntityQuerySortKey<A>>();			
+		}
+
+		return sortKeyList;
+	}
+
+	public <
+		SA extends Attribute,
+		SQ extends EntityQueryTemplate<SA, ?, ?, ?, ?, ?, ?, ?>
+	>	
+	void addSortKey(SQ template, SA attribute, OrderBy.Order so) {	
+		EntityQuerySortKey<SA> sk = SortKeyAttributeTemplate.get(attribute, so);
+		template.addSortKey(sk);
+		
+		if (template != this) {
+			getAllSortKeys().add(sk);
+		}		
+			
+	}
+	
+	
+	public <
+		SA extends Attribute,
+		SQ extends EntityQueryTemplate<SA, ?, ?, ?, ?, ?, ?, ?>
+	>
+	void asc(SQ template, SA attribute) {
+		addSortKey(template, attribute, OrderBy.Order.ASC);
+	}
+	
+	public <
+		SA extends Attribute,
+		SQ extends EntityQueryTemplate<SA, ?, ?, ?, ?, ?, ?, ?>
+	>
+	void desc(SQ template, SA attribute) {
+		addSortKey(template, attribute, OrderBy.Order.DESC);
+	}
+
+	
+	@Override
+	public List<EntityQuerySortKey<?>> allSortKeys() {
+		return Collections.unmodifiableList(getAllSortKeys());
+	}	
+	
+	private List<EntityQuerySortKey<?>> getAllSortKeys() {
+		if (allSortKeys == null) {
+			allSortKeys = new ArrayList<EntityQuerySortKey<?>>();			
+		}
+
+		return allSortKeys;
+	}
+
 }

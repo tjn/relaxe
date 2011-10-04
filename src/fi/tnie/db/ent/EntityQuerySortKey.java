@@ -5,10 +5,13 @@ package fi.tnie.db.ent;
 
 import java.io.Serializable;
 
+import fi.tnie.db.expr.ColumnReference;
 import fi.tnie.db.expr.OrderBy;
 
-public interface EntityQuerySortKey
+public interface EntityQuerySortKey<A extends Attribute>
 	extends Serializable {
-	int ordinal();
-	OrderBy.SortKey sortKey();
+	
+	OrderBy.SortKey sortKey(ColumnReference cr);	
+	// EntityQueryTemplateAttribute getAttributeTemplate();
+	A attribute();
 }

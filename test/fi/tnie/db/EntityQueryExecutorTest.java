@@ -16,12 +16,14 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityQueryExpressionSortKey;
 import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.EntityQueryTemplateAttribute;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
+import fi.tnie.db.expr.OrderBy;
 import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
@@ -267,6 +269,34 @@ public class EntityQueryExecutorTest extends TestCase {
 		assertTrue(el.size() <= 3);
 		
 		logger().debug("testExecuteLimits: el=" + el);
-	}	
+	}
+		
+	public void testExecuteSort() throws Exception {
+		
+		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate();
+		hrq.addAllAttributes();
+		
+		Organization.QueryTemplate ot = new Organization.QueryTemplate();
+
+		hrq.setTemplate(HourReport.FK_HHR_EMPLOYER, ot);
+		hrq.desc(ot, Organization.Attribute.NAME);
+				
+		hrq.asc(ot, Organization.Attribute.YTUNNUS);
+		hrq.desc(HourReport.Attribute.REPORT_DATE);
+		
+		hrq.addSortKey(EntityQueryExpressionSortKey.<HourReport.Attribute>newSortKey(new OrderBy.OrdinalSortKey(1)));
+		
+		Query q = hrq.newQuery();
+		
+		logger().info("testExecuteSort: q.getColumnMap()=" + q.getColumnMap());		
+						
+		String qs = q.getQueryExpression().generate();
+		logger().info("testExecuteSort: qs=" + qs);
+		
+		qs = qs.toLowerCase();
+		
+		assertTrue(qs.matches(".+order +by.+name.+desc.+ytunnus.+report_date.+desc.*"));
+		
+	}
 	
 }

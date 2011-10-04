@@ -4,6 +4,7 @@
 package fi.tnie.db.ent;
 
 import java.io.Serializable;
+import java.util.List;
 
 import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.rpc.ReferenceHolder;
@@ -43,9 +44,10 @@ public interface EntityQueryTemplate<
 		VQ extends EntityQueryTemplate<VA, VR, VT, V, RH, VF, D, VQ>
 	>	
 	void setTemplate(K k, VQ newTemplate);
-
 	
 	public void addAllAttributes();
+	
+	public void add(A attribute);
 	
 	public void add(A ... attributes);	
 	public void remove(A ... attributes);
@@ -56,7 +58,11 @@ public interface EntityQueryTemplate<
 	EntityQuery<A, R, T, E, H, F, M, Q> newQuery(Long limit, Long offset)
 		throws CyclicTemplateException;
 
+
+	List<EntityQuerySortKey<A>> sortKeys();
 	
-	
+	List<EntityQuerySortKey<?>> allSortKeys();
+
+	void addSortKey(EntityQuerySortKey<A> sk);
 }
 

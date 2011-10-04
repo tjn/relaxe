@@ -10,8 +10,8 @@ import fi.tnie.db.expr.Predicate;
 
 public interface EntityQueryTemplateAttribute
 	extends Serializable {
-	
+			
 	boolean isSelected(ColumnReference cref);	
-	Predicate createPredicate(ColumnReference cref);
-	EntityQuerySortKey createSortKey(ColumnReference cref);	
+	Predicate createPredicate(ColumnReference cref);	
+//	EntityQuerySortKey asSortKey();
 }
