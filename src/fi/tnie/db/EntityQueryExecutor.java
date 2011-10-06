@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.DataObject;
+import fi.tnie.db.ent.DataObjectQueryResult;
 import fi.tnie.db.ent.DefaultEntityQueryResult;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityDataObject;
@@ -22,6 +23,7 @@ import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.Reference;
+import fi.tnie.db.ent.MutableDataObject.MetaData;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.expr.CountFunction;
 import fi.tnie.db.expr.DefaultTableExpression;
@@ -102,8 +104,10 @@ public class EntityQueryExecutor<
 			logger().info("execute: available=" + available);
 		}
 		
+		DataObject.MetaData meta = eb.getMetaData();		
 				
-		QueryResult<EntityDataObject<E>> result = new QueryResult<EntityDataObject<E>>(q, content, qt);
+		// QueryResult<EntityDataObject<E>> result = new QueryResult<EntityDataObject<E>>(q, content, qt);
+		DataObjectQueryResult<EntityDataObject<E>> result = new DataObjectQueryResult<EntityDataObject<E>>(q, meta, content, qt);
 		result.setAvailable(available);
 		
 		return new DefaultEntityQueryResult<A, R, T, E, H, F, M, QT>(query, result);		

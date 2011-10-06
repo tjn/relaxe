@@ -55,5 +55,6 @@ public class EntityReader<
 
 	public List<EntityDataObject<E>> getContent() {
 		return content;
-	}		
+	}
+	
 }

@@ -27,18 +27,18 @@ public class DefaultEntityQueryResult<
 	 */
 	private static final long serialVersionUID = -6159979642605451277L;
 	
-	private QueryResult<EntityDataObject<E>> content;
+	private DataObjectQueryResult<EntityDataObject<E>> content;
 	
 	protected DefaultEntityQueryResult() {
 		super();
 	}
 
-	public DefaultEntityQueryResult(EntityQuery<A, R, T, E, H, F, M, QT> request, QueryResult<EntityDataObject<E>> content) {
+	public DefaultEntityQueryResult(EntityQuery<A, R, T, E, H, F, M, QT> request, DataObjectQueryResult<EntityDataObject<E>> content) {
 		super(request);
 		this.content = content;
 	}
 
-	public QueryResult<EntityDataObject<E>> getContent() {
+	public DataObjectQueryResult<EntityDataObject<E>> getContent() {
 		return this.content;
 	}
 }

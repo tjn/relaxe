@@ -16,7 +16,8 @@ public interface DataObject
 	PrimitiveHolder<?, ?> get(int index);	
 	MetaData meta();
 	
-	public interface MetaData {		
+	public interface MetaData
+		extends Serializable {		
 		public int getColumnCount();
 		public QueryExpression getQuery()
 			throws EntityException;

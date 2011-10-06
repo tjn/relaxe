@@ -88,7 +88,7 @@ public abstract class DataObjectProcessor<O extends MutableDataObject>
 	
 	protected abstract O get();
 
-	protected MutableDataObject.MetaData getMetaData() {
+	public MutableDataObject.MetaData getMetaData() {
 		return meta;
 	}
 

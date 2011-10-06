@@ -19,7 +19,7 @@ public interface EntityQueryResult<
 >
 	extends Response<EntityQuery<A, R, T, E, H, F, M, QT>> 
 {
-	QueryResult<EntityDataObject<E>> getContent();
+	DataObjectQueryResult<EntityDataObject<E>> getContent();
 		
 	
 }
