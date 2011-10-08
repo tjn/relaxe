@@ -8,7 +8,5 @@ public interface BooleanModel
 	
 	@Override
 	public MutableBooleanModel asMutable();
-
 	
-	// BooleanModel newAnd(BooleanModel b);
 }

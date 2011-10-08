@@ -8,6 +8,8 @@ public class DefaultConstantValueModel<V>
 	implements ConstantValueModel<V> {
 	
 	private V value;
+	
+// 	public static final ConstantValueModel<Long> LONG_1 = DefaultConstantValueModel.valueOf(0);
 
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -50,5 +52,13 @@ public class DefaultConstantValueModel<V>
 	public static <V>
 	ConstantValueModel<V> valueOf(V newValue) {
 		return new DefaultConstantValueModel<V>(newValue);
+	}
+	
+	public static ConstantValueModel<Long> valueOf(long v) {
+		return DefaultConstantValueModel.valueOf(Long.valueOf(v));
+	}
+	
+	public static ConstantValueModel<Integer> valueOf(int v) {
+		return DefaultConstantValueModel.valueOf(Integer.valueOf(v));
 	}
 }

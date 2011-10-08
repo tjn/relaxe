@@ -10,6 +10,7 @@ public class InvertedMarkModel<S>
 		super(source, mark);
 	}
 	
+	@Override
 	protected boolean match(S value, S mark) {
 		return (value != mark);
 	}

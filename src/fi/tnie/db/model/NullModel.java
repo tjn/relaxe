@@ -11,6 +11,7 @@ public class NullModel<S>
 		super(source);
 	}
 	
+	@Override
 	public Boolean transform(S source) {
 		return Boolean.valueOf(source == null);
 	}
