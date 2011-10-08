@@ -13,6 +13,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.DataObject;
+import fi.tnie.db.ent.DataObjectQueryResult;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityFactory;
@@ -26,6 +28,7 @@ import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.OrderBy;
+import fi.tnie.db.expr.ValueExpression;
 import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
@@ -84,9 +87,21 @@ public class EntityQueryExecutorTest extends TestCase {
 			
 			EntityQueryResult<HourReport.Attribute, HourReport.Reference, Type, HourReport, HourReport.Holder, HourReport.Factory, MetaData, HourReport.QueryTemplate> er = qe.execute(q, opts, c);
 			assertNotNull(er);
-			QueryResult<EntityDataObject<HourReport>> qr = er.getContent(); 
+			DataObjectQueryResult<EntityDataObject<HourReport>> qr = er.getContent(); 
 			// QueryResult<EntityDataObject<HourReport>> qr = qe.execute(q, true, c);
 			assertNotNull(qr);
+			
+			DataObject.MetaData meta = qr.getMeta();
+			assertNotNull(meta);
+			
+			int cc = meta.getColumnCount();
+			assertTrue(cc > 0);
+			
+			for (int i = 0; i < cc; i++) {
+				ValueExpression ve = meta.expr(i);
+				assertNotNull(ve);
+			}
+			
 			
 			return qr;			
 		}
@@ -275,6 +290,8 @@ public class EntityQueryExecutorTest extends TestCase {
 		
 		Query q36 = q3.getTemplate().newQuery();
 		qr = execute(q36, new FetchOptions(3, 6));
+		
+		
 		
 		Long a = qr.getAvailable();
 		assertNotNull(a);
