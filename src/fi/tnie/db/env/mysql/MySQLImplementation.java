@@ -69,8 +69,7 @@ public class MySQLImplementation
         extends DefaultSQLSyntax {
 
         @Override
-        public DeleteStatement newDeleteStatement(TableReference tref,
-                Predicate p) {
+        public DeleteStatement newDeleteStatement(TableReference tref, Predicate p) {
             return new MySQLDeleteStatement(tref, p);
         }
     }
