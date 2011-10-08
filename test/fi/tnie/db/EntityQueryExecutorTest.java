@@ -325,8 +325,8 @@ public class EntityQueryExecutorTest extends TestCase {
 		HourReportFetcher f = new HourReportFetcher(imp, c);
 		HourReportPager p = new HourReportPager(hrq, f);
 		
-		p.run(Command.LAST);
-		p.run(Command.NEXT);
+		p.run(Command.LAST_PAGE);
+		p.run(Command.NEXT_PAGE);
 		
 		p.fetchCurrent();
 		p.fetchFirst();

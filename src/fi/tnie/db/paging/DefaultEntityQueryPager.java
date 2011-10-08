@@ -37,11 +37,11 @@ public class DefaultEntityQueryPager<
 	}
 
 	public enum Command {
-		CURRENT,
-		FIRST,
-		PREVIOUS,
-		NEXT,
-		LAST,
+		CURRENT_PAGE,
+		FIRST_PAGE,
+		PREVIOUS_PAGE,
+		NEXT_PAGE,
+		LAST_PAGE,
 	}
 
 	@Override
@@ -57,19 +57,19 @@ public class DefaultEntityQueryPager<
 		}
 		
 		switch (command) {
-		case FIRST:
+		case FIRST_PAGE:
 			fetchFirst();
 			break;
-		case CURRENT:
+		case CURRENT_PAGE:
 			fetchCurrent();
 			break;
-		case NEXT:
+		case NEXT_PAGE:
 			fetchNext();
 			break;
-		case PREVIOUS:
+		case PREVIOUS_PAGE:
 			fetchPrevious();
 			break;
-		case LAST:
+		case LAST_PAGE:
 			fetchLast();
 			break;			
 		default:
@@ -85,7 +85,7 @@ public class DefaultEntityQueryPager<
 	public void fetchFirst() {		 
 		int ps = getPageSize().get().intValue();
 		FetchOptions fo = new FetchOptions(ps, 0);		
-		fetch(Command.FIRST, fo);		
+		fetch(Command.FIRST_PAGE, fo);		
 	}
 	
 
@@ -94,14 +94,14 @@ public class DefaultEntityQueryPager<
 		Long o = getCurrentOffset();
 		long off = (o == null) ? 0 : o.longValue(); 
 		FetchOptions fo = new FetchOptions(ps, off);		
-		fetch(Command.CURRENT, fo);
+		fetch(Command.CURRENT_PAGE, fo);
 	}
 	
 	public void fetchNext() {	
 		long co = getCurrentOffset().longValue();
 		int ps = getPageSize().get().intValue();
 		FetchOptions fo = new FetchOptions(ps, co + ps);		
-		fetch(Command.NEXT, fo);		
+		fetch(Command.NEXT_PAGE, fo);		
 	}
 	
 	
@@ -117,13 +117,13 @@ public class DefaultEntityQueryPager<
 		long off = pos < 0 ? 0 : pos;
 				
 		FetchOptions opts = new FetchOptions(ps, off);		
-		fetch(Command.PREVIOUS, opts);		
+		fetch(Command.PREVIOUS_PAGE, opts);		
 	}
 	
 	public void fetchLast() {
 		int ps = getPageSize().get().intValue();		  
 		FetchOptions fo = new FetchOptions(ps, -ps);				
-		fetch(Command.LAST, fo);		
+		fetch(Command.LAST_PAGE, fo);		
 	}	
 
 //	private Long getLimit() {
