@@ -31,20 +31,24 @@ public class FetchOptions
 	protected FetchOptions() {
 	}
 	
+	public FetchOptions(int pageSize, long offset) {
+		this(Long.valueOf(pageSize), offset);
+	}
+	
 	/**
 	 * Negative offset is interpreted as an offset counting from the end.
 	 * 
 	 * @param pageSize
 	 * @param offset
 	 */	
-	public FetchOptions(long pageSize, long offset) {
+	public FetchOptions(Long pageSize, long offset) {
 		this(pageSize, offset, Adjustment.AUTO, null, true);
 	}
 	
-	public FetchOptions(long pageSize, long offset, Adjustment adjust, Long count, boolean cardinality) {
+	public FetchOptions(Long pageSize, long offset, Adjustment adjust, Long count, boolean cardinality) {
 		super();
 		this.offset = offset;
-		this.pageSize = Long.valueOf(pageSize);
+		this.pageSize = pageSize;
 		this.adjustment = adjust;
 		this.count = count;
 		this.cardinality = cardinality;
