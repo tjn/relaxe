@@ -10,6 +10,11 @@ import fi.tnie.db.rpc.PrimitiveHolder;
 public abstract class PrimitiveType<T extends PrimitiveType<T>>
 	extends Type<T> {
 		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5378281838745232322L;
+	
 	public static final int ARRAY = 2003;
 	public static final int BIGINT = -5;
 	public static final int BINARY = -2;
@@ -60,6 +65,11 @@ public abstract class PrimitiveType<T extends PrimitiveType<T>>
 	
 	public static class SerializableType
 		extends PrimitiveType<SerializableType> {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 910829028354006706L;
 		
 		private int sqlType;
 		
