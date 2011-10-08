@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.ent;
 
-import fi.tnie.db.query.QueryResult;
 import fi.tnie.db.rpc.AbstractResponse;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
@@ -28,7 +27,7 @@ public class DefaultEntityQueryResult<
 	private static final long serialVersionUID = -6159979642605451277L;
 	
 	private DataObjectQueryResult<EntityDataObject<E>> content;
-	
+
 	protected DefaultEntityQueryResult() {
 		super();
 	}

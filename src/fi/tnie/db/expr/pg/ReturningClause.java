@@ -5,9 +5,7 @@ package fi.tnie.db.expr.pg;
 
 import fi.tnie.db.expr.AbstractClause;
 import fi.tnie.db.expr.Element;
-import fi.tnie.db.expr.SelectListElement;
 import fi.tnie.db.expr.ValueElement;
-import fi.tnie.db.expr.ValueExpression;
 
 public class ReturningClause
 	extends AbstractClause {

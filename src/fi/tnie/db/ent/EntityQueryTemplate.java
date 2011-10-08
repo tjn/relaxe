@@ -54,10 +54,6 @@ public interface EntityQueryTemplate<
 	
 	EntityQuery<A, R, T, E, H, F, M, Q> newQuery()
 		throws CyclicTemplateException;
-		
-	EntityQuery<A, R, T, E, H, F, M, Q> newQuery(Long limit, Long offset)
-		throws CyclicTemplateException;
-
 
 	List<EntityQuerySortKey<A>> sortKeys();
 	

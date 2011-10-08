@@ -8,7 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,10 +109,10 @@ public class PersistenceManager<
 		}
 		
 		@Override
-		public EntityQuery<A, R, T, E, H, F, M, PMTemplate> newQuery(Long limit, Long offset) 
+		public EntityQuery<A, R, T, E, H, F, M, PMTemplate> newQuery() 
 			throws EntityRuntimeException
 		{						
-			return new DefaultEntityTemplateQuery<A, R, T, E, H, F, M, PMTemplate>(this, limit, offset);
+			return new DefaultEntityTemplateQuery<A, R, T, E, H, F, M, PMTemplate>(this);
 		}	
 	}
 
@@ -420,7 +419,7 @@ public class PersistenceManager<
     		eq.getTableExpression().getWhere().setSearchCondition(pkp);
     		EntityQueryExecutor<A, R, T, E, H, F, M, PMTemplate> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, PMTemplate>(imp);
 //    		QueryResult<EntityDataObject<E>> qr = ee.execute(eq, false, c);
-    		EntityQueryResult<A, R, T, E, H, F, M, PMTemplate> er = ee.execute(eq, false, c);
+    		EntityQueryResult<A, R, T, E, H, F, M, PMTemplate> er = ee.execute(eq, null, c);
     		QueryResult<EntityDataObject<E>> qr = er.getContent();    		
     		List<? extends EntityDataObject<E>> cl = qr.getContent();
     		logger().debug("merge: cl.size()=" + cl.size());

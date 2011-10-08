@@ -114,7 +114,7 @@ public class OrderBy
 		}
 		
 		public OrdinalSortKey(int ordinal) {
-			this(ordinal, Order.DESC);
+			this(ordinal, Order.ASC);
 		}
 		
 		public OrdinalSortKey(int ordinal, Order order) {

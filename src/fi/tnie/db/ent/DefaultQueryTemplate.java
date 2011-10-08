@@ -155,16 +155,10 @@ public abstract class DefaultQueryTemplate<
 	public void addAllAttributes() {
 		addAll(getMetaData().attributes());		
 	}
-	
-	@Override
-	public EntityQuery<A, R, T, E, H, F, M, Q> newQuery() throws CyclicTemplateException {	
-		return newQuery(null, null);
-	}
-	
-	public EntityQuery<A, R, T, E, H, F, M, Q> newQuery(long limit, long offset) 
-		throws CyclicTemplateException {
-		return newQuery(Long.valueOf(limit), Long.valueOf(offset));
-	}
+		
+	public abstract EntityQuery<A, R, T, E, H, F, M, Q> newQuery()
+		throws EntityRuntimeException;
+			
 	
 	
 	public void asc(A sk) {

@@ -6,6 +6,7 @@ package fi.tnie.db.query;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.rpc.AbstractResponse;
 
 
@@ -24,10 +25,14 @@ public class QueryResult<T>
 	private Long available;
 	private List<? extends T> content;
 	private QueryTime elapsed;
-	
-	public QueryResult(Query request, List<? extends T> content, QueryTime elapsed) {
+	private FetchOptions options;
+	private long offset;
+			
+	public QueryResult(Query request, List<? extends T> content, QueryTime elapsed, FetchOptions options, long offset) {
 		this(request, content);
 		this.elapsed = elapsed;		
+		this.options = options;
+		this.offset = offset;
 	}
 	
 	public QueryResult(Query request, List<? extends T> content) {
@@ -63,4 +68,13 @@ public class QueryResult<T>
 	public QueryTime getElapsed() {
 		return elapsed;
 	}
+	
+	public FetchOptions getFetchOptions() {
+		return this.options;
+	}
+
+	public long getOffset() {
+		return offset;
+	}
+	
 }

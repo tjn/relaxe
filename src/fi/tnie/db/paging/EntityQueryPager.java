@@ -7,6 +7,7 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.ReferenceHolder;
@@ -26,5 +27,5 @@ public interface EntityQueryPager<
 > 
 	extends Pager<P, C>
 {
-
+	public EntityQueryResult<A, R, T, E, H, F, M, QT> getCurrentPage();
 }

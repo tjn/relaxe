@@ -9,6 +9,7 @@ import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
+import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
@@ -25,6 +26,7 @@ public interface EntityFetcher<
 > 
 	extends Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, QT>, Receiver<EntityQueryResult<A, R, T, E, H, F, M, QT>>>
 {	
-	void fetch(QT queryTemplate, Long limit, Long offset, Receiver<EntityQueryResult<A, R, T, E, H, F, M, QT>> receiver);
+	void fetch(QT queryTemplate, FetchOptions opts, Receiver<EntityQueryResult<A, R, T, E, H, F, M, QT>> receiver);	
+	
 	
 }

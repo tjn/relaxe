@@ -26,14 +26,15 @@ public class DataObjectQueryResult<T extends DataObject>
 	private DataObjectQueryResult() {
 	}
 	
-	public DataObjectQueryResult(Query request, DataObject.MetaData meta, List<? extends T> content, QueryTime elapsed) {
-		super(request, content, elapsed);
+	public DataObjectQueryResult(Query request, DataObject.MetaData meta, List<? extends T> content, QueryTime elapsed, FetchOptions options, long offset) {
+		super(request, content, elapsed, options, offset);
 		this.meta = meta;
 	}
 		
 	public DataObject.MetaData getMeta() {
 		return meta;
 	}
-	
+
+
 
 }

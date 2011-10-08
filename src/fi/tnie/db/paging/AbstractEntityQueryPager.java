@@ -9,6 +9,7 @@ import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
+import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.model.IntegerModel;
 import fi.tnie.db.model.NotNullableIntegerModel;
@@ -101,13 +102,19 @@ public abstract class AbstractEntityQueryPager<
 		return fetcher;
 	}
 
-	protected void fetch(Long limit, Long offset, C command) {
+	protected void fetch(C command, FetchOptions opts) {
 		ResultReceiver rr = new ResultReceiver(command);		
-		this.fetcher.fetch(getTemplate(), limit, offset, rr);
+		this.fetcher.fetch(getTemplate(), opts, rr);
 	}
 	
 //	private static Logger logger() {
 //		return DefaultLogger.getLogger();
 //	}
-	
+
+
+	@Override
+	public EntityQueryResult<A, R, T, E, H, F, M, QT> getCurrentPage() {
+		return result;
+	}
+
 }

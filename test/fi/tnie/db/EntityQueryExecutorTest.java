@@ -5,6 +5,7 @@ package fi.tnie.db;
 
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -20,6 +21,7 @@ import fi.tnie.db.ent.EntityQueryExpressionSortKey;
 import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.EntityQueryTemplateAttribute;
+import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
@@ -28,9 +30,16 @@ import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
 import fi.tnie.db.gen.ent.personal.Person;
+import fi.tnie.db.gen.ent.personal.HourReport.Factory;
+import fi.tnie.db.gen.ent.personal.HourReport.Holder;
 import fi.tnie.db.gen.ent.personal.HourReport.MetaData;
 import fi.tnie.db.gen.ent.personal.HourReport.Query;
+import fi.tnie.db.gen.ent.personal.HourReport.QueryTemplate;
 import fi.tnie.db.gen.ent.personal.HourReport.Type;
+import fi.tnie.db.paging.DefaultEntityQueryPager;
+import fi.tnie.db.paging.EntityFetcher;
+import fi.tnie.db.paging.Receiver;
+import fi.tnie.db.paging.DefaultEntityQueryPager.Command;
 import fi.tnie.db.query.QueryResult;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
@@ -46,19 +55,17 @@ public class EntityQueryExecutorTest extends TestCase {
 	}
 	
 	private QueryResult<EntityDataObject<HourReport>> execute(HourReport.QueryTemplate template) throws Exception {
-		return execute(template.newQuery());
+		return execute(template, null);		
 	}
 	
-	private QueryResult<EntityDataObject<HourReport>> execute(Query q) throws Exception {
+	private QueryResult<EntityDataObject<HourReport>> execute(HourReport.QueryTemplate template, FetchOptions opts) throws Exception {
+		return execute(template.newQuery(), opts);
+	}
+	
+	private QueryResult<EntityDataObject<HourReport>> execute(Query q, FetchOptions opts) throws Exception {
 		Implementation imp = new PGImplementation();
 		
-		Properties cfg = new Properties();
-		cfg.setProperty("user", "test");
-		cfg.setProperty("password", "test");
-		
-		String url = imp.createJdbcUrl("127.0.0.1", "test");
-		Driver drv = imp.getDriver();
-		Connection c = drv.connect(url, cfg);
+		Connection c = newConnection(imp);
 		
 		try {
 			EntityQueryExecutor<
@@ -75,7 +82,7 @@ public class EntityQueryExecutorTest extends TestCase {
 			
 			// Query q = template.newQuery(limit, offset);
 			
-			EntityQueryResult<HourReport.Attribute, HourReport.Reference, Type, HourReport, HourReport.Holder, HourReport.Factory, MetaData, HourReport.QueryTemplate> er = qe.execute(q, true, c);
+			EntityQueryResult<HourReport.Attribute, HourReport.Reference, Type, HourReport, HourReport.Holder, HourReport.Factory, MetaData, HourReport.QueryTemplate> er = qe.execute(q, opts, c);
 			assertNotNull(er);
 			QueryResult<EntityDataObject<HourReport>> qr = er.getContent(); 
 			// QueryResult<EntityDataObject<HourReport>> qr = qe.execute(q, true, c);
@@ -88,6 +95,17 @@ public class EntityQueryExecutorTest extends TestCase {
 				c.close();
 			}
 		}
+	}
+
+	private Connection newConnection(Implementation imp) throws SQLException {
+		Properties cfg = new Properties();
+		cfg.setProperty("user", "test");
+		cfg.setProperty("password", "test");
+		
+		String url = imp.createJdbcUrl("127.0.0.1", "test");
+		Driver drv = imp.getDriver();
+		Connection c = drv.connect(url, cfg);
+		return c;
 	}
 	
 
@@ -119,7 +137,7 @@ public class EntityQueryExecutorTest extends TestCase {
 				
 		hrq.setTemplate(HourReport.FK_HHR_EMPLOYER, oq);
 		
-		QueryResult<EntityDataObject<HourReport>> qr = execute(hrq);
+		QueryResult<EntityDataObject<HourReport>> qr = execute(hrq, null);
 		
 		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
 		
@@ -243,10 +261,10 @@ public class EntityQueryExecutorTest extends TestCase {
 		hrq.addAllAttributes();
 		
 		EntityQueryTemplateAttribute rd = hrq.get(HourReport.Attribute.REPORT_DATE);		
+				
+		Query q3 = hrq.newQuery();								
 		
-		Query q3 = hrq.newQuery(3, 3);								
-		
-		QueryResult<EntityDataObject<HourReport>> qr = execute(q3);		
+		QueryResult<EntityDataObject<HourReport>> qr = execute(q3, new FetchOptions(3, 3));		
 		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
 		
 		List<? extends EntityDataObject<HourReport>> el = qr.getContent();
@@ -255,8 +273,8 @@ public class EntityQueryExecutorTest extends TestCase {
 		logger().debug("testExecuteQuery: size=" + el.size());		
 		assertTrue(el.size() <= 3);
 		
-		Query q36 = q3.getTemplate().newQuery(3, 6);
-		qr = execute(q36);
+		Query q36 = q3.getTemplate().newQuery();
+		qr = execute(q36, new FetchOptions(3, 6));
 		
 		Long a = qr.getAvailable();
 		assertNotNull(a);
@@ -298,5 +316,67 @@ public class EntityQueryExecutorTest extends TestCase {
 		assertTrue(qs.matches(".+order +by.+name.+desc.+ytunnus.+report_date.+desc.*"));
 		
 	}
+
+	public void testFetcher() throws Exception {
+		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate();
+				
+		PGImplementation imp = new PGImplementation();
+		Connection c = newConnection(imp);
+		HourReportFetcher f = new HourReportFetcher(imp, c);
+		HourReportPager p = new HourReportPager(hrq, f);
+		
+		p.run(Command.LAST);
+		p.run(Command.NEXT);
+		
+		p.fetchCurrent();
+		p.fetchFirst();
+		p.fetchNext();
+		p.fetchLast();
+		p.fetchPrevious();
+		
+		c.close();
+		
+		// DefaultEntityQueryPager<Attribute, Reference, ReferenceType<A,R,T,E,H,F,M>, Entity<A,R,T,E,H,F,M>, ReferenceHolder<A,R,T,E,H,M>, EntityFactory<E,H,M,F>, EntityMetaData<A,R,T,E,H,F,M>, EntityQueryTemplate<A,R,T,E,H,F,M,QT>>
+		
+		
+	}
 	
+	
+	public class HourReportFetcher
+		extends SynchronousFetcher<
+		HourReport.Attribute, 
+		HourReport.Reference, 
+		HourReport.Type, 
+		HourReport, 
+		HourReport.Holder, 
+		HourReport.Factory, 
+		HourReport.MetaData, 
+		HourReport.QueryTemplate>
+	{
+
+		public HourReportFetcher(Implementation imp, Connection c) {			
+			super(new EntityQueryExecutor<HourReport.Attribute, fi.tnie.db.gen.ent.personal.HourReport.Reference, Type, HourReport, Holder, Factory, MetaData, QueryTemplate>(imp), c);		
+		}
+	}
+
+	public class HourReportPager
+		extends DefaultEntityQueryPager<
+		HourReport.Attribute, 
+		HourReport.Reference, 
+		HourReport.Type, 
+		HourReport, 
+		HourReport.Holder, 
+		HourReport.Factory, 
+		HourReport.MetaData, 
+		HourReport.QueryTemplate>
+	{
+
+		public HourReportPager(
+				QueryTemplate template,
+				EntityFetcher<fi.tnie.db.gen.ent.personal.HourReport.Attribute, fi.tnie.db.gen.ent.personal.HourReport.Reference, Type, HourReport, Holder, Factory, MetaData, QueryTemplate> fetcher) {
+			super(template, fetcher);
+		}
+	
+		
+	}
 }

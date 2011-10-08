@@ -5,8 +5,10 @@ package fi.tnie.db.paging;
 
 import java.io.Serializable;
 
+import fi.tnie.db.ent.FetchOptions;
+
 public interface Fetcher<
 	Q, T extends Serializable, R extends Receiver<T>> {
 	
-	void fetch(Q queryTemplate, Long limit, Long offset, R receiver);
+	void fetch(Q queryTemplate, FetchOptions opts, R receiver);
 }

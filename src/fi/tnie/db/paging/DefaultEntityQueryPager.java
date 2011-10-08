@@ -9,6 +9,7 @@ import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
+import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
@@ -39,7 +40,8 @@ public class DefaultEntityQueryPager<
 		CURRENT,
 		FIRST,
 		PREVIOUS,
-		NEXT
+		NEXT,
+		LAST,
 	}
 
 	@Override
@@ -56,35 +58,54 @@ public class DefaultEntityQueryPager<
 		
 		switch (command) {
 		case FIRST:
-			fetch(Command.FIRST, null);
+			fetchFirst();
 			break;
 		case CURRENT:
-			fetch(Command.CURRENT, getCurrentOffset());
+			fetchCurrent();
 			break;
 		case NEXT:
 			fetchNext();
 			break;
 		case PREVIOUS:
 			fetchPrevious();
-			break;		
+			break;
+		case LAST:
+			fetchLast();
+			break;			
 		default:
 			break;
 		}		
 	}
 
-	private void fetch(Command action, Long offset) {				
-		Long limit = getLimit();				
-		super.fetch(limit, offset, action);
-	}
+//	private void fetch(Command action, FetchOptions opts) {				
+//		Long limit = getLimit();				
+//		super.fetch(limit, opts, action);
+//	}
 
-	private void fetchNext() {
-		long co = getCurrentOffset().longValue();
-		int ps = getPageSize().get().intValue();			
-		Long offset = Long.valueOf(co + ps);
-		fetch(Command.NEXT, offset);
+	public void fetchFirst() {		 
+		int ps = getPageSize().get().intValue();
+		FetchOptions fo = new FetchOptions(ps, 0);		
+		fetch(Command.FIRST, fo);		
 	}
 	
-	private void fetchPrevious() {
+
+	public void fetchCurrent() {		 
+		int ps = getPageSize().get().intValue();
+		Long o = getCurrentOffset();
+		long off = (o == null) ? 0 : o.longValue(); 
+		FetchOptions fo = new FetchOptions(ps, off);		
+		fetch(Command.CURRENT, fo);
+	}
+	
+	public void fetchNext() {	
+		long co = getCurrentOffset().longValue();
+		int ps = getPageSize().get().intValue();
+		FetchOptions fo = new FetchOptions(ps, co + ps);		
+		fetch(Command.NEXT, fo);		
+	}
+	
+	
+	public void fetchPrevious() {
 		long co = getCurrentOffset().longValue();
 		
 		if (co == 0) {
@@ -92,25 +113,35 @@ public class DefaultEntityQueryPager<
 		}
 		
 		int ps = getPageSize().get().intValue();
-		long pos = co - ps;						
-		Long offset = Long.valueOf(pos < 0 ? 0 : pos);
-		fetch(Command.PREVIOUS, offset);		
+		long pos = co - ps;
+		long off = pos < 0 ? 0 : pos;
+				
+		FetchOptions opts = new FetchOptions(ps, off);		
+		fetch(Command.PREVIOUS, opts);		
 	}
+	
+	public void fetchLast() {
+		int ps = getPageSize().get().intValue();		  
+		FetchOptions fo = new FetchOptions(ps, -ps);				
+		fetch(Command.LAST, fo);		
+	}	
 
-	private Long getLimit() {
-		Integer ps = getPageSize().get();
-		Long limit = Long.valueOf(ps.intValue());
-		return limit;
-	}
+//	private Long getLimit() {
+//		Integer ps = getPageSize().get();
+//		Long limit = Long.valueOf(ps.intValue());
+//		return limit;
+//	}
 
 	private Long getCurrentOffset() {
 		Long off = null;
-				
-		if (getResult() != null) {
-			off = getResult().getRequest().getOffset();
+						
+		if (getResult() != null) {			
+			long offset = getResult().getContent().getOffset();
+			off = Long.valueOf(offset);
 		}		
 
 		return (off == null) ? Long.valueOf(0) : off;
 	}
-
+	
+	
 }

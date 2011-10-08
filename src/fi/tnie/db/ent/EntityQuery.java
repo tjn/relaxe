@@ -21,12 +21,7 @@ public interface EntityQuery<
 	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, QT>
 >
 	extends Request, QueryExpressionSource	
-{
-	Long getOffset();
-	Long getLimit();
-	
-	
-
+{	
 	DefaultTableExpression getTableExpression()
 		throws EntityException;
 	

@@ -6,7 +6,6 @@ package fi.tnie.db;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import sun.security.jca.GetInstance;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.env.pg.PGImplementation;
@@ -14,7 +13,6 @@ import fi.tnie.db.env.util.ResultSetWriter;
 import fi.tnie.db.expr.CountFunction;
 import fi.tnie.db.expr.DefaultTableExpression;
 import fi.tnie.db.expr.From;
-import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.SelectStatement;
 import fi.tnie.db.expr.TableReference;
@@ -25,7 +23,6 @@ import fi.tnie.db.meta.Table;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.rpc.LongHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
-import junit.framework.TestCase;
 
 public class StatementExecutorTest extends DBMetaTestCase {
 

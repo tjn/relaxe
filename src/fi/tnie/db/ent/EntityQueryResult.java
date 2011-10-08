@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.ent;
 
-import fi.tnie.db.query.QueryResult;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
@@ -20,6 +19,4 @@ public interface EntityQueryResult<
 	extends Response<EntityQuery<A, R, T, E, H, F, M, QT>> 
 {
 	DataObjectQueryResult<EntityDataObject<E>> getContent();
-		
-	
 }

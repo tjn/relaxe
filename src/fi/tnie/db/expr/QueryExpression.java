@@ -6,13 +6,10 @@ package fi.tnie.db.expr;
 public interface QueryExpression
 	extends Expression {
 
-	public abstract TableExpression getTableExpr();
-
-	public abstract OrderBy getOrderBy();
-
-	public abstract Limit getLimit();
-
-	public abstract Offset getOffset();
+	public TableExpression getTableExpr();
+	public OrderBy getOrderBy();
+	public Limit getLimit();
+	public Offset getOffset();
 
 	String generate();
 

@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.ent;
 
-import java.io.Serializable;
-
 import fi.tnie.db.expr.ColumnReference;
 import fi.tnie.db.expr.OrderBy;
 import fi.tnie.db.expr.OrderBy.Order;

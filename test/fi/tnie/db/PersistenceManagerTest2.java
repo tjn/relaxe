@@ -6,9 +6,7 @@ package fi.tnie.db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -17,13 +15,11 @@ import junit.framework.TestCase;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
-import fi.tnie.db.env.util.ResultSetWriter;
 import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
@@ -287,46 +283,46 @@ public class PersistenceManagerTest2 extends TestCase  {
 		assertNotNull(c);
 				
 //		PreparedStatement ps = c.prepareStatement("INSERT INTO public.continent DEFAULT VALUES RETURNING *");
-//		PreparedStatement ps = c.prepareStatement("INSERT INTO public.continent DEFAULT VALUES RETURNING id as generated_id, current_date as ff");
-		PreparedStatement ps = c.prepareStatement("INSERT INTO public.continent DEFAULT VALUES RETURNING ");
+		PreparedStatement ps = c.prepareStatement("INSERT INTO public.continent DEFAULT VALUES RETURNING id as generated_id, current_date as ff");
+//		PreparedStatement ps = c.prepareStatement("INSERT INTO public.continent DEFAULT VALUES RETURNING ");
 
-//		int u = ps.executeUpdate();
-//		logger().debug("testInsertSelect: u=" + u);
+		int u = ps.executeUpdate();
+		logger().debug("testInsertSelect: u=" + u);
 		
-		boolean more = ps.execute();
+//		boolean more = ps.execute();
 //		logger().debug("testInsertSelect: hasResults=" + hasResults);
-		ResultSetWriter p = new ResultSetWriter(System.out, false);
-		
-		int results = 0;
-
-		while (true) {
-			if (more) {
-				results++;
-				ResultSet rs = ps.getResultSet();
-				
-				StatementExecutor e = new StatementExecutor(new PGImplementation());				
-				e.apply(p, rs);
-				
-				logger().info("testInsertSelect: rs=" + rs);
-				logger().debug("testInsertSelect: results=" + results);
-				rs.close();
-			}
-			else {
-				int uc = ps.getUpdateCount();
-				
-				if (uc == -1) {
-					break;
-				}
-				else {
-					logger().debug("uc=" + uc);
-				}
-			}
-			
-			more = ps.getMoreResults();
-		}
-		
-		
-		logger().debug("testInsertSelect: results=" + results);
+//		ResultSetWriter p = new ResultSetWriter(System.out, false);
+//		
+//		int results = 0;
+//
+//		while (true) {
+//			if (more) {
+//				results++;
+//				ResultSet rs = ps.getResultSet();
+//				
+//				StatementExecutor e = new StatementExecutor(new PGImplementation());				
+//				e.apply(p, rs);
+//				
+//				logger().info("testInsertSelect: rs=" + rs);
+//				logger().debug("testInsertSelect: results=" + results);
+//				rs.close();
+//			}
+//			else {
+//				int uc = ps.getUpdateCount();
+//				
+//				if (uc == -1) {
+//					break;
+//				}
+//				else {
+//					logger().debug("uc=" + uc);
+//				}
+//			}
+//			
+//			more = ps.getMoreResults();
+//		}
+//		
+//		
+//		logger().debug("testInsertSelect: results=" + results);
 		
 //		if (hasResults) {
 //			ResultSet rs = ps.getResultSet();

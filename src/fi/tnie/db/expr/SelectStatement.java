@@ -40,6 +40,10 @@ public class SelectStatement
 	public SelectStatement(TableExpression te) {
 		this(te, null, null, null);
 	}
+	
+	public SelectStatement(TableExpression te, OrderBy orderBy) {
+		this(te, orderBy, null, null);
+	}
 		
 	public SelectStatement(TableExpression te, OrderBy orderBy, Limit limit, Offset offset) {
 		super(Name.SELECT);

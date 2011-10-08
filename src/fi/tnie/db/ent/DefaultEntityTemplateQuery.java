@@ -21,8 +21,6 @@ import fi.tnie.db.expr.AbstractTableReference;
 import fi.tnie.db.expr.DefaultTableExpression;
 import fi.tnie.db.expr.ForeignKeyJoinCondition;
 import fi.tnie.db.expr.From;
-import fi.tnie.db.expr.Limit;
-import fi.tnie.db.expr.Offset;
 import fi.tnie.db.expr.OrderBy;
 import fi.tnie.db.expr.Predicate;
 import fi.tnie.db.expr.QueryExpression;
@@ -78,10 +76,7 @@ public class DefaultEntityTemplateQuery<
 	
 	private transient List<ColumnReference> rootPrimaryKey; // NS	
 	private Q template;
-	
-	private Long limit;
-	private Long offset;
-				
+					
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
@@ -89,20 +84,6 @@ public class DefaultEntityTemplateQuery<
 	}
 	
 	public DefaultEntityTemplateQuery(Q rootTemplate) {
-		this(rootTemplate, null, null);
-	}
-	
-	public DefaultEntityTemplateQuery(Q rootTemplate, Long limit, Long offset) {
-		this.limit = limit;		
-		this.offset = offset;
-		
-		if (limit != null && limit.longValue() < 0) {
-			throw new IllegalArgumentException("limit must not be negative: " + limit);
-		}
-		
-		if (offset != null && offset.longValue() < 0) {
-			throw new IllegalArgumentException("offset must not be negative: " + offset);
-		}
 		
 		if (rootTemplate == null) {
 			throw new NullPointerException();
@@ -112,9 +93,9 @@ public class DefaultEntityTemplateQuery<
 		this.type = rootTemplate.getMetaData().getType();
 	}
 
-	public DefaultEntityTemplateQuery(Q root, Long limit, Long offset, boolean init) 
+	public DefaultEntityTemplateQuery(Q root, boolean init) 
 		throws CyclicTemplateException, EntityRuntimeException {
-		this(root, limit, offset);
+		this(root);
 	
 		if (init) {
 			init();
@@ -145,7 +126,7 @@ public class DefaultEntityTemplateQuery<
 		
 		List<EntityQuerySortKey<?>> sortKeyList = root.allSortKeys();
 					
-		if (this.limit == null && offset == null && sortKeyList.isEmpty()) {
+		if (sortKeyList.isEmpty()) {
 			this.queryExpression = this.query;
 		}		
 		else {
@@ -155,17 +136,7 @@ public class DefaultEntityTemplateQuery<
 				ob = new OrderBy();
 				
 				for (EntityQuerySortKey<?> sk : sortKeyList) {
-					/**
-					 * TODO: We could probably do better here.
-					 * If EntityQueryTemplateAttribute hold a EntityQueryTemplate it is currently used with,
-					 * we could instantiate ColumnReference on the fly.
-					 * Now we have to have the column referenced in select list.
-					 */					
-//					EntityQueryTemplateAttribute at = sk.getAttributeTemplate();
-//					ColumnReference cr = getColumnMap().get(at);
-					
-					ColumnReference cr = sortKeyColumnMap.get(sk);
-										
+					ColumnReference cr = sortKeyColumnMap.get(sk);										
 					// Only template attributes which are used as sort keys have associated column reference.
 					// Other sort keys just do without.					    					
 					ob.add(sk.sortKey(cr));
@@ -176,10 +147,10 @@ public class DefaultEntityTemplateQuery<
 				ob.add(pkcol, Order.ASC);
 			}
 
-			Limit le = (this.limit == null) ? null : new Limit(limit.longValue());
-			Offset oe = (this.offset == null) ? null : new Offset(this.offset.longValue());
+//			Limit le = (this.limit == null) ? null : new Limit(limit.longValue());
+//			Offset oe = (this.offset == null) ? null : new Offset(this.offset.longValue());
 			
-			SelectStatement sq = new SelectStatement(q, ob, le, oe);			
+			SelectStatement sq = new SelectStatement(q, ob, null, null);			
 			this.queryExpression = sq;
 		}
 	}
@@ -549,16 +520,6 @@ public class DefaultEntityTemplateQuery<
 		}
 
 		return rootPrimaryKey;
-	}
-	
-	@Override
-	public Long getLimit() {
-		return this.limit;
-	}
-	
-	@Override
-	public Long getOffset() {
-		return this.offset;
 	}
 	
 	public Q getTemplate() {

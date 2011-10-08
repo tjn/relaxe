@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.ent;
 
-import fi.tnie.db.expr.AbstractQueryExpression;
 import fi.tnie.db.expr.QueryExpression;
 
 public interface QueryExpressionSource {
