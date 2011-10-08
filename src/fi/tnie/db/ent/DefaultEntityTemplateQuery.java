@@ -250,8 +250,6 @@ public class DefaultEntityTemplateQuery<
 			}
 		}
 		
-		
-		
 		getOriginMap().put(Integer.valueOf(s.getColumnCount()), tref);
 		
 		qref = processReferences(template, qref, tref, q, visited);
@@ -407,6 +405,12 @@ public class DefaultEntityTemplateQuery<
 		return getMetaDataMap().get(tref);
 	}
 
+	/**
+	 * Returns the table reference which the specified <code>column</code> originates from.
+	 * Column numbering starts from 1.
+	 * 
+	 * Throws {@link IndexOutOfBoundsException} if column &lt; 1. 
+	 */	
 	@Override
 	public TableReference getOrigin(int column) 
 		throws CyclicTemplateException, EntityRuntimeException {	
