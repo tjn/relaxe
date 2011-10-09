@@ -7,7 +7,7 @@ public class LongAdditionModel<A extends Number, B extends Number>
 	extends AbstractArithmeticLongModel<A, B> {
 		
 	public LongAdditionModel(ValueModel<A> a, ValueModel<B> b) {
-		super(a, b);		
+		super(a, b);
 	}
 
 	@Override
@@ -16,6 +16,13 @@ public class LongAdditionModel<A extends Number, B extends Number>
 			return null;
 		}
 		
-		return Long.valueOf(a.longValue() + b.longValue());
+		return Long.valueOf(a.longValue() + b.longValue() + getConstant());
 	}
+
+	public long getConstant() {
+		return 0;
+	}
+	
+	
+	
 }
