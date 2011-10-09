@@ -5,6 +5,8 @@ package fi.tnie.db.paging;
 
 import java.io.Serializable;
 
+import fi.tnie.db.model.ImmutableValueModel;
+
 public interface SimplePager<T extends Serializable, P extends Pager<T, P, SimplePager.Command>>
 	extends Pager<T, P, SimplePager.Command> {
 	
@@ -16,5 +18,9 @@ public interface SimplePager<T extends Serializable, P extends Pager<T, P, Simpl
 		LAST
 	}
 	
-	public int getPageSize();
+	int getPageSize();
+	
+	ImmutableValueModel<Long> available();
+	ImmutableValueModel<Long> currentPageOffset();	
+
 }

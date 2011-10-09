@@ -13,6 +13,7 @@ import fi.tnie.db.model.BooleanModel;
 import fi.tnie.db.model.ConstantBooleanModel;
 import fi.tnie.db.model.DefaultConstantValueModel;
 import fi.tnie.db.model.DefaultMutableValueModel;
+import fi.tnie.db.model.ImmutableValueModel;
 import fi.tnie.db.model.LongAdditionModel;
 import fi.tnie.db.model.MutableIntegerModel;
 import fi.tnie.db.model.MutableStringModel;
@@ -42,7 +43,10 @@ public abstract class DefaultPager<
 	
 	private MutableValueModel<Integer> currentPageSize;
 	private MutableValueModel<Long> currentOffset;	
-	private MutableValueModel<Long> available;
+	private MutableValueModel<Long> availableModel;
+	private ImmutableValueModel<Long> available;
+	
+	private ImmutableValueModel<Long> currentPageOffset;
 	
 //	public DefaultPager(Q template, F fetcher) {
 //		this(template, fetcher, 20);
@@ -87,11 +91,13 @@ public abstract class DefaultPager<
 		this.pageSize = new PageSizeModel(Integer.valueOf(initialPageSize));		
 
 		this.currentPageSize = new MutableIntegerModel(0);
-		this.currentOffset = new DefaultMutableValueModel<Long>(Long.valueOf(0));
-		this.available = new DefaultMutableValueModel<Long>(null);
+		this.currentOffset = new DefaultMutableValueModel<Long>(null);
+		this.currentPageOffset = currentOffset.asImmutable();
 		
-		this.actionMap = createActionMap(nmm);
-				
+		this.availableModel = new DefaultMutableValueModel<Long>(null);		
+		this.available = availableModel.asImmutable(); 
+		
+		this.actionMap = createActionMap(nmm);				
 	}
 
 
@@ -191,7 +197,7 @@ public abstract class DefaultPager<
 		
 		currentOffset.set(Long.valueOf(result.getOffset()));
 		currentPageSize.set(Integer.valueOf(result.size()));				
-		available.set(result.available());		
+		availableModel.set(result.available());		
 		
 		fireEvent(new PagingEvent<R, P, Command>(self(), command));
 	}
@@ -256,7 +262,7 @@ public abstract class DefaultPager<
 	public BooleanModel hasNextPage() {
 		if (hasNextPage == null) {
 			LongAdditionModel<Long, Integer> pm = new LongAdditionModel<Long, Integer>(getCurrentOffset(), getPageSizeModel());						
-			this.hasNextPage = new BinaryRelationModel.Lt<Long>(pm, this.available);			
+			this.hasNextPage = new BinaryRelationModel.Lt<Long>(pm, this.availableModel);			
 		}
 
 		return hasNextPage;
@@ -269,6 +275,15 @@ public abstract class DefaultPager<
 	
 	private MutableValueModel<Long> getCurrentOffset() {
 		return currentOffset;
+	}
+	
+	public ImmutableValueModel<Long> currentPageOffset() {
+		return this.currentPageOffset;
+	}
+	
+	@Override
+	public ImmutableValueModel<Long> available() {
+		return this.available;
 	}
 
 	private int pageSize() {
