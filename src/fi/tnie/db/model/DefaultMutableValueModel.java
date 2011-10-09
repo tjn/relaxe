@@ -14,7 +14,7 @@ public class DefaultMutableValueModel<V>
 
 	public DefaultMutableValueModel(V initialValue) {
 		super();
-		this.value = initialValue;
+		set(initialValue);
 	}
 	
 	@Override
@@ -27,5 +27,29 @@ public class DefaultMutableValueModel<V>
 		V from = this.value;
 		this.value = newValue;
 		fireIfChanged(from, this.value);
+	}
+		
+	
+	public static class NotNullable<V>
+		extends DefaultMutableValueModel<V>
+		implements NotNullableModel<V> {
+		
+		public NotNullable(V initialValue) {
+			super(initialValue);		
+		}
+
+		public void set(V value) {
+			if (value == null) {
+				throw new NullPointerException(this.toString());
+			}
+			
+			super.set(value);
+		};
+		
+		@Override
+		public final boolean isNullable() {
+			return false;
+		}
+		
 	}
 }

@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fi.tnie.db.ent.FetchOptions;
+import fi.tnie.db.paging.ResultPage;
 import fi.tnie.db.rpc.AbstractResponse;
 
 
 public class QueryResult<T>
-	extends AbstractResponse<Query> {
+	extends AbstractResponse<Query>
+	implements ResultPage {
 	
 	/**
 	 * 
@@ -69,12 +71,36 @@ public class QueryResult<T>
 		return elapsed;
 	}
 	
+	@Override
 	public FetchOptions getFetchOptions() {
 		return this.options;
 	}
 
+	@Override
 	public long getOffset() {
 		return offset;
 	}
+		
+	@Override
+	public int size() {		
+		return (this.content == null) ? 0 : this.content.size();
+	}	
+
+	@Override
+	public Boolean isLastPage() {		
+		Long a = this.available;
+		
+		if (a == null) {
+			return null;
+		}
+			
+		boolean more = a.longValue() > getOffset() + size();
+		return Boolean.valueOf(!more);
+	}
 	
+	
+	@Override
+	public Long available() {
+		return getAvailable();
+	}
 }

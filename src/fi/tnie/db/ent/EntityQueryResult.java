@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.ent;
 
+import fi.tnie.db.paging.ResultPage;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
@@ -16,7 +17,7 @@ public interface EntityQueryResult<
 	M extends EntityMetaData<A, R, T, E, H, F, M>,	
 	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, QT>
 >
-	extends Response<EntityQuery<A, R, T, E, H, F, M, QT>> 
+	extends Response<EntityQuery<A, R, T, E, H, F, M, QT>>, ResultPage	
 {
 	DataObjectQueryResult<EntityDataObject<E>> getContent();
 }

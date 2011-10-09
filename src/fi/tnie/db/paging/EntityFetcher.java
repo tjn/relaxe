@@ -22,7 +22,7 @@ public interface EntityFetcher<
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	F extends EntityFactory<E, H, M, F>,
 	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, QT>	
+	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, QT>
 > 
 	extends Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, QT>, Receiver<EntityQueryResult<A, R, T, E, H, F, M, QT>>>
 {	

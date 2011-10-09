@@ -54,8 +54,8 @@ public class MutableDataObject
 			
 			final int cc = s.getColumnCount();			
 			this.columnCount = cc;
-			this.valueList = s.expandValueExprList();
-			this.columnList = s.expandColumnExprList();
+			this.valueList = new ArrayList<ValueExpression>(s.expandValueExprList());
+			this.columnList = new ArrayList<ColumnExpr>(s.expandColumnExprList());
 			
 			Map<ColumnName, Integer> xm = this.columnIndexMap = new HashMap<ColumnName, Integer>();
 			

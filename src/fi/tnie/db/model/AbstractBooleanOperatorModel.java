@@ -72,46 +72,14 @@ public abstract class AbstractBooleanOperatorModel
 		return inputListView;
 	}
 	
-	
-	public static class OrModel
-		extends AbstractBooleanOperatorModel {
-				
-		public OrModel(List<BooleanModel> input) {
-			super(input);
+	protected static List<BooleanModel> concat(BooleanModel ... input) {
+		ArrayList<BooleanModel> a = new ArrayList<BooleanModel>();
+		
+		for (BooleanModel m : input) {
+			a.add(m);
 		}
 		
-		/**
-		 * Computes Boolean OR from the input.
-		 * 
-		 * Returns Boolean.TRUE if and only if <code>input</code> contains at least one model with <code>true</code> value.   
-		 * Otherwise, returns <code>null</code> if <code>input</code> contains at least one model with <code>null</code> value.
-		 * Otherwise, returns Boolean.FALSE.
-		 * 
-		 * As a consequence, Boolean.FALSE is returned if the input is empty.  
-		 * 
-		 * @throws NullPointerException if the input is <code>null</code>.
-		 * @precondition: <code>input</code> does not contain null -elements. 
-		 */
-		@Override
-		protected Boolean computeNewValue(List<BooleanModel> input)
-			throws NullPointerException {
-			Boolean result = Boolean.FALSE;
-			
-			for (BooleanModel m : input) {
-				Boolean v = m.get();
-				
-				if (v == null) {
-					result = null;
-					continue;
-				}
-				
-				if (v.booleanValue()) {
-					result = Boolean.TRUE;
-					break;
-				}				
-			}
-			
-			return result;
-		}		
+		return a;
 	}
+
 }

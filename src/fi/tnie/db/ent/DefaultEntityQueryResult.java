@@ -20,14 +20,13 @@ public class DefaultEntityQueryResult<
 	extends AbstractResponse<EntityQuery<A, R, T, E, H, F, M, QT>>
 	implements EntityQueryResult<A, R, T, E, H, F, M, QT> {
 	
-
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6159979642605451277L;
 	
 	private DataObjectQueryResult<EntityDataObject<E>> content;
-
+		
 	protected DefaultEntityQueryResult() {
 		super();
 	}
@@ -35,9 +34,36 @@ public class DefaultEntityQueryResult<
 	public DefaultEntityQueryResult(EntityQuery<A, R, T, E, H, F, M, QT> request, DataObjectQueryResult<EntityDataObject<E>> content) {
 		super(request);
 		this.content = content;
+		this.content.getContent().size();
+				
 	}
 
 	public DataObjectQueryResult<EntityDataObject<E>> getContent() {
 		return this.content;
+	}
+	
+	@Override
+	public FetchOptions getFetchOptions() {		
+		return getContent().getFetchOptions();
+	}
+	
+	@Override
+	public int size() {		
+		return getContent().size();
+	}
+	
+	@Override
+	public Boolean isLastPage() {		
+		return getContent().isLastPage();
+	}
+	
+	@Override
+	public long getOffset() {		
+		return getContent().getOffset();
+	}
+	
+	@Override
+	public Long available() {
+		return getContent().available();
 	}
 }

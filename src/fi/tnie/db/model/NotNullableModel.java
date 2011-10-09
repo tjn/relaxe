@@ -14,7 +14,7 @@ public interface NotNullableModel<V>
 		throws NullPointerException;
 	
 	/**
-	 * Returns <code>true</code>.
+	 * Returns <code>false</code>.
 	 * @return
 	 */
 	boolean isNullable();

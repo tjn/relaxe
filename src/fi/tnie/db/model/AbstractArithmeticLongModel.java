@@ -3,10 +3,10 @@
  */
 package fi.tnie.db.model;
 
-public abstract class AbstractArithmeticLongModel
-	extends AbstractArithmeticModel<Long> {
+public abstract class AbstractArithmeticLongModel<A extends Number, B extends Number>
+	extends AbstractArithmeticModel<Long, A, B> {
 
-	public AbstractArithmeticLongModel(ValueModel<Long> a, ValueModel<Long> b) {
+	public AbstractArithmeticLongModel(ValueModel<A> a, ValueModel<B> b) {
 		super(a, b);
 	}
 	

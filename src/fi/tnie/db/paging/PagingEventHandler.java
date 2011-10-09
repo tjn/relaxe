@@ -3,7 +3,9 @@
  */
 package fi.tnie.db.paging;
 
-public interface PagingEventHandler<P extends Pager<P, X>, X> {
+import java.io.Serializable;
+
+public interface PagingEventHandler<T extends Serializable, P extends Pager<T, P, X>, X> {
 		 
-	void handleEvent(PagingEvent<P, X> e);		
+	void handleEvent(PagingEvent<T, P, X> e);		
 }

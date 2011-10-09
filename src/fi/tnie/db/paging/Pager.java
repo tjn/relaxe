@@ -3,17 +3,20 @@
  */
 package fi.tnie.db.paging;
 
+import java.io.Serializable;
+
 import fi.tnie.db.model.Registration;
+import fi.tnie.db.ui.action.Action;
 
 /**
- * @param <P> Type of the Pager 
+ * @param <T> Type of the page this pager browses.
+ * @param <P> Type of the pager itself 
  * @param <C> Type of the paging command applicable with this pager 
  */
-public interface Pager<P extends Pager<P, C>, C> {
+public interface Pager<T extends Serializable, P extends Pager<T, P, C>, C> {
 		
-	public Registration addPagingEventListener(PagingEventHandler<P, C> listener);
+	Registration addPagingEventListener(PagingEventHandler<T, P, C> listener);		
+	Action getAction(C command);
 	
-	void run(C command);
-	
-	
+	T getCurrentPage();
 }

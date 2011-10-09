@@ -48,6 +48,7 @@ public abstract class BinaryRelationModel<N>
 			super(a, b);
 		}
 		
+		@Override
 		protected Boolean apply(V a, V b) {
 			if (a == null || b == null) {
 				return null;
@@ -65,6 +66,7 @@ public abstract class BinaryRelationModel<N>
 			super(a, b);
 		}
 		
+		@Override
 		protected Boolean apply(V a, V b) {		
 			return Boolean.valueOf(a.equals(b));
 		}
@@ -77,6 +79,7 @@ public abstract class BinaryRelationModel<N>
 			super(a, b);
 		}
 		
+		@Override
 		protected Boolean apply(V a, V b) {
 			if (a == null || b == null) {
 				return null;

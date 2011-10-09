@@ -34,7 +34,8 @@ public class DataObjectQueryResult<T extends DataObject>
 	public DataObject.MetaData getMeta() {
 		return meta;
 	}
-
-
-
+	
+	public T get(int index) {				
+		return getContent().get(index);
+	}
 }

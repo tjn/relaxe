@@ -3,21 +3,19 @@
  */
 package fi.tnie.db.model;
 
-public class LongAdditionModel
-	extends AbstractArithmeticLongModel {
-
+public class LongAdditionModel<A extends Number, B extends Number>
+	extends AbstractArithmeticLongModel<A, B> {
 		
-	public LongAdditionModel(ValueModel<Long> a, ValueModel<Long> b) {
+	public LongAdditionModel(ValueModel<A> a, ValueModel<B> b) {
 		super(a, b);		
 	}
 
 	@Override
-	protected Long compute(Long a, Long b) {
+	protected Long compute(A a, B b) {
 		if (a == null || b == null) {
 			return null;
 		}
 		
 		return Long.valueOf(a.longValue() + b.longValue());
 	}
-
 }

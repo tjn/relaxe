@@ -3,26 +3,28 @@
  */
 package fi.tnie.db.model;
 
-public abstract class AbstractArithmeticModel<N>
+public abstract class AbstractArithmeticModel<N extends Number, A extends Number, B extends Number>
 	implements ImmutableValueModel<N> {
 
 	private MutableValueModel<N> result = new DefaultMutableValueModel<N>(null);
 
-	public AbstractArithmeticModel(final ValueModel<N> a, final ValueModel<N> b) {		
-		ChangeListener<N> cl = new ChangeListener<N>() {
-			@Override
-			public void changed(N from, N to) {	
-				N newResult = compute(a.get(), b.get());
-				result.set(newResult);
-			}
-		};
-		
-		if (!a.isConstant()) {
-			a.addChangeHandler(cl);
+	public AbstractArithmeticModel(final ValueModel<A> a, final ValueModel<B> b) {
+		if (!a.isConstant()) {						
+			a.addChangeHandler(new ChangeListener<A>() {
+				@Override
+				public void changed(A from, A to) {	
+					compute(a, b);
+				}
+			});
 		}
 		
 		if (!b.isConstant()) {
-			b.addChangeHandler(cl);
+			b.addChangeHandler(new ChangeListener<B>() {
+				@Override
+				public void changed(B from, B to) {	
+					compute(a, b);
+				}
+			});
 		}
 		
 		this.result.set(compute(a.get(), b.get()));
@@ -33,7 +35,7 @@ public abstract class AbstractArithmeticModel<N>
 		return this.result.addChangeHandler(ch);
 	}
 
-	protected abstract N compute(N a, N b);
+	protected abstract N compute(A a, B b);
 	
 	@Override
 	public boolean isMutable() {
@@ -63,5 +65,10 @@ public abstract class AbstractArithmeticModel<N>
 	@Override
 	public N get() {
 		return this.result.get();
+	}
+
+	private void compute(final ValueModel<A> a, final ValueModel<B> b) {
+		N newResult = compute(a.get(), b.get());
+		result.set(newResult);
 	}
 }

@@ -21,11 +21,13 @@ public interface EntityQueryPager<
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	F extends EntityFactory<E, H, M, F>,
 	M extends EntityMetaData<A, R, T, E, H, F, M>,
+	RP extends EntityQueryResult<A, R, T, E, H, F, M, QT>,
 	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, QT>,
-	P extends EntityQueryPager<A, R, T, E, H, F, M, QT, P, C>,
-	C
+	P extends EntityQueryPager<A, R, T, E, H, F, M, RP, QT, P>
 > 
-	extends Pager<P, C>
-{
-	public EntityQueryResult<A, R, T, E, H, F, M, QT> getCurrentPage();
+	extends SimplePager<RP, P>
+{			
+//	public EntityQueryResult<A, R, T, E, H, F, M, QT> getCurrentPage();
+	
+	
 }
