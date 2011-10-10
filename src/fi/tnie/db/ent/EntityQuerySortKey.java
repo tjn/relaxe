@@ -12,6 +12,5 @@ public interface EntityQuerySortKey<A extends Attribute>
 	extends Serializable {
 	
 	OrderBy.SortKey sortKey(ColumnReference cr);	
-	// EntityQueryTemplateAttribute getAttributeTemplate();
 	A attribute();
 }

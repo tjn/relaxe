@@ -37,6 +37,10 @@ public abstract class DefaultQueryTemplate<
 	
 	private List<EntityQuerySortKey<A>> sortKeyList = null;	
 	private List<EntityQuerySortKey<?>> allSortKeys = null;
+	private List<EntityQueryPredicate<A>> predicateList = null;	
+	private List<EntityQueryPredicate<?>> allPredicates = null;
+	
+//	private E predicateSource;
 	
 	@Override
 	public EntityQueryTemplateAttribute get(A a) throws EntityRuntimeException {
@@ -174,6 +178,11 @@ public abstract class DefaultQueryTemplate<
 		getAllSortKeys().add(sk);
 	}	
 	
+	public void addPredicate(EntityQueryPredicate<A> p) {
+		getPredicateList().add(p);
+		getAllPredicates().add(p);
+	}
+	
 	@Override
 	public List<EntityQuerySortKey<A>> sortKeys() {
 		if (this.sortKeyList == null) {
@@ -190,6 +199,17 @@ public abstract class DefaultQueryTemplate<
 
 		return sortKeyList;
 	}
+	
+	private List<EntityQueryPredicate<A>> getPredicateList() {
+		if (predicateList == null) {
+			predicateList = new ArrayList<EntityQueryPredicate<A>>();			
+		}
+
+		return predicateList;
+	}
+	
+	
+	
 
 	public <
 		SA extends Attribute,
@@ -235,5 +255,22 @@ public abstract class DefaultQueryTemplate<
 
 		return allSortKeys;
 	}
+	
+	@Override
+	public List<EntityQueryPredicate<?>> allPredicates() {
+		return Collections.unmodifiableList(getAllPredicates());
+	}
+	
+	private List<EntityQueryPredicate<?>> getAllPredicates() {
+		if (allPredicates == null) {
+			allPredicates = new ArrayList<EntityQueryPredicate<?>>();			
+		}
 
+		return allPredicates;
+	}
+	
+	@Override
+	public List<EntityQueryPredicate<A>> predicates() {
+		return Collections.unmodifiableList(getPredicateList());
+	}
 }

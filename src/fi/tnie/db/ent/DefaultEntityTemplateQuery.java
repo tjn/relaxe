@@ -70,9 +70,8 @@ public class DefaultEntityTemplateQuery<
 	
 	private transient Map<EntityQueryTemplateAttribute, ColumnReference> columnMap;
 	
-	private transient Map<EntityQuerySortKey<?>, ColumnReference> sortKeyColumnMap = new HashMap<EntityQuerySortKey<?>, ColumnReference>();
-	
-	// private transient Map<Attribute, EntityQueryTemplateAttribute> attributeTemplateMap = new HashMap<Attribute, EntityQueryTemplateAttribute>();
+	private transient Map<EntityQuerySortKey<?>, ColumnReference> sortKeyColumnMap = new HashMap<EntityQuerySortKey<?>, ColumnReference>();	
+	private transient Map<EntityQueryPredicate<?>, ColumnReference> predicateColumnMap = new HashMap<EntityQueryPredicate<?>, ColumnReference>();
 	
 	private transient List<ColumnReference> rootPrimaryKey; // NS	
 	private Q template;
@@ -211,31 +210,23 @@ public class DefaultEntityTemplateQuery<
 			if (root) {
 				getRootPrimaryKey().add(cref);
 			}
-		}
-		
-		
-		
-	
-						
-//		Set<MR> rs = meta.relationships();
+		}					
 
-//		for (MR r : rs) {
-//			EntityKey<?, ?, ?, M, ?, ?, ?, ?> k = meta.getEntityKey(r);			
-//			ReferenceHolder<?, ?, ?, ?> h = k.get(template);
-//			
-//			if (h == null) {
-//				// skip
-//			}
-//			else {
-//				fk = meta.getForeignKey(r);
-//				
-//				for (Column c : fk.columns().keySet()) {
-//					s.add(new ColumnReference(tref, c));
-//				}
-//			}
-//		}
-
-		addAttributes(template, s, tref);				
+		addAttributes(template, s, tref);
+		
+		
+		List<EntityQueryPredicate<MA>> ps = template.predicates();
+		
+		for (EntityQueryPredicate<MA> k : ps) {
+			MA a = k.attribute();
+			ColumnReference cref = null;
+			
+			if (a != null) {			
+				Column c = meta.getColumn(a);
+				cref = new ColumnReference(tref, c);
+				predicateColumnMap.put(k, cref);
+			}
+		}		
 		
 		List<EntityQuerySortKey<MA>> keys = template.sortKeys();
 		

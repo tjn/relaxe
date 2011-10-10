@@ -55,10 +55,13 @@ public interface EntityQueryTemplate<
 	EntityQuery<A, R, T, E, H, F, M, Q> newQuery()
 		throws CyclicTemplateException;
 
-	List<EntityQuerySortKey<A>> sortKeys();
-	
+	List<EntityQuerySortKey<A>> sortKeys();	
 	List<EntityQuerySortKey<?>> allSortKeys();
+	
+	List<EntityQueryPredicate<A>> predicates();
+	List<EntityQueryPredicate<?>> allPredicates();
 
-	void addSortKey(EntityQuerySortKey<A> sk);
+	void addSortKey(EntityQuerySortKey<A> sk);	
+	void addPredicate(EntityQueryPredicate<A> p);
 }
 
