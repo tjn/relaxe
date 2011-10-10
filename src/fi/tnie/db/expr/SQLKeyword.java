@@ -78,7 +78,8 @@ public enum SQLKeyword implements Keyword {
 	TIMESTAMP, 
 	CONSTRAINT, 
 	ASC, 
-	DESC	
+	DESC,
+	IS
 	;
 	
 	private static EnumSet<SQLKeyword> keywords = EnumSet.allOf(SQLKeyword.class);

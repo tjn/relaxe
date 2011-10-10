@@ -6,9 +6,10 @@
  */
 package fi.tnie.db.expr;
 
-public class IntLiteral
-	extends SimpleElement
-	implements Token {
+import fi.tnie.db.types.PrimitiveType;
+
+public class IntLiteral	
+	implements Token, ValueExpression {
 
 	/**
 	 * 
@@ -34,13 +35,23 @@ public class IntLiteral
 	}
 
 	@Override
-	public void traverse(VisitContext vc, ElementVisitor v) {
-		v.start(vc, this);
+	public void traverse(VisitContext vc, ElementVisitor v) {		
+		v.start(vc, (Token) this);
 		v.end(this);			
+	}
+	
+	@Override
+	public int getType() {
+		return PrimitiveType.INTEGER;
 	}
 
 	@Override
 	public boolean isOrdinary() {
 		return true;
-	}		
+	}
+	
+	@Override
+	public ColumnName getColumnName() {
+		return null;
+	}
 }
