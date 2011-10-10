@@ -64,4 +64,10 @@ public class ForeignKeyJoinCondition
 
 		return this.condition;		
 	}
+	
+	
+	@Override
+	public Predicate parenthesize() {
+		return new ParenthesizedPredicate(this);
+	}
 }
