@@ -5,7 +5,6 @@ package fi.tnie.db.expr.op;
 
 import fi.tnie.db.expr.ElementVisitor;
 import fi.tnie.db.expr.Expression;
-import fi.tnie.db.expr.Symbol;
 import fi.tnie.db.expr.Token;
 import fi.tnie.db.expr.VisitContext;
 
@@ -58,11 +57,11 @@ public class BinaryOperator implements Expression {
 	public void traverse(VisitContext vc, ElementVisitor v) {
 		vc = v.start(vc, this);
 		
-		Symbol.PAREN_LEFT.traverse(vc, v);
+//		Symbol.PAREN_LEFT.traverse(vc, v);
 		left.traverse(vc, v);
 		symbol.traverse(vc, v);		
 		right.traverse(vc, v);
-		Symbol.PAREN_RIGHT.traverse(vc, v);
+//		Symbol.PAREN_RIGHT.traverse(vc, v);
 
 		v.end(this);
 	}

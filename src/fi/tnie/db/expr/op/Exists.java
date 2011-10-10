@@ -55,4 +55,9 @@ public class Exists
 		
 		v.end(this);
 	}
+	
+	@Override
+	public Predicate parenthesize() {
+		return new ParenthesizedPredicate(this);
+	}
 }

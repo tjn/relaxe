@@ -51,4 +51,9 @@ public class NotPredicate
 		SQLKeyword.NOT.traverse(vc, v);
 		inner.traverse(vc, v);		
 	}
+	
+	@Override
+	public Predicate parenthesize() {
+		return new ParenthesizedPredicate(this);
+	}
 }

@@ -36,4 +36,9 @@ public class AndPredicate
 		
 		return new AndPredicate(a, b);
 	}
+	
+	@Override
+	public Predicate parenthesize() {
+		return new ParenthesizedPredicate(this);
+	}
 }

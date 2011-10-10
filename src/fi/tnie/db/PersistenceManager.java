@@ -48,7 +48,7 @@ import fi.tnie.db.expr.ValueExpression;
 import fi.tnie.db.expr.ValueParameter;
 import fi.tnie.db.expr.ValueRow;
 import fi.tnie.db.expr.op.AndPredicate;
-import fi.tnie.db.expr.op.Eq;
+import fi.tnie.db.expr.op.Comparison;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
@@ -602,8 +602,8 @@ public class PersistenceManager<
         return p;
     }
 
-    private Eq eq(ValueExpression a, ValueExpression b) {
-        return new Eq(a, b);
+    private Predicate eq(ValueExpression a, ValueExpression b) {
+    	return Comparison.eq(a, b);        
     }
 
 //
