@@ -197,7 +197,7 @@ public class DefaultEntityTemplateQuery<
 			qref = tref;
 		}
 		else {
-			ForeignKeyJoinCondition jc = new ForeignKeyJoinCondition(fk, qref, tref);
+			ForeignKeyJoinCondition jc = new ForeignKeyJoinCondition(fk, referencing, tref);
 			qref = qref.leftJoin(tref, jc);
 		}
 					
