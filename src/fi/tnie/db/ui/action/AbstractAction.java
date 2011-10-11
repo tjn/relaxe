@@ -20,7 +20,8 @@ public abstract class AbstractAction
 		this(null, nameModel);
 	}
 	
-	protected AbstractAction() {		
+	protected AbstractAction() {
+		this(ConstantBooleanModel.TRUE, (ValueModel<String>) null);
 	}
 	
 	public AbstractAction(String name) {
