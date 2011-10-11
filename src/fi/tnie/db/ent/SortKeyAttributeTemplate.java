@@ -9,9 +9,6 @@ import fi.tnie.db.expr.OrderBy.Order;
 import fi.tnie.db.expr.OrderBy.SortKey;
 
 /**
- * Provides a EntityQueryTemplateAttribute implementation with the capability to act as an EntityQuerySortKey.
- * 
- *  
  *  
  * @author Topi Nieminen <topi.nieminen@gmail.com>
  */
