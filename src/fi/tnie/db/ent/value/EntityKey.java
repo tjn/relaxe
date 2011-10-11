@@ -20,39 +20,39 @@ import fi.tnie.db.types.ReferenceType;
  * @param <R>
  * @param <T>
  * @param <E>
- * @param <S>
- * @param <P>
- * @param <VE>
- * @param <VH>
- * @param <VM>
+ * @param <M>
+ * @param <RT>
+ * @param <RE>
+ * @param <RH>
+ * @param <RM>
  * @param <K>
  */
 public interface EntityKey<	
 	R extends Reference,
-	T extends ReferenceType<?, R, T, E, ?, ?, S>,
-	E extends Entity<?, R, T, E, ?, ?, S>,	
-	S extends EntityMetaData<?, R, T, E, ?, ?, S>,	
-	P extends ReferenceType<VA, VR, P, VE, VH, VF, VM>,
-	VA extends Attribute,
-	VR extends Reference,	
-	VE extends Entity<VA, VR, P, VE, VH, VF, VM>,
-	VH extends ReferenceHolder<VA, VR, P, VE, VH, VM>,
-	VF extends EntityFactory<VE, VH, VM, VF>,
-	VM extends EntityMetaData<VA, VR, P, VE, VH, VF, VM>,	
-	K extends EntityKey<R, T, E, S, P, VA, VR, VE, VH, VF, VM, K>	
+	T extends ReferenceType<?, R, T, E, ?, ?, M>,
+	E extends Entity<?, R, T, E, ?, ?, M>,	
+	M extends EntityMetaData<?, R, T, E, ?, ?, M>,	
+	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+	RA extends Attribute,
+	RR extends Reference,	
+	RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+	RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+	RF extends EntityFactory<RE, RH, RM, RF>,
+	RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,	
+	K extends EntityKey<R, T, E, M, RT, RA, RR, RE, RH, RF, RM, K>	
 >
-	extends Key<T, E, P, K>
+	extends Key<T, E, RT, K>
 {	
 	R name();	
-	VH newHolder(VE newValue);	
-	VH get(E e);
-	VE value(E e);
-	void set(E e, VH newValue);
-	void set(E e, VE newValue);
+	RH newHolder(RE newValue);	
+	RH get(E e);
+	RE value(E e);
+	void set(E e, RH newValue);
+	void set(E e, RE newValue);
 	
 //	P getTargetType();
-	S getSource();	
-	VM getTarget();
+	M getSource();	
+	RM getTarget();
 
 
 }
