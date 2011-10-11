@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import fi.tnie.db.expr.op.AndPredicate;
 import fi.tnie.db.expr.op.Comparison;
+import fi.tnie.db.expr.op.ParenthesizedPredicate;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 
