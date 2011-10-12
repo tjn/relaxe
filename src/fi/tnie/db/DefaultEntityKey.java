@@ -13,33 +13,36 @@ import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
 public abstract class DefaultEntityKey<
-	R extends Reference,
-	T extends ReferenceType<?, R, T, E, ?, ?, S>,
-	E extends Entity<?, R, T, E, ?, ?, S>,
-	S extends EntityMetaData<?, R, T, E, ?, ?, S>,
-	X extends Attribute,
-	Y extends Reference,
-	Z extends ReferenceType<X, Y, Z, V, H, VF, D>,
-	V extends Entity<X, Y, Z, V, H, VF, D>,
-	H extends ReferenceHolder<X, Y, Z, V, H, D>,
-	VF extends EntityFactory<V, H, D, VF>,
-	D extends EntityMetaData<X, Y, Z, V, H, VF, D>,
-	K extends EntityKey<R, T, E, S, Z, X, Y, V, H, VF, D, K>	 
+	A extends Attribute,
+	R extends Reference,	
+	T extends ReferenceType<A, R, T, E, H, F, M>,
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>,	
+	RA extends Attribute,
+	RR extends Reference,	
+	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+	RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+	RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+	RF extends EntityFactory<RE, RH, RM, RF>,
+	RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,	
+	K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>
 >
-	implements EntityKey<R, T, E, S, Z, X, Y, V, H, VF, D, K> {
+	implements EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K> {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4023544205660547860L;
-	private S source;
-	private D destination;		
+	private M source;
+	private RM destination;		
 	private R name;
 	
 	protected DefaultEntityKey() {
 	}
 		
-	public DefaultEntityKey(S source, D destination, R name) {
+	public DefaultEntityKey(M source, RM destination, R name) {
 		super();
 		this.source = source;
 		this.destination = destination;
@@ -51,13 +54,13 @@ public abstract class DefaultEntityKey<
 	}
 	
 	@Override
-	public S getSource() {
+	public M getSource() {
 		return this.source;
 	}
 	
 	
 	@Override
-	public D getTarget() {
+	public RM getTarget() {
 		return destination;
 	}
 
@@ -67,30 +70,30 @@ public abstract class DefaultEntityKey<
 	}
 
 	@Override
-	public abstract H newHolder(V newValue);
+	public abstract RH newHolder(RE newValue);
 
 	@Override
-	public abstract void set(E e, H newValue);
+	public abstract void set(E e, RH newValue);
 
 	@Override
-	public void set(E e, V newValue) {		
+	public void set(E e, RE newValue) {		
 		e.setRef(self(), newHolder(newValue));
 	}
 
 	@Override
-	public V value(E e) {
-		H h = get(e);
+	public RE value(E e) {
+		RH h = get(e);
 		return (h == null) ? null : h.value();
 	}
 	
-	public H get(E e) {
-		H ref = e.getRef(self());
+	public RH get(E e) {
+		RH ref = e.getRef(self());
 		return ref;
 	};
 
 			
 	@Override
-	public Z type() {	
+	public RT type() {	
 		return destination.getType();
 	}
 	
@@ -102,7 +105,7 @@ public abstract class DefaultEntityKey<
 	
 	@Override
 	public void copy(E src, E dest) {
-		H v = src.getRef(self());
+		RH v = src.getRef(self());
 		dest.setRef(self(), v);		
 	}
 

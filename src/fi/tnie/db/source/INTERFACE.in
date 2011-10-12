@@ -8,6 +8,7 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityBuildContext;
 import fi.tnie.db.ent.EntityBuilder;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.value.AbstractEntityKey;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.types.*;
@@ -74,8 +75,8 @@ public interface {{table-interface}}
 	
 		
 	interface MetaData
-		extends fi.tnie.db.ent.EntityMetaData<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData>
-		{{implemented-has-key-list}}	
+		extends fi.tnie.db.ent.EntityMetaData<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData>		
+		{{implemented-has-key-list}}
 	{		
 		@Override
 		public Builder newBuilder(TableReference tableRef, EntityBuildContext ctx)
@@ -118,12 +119,15 @@ public interface {{table-interface}}
 		
 		
 	public static abstract class Key<
-		R extends fi.tnie.db.ent.Reference, 
-		T extends ReferenceType<?, R, T, E, ?, ?, S>,
-		E extends Entity<?, R, T, E, ?, ?, S>,
-		S extends EntityMetaData<?, R, T, E, ?, ?, S>		
+		A extends fi.tnie.db.ent.Attribute,
+		R extends fi.tnie.db.ent.Reference,	
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M> & Has{{table-interface}}<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M> & Has{{table-interface}}Key<A, R, T, E, H, F, M>
 	>
-		extends AbstractEntityKey<R, T, E, S, {{table-interface}}.Type, {{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Key<R, T, E, S>> {
+		extends AbstractEntityKey<A, R, T, E, H, F, M, {{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Key<A, R, T, E, H, F, M>> {
 
 		private static final long serialVersionUID = 1L;
 		
@@ -133,8 +137,8 @@ public interface {{table-interface}}
 		protected Key() {	
 		}
 
-		protected Key(S meta, R name) {
-			super(meta, name);
+		protected Key(T type, R name) {
+			super(type, name);
 		}		
 
 		@Override
@@ -146,6 +150,14 @@ public interface {{table-interface}}
 		public {{table-interface}}.MetaData getTarget() {		
 			return {{table-interface}}Impl.{{table-interface}}MetaData.getInstance();
 		}
+		
+		public void set(E e, {{table-interface}}.Holder newValue) {
+			e.set{{table-interface}}(this, newValue);			
+		}
+		
+		public {{table-interface}}.Holder get(E e) {
+			return e.get{{table-interface}}(this);			
+		}		
 
 		@Override
 		public {{table-interface}}.Type type() {
@@ -153,7 +165,7 @@ public interface {{table-interface}}
 		}
 		
 		@Override
-		public {{table-interface}}.Key<R, T, E, S> self() {		
+		public {{table-interface}}.Key<A, R, T, E, H, F, M> self() {		
 			return this;
 		}
 	}

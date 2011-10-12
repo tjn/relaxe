@@ -5,17 +5,25 @@ package {{package-name}};
 */
 // {{table-interface}}
 	
+import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.Reference;
+import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
+
 public interface {{has-key-interface}}<
+	A extends fi.tnie.db.ent.Attribute,
 	R extends fi.tnie.db.ent.Reference,
-	T extends ReferenceType<?, R, T, E, ?, ?, S>,
-	E extends Entity<?, R, T, E, ?, ?, S>,
-	S extends EntityMetaData<?, R, T, E, ?, ?, S>	
+	T extends ReferenceType<A, R, T, E, H, F, M>,
+	E extends Entity<A, R, T, E, H, F, M> & {{has-interface}}<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,		
+	M extends EntityMetaData<A, R, T, E, H, F, M> & {{has-key-interface}}<A, R, T, E, H, F, M>
 	>
 {
-	public {{table-interface}}.Key<R, T, E, S> get{{table-interface}}Key(R ref);
+	public {{table-interface}}.Key<A, R, T, E, H, F, M> get{{table-interface}}Key(R ref);
 }
 	

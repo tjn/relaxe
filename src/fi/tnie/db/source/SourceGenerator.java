@@ -56,6 +56,7 @@ public class SourceGenerator {
 	     */		
 		TABLE_INTERFACE,
 		HAS_KEY_INTERFACE,
+		HAS_INTERFACE,
 		
 		REFERENCED_TABLE_INTERFACE_QUALIFIED,
 		TABLE_INTERFACE_REF,
@@ -264,11 +265,16 @@ public class SourceGenerator {
         
 		Set<BaseTable> tts = new HashSet<BaseTable>();
 		
+//		for (Schema s : cat.schemas().values()) {
+//			for (ForeignKey fk : s.foreignKeys().values()) {			
+//				tts.add(fk.getReferenced());			
+//			}			
+//		}
+		
 		for (Schema s : cat.schemas().values()) {
-			for (ForeignKey fk : s.foreignKeys().values()) {			
-				tts.add(fk.getReferenced());			
-			}			
+			tts.addAll(s.baseTables().values());
 		}
+
 		
 		for (BaseTable t : tts) {
 			JavaType hki = tm.entityType(t, Part.HAS_KEY);
@@ -311,6 +317,8 @@ public class SourceGenerator {
     	if (intf == null) {
     		return null;
     	}
+    	
+    	JavaType hp = tm.entityType(t, Part.HAS);
     	    	
     	String src = getTemplateForHasKeyInterface();
     	
@@ -318,6 +326,7 @@ public class SourceGenerator {
     	
     	src = replaceAllWithComment(src, Tag.PACKAGE_NAME, hki.getPackageName());
     	src = replaceAll(src, Tag.HAS_KEY_INTERFACE, hki.getUnqualifiedName());    	
+    	src = replaceAll(src, Tag.HAS_INTERFACE, hp.getUnqualifiedName());    	
     	src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
     	
     	logger().info("generateHasKeyInterface: src 2=" + src);
@@ -810,7 +819,7 @@ public class SourceGenerator {
 		    final JavaType hp = tm.entityType(t, Part.HOOK);
 		    final JavaType impl = tm.entityType(t, Part.IMPLEMENTATION);
 		    final JavaType te = tm.entityType(t, Part.LITERAL_TABLE_ENUM);
-		    final JavaType ref = tm.entityType(t, Part.REF);
+		    final JavaType ref = tm.entityType(t, Part.HAS);
 		    
 		    if (intf == null || impl == null) {
 		        continue;
@@ -826,8 +835,8 @@ public class SourceGenerator {
 		        }
 		        
 		        {	
-                    CharSequence source = generateRef(t, ref, intf, tm);                    
-                    File root = getSourceDir(schema, Part.REF);
+                    CharSequence source = generateHasRef(t, ref, intf, tm);                    
+                    File root = getSourceDir(schema, Part.HAS);
                     logger().debug("ref: " + source);                   
                     write(root, ref, source, generated, gm);
 		        }
@@ -910,10 +919,10 @@ public class SourceGenerator {
 		
 	}
 
-    private CharSequence generateRef(BaseTable t, JavaType ref, JavaType intf, TableMapper tm) 
+    private CharSequence generateHasRef(BaseTable t, JavaType ref, JavaType intf, TableMapper tm) 
     	throws IOException {
-    	String src = getTemplateFor(Part.REF);
-    	src = replaceAll(src, Tag.TABLE_INTERFACE_REF, ref.getUnqualifiedName());    	
+    	String src = getTemplateFor(Part.HAS);
+//    	src = replaceAll(src, Tag.TABLE_INTERFACE_REF, ref.getUnqualifiedName());    	
 	    src = replacePackageAndImports(src, intf);
 	    src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());    	
 		return src;
@@ -1050,20 +1059,18 @@ public class SourceGenerator {
     	
     	StringBuffer buf = new StringBuffer();
     	
-    	JavaType intf = tm.entityType(t, Part.INTERFACE);
+//    	JavaType intf = tm.entityType(t, Part.INTERFACE);
     	
     	// HasProjectKey<Reference, Type, HourReport, MetaData>, HasOrganizationKey<Reference, Type, HourReport, MetaData>
-    	   	
+    	   	    	
+    	String args = referenceKeyTypeArgs(tm, t);
     	
     	for (BaseTable r : ts) {
     		buf.append(", ");    		
     		JavaType kt = tm.entityType(r, Part.HAS_KEY);    		
     		buf.append(kt.getQualifiedName());
     		buf.append("<");
-    		buf.append(getReferenceType());
-    		buf.append(", Type, ");
-    		buf.append(intf.getUnqualifiedName());
-    		buf.append(", MetaData");
+    		buf.append(args);
     		buf.append("> ");
 		}
     	
@@ -1080,20 +1087,36 @@ public class SourceGenerator {
     
 	private String referenceList(BaseTable t, TableMapper tm) {
 		StringBuffer buf = new StringBuffer();
-		Collection<JavaType> rl = referenced(t, tm).values();
+//		Collection<JavaType> rl = referenced(t, tm).values();
 		
-		JavaType intf = tm.entityType(t, Part.INTERFACE);
+		Set<BaseTable> rs = referencedTables(t);
 		
-		for (JavaType jt : rl) {
-			buf.append(", ");
-			buf.append(jt.getQualifiedName());			
-			buf.append("Ref");
+//		JavaType intf = tm.entityType(t, Part.INTERFACE);
+		
+		String args = referenceKeyTypeArgs(tm, t);
+		
+		for (BaseTable rt : rs) {
+			buf.append(", ");			
+			JavaType e = tm.entityType(rt, Part.HAS);			
+			buf.append(e.getQualifiedName());
 			buf.append("<");
-			buf.append(intf.getUnqualifiedName());
-			buf.append(".");
-			buf.append(getReferenceType());
-			buf.append(">");
-		}        	
+			buf.append(args);
+			buf.append(">");			
+		}
+				
+//		for (JavaType jt : rl) {
+//			buf.append(", ");
+//									
+//			buf.append(jt.getQualifiedName());			
+//			buf.append("Ref");
+//			
+//			
+//			buf.append("<");
+//			buf.append(intf.getUnqualifiedName());
+//			buf.append(".");
+//			buf.append(getReferenceType());
+//			buf.append(">");
+//		}        	
 		
 		String code = buf.toString();
 		return code;
@@ -1562,24 +1585,38 @@ public class SourceGenerator {
 //		@Override
 //		public fi.tnie.db.gen.ent.personal.Organization.Holder getOrganization(
 //				fi.tnie.db.gen.ent.personal.Organization.Key<?, ?, ?, ?, ?> ok) {
-//			return om.get(ok.name());
+//			return om.get(ok);
 //		}		
 		
 		StringBuffer buf = new StringBuffer();
+		
+		JavaType ti = tm.entityType(referenced, Part.INTERFACE);
+					
+		final StringBuffer ktbuf = new StringBuffer();
+		ktbuf.append(ti.getQualifiedName());
+		ktbuf.append(".Key<");
+		ktbuf.append(referenceKeyTypeArgs(tm, t));
+		ktbuf.append(">");
+		
+		final String kt = ktbuf.toString();
+		
+
+		
 		
 		String vm = referenceValueMapVariable(referenced, target, qualify);
 		
 		String hn = target.getQualifiedName() + ".Holder";
 						
+						
 		buf.append("private java.util.Map<");
-		buf.append(getReferenceType());
+		buf.append(kt);
 		buf.append(", ");
 		buf.append(hn);		
 		buf.append(">");
 		buf.append(" ");
 		buf.append(vm);		
 		buf.append(" = new java.util.HashMap<");
-		buf.append(getReferenceType());
+		buf.append(ktbuf);
 		buf.append(", ");
 		buf.append(hn);		
 		buf.append(">();\n\n");
@@ -1589,28 +1626,24 @@ public class SourceGenerator {
 		buf.append(" get");
 		buf.append(target.getUnqualifiedName());
 		buf.append("(");
-		buf.append(target.getUnqualifiedName());
-		buf.append(".Key<");
-		buf.append(getReferenceType());
-		buf.append(", ?, ?, ?> key) {\n");
+		buf.append(kt);		
+		buf.append(" key) {\n");
 		buf.append("\treturn this.");
 		buf.append(vm);
-		buf.append(".get(key.name());\n");
+		buf.append(".get(key);\n");
 		buf.append("}\n\n");
 		
 		buf.append("@Override\npublic void ");
 		buf.append("set");
 		buf.append(target.getUnqualifiedName());
 		buf.append("(");
-		buf.append(target.getQualifiedName());
-		buf.append(".Key<");
-		buf.append(getReferenceType());
-		buf.append(", ?, ?, ?> key, ");
+		buf.append(kt);
+		buf.append(" key, ");
 		buf.append(target.getQualifiedName());
 		buf.append(".Holder newValue) {\n");		
 		buf.append("\tthis.");
 		buf.append(vm);
-		buf.append(".put(key.name(), newValue);\n");
+		buf.append(".put(key, newValue);\n");
 		buf.append("}\n\n");		
 		
 		return buf.toString();
@@ -1651,6 +1684,17 @@ public class SourceGenerator {
 	}
 	
 	
+	private Set<BaseTable> referencedTables(BaseTable table) {			
+		Set<BaseTable> rs = new HashSet<BaseTable>();
+		
+		for (ForeignKey k : table.foreignKeys().values()) {
+			BaseTable referenced = k.getReferenced();
+			rs.add(referenced);		
+		}
+		
+		return rs;
+	}	
+	
 	private Map<BaseTable, JavaType> referenced(BaseTable table, TableMapper tm) {			
 		Map<BaseTable, JavaType> map = new HashMap<BaseTable, JavaType>();
 		
@@ -1683,14 +1727,14 @@ public class SourceGenerator {
 	private String formatReferenceKeyClass(BaseTable referencing, BaseTable referenced, boolean qualify, TableMapper tm) {
 
 //		// Sample output:
-//		private static class OrganizationKey
+//		public static class OrganizationKey
 //		extends Organization.Key<Person.Reference, Person.Type, Person, Person.MetaData> {
 //
 //		private static final long serialVersionUID = 1L;
 //
 //		protected OrganizationKey(
 //				EntityMetaData<fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person> meta, Reference name) {
-//			super(meta, name);
+//			super(Person.TYPE, name);
 //		}
 		
 		// TODO: implement get()
@@ -1716,12 +1760,14 @@ public class SourceGenerator {
 		JavaType target = tm.entityType(referenced, Part.INTERFACE);
 				
 		StringBuffer buf = new StringBuffer();
-		buf.append("private static class ");
+		
+		// Key implementation must be public to be GWT serializable
+		buf.append("public static class ");
 		
 		String n = referenceKeyImplementationName(referenced, target, qualify);
 		
 //		String kta = keyTypeArgs(tm, referencing, true);
-		String kta = referenceKeyTypeArgs(tm, referencing, true);
+		String kta = referenceKeyTypeArgs(tm, referencing);
 				
 		buf.append(n);
 		buf.append(" extends ");
@@ -1741,12 +1787,12 @@ public class SourceGenerator {
 		buf.append("private ");		
 		buf.append(n);
 		buf.append("(");
-		buf.append(src.getUnqualifiedName());
-		buf.append(".MetaData");
-		buf.append(" meta, ");
 		buf.append(getReferenceType());
 		buf.append(" name) {\n");
-		buf.append("super(meta, name);");
+		buf.append("super(");
+		buf.append(src.getUnqualifiedName());
+		buf.append(".TYPE, ");
+		buf.append("name);");
 		buf.append("}\n\n");
 		
 		buf.append("@Override\n");
@@ -1801,15 +1847,33 @@ public class SourceGenerator {
 		
 		nb.append(target.getUnqualifiedName());
 		nb.append(".");
-		nb.append("Key<");
+		nb.append("Key<");		
+		nb.append(source.getUnqualifiedName());
+		nb.append(".");
+		nb.append(getAttributeType());
+		nb.append(", ");		
+		
 		nb.append(source.getUnqualifiedName());
 		nb.append(".");
 		nb.append(getReferenceType());
 		nb.append(", ");
+		
 		nb.append(source.getUnqualifiedName());
 		nb.append(".Type, ");
+		
 		nb.append(source.getUnqualifiedName());
 		nb.append(", ");
+
+		nb.append(source.getUnqualifiedName());
+		nb.append(".");
+		nb.append("Holder");
+		nb.append(", ");
+
+		nb.append(source.getUnqualifiedName());
+		nb.append(".");
+		nb.append("Factory");
+		nb.append(", ");
+
 		nb.append(source.getUnqualifiedName());
 		nb.append(".MetaData");		
 		nb.append(">");
@@ -1930,16 +1994,39 @@ public class SourceGenerator {
         return buf.toString();
 	}
 	
-	private String referenceKeyTypeArgs(TableMapper tm, BaseTable t, boolean reference) {
+	private String referenceKeyTypeArgs(TableMapper tm, BaseTable t) {
 		JavaType intf = tm.entityType(t, Part.INTERFACE);
-		StringBuffer buf = new StringBuffer();		
+		StringBuffer buf = new StringBuffer();
+		
+		String q = intf.getUnqualifiedName();
+
+		buf.append(q);
+		buf.append(".");
+		buf.append(getAttributeType());        
+        buf.append(", ");
+		
+        buf.append(q);
+		buf.append(".");
 		buf.append(getReferenceType());        
         buf.append(", ");
+        
+        buf.append(q);
+		buf.append(".");
         buf.append("Type");        
-        buf.append(", ");        
-        buf.append(intf.getUnqualifiedName());
-        buf.append(", ");        
-        buf.append(intf.getUnqualifiedName());
+        buf.append(", ");       
+
+        buf.append(q);		
+        buf.append(", ");
+        
+        buf.append(q);		
+        buf.append(".Holder");        
+        buf.append(", ");
+                
+        buf.append(q);
+        buf.append(".Factory");        
+        buf.append(", ");
+        
+        buf.append(q);
         buf.append(".MetaData");
         return buf.toString();
 	}
@@ -2180,7 +2267,7 @@ public class SourceGenerator {
 			content.append(n);
 			content.append(" k = new ");
 			content.append(n);
-			content.append("(this, ");
+			content.append("(");
 			content.append(jt.getQualifiedName());
 			content.append(".");
 			content.append(getReferenceType());
@@ -2216,15 +2303,33 @@ public class SourceGenerator {
 		buf.append(tt.getQualifiedName());
 		buf.append(".Key");
 		buf.append("<");
-		buf.append(it.getUnqualifiedName());		
+		buf.append(rt.getUnqualifiedName());		
+		buf.append(".");		
+		buf.append(getAttributeType());
+		buf.append(",");
+		
+		buf.append(rt.getUnqualifiedName());
 		buf.append(".");
 		buf.append(getReferenceType());
 		buf.append(", ");
+		
 		buf.append(it.getUnqualifiedName());		
 		buf.append(".");
 		buf.append("Type, ");
+		
 		buf.append(rt.getUnqualifiedName());
 		buf.append(", ");
+		
+		buf.append(rt.getUnqualifiedName());		
+		buf.append(".");		
+		buf.append("Holder");
+		buf.append(", ");
+
+		buf.append(rt.getUnqualifiedName());		
+		buf.append(".");		
+		buf.append("Factory");
+		buf.append(", ");
+		
 		buf.append(rt.getUnqualifiedName());
 		buf.append(".MetaData");
 		buf.append("> ");
@@ -2332,6 +2437,8 @@ public class SourceGenerator {
         String rki = referenceKeyReferenceTypeName(t, referenced, tm, qualify);
         String rkimp = referenceKeyImplementationName(referenced, target, qualify);
         String rkv = referenceKeyMapVariable(referenced, target, qualify);
+        
+        String ta = referenceKeyTypeArgs(tm, t);
                         
         buf.append("private java.util.Map<");
         buf.append(intf.getUnqualifiedName());
@@ -2352,12 +2459,7 @@ public class SourceGenerator {
         buf.append("public ");
         buf.append(target.getQualifiedName());
         buf.append(".Key<");
-        buf.append(getReferenceType());
-        buf.append(", Type, ");
-        buf.append(intf.getUnqualifiedName());
-        buf.append(", ");
-        buf.append(intf.getUnqualifiedName());
-        buf.append(".MetaData");
+        buf.append(ta);        
         buf.append(">");
         buf.append(" get");
         buf.append(rkimp);        

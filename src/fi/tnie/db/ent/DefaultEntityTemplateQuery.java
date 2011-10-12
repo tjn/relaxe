@@ -68,8 +68,6 @@ public class DefaultEntityTemplateQuery<
 	private transient LinkedHashMap<Integer, TableReference> originMap;	
 	private transient Map<JoinKey, TableReference> referenceMap;
 	
-	
-	
 	private transient Map<EntityQueryTemplateAttribute, ColumnReference> columnMap;
 	
 	private transient Map<EntityQuerySortKey<?>, ColumnReference> sortKeyColumnMap = new HashMap<EntityQuerySortKey<?>, ColumnReference>();	
@@ -123,7 +121,11 @@ public class DefaultEntityTemplateQuery<
 
 		AbstractTableReference tref = fromTemplate(root, null, null, null, q, visited);
 		
-		logger().debug("ref: " + tref);
+		
+		logger().debug("ref: " + tref);		
+		logger().debug("originMap: " + originMap);
+		logger().debug("metaDataMap: " + metaDataMap);
+		
 		q.setFrom(new From(tref));
 				
 		this.query = q;
@@ -262,22 +264,29 @@ public class DefaultEntityTemplateQuery<
 	private	<
 		KA extends Attribute,
 		KR extends Reference,
-		KT extends ReferenceType<KA, KR, KT, KE, ?, ?, KM>,
-		KE extends Entity<KA, KR, KT, KE, ?, ?, KM>,	
-		KM extends EntityMetaData<KA, KR, KT, KE, ?, ?, KM>,
-		KQ extends EntityQueryTemplate<KA, KR, KT, KE, ?, ?, KM, KQ>		
+		KT extends ReferenceType<KA, KR, KT, KE, KH, KF, KM>,
+		KE extends Entity<KA, KR, KT, KE, KH, KF, KM>,
+		KH extends ReferenceHolder<KA, KR, KT, KE, KH, KM>,
+		KF extends EntityFactory<KE, KH, KM, KF>,
+		KM extends EntityMetaData<KA, KR, KT, KE, KH, KF, KM>,
+		KQ extends EntityQueryTemplate<KA, KR, KT, KE, KH, KF, KM, KQ>		
 	>
 	AbstractTableReference processReferences(KQ template, AbstractTableReference qref, TableReference tref, DefaultTableExpression q, Set<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?>> visited) throws EntityRuntimeException, CyclicTemplateException {
+		
+		logger().debug("processReferences - enter");
+		
 
 		KM meta = template.getMetaData();
 		
 		Set<KR> rs = meta.relationships();
 		
 		for (KR kr : rs) {
-			EntityKey<KR, KT, KE, KM, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(kr);
+			EntityKey<KA, KR, KT, KE, KH, KF, KM, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(kr);
 			EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> t = template.getTemplate(ek);
 			
-			if (t != null) {				
+			logger().debug("ref-template for: " + ek + " => " + t);
+			
+			if (t != null) {
 				ForeignKey fk = meta.getForeignKey(kr);
 
 				if (fk == null) {
@@ -288,6 +297,8 @@ public class DefaultEntityTemplateQuery<
 			}									
 		}
 	
+		logger().debug("processReferences - exit");
+		
 		return qref;
 	
 	}

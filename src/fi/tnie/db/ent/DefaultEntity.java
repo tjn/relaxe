@@ -73,7 +73,7 @@ public abstract class DefaultEntity<
 	 *
 	 */
 	private static final long serialVersionUID = 3498823449580706161L;
-	private Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> refs;
+//	private Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> refs;
 			
 	private List<Map<A, ?>> valueMapList;
 	
@@ -95,14 +95,14 @@ public abstract class DefaultEntity<
 		super();
 	}
 
-	@Override
-	protected Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> references() {
-		if (refs == null) {
-			refs = new HashMap<R, ReferenceHolder<?,?,?,?,?,?>>();
-		}
-
-		return refs;
-	}
+//	@Override
+//	protected Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> references() {
+//		if (refs == null) {
+//			refs = new HashMap<R, ReferenceHolder<?,?,?,?,?,?>>();
+//		}
+//
+//		return refs;
+//	}
 
 	private Map<A, IntegerHolder> getIntValueMap() {
 		if (intValueMap == null) {
@@ -308,16 +308,17 @@ public abstract class DefaultEntity<
 	}
 	
 		
+	@Override
 	public <
-		P extends ReferenceType<VA, VR, P, G, RH, VF, D>,
-		VA extends Attribute,
-		VR extends Reference,
-		G extends fi.tnie.db.ent.Entity<VA,VR,P,G,RH,VF,D>, 
-		RH extends fi.tnie.db.rpc.ReferenceHolder<VA,VR,P,G, RH, D>, 
-		VF extends EntityFactory<G, RH, D, VF>,
-		D extends fi.tnie.db.ent.EntityMetaData<VA,VR,P,G,RH,VF,D>, 
-		K extends fi.tnie.db.ent.value.EntityKey<R,T,E,M,P,VA,VR,G,RH,VF, D,K>
-	> RH getRef(K k) {
+		RA extends Attribute,
+		RR extends Reference,
+		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,		
+		RK extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK>
+	> RH getRef(RK k) {
 		return k.get(self());
 	};
 	
@@ -340,37 +341,44 @@ public abstract class DefaultEntity<
 		return dayTimeIntervalValueMap;
 	};
 	
-	private Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> getRefs() {
-		if (refs == null) {
-			refs = new HashMap<R, ReferenceHolder<?, ?, ?, ?, ?, ?>>();			
-		}
-
-		return refs;
-	};
+//	private Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> getRefs() {
+//		if (refs == null) {
+//			refs = new HashMap<R, ReferenceHolder<?, ?, ?, ?, ?, ?>>();			
+//		}
+//
+//		return refs;
+//	};
 	
 //	public <P extends fi.tnie.db.types.ReferenceType<P>, G extends fi.tnie.db.ent.Entity<?,?,P,G>, H extends fi.tnie.db.rpc.ReferenceHolder<?,?,P,G>, K extends fi.tnie.db.ent.value.EntityKey<A,R,T,E,P,G,H,? extends K>> void setRef(K k, H newValue) {
 //		getRefs().put(k.name(), newValue);
 //	}
 	
 	public <
-		P extends ReferenceType<VA, VR, P, G, RH, VF, D>, 
-		VA extends Attribute,
-		VR extends Reference,
-		G extends fi.tnie.db.ent.Entity<VA,VR,P,G,RH,VF, D>,		
-		RH extends fi.tnie.db.rpc.ReferenceHolder<VA,VR,P,G, RH, D>,
-		VF extends EntityFactory<G, RH, D, VF>,
-		D extends fi.tnie.db.ent.EntityMetaData<VA,VR,P,G,RH,VF,D>, K extends fi.tnie.db.ent.value.EntityKey<R,T,E,M,P,VA,VR,G,RH,VF, D,K>> void setRef(K k, RH newValue) {
-		
-		k.set(self(), newValue);	
-
+		RA extends Attribute,
+		RR extends Reference,
+		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,		
+		RK extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK>
+	> 
+	void setRef(RK k, RH newValue) {		
+		k.set(self(), newValue);
 	};
 	
-	public Entity<?, ?, ?, ?, ?, ?, ?> getRef(R k) {
-		ReferenceHolder<?, ?, ?, ?, ?, ?> rh = getRefs().get(k);				
+//	public Entity<?, ?, ?, ?, ?, ?, ?> getRef(R k) {
+//		ReferenceHolder<?, ?, ?, ?, ?, ?> rh = getRefs().get(k);				
+//		return (rh == null) ? null : rh.value();		
+//	}
+	
+	public Entity<?, ?, ?, ?, ?, ?, ?> getRef(R r) {
+		EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k = getMetaData().getEntityKey(r);
+		ReferenceHolder<?, ?, ?, ?, ?, ?> rh = getRef(k.self());
 		return (rh == null) ? null : rh.value();		
 	}
 	
-
+	
 	
 	public E copy() {
 		M meta = getMetaData();
@@ -385,7 +393,7 @@ public abstract class DefaultEntity<
 		}
 		
 		for (R r : meta.relationships()) {
-			EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
+			EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
 			ek.copy(src, dest);			
 		}
 		
@@ -453,12 +461,19 @@ public abstract class DefaultEntity<
 		return valueMapList;
 	}
 	
-	public boolean has(R r) {
-		if (r == null || this.refs == null) {
-			return false;
-		}
-		
-		ReferenceHolder<?, ?, ?, ?, ?, ?> rh = this.refs.get(r);		
-		return (rh != null);		
+	
+	public fi.tnie.db.rpc.ReferenceHolder<?,?,?,?,?,?> ref(R ref) {
+		EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k = getMetaData().getEntityKey(ref);
+		ReferenceHolder<?, ?, ?, ?, ?, ?> rh = getRef(k.self());
+		return rh;
 	};
+	
+//	public boolean has(R r) {
+//		if (r == null || this.refs == null) {
+//			return false;
+//		}
+//		
+//		ReferenceHolder<?, ?, ?, ?, ?, ?> rh = this.refs.get(r);		
+//		return (rh != null);		
+//	};
 }

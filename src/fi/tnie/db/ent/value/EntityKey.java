@@ -27,19 +27,22 @@ import fi.tnie.db.types.ReferenceType;
  * @param <RM>
  * @param <K>
  */
-public interface EntityKey<	
-	R extends Reference,
-	T extends ReferenceType<?, R, T, E, ?, ?, M>,
-	E extends Entity<?, R, T, E, ?, ?, M>,	
-	M extends EntityMetaData<?, R, T, E, ?, ?, M>,	
-	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+public interface EntityKey<
+	A extends Attribute,
+	R extends Reference,	
+	T extends ReferenceType<A, R, T, E, H, F, M>,
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>,	
 	RA extends Attribute,
 	RR extends Reference,	
+	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
 	RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
 	RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
 	RF extends EntityFactory<RE, RH, RM, RF>,
 	RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,	
-	K extends EntityKey<R, T, E, M, RT, RA, RR, RE, RH, RF, RM, K>	
+	K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>	
 >
 	extends Key<T, E, RT, K>
 {	
@@ -53,6 +56,6 @@ public interface EntityKey<
 //	P getTargetType();
 	M getSource();	
 	RM getTarget();
-
-
+	K self();
+	
 }

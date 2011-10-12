@@ -30,20 +30,20 @@ public interface EntityQueryTemplate<
 	EntityQueryTemplateAttribute get(A a)
 		throws EntityRuntimeException;
 
-	EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ? > getTemplate(EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?> k);
+	EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ? > getTemplate(EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k);
 
-	<	
-		VT extends ReferenceType<VA, VR, VT, V, RH, VF, D>,
-		VA extends Attribute,
-		VR extends Reference,		
-		V extends Entity<VA, VR, VT, V, RH, VF, D>,
-		RH extends ReferenceHolder<VA, VR, VT, V, RH, D>,
-		VF extends EntityFactory<V, RH, D, VF>,
-		D extends EntityMetaData<VA, VR, VT, V, RH, VF, D>,		
-		K extends EntityKey<R, T, E, M, VT, VA, VR, V, RH, VF, D, K>,
-		VQ extends EntityQueryTemplate<VA, VR, VT, V, RH, VF, D, VQ>
+	<			
+		RA extends Attribute,
+		RR extends Reference,
+		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,		
+		RK extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK>,
+		RQ extends EntityQueryTemplate<RA, RR, RT, RE, RH, RF, RM, RQ>
 	>	
-	void setTemplate(K k, VQ newTemplate);
+	void setTemplate(RK k, RQ newTemplate);
 	
 	public void addAllAttributes();
 	

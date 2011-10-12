@@ -87,7 +87,9 @@ public abstract class DefaultPager<
 		}
 		
 		this.template = new DefaultMutableValueModel.NotNullable<Q>(template);
-		this.fetcher = fetcher;		
+		
+		
+		this.fetcher = fetcher;
 		this.pageSize = new PageSizeModel(Integer.valueOf(initialPageSize));		
 
 		this.currentPageSize = new MutableIntegerModel(0);
@@ -294,4 +296,8 @@ public abstract class DefaultPager<
 		return this.template;
 	}
 	
+	@Override
+	public String toString() {
+		return super.toString() + "; query-template=" + this.template.get();
+	}
 }

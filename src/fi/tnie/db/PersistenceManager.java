@@ -250,7 +250,7 @@ public class PersistenceManager<
     public UpdateStatement createUpdateStatement() throws EntityException {
         E pe = getTarget();
 
-    	final EntityMetaData<A, R, T, E, ?, ?, ?> meta = pe.getMetaData();
+    	final M meta = pe.getMetaData();
     	TableReference tref = new TableReference(meta.getBaseTable());
     	
     	Set<Column> pkcols = meta.getPKDefinition();
@@ -276,38 +276,49 @@ public class PersistenceManager<
     	Map<Column, Assignment> am = new LinkedHashMap<Column, Assignment>();
     	
     	for (R r : meta.relationships()) {
+    		    		
     		
-    		if (!pe.has(r)) {
-    			logger().debug("createUpdateStatement: no ref=" + r);
-    		}
-    		else {
-		        ForeignKey fk = meta.getForeignKey(r);
-		        
-		        // TODO: try to use keys instead to get rid of refs() and getRef 
-		        		        		        
-		        Entity<?,?,?,?,?,?,?> ref = pe.getRef(r);
-		
-		        if (ref == null) {
-		            for (Column c : fk.columns().keySet()) {
-		            	if (!am.containsKey(c)) {
-		            		am.put(c, null);
-		            	}
-		            }
-		        }
-		        else {
-		            for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
-		                Column fc = ce.getValue();
-		                PrimitiveHolder<?, ?> ph = ref.get(fc);
-		                
-		                Column column = ce.getKey();
-		                
-		        		if (ph != null) {    		    		    		
-		    	    		ValueParameter<?, ?> vp = createParameter(column, ph);    		
-		    	    		am.put(column, new Assignment(column.getColumnName(), vp));
-		        		}                    
-		            }
-		        }
-    		}
+//    		if (!pe.has(r)) {
+//    			logger().debug("createUpdateStatement: no ref=" + r);
+//    		}
+//    		else {
+    			
+    			// EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);
+    			// EntityMetaData<?, ?, ?, ?, ?, ?, ?> t = k.getTarget();
+    			
+    			EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
+    			processKey(ek, am);
+    			   			   			
+    			
+//    			ForeignKey fk = meta.getForeignKey(r);   			  			
+//		        		        
+//		        
+//		        
+//		        // TODO: try to use keys instead to get rid of refs() and getRef 
+//		        		        		        
+//		        Entity<?,?,?,?,?,?,?> ref = pe.getRef(r);
+//		
+//		        if (ref == null) {
+//		            for (Column c : fk.columns().keySet()) {
+//		            	if (!am.containsKey(c)) {
+//		            		am.put(c, null);
+//		            	}
+//		            }
+//		        }
+//		        else {
+//		            for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
+//		                Column fc = ce.getValue();
+//		                PrimitiveHolder<?, ?> ph = ref.get(fc);
+//		                
+//		                Column column = ce.getKey();
+//		                
+//		        		if (ph != null) {    		    		    		
+//		    	    		ValueParameter<?, ?> vp = createParameter(column, ph);    		
+//		    	    		am.put(column, new Assignment(column.getColumnName(), vp));
+//		        		}                    
+//		            }
+//		        }
+//    		}
 	    }    	
     	
     	for (Map.Entry<Column, Assignment> e : am.entrySet()) {
@@ -325,7 +336,65 @@ public class PersistenceManager<
     	return new UpdateStatement(tref, assignments, p);
     }
 
-    public void delete(Connection c) throws EntityException {
+    private 
+    <	
+    	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+		RA extends Attribute,
+		RR extends Reference,	
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
+		RK extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK>
+    >    
+    void processKey(EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK> key, Map<Column, Assignment> am) {
+    	final E e = getTarget();
+    	final M m = e.getMetaData();
+    	    	
+    	RH rh = e.getRef(key.self());
+    	
+    	if (rh == null) {
+    		return;
+    	}
+    	    	    	
+		ForeignKey fk = m.getForeignKey(key.name());			
+
+		if (rh.isNull()) {
+		      for (Column c : fk.columns().keySet()) {
+		      	if (!am.containsKey(c)) {
+		      		am.put(c, null);
+		      	}
+		      }
+		  }
+		  else {
+			  RE re = rh.value();
+			  
+		      for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
+		          Column fc = ce.getValue();
+		          		          
+		          PrimitiveHolder<?, ?> ph = re.get(fc);
+		          
+		          Column column = ce.getKey();
+		          
+		  		if (ph != null) {    		    		    		
+		  			ValueParameter<?, ?> vp = createParameter(column, ph);    		
+			    	am.put(column, new Assignment(column.getColumnName(), vp));
+		  		}                    
+		     }
+		  }
+
+				
+                
+//        // TODO: try to use keys instead to get rid of refs() and getRef 
+//        		        		        
+//        Entity<?,?,?,?,?,?,?> ref = pe.getRef(r);
+//
+    	
+    	
+	}
+
+
+	public void delete(Connection c) throws EntityException {
     	DeleteStatement ds = createDeleteStatement();
 
     	if (ds != null) {
@@ -457,7 +526,7 @@ public class PersistenceManager<
     	final MergeMode ms = getMergeMode();
     	
     	for (DR dr : rs) {
-			EntityKey<DR, DT, DE, DM, ?, ?, ?, ?, ?, ?, ?, ?> ek = m.getEntityKey(dr);
+			EntityKey<DA, DR, DT, DE, DH, DF, DM, ?, ?, ?, ?, ?, ?, ?, ?> ek = m.getEntityKey(dr);
 			
 			String id = ek.name().identifier();
 			logger().debug("mergeDependencies: id=" + id);			
@@ -481,7 +550,9 @@ public class PersistenceManager<
 			}
 		}
 	}
-
+    
+    
+    
 
 	public void update(Connection c) throws EntityException {
     	Predicate pkp = getPKPredicate();

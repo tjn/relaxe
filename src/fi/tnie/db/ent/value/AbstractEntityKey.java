@@ -12,20 +12,23 @@ import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
 public abstract class AbstractEntityKey<	
-	R extends Reference,
-	T extends ReferenceType<?, R, T, E, ?, ?, S>,
-	E extends Entity<?, R, T, E, ?, ?, S>,
-	S extends EntityMetaData<?, R, T, E, ?, ?, S>,	
-	P extends ReferenceType<VA, VR, P, V, H, VF, D>,	
-	VA extends Attribute,
-	VR extends Reference,
-	V extends Entity<VA, VR, P, V, H, VF, D>,
-	H extends ReferenceHolder<VA, VR, P, V, H, D>,
-	VF extends EntityFactory<V, H, D, VF>,
-	D extends EntityMetaData<VA, VR, P, V, H, VF, D>,	
-	K extends EntityKey<R, T, E, S, P, VA, VR, V, H, VF, D, K>
+	A extends Attribute,
+	R extends Reference,	
+	T extends ReferenceType<A, R, T, E, H, F, M>,
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>,	
+	RA extends Attribute,
+	RR extends Reference,	
+	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+	RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+	RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+	RF extends EntityFactory<RE, RH, RM, RF>,
+	RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,	
+	K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>
 >
-	implements EntityKey<R, T, E, S, P, VA, VR, V, H, VF, D, K> {
+	implements EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K> {
 	
 	/**
 	 * 
@@ -35,16 +38,16 @@ public abstract class AbstractEntityKey<
 	 *
 	 */
 	private R name;
-	private S source;
+	private T source;
 		
 //	protected AbstractEntityKey() {		
 //	}	
 	
 	@Override
-	public abstract H get(E e);
+	public abstract RH get(E e);
 	
 	@Override
-	public abstract void set(E e, H newValue);
+	public abstract void set(E e, RH newValue);
 	
 //	@Override
 //	public void set(E e, H newValue) {		
@@ -52,7 +55,7 @@ public abstract class AbstractEntityKey<
 //	}
 		
 	@Override
-	public void set(E e, V newValue) {
+	public void set(E e, RE newValue) {
 		e.setRef(self(), newHolder(newValue));
 	}
 
@@ -62,7 +65,7 @@ public abstract class AbstractEntityKey<
 	protected AbstractEntityKey() {
 	}
 	
-	protected AbstractEntityKey(S source, R name) {
+	protected AbstractEntityKey(T source, R name) {
 		setName(name);
 		
 		if (source == null) {
@@ -70,9 +73,6 @@ public abstract class AbstractEntityKey<
 		}
 		
 		this.source = source;
-		
-		
-		// meta.addEntityKey(self());
 	}
 
 	private void setName(R name) {
@@ -86,7 +86,12 @@ public abstract class AbstractEntityKey<
 	@Override
 	public R name() {
 		return this.name;
-	}	
+	}
+	
+	@Override
+	public int hashCode() {
+		return getClass().hashCode() ^ this.name.hashCode();
+	}
 
 	@Override
 	public boolean equals(Object o) {
@@ -104,11 +109,11 @@ public abstract class AbstractEntityKey<
 		
 		// Since getClass().equals(o.getClass()) implies t.type().getSqlType() == type().getSqlType()
 		// we only need to check the name:		
-		AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> t = (AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?>) o;								
+		AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> t = (AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?>) o;								
 		return nameEquals(t);
 	}
 	
-	private boolean nameEquals(AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> pk) {		
+	private boolean nameEquals(AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> pk) {		
 		return name().equals(pk.name());
 	}
 //	
@@ -122,13 +127,13 @@ public abstract class AbstractEntityKey<
 //		e.setRef(self(), newValue);		
 //	}
 	
-	public V value(E e) {
-		H h = get(e);
+	public RE value(E e) {
+		RH h = get(e);
 		return (h == null) ? null : h.value();		
 	}
 	
 	@Override
-	public abstract P type();
+	public abstract RT type();
 	
 	public void copy(E src, E dest) {
 		K k = self();
@@ -141,10 +146,8 @@ public abstract class AbstractEntityKey<
 
 	
 	@Override
-	public S getSource() {	
-		return this.source;
+	public M getSource() {
+		return source.getMetaData();
 	}
-	
-	
 	
 }

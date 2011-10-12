@@ -15,7 +15,7 @@ public interface TableMapper {
 		ABSTRACT,		
 		HOOK,		
 		IMPLEMENTATION,
-		REF,
+		HAS,
 		HAS_KEY,
 		FACTORY,
 		METADATA

@@ -80,7 +80,20 @@ public interface EntityMetaData<
 	 * 
 	 */
 	
-	EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?> getEntityKey(R ref);
+	EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> getEntityKey(R ref);
+	
+	
+//	<
+//		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+//		RA extends Attribute,
+//		RR extends Reference,	
+//		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+//		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+//		RF extends EntityFactory<RE, RH, RM, RF>,
+//		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
+//		RK extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK> 
+//	>
+//	RK getEntityKey(RM target, R ref);
 
 	
 	IntegerKey<A, T, E> getIntegerKey(A a);

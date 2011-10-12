@@ -100,8 +100,8 @@ public class DefaultTableMapper
             return "Default" + name;
         }
         
-        if (p == Part.REF) {
-            return name + "Ref";
+        if (p == Part.HAS) {
+            return "Has" + name;
         }
         
         if (p == Part.HAS_KEY) {

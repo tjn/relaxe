@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
@@ -32,7 +33,7 @@ public abstract class AbstractEntity<
 	private static final long serialVersionUID = -1538787348338709153L;	
 
 //	public abstract Map<A, PrimitiveHolder<?, ?>> values();		
-	protected abstract Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> references();
+//	protected abstract Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> references();
 	
 	public PrimitiveHolder<?, ?> get(Column column) throws NullPointerException, EntityRuntimeException {
 		
@@ -61,7 +62,7 @@ public abstract class AbstractEntity<
 		Entity<?, ?, ?, ?, ?, ?, ?> ref = null;
 		R r = null;
 		
-		for (R ri : rs) {			
+		for (R ri : rs) {						
 			ReferenceHolder<?, ?, ?, ?, ?, ?> rh = ref(ri);
 			
 			if (rh != null) {
@@ -100,9 +101,9 @@ public abstract class AbstractEntity<
 //	}
 	
 	
-	public ReferenceHolder<?, ?, ?, ?, ?, ?> ref(R ref) {    	
-		return references().get(ref);    	
-	}
+//	public ReferenceHolder<?, ?, ?, ?, ?, ?> ref(R ref) {    	
+//		return references().get(ref);    	
+//	}
 
 	/**
 	 * Returns a type-safe self-reference. Implementation must return <code>this</code>.
@@ -149,6 +150,8 @@ public abstract class AbstractEntity<
 		
 		M meta = getMetaData();
 		
+		buf.append("{");
+		
 		buf.append(super.toString());
 		buf.append(":");
 		
@@ -178,8 +181,43 @@ public abstract class AbstractEntity<
 				buf.append("]");
 			}
 			
-			buf.append("; ");
+			buf.append("\n");
 		}
+		
+		Set<R> rs = meta.relationships();
+		
+		int rc = 0;
+		
+		for (R r : rs) {
+			try {
+				EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);
+				ReferenceHolder<?, ?, ?, ?, ?, ?> rh = k.get(self());
+				
+				if (rh != null) {
+					rc++;
+					buf.append(r);
+					buf.append("=");
+					
+					if (rh.isNull()) {
+						buf.append(rh.toString());
+					}
+					else {
+						buf.append(rh.value());
+					}
+				}
+			}
+			catch (EntityRuntimeException e) {
+				buf.append("[ERROR: ");
+				buf.append(e.getMessage());
+				buf.append("]");
+			}
+			
+			buf.append("\n");
+		}
+		
+		buf.append("\n");
+		buf.append("ref-count: " + rc);
+		buf.append("}");
 		
 		return buf.toString();
 	}

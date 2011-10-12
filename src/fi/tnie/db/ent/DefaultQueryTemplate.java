@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import fi.tnie.db.ent.value.EntityKey;
+import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.expr.OrderBy;
+import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
@@ -51,29 +53,29 @@ public abstract class DefaultQueryTemplate<
 	public abstract M getMetaData();
 
 	@Override
-	public EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> getTemplate(EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?> k) {
+	public EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> getTemplate(EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k) {
 		return getTemplateMap().get(k.name());
 	}
 
 	@Override
 	public abstract Q self();
 
-	
 	@Override
-	public <
-		VT extends ReferenceType<VA, VR, VT, V, RH, VF, D>, 
-		VA extends Attribute, 
-		VR extends Reference, 
-		V extends Entity<VA, VR, VT, V, RH, VF, D>, 
-		RH extends ReferenceHolder<VA, VR, VT, V, RH, D>, 
-		VF extends EntityFactory<V, RH, D, VF>, 
-		D extends EntityMetaData<VA, VR, VT, V, RH, VF, D>, 
-		K extends EntityKey<R, T, E, M, VT, VA, VR, V, RH, VF, D, K>, 
-		VQ extends EntityQueryTemplate<VA, VR, VT, V, RH, VF, D, VQ>
-	> 
-	void setTemplate(K k, VQ newTemplate) {
-		getTemplateMap().put(k.name(), newTemplate);
-	}
+	public 
+	<			
+		RA extends Attribute,
+		RR extends Reference,
+		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,		
+		RK extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK>,
+		RQ extends EntityQueryTemplate<RA, RR, RT, RE, RH, RF, RM, RQ>
+	>	 
+	void setTemplate(RK k, RQ newTemplate) {
+		getTemplateMap().put(k.name(), newTemplate);		
+	};
 	
 	private Map<A, EntityQueryTemplateAttribute> getAttributeMap() {
 		if (attributeMap == null) {
@@ -94,6 +96,10 @@ public abstract class DefaultQueryTemplate<
 		}
 
 		return templateMap;
+	}
+		
+	public void add(PrimitiveKey<A, T, E, ?, ?, ?, ?> ak) {
+		add(ak.name());
 	}
 	
 	public void add(A attribute) {
@@ -116,6 +122,12 @@ public abstract class DefaultQueryTemplate<
 		}
 		
 		remove(Arrays.asList(as));
+	}
+	
+	public void add(PrimitiveKey<A, T, E, ?, ?, ?, ?>[]  ks) {
+		for (PrimitiveKey<A, T, E, ?, ?, ?, ?> k : ks) {
+			add(k.name());
+		}		
 	}
 	
 	public void add(A ... as) {

@@ -56,14 +56,14 @@ public interface Entity<
 		throws EntityRuntimeException;	
 
 	<	
-		VT extends ReferenceType<VA, VR, VT, V, RH, VF, D>,
-		VA extends Attribute,
-		VR extends Reference,		
-		V extends Entity<VA, VR, VT, V, RH, VF, D>,
-		RH extends ReferenceHolder<VA, VR, VT, V, RH, D>,
-		VF extends EntityFactory<V, RH, D, VF>,
-		D extends EntityMetaData<VA, VR, VT, V, RH, VF, D>,
-		K extends EntityKey<R, T, E, M, VT, VA, VR, V, RH, VF, D, K>
+		RA extends Attribute,
+		RR extends Reference,	
+		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,	
+		K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>	
 	>	
 	RH getRef(K k);
 	
@@ -81,14 +81,14 @@ public interface Entity<
 	public Entity<?, ?, ?, ?, ?, ?, ?> getRef(R k);
 	
 	<			
-		VT extends ReferenceType<VA, VR, VT, G, RH, VF, D>,
-		VA extends Attribute,
-		VR extends Reference,
-		G extends Entity<VA, VR, VT, G, RH, VF, D>,
-		RH extends ReferenceHolder<VA, VR, VT, G, RH, D>,
-		VF extends EntityFactory<G, RH, D, VF>,
-		D extends EntityMetaData<VA, VR, VT, G, RH, VF, D>,		
-		K extends EntityKey<R, T, E, M, VT, VA, VR, G, RH, VF, D, K>
+		RA extends Attribute,
+		RR extends Reference,	
+		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,	
+		K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>	
 	>		
 	void setRef(K k, RH newValue);
 	
@@ -262,14 +262,14 @@ public interface Entity<
 	> 
 	boolean has(K key);
 	
-	/**
-	 * Returns true if and only if this entity has currently the value holder set for the reference named by <code>r</code>.
-	 *  
-	 * @param <VV>
-	 * @param <VT>
-	 * @param <VH>
-	 * @param <K>
-	 * @param key
-	 */
-	boolean has(R r);	
+//	/**
+//	 * Returns true if and only if this entity has currently the value holder set for the reference named by <code>r</code>.
+//	 *  
+//	 * @param <VV>
+//	 * @param <VT>
+//	 * @param <VH>
+//	 * @param <K>
+//	 * @param key
+//	 */
+//	boolean has(R r);	
 }
