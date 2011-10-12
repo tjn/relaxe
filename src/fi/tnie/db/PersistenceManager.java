@@ -206,12 +206,13 @@ public class PersistenceManager<
     	for (R r : meta.relationships()) {
             ForeignKey fk = meta.getForeignKey(r);
             
+            ReferenceHolder<?, ?, ?, ?, ?, ?> rh = pe.ref(r);
+                                    
             EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?> ek = m.getEntityKey(r);
             
 //            ReferenceHolder<?, ?, ?, ?, ?, ?> rh = pe.ref(r);
             ReferenceHolder<?, ?, ?, ?, ?, ?> rh = ek.get(target);
-                        
-            if (rh == null || rh.isNull()) {
+            if (rh == null) {
             	continue;
             }
             
