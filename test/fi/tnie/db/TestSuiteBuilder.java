@@ -199,8 +199,6 @@ public class TestSuiteBuilder
                     File cd = f.getParentFile();
                     Properties drvcfg = loadTestConfig(cd);
                     
-                    
-                    
                     TestSuite driverConfigSuite = new TestSuite("Driver config: " + cd.getName());
                     driverSuite.addTest(driverConfigSuite);
                                         

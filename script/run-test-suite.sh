@@ -24,4 +24,4 @@ META_GEN_CP=$META_GEN_CP:$JARDIR/log4j.jar
 META_GEN_CP=$META_GEN_CP:$JARDIR/junit.jar
 
 # REM ready to go:
-java -classpath $META_GEN_CP fi.tnie.db.TestSuite
+java -classpath $META_GEN_CP fi.tnie.db.MyTestSuite

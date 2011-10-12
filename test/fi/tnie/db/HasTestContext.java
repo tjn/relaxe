@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.query.QueryException;
 
-public interface HasTestContext {
-	public void setTestContext(TestContext context);
+public interface HasTestContext {	
 	public TestContext getTestContext(Implementation imp) throws SQLException, QueryException;
 }

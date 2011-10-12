@@ -3,12 +3,16 @@
  */
 package fi.tnie.db;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
+import fi.tnie.db.log.DefaultLogger;
 
 public abstract class AbstractUnitTest
 	extends TestCase {
@@ -32,7 +36,8 @@ public abstract class AbstractUnitTest
 	@Override
 	protected final void setUp() throws Exception {		
 		this.current = null;		
-		this.current = getContext();		
+		this.current = getContext();
+		DefaultLogger.getInstance().setTarget(new Log4JLogger(logger()));
 		init();
 	}	
 	
@@ -112,5 +117,9 @@ public abstract class AbstractUnitTest
 		}
 
 		return logger;
-	}	
+	}
+	
+	public Connection newConnection() throws SQLException {
+		return getContext().newConnection();
+	}
 }

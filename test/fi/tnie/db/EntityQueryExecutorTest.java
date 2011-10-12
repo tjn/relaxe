@@ -17,6 +17,7 @@ import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.DataObjectQueryResult;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityDataObject;
+import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQueryExpressionSortKey;
@@ -24,6 +25,7 @@ import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.EntityQueryTemplateAttribute;
 import fi.tnie.db.ent.FetchOptions;
+import fi.tnie.db.ent.PredicateAttributeTemplate;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
@@ -33,27 +35,23 @@ import fi.tnie.db.gen.ent.LiteralCatalog;
 import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
 import fi.tnie.db.gen.ent.personal.Person;
-import fi.tnie.db.gen.ent.personal.HourReport.Factory;
-import fi.tnie.db.gen.ent.personal.HourReport.Holder;
+import fi.tnie.db.gen.ent.personal.Project;
 import fi.tnie.db.gen.ent.personal.HourReport.MetaData;
 import fi.tnie.db.gen.ent.personal.HourReport.Query;
-import fi.tnie.db.gen.ent.personal.HourReport.QueryTemplate;
 import fi.tnie.db.gen.ent.personal.HourReport.Type;
-import fi.tnie.db.paging.DefaultEntityQueryPager;
-import fi.tnie.db.paging.EntityFetcher;
-import fi.tnie.db.paging.Receiver;
-import fi.tnie.db.paging.DefaultEntityQueryPager.Command;
+import fi.tnie.db.log.DefaultLogger;
+import fi.tnie.db.paging.SimplePager;
+import fi.tnie.db.query.QueryException;
 import fi.tnie.db.query.QueryResult;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 import junit.framework.TestCase;
 
-public class EntityQueryExecutorTest extends TestCase {
+public class EntityQueryExecutorTest extends AbstractUnitTest {
 	
-	private static Logger logger = Logger.getLogger(EntityQueryExecutorTest.class);
-	
+		
 	@Override
-	protected void setUp() throws Exception {
+	protected void init() {				
 		LiteralCatalog.getInstance();
 	}
 	
@@ -64,6 +62,8 @@ public class EntityQueryExecutorTest extends TestCase {
 	private QueryResult<EntityDataObject<HourReport>> execute(HourReport.QueryTemplate template, FetchOptions opts) throws Exception {
 		return execute(template.newQuery(), opts);
 	}
+
+
 	
 	private QueryResult<EntityDataObject<HourReport>> execute(Query q, FetchOptions opts) throws Exception {
 		Implementation imp = new PGImplementation();
@@ -138,10 +138,6 @@ public class EntityQueryExecutorTest extends TestCase {
 		return new EntityQueryExecutor<A, R, T, E, H, F, M, QT>(imp);
 	}
 	
-	private static Logger logger() {
-		return EntityQueryExecutorTest.logger;
-	}
-
 	
 	public void testExecute3() throws Exception {		
 		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate(); 
@@ -334,6 +330,65 @@ public class EntityQueryExecutorTest extends TestCase {
 		
 	}
 
+	public void testNotNullPredicate() throws Exception {
+		HourReport.QueryTemplate ht = new HourReport.QueryTemplate();
+		ht.addAllAttributes();
+		
+		PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p = 
+			PredicateAttributeTemplate.eq(HourReport.Attribute.ID, null);
+		
+		ht.addPredicate(p);
+		
+		Organization.QueryTemplate ot = new Organization.QueryTemplate();
+
+		ht.setTemplate(HourReport.FK_HHR_EMPLOYER, ot);
+		ht.desc(ot, Organization.Attribute.NAME);				
+		
+		Query q = ht.newQuery();
+		
+		QueryResult<EntityDataObject<HourReport>> qr = execute(q, null);
+		assertNotNull(qr);
+		assertEquals(0, qr.size());
+		
+	}
+	
+	
+	public void testNullPredicate() throws Exception {
+		PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p = PredicateAttributeTemplate.eq(HourReport.Attribute.ID, null);
+		QueryResult<EntityDataObject<HourReport>> qr = executeWithPredicate(p);
+		assertNotNull(qr);
+		assertEquals(0, qr.size());
+	}
+	
+	public void testPredicate() throws Exception {
+		PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p = 
+			PredicateAttributeTemplate.eq(HourReport.Attribute.ID, Integer.valueOf(30));
+		
+		QueryResult<EntityDataObject<HourReport>> qr = executeWithPredicate(p);
+		assertNotNull(qr);
+		assertEquals(1, qr.size());
+	}
+	
+	public QueryResult<EntityDataObject<HourReport>> executeWithPredicate(PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p) throws Exception {
+		HourReport.QueryTemplate ht = new HourReport.QueryTemplate();
+		ht.addAllAttributes();
+		
+		ht.addPredicate(p);
+		
+		Organization.QueryTemplate ot = new Organization.QueryTemplate();
+
+		ht.setTemplate(HourReport.FK_HHR_EMPLOYER, ot);
+		ht.desc(ot, Organization.Attribute.NAME);				
+		
+		Query q = ht.newQuery();
+		
+		QueryResult<EntityDataObject<HourReport>> qr = execute(q, null);
+		assertNotNull(qr);
+		return qr;
+		
+	}
+
+	
 	public void testFetcher() throws Exception {
 		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate();
 				
@@ -342,58 +397,73 @@ public class EntityQueryExecutorTest extends TestCase {
 		HourReportFetcher f = new HourReportFetcher(imp, c);
 		HourReportPager p = new HourReportPager(hrq, f);
 		
-		p.run(Command.LAST_PAGE);
-		p.run(Command.NEXT_PAGE);
 		
-		p.fetchCurrent();
-		p.fetchFirst();
-		p.fetchNext();
-		p.fetchLast();
-		p.fetchPrevious();
+		p.getAction(SimplePager.Command.LAST).execute();
+		
+		p.getAction(SimplePager.Command.NEXT).execute();
+		
+//		p.fetchCurrent();
+//		p.fetchFirst();
+//		p.fetchNextPage();
+//		p.fetchLast();
+//		p.fetchPrevious();
 		
 		c.close();
 		
-		// DefaultEntityQueryPager<Attribute, Reference, ReferenceType<A,R,T,E,H,F,M>, Entity<A,R,T,E,H,F,M>, ReferenceHolder<A,R,T,E,H,M>, EntityFactory<E,H,M,F>, EntityMetaData<A,R,T,E,H,F,M>, EntityQueryTemplate<A,R,T,E,H,F,M,QT>>
-		
-		
+		// DefaultEntityQueryPager<Attribute, Reference, ReferenceType<A,R,T,E,H,F,M>, Entity<A,R,T,E,H,F,M>, ReferenceHolder<A,R,T,E,H,M>, EntityFactory<E,H,M,F>, EntityMetaData<A,R,T,E,H,F,M>, EntityQueryTemplate<A,R,T,E,H,F,M,QT>>		
 	}
 	
-	
-	public class HourReportFetcher
-		extends SynchronousFetcher<
-		HourReport.Attribute, 
-		HourReport.Reference, 
-		HourReport.Type, 
-		HourReport, 
-		HourReport.Holder, 
-		HourReport.Factory, 
-		HourReport.MetaData, 
-		HourReport.QueryTemplate>
-	{
-
-		public HourReportFetcher(Implementation imp, Connection c) {			
-			super(new EntityQueryExecutor<HourReport.Attribute, fi.tnie.db.gen.ent.personal.HourReport.Reference, Type, HourReport, Holder, Factory, MetaData, QueryTemplate>(imp), c);		
-		}
-	}
-
-	public class HourReportPager
-		extends DefaultEntityQueryPager<
-		HourReport.Attribute, 
-		HourReport.Reference, 
-		HourReport.Type, 
-		HourReport, 
-		HourReport.Holder, 
-		HourReport.Factory, 
-		HourReport.MetaData, 
-		HourReport.QueryTemplate>
-	{
-
-		public HourReportPager(
-				QueryTemplate template,
-				EntityFetcher<fi.tnie.db.gen.ent.personal.HourReport.Attribute, fi.tnie.db.gen.ent.personal.HourReport.Reference, Type, HourReport, Holder, Factory, MetaData, QueryTemplate> fetcher) {
-			super(template, fetcher);
-		}
-	
+	public void testProject() throws SQLException, QueryException, EntityException {
+		Project.QueryTemplate qt = new Project.QueryTemplate();
 		
+		qt.add(
+				Project.Attribute.ALIAS, 
+				Project.Attribute.NAME, 
+				Project.Attribute.CREATED_AT
+		);
+		
+		Organization.QueryTemplate ct = new Organization.QueryTemplate();
+		ct.add(Organization.Attribute.NAME);		
+		qt.setTemplate(Project.FK_CLIENT, ct);
+		
+		Organization.QueryTemplate st = new Organization.QueryTemplate();
+		st.add(Organization.Attribute.NAME);	
+				
+		qt.setTemplate(Project.FK_SUPPLIER, st);
+		
+		Person.QueryTemplate cpt = new Person.QueryTemplate();
+		cpt.add(Person.Attribute.FIRST_NAME, Person.Attribute.LAST_NAME);
+		st.setTemplate(Organization.FK_COMPANY_CEO, cpt);
+		
+		fi.tnie.db.gen.ent.personal.Project.Query q = qt.newQuery();
+		
+		String qs = q.getQueryExpression().generate();
+		logger().debug("testProject: qs=" + qs);
+
+		EntityQueryExecutor<
+			Project.Attribute,
+	        Project.Reference,        
+	        Project.Type,
+	        Project,
+	        Project.Holder,		
+	        Project.Factory,
+	        Project.MetaData,
+	        Project.QueryTemplate
+	    > qe = new EntityQueryExecutor<
+	        Project.Attribute,
+	        Project.Reference,        
+	        Project.Type,
+	        Project,
+	        Project.Holder,		
+	        Project.Factory,
+	        Project.MetaData,
+	        Project.QueryTemplate
+	      >(getImplementation());
+
+		Connection c = newConnection();
+		
+		qe.execute(q, null, c);
+		
+		c.close();
 	}
 }

@@ -175,7 +175,8 @@ public class PersistenceManagerTest2 extends TestCase  {
 	    HourReport hr = pf.newHourReport();
 	    assertNotNull(hr.reportDate());
     
-	    Organization org = pf.newOrganization();
+	    	    
+	    
 	    
 	    DateKey<HourReport.Attribute, HourReport.Type, HourReport> dk = 
 	    	hr.getMetaData().getDateKey(HourReport.Attribute.REPORT_DATE);
@@ -186,13 +187,29 @@ public class PersistenceManagerTest2 extends TestCase  {
 	    hr.setComment("asdfasd");
 	    hr.setStartedAt(new Date());
 	    hr.setFinishedAt(new Date());
-    	    
-	    org.setName("Ab Firma Oy " + ((int) (Math.random() * 1000)));    
+	    
+	    String suffix = Integer.toString((int) (Math.random() * 1000));
+    	
+	    Organization org = pf.newOrganization();
+	    org.setName("Ab Firma Oy " + suffix);
+
+	    Organization client = pf.newOrganization();
+	    client.setName("Ab Asiakas Oy " + suffix);
+
+	    final Project proj = pf.newProject();
+	    
+	    proj.setName("Project " + suffix);
+	    proj.setAlias("P" + suffix);
+	    
+	    proj.setRef(Project.FK_SUPPLIER, org.ref());
+	    proj.setRef(Project.FK_CLIENT, client.ref());
     
 //	    hr.id().set(null);
+	    
+	    hr.setProject(HourReport.FK_HHR_PROJECT, proj.ref());
 	    hr.setInteger(HourReport.ID, null);
 	    
-	    hr.setRef(HourReport.FK_HHR_EMPLOYER, org.ref());
+	    // hr.setRef(HourReport.FK_HHR_EMPLOYER, org.ref());
     
 	    PersistenceManager<fi.tnie.db.gen.ent.personal.HourReport.Attribute, 
 	    	fi.tnie.db.gen.ent.personal.HourReport.Reference, 
@@ -203,11 +220,13 @@ public class PersistenceManagerTest2 extends TestCase  {
 	    	HourReport.MetaData> hrm =
 	    	create(hr, impl);
 	    
-	    hr.setRef(HourReport.FK_HHR_EMPLOYER, org.ref());                
-	    hrm.merge(c);
-	        
+//	    hr.setRef(HourReport.FK_HHR_EMPLOYER, org.ref());                
+	    hrm.merge(c);	    	    	    
+	    c.commit();  
 	    
-	    c.commit();        
+	    
+	    
+	    
     }
     
     public void testMerge() throws Exception {

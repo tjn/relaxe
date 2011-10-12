@@ -18,7 +18,10 @@ import junit.framework.TestSuite;
 
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.env.mysql.MySQLImplementation;
 import fi.tnie.db.env.pg.PGImplementation;
+import fi.tnie.db.model.DefaultMutableValueModel;
+import fi.tnie.db.model.MutableValueModel;
 
 public class MyTestSuite {
 	
@@ -35,16 +38,15 @@ public class MyTestSuite {
 				in = new FileInputStream(args[0]);
 			}
 			
-			Class<?> tt = AbstractUnitTest.class;
+//			Class<?> tt = AbstractUnitTest.class;
+			Class<?> tt = AbstractTest.class;
 			ArrayList<Class<?>> cases = new ArrayList<Class<?>>();			
 			int cc = findImplementors(in, tt, cases);
 			
 			logger().debug("test cases: " + cc);
 			
 			TestSuite ts = new TestSuite();
-		
-			
-			
+						
 			for (Class<?> c : cases) {
 				ts.addTestSuite(c);
 			}
@@ -63,15 +65,21 @@ public class MyTestSuite {
 
 				@Override
 				public void endTest(Test test) {
- 					
+					
 				}
 
 				@Override
-				public void startTest(Test test) {
-					logger().debug("starting: " + test);
+				public void startTest(Test test) {										
 				}				
-			});
+			});			
 			
+			MutableValueModel<TestContext> tc = new DefaultMutableValueModel<TestContext>();
+			DefaultContextModel cm = DefaultContextModel.getInstance();
+			cm.init(tc);
+			
+			tc.set(new SimpleTestContext(new PGImplementation()));
+			ts.run(tr);
+			tc.set(new SimpleTestContext(new MySQLImplementation()));
 			ts.run(tr);
 			
 			logger().info("results: " + tr.errorCount());

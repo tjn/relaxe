@@ -31,7 +31,7 @@ public class SimpleTestContext
     private String jdbcURL;
     private Properties driverConfig;
             
-    protected SimpleTestContext(Implementation impl, Driver driver, String jdbcURL, Properties driverConfig) {            
+    public SimpleTestContext(Implementation impl, Driver driver, String jdbcURL, Properties driverConfig) {            
         super();
         this.implementation = impl;            
         this.driver = driver;
@@ -133,6 +133,7 @@ public class SimpleTestContext
     		throw new RuntimeException(e);
 		}
     }
+    
 	@Override
 	public Connection newConnection() throws SQLException {
 		Driver d = getImplementation().getDriver();		

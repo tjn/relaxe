@@ -4,8 +4,6 @@
 package fi.tnie.db.meta.impl.pg;
 
 
-import junit.framework.TestResult;
-import sun.security.action.GetLongAction;
 import fi.tnie.db.AbstractUnitTest;
 import fi.tnie.db.TestContext;
 
