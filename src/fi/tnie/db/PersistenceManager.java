@@ -208,10 +208,6 @@ public class PersistenceManager<
             
             ReferenceHolder<?, ?, ?, ?, ?, ?> rh = pe.ref(r);
                                     
-            EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?> ek = m.getEntityKey(r);
-            
-//            ReferenceHolder<?, ?, ?, ?, ?, ?> rh = pe.ref(r);
-            ReferenceHolder<?, ?, ?, ?, ?, ?> rh = ek.get(target);
             if (rh == null) {
             	continue;
             }
@@ -229,10 +225,7 @@ public class PersistenceManager<
             else {
                 for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
                     Column fc = ce.getValue();
-//                    Object o = ref.get(fc);
                     PrimitiveHolder<?, ?> o = ref.get(fc);
-
-//                    ValueParameter p = new ValueParameter(ce.getKey(), o);
                     ValueParameter<?, ?> p = createParameter(ce.getKey(), o);
                     newRow.add(p);
                     names.add(ce.getKey().getColumnName());
@@ -289,6 +282,9 @@ public class PersistenceManager<
     		}
     		else {
 		        ForeignKey fk = meta.getForeignKey(r);
+		        
+		        // TODO: try to use keys instead to get rid of refs() and getRef 
+		        		        		        
 		        Entity<?,?,?,?,?,?,?> ref = pe.getRef(r);
 		
 		        if (ref == null) {
@@ -428,8 +424,7 @@ public class PersistenceManager<
     		stored = cl.isEmpty() ? null : cl.get(0).getRoot(); 
     	}
     	
-    	logger().debug("merge: stored=" + stored);
-    	
+    	logger().debug("merge: stored=" + stored);    	
     	    	
     	mergeDependencies(getTarget(), qt, c);    	
 
