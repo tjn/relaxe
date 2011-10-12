@@ -29,6 +29,8 @@ import fi.tnie.db.expr.ColumnReference;
 import fi.tnie.db.expr.SelectStatement;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.expr.OrderBy.Order;
+import fi.tnie.db.log.DefaultLogger;
+import fi.tnie.db.log.Logger;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
@@ -106,8 +108,9 @@ public class DefaultEntityTemplateQuery<
 			return;
 		}
 		
-		Q root = this.template;
-				
+		logger().debug("init - enter");
+		
+		Q root = this.template;				
 			
 		BaseTable table = getMetaData().getBaseTable();
 
@@ -119,6 +122,8 @@ public class DefaultEntityTemplateQuery<
 		HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?>> visited = new HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?>>();
 
 		AbstractTableReference tref = fromTemplate(root, null, null, null, q, visited);
+		
+		logger().debug("ref: " + tref);
 		q.setFrom(new From(tref));
 				
 		this.query = q;
@@ -152,6 +157,8 @@ public class DefaultEntityTemplateQuery<
 			SelectStatement sq = new SelectStatement(q, ob, null, null);			
 			this.queryExpression = sq;
 		}
+		
+		logger().debug("init - exit");
 	}
 
 
@@ -173,12 +180,16 @@ public class DefaultEntityTemplateQuery<
 			Set<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?>> visited)
 		throws CyclicTemplateException, EntityRuntimeException {
 		
+		logger().debug("fromTemplate - enter: " + template);
+		logger().debug("fromTemplate - fk: " + fk);
+		
 		if (visited.contains(template)) {
 			throw new CyclicTemplateException(template);
 		}
 		else {
 			visited.add(template);
 		}		
+			
 		
 		Select s = getSelect(q);
 		MM meta = template.getMetaData();
@@ -197,7 +208,7 @@ public class DefaultEntityTemplateQuery<
 			qref = tref;
 		}
 		else {
-			ForeignKeyJoinCondition jc = new ForeignKeyJoinCondition(fk, qref, tref);
+			ForeignKeyJoinCondition jc = new ForeignKeyJoinCondition(fk, referencing, tref);
 			qref = qref.leftJoin(tref, jc);
 		}
 					
@@ -549,5 +560,9 @@ public class DefaultEntityTemplateQuery<
 
 		return columnMap;
 	}	
+	
+	public Logger logger() {
+		return DefaultLogger.getLogger();
+	}
 }
 
