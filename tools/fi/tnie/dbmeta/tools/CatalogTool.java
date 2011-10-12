@@ -352,7 +352,8 @@ public abstract class CatalogTool {
            
         String jdbcURL = getJdbcURL();
         Properties jdbcConfig = getJdbcConfig();                                
-        Class.forName(getImplementation().driverClassName());
+        // Class.forName(getImplementation().driverClassName());               
+        
         Connection c = DriverManager.getConnection(jdbcURL, jdbcConfig);
         return c;
     }
