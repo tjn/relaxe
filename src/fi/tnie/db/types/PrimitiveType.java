@@ -5,7 +5,14 @@ package fi.tnie.db.types;
 
 import java.io.Serializable;
 
+import fi.tnie.db.rpc.CharHolder;
+import fi.tnie.db.rpc.DateHolder;
+import fi.tnie.db.rpc.IntegerHolder;
+import fi.tnie.db.rpc.LongHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
+import fi.tnie.db.rpc.TimeHolder;
+import fi.tnie.db.rpc.TimestampHolder;
+import fi.tnie.db.rpc.VarcharHolder;
 
 public abstract class PrimitiveType<T extends PrimitiveType<T>>
 	extends Type<T> {
@@ -157,6 +164,42 @@ public abstract class PrimitiveType<T extends PrimitiveType<T>>
 		public Serializable value() {
 			return null;
 		}		
+		
+		
+		@Override
+		public IntegerHolder asIntegerHolder() {
+			return IntegerHolder.NULL_HOLDER;
+		}
+		
+		@Override
+		public DateHolder asDateHolder() {
+			return DateHolder.NULL_HOLDER;
+		}
+		
+		@Override
+		public TimeHolder asTimeHolder() {
+			return TimeHolder.NULL_HOLDER;
+		}
+		
+		@Override
+		public CharHolder asCharHolder() {			
+			return CharHolder.NULL_HOLDER;
+		}
+		
+		@Override
+		public TimestampHolder asTimestampHolder() {
+			return TimestampHolder.NULL_HOLDER;
+		}
+		
+		@Override
+		public LongHolder asLongHolder() {
+			return LongHolder.NULL_HOLDER;
+		}
+		
+		@Override
+		public VarcharHolder asVarcharHolder() {
+			return VarcharHolder.NULL_HOLDER;
+		}
 	}
 		
 	public static PrimitiveHolder<?, ?> nullHolder(int t) {
@@ -182,7 +225,7 @@ public abstract class PrimitiveType<T extends PrimitiveType<T>>
 			nh = NullHolder.BOOLEAN;
 			break;
 		case CHAR:
-			nh = NullHolder.CHAR;
+			nh = CharHolder.NULL_HOLDER;
 			break;
 		case CLOB:
 			nh = NullHolder.CLOB;
