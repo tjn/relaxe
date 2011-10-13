@@ -112,7 +112,9 @@ public abstract class DefaultEntityMetaData<
 		this.columnMap = columnMap;
 	}
 
-	protected abstract Column map(BaseTable table, A a);
+	protected Column map(BaseTable table, A a) {
+		return table.columnMap().get(a.identifier());
+	}
 
 	protected abstract void populateReferences(BaseTable table);
 
