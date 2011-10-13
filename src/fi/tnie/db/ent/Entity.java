@@ -171,22 +171,31 @@ public interface Entity<
 	
 	void setInteger(IntegerKey<A, T, E> k, IntegerHolder newValue)
 		throws EntityRuntimeException;
+	
 	void setVarchar(VarcharKey<A, T, E> k, VarcharHolder newValue)
 		throws EntityRuntimeException;
+	
 	void setChar(CharKey<A, T, E> k, CharHolder newValue)
 		throws EntityRuntimeException;
+	
 	void setDate(DateKey<A, T, E> k, DateHolder newValue)	
 		throws EntityRuntimeException;
+	
 	void setTimestamp(TimestampKey<A, T, E> k, TimestampHolder newValue)
-		throws EntityRuntimeException;	
+		throws EntityRuntimeException;
+	
 	void setTime(TimeKey<A, T, E> k, TimeHolder newValue)
 		throws EntityRuntimeException;
+	
 	void setDecimal(DecimalKey<A, T, E> k, DecimalHolder newValue)
 		throws EntityRuntimeException;
+	
 	void setDouble(DoubleKey<A, T, E> k, DoubleHolder newValue)
-		throws EntityRuntimeException;	
+		throws EntityRuntimeException;
+	
 	void setInterval(IntervalKey.YearMonth<A, T, E> k, IntervalHolder.YearMonth newValue)
 		throws EntityRuntimeException;
+	
 	void setInterval(IntervalKey.DayTime<A, T, E> k, IntervalHolder.DayTime newValue)
 		throws EntityRuntimeException;
 		
