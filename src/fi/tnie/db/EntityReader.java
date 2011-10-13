@@ -17,6 +17,7 @@ import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.Reference;
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
@@ -33,13 +34,13 @@ public class EntityReader<
 	
 	private List<EntityDataObject<E>> content;
 	
-	public EntityReader(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, ?> query) throws EntityException {
-		this(vef, query, new ArrayList<EntityDataObject<E>>());
+	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, ?> query) throws EntityException {
+		this(imp, query, new ArrayList<EntityDataObject<E>>());
 	}
 
-	public EntityReader(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, ?> query, List<EntityDataObject<E>> result) 
+	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, ?> query, List<EntityDataObject<E>> result) 
 		throws EntityException {
-		super(vef, query);
+		super(imp, query);
 		
 		if (result == null) {
 			throw new NullPointerException("result");

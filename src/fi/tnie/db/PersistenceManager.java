@@ -348,10 +348,15 @@ public class PersistenceManager<
 		RK extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK>
     >    
     void processKey(EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK> key, Map<Column, Assignment> am) {
+    	
+    	logger().debug("processKey - enter: " + key.name());
+    	
     	final E e = getTarget();
     	final M m = e.getMetaData();
     	    	
     	RH rh = e.getRef(key.self());
+    	
+    	logger().debug("rh: " + rh);
     	
     	if (rh == null) {
     		return;
@@ -360,6 +365,8 @@ public class PersistenceManager<
 		ForeignKey fk = m.getForeignKey(key.name());			
 
 		if (rh.isNull()) {
+			logger().debug("null ref: " + rh);
+			
 		      for (Column c : fk.columns().keySet()) {
 		      	if (!am.containsKey(c)) {
 		      		am.put(c, null);
@@ -369,17 +376,21 @@ public class PersistenceManager<
 		  else {
 			  RE re = rh.value();
 			  
+			  logger().debug("ref: " + re);
+			  logger().debug("fk-cols: " + fk.columns().size());
+			  
 		      for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
-		          Column fc = ce.getValue();
-		          		          
+		          Column fc = ce.getValue();		          		          
 		          PrimitiveHolder<?, ?> ph = re.get(fc);
+		          
+		          logger().debug("rc: " + fc + " => " + ph);
 		          
 		          Column column = ce.getKey();
 		          
-		  		if (ph != null) {    		    		    		
-		  			ValueParameter<?, ?> vp = createParameter(column, ph);    		
-			    	am.put(column, new Assignment(column.getColumnName(), vp));
-		  		}                    
+		          if (ph != null) {    		    		    		
+			  		ValueParameter<?, ?> vp = createParameter(column, ph);    		
+				    am.put(column, new Assignment(column.getColumnName(), vp));
+			  	}                    
 		     }
 		  }
 

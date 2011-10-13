@@ -29,6 +29,7 @@ public class DefaultEntityBuildContext
 		this.attributeWriterFactory = attributeWriterFactory;
 		this.columnResolver = columnResolver;		
 	}
+	
 	public AttributeWriterFactory getAttributeWriterFactory() {
 		return attributeWriterFactory;
 	}

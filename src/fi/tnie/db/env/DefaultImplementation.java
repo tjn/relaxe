@@ -7,10 +7,12 @@ import java.sql.Driver;
 
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.DefaultAttributeWriterFactory;
 import fi.tnie.db.DefaultValueAssignerFactory;
 import fi.tnie.db.DefaultValueExtractorFactory;
 import fi.tnie.db.ValueAssignerFactory;
 import fi.tnie.db.ValueExtractorFactory;
+import fi.tnie.db.ent.AttributeWriterFactory;
 import fi.tnie.db.meta.impl.DefaultEnvironment;
 
 public abstract class DefaultImplementation
@@ -20,6 +22,8 @@ public abstract class DefaultImplementation
 	private ValueExtractorFactory valueExtractorFactory; 
 	private ValueAssignerFactory valueAssignerFactory;	
 	private Driver driver;
+	
+	private AttributeWriterFactory attributeWriterFactory;
 	
 	private static Logger logger = Logger.getLogger(DefaultImplementation.class);
 	
@@ -35,6 +39,20 @@ public abstract class DefaultImplementation
 		return valueExtractorFactory;
 	}
 	
+	@Override
+	public AttributeWriterFactory getAttributeWriterFactory() {
+		if (attributeWriterFactory == null) {
+			attributeWriterFactory = createAttributeWriterFactory();
+			
+		}
+
+		return attributeWriterFactory;
+	}
+	
+	protected AttributeWriterFactory createAttributeWriterFactory() {
+		return new DefaultAttributeWriterFactory();
+	}
+
 	protected ValueExtractorFactory createValueExtractorFactory() {
 		return new DefaultValueExtractorFactory();
 	}

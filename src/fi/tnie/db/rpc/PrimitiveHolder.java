@@ -56,4 +56,18 @@ public abstract class PrimitiveHolder<V extends Serializable, T extends Primitiv
 		return null;
 	}	
 	
+	/**
+	 * If this holder is an {@link IntervalHolder.DayTime}, returns itself as such. Otherwise, returns <code>null</code> 
+	 */		
+	public IntervalHolder.DayTime asDayTimeIntervalHolder() {
+		return null;
+	}
+	
+	/**
+	 * If this holder is an {@link IntervalHolder.YearMonth}, returns itself as such. Otherwise, returns <code>null</code> 
+	 */		
+	public IntervalHolder.YearMonth asYearMonthIntervalHolder() {
+		return null;
+	}	
+	
 }

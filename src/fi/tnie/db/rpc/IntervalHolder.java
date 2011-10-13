@@ -43,6 +43,11 @@ public abstract class IntervalHolder<V extends Interval<?>, T extends PrimitiveT
 		public static IntervalHolder.YearMonth valueOf(Interval.YearMonth value) {
 			return (value == null) ? NULL : new YearMonth(value);
 		}
+		
+		@Override
+		public YearMonth asYearMonthIntervalHolder() {
+			return this;
+		}
 	}
 	
 	
@@ -71,7 +76,12 @@ public abstract class IntervalHolder<V extends Interval<?>, T extends PrimitiveT
 		
 		public static IntervalHolder.DayTime valueOf(Interval.DayTime value) {
 			return (value == null) ? NULL : new DayTime(value);
-		}		
+		}
+		
+		@Override
+		public IntervalHolder.DayTime asDayTimeIntervalHolder() {
+			return this;
+		}
 	}	
 	
 	/**

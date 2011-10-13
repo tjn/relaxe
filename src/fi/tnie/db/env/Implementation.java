@@ -7,6 +7,7 @@ import java.sql.Driver;
 
 import fi.tnie.db.ValueAssignerFactory;
 import fi.tnie.db.ValueExtractorFactory;
+import fi.tnie.db.ent.AttributeWriterFactory;
 import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.SerializableEnvironment;
@@ -24,6 +25,7 @@ public interface Implementation
 
 	
 	GeneratedKeyHandler generatedKeyHandler();
+	AttributeWriterFactory getAttributeWriterFactory();
 	ValueExtractorFactory getValueExtractorFactory();			
 	ValueAssignerFactory getValueAssignerFactory();
 	
@@ -33,5 +35,6 @@ public interface Implementation
 	
 	SerializableEnvironment environment();
 	
-	Driver getDriver();		
+	Driver getDriver();
+			
 }

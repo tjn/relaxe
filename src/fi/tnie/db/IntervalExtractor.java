@@ -10,7 +10,7 @@ import fi.tnie.db.rpc.Interval;
 import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.types.IntervalType;
 
-public abstract class IntervalExtractor<V extends Interval<V>, T extends IntervalType<T>> 
+public abstract class IntervalExtractor<V extends Interval<V>, T extends IntervalType<T>, H extends IntervalHolder<V, T>> 
 	extends ValueExtractor<V, T, IntervalHolder<V, T>> {
 
 	public IntervalExtractor(int column) {
@@ -18,10 +18,10 @@ public abstract class IntervalExtractor<V extends Interval<V>, T extends Interva
 	}
 
 	@Override
-	public abstract IntervalHolder<V, T> extractValue(ResultSet rs) throws SQLException;
+	public abstract H extractValue(ResultSet rs) throws SQLException;
 	
 	public static abstract class YearMonth
-		extends IntervalExtractor<Interval.YearMonth, IntervalType.YearMonth> {
+		extends IntervalExtractor<Interval.YearMonth, IntervalType.YearMonth, IntervalHolder.YearMonth> {
 
 		public YearMonth(int column) {
 			super(column);
@@ -29,11 +29,11 @@ public abstract class IntervalExtractor<V extends Interval<V>, T extends Interva
 	}
 
 	public static abstract class DayTime
-		extends IntervalExtractor<Interval.DayTime, IntervalType.DayTime> {
+		extends IntervalExtractor<Interval.DayTime, IntervalType.DayTime, IntervalHolder.DayTime> {
 
 		public DayTime(int column) {
 			super(column);
-		}		
+		}
 	}
 }
 

@@ -19,6 +19,9 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 		throws SQLException {
 		ValueExtractor<?, ?, ?> e = null;
 		int sqltype = meta.getColumnType(col);
+		
+		String typename = meta.getColumnTypeName(col);
+				
 	
 		switch (sqltype) {
 			case Types.INTEGER:					
@@ -49,13 +52,15 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 				e = createDoubleExtractor(col);
 				break;				
 			default:
+				logger().debug("createExtractor: type=" + sqltype);
+				logger().debug("createExtractor: typename=" + typename);
 				// 
 	//			e = new ObjectExtractor(colno);
 				break;
 			}
 		
 		
-			logger().debug("createExtractor - exit " + meta.getColumnLabel(col) + ": " + sqltype + " => " + e);
+			// logger().debug("createExtractor - exit " + meta.getColumnLabel(col) + ": " + sqltype + " => " + e);
 			
 			return e;
 		}

@@ -68,10 +68,10 @@ public class EntityQueryExecutor<
 		// QueryExpression qe = query.getQueryExpression();
 		QueryExpression qe = query.getQueryExpression();
 					
-		ValueExtractorFactory vef = imp.getValueExtractorFactory();
+//		ValueExtractorFactory vef = imp.getValueExtractorFactory();
 		
 		List<EntityDataObject<E>> content = new ArrayList<EntityDataObject<E>>();		
-		EntityReader<?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M>(vef, query, content);
+		EntityReader<?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M>(imp, query, content);
 		StatementExecutor sx = new StatementExecutor(imp);
 	
 		if (logger().isDebugEnabled()) {

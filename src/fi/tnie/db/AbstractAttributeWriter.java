@@ -24,7 +24,8 @@ public abstract class AbstractAttributeWriter<
 	V extends Serializable,
 	P extends PrimitiveType<P>,
 	H extends PrimitiveHolder<V, P>,
-	K extends PrimitiveKey<A, T, E, V, P, H, K>>
+	K extends PrimitiveKey<A, T, E, V, P, H, K>
+>
 	implements AttributeWriter<A, T, E, V, P, H, K> {
 
 	private K key;

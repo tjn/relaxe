@@ -21,24 +21,24 @@ public class DefaultValueAssignerFactory
 	public <T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T>> ParameterAssignment create(H holder) {
 		ParameterAssignment pa = null;
 				
-		PrimitiveHolder<?, ?> ph = holder;		
+		PrimitiveHolder<?, ?> ph = holder;
 		int t = ph.getSqlType();
-		
+						
 		switch (t) {
 			case PrimitiveType.INTEGER:				 
-				pa = createIntegerAssignment((IntegerHolder) ph);
+				pa = createIntegerAssignment(ph.asIntegerHolder());
 				break;
 			case PrimitiveType.VARCHAR:	
-				pa = createVarcharAssignment((VarcharHolder) ph);
+				pa = createVarcharAssignment(ph.asVarcharHolder());
 				break;
 			case PrimitiveType.DATE:	
-				pa = createDateAssignment((DateHolder) ph);
+				pa = createDateAssignment(ph.asDateHolder());
 				break;
 			case PrimitiveType.TIME:	
-				pa = createTimeAssignment((TimeHolder) ph);
+				pa = createTimeAssignment(ph.asTimeHolder());
 				break;				
 			case PrimitiveType.TIMESTAMP:	
-				pa = createTimestampAssignment((TimestampHolder) ph);
+				pa = createTimestampAssignment(ph.asTimestampHolder());
 				break;				
 			case PrimitiveType.OTHER:	
 				// TODO: 

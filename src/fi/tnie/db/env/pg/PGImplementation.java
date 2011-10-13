@@ -13,6 +13,8 @@ import fi.tnie.db.DefaultAttributeWriterFactory;
 import fi.tnie.db.DefaultValueExtractorFactory;
 import fi.tnie.db.ResultSetColumnResolver;
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.AttributeWriter;
+import fi.tnie.db.ent.AttributeWriterFactory;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.Reference;
@@ -166,4 +168,11 @@ public class PGImplementation
 //				
 //		return driver;
 //	}
+
+	@Override
+	protected AttributeWriterFactory createAttributeWriterFactory() {
+		return new PGAttributeWriterFactory();
+	}
+
+	
 }

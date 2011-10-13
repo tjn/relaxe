@@ -19,6 +19,7 @@ import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.IdentityContext;
 import fi.tnie.db.ent.MutableEntityDataObject;
 import fi.tnie.db.ent.Reference;
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
@@ -42,11 +43,14 @@ public class EntityBuilderManager<
 	private IdentityContext identityContext = new SimpleIdentityContext();	
 	private EntityBuildContext context;
 	
+	private Implementation implementation;
+	
 	private EntityBuilder<E> rootBuilder;
 						
-	public EntityBuilderManager(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, ?> query) 
+	public EntityBuilderManager(Implementation imp, EntityQuery<A, R, T, E, H, F, M, ?> query) 
 		throws EntityException {
-		super(vef, query);
+		super(imp.getValueExtractorFactory(), query);
+		this.implementation = imp;
 		this.query = query;
 		this.meta = query.getMetaData();		
 	}
@@ -56,7 +60,8 @@ public class EntityBuilderManager<
 		throws EntityRuntimeException {
 		
 		try {		
-			AttributeWriterFactory wf = new DefaultAttributeWriterFactory();				
+			AttributeWriterFactory wf = implementation.getAttributeWriterFactory();			
+			
 			context = new DefaultEntityBuildContext(getMetaData(), this.query, wf, null);				
 			TableReference rootRef = query.getTableRef();				
 			this.rootBuilder = this.meta.newBuilder(rootRef, context);

@@ -4,6 +4,7 @@
 package fi.tnie.db.rpc;
 
 import java.io.Serializable;
+import java.sql.Time;
 
 /**
  * 
@@ -168,6 +169,10 @@ public abstract class Interval<T extends Interval<T>>
 		
 		public DayTime(int hour, int minute, double second) {
 			this(0, hour, minute, second);
+		}
+		
+		public DayTime(Time t) {
+			this(0, 0, 0, t.getTime() / 1000D);
 		}
 		
 		public DayTime(int day, int hour, int minute, double second) {
