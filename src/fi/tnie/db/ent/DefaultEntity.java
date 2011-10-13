@@ -382,8 +382,7 @@ public abstract class DefaultEntity<
 	
 	public E copy() {
 		M meta = getMetaData();
-		EntityFactory<E, H, M, ?> ef = meta.getFactory();
-				
+		F ef = meta.getFactory();				
 		E src = self(); 
 		E dest = ef.newInstance();
 		
