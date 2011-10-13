@@ -6,6 +6,10 @@ package fi.tnie.db.types;
 public class CharType
 	extends PrimitiveType<CharType> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 619972121801208648L;
 	public static final CharType TYPE = new CharType();
 	
 	private CharType() {
