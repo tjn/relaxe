@@ -28,7 +28,9 @@ import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.ColumnReference;
 import fi.tnie.db.expr.SelectStatement;
 import fi.tnie.db.expr.TableReference;
+import fi.tnie.db.expr.Where;
 import fi.tnie.db.expr.OrderBy.Order;
+import fi.tnie.db.expr.op.AndPredicate;
 import fi.tnie.db.log.DefaultLogger;
 import fi.tnie.db.log.Logger;
 import fi.tnie.db.meta.BaseTable;
@@ -127,6 +129,22 @@ public class DefaultEntityTemplateQuery<
 		logger().debug("metaDataMap: " + metaDataMap);
 		
 		q.setFrom(new From(tref));
+		
+		List<EntityQueryPredicate<?>> pl = root.allPredicates();
+		
+		if (pl != null && (!pl.isEmpty())) {			
+			Predicate ap = null;
+			
+			for (EntityQueryPredicate<?> p : pl) {
+				ColumnReference cr = predicateColumnMap.get(p);				
+				Predicate qp = p.predicate(cr);
+				ap = AndPredicate.newAnd(ap, qp);
+			}
+			
+			q.setWhere(new Where(ap));
+		}	
+		
+		
 				
 		this.query = q;
 		
