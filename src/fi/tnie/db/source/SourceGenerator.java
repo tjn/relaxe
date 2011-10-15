@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.ent.im.EntityIdentityMap;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.gen.ent.test.Org;
 import fi.tnie.db.map.AttributeInfo;
 import fi.tnie.db.map.JavaType;
 import fi.tnie.db.map.TableMapper;
@@ -1006,6 +1007,7 @@ public class SourceGenerator {
         {
             String type = createReferenceType(getReferenceTemplate(), getReferenceType(), refs(t, tm));
             src = replaceAll(src, "{{reference-name-type}}", type);
+            src = replaceAll(src, Tag.TABLE_INTERFACE, mt.getUnqualifiedName());
         }	    
 
 //        {
@@ -2833,10 +2835,21 @@ public class SourceGenerator {
 			buf.append('"');
 			buf.append(kn);
 			buf.append('"');
-			buf.append(", ");
-			buf.append(ref.getQualifiedName());
-			buf.append(".TYPE");
 			buf.append(")");
+			
+			buf.append(" {");
+			buf.append("\n@Override\npublic ");
+			buf.append(ref.getQualifiedName());
+			buf.append(".Type type() {\n");
+			buf.append("return ");
+			buf.append(ref.getQualifiedName());
+			buf.append(".TYPE;\n");			
+			buf.append("}\n}");
+			
+//			buf.append(", ");
+//			buf.append(ref.getQualifiedName());
+//			buf.append(".TYPE");
+			
 
 			expr = buf.toString();
 		}

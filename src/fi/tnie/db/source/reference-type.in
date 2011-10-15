@@ -3,15 +3,12 @@ enum {{reference-type}} implements fi.tnie.db.ent.Reference {
     {{reference-constants}}
     ;
     
-    private String identifier;
-    private ReferenceType<?, ?, ?, ?, ?, ?, ?> type;
+    private String identifier;    
         
-    {{reference-type}}(ReferenceType<?, ?, ?, ?, ?, ?, ?> type) {    
-    	this.type = type;
+    {{reference-type}}() {    
     }
     
-    {{reference-type}}(String identifier, ReferenceType<?, ?, ?, ?, ?, ?, ?> type) {
-    	this(type);
+    {{reference-type}}(String identifier) {    	
         this.identifier = identifier;
     }    
     
@@ -19,9 +16,9 @@ enum {{reference-type}} implements fi.tnie.db.ent.Reference {
     public String identifier() {
         return (identifier == null) ? name() : identifier;
     }
-
+    
     public ReferenceType<?, ?, ?, ?, ?, ?, ?> type() {
-    	return this.type;
-    }    
+    	return null;
+    }
 }    
     
