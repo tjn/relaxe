@@ -178,7 +178,7 @@ public abstract class DefaultPager<
 		fetch(command, opts);		
 	}
 	
-	protected void fetchFirst() {
+	public void fetchFirst() {
 		fetch(Command.FIRST);
 	}
 	

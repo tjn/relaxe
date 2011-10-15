@@ -28,6 +28,6 @@ public interface EntityQueryPager<
 	extends SimplePager<RP, P>
 {			
 //	public EntityQueryResult<A, R, T, E, H, F, M, QT> getCurrentPage();
-	
+	void fetchFirst();
 	
 }
