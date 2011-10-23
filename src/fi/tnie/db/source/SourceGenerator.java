@@ -6,7 +6,6 @@ package fi.tnie.db.source;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,7 +27,6 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.ent.im.EntityIdentityMap;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.gen.ent.test.Org;
 import fi.tnie.db.map.AttributeInfo;
 import fi.tnie.db.map.JavaType;
 import fi.tnie.db.map.TableMapper;
@@ -251,7 +249,21 @@ public class SourceGenerator {
 		return SourceGenerator.logger;
 	}
 	
-    public Properties run(Connection c, Catalog cat, TableMapper tm)
+	/**
+	 * Generates the Java sources for the catalog.
+	 * 
+	 * Source files are placed into 
+	 *  
+	 * Returns a mapping: name of the class of the generated type =&gt;
+	 *   
+	 * @param cat
+	 * @param tm
+	 * @return
+	 * @throws QueryException
+	 * @throws IOException
+	 */
+	
+    public Properties run(Catalog cat, TableMapper tm)
         throws QueryException, IOException {
     	
         Map<File, String> gm = new HashMap<File, String>();
@@ -3015,15 +3027,15 @@ public class SourceGenerator {
 		return src;
 	}
     
-    public void setSourceDir(Part part, File dir) {
-        if (part == null) {
-            throw new NullPointerException();
-        }
-                        
-        getSourceDirMap().put(part, dir); 
-    }
+//    public void setSourceDir(Part part, File dir) {
+//        if (part == null) {
+//            throw new NullPointerException();
+//        }
+//                        
+//        getSourceDirMap().put(part, dir); 
+//    }
         
-    public File getSourceDir(Part part) {
+    private File getSourceDir(Part part) {
         File dir = getSourceDirMap().get(part);        
         return (dir != null) ? dir : getSourceDir();        
     }

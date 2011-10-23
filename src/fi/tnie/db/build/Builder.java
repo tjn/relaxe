@@ -9,6 +9,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.TransformerException;
+
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.DefaultTableMapper;
@@ -18,7 +21,10 @@ import fi.tnie.db.feature.Features;
 import fi.tnie.db.feature.SQLGenerationException;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.query.QueryException;
+import fi.tnie.db.source.DefaultNamingPolicy;
+import fi.tnie.db.source.NamingPolicy;
 import fi.tnie.db.source.SourceGenerator;
+import fi.tnie.db.source.TemplateGenerator;
 import fi.tnie.dbmeta.tools.CatalogTool;
 import fi.tnie.dbmeta.tools.ToolConfigurationException;
 import fi.tnie.dbmeta.tools.ToolException;
@@ -38,8 +44,13 @@ public class Builder
     private String catalogContextPackage;
     private File sourceDir;
     
+    private File templateDir;
+    
     public static final Option OPTION_GENERATED_DIR = 
-        new SimpleOption("generated-sources", "g", new Argument(false), "Dir for generated source files.");  
+        new SimpleOption("generated-sources", "g", new Argument(false), "Dir for generated source files.");
+    
+    public static final Option OPTION_TEMPLATE_DIR = 
+        new SimpleOption("generated-templates", "t", new Argument(false), "Dir for generated template files.");      
 
     public static final Option OPTION_ROOT_PACKAGE = 
         new SimpleOption("root-package", "r", new Argument(false), "Root java package name for generated classes.");  
@@ -57,6 +68,7 @@ public class Builder
     protected void prepare(Parser p) {     
         super.prepare(p);
         addOption(p, OPTION_GENERATED_DIR);
+        addOption(p, OPTION_TEMPLATE_DIR);
         addOption(p, OPTION_ROOT_PACKAGE);
         addOption(p, OPTION_CATALOG_CONTEXT_PACKAGE);        
     }      
@@ -67,10 +79,12 @@ public class Builder
         super.init(cl);
         
         String gen = cl.value(require(cl, OPTION_GENERATED_DIR));
+        String tem = cl.value(require(cl, OPTION_TEMPLATE_DIR));
         String pkg = cl.value(require(cl, OPTION_ROOT_PACKAGE));
         String ccp = cl.value(OPTION_CATALOG_CONTEXT_PACKAGE);
         
         setSourceDir(new File(gen));
+        setTemplateDir(new File(tem));
         setRootPackage(pkg);
         setCatalogContextPackage(ccp);
     }
@@ -89,17 +103,18 @@ public class Builder
             c.setAutoCommit(false);        
             CatalogFactory cf = impl.catalogFactory();          
             getFeatures().installAll(c, cf, false);         
-                        
-            File root = getSourceDir();
-                        
-            generateSources(c, impl, root);
-                                  
-              new FileProcessor(true) {
-                @Override
-                public void apply(File file) {
-                    logger().debug(file.getAbsolutePath());                
-                }              
-              }.traverse(root);
+            
+            Catalog cat = cf.create(c);
+            
+            File root = getSourceDir();            
+            generateSources(cat, root);
+            traverseFiles(root);
+            
+            NamingPolicy np = new DefaultNamingPolicy();            
+            generateTemplates(cat, getTemplateDir(), np);
+            traverseFiles(getTemplateDir());
+            
+            
         } 
         catch (SQLException e) {
             logger().error(e.getMessage(), e);
@@ -125,6 +140,15 @@ public class Builder
             
         }
       }
+
+	private void traverseFiles(File root) {
+		new FileProcessor(true) {
+		    @Override
+		    public void apply(File file) {
+		        logger().debug(file.getAbsolutePath());                
+		    }              
+		  }.traverse(root);
+	}
 
     
 
@@ -185,34 +209,43 @@ public class Builder
         return count;
     }
     
-    private void generateSources(Connection c, Implementation env, File sourceRoot)
+    private void generateSources(Catalog cat, File sourceRoot)
             throws QueryException, IOException {
-        try {
-            final File sourceList = getSourceList(sourceRoot);            
-            remove(sourceList);
-            
-            String rp = getRootPackage();
-            String ccp = getCatalogContextPackage();
-                        
-            SourceGenerator gen = new SourceGenerator(sourceRoot);            
-            DefaultTableMapper tm = new DefaultTableMapper(rp, ccp);   
-                  
-            CatalogFactory cf = env.catalogFactory();
-            Catalog cat = cf.create(c);
-            Properties current = gen.run(c, cat, tm);
-            
-            IOHelper.doStore(current, sourceList.getPath(), "List of the generated source files");            
-        }
-        catch (SQLException e) {
-          throw new QueryException(e.getMessage(), e);
-        }
-    }    
+        final File sourceList = getSourceList(sourceRoot);            
+        remove(sourceList);
+        
+        String rp = getRootPackage();
+        String ccp = getCatalogContextPackage();
+                    
+        SourceGenerator gen = new SourceGenerator(sourceRoot);            
+        DefaultTableMapper tm = new DefaultTableMapper(rp, ccp);   
+              
+        Properties current = gen.run(cat, tm);
+        
+        IOHelper.doStore(current, sourceList.getPath(), "List of the generated source files");            
+    }
+    
+    private void generateTemplates(Catalog cat, File templateRoot, NamingPolicy np)
+    	throws QueryException, IOException, XMLStreamException, TransformerException {
+	    final File templateList = getTemplateList(templateRoot);            
+	    remove(templateList);
+	    
+	    TemplateGenerator gen = new TemplateGenerator(templateRoot);
+	    		    		                
+	    Properties current = gen.run(cat, np);
+	    
+	    IOHelper.doStore(current, templateList.getPath(), "List of the generated template files");            
+	}    
     
     public Builder() {
     }
     
     public File getSourceList(File sourceRoot) {
         return new File(sourceRoot, "generated-sources-files.txt");        
+    }
+    
+    public File getTemplateList(File templateRoot) {
+        return new File(templateRoot, "generated-templates.txt");        
     }
 
     public Features getFeatures() {
@@ -276,6 +309,14 @@ public class Builder
 
 	public void setCatalogContextPackage(String catalogContextPackage) {
 		this.catalogContextPackage = catalogContextPackage;
+	}
+
+	public File getTemplateDir() {
+		return templateDir;
+	}
+
+	public void setTemplateDir(File templateDir) {
+		this.templateDir = templateDir;
 	}
     
     

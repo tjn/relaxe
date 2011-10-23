@@ -5,6 +5,7 @@ tstamp
 SET ROOT=%~dp0..
 SET JARDIR=%ROOT%\lib
 SET GENSRC=%ROOT%\out\src
+SET TEMPLATE_DIR=%ROOT%\war\WEB-INF\templates
 
 MKDIR %ROOT%\gen 2> nul
 MKDIR %GENSRC% 2> nul
@@ -24,6 +25,6 @@ SET META_GEN_CP=%META_GEN_CP%;%JARDIR%\util.jar
 SET META_GEN_CP=%META_GEN_CP%;%JARDIR%\log4j.jar
 
 REM read to go:
-java -classpath %META_GEN_CP% fi.tnie.db.build.Builder -g %GENSRC% -j %JDBC_CONFIG% -e %ENV% --root-package %ROOT_PACKAGE% --catalog-context-package %CC_PACKAGE% -u %JDBC_URL% || echo generation failed
+java -classpath %META_GEN_CP% fi.tnie.db.build.Builder -g %GENSRC% -t %TEMPLATE_DIR% -j %JDBC_CONFIG% -e %ENV% --root-package %ROOT_PACKAGE% --catalog-context-package %CC_PACKAGE% -u %JDBC_URL% || echo generation failed
 tstamp
 @echo on
