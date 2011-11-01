@@ -79,7 +79,8 @@ public enum SQLKeyword implements Keyword {
 	CONSTRAINT, 
 	ASC, 
 	DESC,
-	IS
+	IS, 
+	GENERATED, ALWAYS, BY, IDENTITY, START, WITH, INCREMENT
 	;
 	
 	private static EnumSet<SQLKeyword> keywords = EnumSet.allOf(SQLKeyword.class);
