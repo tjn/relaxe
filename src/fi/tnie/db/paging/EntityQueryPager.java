@@ -4,7 +4,9 @@
 package fi.tnie.db.paging;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQueryResult;
@@ -25,9 +27,7 @@ public interface EntityQueryPager<
 	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, QT>,
 	P extends EntityQueryPager<A, R, T, E, H, F, M, RP, QT, P>
 > 
-	extends SimplePager<RP, P>
-{			
-//	public EntityQueryResult<A, R, T, E, H, F, M, QT> getCurrentPage();
-	void fetchFirst();
-	
+	extends DataObjectPager<EntityDataObject<E>, RP, P>
+{
+	void fetchFirst();	
 }

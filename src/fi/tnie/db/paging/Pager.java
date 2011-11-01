@@ -9,7 +9,7 @@ import fi.tnie.db.model.Registration;
 import fi.tnie.db.ui.action.Action;
 
 /**
- * @param <T> Type of the page this pager browses.
+ * @param <T> Type of the page(s) this pager browses.
  * @param <P> Type of the pager itself 
  * @param <C> Type of the paging command applicable with this pager 
  */

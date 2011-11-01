@@ -66,4 +66,9 @@ public class DefaultEntityQueryResult<
 	public Long available() {
 		return getContent().available();
 	}
+
+	@Override
+	public DataObjectQueryResult<EntityDataObject<E>> getResult() {
+		return getContent();
+	}	
 }

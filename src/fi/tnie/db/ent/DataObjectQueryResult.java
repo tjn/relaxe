@@ -5,12 +5,13 @@ package fi.tnie.db.ent;
 
 import java.util.List;
 
+import fi.tnie.db.paging.HasDataObjectQueryResult;
 import fi.tnie.db.query.Query;
 import fi.tnie.db.query.QueryResult;
 import fi.tnie.db.query.QueryTime;
 
 public class DataObjectQueryResult<T extends DataObject>
-	extends QueryResult<T> {
+	extends QueryResult<T> implements HasDataObjectQueryResult<T>  {
 
 	/**
 	 * 
@@ -37,5 +38,10 @@ public class DataObjectQueryResult<T extends DataObject>
 	
 	public T get(int index) {				
 		return getContent().get(index);
+	}
+	
+	@Override
+	public fi.tnie.db.ent.DataObjectQueryResult<T> getResult() {
+		return this;
 	}
 }
