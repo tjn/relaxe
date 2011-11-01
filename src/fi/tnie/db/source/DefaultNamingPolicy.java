@@ -102,6 +102,12 @@ public class DefaultNamingPolicy
 		return toIdentifier("meta." + fk.getUnqualifiedName().getName());
 	}
 	
+	
+	@Override
+	public String getLabelText(BaseTable t, Column c) {
+		return c.getColumnName().getName();
+	}
+	
 	@Override
 	public String getLabelText(ForeignKey fk) {	
 		// TODO:

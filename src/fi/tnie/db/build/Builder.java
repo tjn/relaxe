@@ -14,11 +14,13 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.DefaultEntityContext;
 import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.feature.Features;
 import fi.tnie.db.feature.SQLGenerationException;
+import fi.tnie.db.map.TableMapper;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.source.DefaultNamingPolicy;
@@ -45,6 +47,8 @@ public class Builder
     private File sourceDir;
     
     private File templateDir;
+    
+    private transient TableMapper tableMapper;
     
     public static final Option OPTION_GENERATED_DIR = 
         new SimpleOption("generated-sources", "g", new Argument(false), "Dir for generated source files.");
@@ -109,6 +113,8 @@ public class Builder
             File root = getSourceDir();            
             generateSources(cat, root);
             traverseFiles(root);
+            
+            // DefaultTableMapper tm = new DefaultTableMapper(;)
             
             NamingPolicy np = new DefaultNamingPolicy();            
             generateTemplates(cat, getTemplateDir(), np);
@@ -214,24 +220,21 @@ public class Builder
         final File sourceList = getSourceList(sourceRoot);            
         remove(sourceList);
         
-        String rp = getRootPackage();
-        String ccp = getCatalogContextPackage();
-                    
-        SourceGenerator gen = new SourceGenerator(sourceRoot);            
-        DefaultTableMapper tm = new DefaultTableMapper(rp, ccp);   
-              
+        TableMapper tm = getTableMapper();       
+        SourceGenerator gen = new SourceGenerator(sourceRoot);              
         Properties current = gen.run(cat, tm);
         
         IOHelper.doStore(current, sourceList.getPath(), "List of the generated source files");            
     }
     
-    private void generateTemplates(Catalog cat, File templateRoot, NamingPolicy np)
+	private void generateTemplates(Catalog cat, File templateRoot, NamingPolicy np)
     	throws QueryException, IOException, XMLStreamException, TransformerException {
 	    final File templateList = getTemplateList(templateRoot);            
 	    remove(templateList);
 	    
-	    TemplateGenerator gen = new TemplateGenerator(templateRoot);
-	    		    		                
+	    TableMapper tm = getTableMapper();
+	    DefaultEntityContext ec = new DefaultEntityContext(cat, null, tm);	    
+	    TemplateGenerator gen = new TemplateGenerator(templateRoot, ec);	    		    		                
 	    Properties current = gen.run(cat, np);
 	    
 	    IOHelper.doStore(current, templateList.getPath(), "List of the generated template files");            
@@ -317,6 +320,16 @@ public class Builder
 
 	public void setTemplateDir(File templateDir) {
 		this.templateDir = templateDir;
+	}
+
+	private TableMapper getTableMapper() {
+		if (tableMapper == null) {
+			String rp = getRootPackage();
+	        String ccp = getCatalogContextPackage();
+			tableMapper = new DefaultTableMapper(rp, ccp);
+		}
+
+		return tableMapper;
 	}
     
     

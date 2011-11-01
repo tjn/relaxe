@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -21,14 +22,17 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Logger;
-
+import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityContext;
+import fi.tnie.db.ent.EntityFactory;
+import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.Reference;
 import fi.tnie.db.expr.ddl.SQLType;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
@@ -37,16 +41,20 @@ import fi.tnie.db.meta.DataType;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaElementMap;
+import fi.tnie.db.rpc.ReferenceHolder;
+import fi.tnie.db.types.ReferenceType;
 
 public class TemplateGenerator {
 
-	private static Logger logger = Logger.getLogger(TemplateGenerator.class);
+//	private static Logger logger = Logger.getLogger(TemplateGenerator.class);
 		
 	private File templateDir;
+	private EntityContext context;
 	
-	public TemplateGenerator(File templateDir) {
+	public TemplateGenerator(File templateDir, EntityContext context) {
 		super();
 		setTemplateDir(templateDir);
+		setContext(context);
 	}
 
 	public Properties run(Catalog cat, NamingPolicy np) throws IOException, XMLStreamException, TransformerException {
@@ -56,6 +64,8 @@ public class TemplateGenerator {
 		Map<Schema, File> dm = mkdirs(np, sc);				
 		
 		XMLOutputFactory xof = XMLOutputFactory.newInstance();
+		
+		EntityContext ctx = getContext();
 				
 		for (Schema s : sc) {
 			SchemaElementMap<? extends BaseTable> tem = s.baseTables();			
@@ -64,11 +74,14 @@ public class TemplateGenerator {
 			File sd = dm.get(s);
 						
 			for (BaseTable t : tables) {
+				EntityMetaData<?, ?, ?, ?, ?, ?, ?> meta = ctx.getMetaData(t);
+				
+				
 				String tn = np.getTemplate(t);				
 				File tf = new File(sd, tn);
 				
 //				if (!tf.exists()) {					
-					write(t, np, tf, xof);					
+					write(meta, np, tf, xof);					
 					generated.put(t.getQualifiedName(), tf.getPath());
 //				}				
 			}
@@ -78,16 +91,28 @@ public class TemplateGenerator {
 		return generated;
 	}
 	
-	protected void generateTemplate(BaseTable t, XMLStreamWriter w, NamingPolicy np) throws XMLStreamException {
+	protected 
+	<
+		A extends Attribute,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, H, F, M>,	
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,	 
+		M extends EntityMetaData<A, R, T, E, H, F, M>
+	>
+	void generateTemplate(M meta, XMLStreamWriter w, NamingPolicy np) throws XMLStreamException {
+		BaseTable t = meta.getBaseTable();
+		
 		w.writeStartDocument();
 		w.writeStartElement("div");
 		
 		w.writeStartElement("table");
 		writeClass(w, np.getTableStyle(t));
 		
-		generateAttributeRows(t, w, np);
+		generateAttributeRows(meta, w, np);
 		
-		generateReferenceRows(t, w, np);
+		generateReferenceRows(meta, w, np);
 		
 		w.writeEndElement();
 		
@@ -96,21 +121,44 @@ public class TemplateGenerator {
 		
 	}
 
-	private void generateAttributeRows(BaseTable t, XMLStreamWriter w, NamingPolicy np) throws XMLStreamException {	
-		for(Column c : t.columnMap().values()) {						
+	private 
+	<
+		A extends Attribute,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, H, F, M>,	
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,	 
+		M extends EntityMetaData<A, R, T, E, H, F, M>
+	>
+	void generateAttributeRows(M meta, XMLStreamWriter w, NamingPolicy np) throws XMLStreamException {
+		
+		for(A a : meta.attributes()) {
+			Column c = meta.getColumn(a);
+			BaseTable t = meta.getBaseTable();
 			generateAttribute(t, c, np, w);			
 		}
 	}
 	
-	private void generateReferenceRows(BaseTable t, XMLStreamWriter w, NamingPolicy np) throws XMLStreamException {
-						
-		SchemaElementMap<ForeignKey> keys = t.foreignKeys();
+	private 
+	<
+		A extends Attribute,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, H, F, M>,	
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,	 
+		M extends EntityMetaData<A, R, T, E, H, F, M>
+	>
+	void generateReferenceRows(M meta, XMLStreamWriter w, NamingPolicy np) throws XMLStreamException {		
 		
-		for (ForeignKey fk : keys.values()) {
+		Set<R> rs = meta.relationships();
+		
+		for (R r : rs) {
+			BaseTable t = meta.getBaseTable();
+			ForeignKey fk = meta.getForeignKey(r);			
 			generateReference(t, fk, np, w);			
-		}
-		
-		
+		}		
 	}
 	
 //	private String styles(String[] sa, String ... styles) {
@@ -218,7 +266,10 @@ public class TemplateGenerator {
 		w.writeStartElement("div");
 		String ls = np.getLabelIdentifier(t, c);
 		w.writeAttribute("id", ls);
-		w.writeAttribute("class", ls);		
+		w.writeAttribute("class", ls);
+		
+		w.writeCharacters(np.getLabelText(t, c));
+		
 		w.writeEndElement();
 		w.writeEndElement();
 			
@@ -240,12 +291,22 @@ public class TemplateGenerator {
 		}		
 	}
 
-	private void write(BaseTable t, NamingPolicy np, File tf, XMLOutputFactory xof) throws IOException, XMLStreamException, TransformerException {
-		
+	private 
+	<
+		A extends Attribute,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, H, F, M>,	
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,	 
+		M extends EntityMetaData<A, R, T, E, H, F, M>
+	>		
+	void write(EntityMetaData<A, R, T, E, H, F, M> meta, NamingPolicy np, File tf, XMLOutputFactory xof) throws IOException, XMLStreamException, TransformerException {
 		
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		XMLStreamWriter w = xof.createXMLStreamWriter(os);
-		generateTemplate(t, w, np);
+		
+		generateTemplate(meta.self(), w, np);
 		w.flush();
 		w.close();		
 		
@@ -296,6 +357,14 @@ public class TemplateGenerator {
 
 	private void setTemplateDir(File templateDir) {
 		this.templateDir = templateDir;
+	}
+
+	private EntityContext getContext() {
+		return context;
+	}
+
+	private void setContext(EntityContext context) {
+		this.context = context;
 	}
 	
 	

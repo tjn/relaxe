@@ -19,6 +19,7 @@ public interface NamingPolicy {
 	String getAttributeTypeStyle(DataType t);
 	String getAttributeSizeStyle(DataType t);
 	String getLabelIdentifier(BaseTable t, Column c);
+	String getLabelText(BaseTable t, Column c);
 	String getValueIdentifier(BaseTable t, Column c);
 	
 	String getLabelIdentifier(ForeignKey fk);
