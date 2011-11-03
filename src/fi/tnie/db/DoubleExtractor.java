@@ -21,7 +21,7 @@ public class DoubleExtractor
 
 	@Override
 	public DoubleHolder extractValue(ResultSet rs) throws SQLException {
-		int v = rs.getInt(getColumn());
+		double v = rs.getDouble(getColumn());
 		return rs.wasNull() ? DoubleHolder.NULL_HOLDER : DoubleHolder.valueOf(v);			
 	}
 	
