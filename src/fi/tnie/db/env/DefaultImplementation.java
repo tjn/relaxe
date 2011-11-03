@@ -15,6 +15,11 @@ import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.AttributeWriterFactory;
 import fi.tnie.db.meta.impl.DefaultEnvironment;
 
+/**
+ * TODO: This needs to be fixed. DefaultImplementation should not extend a DefaultEnvironment.
+ * We should not to require implementation object to be serializable.
+ */
+
 public abstract class DefaultImplementation
 	extends DefaultEnvironment
 	implements Implementation {
