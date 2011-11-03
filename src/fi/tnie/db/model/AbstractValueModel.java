@@ -76,8 +76,6 @@ public abstract class AbstractValueModel<V>
 	}
 	
 	/**
-	 *     
-	 * 
 	 * @param oldValue
 	 * @param newValue
 	 * @return
@@ -91,7 +89,7 @@ public abstract class AbstractValueModel<V>
 			return true;
 		}
 		
-		return !oldValue.equals(newValue);    
+		return (!oldValue.equals(newValue));    
 	}
 	
 	/**

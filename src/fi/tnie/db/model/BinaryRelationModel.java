@@ -3,15 +3,15 @@
  */
 package fi.tnie.db.model;
 
-public abstract class BinaryRelationModel<N>
+public abstract class BinaryRelationModel<V>
 	extends ImmutableBooleanModel {
 	
 	private MutableBooleanModel result = new MutableBooleanModel();
 
-	public BinaryRelationModel(final ValueModel<N> a, final ValueModel<N> b) {		
-		ChangeListener<N> cl = new ChangeListener<N>() {
+	public BinaryRelationModel(final ValueModel<V> a, final ValueModel<V> b) {		
+		ChangeListener<V> cl = new ChangeListener<V>() {
 			@Override
-			public void changed(N from, N to) {				
+			public void changed(V from, V to) {				
 				Boolean newResult = apply(a.get(), b.get());
 				result.set(newResult);
 			}
@@ -28,7 +28,7 @@ public abstract class BinaryRelationModel<N>
 		this.result.set(apply(a.get(), b.get()));
 	}
 
-	protected abstract Boolean apply(N a, N b);
+	protected abstract Boolean apply(V a, V b);
 
 	
 	@Override

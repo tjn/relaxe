@@ -9,7 +9,6 @@ import fi.tnie.db.AbstractAttributeWriter;
 import fi.tnie.db.DefaultAttributeWriterFactory;
 import fi.tnie.db.IntervalAttributeWriter;
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.AttributeWriter;
 import fi.tnie.db.ent.ColumnResolver;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;

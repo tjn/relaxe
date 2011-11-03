@@ -38,6 +38,7 @@ public class DefaultMutableValueModel<V>
 			super(initialValue);		
 		}
 
+		@Override
 		public void set(V value) {
 			if (value == null) {
 				throw new NullPointerException(this.toString());
