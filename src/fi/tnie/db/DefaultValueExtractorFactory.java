@@ -46,6 +46,10 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 				break;
 			case Types.TIME:
 				e = createTimeExtractor(col);
+				break;
+			case Types.NUMERIC:
+			case Types.DECIMAL:
+				e = createDecimalExtractor(col);
 				break;				
 			case Types.FLOAT:
 			case Types.DOUBLE:
@@ -72,6 +76,10 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 	
 	public DoubleExtractor createDoubleExtractor(int col) {
 		return new DoubleExtractor(col);
+	}
+	
+	public DecimalExtractor createDecimalExtractor(int col) {
+		return new DecimalExtractor(col);
 	}
 	
 	public VarcharExtractor createVarcharExtractor(int col) {
