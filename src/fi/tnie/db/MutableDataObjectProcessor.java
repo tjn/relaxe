@@ -3,9 +3,9 @@
  */
 package fi.tnie.db;
 
-import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.MutableDataObject;
 import fi.tnie.db.ent.QueryExpressionSource;
+import fi.tnie.db.query.QueryException;
 
 public class MutableDataObjectProcessor
 	extends DataObjectProcessor<MutableDataObject> {
@@ -13,7 +13,7 @@ public class MutableDataObjectProcessor
 	private MutableDataObject content;
 	private MutableDataObject result;
 		
-	public MutableDataObjectProcessor(ValueExtractorFactory vef, QueryExpressionSource qes) throws EntityException {
+	public MutableDataObjectProcessor(ValueExtractorFactory vef, QueryExpressionSource qes) throws QueryException {
 		super(vef, qes);
 	}
 	

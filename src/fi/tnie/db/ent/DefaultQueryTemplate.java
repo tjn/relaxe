@@ -13,7 +13,6 @@ import java.util.Map;
 import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.expr.OrderBy;
-import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 

@@ -3,9 +3,13 @@
  */
 package fi.tnie.db.ent;
 
-import fi.tnie.db.expr.QueryExpression;
+import java.io.Serializable;
 
-public interface QueryExpressionSource {
+import fi.tnie.db.expr.QueryExpression;
+import fi.tnie.db.query.QueryException;
+
+public interface QueryExpressionSource
+	extends Serializable {
 	QueryExpression getQueryExpression()
-		throws EntityException;
+		throws QueryException;
 }

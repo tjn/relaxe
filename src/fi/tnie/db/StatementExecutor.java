@@ -10,7 +10,6 @@ import java.sql.PreparedStatement;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.DataObject;
-import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.exec.QueryProcessor;
 import fi.tnie.db.expr.SelectStatement;
@@ -22,8 +21,7 @@ import fi.tnie.db.query.QueryTime;
 public class StatementExecutor {
 
 	private static Logger logger = Logger.getLogger(StatementExecutor.class);
-	
-		
+			
 	private ValueAssignerFactory valueAssignerFactory = null; 
 	private ValueExtractorFactory valueExtractorFactory = null;
 		
@@ -33,7 +31,7 @@ public class StatementExecutor {
 		this.valueExtractorFactory = implementation.getValueExtractorFactory();
 	}
 
-	public DataObject fetchFirst(SelectStatement statement, Connection c) throws SQLException, QueryException, EntityException {
+	public DataObject fetchFirst(SelectStatement statement, Connection c) throws SQLException, QueryException {
 		MutableDataObjectProcessor p = new MutableDataObjectProcessor(valueExtractorFactory, statement) {
 			@Override
 			public void process(ResultSet rs, long ordinal) throws QueryException {			
@@ -96,7 +94,7 @@ public class StatementExecutor {
 				}
 				finally {
 					doClose(rs);
-				}								
+				}
 			}
 			else {
 			    

@@ -25,21 +25,10 @@ import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
-import fi.tnie.db.expr.CountFunction;
-import fi.tnie.db.expr.DefaultTableExpression;
-import fi.tnie.db.expr.From;
-import fi.tnie.db.expr.Limit;
-import fi.tnie.db.expr.NestedTableReference;
-import fi.tnie.db.expr.Offset;
-import fi.tnie.db.expr.OrderBy;
-import fi.tnie.db.expr.QueryExpression;
-import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.SelectStatement;
-import fi.tnie.db.expr.TableExpression;
 import fi.tnie.db.query.Query;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.query.QueryTime;
-import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
@@ -52,125 +41,169 @@ public class EntityQueryExecutor<
 	F extends EntityFactory<E, H, M, F>,
 	M extends EntityMetaData<A, R, T, E, H, F, M>,
 	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, QT>
-> {	
-	private Implementation implementation;	
+> 	
+{	
+//	private Implementation implementation;	
 	private static Logger logger = Logger.getLogger(EntityQueryExecutor.class);
+	
+	private QueryExecutor executor;
+	 
 	
 	public EntityQueryExecutor(Implementation implementation) {
 		super();
-		this.implementation = implementation;
+		executor = new QueryExecutor(implementation);
+//		this.implementation = implementation;
 	}
 
 	public EntityQueryResult<A, R, T, E, H, F, M, QT> execute(EntityQuery<A, R, T, E, H, F, M, QT> query, FetchOptions opts, Connection c) 
 		throws SQLException, QueryException, EntityException {
 		
-		Implementation imp = getImplementation();
-		// QueryExpression qe = query.getQueryExpression();
-		QueryExpression qe = query.getQueryExpression();
-					
-//		ValueExtractorFactory vef = imp.getValueExtractorFactory();
+		QueryExecutor se = getExecutor();		
+		Implementation imp = se.getImplementation();
 		
 		List<EntityDataObject<E>> content = new ArrayList<EntityDataObject<E>>();		
 		EntityReader<?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M>(imp, query, content);
+		
+		QueryExecutor.SliceStatement sb = se.createStatement(query, opts, c);
+				
 		StatementExecutor sx = new StatementExecutor(imp);
-	
-		if (logger().isDebugEnabled()) {
-			logger().debug("execute: query=" + qe.generate());
-		}
 		
-		SelectStatement qs = new SelectStatement(qe.getTableExpr());
-
-		Long available = null;
-		
-		// boolean card = opts.getCardinality() ||
-		
-		long oo = 0;
-		Long pageSize = null;
-
-		if (opts != null) {
-			oo = opts.getOffset();
-			pageSize = opts.getPageSize();			
-		}
-				
-		logger().info("execute: oo=" + oo);
-				
-		if ((opts != null && opts.getCardinality()) || oo < 0) {			
-			SelectStatement cs = createCountQuery(qs);
-			DataObject result = sx.fetchFirst(cs, c);
-			
-			PrimitiveHolder<?, ?> h = result.get(0);
-			logger().debug("execute: h=" + h);
-			available = h.asLongHolder().value();
-		}
-		
-		logger().info("execute: available=" + available);
-		
-		Limit limit = (pageSize == null) ? null : new Limit(pageSize.longValue());
-		
-		long op = oo;
-		
-		if (oo < 0) {
-			op = available.longValue();
-						
-			if (pageSize != null) {
-				long ps = pageSize.longValue();
-				long pp = op % ps;
-				
-				if (pp == 0) {
-					op -= ps;
-				}
-				else {
-					op -= pp;
-				}
-			}			
-		}		
-		
-		
-		// TODO: do something with this
-		OrderBy ob = qe.getOrderBy();
-		
-		if (ob == null) {
-			ob = new OrderBy();
-			ob.add(new OrderBy.OrdinalSortKey(1));
-		}		
-		 
-		Offset offset = new Offset(op);
-		qs = new SelectStatement(qe.getTableExpr(), ob, limit, offset);
-										
-		Query q = new Query(qs);
-		QueryTime qt = sx.execute(qs, c, eb);
+		SelectStatement ss = sb.getStatement();
+		Query q = new Query(ss);		
+		QueryTime qt = sx.execute(ss, c, eb);
 		
 		DataObject.MetaData meta = eb.getMetaData();		
-				
-		// QueryResult<EntityDataObject<E>> result = new QueryResult<EntityDataObject<E>>(q, content, qt);
-		DataObjectQueryResult<EntityDataObject<E>> result = new DataObjectQueryResult<EntityDataObject<E>>(q, meta, content, qt, opts, op);
-		result.setAvailable(available);
+
+		DataObjectQueryResult<EntityDataObject<E>> result = new DataObjectQueryResult<EntityDataObject<E>>(q, meta, content, qt, opts, sb.getPosition());
+		result.setAvailable(sb.getAvailable());
 		
 		return new DefaultEntityQueryResult<A, R, T, E, H, F, M, QT>(query, result);		
 	}
 
-	private SelectStatement createCountQuery(SelectStatement qs) {
-		TableExpression te = qs.getTableExpr();			
-		QueryExpression tx = new DefaultTableExpression(te);						
-		final NestedTableReference nt = new NestedTableReference(tx);												
-		DefaultTableExpression ce = new DefaultTableExpression();
-		
-		From from = new From(nt);			
-		ce.setFrom(from);
-		
-		Select s = new Select();
-		s.add(new CountFunction());			
-		ce.setSelect(s);
-		
-		SelectStatement cs = new SelectStatement(ce.getQueryExpression());
-		return cs;
-	}
+//	private SelectStatement createCountQuery(SelectStatement qs) {
+//		TableExpression te = qs.getTableExpr();			
+//		QueryExpression tx = new DefaultTableExpression(te);						
+//		final NestedTableReference nt = new NestedTableReference(tx);												
+//		DefaultTableExpression ce = new DefaultTableExpression();
+//		
+//		From from = new From(nt);			
+//		ce.setFrom(from);
+//		
+//		Select s = new Select();
+//		s.add(new CountFunction());			
+//		ce.setSelect(s);
+//		
+//		SelectStatement cs = new SelectStatement(ce.getQueryExpression());
+//		return cs;
+//	}
 	
-	public Implementation getImplementation() {
-		return implementation;
-	}
+//	public Implementation getImplementation() {
+//		return implementation;
+//	}
 	
 	private static Logger logger() {
 		return EntityQueryExecutor.logger;
 	}	
+	
+		
+//	protected SliceStatement createStatement(QueryExpressionSource qes, FetchOptions opts, Connection c) 
+//		throws QueryException, SQLException {
+//		Implementation imp = getImplementation();
+//		
+//		StatementExecutor sx = new StatementExecutor(imp);
+//		
+////		if (logger().isDebugEnabled()) {
+////			logger().debug("execute: query=" + qe.generate());
+////		}
+//		
+//		QueryExpression qe = qes.getQueryExpression();		
+//		SelectStatement qs = new SelectStatement(qe.getTableExpr());
+//
+//		Long available = null;			
+//		
+//		long oo = 0;
+//		Long pageSize = null;
+//
+//		if (opts != null) {
+//			oo = opts.getOffset();
+//			pageSize = opts.getPageSize();			
+//		}
+//				
+//		logger().info("execute: oo=" + oo);
+//				
+//		if ((opts != null && opts.getCardinality()) || oo < 0) {			
+//			SelectStatement cs = createCountQuery(qs);
+//			DataObject result = sx.fetchFirst(cs, c);
+//			
+//			PrimitiveHolder<?, ?> h = result.get(0);
+//			logger().debug("execute: h=" + h);
+//			available = h.asLongHolder().value();
+//		}
+//		
+//		logger().info("execute: available=" + available);
+//		
+//		Limit limit = (pageSize == null) ? null : new Limit(pageSize.longValue());
+//		
+//		long op = oo;
+//		
+//		if (oo < 0) {
+//			op = available.longValue();
+//						
+//			if (pageSize != null) {
+//				long ps = pageSize.longValue();
+//				long pp = op % ps;
+//				
+//				if (pp == 0) {
+//					op -= ps;
+//				}
+//				else {
+//					op -= pp;
+//				}
+//			}			
+//		}		
+//		
+//		
+//		// TODO: do something with this
+//		OrderBy ob = qe.getOrderBy();
+//		
+//		if (ob == null) {
+//			ob = new OrderBy();
+//			ob.add(new OrderBy.OrdinalSortKey(1));
+//		}		
+//		 
+//		Offset offset = new Offset(op);
+//		qs = new SelectStatement(qe.getTableExpr(), ob, limit, offset);
+//		
+//			
+//		return new SliceStatement(qs, available, op);
+//	}
+		
+	public static class SliceStatement2 {
+		private SelectStatement statement;
+		private Long available;
+		private long position;
+		
+		protected SliceStatement2(SelectStatement statement, Long available, long position) {
+			super();
+			this.statement = statement;
+			this.available = available;
+			this.position = position;
+		}
+		
+		public Long getAvailable() {
+			return available;
+		}
+		
+		public long getPosition() {
+			return position;
+		}
+		
+		public SelectStatement getStatement() {
+			return statement;
+		}
+	}
+	
+	private QueryExecutor getExecutor() {
+		return executor;
+	}
 }

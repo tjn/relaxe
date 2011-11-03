@@ -8,6 +8,7 @@ import java.io.Serializable;
 import fi.tnie.db.expr.ColumnExpr;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.ValueExpression;
+import fi.tnie.db.query.QueryException;
 import fi.tnie.db.rpc.PrimitiveHolder;
 
 public interface DataObject	
@@ -20,7 +21,7 @@ public interface DataObject
 		extends Serializable {		
 		public int getColumnCount();
 		public QueryExpression getQuery()
-			throws EntityException;
+			throws QueryException;
 		
 		public ColumnExpr column(int index);
 		public ValueExpression expr(int index);

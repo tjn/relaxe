@@ -7,6 +7,7 @@ import fi.tnie.db.expr.DefaultTableExpression;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.query.QueryException;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
@@ -26,7 +27,7 @@ public interface EntityQuery<
 		throws EntityException;
 	
 	QueryExpression getQueryExpression()
-		throws EntityException;
+		throws QueryException;
 
 	/**
 	 * result item meta-data

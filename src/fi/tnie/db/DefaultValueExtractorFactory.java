@@ -21,7 +21,6 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 		int sqltype = meta.getColumnType(col);
 		
 		String typename = meta.getColumnTypeName(col);
-				
 	
 		switch (sqltype) {
 			case Types.INTEGER:					

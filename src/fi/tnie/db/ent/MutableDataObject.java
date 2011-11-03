@@ -14,6 +14,7 @@ import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.ValueExpression;
+import fi.tnie.db.query.QueryException;
 import fi.tnie.db.rpc.PrimitiveHolder;
 
 public class MutableDataObject
@@ -47,7 +48,7 @@ public class MutableDataObject
 		}
 		
 		public MetaData(QueryExpressionSource qes) 
-			throws EntityException {
+			throws QueryException {
 			this.queryExpressionSource = qes;
 			QueryExpression qe = qes.getQueryExpression();			
 			Select s = qe.getTableExpr().getSelect();
@@ -87,7 +88,7 @@ public class MutableDataObject
 
 		@Override
 		public QueryExpression getQuery() 
-			throws EntityException {
+			throws QueryException {
 			return queryExpressionSource.getQueryExpression();
 		}
 	}
@@ -133,7 +134,9 @@ public class MutableDataObject
 		int index = this.metaData.index(a);
 		return this.content.get(index);
 	}
-	
-	
-	
+
+	@Override
+	public String toString() {
+		return "{" + super.toString() + ":" + this.content + "}";
+	}
 }

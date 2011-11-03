@@ -390,9 +390,8 @@ public class DefaultEntityTemplateQuery<
 
 	@Override
 	public QueryExpression getQueryExpression() 
-		throws CyclicTemplateException, EntityRuntimeException {
-		init();
-		
+		throws CyclicTemplateException, EntityRuntimeException {		
+		init();		
 		return this.queryExpression;
 	}
 	

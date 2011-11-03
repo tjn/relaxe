@@ -21,6 +21,7 @@ import fi.tnie.db.ent.MutableEntityDataObject;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.expr.TableReference;
+import fi.tnie.db.query.QueryException;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
@@ -48,7 +49,7 @@ public class EntityBuilderManager<
 	private EntityBuilder<E> rootBuilder;
 						
 	public EntityBuilderManager(Implementation imp, EntityQuery<A, R, T, E, H, F, M, ?> query) 
-		throws EntityException {
+		throws QueryException {
 		super(imp.getValueExtractorFactory(), query);
 		this.implementation = imp;
 		this.query = query;

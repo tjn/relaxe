@@ -5,7 +5,7 @@ package fi.tnie.db.ent;
 
 import java.io.Serializable;
 
-public class CyclicTemplateException extends EntityException
+public class CyclicTemplateException extends EntityRuntimeException
 	implements Serializable {
 
 	private EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> template;

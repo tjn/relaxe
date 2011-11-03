@@ -5,8 +5,8 @@ package fi.tnie.db.paging;
 
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.DataObjectQueryResult;
-import fi.tnie.db.query.Query;
+import fi.tnie.db.ent.QueryExpressionSource;
 
 public interface DataObjectFetcher
-	extends Fetcher<Query, DataObjectQueryResult<DataObject>, Receiver<DataObjectQueryResult<DataObject>>> {
+	extends Fetcher<QueryExpressionSource, DataObjectQueryResult<DataObject>, Receiver<DataObjectQueryResult<DataObject>>> {
 }

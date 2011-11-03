@@ -11,7 +11,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.MutableDataObject;
 import fi.tnie.db.ent.QueryExpressionSource;
 import fi.tnie.db.exec.QueryProcessorAdapter;
@@ -27,7 +26,7 @@ public abstract class DataObjectProcessor<O extends MutableDataObject>
 	private ValueExtractorFactory valueExtractorFactory;
 		
 	public DataObjectProcessor(ValueExtractorFactory vef, QueryExpressionSource qes) 
-		throws EntityException {
+		throws QueryException {
 		if (vef == null) {
 			throw new NullPointerException("vef");
 		}

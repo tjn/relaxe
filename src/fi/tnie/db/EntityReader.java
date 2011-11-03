@@ -12,12 +12,12 @@ import java.util.List;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityDataObject;
-import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
+import fi.tnie.db.query.QueryException;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
@@ -34,12 +34,13 @@ public class EntityReader<
 	
 	private List<EntityDataObject<E>> content;
 	
-	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, ?> query) throws EntityException {
+	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, ?> query) 
+		throws QueryException {
 		this(imp, query, new ArrayList<EntityDataObject<E>>());
 	}
 
 	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, ?> query, List<EntityDataObject<E>> result) 
-		throws EntityException {
+		throws QueryException {
 		super(imp, query);
 		
 		if (result == null) {

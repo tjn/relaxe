@@ -272,6 +272,7 @@ public abstract class DefaultPager<
 		return currentOffset;
 	}
 	
+	@Override
 	public ImmutableValueModel<Long> currentPageOffset() {
 		return this.currentPageOffset;
 	}
