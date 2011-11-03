@@ -24,7 +24,7 @@ import fi.tnie.db.query.QueryException;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
-public class SynchronousFetcher<
+public class SynchronousEntityFetcher<
 	A extends Attribute,
 	R extends Reference,	
 	T extends ReferenceType<A, R, T, E, H, F, M>,
@@ -38,7 +38,7 @@ public class SynchronousFetcher<
 	private EntityQueryExecutor<A, R, T, E, H, F, M, QT> executor;
 	private Connection connection;
 	
-	public SynchronousFetcher(EntityQueryExecutor<A, R, T, E, H, F, M, QT> executor, Connection connection) {
+	public SynchronousEntityFetcher(EntityQueryExecutor<A, R, T, E, H, F, M, QT> executor, Connection connection) {
 		super();
 		this.executor = executor;
 		this.connection = connection;
