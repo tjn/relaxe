@@ -4,7 +4,6 @@
 package fi.tnie.db.paging;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityFactory;

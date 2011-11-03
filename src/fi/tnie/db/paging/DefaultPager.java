@@ -47,14 +47,7 @@ public abstract class DefaultPager<
 	private ImmutableValueModel<Long> available;
 	
 	private ImmutableValueModel<Long> currentPageOffset;
-	
-//	public DefaultPager(Q template, F fetcher) {
-//		this(template, fetcher, 20);
-//	}
-//	
-//	public DefaultPager(Q template, F fetcher, int initialPageSize) {
-//		this(template, fetcher, initialPageSize, null);
-//	}
+
 	
 	public DefaultPager(Q template, F fetcher, Map<SimplePager.Command, String> nm, int initialPageSize) {
 		this(template, fetcher, initialPageSize, createNameModelMap(nm));		

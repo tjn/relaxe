@@ -56,8 +56,7 @@ public class PGCatalogFactory
 	}
 	
 	@Override
-    public String getReferencedTableCatalogName(DatabaseMetaData meta,
-			ResultSet fkcols) throws SQLException {		
+    public String getReferencedTableCatalogName(DatabaseMetaData meta, ResultSet fkcols) throws SQLException {		
 		String cn = super.getReferencedTableCatalogName(meta, fkcols);		
 		return (cn == null) ? getCatalog(meta) : cn;		
 	}
