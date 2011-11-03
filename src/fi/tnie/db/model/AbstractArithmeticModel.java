@@ -13,7 +13,7 @@ public abstract class AbstractArithmeticModel<N extends Number, A extends Number
 			a.addChangeHandler(new ChangeListener<A>() {
 				@Override
 				public void changed(A from, A to) {	
-					compute(a, b);
+					computeAndAssign(a, b);
 				}
 			});
 		}
@@ -22,7 +22,7 @@ public abstract class AbstractArithmeticModel<N extends Number, A extends Number
 			b.addChangeHandler(new ChangeListener<B>() {
 				@Override
 				public void changed(B from, B to) {	
-					compute(a, b);
+					computeAndAssign(a, b);
 				}
 			});
 		}
@@ -67,7 +67,7 @@ public abstract class AbstractArithmeticModel<N extends Number, A extends Number
 		return this.result.get();
 	}
 
-	private void compute(final ValueModel<A> a, final ValueModel<B> b) {
+	private void computeAndAssign(final ValueModel<A> a, final ValueModel<B> b) {
 		N newResult = compute(a.get(), b.get());
 		result.set(newResult);
 	}

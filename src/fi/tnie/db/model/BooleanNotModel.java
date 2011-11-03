@@ -7,8 +7,7 @@
 package fi.tnie.db.model;
 
 public class BooleanNotModel
-	extends AbstractTransformationModel<Boolean, Boolean>
-	implements BooleanModel {
+	extends BooleanTransformationModel<Boolean> {
 
 	public BooleanNotModel(ValueModel<Boolean> source) {
 		super(source);
@@ -22,9 +21,4 @@ public class BooleanNotModel
 		
 		return Boolean.valueOf(!source.booleanValue());
 	}
-	
-	@Override
-	public MutableBooleanModel asMutable() {
-		return null;
-	}	
 }

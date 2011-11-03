@@ -4,8 +4,7 @@
 package fi.tnie.db.model;
 
 public class MarkModel<S>
-	extends AbstractTransformationModel<Boolean, S>
-	implements BooleanModel {
+	extends BooleanTransformationModel<S> {
 	
 	private S mark;
 	
@@ -22,10 +21,5 @@ public class MarkModel<S>
 	public Boolean transform(S value) {
 		boolean m = match(value, this.mark);		
 		return Boolean.valueOf(m);
-	}
-
-	@Override
-	public final MutableBooleanModel asMutable() {
-		return null;
 	}
 }

@@ -9,6 +9,4 @@ public abstract class AbstractArithmeticLongModel<A extends Number, B extends Nu
 	public AbstractArithmeticLongModel(ValueModel<A> a, ValueModel<B> b) {
 		super(a, b);
 	}
-	
-	
 }

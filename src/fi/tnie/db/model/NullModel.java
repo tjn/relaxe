@@ -4,8 +4,7 @@
 package fi.tnie.db.model;
 
 public class NullModel<S>
-	extends AbstractTransformationModel<Boolean, S>
-	implements BooleanModel {
+	extends BooleanTransformationModel<S> {
 
 	public NullModel(ValueModel<S> source) {
 		super(source);
@@ -14,10 +13,5 @@ public class NullModel<S>
 	@Override
 	public Boolean transform(S source) {
 		return Boolean.valueOf(source == null);
-	}
-	
-	@Override
-	public MutableBooleanModel asMutable() {
-		return null;
 	}
 }

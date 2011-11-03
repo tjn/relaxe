@@ -51,7 +51,7 @@ public interface ValueModel<V> {
 	ImmutableValueModel<V> asImmutable();
 	
 	/**
-	 * Returns true if and only if this model is constant model. 
+	 * Returns true if and only if this model is a constant model. 
 	 * Constant model provides a guarantee that every invocation of get() returns always a reference to the same object.
 	 *   
 	 * @return
@@ -59,7 +59,7 @@ public interface ValueModel<V> {
 	boolean isConstant();
 	
 	/**
-	 * Returns its current status as constant model.
+	 * Returns this model's current status as a constant model.
 	 * 
 	 * @return
 	 */

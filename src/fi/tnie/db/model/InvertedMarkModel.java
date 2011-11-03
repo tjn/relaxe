@@ -3,6 +3,14 @@
  */
 package fi.tnie.db.model;
 
+
+/***
+ * TODO: Considering the Liskov's substitution principle, it looks highly suspicious to inherit InvertedMarkModel from MarkModel...    
+ *  
+ * @author Topi Nieminen <topi.nieminen@gmail.com>
+ *
+ * @param <S>
+ */
 public class InvertedMarkModel<S>
 	extends MarkModel<S> {
 
