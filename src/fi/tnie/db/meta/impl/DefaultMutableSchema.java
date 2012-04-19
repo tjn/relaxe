@@ -144,7 +144,7 @@ public class DefaultMutableSchema
 		return getPrimaryKeys().add(pk);
 	}
 	
-	boolean add(DefaultForeignKey fk) {
+	public boolean add(DefaultForeignKey fk) {
 		getConstraintMap().add(fk);
 		return getForeignKeys().add(fk);
 	}
@@ -199,14 +199,13 @@ public class DefaultMutableSchema
 	}
 
 	protected <E extends DefaultSchemaElement> DefaultSchemaElementMap<E> createSchemaElementMap() {
-		return new DefaultSchemaElementMap<E>(
-				getCatalog().getEnvironment());
+		return new DefaultSchemaElementMap<E>(getCatalog().getEnvironment());
 	}
 	
 
 	public SchemaElementMap<? extends BaseTable> baseTables() {		
 		if (baseTables == null) {		
-			baseTables = createSchemaElementMap();					
+			baseTables = createSchemaElementMap();		
 		
 			for (Table t : tables().values()) {
 				if (t.isBaseTable()) {

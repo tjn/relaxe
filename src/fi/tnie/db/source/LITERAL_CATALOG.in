@@ -28,6 +28,7 @@ import fi.tnie.db.meta.SchemaMap;
 import fi.tnie.db.meta.Table;
 import fi.tnie.db.meta.impl.DataTypeImpl;
 import fi.tnie.db.meta.impl.DefaultMutableBaseTable;
+import fi.tnie.db.meta.impl.DefaultMutableView;
 import fi.tnie.db.meta.impl.DefaultMutableCatalog;
 import fi.tnie.db.meta.impl.DefaultMutableColumn;
 import fi.tnie.db.meta.impl.DefaultMutableSchema;
@@ -131,6 +132,10 @@ public class LiteralCatalog
 		}
 		
 		for (LiteralBaseTable s : LiteralBaseTable.values()) {			
+			s.bind();
+		}
+		
+		for (LiteralView s : LiteralView.values()) {			
 			s.bind();
 		}
 		
@@ -320,6 +325,79 @@ public class LiteralCatalog
 		}
 
 		private DefaultMutableBaseTable getTable() {
+			return this.table;
+		};
+	}
+	
+	
+		public enum LiteralView		
+		implements Table, LiteralTable {		
+{{view-enum-list}}
+		;		
+		
+		private LiteralSchema schema;
+		private DefaultMutableView table;
+		private String name;
+		
+		LiteralView(LiteralSchema s, String name) {
+			this.name = name;
+			this.schema = s;			
+		}
+		
+		private void bind() {
+			LiteralCatalog cat = getInstance();
+			DefaultMutableSchema ms = this.schema.getMutableSchema();
+			Identifier t = cat.getEnvironment().createIdentifier(this.name);			
+			this.table = new DefaultMutableView(ms, t);			
+			getInstance().getMutableTableMap().put(this, this.table);			
+		}
+
+		@Override
+		public ColumnMap columnMap() {
+			return this.table.columnMap();
+		}
+
+		@Override
+		public List<? extends fi.tnie.db.meta.Column> columns() {
+			return this.table.columns();
+		}
+
+		@Override
+		public fi.tnie.db.meta.Column getColumn(Identifier cn) {
+			return this.table.getColumn(cn);
+		}
+
+		@Override
+		public String getTableType() {
+			return this.table.getTableType();
+		}
+
+		@Override
+		public boolean isBaseTable() {
+			return this.table.isBaseTable();
+		}
+
+		@Override
+		public SchemaElementName getName() {
+			return this.table.getName();
+		}
+
+		@Override
+		public String getQualifiedName() {
+			return this.table.getQualifiedName();
+		}
+
+		@Override
+		public Schema getSchema() {
+			return this.schema;
+		}
+
+		@Override
+		public Identifier getUnqualifiedName() {
+			return this.table.getUnqualifiedName();
+		}
+
+		private DefaultMutableView getTable() {
 			return this.table;
 		};
 	}

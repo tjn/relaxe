@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 public class SourceGeneratorTest extends TestCase {
 
     public void testName() {
-        SourceGenerator g = new SourceGenerator(new File("."));
+        SourceGenerator g = new SourceGenerator(new File("."), null);
         
         assertEquals("SourceDir", g.name("SOURCE_DIR"));
         assertEquals("SourceRootDir", g.name("SOURCE_ROOT_DIR"));

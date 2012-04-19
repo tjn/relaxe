@@ -11,6 +11,8 @@ public interface Table
 	extends SchemaElement {
 	
 	String BASE_TABLE = "TABLE";	
+	String VIEW = "VIEW";
+	String SYSTEM_TABLE = "SYSTEM TABLE";
 	String getTableType();
 	
 	ColumnMap columnMap();

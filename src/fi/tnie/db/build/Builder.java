@@ -7,7 +7,13 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
@@ -22,8 +28,21 @@ import fi.tnie.db.feature.Features;
 import fi.tnie.db.feature.SQLGenerationException;
 import fi.tnie.db.map.TableMapper;
 import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.meta.PrimaryKey;
+import fi.tnie.db.meta.Schema;
+import fi.tnie.db.meta.Table;
+import fi.tnie.db.meta.impl.DataTypeImpl;
+import fi.tnie.db.meta.impl.DefaultForeignKey;
+import fi.tnie.db.meta.impl.DefaultMutableBaseTable;
+import fi.tnie.db.meta.impl.DefaultMutableCatalog;
+import fi.tnie.db.meta.impl.DefaultMutableColumn;
+import fi.tnie.db.meta.impl.DefaultMutableSchema;
+import fi.tnie.db.meta.impl.DefaultMutableTable;
+import fi.tnie.db.meta.impl.DefaultMutableView;
+import fi.tnie.db.meta.impl.DefaultPrimaryKey;
 import fi.tnie.db.query.QueryException;
-import fi.tnie.db.source.DefaultNamingPolicy;
 import fi.tnie.db.source.NamingPolicy;
 import fi.tnie.db.source.SourceGenerator;
 import fi.tnie.db.source.TemplateGenerator;
@@ -44,11 +63,19 @@ public class Builder
     private Features features;
     private String rootPackage;
     private String catalogContextPackage;
-    private File sourceDir;
-    
-    private File templateDir;
-    
+    private File sourceDir;    
+    private File templateDir;    
+               
     private transient TableMapper tableMapper;
+    
+    private SchemaFilter schemaFilter;
+    
+    private static final SchemaFilter ALL_SCHEMAS = new SchemaFilter() {		
+		@Override
+		public boolean accept(Schema s) {
+			return true;
+		}
+	};
     
     public static final Option OPTION_GENERATED_DIR = 
         new SimpleOption("generated-sources", "g", new Argument(false), "Dir for generated source files.");
@@ -62,9 +89,14 @@ public class Builder
     public static final Option OPTION_CATALOG_CONTEXT_PACKAGE = 
         new SimpleOption("catalog-context-package", "c", new Argument(false), "Java package name for generated catalog context classes.");  
 
+    public static final Option OPTION_INCLUDE_ONLY_SCHEMAS = 
+        new SimpleOption("only-schemas", "o", new Argument("only-schemas", 1, null), "Schema names to include.");  
+
     private static Logger logger = Logger.getLogger(Builder.class);
     
     public static void main(String[] args) {
+    	logger().info("version: 1");
+    	
         System.exit(new Builder().run(args));        
     }
     
@@ -75,11 +107,14 @@ public class Builder
         addOption(p, OPTION_TEMPLATE_DIR);
         addOption(p, OPTION_ROOT_PACKAGE);
         addOption(p, OPTION_CATALOG_CONTEXT_PACKAGE);        
-    }      
-    
+//        addOption(p, OPTION_SCHEMA);        
+        addOption(p, OPTION_INCLUDE_ONLY_SCHEMAS);
+    }
+        
     @Override
     protected void init(CommandLine cl) 
-        throws ToolConfigurationException, ToolException {     
+        throws ToolConfigurationException, ToolException {
+    	
         super.init(cl);
         
         String gen = cl.value(require(cl, OPTION_GENERATED_DIR));
@@ -87,11 +122,138 @@ public class Builder
         String pkg = cl.value(require(cl, OPTION_ROOT_PACKAGE));
         String ccp = cl.value(OPTION_CATALOG_CONTEXT_PACKAGE);
         
+        List<String> schemas = cl.values(OPTION_INCLUDE_ONLY_SCHEMAS);
+        
+        final SchemaFilter sf = createSchemaFilter(schemas);
+        setSchemaFilter(sf);
+        
+        logger().info("schema filter: " + sf);
+        	    
+	    Catalog cat = getCatalog();
+	    	    
+	    DefaultMutableCatalog mc = new DefaultMutableCatalog(cat.getEnvironment());
+	    
+	    Map<Schema, DefaultMutableSchema> sm = new HashMap<Schema, DefaultMutableSchema>();
+	    Map<Table, DefaultMutableBaseTable> tm = new HashMap<Table, DefaultMutableBaseTable>();
+	    
+	    for (Schema schema : cat.schemas().values()) {	    	
+	    	String n = schema.getUnqualifiedName().getName();
+	    	logger().debug("processing schema: '" + n + "'");
+	    	
+	    	if (!sf.accept(schema)) {
+	    		logger().debug("skipped schema: '" + n + "'");
+	    		continue;
+	    	}
+	    		    	
+	    	DefaultMutableSchema ms = new DefaultMutableSchema(schema.getUnqualifiedName());
+	    	ms.setCatalog(mc);
+	    	
+	    	sm.put(schema, ms);
+	    		    	
+	    	for (Table t : schema.tables().values()) {
+	    		DefaultMutableTable mt = null;
+	    		
+	    		if (t.isBaseTable()) {	    				    			
+	    			DefaultMutableBaseTable copy = new DefaultMutableBaseTable(ms, t.getUnqualifiedName());
+	    			tm.put(t, copy);
+	    			mt = copy;
+	    		}
+	    		else {	    				
+    				mt = new DefaultMutableView(ms, t.getUnqualifiedName());
+	    		}
+	    		
+	    		ms.add(mt);	    		
+	    			    		
+	    		for (Column c : t.columns()) {
+	    			DataTypeImpl d = new DataTypeImpl(c.getDataType());
+	    			mt.add(new DefaultMutableColumn(mt, c.getUnqualifiedName(), d));	    			
+				}	    		
+			}
+		}
+	    
+	    for (Schema schema : cat.schemas().values()) {	    	
+	    	String n = schema.getUnqualifiedName().getName();
+	    	
+	    	if (!sf.accept(schema)) {
+	    		logger().debug("skipped schema: '" + n + "'");
+	    		continue;
+	    	}
+	    	
+	    	DefaultMutableSchema ms = sm.get(schema);
+	    	
+	    	for (PrimaryKey pk : schema.primaryKeys().values()) {
+	    		DefaultMutableBaseTable mt = tm.get(pk.getTable());	    		
+	    		List<DefaultMutableColumn> cols = new ArrayList<DefaultMutableColumn>();
+	    		
+	    		for (Column c : pk.columns()) {
+	    			DefaultMutableColumn cc = mt.columnMap().get(c.getUnqualifiedName().getName());
+	    			cols.add(cc);
+				}	    		
+	    		
+	    		new DefaultPrimaryKey(mt, pk.getUnqualifiedName(), cols);
+			}
+	    	
+	    	for (ForeignKey fk : schema.foreignKeys().values()) {
+	    		Map<Column, Column> cm = fk.columns();
+	    		DefaultMutableBaseTable referencing = tm.get(fk.getReferencing());
+	    		DefaultMutableBaseTable referenced = tm.get(fk.getReferenced());
+	    		
+	    		List<DefaultForeignKey.Pair> cplist = new ArrayList<DefaultForeignKey.Pair>();
+	    		
+	    		for (Map.Entry<Column, Column> e : cm.entrySet()) {
+	    			DefaultMutableColumn src = (DefaultMutableColumn) referencing.getColumn(e.getKey().getUnqualifiedName());
+	    			DefaultMutableColumn dest = (DefaultMutableColumn) referenced.getColumn(e.getValue().getUnqualifiedName());	    				    		
+	    			cplist.add(new DefaultForeignKey.Pair(src, dest));	
+				}	    		
+	    		
+	    		DefaultForeignKey copy = new DefaultForeignKey(ms, fk.getUnqualifiedName(), cplist);	    			    		
+	    		ms.add(copy);	    		
+	    	}
+	    }
+	    
+	    setCatalog(mc);
+	        
+//	    final Set<String> ss = new TreeSet<String>(schemas);
+//	   
+//		setSchemaFilter(new SQLObjectFilter() {				
+//			@Override
+//			public boolean include(String schema) {
+//				return ss.contains(schema);
+//			}
+//		});       
+        
+        
         setSourceDir(new File(gen));
         setTemplateDir(new File(tem));
         setRootPackage(pkg);
         setCatalogContextPackage(ccp);
+        
     }
+
+	private SchemaFilter createSchemaFilter(List<String> schemas) {
+		SchemaFilter sf = null;
+		
+		if (schemas == null) {
+        	sf = ALL_SCHEMAS;
+        	logger().debug("createSchemaFilter: ALL_SCHEMAS");
+        }
+        else {
+        	final Set<String> ss = new TreeSet<String>(schemas);
+        	sf = new SchemaFilter() {				
+				@Override
+				public boolean accept(Schema s) {
+					String n = s.getUnqualifiedName().getName();
+					boolean include = ss.contains(s.getUnqualifiedName().getName());
+					logger().debug("include schema '" + n + "' ? " + include);
+					return include;
+				}
+			};
+
+			logger().debug("createSchemaFilter: only schemas: " + ss);
+        }
+		
+		return sf;
+	}
     
     @Override
     protected void run() 
@@ -114,11 +276,10 @@ public class Builder
             generateSources(cat, root);
             traverseFiles(root);
             
-            // DefaultTableMapper tm = new DefaultTableMapper(;)
-            
-            NamingPolicy np = new DefaultNamingPolicy();            
-            generateTemplates(cat, getTemplateDir(), np);
-            traverseFiles(getTemplateDir());
+            // TODO: generate templates:            
+//            NamingPolicy np = new DefaultNamingPolicy();            
+//            generateTemplates(cat, getTemplateDir(), np);
+//            traverseFiles(getTemplateDir());
             
             
         } 
@@ -221,7 +382,7 @@ public class Builder
         remove(sourceList);
         
         TableMapper tm = getTableMapper();       
-        SourceGenerator gen = new SourceGenerator(sourceRoot);              
+        SourceGenerator gen = new SourceGenerator(sourceRoot, getSchemaFilter());              
         Properties current = gen.run(cat, tm);
         
         IOHelper.doStore(current, sourceList.getPath(), "List of the generated source files");            
@@ -331,6 +492,15 @@ public class Builder
 
 		return tableMapper;
 	}
-    
-    
+
+	public SchemaFilter getSchemaFilter() {
+		return schemaFilter;
+	}
+
+	public void setSchemaFilter(SchemaFilter schemaFilter) {
+		this.schemaFilter = schemaFilter;
+	}
+	
+	
+	
 }

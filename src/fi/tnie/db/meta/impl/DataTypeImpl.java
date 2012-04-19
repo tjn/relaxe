@@ -42,7 +42,7 @@ public class DataTypeImpl
 		this.size = size;
 	}
 	
-	public DataTypeImpl(DataTypeImpl source) {
+	public DataTypeImpl(DataType source) {
 		super();
 		this.dataType = source.getDataType();
 		this.typeName = source.getTypeName();		

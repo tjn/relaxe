@@ -49,7 +49,7 @@ public class DefaultMutableBaseTable
 		getMutableSchema().add(k);
 	}	
 	
-	void ref(DefaultForeignKey k) {
+	void ref(ForeignKey k) {
 		if (k.getReferenced() != this) {
 			throw new IllegalArgumentException(
 					"Can not add a reference from the foreign key referencing to the other table: " + k.getReferenced());
@@ -109,11 +109,6 @@ public class DefaultMutableBaseTable
 	public String toString() {		
 		return "base table " + getQualifiedName() + "@" + System.identityHashCode(this) + ": schema=" + getSchema() + ": cat=" + getSchema().getCatalog();
 	}
-	
-//	private String format(Date d) {
-////	    return timestampFormat.format(d);
-//		return d == null ? "" : d.toString();
-//	}
 
 	@Override
 	public SchemaElementMap<ForeignKey> foreignKeys() {
@@ -124,22 +119,4 @@ public class DefaultMutableBaseTable
 	public SchemaElementMap<ForeignKey> references() {
 		return this.referencingKeys;
 	}
-	
-//	private Map<String, Column> getPrimaryKeyColumns() {
-//		if (primaryKeyColumns == null) {
-//			primaryKeyColumns = new LinkedHashMap<String, Column>();			
-//		}
-//
-//		return primaryKeyColumns;
-//	}
-//
-//	@Override
-//	public List<Column> primaryKey() {
-//		if (primaryKeyColumns == null || primaryKeyColumns.isEmpty()) {
-//			throw new IllegalStateException(
-//					"primary key is not defined for the table " + getQualifiedName());
-//		}
-//		
-//		return new ArrayList<Column>(primaryKeyColumns.values());
-//	}
 }

@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.build.SchemaFilter;
 import fi.tnie.db.ent.im.EntityIdentityMap;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
@@ -47,7 +48,6 @@ import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.util.io.IOHelper;
 
 public class SourceGenerator {
-	
 	
 	public enum Tag {
 	    /**
@@ -77,6 +77,7 @@ public class SourceGenerator {
 	     *
 	     */		
 		LITERAL_TABLE_ENUM,
+				
 		
 	    /**  
 	     * Pattern which is replaced with the simple name of the hook class in template files.
@@ -162,7 +163,7 @@ public class SourceGenerator {
 		NEW_ENVIRONMENT_EXPR, 
 		SCHEMA_ENUM_LIST,
 		BASE_TABLE_ENUM_LIST,
-		VIEW_ENUM_LIST,
+		VIEW_ENUM_LIST,		
 		COLUMN_ENUM_LIST,		
 		SCHEMA_TYPE_NAME,
 		FOREIGN_KEY_ENUM_LIST,
@@ -217,6 +218,7 @@ public class SourceGenerator {
 
 	private static Logger logger = Logger.getLogger(SourceGenerator.class);
 	
+	private SchemaFilter schemaFilter; 
 	private File defaultSourceDir;	
 	private EnumMap<Part, File> sourceDirMap;
 	private Map<Class<?>, Class<?>> wrapperMap;	
@@ -231,8 +233,13 @@ public class SourceGenerator {
 	}
 	
 	public SourceGenerator(File defaultSourceDir) {
+		this(defaultSourceDir, null);
+	}
+	
+	public SourceGenerator(File defaultSourceDir, SchemaFilter sf) {
         super();
         this.defaultSourceDir = defaultSourceDir;
+        this.schemaFilter = (sf == null) ? SchemaFilter.ALL_SCHEMAS : sf;
     }
 
 //	private static boolean knownAbbr(String t) {
@@ -273,7 +280,9 @@ public class SourceGenerator {
         Map<JavaType, CharSequence> fm = new HashMap<JavaType, CharSequence>();
 
         for (Schema s : cat.schemas().values()) {
-            process(s, tm, ccil, fm, generated, gm);
+        	if (schemaFilter.accept(s)) {        	
+        		process(s, tm, ccil, fm, generated, gm);
+        	}
         }
         
 		Set<BaseTable> tts = new HashSet<BaseTable>();
@@ -285,7 +294,9 @@ public class SourceGenerator {
 //		}
 		
 		for (Schema s : cat.schemas().values()) {
-			tts.addAll(s.baseTables().values());
+			if (schemaFilter.accept(s)) {
+				tts.addAll(s.baseTables().values());
+			}
 		}
 
 		
@@ -369,6 +380,11 @@ public class SourceGenerator {
     	}
     	
     	{
+	    	String list = generateViewList(cat);
+	    	src = replaceAllWithComment(src, Tag.VIEW_ENUM_LIST, list);
+    	}
+    	
+    	{
 	    	String list = generateColumnList(cat);
 	    	src = replaceAllWithComment(src, Tag.COLUMN_ENUM_LIST, list);
     	}
@@ -401,6 +417,10 @@ public class SourceGenerator {
     	List<String> initList = new ArrayList<String>(); 
     	
     	for (Schema s : cat.schemas().values()) {
+    		if (!schemaFilter.accept(s)) {
+    			continue;
+    		}
+    		
     		String sn = name(s.getUnqualifiedName().getName());
     		
     		for (Table t : s.tables().values()) {
@@ -421,6 +441,8 @@ public class SourceGenerator {
     			buf.append("\n\n");
     			    			
     			JavaType tet = tm.entityType(t, Part.LITERAL_TABLE_ENUM);
+    			
+    			logger().info("generateLiteralContext: tet = " + tet + " for " + t.getQualifiedName());
     			
     			if (tet != null) {
     				initList.add(tet.getQualifiedName());
@@ -448,6 +470,10 @@ public class SourceGenerator {
 		StringBuffer buf = new StringBuffer();
 				
 		for (Schema s : cat.schemas().values()) {
+			if (!schemaFilter.accept(s)) {
+    			continue;
+    		}
+			
 			for (BaseTable t : s.baseTables().values()) {				
 				String tn = tableEnumeratedName(t);
 				
@@ -476,6 +502,10 @@ public class SourceGenerator {
 		EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
 		
 		for (Schema s : cat.schemas().values()) {
+			if (!schemaFilter.accept(s)) {
+    			continue;
+    		}
+			
 			for (BaseTable t : s.baseTables().values()) {
 				SchemaElementMap<ForeignKey> fm = t.foreignKeys();
 								
@@ -524,6 +554,10 @@ public class SourceGenerator {
 		EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
 		
 		for (Schema s : cat.schemas().values()) {
+			if (!schemaFilter.accept(s)) {
+    			continue;
+    		}
+			
 			for (BaseTable t : s.baseTables().values()) {
 				PrimaryKey pk = t.getPrimaryKey();
 				
@@ -619,6 +653,10 @@ public class SourceGenerator {
 		StringBuffer buf = new StringBuffer();
 
 		for (Schema s : cat.schemas().values()) {
+			if (!schemaFilter.accept(s)) {
+    			continue;
+    		}
+			
 			for (Table t : s.tables().values()) {
 				boolean b = t.isBaseTable();
 				String te = b ? "LiteralBaseTable" : "LiteralView"; 				
@@ -673,6 +711,10 @@ public class SourceGenerator {
 		StringBuffer buf = new StringBuffer();
 
 		for (Schema s : cat.schemas().values()) {
+			if (!schemaFilter.accept(s)) {
+    			continue;
+    		}
+			
 			for (BaseTable t : s.baseTables().values()) {				
 				String tn = tableEnumeratedName(t);
 				String sn = schemaEnumeratedName(s);
@@ -689,11 +731,50 @@ public class SourceGenerator {
 		
 		return buf.toString();
 	}
+	
+	private String generateViewList(Catalog cat) {
+		logger().debug("generateViewList - enter");
+		
+		StringBuffer buf = new StringBuffer();
+
+		for (Schema s : cat.schemas().values()) {
+			if (!schemaFilter.accept(s)) {
+    			continue;
+    		}
+			
+			for (Table t : s.tables().values()) {
+				String tt = t.getTableType();
+				
+				logger().debug("generateViewList: tt=" + tt + " in table " + t.getQualifiedName());
+				
+				if (tt.equals(Table.VIEW) || tt.equals(Table.SYSTEM_TABLE)) {				
+					String tn = tableEnumeratedName(t);
+					String sn = schemaEnumeratedName(s);
+					Identifier un = t.getUnqualifiedName();
+									
+					buf.append(tn);
+					buf.append("(LiteralSchema.");
+					buf.append(sn);
+					buf.append(", \"");
+					buf.append(un.getName());
+					buf.append("\"),\n");
+				}
+			}
+		}		
+		
+		logger().debug("generateViewList - exit: " + buf);
+		
+		return buf.toString();
+	}
 
 	private String generateSchemaList(Catalog cat) {
 		StringBuffer buf = new StringBuffer();
 
 		for (Schema s : cat.schemas().values()) {
+			if (!schemaFilter.accept(s)) {
+    			continue;
+    		}
+			
 			Identifier un = s.getUnqualifiedName();
 			String n = un.getName();
 			buf.append(schemaEnumeratedName(s));
@@ -861,7 +942,7 @@ public class SourceGenerator {
                 }
                 
                 if (te != null) {
-                    CharSequence source = generateTableEnum(t, te, tm);
+                    CharSequence source = generateTableEnum(t, te, Tag.LITERAL_TABLE_ENUM, tm);
                     File root = getSourceDir(schema, Part.LITERAL_TABLE_ENUM);
                     write(root, te, source, generated, gm);
                  }                
@@ -896,6 +977,18 @@ public class SourceGenerator {
 		    }
 		}
 		
+		for (Table t : s.tables().values()) {
+			String tt = t.getTableType();
+			if (tt.equals(Table.VIEW) || tt.equals(Table.SYSTEM_TABLE)) {
+				final JavaType te = tm.entityType(t, Part.LITERAL_TABLE_ENUM);
+				
+	            if (te != null) {
+	                CharSequence source = generateViewEnum(t, te, tm);
+	                File root = getSourceDir(s, Part.LITERAL_TABLE_ENUM);
+	                write(root, te, source, generated, gm);
+	             }
+			}
+		}		
 
 		{
             final JavaType intf = tm.factoryType(s, Part.INTERFACE);
@@ -1136,7 +1229,7 @@ public class SourceGenerator {
 		return code;
 	}
     
-    public CharSequence generateTableEnum(BaseTable t, JavaType mt, TableMapper tm)
+    public CharSequence generateTableEnum(Table t, JavaType mt, Tag tableEnum, TableMapper tm)
     	throws IOException {
 
 	    String src = getTemplateFor(Part.LITERAL_TABLE_ENUM);			
@@ -1147,7 +1240,7 @@ public class SourceGenerator {
 	    addImport(mt, tm.literalContextType(), il);
 	    src = replaceImportList(src, il);
 	    
-	    src = replaceAll(src, Tag.LITERAL_TABLE_ENUM, mt.getUnqualifiedName());
+	    src = replaceAll(src, tableEnum, mt.getUnqualifiedName());
 	
 	    EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
 	    
@@ -1157,6 +1250,12 @@ public class SourceGenerator {
 		src = replaceAll(src, Tag.COLUMN_ENUM_LIST, cl);
 		
 	    return src;
+	}
+    
+    public CharSequence generateViewEnum(Table t, JavaType mt, TableMapper tm)
+    	throws IOException {
+    	
+    	return generateTableEnum(t, mt, Tag.LITERAL_TABLE_ENUM, tm);
 	}
 
 	public CharSequence generateFactoryInterface(Schema s, JavaType factoryType, TableMapper tm, Collection<TypeInfo> types)
@@ -1430,8 +1529,8 @@ public class SourceGenerator {
         boolean qualify = hasAmbiguousSimpleNamesForReferenceKeys(t, tm);
         
         {
-            String code = accessors(t, tm, true);
-            src = replaceAll(src, Tag.ACCESSOR_LIST, code);
+        	String code = accessors(t, tm, true);
+        	src = replaceAll(src, Tag.ACCESSOR_LIST, code);
         }
         
         {
@@ -1798,14 +1897,14 @@ public class SourceGenerator {
 		buf.append("}\n\n");
 
 		
-		buf.append("private ");		
+		buf.append("private ");
 		buf.append(n);
 		buf.append("(");
 		buf.append(getReferenceType());
 		buf.append(" name) {\n");
 		buf.append("super(");
 		buf.append(src.getUnqualifiedName());
-		buf.append(".TYPE, ");
+		buf.append(".Type.TYPE, ");
 		buf.append("name);");
 		buf.append("}\n\n");
 		
@@ -2855,6 +2954,8 @@ public class SourceGenerator {
 			buf.append(".Type type() {\n");
 			buf.append("return ");
 			buf.append(ref.getQualifiedName());
+			buf.append(".");
+			buf.append("Type");
 			buf.append(".TYPE;\n");			
 			buf.append("}\n}");
 			
@@ -2911,6 +3012,7 @@ public class SourceGenerator {
 
 		if (!n.isOrdinary()) {
 			attr = attr.replace(' ', '_');
+			attr = attr.replace('-', '_');
 		}
 
 		return attr;

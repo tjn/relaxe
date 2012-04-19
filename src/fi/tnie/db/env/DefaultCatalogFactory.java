@@ -42,6 +42,7 @@ import fi.tnie.db.meta.impl.DefaultMutableCatalog;
 import fi.tnie.db.meta.impl.DefaultMutableColumn;
 import fi.tnie.db.meta.impl.DefaultMutableSchema;
 import fi.tnie.db.meta.impl.DefaultMutableTable;
+import fi.tnie.db.meta.impl.DefaultMutableView;
 import fi.tnie.db.meta.impl.DefaultPrimaryKey;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.util.io.IOHelper;
@@ -51,8 +52,8 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	private static Logger logger = Logger.getLogger(DefaultCatalogFactory.class);
 	private static final int TABLE_NAME_COLUMN = 3;
 
-	private SerializableEnvironment environment;
-	
+	private SerializableEnvironment environment;	
+		
 //	TODO: requiring environment as an argument for constructor, makes
 //	instantiating via Class.newInstance() (too) painful 
 //	in Environment -implementations.
@@ -67,9 +68,9 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	}	
 
 	class ColumnReader extends QueryProcessorAdapter {
-		private DefaultMutableBaseTable table;
+		private DefaultMutableTable table;
 		
-		public ColumnReader(DefaultMutableBaseTable table, DatabaseMetaData meta) {
+		public ColumnReader(DefaultMutableTable table, DatabaseMetaData meta) {
 			super();
 			this.table = table;		
 		}
@@ -424,6 +425,8 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			return columnPairList;
 		}
 	}
+		
+	
 	
 	public CatalogMap createAll(Connection c) 
 		throws QueryException, SQLException {
@@ -432,6 +435,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	
 	public Catalog create(Connection c) 
 		throws QueryException, SQLException {		
+		
 		CatalogMap cm = create(c, false);		
 		Catalog catalog = cm.get(getCatalogName(c));
 		return catalog;
@@ -466,7 +470,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 				}							
 			}
 			
-			createSchemas(meta, cm);			
+			createSchemas(meta, cm);
 			populateTables(meta, cm);
 				
 //				logger().debug("catalog:schemas: " + catalog.schemas().keySet().size());
@@ -504,9 +508,9 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			schemas = getSchemas(meta);
 			
 			while(schemas.next()) {
-				String sch = getSchemaNameFromSchemas(meta, schemas);				
+				String sch = getSchemaNameFromSchemas(meta, schemas);
 				String cat = getCatalogNameFromSchemas(meta, schemas);				
-				getSchema(cm, cat, sch);
+				getSchema(cm, cat, sch);	
 			}
 		}
 		finally {
@@ -714,23 +718,46 @@ public class DefaultCatalogFactory implements CatalogFactory {
 		// table-pop
 //		List<String> names = new ArrayList<String>();
 		
-		String[] types = { "TABLE" };
-	
-		ResultSet tables = meta.getTables(null, null, "%", types);
+		{
+			String[] types = { "TABLE" };
 		
-		try {				
-			while(tables.next()) {
-				String cat = getCatalogNameFromTables(meta, tables);
-				String sch = getSchemaNameFromTables(meta, tables);
-				String tbl = tables.getString(3);
-				
-				DefaultMutableSchema schema = getSchema(cm, cat, sch);
-				DefaultMutableBaseTable t = createBaseTable(schema, tbl, meta);
-				populateTable(t, meta);
+			ResultSet tables = meta.getTables(null, null, "%", types);
+			
+			try {				
+				while(tables.next()) {
+					String cat = getCatalogNameFromTables(meta, tables);
+					String sch = getSchemaNameFromTables(meta, tables);
+					String tbl = tables.getString(3);					
+					DefaultMutableSchema schema = getSchema(cm, cat, sch);
+					DefaultMutableBaseTable t = createBaseTable(schema, tbl, meta);
+					populateTable(t, meta);	
+				}
+			}
+			finally {
+				tables = QueryHelper.doClose(tables);
 			}
 		}
-		finally {
-			tables = QueryHelper.doClose(tables);
+		
+		
+		{
+			String[] types = { "VIEW", "SYSTEM TABLE" };
+			
+			ResultSet tables = meta.getTables(null, null, "%", types);
+						
+			try {				
+				while(tables.next()) {
+					String cat = getCatalogNameFromTables(meta, tables);
+					String sch = getSchemaNameFromTables(meta, tables);
+					String tbl = tables.getString(3);
+					
+					DefaultMutableSchema schema = getSchema(cm, cat, sch);
+					DefaultMutableView t = createView(schema, tbl, meta);
+					populateView(t, meta);
+				}
+			}
+			finally {
+				tables = QueryHelper.doClose(tables);
+			}
 		}
 		
 		
@@ -797,8 +824,21 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	private void populateTable(DefaultMutableBaseTable t, DatabaseMetaData meta)
 			throws QueryException, SQLException {
 
-		logger().debug("populate table: " + t.getName());
+		logger().debug("1: populate table: " + t.getName());
 
+		{
+			// ResultSet rs = meta.getColumns(c.getName(), s.getName(), t.getName(),
+			// "%");
+			ResultSet rs = getColumnsForTable(meta, t);
+			process(rs, new ColumnReader(t, meta), true);
+		}
+	}
+	
+	private void populateView(DefaultMutableView t, DatabaseMetaData meta)
+		throws QueryException, SQLException {
+	
+		logger().debug("populate view: " + t.getName());
+	
 		{
 			// ResultSet rs = meta.getColumns(c.getName(), s.getName(), t.getName(),
 			// "%");
@@ -811,6 +851,10 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			String n, DatabaseMetaData meta) {
 		// return new DefaultMutableBaseTable(s, s.getCatalog().create(n));
 		return new DefaultMutableBaseTable(s, getEnvironment().createIdentifier(n));
+	}
+	
+	private DefaultMutableView createView(DefaultMutableSchema s, String n, DatabaseMetaData meta) {	
+		return new DefaultMutableView(s, getEnvironment().createIdentifier(n));
 	}
 
 	public void populatePrimaryKeys(DefaultCatalogMap cm,
@@ -947,8 +991,6 @@ public class DefaultCatalogFactory implements CatalogFactory {
 	public String getCatalogName(Connection c) throws SQLException {
 	    return c.getCatalog();
 	}
-	
-	
 
 	
 }
