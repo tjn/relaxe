@@ -4,6 +4,7 @@
 	<classpathentry kind="src" path="tools"/>
 	<classpathentry kind="src" path="out/src"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="out/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache Log4J"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
