@@ -1,0 +1,11 @@
+
+
+
+
+database
+=>
+literal catalog & entity classes
+=>
+templates 
+=> 
+template keys
