@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.meta.impl.pg;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -10,23 +11,29 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
+import fi.tnie.db.StatementExecutor;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGCatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
+import fi.tnie.db.env.util.ResultSetWriter;
+import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.impl.DefaultCatalogMap;
 import fi.tnie.db.meta.impl.DefaultMutableCatalog;
 import fi.tnie.db.meta.impl.DefaultMutableSchema;
+import fi.tnie.db.query.QueryException;
 
 public class PGCatalogFactoryTest extends DBMetaTestCase {
 
     public void testGetCatalogNameFromSchemas() 
-        throws SQLException {
+        throws SQLException, QueryException {
         assertNotNull(getEnvironmentContext());
                 
         DatabaseMetaData meta = meta();                
         PGCatalogFactory f = factory();
+        
+        PGImplementation imp = new PGImplementation();
         
         // f.prepare(meta);
                 
@@ -42,12 +49,36 @@ public class PGCatalogFactoryTest extends DBMetaTestCase {
         assertEquals(catalog, n);        
         schemas.close();
         
-        String[] types = { "TABLE" };
-        ResultSet tables = meta.getTables(null, null, "%", types);
-        assertTrue(tables.next());
-        n = f.getCatalogNameFromTables(meta, tables);        
-        assertEquals(catalog, n);
-        tables.close();
+        {
+	        String[] types = { "TABLE" };
+	        ResultSet tables = meta.getTables(null, null, "%", types);
+	        assertTrue(tables.next());
+	        n = f.getCatalogNameFromTables(meta, tables);        
+	        assertEquals(catalog, n);
+	        tables.close();
+        }
+        
+        
+        {
+        	String[] types = { "VIEW", "SYSTEM TABLE" };
+	        ResultSet at = meta.getTables(null, null, "%", types);
+	        
+	        
+	        ByteArrayOutputStream os = new ByteArrayOutputStream();
+	        ResultSetWriter w = new ResultSetWriter(os, true);
+	        
+	        StatementExecutor se = new StatementExecutor(imp);
+	        se.apply(w, at);
+	        
+	        String rs = new String(os.toByteArray());
+	        logger().debug("testGetCatalogNameFromSchemas: tables\n" + rs);
+	        
+	                
+	        assertEquals(catalog, n);
+	        at.close();
+        }
+        
+        Catalog cat = f.create(getConnection());
                 
     }
 

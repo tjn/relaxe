@@ -9,12 +9,13 @@ import java.sql.SQLException;
 
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.query.QueryException;
 
 public interface EnvironmentTestContext {
 
     public Implementation getImplementation();
     public Connection connect() throws SQLException;
     public Driver getDriver();
-    public Catalog getCatalog();
+    public Catalog getCatalog() throws SQLException, QueryException;
     public void setCatalog(Catalog catalog);
 }

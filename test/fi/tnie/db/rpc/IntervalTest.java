@@ -3,14 +3,19 @@
  */
 package fi.tnie.db.rpc;
 
+// import java.sql.Date;
+
+import java.sql.Time;
+import java.util.Date;
+import java.util.TimeZone;
+
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.AbstractUnitTest;
 import fi.tnie.db.rpc.Interval.DayTime;
 import fi.tnie.db.rpc.Interval.YearMonth;
 
-import junit.framework.TestCase;
-
-public class IntervalTest extends TestCase {
+public class IntervalTest extends AbstractUnitTest {
 	
 	private static Logger logger = Logger.getLogger(IntervalTest.class);
 	
@@ -204,10 +209,6 @@ public class IntervalTest extends TestCase {
 		assertEquals(ti.hashCode(), dt.hashCode());
 	}
 	
-	private static Logger logger() {
-		return IntervalTest.logger;
-	}	
-	
 	public void testDayTimeCompare() {		
 		DayTime a = new Interval.DayTime(3, 3);
 		DayTime b = new Interval.DayTime(2, 4);
@@ -228,5 +229,29 @@ public class IntervalTest extends TestCase {
 		assertEquals(0, a.compareTo(a));
 		assertEquals(-1, a.compareTo(b));
 		assertEquals(+1, b.compareTo(a));
-	}	
+	}
+	
+	
+	
+	public void testDayTimeConstructor() {
+		Date d = new Date();
+		logger().debug("testDayTimeConstructor: d.getTime()=" + d.getTime());
+				
+		Time t = new Time(d.getTime());
+		logger().debug("testDayTimeConstructor: t.getTime()=" + t.getTime());
+		
+		
+		TimeZone tz = TimeZone.getDefault();
+		logger().debug("tz=" + tz);
+		
+//		Calendar cal = new GregorianCalendar();
+//		cal.setTime(d);
+//		cal.set(year, month, date, hourOfDay, minute, second);
+		// cal.get
+						
+		Interval.DayTime dt = new Interval.DayTime(t);		
+		logger().debug("testDayTimeConstructor: dt=" + dt);
+		logger().debug("testDayTimeConstructor: hh=" + dt.getHour());
+		logger().debug("testDayTimeConstructor: min=" + dt.getMinute());
+	}
 }

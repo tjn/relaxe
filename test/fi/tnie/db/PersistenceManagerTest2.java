@@ -31,7 +31,6 @@ import fi.tnie.db.gen.ent.personal.Person.Type;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.rpc.IntegerHolder;
-import fi.tnie.db.rpc.Interval;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
@@ -67,7 +66,7 @@ public class PersistenceManagerTest2 extends TestCase  {
         assertFalse(c.getAutoCommit());                        
         LiteralCatalog cc = getCatalog();
                 
-        BaseTable ct = LiteralCatalog.LiteralBaseTable.PUBLIC_CONTINENT;
+        BaseTable ct = LiteralCatalog.LiteralBaseTable.PUBLIC_ABC;
         assertNotNull(ct);
         
 //        logger().debug("bound tables: " + cc.getMetaMap().keySet());
@@ -101,9 +100,8 @@ public class PersistenceManagerTest2 extends TestCase  {
         p.setFirstName("a");
         p.setLastName("b");
         p.setDateOfBirth(new Date());        
-        p.createdAt().set(new Date());
-        
-        p.averageNaptime().set(new Interval.DayTime(1, 30, 0));
+//        p.createdAt().set(new Date());        
+//        p.averageNaptime().set(new Interval.DayTime(1, 30, 0));
                                        
         pm.merge(c);
         c.commit();        
@@ -174,9 +172,7 @@ public class PersistenceManagerTest2 extends TestCase  {
     
 	    HourReport hr = pf.newHourReport();
 	    assertNotNull(hr.reportDate());
-    
-	    	    
-	    
+        
 	    
 	    DateKey<HourReport.Attribute, HourReport.Type, HourReport> dk = 
 	    	hr.getMetaData().getDateKey(HourReport.Attribute.REPORT_DATE);
@@ -206,9 +202,11 @@ public class PersistenceManagerTest2 extends TestCase  {
     
 //	    hr.id().set(null);
 	    
+	    hr.setOrganization(HourReport.FK_HHR_EMPLOYER, proj.getOrganization(Project.FK_SUPPLIER));
+	    
 	    hr.setProject(HourReport.FK_HHR_PROJECT, proj.ref());
 	    hr.setInteger(HourReport.ID, null);
-	    
+	    	    
 	    // hr.setRef(HourReport.FK_HHR_EMPLOYER, org.ref());
     
 	    PersistenceManager<fi.tnie.db.gen.ent.personal.HourReport.Attribute, 
@@ -234,7 +232,7 @@ public class PersistenceManagerTest2 extends TestCase  {
         assertFalse(c.getAutoCommit());                        
         PGImplementation impl = new PGImplementation();
 
-    	HourReport hr = HourReport.TYPE.getMetaData().getFactory().newInstance();
+    	HourReport hr = HourReport.Type.TYPE.getMetaData().getFactory().newInstance();
     	hr.setComment("My Comment");
     	hr.setReportDate(new Date());
     	hr.setStartedAt(new Date());
@@ -242,13 +240,13 @@ public class PersistenceManagerTest2 extends TestCase  {
     	
     	long ms = System.currentTimeMillis();
     	
-		Organization client = Organization.TYPE.getMetaData().getFactory().newInstance();
+		Organization client = Organization.Type.TYPE.getMetaData().getFactory().newInstance();
 		client.setName("Asiakas " + ms);
 		
-		Organization supplier = Organization.TYPE.getMetaData().getFactory().newInstance();
+		Organization supplier = Organization.Type.TYPE.getMetaData().getFactory().newInstance();
 		supplier.setName("Toimittaja" + ms);
 		
-		Project p = Project.TYPE.getMetaData().getFactory().newInstance();
+		Project p = Project.Type.TYPE.getMetaData().getFactory().newInstance();
 		p.setName("Test Project " + ms);
 							
 		p.setOrganization(Project.FK_CLIENT, client.ref());
@@ -256,6 +254,16 @@ public class PersistenceManagerTest2 extends TestCase  {
 		
 		hr.setOrganization(HourReport.FK_HHR_EMPLOYER, supplier.ref());
 		hr.setProject(HourReport.FK_HHR_PROJECT, p.ref());
+		
+		Organization.Holder oh = null;
+		
+		oh = p.getRef(Project.FK_CLIENT);
+		assertNotNull(oh);
+		assertNotNull(oh.value());
+				
+		oh = p.getRef(Project.FK_SUPPLIER);
+		assertNotNull(oh);
+		assertNotNull(oh.value());				
 		
         PersistenceManager<?, ?, ?, ?, ?, ?, ?> hm = create(hr, impl);
         

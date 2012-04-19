@@ -54,6 +54,7 @@ public abstract class AbstractUnitTest
 		String h = getHost();
 		String d = getDatabase();		
 		SimpleTestContext tc = new SimpleTestContext(imp, h, d, getUser(), "test");
+			
 		
 		return tc;
 	}

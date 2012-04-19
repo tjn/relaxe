@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.meta.Catalog;
+import fi.tnie.db.query.QueryException;
 
 /**
  * @author Administrator
@@ -56,9 +57,17 @@ public class SimpleTestContext
 
     }
     
-    public Catalog getCatalog() {
-        return catalog;
+    public Catalog getCatalog() throws SQLException, QueryException {
+    	if (catalog == null) {
+    		Connection c = newConnection();
+			catalog = getImplementation().catalogFactory().create(c);
+			c.close();
+			
+		}
+
+		return catalog;
     }
+    
     public void setCatalog(Catalog catalog) {
         this.catalog = catalog;
     }
