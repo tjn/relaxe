@@ -11,23 +11,22 @@ package fi.tnie.db.model;
  */
 public abstract class AbstractTransformationModel<V, S>
 	extends AbstractValueModel<V> {
-
-	private MutableValueModel<V> result = new DefaultMutableValueModel<V>(null);
+	
+	 private ValueModel<S> source;
+//	private MutableValueModel<V> result;
 	
 	public AbstractTransformationModel(final ValueModel<S> source) {
 		source.addChangeHandler(new ChangeListener<S>() {
 			@Override
 			public void changed(S from, S to) {
-				result.set(transform(to));
+				// change has already taken place:
+				V previous = transform(from);	
+				V current = transform(to);
+				fireIfChanged(previous, current);
 			}
 		});
 		
-		this.result.set(transform(source.get()));
-	}
-	
-	@Override
-	public Registration addChangeHandler(ChangeListener<V> ch) {
-		return this.result.addChangeHandler(ch);
+		this.source = source;
 	}
 	
 	/**
@@ -35,14 +34,13 @@ public abstract class AbstractTransformationModel<V, S>
 	 * @return
 	 */
 	public abstract V transform(S source);
-	
-	@Override
-	public V get() {		
-		return result.get();
+
+	private ValueModel<S> getSource() {
+		return source;
 	}
 	
 	@Override
-	public MutableValueModel<V> asMutable() {
-		return null;
+	public V get() {		
+		return transform(getSource().get());
 	}
 }
