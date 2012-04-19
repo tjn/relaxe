@@ -7,7 +7,7 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
-
+import fi.tnie.db.ent.Content;
 
 {{imports}}
 
@@ -16,15 +16,16 @@ import fi.tnie.db.types.ReferenceType;
 */
 
 public interface Has{{table-interface}}<
-	A extends Attribute,
+	A extends fi.tnie.db.ent.Attribute,
 	R extends fi.tnie.db.ent.Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M> & Has{{table-interface}}<A, R, T, E, H, F, M>,
-	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M> & Has{{table-interface}}Key<A, R, T, E, H, F, M>	
+	T extends ReferenceType<A, R, T, E, H, F, M, C>,
+	E extends Entity<A, R, T, E, H, F, M, C> & Has{{table-interface}}<A, R, T, E, H, F, M, C>,
+	H extends ReferenceHolder<A, R, T, E, H, M, C>,
+	F extends EntityFactory<E, H, M, F, C>,
+	M extends EntityMetaData<A, R, T, E, H, F, M, C> & Has{{table-interface}}Key<A, R, T, E, H, F, M, C>,
+	C extends fi.tnie.db.ent.Content	
 	>
 {
-	public {{table-interface}}.Holder get{{table-interface}}({{table-interface}}.Key<A, R, T, E, H, F, M> key);
-	public void set{{table-interface}}({{table-interface}}.Key<A, R, T, E, H, F, M> key, {{table-interface}}.Holder newHolder);
+	public {{table-interface}}.Holder get{{table-interface}}({{table-interface}}.Key<A, R, T, E, H, F, M, C> key);
+	public void set{{table-interface}}({{table-interface}}.Key<A, R, T, E, H, F, M, C> key, {{table-interface}}.Holder newHolder);
 }

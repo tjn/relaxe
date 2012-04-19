@@ -16,6 +16,7 @@ import fi.tnie.db.gen.ent.personal.PersonalFactory;
 import fi.tnie.db.gen.ent.personal.HourReport.Attribute;
 import fi.tnie.db.gen.ent.personal.HourReport.Reference;
 import fi.tnie.db.gen.ent.personal.HourReport.Type;
+import fi.tnie.db.gen.ent.personal.Person.Content;
 import fi.tnie.db.map.TableMapper;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
@@ -64,10 +65,10 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
                 
 //        assertTrue(cc.getMetaMap().containsKey(ct));               
                         
-        EntityMetaData<?, ?, ?, ?, ?, ?, ?> meta = cc.getMetaData(ct);
+        EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> meta = cc.getMetaData(ct);
         assertNotNull(meta);
                 
-        EntityFactory<?, ?, ?, ?> ef = meta.getFactory();
+        EntityFactory<?, ?, ?, ?, ?> ef = meta.getFactory();
         assertNotNull(ef);
                 
         PersonalFactory pf = cc.newPersonalFactory();
@@ -77,7 +78,7 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
         PGImplementation pgi = new PGImplementation();
         
         HourReport hr = pf.newHourReport();
-        Organization.Key<Attribute, Reference, Type, HourReport, ?, ?, ?> ok = HourReport.FK_HHR_EMPLOYER;
+        Organization.Key<Attribute, Reference, Type, HourReport, ?, ?, ?, ?> ok = HourReport.FK_HHR_EMPLOYER;
                        
         Organization org = pf.newOrganization();        
         ok.set(hr, org);
@@ -94,8 +95,10 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
                 
         // p.setId(8);
         // p.setName("asdf");
-        p.setFirstName("a");
-        p.setLastName("b");
+        Content pc = p.getContent();
+        
+        pc.setFirstName("a");
+        pc.setLastName("b");
                                        
 //        pm.merge(c);
 //        c.commit();        

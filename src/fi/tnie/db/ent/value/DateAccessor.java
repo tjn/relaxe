@@ -13,8 +13,8 @@ import fi.tnie.db.types.ReferenceType;
 
 public class DateAccessor<
 	A extends Attribute,	
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,	
-	E extends Entity<A, ?, T, E, ?, ?, ?>
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,	
+	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
 	>
 	extends AbstractPrimitiveAccessor<A, T, E, Date, DateType, DateHolder, DateKey<A, T, E>> {
 

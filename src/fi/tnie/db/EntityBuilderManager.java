@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.AttributeWriterFactory;
+import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityFactory;
@@ -28,15 +29,16 @@ import fi.tnie.db.types.ReferenceType;
 public class EntityBuilderManager<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
-	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>
+	T extends ReferenceType<A, R, T, E, H, F, M, C>,
+	E extends Entity<A, R, T, E, H, F, M, C>,
+	H extends ReferenceHolder<A, R, T, E, H, M, C>,
+	F extends EntityFactory<E, H, M, F, C>,
+	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
+	C extends Content
 >
 	extends DataObjectProcessor<MutableEntityDataObject<E>> {
 			
-	private EntityQuery<A, R, T, E, H, F, M, ?> query;	
+	private EntityQuery<A, R, T, E, H, F, M, C, ?> query;	
 	private M meta;
 	
 	private static Logger logger = Logger.getLogger(EntityBuilderManager.class);
@@ -48,7 +50,7 @@ public class EntityBuilderManager<
 	
 	private EntityBuilder<E> rootBuilder;
 						
-	public EntityBuilderManager(Implementation imp, EntityQuery<A, R, T, E, H, F, M, ?> query) 
+	public EntityBuilderManager(Implementation imp, EntityQuery<A, R, T, E, H, F, M, C, ?> query) 
 		throws QueryException {
 		super(imp.getValueExtractorFactory(), query);
 		this.implementation = imp;
@@ -115,7 +117,7 @@ public class EntityBuilderManager<
 		return identityContext;
 	}
 
-	public EntityQuery<?, ?, ?, ?, ?, ?, ?, ?> getQuery() {
+	public EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> getQuery() {
 		return query;
 	}
 

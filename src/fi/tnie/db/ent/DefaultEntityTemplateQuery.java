@@ -40,14 +40,15 @@ import fi.tnie.db.meta.ForeignKey;
 public class DefaultEntityTemplateQuery<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
-	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	Q extends EntityQueryTemplate<A, R, T, E, H, F, M, Q>
+	T extends ReferenceType<A, R, T, E, H, F, M, C>,
+	E extends Entity<A, R, T, E, H, F, M, C>,
+	H extends ReferenceHolder<A, R, T, E, H, M, C>,
+	F extends EntityFactory<E, H, M, F, C>,
+	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
+	C extends Content,
+	Q extends EntityQueryTemplate<A, R, T, E, H, F, M, C, Q>
 	> 
-	implements EntityQuery<A, R, T, E, H, F, M, Q>	
+	implements EntityQuery<A, R, T, E, H, F, M, C, Q>	
 {
 	
 //	private static Logger logger = Logger.getLogger(DefaultEntityQuery.class);
@@ -65,7 +66,7 @@ public class DefaultEntityTemplateQuery<
 		
 	private transient List<Predicate> predicateList;
 
-	private transient Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> metaDataMap;
+	private transient Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> metaDataMap;
 	
 	private transient LinkedHashMap<Integer, TableReference> originMap;	
 	private transient Map<JoinKey, TableReference> referenceMap;
@@ -119,7 +120,7 @@ public class DefaultEntityTemplateQuery<
 		}		
 	
 		DefaultTableExpression q = new DefaultTableExpression();
-		HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?>> visited = new HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?>>();
+		HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>> visited = new HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>>();
 
 		AbstractTableReference tref = fromTemplate(root, null, null, null, q, visited);
 		
@@ -186,18 +187,19 @@ public class DefaultEntityTemplateQuery<
 	<
 		MA extends Attribute,
 		MR extends Reference,
-		MT extends ReferenceType<MA, MR, MT, ME, MH, MF, MM>,
-		ME extends Entity<MA, MR, MT, ME, MH, MF, MM>,
-		MH extends ReferenceHolder<MA, MR, MT, ME, MH, MM>,		
-		MF extends EntityFactory<ME, MH, MM, MF>,		
-		MM extends EntityMetaData<MA, MR, MT, ME, MH, MF, MM>,
-		MQ extends EntityQueryTemplate<MA, MR, MT, ME, MH, MF, MM, MQ>
+		MT extends ReferenceType<MA, MR, MT, ME, MH, MF, MM, MC>,
+		ME extends Entity<MA, MR, MT, ME, MH, MF, MM, MC>,
+		MH extends ReferenceHolder<MA, MR, MT, ME, MH, MM, MC>,		
+		MF extends EntityFactory<ME, MH, MM, MF, MC>,		
+		MM extends EntityMetaData<MA, MR, MT, ME, MH, MF, MM, MC>,
+		MC extends Content,
+		MQ extends EntityQueryTemplate<MA, MR, MT, ME, MH, MF, MM, MC, MQ>
 	>
 	AbstractTableReference fromTemplate(
 			MQ template, 
 			AbstractTableReference qref, ForeignKey fk, TableReference referencing, 
 			DefaultTableExpression q,
-			Set<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?>> visited)
+			Set<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>> visited)
 		throws CyclicTemplateException, EntityRuntimeException {
 		
 		logger().debug("fromTemplate - enter: " + template);
@@ -282,14 +284,15 @@ public class DefaultEntityTemplateQuery<
 	private	<
 		KA extends Attribute,
 		KR extends Reference,
-		KT extends ReferenceType<KA, KR, KT, KE, KH, KF, KM>,
-		KE extends Entity<KA, KR, KT, KE, KH, KF, KM>,
-		KH extends ReferenceHolder<KA, KR, KT, KE, KH, KM>,
-		KF extends EntityFactory<KE, KH, KM, KF>,
-		KM extends EntityMetaData<KA, KR, KT, KE, KH, KF, KM>,
-		KQ extends EntityQueryTemplate<KA, KR, KT, KE, KH, KF, KM, KQ>		
+		KT extends ReferenceType<KA, KR, KT, KE, KH, KF, KM, KC>,
+		KE extends Entity<KA, KR, KT, KE, KH, KF, KM, KC>,
+		KH extends ReferenceHolder<KA, KR, KT, KE, KH, KM, KC>,
+		KF extends EntityFactory<KE, KH, KM, KF, KC>,
+		KM extends EntityMetaData<KA, KR, KT, KE, KH, KF, KM, KC>,
+		KC extends Content,
+		KQ extends EntityQueryTemplate<KA, KR, KT, KE, KH, KF, KM, KC, KQ>		
 	>
-	AbstractTableReference processReferences(KQ template, AbstractTableReference qref, TableReference tref, DefaultTableExpression q, Set<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?>> visited) throws EntityRuntimeException, CyclicTemplateException {
+	AbstractTableReference processReferences(KQ template, AbstractTableReference qref, TableReference tref, DefaultTableExpression q, Set<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>> visited) throws EntityRuntimeException, CyclicTemplateException {
 		
 		logger().debug("processReferences - enter");
 		
@@ -299,8 +302,8 @@ public class DefaultEntityTemplateQuery<
 		Set<KR> rs = meta.relationships();
 		
 		for (KR kr : rs) {
-			EntityKey<KA, KR, KT, KE, KH, KF, KM, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(kr);
-			EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> t = template.getTemplate(ek);
+			EntityKey<KA, KR, KT, KE, KH, KF, KM, KC, ?, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(kr);
+			EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?> t = template.getTemplate(ek);
 			
 			logger().debug("ref-template for: " + ek + " => " + t);
 			
@@ -333,9 +336,9 @@ public class DefaultEntityTemplateQuery<
 
 	private <
 		MA extends Attribute,
-		D extends Entity<MA, ?, ?, D, ?, ?, DM>,
-		DM extends EntityMetaData<MA, ?, ?, D, ?, ?, DM>,
-		DQ extends EntityQueryTemplate<MA, ?, ?, D, ?, ?, DM, DQ>
+		D extends Entity<MA, ?, ?, D, ?, ?, DM, ?>,
+		DM extends EntityMetaData<MA, ?, ?, D, ?, ?, DM, ?>,
+		DQ extends EntityQueryTemplate<MA, ?, ?, D, ?, ?, DM, ?, DQ>
 	> 
 	void addAttributes(DQ template, Select s, TableReference tref) throws EntityRuntimeException {
 		DM meta = template.getMetaData();
@@ -424,7 +427,7 @@ public class DefaultEntityTemplateQuery<
 	}
 
 	@Override
-	public EntityMetaData<?, ?, ?, ?, ?, ?, ?> getMetaData(TableReference tref) 
+	public EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> getMetaData(TableReference tref) 
 		throws CyclicTemplateException, EntityRuntimeException {
 		if (tref == null) {
 			throw new NullPointerException("tref");
@@ -461,9 +464,9 @@ public class DefaultEntityTemplateQuery<
 		return null;
 	}
 
-	private Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> getMetaDataMap() {
+	private Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> getMetaDataMap() {
 		if (metaDataMap == null) {
-			metaDataMap = new HashMap<TableReference, EntityMetaData<?,?,?,?, ?, ?, ?>>();			
+			metaDataMap = new HashMap<TableReference, EntityMetaData<?,?,?,?,?,?,?,?>>();			
 		}
 
 		return metaDataMap;

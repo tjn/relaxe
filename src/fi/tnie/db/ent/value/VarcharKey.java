@@ -14,8 +14,8 @@ import fi.tnie.db.types.VarcharType;
 
 public final class VarcharKey<
 	A extends Attribute,	
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?>
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
 >
 	extends AbstractPrimitiveKey<A, T, E, String, VarcharType, VarcharHolder, VarcharKey<A, T, E>>
 {
@@ -30,17 +30,17 @@ public final class VarcharKey<
 	private VarcharKey() {
 	}
 
-	private VarcharKey(EntityMetaData<A, ?, T, E, ?, ?, ?> meta, A name) {
+	private VarcharKey(EntityMetaData<A, ?, T, E, ?, ?, ?, ?> meta, A name) {
 		super(meta, name);
 		meta.addKey(this);
 	}
 	
 	public static <
 		X extends Attribute,		
-		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?>,
-		T extends Entity<X, ?, Z, T, ?, ?, ?>
+		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?, ?>,
+		T extends Entity<X, ?, Z, T, ?, ?, ?, ?>
 	>
-	VarcharKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?> meta, X a) {
+	VarcharKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?, ?> meta, X a) {
 		VarcharKey<X, Z, T> k = meta.getVarcharKey(a);
 		
 		if (k == null) {

@@ -19,14 +19,15 @@ import fi.tnie.db.types.ReferenceType;
 public abstract class DefaultQueryTemplate<
 	A extends Attribute,
 	R extends Reference,	
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
-	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	Q extends EntityQueryTemplate<A,R,T,E,H,F,M,Q>
+	T extends ReferenceType<A, R, T, E, H, F, M, C>,
+	E extends Entity<A, R, T, E, H, F, M, C>,
+	H extends ReferenceHolder<A, R, T, E, H, M, C>,
+	F extends EntityFactory<E, H, M, F, C>,
+	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
+	C extends Content,
+	Q extends EntityQueryTemplate<A,R,T,E,H,F,M,C,Q>
 >
-	implements EntityQueryTemplate<A, R, T, E, H, F, M, Q>, Serializable {
+	implements EntityQueryTemplate<A, R, T, E, H, F, M, C, Q>, Serializable {
 
 	/**
 	 * 
@@ -34,7 +35,7 @@ public abstract class DefaultQueryTemplate<
 	private static final long serialVersionUID = -5086377201591899922L;
 	
 	private Map<A, EntityQueryTemplateAttribute> attributeMap;
-	private Map<R, EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?>> templateMap;
+	private Map<R, EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>> templateMap;
 	
 	private List<EntityQuerySortKey<A>> sortKeyList = null;	
 	private List<EntityQuerySortKey<?>> allSortKeys = null;
@@ -52,7 +53,7 @@ public abstract class DefaultQueryTemplate<
 	public abstract M getMetaData();
 
 	@Override
-	public EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> getTemplate(EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k) {
+	public EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?> getTemplate(EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> k) {
 		return getTemplateMap().get(k.name());
 	}
 
@@ -64,13 +65,14 @@ public abstract class DefaultQueryTemplate<
 	<			
 		RA extends Attribute,
 		RR extends Reference,
-		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
-		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
-		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
-		RF extends EntityFactory<RE, RH, RM, RF>,
-		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,		
-		RK extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK>,
-		RQ extends EntityQueryTemplate<RA, RR, RT, RE, RH, RF, RM, RQ>
+		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM, RC>,
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM, RC>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM, RC>,
+		RF extends EntityFactory<RE, RH, RM, RF, RC>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM, RC>,
+		RC extends Content,
+		RK extends EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, RK>,
+		RQ extends EntityQueryTemplate<RA, RR, RT, RE, RH, RF, RM, RC, RQ>
 	>	 
 	void setTemplate(RK k, RQ newTemplate) {
 		getTemplateMap().put(k.name(), newTemplate);		
@@ -86,11 +88,11 @@ public abstract class DefaultQueryTemplate<
 		
 	private Map<
 		R, 
-		EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?>
+		EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>
 	> 
 	getTemplateMap() {
 		if (templateMap == null) {
-			templateMap = new HashMap<R, EntityQueryTemplate<?,?,?,?,?,?,?,?>
+			templateMap = new HashMap<R, EntityQueryTemplate<?,?,?,?,?,?,?,?,?>
 			>();			
 		}
 
@@ -171,7 +173,7 @@ public abstract class DefaultQueryTemplate<
 		addAll(getMetaData().attributes());		
 	}
 		
-	public abstract EntityQuery<A, R, T, E, H, F, M, Q> newQuery()
+	public abstract EntityQuery<A, R, T, E, H, F, M, C, Q> newQuery()
 		throws EntityRuntimeException;
 			
 	
@@ -224,7 +226,7 @@ public abstract class DefaultQueryTemplate<
 
 	public <
 		SA extends Attribute,
-		SQ extends EntityQueryTemplate<SA, ?, ?, ?, ?, ?, ?, ?>
+		SQ extends EntityQueryTemplate<SA, ?, ?, ?, ?, ?, ?, ?, ?>
 	>	
 	void addSortKey(SQ template, SA attribute, OrderBy.Order so) {	
 		EntityQuerySortKey<SA> sk = SortKeyAttributeTemplate.get(attribute, so);
@@ -239,7 +241,7 @@ public abstract class DefaultQueryTemplate<
 	
 	public <
 		SA extends Attribute,
-		SQ extends EntityQueryTemplate<SA, ?, ?, ?, ?, ?, ?, ?>
+		SQ extends EntityQueryTemplate<SA, ?, ?, ?, ?, ?, ?, ?, ?>
 	>
 	void asc(SQ template, SA attribute) {
 		addSortKey(template, attribute, OrderBy.Order.ASC);
@@ -247,7 +249,7 @@ public abstract class DefaultQueryTemplate<
 	
 	public <
 		SA extends Attribute,
-		SQ extends EntityQueryTemplate<SA, ?, ?, ?, ?, ?, ?, ?>
+		SQ extends EntityQueryTemplate<SA, ?, ?, ?, ?, ?, ?, ?, ?>
 	>
 	void desc(SQ template, SA attribute) {
 		addSortKey(template, attribute, OrderBy.Order.DESC);

@@ -16,8 +16,8 @@ import fi.tnie.db.types.CharType;
 
 public class CharAttributeWriter<
 	A extends Attribute,
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?>
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
 >
 	extends AbstractAttributeWriter<A, T, E, String, CharType, CharHolder, CharKey<A, T, E>>
 {

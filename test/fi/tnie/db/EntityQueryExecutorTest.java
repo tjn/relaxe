@@ -11,6 +11,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.DataObjectQueryResult;
 import fi.tnie.db.ent.Entity;
@@ -75,13 +76,14 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 				HourReport.Holder, 
 				HourReport.Factory, 
 				HourReport.MetaData,
+				HourReport.Content,
 				HourReport.QueryTemplate				
 			> qe = createExecutor(HourReport.Type.TYPE.getMetaData(), imp);
 			
 			
 			// Query q = template.newQuery(limit, offset);
 			
-			EntityQueryResult<HourReport.Attribute, HourReport.Reference, Type, HourReport, HourReport.Holder, HourReport.Factory, MetaData, HourReport.QueryTemplate> er = qe.execute(q, opts, c);
+			EntityQueryResult<HourReport.Attribute, HourReport.Reference, Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData, HourReport.Content, HourReport.QueryTemplate> er = qe.execute(q, opts, c);
 			assertNotNull(er);
 			
 			DataObjectQueryResult<EntityDataObject<HourReport>> qr = er.getContent(); 
@@ -124,15 +126,16 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 	public <
 		A extends Attribute,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M>,
-		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>,
-		QT extends EntityQueryTemplate<A, R, T, E, H, F, M, QT>
+		T extends ReferenceType<A, R, T, E, H, F, M, C>,
+		E extends Entity<A, R, T, E, H, F, M, C>,
+		H extends ReferenceHolder<A, R, T, E, H, M, C>,
+		F extends EntityFactory<E, H, M, F, C>,
+		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
+		C extends Content,
+		QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
 	>
-	EntityQueryExecutor<A, R, T, E, H, F, M, QT> createExecutor(M meta, Implementation imp) {
-		return new EntityQueryExecutor<A, R, T, E, H, F, M, QT>(imp);
+	EntityQueryExecutor<A, R, T, E, H, F, M, C, QT> createExecutor(M meta, Implementation imp) {
+		return new EntityQueryExecutor<A, R, T, E, H, F, M, C, QT>(imp);
 	}
 	
 	
@@ -434,6 +437,7 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 	        Project.Holder,		
 	        Project.Factory,
 	        Project.MetaData,
+	        Project.Content,
 	        Project.QueryTemplate
 	    > qe = new EntityQueryExecutor<
 	        Project.Attribute,
@@ -443,6 +447,7 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 	        Project.Holder,		
 	        Project.Factory,
 	        Project.MetaData,
+	        Project.Content,
 	        Project.QueryTemplate
 	      >(getImplementation());
 

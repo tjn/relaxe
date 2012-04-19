@@ -4,7 +4,7 @@
 package fi.tnie.db.ent;
 
 public class MutableEntityDataObject<
-	E extends Entity<?, ?, ?, E, ?, ?, ?>	
+	E extends Entity<?, ?, ?, E, ?, ?, ?, ?>	
 >
 	extends EntityDataObject<E> {
 	

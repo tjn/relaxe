@@ -23,13 +23,7 @@ public class {{table-impl-class}}
     extends {{table-impl-base}} {
         
     private {{table-interface}}.Holder holder;
-    
-    /**
-     * generated value variable list below: 
-     */
-    {{value-variable-list}}
-    
-    
+    private transient {{table-interface}}.Content content;
     
     /**
      * generated list below: 
@@ -46,7 +40,8 @@ public class {{table-impl-class}}
         {{table-interface}},
         {{table-interface}}.Holder,
         {{table-interface}}.Factory,
-        {{table-interface}}.MetaData        
+        {{table-interface}}.MetaData,
+        {{table-interface}}.Content
     >
     	implements {{table-interface}}.MetaData
     {
@@ -58,8 +53,8 @@ public class {{table-impl-class}}
 
 {{reference-key-map-list}}
 
-		private java.util.Map<{{table-interface}}.Reference, EntityKey<Attribute, Reference, Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, ?, ?, ?, ?, ?, ?, ?, ?>> entityKeyMap = 
-			new java.util.HashMap<{{table-interface}}.Reference, EntityKey<Attribute, Reference, Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, ?, ?, ?, ?, ?, ?, ?, ?>>();
+		private java.util.Map<{{table-interface}}.Reference, EntityKey<Attribute, Reference, Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Content, ?, ?, ?, ?, ?, ?, ?, ?, ?>> entityKeyMap = 
+			new java.util.HashMap<{{table-interface}}.Reference, EntityKey<Attribute, Reference, Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Content, ?, ?, ?, ?, ?, ?, ?, ?, ?>>();
     
         public {{table-interface}}MetaData() {
             super({{table-interface}}.Attribute.class, {{table-interface}}.Reference.class);
@@ -102,7 +97,7 @@ public class {{table-impl-class}}
 		}		
 		
 		public static class BuilderImpl
-			extends fi.tnie.db.ent.DefaultEntityBuilder<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData>
+			extends fi.tnie.db.ent.DefaultEntityBuilder<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content>
 			implements Builder {
 			
 			private Linker[] linkerList = {};
@@ -152,15 +147,13 @@ public class {{table-impl-class}}
 		}	
 
 		@Override
-		public EntityKey<Attribute, Reference, Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, ?, ?, ?, ?, ?, ?, ?, ?> getEntityKey(Reference ref) {			
+		public EntityKey<Attribute, Reference, Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Content, ?, ?, ?, ?, ?, ?, ?, ?, ?> getEntityKey(Reference ref) {			
 			if (ref == null) {
 				throw new NullPointerException("ref");
 			}
 			
 			return entityKeyMap.get(ref);
-		}		
-		
-		
+		}
     }    
         
 	/**
@@ -225,15 +218,27 @@ public class {{table-impl-class}}
 	*/
 	
 
-	
-	{{value-accessor-list}}
- 
-  	{{accessor-list}}
-  	
-    
     /**
      * {reference-map-list} below: 
      */
     {{reference-map-list}}
+    
+    @Override
+	public Content getContent() {
+		if (this.content == null) {
+			this.content = new Content() {
+			    /**
+			     * generated value variable list below: 
+			     */
+			    {{value-variable-list}}				
+
+				{{value-accessor-list}}
+				 
+			  	{{accessor-list}}			
+			};
+		}
+		
+		return this.content;
+	}    
 } 
 

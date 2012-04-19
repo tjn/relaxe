@@ -16,8 +16,8 @@ import fi.tnie.db.types.VarcharType;
 
 public class VarcharAttributeWriter<
 	A extends Attribute,
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?>
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
 >
 	extends AbstractAttributeWriter<A, T, E, String, VarcharType, VarcharHolder, VarcharKey<A, T, E>>
 {

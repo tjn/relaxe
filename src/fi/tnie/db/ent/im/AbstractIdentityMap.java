@@ -15,8 +15,8 @@ import fi.tnie.db.types.ReferenceType;
 public abstract class AbstractIdentityMap<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, ?, ?, ?>,
-	E extends Entity<A, R, T, E, ?, ?, ?>,
+	T extends ReferenceType<A, R, T, E, ?, ?, ?, ?>,
+	E extends Entity<A, R, T, E, ?, ?, ?, ?>,
 	K
 >
 	implements EntityIdentityMap<A, R, T, E> {

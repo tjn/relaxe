@@ -19,8 +19,8 @@ import fi.tnie.db.types.ReferenceType;
 
 public abstract class AbstractAttributeWriter<
 	A extends Attribute,
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?, ?>,
 	V extends Serializable,
 	P extends PrimitiveType<P>,
 	H extends PrimitiveHolder<V, P>,

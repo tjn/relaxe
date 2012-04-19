@@ -14,8 +14,8 @@ import fi.tnie.db.types.ReferenceType;
 
 public interface PrimitiveAccessor<
 	A extends Attribute,	
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?, ?>,
 	S extends Serializable,
 	P extends PrimitiveType<P>,
 	H extends PrimitiveHolder<S, P>,	

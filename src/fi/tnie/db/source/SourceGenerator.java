@@ -48,7 +48,7 @@ import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.util.io.IOHelper;
 
 public class SourceGenerator {
-	
+		
 	public enum Tag {
 	    /**
 	     * Pattern which is replaced with the simple name of the table interface in template files.
@@ -888,11 +888,10 @@ public class SourceGenerator {
     private String getTemplateForHasKeyInterface() throws IOException {
         return read("HAS_KEY.in");
     }
-
+    
     private String getTemplateForBuilderLinkerInit() throws IOException {
         return read("BUILDER_LINKER_INIT.in");
     }
-
     
     private String getTemplateForLiteralInnerTable() throws IOException {
         return read("LITERAL_INNER_TABLE.in");
@@ -1841,12 +1840,12 @@ public class SourceGenerator {
 
 //		// Sample output:
 //		public static class OrganizationKey
-//		extends Organization.Key<Person.Reference, Person.Type, Person, Person.MetaData> {
+//		extends Organization.Key<Person.Reference, Person.Type, Person, Person.MetaData, Content> {
 //
 //		private static final long serialVersionUID = 1L;
 //
 //		protected OrganizationKey(
-//				EntityMetaData<fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person> meta, Reference name) {
+//				EntityMetaData<fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person, Content> meta, Reference name) {
 //			super(Person.TYPE, name);
 //		}
 		
@@ -1988,7 +1987,12 @@ public class SourceGenerator {
 		nb.append(", ");
 
 		nb.append(source.getUnqualifiedName());
-		nb.append(".MetaData");		
+		nb.append(".MetaData");
+		nb.append(", ");
+
+		nb.append(source.getUnqualifiedName());
+		nb.append(".Content");
+
 		nb.append(">");
 		
 		return nb.toString();
@@ -2080,6 +2084,7 @@ public class SourceGenerator {
         	return "";
         }
         
+        
 //        JavaType intf = tm.entityType(t, Part.INTERFACE);
         
         buf.append("private transient ");
@@ -2141,6 +2146,11 @@ public class SourceGenerator {
         
         buf.append(q);
         buf.append(".MetaData");
+        buf.append(", ");
+        
+        buf.append(q);
+        buf.append(".Content");        
+        
         return buf.toString();
 	}
 	
@@ -2445,6 +2455,11 @@ public class SourceGenerator {
 		
 		buf.append(rt.getUnqualifiedName());
 		buf.append(".MetaData");
+		buf.append(", ");
+		
+		buf.append(rt.getUnqualifiedName());
+		buf.append(".Content");
+				
 		buf.append("> ");
 		buf.append(referenceName);
 		buf.append(" = ");
@@ -2595,7 +2610,7 @@ public class SourceGenerator {
 		
 		// sample output:
 //      {
-//      	final Project.Key<Reference, Type, HourReport, HourReport.MetaData> pk = FK_HHR_PROJECT;					
+//      	final Project.Key<Reference, Type, HourReport, HourReport.MetaData, HourReport.Content> pk = FK_HHR_PROJECT;					
 //      	ForeignKey fk = m.getForeignKey(pk.name());				
 //      	TableReference tref = ctx.getQuery().getReferenced(tableRef, fk);
 //

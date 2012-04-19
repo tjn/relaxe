@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.DataObjectQueryResult;
 import fi.tnie.db.ent.DefaultEntityQueryResult;
@@ -35,12 +36,13 @@ import fi.tnie.db.types.ReferenceType;
 public class EntityQueryExecutor<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
-	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, QT>
+	T extends ReferenceType<A, R, T, E, H, F, M, C>,
+	E extends Entity<A, R, T, E, H, F, M, C>,
+	H extends ReferenceHolder<A, R, T, E, H, M, C>,
+	F extends EntityFactory<E, H, M, F, C>,
+	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
+	C extends Content,
+	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
 > 	
 {	
 //	private Implementation implementation;	
@@ -55,14 +57,14 @@ public class EntityQueryExecutor<
 //		this.implementation = implementation;
 	}
 
-	public EntityQueryResult<A, R, T, E, H, F, M, QT> execute(EntityQuery<A, R, T, E, H, F, M, QT> query, FetchOptions opts, Connection c) 
+	public EntityQueryResult<A, R, T, E, H, F, M, C, QT> execute(EntityQuery<A, R, T, E, H, F, M, C, QT> query, FetchOptions opts, Connection c) 
 		throws SQLException, QueryException, EntityException {
 		
 		QueryExecutor se = getExecutor();		
 		Implementation imp = se.getImplementation();
 		
 		List<EntityDataObject<E>> content = new ArrayList<EntityDataObject<E>>();		
-		EntityReader<?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M>(imp, query, content);
+		EntityReader<?, ?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M, C>(imp, query, content);
 		
 		QueryExecutor.SliceStatement sb = se.createStatement(query, opts, c);
 				
@@ -77,7 +79,7 @@ public class EntityQueryExecutor<
 		DataObjectQueryResult<EntityDataObject<E>> result = new DataObjectQueryResult<EntityDataObject<E>>(q, meta, content, qt, opts, sb.getPosition());
 		result.setAvailable(sb.getAvailable());
 		
-		return new DefaultEntityQueryResult<A, R, T, E, H, F, M, QT>(query, result);		
+		return new DefaultEntityQueryResult<A, R, T, E, H, F, M, C, QT>(query, result);		
 	}
 
 //	private SelectStatement createCountQuery(SelectStatement qs) {

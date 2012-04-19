@@ -16,6 +16,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.CyclicTemplateException;
 import fi.tnie.db.ent.DefaultEntityTemplateQuery;
 import fi.tnie.db.ent.DefaultQueryTemplate;
@@ -62,11 +63,12 @@ import fi.tnie.db.types.ReferenceType;
 public class PersistenceManager<
     A extends Attribute,
     R extends Reference,
-    T extends ReferenceType<A, R, T, E, H, F, M>,
-    E extends Entity<A, R, T, E, H, F, M>,
-    H extends ReferenceHolder<A, R, T, E, H, M>,
-    F extends EntityFactory<E, H, M, F>,
-    M extends EntityMetaData<A, R, T, E, H, F, M>
+    T extends ReferenceType<A, R, T, E, H, F, M, C>,
+    E extends Entity<A, R, T, E, H, F, M, C>,
+    H extends ReferenceHolder<A, R, T, E, H, M, C>,
+    F extends EntityFactory<E, H, M, F, C>,
+    M extends EntityMetaData<A, R, T, E, H, F, M, C>,
+    C extends Content
 >
 {	
 //    private class PMQuery
@@ -83,8 +85,8 @@ public class PersistenceManager<
 //    }
     
     private class PMTemplate
-	    extends DefaultQueryTemplate<A, R, T, E, H, F, M, PMTemplate>
-    	implements EntityQueryTemplate<A, R, T, E, H, F, M, PMTemplate>
+	    extends DefaultQueryTemplate<A, R, T, E, H, F, M, C, PMTemplate>
+    	implements EntityQueryTemplate<A, R, T, E, H, F, M, C, PMTemplate>
 	{
 	    /**
 		 * 
@@ -109,10 +111,10 @@ public class PersistenceManager<
 		}
 		
 		@Override
-		public EntityQuery<A, R, T, E, H, F, M, PMTemplate> newQuery() 
+		public EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> newQuery() 
 			throws EntityRuntimeException
 		{						
-			return new DefaultEntityTemplateQuery<A, R, T, E, H, F, M, PMTemplate>(this);
+			return new DefaultEntityTemplateQuery<A, R, T, E, H, F, M, C, PMTemplate>(this);
 		}	
 	}
 
@@ -123,28 +125,11 @@ public class PersistenceManager<
     
 //    private QT queryTemplate;
     
-    /**
-     * Specifies a behavior for merging the dependencies of the entity currently being merged.  
-     * 
-     * @see PersistenceManager#merge(Connection)
-     * @author tnie
-     */    
-    public enum MergeMode {
-    	/** 
-    	 * Only the unidentified (non-null) entities the target refers to are merged.
-    	 */    	
-    	UNIDENTIFIED,
-    	/**
-    	 * All the non-null entities the target refers to are also merged.
-    	 */
-    	ALL
-    }
-    
     private MergeMode mergeMode;        
     
     public DeleteStatement createDeleteStatement() throws EntityException {
         E pe = getTarget();
-        final EntityMetaData<?, ?, ?, ?, ?, ?, ?> meta = pe.getMetaData();
+        final EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> meta = pe.getMetaData();
 
     	TableReference tref = new TableReference(meta.getBaseTable());
     	Predicate pkp = getPKPredicate(tref, pe);
@@ -206,13 +191,13 @@ public class PersistenceManager<
     	for (R r : meta.relationships()) {
             ForeignKey fk = meta.getForeignKey(r);
             
-            ReferenceHolder<?, ?, ?, ?, ?, ?> rh = pe.ref(r);
+            ReferenceHolder<?, ?, ?, ?, ?, ?, ?> rh = pe.ref(r);
                                     
             if (rh == null) {
             	continue;
             }
             
-            Entity<?, ?, ?, ?, ?, ?, ?> ref = rh.value();
+            Entity<?, ?, ?, ?, ?, ?, ?, ?> ref = rh.value();
 
             if (ref == null) {
                 for (Column c : fk.columns().keySet()) {                	
@@ -286,7 +271,7 @@ public class PersistenceManager<
     			// EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);
     			// EntityMetaData<?, ?, ?, ?, ?, ?, ?> t = k.getTarget();
     			
-    			EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
+    			EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
     			processKey(ek, am);
     			   			   			
     			
@@ -338,16 +323,17 @@ public class PersistenceManager<
 
     private 
     <	
-    	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+    	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM, RC>,
 		RA extends Attribute,
 		RR extends Reference,	
-		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
-		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
-		RF extends EntityFactory<RE, RH, RM, RF>,
-		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
-		RK extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK>
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM, RC>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM, RC>,
+		RF extends EntityFactory<RE, RH, RM, RF, RC>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM, RC>,
+		RC extends Content,
+		RK extends EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, RK>
     >    
-    void processKey(EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK> key, Map<Column, Assignment> am) {
+    void processKey(EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, RK> key, Map<Column, Assignment> am) {
     	
     	logger().debug("processKey - enter: " + key.name());
     	
@@ -485,7 +471,7 @@ public class PersistenceManager<
     	M meta = getTarget().getMetaData();    	
         PMTemplate qt = new PMTemplate(meta);
         
-        EntityQuery<A, R, T, E, H, F, M, PMTemplate> eq = qt.newQuery();        
+        EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> eq = qt.newQuery();        
         TableReference tref = eq.getTableRef();        
     	Predicate pkp = getPKPredicate(tref, getTarget());
     	logger().debug("merge: pkp=" + pkp);
@@ -494,9 +480,9 @@ public class PersistenceManager<
 
     	if (pkp != null) {    	
     		eq.getTableExpression().getWhere().setSearchCondition(pkp);
-    		EntityQueryExecutor<A, R, T, E, H, F, M, PMTemplate> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, PMTemplate>(imp);
+    		EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate>(imp);
 //    		QueryResult<EntityDataObject<E>> qr = ee.execute(eq, false, c);
-    		EntityQueryResult<A, R, T, E, H, F, M, PMTemplate> er = ee.execute(eq, null, c);
+    		EntityQueryResult<A, R, T, E, H, F, M, C, PMTemplate> er = ee.execute(eq, null, c);
     		QueryResult<EntityDataObject<E>> qr = er.getContent();    		
     		List<? extends EntityDataObject<E>> cl = qr.getContent();
     		logger().debug("merge: cl.size()=" + cl.size());
@@ -520,12 +506,13 @@ public class PersistenceManager<
     <
     	DA extends Attribute,
     	DR extends Reference,
-    	DT extends ReferenceType<DA, DR, DT, DE, DH, DF, DM>,	
-		DE extends Entity<DA, DR, DT, DE, DH, DF, DM>,
-		DH extends ReferenceHolder<DA, DR, DT, DE, DH, DM>,
-		DF extends EntityFactory<DE, DH, DM, DF>,
-		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM>,
-		DQ extends EntityQueryTemplate<DA, DR, DT, DE, DH, DF, DM, DQ>
+    	DT extends ReferenceType<DA, DR, DT, DE, DH, DF, DM, DC>,	
+		DE extends Entity<DA, DR, DT, DE, DH, DF, DM, DC>,
+		DH extends ReferenceHolder<DA, DR, DT, DE, DH, DM, DC>,
+		DF extends EntityFactory<DE, DH, DM, DF, DC>,
+		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM, DC>,
+		DC extends Content, 
+		DQ extends EntityQueryTemplate<DA, DR, DT, DE, DH, DF, DM, DC, DQ>
     >    
     void mergeDependencies(DE target, DQ qt, Connection c) throws EntityException, SQLException, QueryException {
     	
@@ -537,23 +524,23 @@ public class PersistenceManager<
     	final MergeMode ms = getMergeMode();
     	
     	for (DR dr : rs) {
-			EntityKey<DA, DR, DT, DE, DH, DF, DM, ?, ?, ?, ?, ?, ?, ?, ?> ek = m.getEntityKey(dr);
+			EntityKey<DA, DR, DT, DE, DH, DF, DM, DC, ?, ?, ?, ?, ?, ?, ?, ?, ?> ek = m.getEntityKey(dr);
 			
 			String id = ek.name().identifier();
 			logger().debug("mergeDependencies: id=" + id);			
 			
-			ReferenceHolder<?, ?, ?, ?, ?, ?> rh = ek.get(target);
+			ReferenceHolder<?, ?, ?, ?, ?, ?, ?> rh = ek.get(target);
 			
 			if (rh == null || rh.isNull()) {
 				logger().debug("no ref");
 				continue;
 			}
 			
-			Entity<?, ?, ?, ?, ?, ?, ?> rv = rh.value();
+			Entity<?, ?, ?, ?, ?, ?, ?, ?> rv = rh.value();
 								
 			if (ms == MergeMode.ALL || (!rv.isIdentified())) {
 				logger().debug("merging dependency: " + id);
-				PersistenceManager<?, ?, ?, ?, ?, ?, ?> pm = create(rv.self(), getImplementation());
+				PersistenceManager<?, ?, ?, ?, ?, ?, ?, ?> pm = create(rv.self(), getImplementation());
 				pm.merge(c);
 			}
 			else {
@@ -604,7 +591,7 @@ public class PersistenceManager<
 
     private Predicate getPKPredicate() throws EntityException {
         E pe = getTarget();
-    	EntityMetaData<A, R, T, E, ?, ?, ?> meta = pe.getMetaData();
+    	EntityMetaData<A, R, T, E, ?, ?, ?, ?> meta = pe.getMetaData();
     	TableReference tref = new TableReference(meta.getBaseTable());
     	Predicate pkp = getPKPredicate(tref, pe);
         return pkp;
@@ -654,7 +641,7 @@ public class PersistenceManager<
             throw new NullPointerException();
         }
 
-        EntityMetaData<A, R, T, E, ?, ?, ?> meta = pe.getMetaData();
+        EntityMetaData<A, R, T, E, ?, ?, ?, ?> meta = pe.getMetaData();
         Set<Column> pkcols = meta.getPKDefinition();
 
         if (pkcols.isEmpty()) {
@@ -714,14 +701,15 @@ public class PersistenceManager<
 	private <
 		DA extends Attribute, 
 		DR extends fi.tnie.db.ent.Reference, 
-		DT extends ReferenceType<DA, DR, DT, DE, DH, DF, DM>, 
-		DE extends Entity<DA, DR, DT, DE, DH, DF, DM>,
-		DH extends ReferenceHolder<DA, DR, DT, DE, DH, DM>,
-		DF extends EntityFactory<DE, DH, DM, DF>,
-		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM>		
+		DT extends ReferenceType<DA, DR, DT, DE, DH, DF, DM, DC>, 
+		DE extends Entity<DA, DR, DT, DE, DH, DF, DM, DC>,
+		DH extends ReferenceHolder<DA, DR, DT, DE, DH, DM, DC>,
+		DF extends EntityFactory<DE, DH, DM, DF, DC>,
+		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM, DC>,
+		DC extends Content
 	>
-	PersistenceManager<DA, DR, DT, DE, DH, DF, DM> create(DE e, Implementation impl) {
-		PersistenceManager<DA, DR, DT, DE, DH, DF, DM> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM>(e, impl, getMergeMode());
+	PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> create(DE e, Implementation impl) {
+		PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC>(e, impl, getMergeMode());
 		return pm;
 	}
 

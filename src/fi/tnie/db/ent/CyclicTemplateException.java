@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class CyclicTemplateException extends EntityRuntimeException
 	implements Serializable {
 
-	private EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> template;
+	private EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?> template;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -16,7 +16,7 @@ public class CyclicTemplateException extends EntityRuntimeException
 	protected CyclicTemplateException() {
 	}
 	
-	public CyclicTemplateException(EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> template) {
+	public CyclicTemplateException(EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?> template) {
 		setTemplate(template);
 	}
 	
@@ -25,11 +25,11 @@ public class CyclicTemplateException extends EntityRuntimeException
 	 */
 	private static final long serialVersionUID = -8336918826639436436L;
 
-	public EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> getEntity() {
+	public EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?> getEntity() {
 		return template;
 	}
 
-	private void setTemplate(EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?> newTemplate) {
+	private void setTemplate(EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?> newTemplate) {
 		this.template = newTemplate;
 	}
 

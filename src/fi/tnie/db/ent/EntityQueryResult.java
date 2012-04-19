@@ -11,14 +11,15 @@ import fi.tnie.db.types.ReferenceType;
 public interface EntityQueryResult<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,	
-	E extends Entity<A, R, T, E, H, F, M>,
-	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,	
-	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, QT>
+	T extends ReferenceType<A, R, T, E, H, F, M, C>,	
+	E extends Entity<A, R, T, E, H, F, M, C>,
+	H extends ReferenceHolder<A, R, T, E, H, M, C>,
+	F extends EntityFactory<E, H, M, F, C>,
+	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
+	C extends Content,
+	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
 >
-	extends Response<EntityQuery<A, R, T, E, H, F, M, QT>>, ResultPage, HasDataObjectQueryResult<EntityDataObject<E>>
+	extends Response<EntityQuery<A, R, T, E, H, F, M, C, QT>>, ResultPage, HasDataObjectQueryResult<EntityDataObject<E>>
 {
 	DataObjectQueryResult<EntityDataObject<E>> getContent();
 }

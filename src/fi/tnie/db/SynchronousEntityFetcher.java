@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.CyclicTemplateException;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
@@ -27,30 +28,31 @@ import fi.tnie.db.types.ReferenceType;
 public class SynchronousEntityFetcher<
 	A extends Attribute,
 	R extends Reference,	
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
-	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, QT>	
-> implements EntityFetcher<A, R, T, E, H, F, M, QT> {
+	T extends ReferenceType<A, R, T, E, H, F, M, C>,
+	E extends Entity<A, R, T, E, H, F, M, C>,
+	H extends ReferenceHolder<A, R, T, E, H, M, C>,
+	F extends EntityFactory<E, H, M, F, C>,
+	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
+	C extends Content,
+	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>	
+> implements EntityFetcher<A, R, T, E, H, F, M, C, QT> {
 	
-	private EntityQueryExecutor<A, R, T, E, H, F, M, QT> executor;
+	private EntityQueryExecutor<A, R, T, E, H, F, M, C, QT> executor;
 	private Connection connection;
 	
-	public SynchronousEntityFetcher(EntityQueryExecutor<A, R, T, E, H, F, M, QT> executor, Connection connection) {
+	public SynchronousEntityFetcher(EntityQueryExecutor<A, R, T, E, H, F, M, C, QT> executor, Connection connection) {
 		super();
 		this.executor = executor;
 		this.connection = connection;
 	}
 
 	@Override
-	public void fetch(QT queryTemplate, FetchOptions opts, Receiver<EntityQueryResult<A, R, T, E, H, F, M, QT>> receiver) 
+	public void fetch(QT queryTemplate, FetchOptions opts, Receiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>> receiver) 
 		throws EntityRuntimeException {
 		
 		try {
-			EntityQuery<A, R, T, E, H, F, M, QT> q = queryTemplate.newQuery();
-			EntityQueryResult<A, R, T, E, H, F, M, QT> qr = executor.execute(q, opts, this.connection);
+			EntityQuery<A, R, T, E, H, F, M, C, QT> q = queryTemplate.newQuery();
+			EntityQueryResult<A, R, T, E, H, F, M, C, QT> qr = executor.execute(q, opts, this.connection);
 			receiver.receive(qr);			
 		}
 		catch (SQLException e) {

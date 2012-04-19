@@ -4,7 +4,7 @@
 package fi.tnie.db.ent;
 
 public interface EntityBuilder<
-	E extends Entity<?, ?, ?, ?, ?, ?, ?>> {
+	E extends Entity<?, ?, ?, ?, ?, ?, ?, ?>> {
 	
 	E read(DataObject src);
 }

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityFactory;
@@ -24,22 +25,23 @@ import fi.tnie.db.types.ReferenceType;
 public class EntityReader<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
-	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>
+	T extends ReferenceType<A, R, T, E, H, F, M, C>,
+	E extends Entity<A, R, T, E, H, F, M, C>,
+	H extends ReferenceHolder<A, R, T, E, H, M, C>,
+	F extends EntityFactory<E, H, M, F, C>,
+	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
+	C extends Content
 >
-	extends EntityBuilderManager<A, R, T, E, H, F, M> {
+	extends EntityBuilderManager<A, R, T, E, H, F, M, C> {
 	
 	private List<EntityDataObject<E>> content;
 	
-	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, ?> query) 
+	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, C, ?> query) 
 		throws QueryException {
 		this(imp, query, new ArrayList<EntityDataObject<E>>());
 	}
 
-	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, ?> query, List<EntityDataObject<E>> result) 
+	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, C, ?> query, List<EntityDataObject<E>> result) 
 		throws QueryException {
 		super(imp, query);
 		

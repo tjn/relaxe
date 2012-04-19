@@ -21,6 +21,7 @@ import fi.tnie.db.gen.ent.personal.Project;
 import fi.tnie.db.gen.ent.personal.HourReport.MetaData;
 import fi.tnie.db.gen.ent.personal.HourReport.Reference;
 import fi.tnie.db.gen.ent.personal.HourReport.Type;
+import fi.tnie.db.gen.ent.personal.Organization.Content;
 import fi.tnie.db.gen.ent.personal.Project.Holder;
 import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.rpc.DateHolder;
@@ -52,18 +53,20 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	HourReport hr = pf.newHourReport();
     	Organization org = pf.newOrganization();
     	Project proj = pf.newProject();
+    	
+    	Content oc = org.getContent();
     	    	
-    	proj.setName("project name");
-    	org.name().set("org name");
+    	proj.getContent().setName("project name");
+    	oc.name().set("org name");
     	hr.setRef(HourReport.FK_HHR_PROJECT, proj.ref());
     	// hr.setTravelTime();
-    	hr.setStartedAt(new java.util.Date());
+    	hr.getContent().setStartedAt(new java.util.Date());
     	hr.set(HourReport.REPORT_DATE, DateHolder.NULL_HOLDER);
 //    	hr.set(HourReport.CREATED_AT, TimestampHolder.NULL_HOLDER);
     	
     	proj.setRef(Project.FK_SUPPLIER, org.ref());
     	
-    	Project.Key<?, Reference, Type, HourReport, ?, ?, MetaData> k = HourReport.FK_HHR_PROJECT;
+    	Project.Key<?, Reference, Type, HourReport, ?, ?, MetaData, ?> k = HourReport.FK_HHR_PROJECT;
     	Holder h = k.get(hr);
     	assertNotNull(h);
     	assertSame(proj.ref(), h);
@@ -82,8 +85,8 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	
 //    	ValueExtractorFactory vef = imp.getValueExtractorFactory();
     	    	    	    	
-    	EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData> eb
-    		= new EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData>(imp, e);
+    	EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData, HourReport.Content> eb
+    		= new EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData, HourReport.Content>(imp, e);
     	    	    	    	
     	PGImplementation impl = new PGImplementation();
     	

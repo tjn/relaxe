@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import junit.framework.TestCase;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
@@ -77,10 +78,10 @@ public class PersistenceManagerTest2 extends TestCase  {
                 
 //        assertTrue(cc.getMetaMap().containsKey(ct));               
                         
-        EntityMetaData<?, ?, ?, ?, ?, ?, ?> meta = cc.getMetaData(ct);
+        EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> meta = cc.getMetaData(ct);
         assertNotNull(meta);
                 
-        EntityFactory<?, ?, ?, ?> ef = meta.getFactory();
+        EntityFactory<?, ?, ?, ?, ?> ef = meta.getFactory();
         assertNotNull(ef);
                 
         PersonalFactory pf = cc.newPersonalFactory();
@@ -89,7 +90,7 @@ public class PersistenceManagerTest2 extends TestCase  {
         PGImplementation impl = new PGImplementation();
         
         PersistenceManager<
-        	fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person, Person.Holder, Person.Factory, Person.MetaData> pm = 
+        	fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person, Person.Holder, Person.Factory, Person.MetaData, Person.Content> pm = 
        		create(p.self(), impl);
                                 
 //        PersistenceManager<Attribute, Reference, Query, 
@@ -97,9 +98,12 @@ public class PersistenceManagerTest2 extends TestCase  {
                 
         // p.setId(8);
         // p.setName("asdf");
-        p.setFirstName("a");
-        p.setLastName("b");
-        p.setDateOfBirth(new Date());        
+        
+        // TODO: restore
+        
+//        p.setFirstName("a");
+//        p.setLastName("b");
+//        p.setDateOfBirth(new Date());        
 //        p.createdAt().set(new Date());        
 //        p.averageNaptime().set(new Interval.DayTime(1, 30, 0));
                                        
@@ -115,7 +119,9 @@ public class PersistenceManagerTest2 extends TestCase  {
 //        c.commit();
         
         HourReport hr = pf.newHourReport();
-        assertNotNull(hr.reportDate());
+        HourReport.Content hrc = hr.getContent();
+        
+        assertNotNull(hrc.reportDate());
         
         Organization org = pf.newOrganization();
         
@@ -123,16 +129,17 @@ public class PersistenceManagerTest2 extends TestCase  {
         	hr.getMetaData().getDateKey(HourReport.Attribute.REPORT_DATE);
         
         hr.setDate(dk, DateHolder.currentDate());                
-        assertNotNull(hr.reportDate().get());
-        assertNotNull(hr.getReportDate());
-        hr.setComment("asdfasd");
-        hr.setStartedAt(new Date());
-        hr.setFinishedAt(new Date());
+        assertNotNull(hrc.reportDate().get());
+        assertNotNull(hrc.getReportDate());
+        hrc.setComment("asdfasd");
+        hrc.setStartedAt(new Date());
+        hrc.setFinishedAt(new Date());
         
+        Organization.Content oc = org.getContent();
         org.setRef(Organization.FK_COMPANY_CEO, p.ref());
-        org.setName("Ab Firma Oy " + ((int) (Math.random() * 1000)));
+        oc.setName("Ab Firma Oy " + ((int) (Math.random() * 1000)));
         
-        PersistenceManager<?, ?, ?, ?, ?, ?, ?> om = create(org, impl);
+        PersistenceManager<?, ?, ?, ?, ?, ?, ?, ?> om = create(org, impl);
         
         om.merge(c);
         c.commit();
@@ -150,7 +157,9 @@ public class PersistenceManagerTest2 extends TestCase  {
         	HourReport,
         	fi.tnie.db.gen.ent.personal.HourReport.Holder,
         	fi.tnie.db.gen.ent.personal.HourReport.Factory,
-        	HourReport.MetaData> hrm =
+        	HourReport.MetaData,
+        	HourReport.Content
+        > hrm =
         	create(hr, impl);
         
         hr.setRef(HourReport.FK_HHR_EMPLOYER, org.ref());                
@@ -171,31 +180,35 @@ public class PersistenceManagerTest2 extends TestCase  {
 	    PGImplementation impl = new PGImplementation();
     
 	    HourReport hr = pf.newHourReport();
-	    assertNotNull(hr.reportDate());
+	    HourReport.Content hrc = hr.getContent();
+	    
+	    assertNotNull(hrc.reportDate());
         
 	    
 	    DateKey<HourReport.Attribute, HourReport.Type, HourReport> dk = 
 	    	hr.getMetaData().getDateKey(HourReport.Attribute.REPORT_DATE);
     
 	    hr.setDate(dk, DateHolder.currentDate());                
-	    assertNotNull(hr.reportDate().get());
-	    assertNotNull(hr.getReportDate());
-	    hr.setComment("asdfasd");
-	    hr.setStartedAt(new Date());
-	    hr.setFinishedAt(new Date());
+	    assertNotNull(hrc.reportDate().get());
+	    assertNotNull(hrc.getReportDate());
+	    hrc.setComment("asdfasd");
+	    hrc.setStartedAt(new Date());
+	    hrc.setFinishedAt(new Date());
 	    
 	    String suffix = Integer.toString((int) (Math.random() * 1000));
     	
 	    Organization org = pf.newOrganization();
-	    org.setName("Ab Firma Oy " + suffix);
+	    Organization.Content oc = org.getContent();
+	    
+	    oc.setName("Ab Firma Oy " + suffix);
 
 	    Organization client = pf.newOrganization();
-	    client.setName("Ab Asiakas Oy " + suffix);
+	    client.getContent().setName("Ab Asiakas Oy " + suffix);
 
 	    final Project proj = pf.newProject();
 	    
-	    proj.setName("Project " + suffix);
-	    proj.setAlias("P" + suffix);
+	    proj.getContent().setName("Project " + suffix);
+	    proj.getContent().setAlias("P" + suffix);
 	    
 	    proj.setRef(Project.FK_SUPPLIER, org.ref());
 	    proj.setRef(Project.FK_CLIENT, client.ref());
@@ -215,7 +228,9 @@ public class PersistenceManagerTest2 extends TestCase  {
 	    	HourReport,
 	    	fi.tnie.db.gen.ent.personal.HourReport.Holder,
 	    	fi.tnie.db.gen.ent.personal.HourReport.Factory,
-	    	HourReport.MetaData> hrm =
+	    	HourReport.MetaData,
+	    	HourReport.Content
+	    > hrm =
 	    	create(hr, impl);
 	    
 //	    hr.setRef(HourReport.FK_HHR_EMPLOYER, org.ref());                
@@ -233,21 +248,23 @@ public class PersistenceManagerTest2 extends TestCase  {
         PGImplementation impl = new PGImplementation();
 
     	HourReport hr = HourReport.Type.TYPE.getMetaData().getFactory().newInstance();
-    	hr.setComment("My Comment");
-    	hr.setReportDate(new Date());
-    	hr.setStartedAt(new Date());
-    	hr.setFinishedAt(new Date());
+    	HourReport.Content hrc = hr.getContent();
+    	
+    	hrc.setComment("My Comment");
+    	hrc.setReportDate(new Date());
+    	hrc.setStartedAt(new Date());
+    	hrc.setFinishedAt(new Date());
     	
     	long ms = System.currentTimeMillis();
     	
 		Organization client = Organization.Type.TYPE.getMetaData().getFactory().newInstance();
-		client.setName("Asiakas " + ms);
+		client.getContent().setName("Asiakas " + ms);
 		
 		Organization supplier = Organization.Type.TYPE.getMetaData().getFactory().newInstance();
-		supplier.setName("Toimittaja" + ms);
+		supplier.getContent().setName("Toimittaja" + ms);
 		
 		Project p = Project.Type.TYPE.getMetaData().getFactory().newInstance();
-		p.setName("Test Project " + ms);
+		p.getContent().setName("Test Project " + ms);
 							
 		p.setOrganization(Project.FK_CLIENT, client.ref());
 		p.setOrganization(Project.FK_SUPPLIER, supplier.ref());
@@ -265,17 +282,17 @@ public class PersistenceManagerTest2 extends TestCase  {
 		assertNotNull(oh);
 		assertNotNull(oh.value());				
 		
-        PersistenceManager<?, ?, ?, ?, ?, ?, ?> hm = create(hr, impl);
+        PersistenceManager<?, ?, ?, ?, ?, ?, ?, ?> hm = create(hr, impl);
         
         hm.merge(c);
         c.commit();
         
         hm.merge(c);
         c.commit();
-        
-        hr.id().setHolder(IntegerHolder.NULL_HOLDER);        
-    	hr.setStartedAt(new Date());
-    	hr.setFinishedAt(new Date());
+                       
+        hrc.id().setHolder(IntegerHolder.NULL_HOLDER);        
+    	hrc.setStartedAt(new Date());
+    	hrc.setFinishedAt(new Date());
     	hm.merge(c);
         c.commit();
         
@@ -294,14 +311,15 @@ public class PersistenceManagerTest2 extends TestCase  {
 	private <
 		A extends Attribute, 
 		R extends fi.tnie.db.ent.Reference, 
-		T extends ReferenceType<A, R, T, E, H, F, M>, 
-		E extends Entity<A, R, T, E, H, F, M>,
-		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M>
+		T extends ReferenceType<A, R, T, E, H, F, M, C>, 
+		E extends Entity<A, R, T, E, H, F, M, C>,
+		H extends ReferenceHolder<A, R, T, E, H, M, C>,
+		F extends EntityFactory<E, H, M, F, C>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
+		C extends Content
 	>
-	PersistenceManager<A, R, T, E, H, F, M> create(E e, Implementation impl) {
-		PersistenceManager<A, R, T, E, H, F, M> pm = new PersistenceManager<A, R, T, E, H, F, M>(e, impl);
+	PersistenceManager<A, R, T, E, H, F, M, C> create(E e, Implementation impl) {
+		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, impl);
 		return pm;
 	}
 	

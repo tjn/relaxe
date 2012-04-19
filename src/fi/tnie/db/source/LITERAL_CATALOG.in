@@ -42,7 +42,7 @@ public class LiteralCatalog
 	private Identifier name;
 	private SerializableEnvironment environment;	
 	private DefaultMutableCatalog content;
-	private Map<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> metaMap;
+	private Map<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> metaMap;
 	
 	private Map<LiteralTable, DefaultMutableTable> mutableTableMap;
 	private Map<LiteralColumn, DefaultMutableColumn> mutableColumnMap;		
@@ -170,12 +170,12 @@ public class LiteralCatalog
 //		Not sure if GWT compiler honors this behavior, though.
 	}
 	
-	private void populateMetaMap(Map<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> mm) 
+	private void populateMetaMap(Map<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> mm) 
 		throws EntityException {
 {{meta-map-population}}
 	}
 	
-	private void add(Map<String, EntityMetaData<?,?,?,?,?,?,?>> mm, LiteralBaseTable t, EntityMetaData<?,?,?,?,?,?,?> meta) 
+	private void add(Map<String, EntityMetaData<?,?,?,?,?,?,?,?>> mm, LiteralBaseTable t, EntityMetaData<?,?,?,?,?,?,?,?> meta) 
 		throws EntityException {
 		BaseTable baseTable = t.getTable();
 		meta.bind(baseTable);
@@ -623,7 +623,7 @@ public class LiteralCatalog
 	}
 	
 	@Override
-	public EntityMetaData<?, ?, ?, ?, ?, ?, ?> getMetaData(BaseTable table)  {
+	public EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> getMetaData(BaseTable table)  {
 		if (table == null) {
 			throw new NullPointerException("table");
 		}
@@ -631,10 +631,10 @@ public class LiteralCatalog
 		return this.metaMap.get(table.getQualifiedName());
 	}
 
-	private Map<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> getMetaMap() 
+	private Map<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> getMetaMap() 
 		throws EntityException {
 		if (metaMap == null) {
-			metaMap = new HashMap<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?>>();
+			metaMap = new HashMap<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>>();
 			populateMetaMap(metaMap);			
 		}
 

@@ -16,11 +16,11 @@ public class DefaultEntityBuildContext
 	private AttributeWriterFactory attributeWriterFactory;
 	private ColumnResolver columnResolver;
 	private DataObject.MetaData inputMetaData;
-	private EntityQuery<?, ?, ?, ?, ?, ?, ?, ?> query;
+	private EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> query;
 		
 	public DefaultEntityBuildContext(
 			MetaData inputMetaData,
-			EntityQuery<?, ?, ?, ?, ?, ?, ?, ?> query, 
+			EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> query, 
 			AttributeWriterFactory attributeWriterFactory,
 			ColumnResolver columnResolver) {
 		super();
@@ -42,7 +42,7 @@ public class DefaultEntityBuildContext
 		return inputMetaData;
 	}
 	
-	public EntityQuery<?, ?, ?, ?, ?, ?, ?, ?> getQuery() {
+	public EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> getQuery() {
 		return query;
 	}
 }

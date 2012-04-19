@@ -82,7 +82,7 @@ public abstract class PredicateAttributeTemplate<A extends Attribute>
 
 		public 
 		<
-			M extends EntityMetaData<A, ?, ?, ?, ?, ?, M>
+			M extends EntityMetaData<A, ?, ?, ?, ?, ?, M, ?>
 		>
 		Equals(M meta, A attribute, ValueExpression ve) {
 			this(attribute, ve);

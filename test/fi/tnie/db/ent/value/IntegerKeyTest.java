@@ -4,6 +4,7 @@
 package fi.tnie.db.ent.value;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.Reference;
@@ -26,9 +27,10 @@ public class IntegerKeyTest extends TestCase {
 	<
 		A extends Attribute,
 		Y extends Reference, 
-		Z extends ReferenceType<A, Y, Z, E, ?, ?, M>,		
-		E extends Entity<A, Y, Z, E, ?, ?, M>,
-		M extends EntityMetaData<A, Y, Z, E, ?, ?, M>		
+		Z extends ReferenceType<A, Y, Z, E, ?, ?, M, C>,		
+		E extends Entity<A, Y, Z, E, ?, ?, M, C>,
+		M extends EntityMetaData<A, Y, Z, E, ?, ?, M, C>,
+		C extends Content
 	>
 	void test(M meta, A name) {
 		IntegerKey<A, Z, E> ik1 = IntegerKey.get(meta, name);

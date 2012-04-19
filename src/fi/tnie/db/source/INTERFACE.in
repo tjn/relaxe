@@ -22,10 +22,11 @@ public interface {{table-interface}}
         {{table-interface}},
         {{table-interface}}.Holder,		
         {{table-interface}}.Factory,
-        {{table-interface}}.MetaData
+        {{table-interface}}.MetaData,
+        {{table-interface}}.Content
     > {{reference-list}} {
     
-	class Type extends ReferenceType<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData> {
+	class Type extends ReferenceType<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content> {
 		private static final long serialVersionUID = 1L;
 		
 		@Override
@@ -42,7 +43,7 @@ public interface {{table-interface}}
 	}
 	
 	public static class Holder
-		extends ReferenceHolder<Attribute, Reference, Type, {{table-interface}}, Holder, MetaData> {
+		extends ReferenceHolder<Attribute, Reference, Type, {{table-interface}}, Holder, MetaData, Content> {
 		
 		/**
 		 * 
@@ -68,13 +69,12 @@ public interface {{table-interface}}
 	}
 	
 	interface Factory
-		extends fi.tnie.db.ent.EntityFactory<{{table-interface}}, Holder, MetaData, Factory> {
+		extends fi.tnie.db.ent.EntityFactory<{{table-interface}}, Holder, MetaData, Factory, Content> {
 		
 	}
-	
-		
+			
 	interface MetaData
-		extends fi.tnie.db.ent.EntityMetaData<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData>		
+		extends fi.tnie.db.ent.EntityMetaData<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content>		
 		{{implemented-has-key-list}}
 	{		
 		@Override
@@ -87,7 +87,7 @@ public interface {{table-interface}}
 	}
 	
 	public class QueryTemplate
-		extends DefaultQueryTemplate<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, QueryTemplate>
+		extends DefaultQueryTemplate<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content, QueryTemplate>
 	{
 		/**
 		 * 
@@ -120,13 +120,14 @@ public interface {{table-interface}}
 	public static abstract class Key<
 		A extends fi.tnie.db.ent.Attribute,
 		R extends fi.tnie.db.ent.Reference,	
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M> & Has{{table-interface}}<A, R, T, E, H, F, M>,
-		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M> & Has{{table-interface}}Key<A, R, T, E, H, F, M>
+		T extends ReferenceType<A, R, T, E, H, F, M, C>,
+		E extends Entity<A, R, T, E, H, F, M, C> & Has{{table-interface}}<A, R, T, E, H, F, M, C>,
+		H extends ReferenceHolder<A, R, T, E, H, M, C>,
+		F extends EntityFactory<E, H, M, F, C>,
+		M extends EntityMetaData<A, R, T, E, H, F, M, C> & Has{{table-interface}}Key<A, R, T, E, H, F, M, C>,
+		C extends fi.tnie.db.ent.Content
 	>
-		extends AbstractEntityKey<A, R, T, E, H, F, M, {{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Key<A, R, T, E, H, F, M>> {
+		extends AbstractEntityKey<A, R, T, E, H, F, M, C, {{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Content, {{table-interface}}.Key<A, R, T, E, H, F, M, C>> {
 
 		private static final long serialVersionUID = 1L;
 		
@@ -164,7 +165,7 @@ public interface {{table-interface}}
 		}
 		
 		@Override
-		public {{table-interface}}.Key<A, R, T, E, H, F, M> self() {		
+		public {{table-interface}}.Key<A, R, T, E, H, F, M, C> self() {		
 			return this;
 		}
 	}
@@ -181,7 +182,7 @@ public interface {{table-interface}}
 
 		public static class Query
 			extends fi.tnie.db.ent.DefaultEntityTemplateQuery<
-				Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, QueryTemplate> {
+				Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content, QueryTemplate> {
 		
 			/**
 			 * 
@@ -200,10 +201,13 @@ public interface {{table-interface}}
 				super(root);
 			}
 		}
-  
-  	{{value-accessor-list}}  
-	    
-	{{abstract-accessor-list}}
+
+	interface Content extends fi.tnie.db.ent.Content {  
+  		{{value-accessor-list}}
+		{{abstract-accessor-list}}
+	}
+		
+	Content getContent();
 
 } 
 

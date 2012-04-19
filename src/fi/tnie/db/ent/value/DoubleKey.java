@@ -14,8 +14,8 @@ import fi.tnie.db.types.ReferenceType;
 
 public final class DoubleKey<	
 	A extends Attribute,
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?>
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
 >
 	extends AbstractPrimitiveKey<A, T, E, Double, DoubleType, DoubleHolder, DoubleKey<A, T, E>>
 {
@@ -30,17 +30,17 @@ public final class DoubleKey<
 	private DoubleKey() {
 	}
 
-	private DoubleKey(EntityMetaData<A, ?, T, E, ?, ?, ?> meta, A name) {
+	private DoubleKey(EntityMetaData<A, ?, T, E, ?, ?, ?, ?> meta, A name) {
 		super(meta, name);
 		meta.addKey(this);
 	}
 	
 	public static <
 		X extends Attribute,		 
-		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?>,
-		T extends Entity<X, ?, Z, T, ?, ?, ?>
+		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?, ?>,
+		T extends Entity<X, ?, Z, T, ?, ?, ?, ?>
 	>
-	DoubleKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?> meta, X a) {
+	DoubleKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?, ?> meta, X a) {
 		DoubleKey<X, Z, T> k = meta.getDoubleKey(a);
 		
 		if (k == null) {

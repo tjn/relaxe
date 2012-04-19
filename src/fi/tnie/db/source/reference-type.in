@@ -17,7 +17,7 @@ enum {{reference-type}} implements fi.tnie.db.ent.Reference {
         return (identifier == null) ? name() : identifier;
     }
     
-    public ReferenceType<?, ?, ?, ?, ?, ?, ?> type() {
+    public ReferenceType<?, ?, ?, ?, ?, ?, ?, ?> type() {
     	return null;
     }
 }    

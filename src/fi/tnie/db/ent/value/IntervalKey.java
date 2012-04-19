@@ -16,8 +16,8 @@ import fi.tnie.db.types.ReferenceType;
 
 public abstract class IntervalKey<
 	A extends Attribute,
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?, ?>,
 	V extends Interval<V>, 
 	P extends PrimitiveType<P>, 
 	H extends IntervalHolder<V, P>, 
@@ -36,15 +36,15 @@ public abstract class IntervalKey<
 	protected IntervalKey() {
 	}
 
-	protected IntervalKey(EntityMetaData<A, ?, ?, E, ?, ?, ?> meta, A name) {
+	protected IntervalKey(EntityMetaData<A, ?, ?, E, ?, ?, ?, ?> meta, A name) {
 		super(meta, name);
 	}
 	
 
 	public static final class YearMonth<
 		A extends Attribute,		
-		T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
-		E extends Entity<A, ?, T, E, ?, ?, ?>
+		T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
+		E extends Entity<A, ?, T, E, ?, ?, ?, ?>
 	>
 		extends IntervalKey<A, T, E, Interval.YearMonth, IntervalType.YearMonth, IntervalHolder.YearMonth, IntervalKey.YearMonth<A, T, E>> {
 	
@@ -60,17 +60,17 @@ public abstract class IntervalKey<
 		private YearMonth() {
 		}
 
-		protected YearMonth(EntityMetaData<A, ?, T, E, ?, ?, ?> meta, A name) {
+		protected YearMonth(EntityMetaData<A, ?, T, E, ?, ?, ?, ?> meta, A name) {
 			super(meta, name);
 			meta.addKey(this);
 		}
 		
 		public static <
 			X extends Attribute,		
-			Z extends ReferenceType<X, ?, Z, T, ?, ?, ?>,
-			T extends Entity<X, ?, Z, T, ?, ?, ?>
+			Z extends ReferenceType<X, ?, Z, T, ?, ?, ?, ?>,
+			T extends Entity<X, ?, Z, T, ?, ?, ?, ?>
 		>
-		YearMonth<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?> meta, X a) {
+		YearMonth<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?, ?> meta, X a) {
 			YearMonth<X, Z, T> k = meta.getYearMonthIntervalKey(a);
 		
 			if (k == null) {
@@ -120,8 +120,8 @@ public abstract class IntervalKey<
 	
 	public static final class DayTime<
 		A extends Attribute,
-		T extends ReferenceType<A, ?, T, E, ?, ?, ?>,		
-		E extends Entity<A, ?, T, E, ?, ?, ?>
+		T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,		
+		E extends Entity<A, ?, T, E, ?, ?, ?, ?>
 	>
 		extends IntervalKey<A, T, E, Interval.DayTime, IntervalType.DayTime, IntervalHolder.DayTime, 
 			IntervalKey.DayTime<A, T, E>> {
@@ -131,17 +131,17 @@ public abstract class IntervalKey<
 		 */
 		private static final long serialVersionUID = 1349100151581333245L;
 		
-		public DayTime(EntityMetaData<A, ?, T, E, ?, ?, ?> meta, A a) {
+		public DayTime(EntityMetaData<A, ?, T, E, ?, ?, ?, ?> meta, A a) {
 			super(meta, a);
 			meta.addKey(this);
 		}
 
 		public static <
 			X extends Attribute,
-			Z extends ReferenceType<X, ?, Z, T, ?, ?, ?>,
-			T extends Entity<X, ?, Z, T, ?, ?, ?>
+			Z extends ReferenceType<X, ?, Z, T, ?, ?, ?, ?>,
+			T extends Entity<X, ?, Z, T, ?, ?, ?, ?>
 		>
-		IntervalKey.DayTime<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?> meta, X a) {			
+		IntervalKey.DayTime<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?, ?> meta, X a) {			
 			IntervalKey.DayTime<X, Z, T> k = meta.getDayTimeIntervalKey(a);
 			
 			if (k == null) {

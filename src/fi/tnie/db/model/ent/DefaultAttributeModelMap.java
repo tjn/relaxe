@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.value.PrimitiveKey;
@@ -19,11 +20,12 @@ import fi.tnie.db.types.ReferenceType;
 
 public abstract class DefaultAttributeModelMap<
 	A extends Attribute,
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?, C>,
+	E extends Entity<A, ?, T, E, ?, ?, ?, C>,
 	V extends Serializable,
 	P extends PrimitiveType<P>,
 	H extends PrimitiveHolder<V, P>,
+	C extends Content,
 	D extends AttributeModelMap<A, V, P, H, T, E, D>	
 	>
 	implements AttributeModelMap<A, V, P, H, T, E, D> {

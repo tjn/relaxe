@@ -13,8 +13,8 @@ import fi.tnie.db.types.TimeType;
 
 public class TimeAccessor<
 	A extends Attribute,	
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,	
-	E extends Entity<A, ?, T, E, ?, ?, ?>
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,	
+	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
 >
 	extends AbstractPrimitiveAccessor<A, T, E, Date, TimeType, TimeHolder, TimeKey<A, T, E>> {
 
