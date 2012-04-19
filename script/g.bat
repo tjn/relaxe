@@ -1,3 +1,3 @@
 @echo off
-call generate.bat > generate.log 2>&1
+call generate.bat > go.log 2>ge.log
 @echo on
