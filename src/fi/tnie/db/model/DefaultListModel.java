@@ -10,7 +10,7 @@ import java.util.List;
 
 
 
-public class DefaultListModel<E extends Comparable<E>>
+public class DefaultListModel<E>
 	extends AbstractValueModel<List<E>> 
 	implements ListModel<E> {
 	
@@ -20,7 +20,7 @@ public class DefaultListModel<E extends Comparable<E>>
 	
 	private ModelList<E> content;
 		
-	private static class ModelList<I extends Comparable<I>>
+	private static class ModelList<I>
 		extends AbstractList<I> {
 		
 		private DefaultListModel<I> model;				
