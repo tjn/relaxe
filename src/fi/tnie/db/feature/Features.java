@@ -30,7 +30,7 @@ import fi.tnie.db.query.QueryException;
 public class Features
     extends AbstractFeature {
     
-    private static final String FEATURES_SCHEMA = "core";    
+    private static final String FEATURES_SCHEMA = "features";    
     private static final String FEATURE_TABLE = "feature";
     private static final String DEPENDENCY_TABLE = "dependency";
     
