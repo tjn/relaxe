@@ -13,9 +13,9 @@ import fi.tnie.db.gen.ent.personal.HourReport;
 import fi.tnie.db.gen.ent.personal.Organization;
 import fi.tnie.db.gen.ent.personal.Person;
 import fi.tnie.db.gen.ent.personal.PersonalFactory;
+import fi.tnie.db.gen.ent.personal.HourReport.Attribute;
 import fi.tnie.db.gen.ent.personal.HourReport.Reference;
 import fi.tnie.db.gen.ent.personal.HourReport.Type;
-import fi.tnie.db.gen.ent.personal.Organization.Key;
 import fi.tnie.db.map.TableMapper;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
@@ -77,7 +77,7 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
         PGImplementation pgi = new PGImplementation();
         
         HourReport hr = pf.newHourReport();
-        Key<Reference, Type, HourReport, ?> ok = HourReport.FK_HHR_EMPLOYER;
+        Organization.Key<Attribute, Reference, Type, HourReport, ?, ?, ?> ok = HourReport.FK_HHR_EMPLOYER;
                        
         Organization org = pf.newOrganization();        
         ok.set(hr, org);

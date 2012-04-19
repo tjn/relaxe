@@ -91,7 +91,7 @@ public class DefaultEntityTemplateQuery<
 		}
 		
 		this.template = rootTemplate;
-		this.type = rootTemplate.getMetaData().getType();
+		this.type = rootTemplate.getMetaData().type();
 	}
 
 	public DefaultEntityTemplateQuery(Q root, boolean init) 

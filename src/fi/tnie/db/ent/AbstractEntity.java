@@ -140,8 +140,8 @@ public abstract class AbstractEntity<
 	}
 	
 	@Override
-	public T getType() {
-	 	return getMetaData().getType();
+	public T type() {
+	 	return getMetaData().type();
 	}
 	
 	@Override

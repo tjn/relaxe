@@ -48,8 +48,8 @@ public abstract class DefaultEntityKey<
 		this.destination = destination;
 		this.name = name;
 		
-		if (destination.getType() != name.type()) {
-			throw new IllegalArgumentException("type mismatch: reference-type="  +name.type() + "; destination-type=" + destination.getType()); 
+		if (destination.type() != name.type()) {
+			throw new IllegalArgumentException("type mismatch: reference-type="  +name.type() + "; destination-type=" + destination.type()); 
 		} 
 	}
 	
@@ -94,7 +94,7 @@ public abstract class DefaultEntityKey<
 			
 	@Override
 	public RT type() {	
-		return destination.getType();
+		return destination.type();
 	}
 	
 	@Override

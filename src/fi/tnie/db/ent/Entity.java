@@ -145,7 +145,7 @@ public interface Entity<
 	 */	
 	M getMetaData();
 		
-	T getType();
+	T type();
 	
 	H ref();
 	

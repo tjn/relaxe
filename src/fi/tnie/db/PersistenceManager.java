@@ -658,7 +658,7 @@ public class PersistenceManager<
         Set<Column> pkcols = meta.getPKDefinition();
 
         if (pkcols.isEmpty()) {
-            throw new EntityException("no pk-columns available for entity type " + pe.getType());
+            throw new EntityException("no pk-columns available for entity type " + pe.type());
         }
 
         Predicate p = null;

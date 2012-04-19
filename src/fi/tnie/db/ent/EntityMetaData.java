@@ -127,7 +127,7 @@ public interface EntityMetaData<
 	 */
 	Catalog getCatalog();
 
-	T getType();
+	T type();
 
 
 	void addKey(DecimalKey<A, T, E> key);

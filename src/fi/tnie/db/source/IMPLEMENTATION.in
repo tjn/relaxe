@@ -82,8 +82,8 @@ public class {{table-impl-class}}
         }
         
         @Override
-	    public Type getType() {
-	     	return {{table-interface}}.TYPE;
+	    public Type type() {
+	     	return {{table-interface}}.Type.TYPE;
 	    }   
 	    
 	    @Override
@@ -224,11 +224,12 @@ public class {{table-impl-class}}
 	    }	
 	*/
 	
+
 	
 	{{value-accessor-list}}
-    
-        
-    {{accessor-list}}
+ 
+  	{{accessor-list}}
+  	
     
     /**
      * {reference-map-list} below: 

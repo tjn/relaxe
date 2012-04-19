@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.DataObjectQueryResult;
@@ -39,13 +37,11 @@ import fi.tnie.db.gen.ent.personal.Project;
 import fi.tnie.db.gen.ent.personal.HourReport.MetaData;
 import fi.tnie.db.gen.ent.personal.HourReport.Query;
 import fi.tnie.db.gen.ent.personal.HourReport.Type;
-import fi.tnie.db.log.DefaultLogger;
-import fi.tnie.db.paging.SimplePager;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.query.QueryResult;
+import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
-import junit.framework.TestCase;
 
 public class EntityQueryExecutorTest extends AbstractUnitTest {
 	
@@ -80,13 +76,14 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 				HourReport.Factory, 
 				HourReport.MetaData,
 				HourReport.QueryTemplate				
-			> qe = createExecutor(HourReport.TYPE.getMetaData(), imp);
+			> qe = createExecutor(HourReport.Type.TYPE.getMetaData(), imp);
 			
 			
 			// Query q = template.newQuery(limit, offset);
 			
 			EntityQueryResult<HourReport.Attribute, HourReport.Reference, Type, HourReport, HourReport.Holder, HourReport.Factory, MetaData, HourReport.QueryTemplate> er = qe.execute(q, opts, c);
 			assertNotNull(er);
+			
 			DataObjectQueryResult<EntityDataObject<HourReport>> qr = er.getContent(); 
 			// QueryResult<EntityDataObject<HourReport>> qr = qe.execute(q, true, c);
 			assertNotNull(qr);
@@ -223,6 +220,10 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 	public void testExecute6() throws Exception {
 		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate(); 
 		hrq.addAllAttributes();
+		
+		Project.QueryTemplate jt = new Project.QueryTemplate();
+		jt.addAllAttributes();		
+		hrq.setTemplate(HourReport.FK_HHR_PROJECT, jt);
 							
 		Organization.QueryTemplate ot = new Organization.QueryTemplate();
 		ot.remove(ot.getMetaData().attributes());
@@ -244,6 +245,13 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 			assertNotNull(eo);
 			HourReport hr = eo.getRoot();
 			assertNotNull(hr);
+			
+			IntervalHolder.DayTime dt = hr.getInterval(HourReport.TRAVEL_TIME);
+			assertNotNull(dt);
+			
+			Project.Holder jh = hr.getProject(HourReport.FK_HHR_PROJECT);
+			assertNotNull(jh);
+			assertNotNull(jh.value());			
 			
 			Organization.Holder oh = hr.getOrganization(HourReport.FK_HHR_EMPLOYER);
 			assertNotNull(oh);
@@ -389,37 +397,15 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 	}
 
 	
-	public void testFetcher() throws Exception {
-		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate();
-				
-		PGImplementation imp = new PGImplementation();
-		Connection c = newConnection(imp);
-		HourReportFetcher f = new HourReportFetcher(imp, c);
-		HourReportPager p = new HourReportPager(hrq, f);
-		
-		
-		p.getAction(SimplePager.Command.LAST).execute();
-		
-		p.getAction(SimplePager.Command.NEXT).execute();
-		
-//		p.fetchCurrent();
-//		p.fetchFirst();
-//		p.fetchNextPage();
-//		p.fetchLast();
-//		p.fetchPrevious();
-		
-		c.close();
-		
-		// DefaultEntityQueryPager<Attribute, Reference, ReferenceType<A,R,T,E,H,F,M>, Entity<A,R,T,E,H,F,M>, ReferenceHolder<A,R,T,E,H,M>, EntityFactory<E,H,M,F>, EntityMetaData<A,R,T,E,H,F,M>, EntityQueryTemplate<A,R,T,E,H,F,M,QT>>		
-	}
 	
 	public void testProject() throws SQLException, QueryException, EntityException {
 		Project.QueryTemplate qt = new Project.QueryTemplate();
 		
 		qt.add(
 				Project.Attribute.ALIAS, 
-				Project.Attribute.NAME, 
-				Project.Attribute.CREATED_AT
+				Project.Attribute.NAME
+//				, 
+//				Project.Attribute.CREATED_AT
 		);
 		
 		Organization.QueryTemplate ct = new Organization.QueryTemplate();

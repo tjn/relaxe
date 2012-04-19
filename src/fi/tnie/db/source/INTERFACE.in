@@ -37,10 +37,9 @@ public interface {{table-interface}}
 		public Type self() {
 			return this;
 		}
+		
+		public static final Type TYPE = new Type();
 	}
-	
-
-	Type TYPE = new Type();
 	
 	public static class Holder
 		extends ReferenceHolder<Attribute, Reference, Type, {{table-interface}}, Holder, MetaData> {
@@ -60,7 +59,7 @@ public interface {{table-interface}}
 	
 		@Override
 		public Type getType() {
-			return {{table-interface}}.TYPE;
+			return {{table-interface}}.Type.TYPE;
 		}
 		
 		public static {{table-interface}}.Holder valueOf({{table-interface}} value) {
@@ -161,7 +160,7 @@ public interface {{table-interface}}
 
 		@Override
 		public {{table-interface}}.Type type() {
-			return {{table-interface}}.TYPE;
+			return {{table-interface}}.Type.TYPE;
 		}
 		
 		@Override
@@ -201,9 +200,10 @@ public interface {{table-interface}}
 				super(root);
 			}
 		}
-    
-{{value-accessor-list}}
-    
-{{abstract-accessor-list}}
+  
+  	{{value-accessor-list}}  
+	    
+	{{abstract-accessor-list}}
+
 } 
 
