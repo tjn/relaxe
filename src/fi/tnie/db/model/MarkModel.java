@@ -11,6 +11,7 @@ public class MarkModel<S>
 	public MarkModel(ValueModel<S> source, S mark) {
 		super(source);
 		this.mark = mark;
+//		init(source.get());
 	}
 	
 	protected boolean match(S value, S mark) {
