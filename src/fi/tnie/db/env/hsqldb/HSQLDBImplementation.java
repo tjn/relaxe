@@ -93,7 +93,7 @@ public class HSQLDBImplementation
 
 
     @Override
-    public String driverClassName() {
+    public String defaultDriverClassName() {
         return "org.hsqldb.jdbcDriver";
     }
 

@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.env;
 
-import java.sql.Driver;
-
 import fi.tnie.db.ValueAssignerFactory;
 import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.AttributeWriterFactory;
@@ -20,9 +18,8 @@ public interface Implementation
 	 * @return
 	 */
 	CatalogFactory catalogFactory();
-	String driverClassName();
+	String defaultDriverClassName();
 	SQLSyntax getSyntax();
-
 	
 	GeneratedKeyHandler generatedKeyHandler();
 	AttributeWriterFactory getAttributeWriterFactory();
@@ -34,7 +31,7 @@ public interface Implementation
 	String createJdbcUrl(String host, int port, String database);
 	
 	SerializableEnvironment environment();
+		
 	
-	Driver getDriver();
-			
+//	Driver getDriver();			
 }

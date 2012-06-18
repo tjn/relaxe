@@ -5,6 +5,7 @@ package fi.tnie.db;
 
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
@@ -111,14 +112,14 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 		}
 	}
 
-	private Connection newConnection(Implementation imp) throws SQLException {
+	private Connection newConnection(Implementation imp) throws Exception {
 		Properties cfg = new Properties();
 		cfg.setProperty("user", "test");
 		cfg.setProperty("password", "test");
 		
 		String url = imp.createJdbcUrl("127.0.0.1", "test");
-		Driver drv = imp.getDriver();
-		Connection c = drv.connect(url, cfg);
+		Class.forName(imp.defaultDriverClassName());
+		Connection c = DriverManager.getConnection(url, cfg);
 		return c;
 	}
 	
@@ -346,7 +347,7 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 		ht.addAllAttributes();
 		
 		PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p = 
-			PredicateAttributeTemplate.eq(HourReport.Attribute.ID, null);
+			PredicateAttributeTemplate.eq(HourReport.Attribute.ID, (Integer) null);
 		
 		ht.addPredicate(p);
 		
@@ -365,19 +366,29 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 	
 	
 	public void testNullPredicate() throws Exception {
-		PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p = PredicateAttributeTemplate.eq(HourReport.Attribute.ID, null);
+		PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p = PredicateAttributeTemplate.eq(HourReport.Attribute.ID, (Integer) null);
 		QueryResult<EntityDataObject<HourReport>> qr = executeWithPredicate(p);
 		assertNotNull(qr);
 		assertEquals(0, qr.size());
 	}
 	
-	public void testPredicate() throws Exception {
+	public void testIntPredicate() throws Exception {
 		PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p = 
 			PredicateAttributeTemplate.eq(HourReport.Attribute.ID, Integer.valueOf(30));
 		
 		QueryResult<EntityDataObject<HourReport>> qr = executeWithPredicate(p);
 		assertNotNull(qr);
 		assertEquals(1, qr.size());
+	}
+	
+	
+	public void testStringPredicate() throws Exception {
+		PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p = 
+			PredicateAttributeTemplate.eq(HourReport.Attribute.COMMENT, "palaveri");
+		
+		QueryResult<EntityDataObject<HourReport>> qr = executeWithPredicate(p);
+		assertNotNull(qr);
+		assertEquals(5, qr.size());
 	}
 	
 	public QueryResult<EntityDataObject<HourReport>> executeWithPredicate(PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p) throws Exception {
@@ -401,7 +412,7 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 
 	
 	
-	public void testProject() throws SQLException, QueryException, EntityException {
+	public void testProject() throws SQLException, QueryException, EntityException, ClassNotFoundException {
 		Project.QueryTemplate qt = new Project.QueryTemplate();
 		
 		qt.add(

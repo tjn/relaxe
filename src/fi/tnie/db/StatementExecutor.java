@@ -53,9 +53,14 @@ public class StatementExecutor {
 	    QueryTime qt = null;
 
 		try {
-			String qs = statement.generate();
+			long start = System.currentTimeMillis();
 			
-			logger().debug("execute: qs=" + qs);
+			String qs = statement.generate();
+			long elapsed = System.currentTimeMillis() - start;
+			
+			logger().info("generate(): " + elapsed + "ms");
+			
+			logger().info("execute: qs=" + qs);
 			
 			PreparedStatement ps = null;
 			Name name = statement.getName();
@@ -87,10 +92,16 @@ public class StatementExecutor {
 					
 					final long f = System.currentTimeMillis();
 					
+					logger().info("executeQuery(): " + (f - s) + "ms");
+					
 					apply(qp, rs);
 					
 					final long p = System.currentTimeMillis();
 					qt = new QueryTime(f - s, p - f);
+				}
+				catch (NullPointerException e) {
+					logger.error(e.getMessage(), e);
+					throw e;
 				}
 				finally {
 					doClose(rs);
@@ -103,11 +114,14 @@ public class StatementExecutor {
 				
 				final long s = System.currentTimeMillis();
 				int updated = ps.executeUpdate();
-				final long u = System.currentTimeMillis();				
+				final long u = System.currentTimeMillis();
+				
+				logger().info("executeUpdate(): " + (u - s) + "ms");
+				
 				qt = new QueryTime(u - s);				
 				
-				// ResultSet rs = ps.getResultSet();				
-								
+				// ResultSet rs = ps.getResultSet();			
+												
 				qp.updated(updated);
 				
 				if (updated > 0) {

@@ -93,16 +93,16 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
     
     @Override
     protected String getSchemaNameFromImportedKeys(DatabaseMetaData meta, ResultSet fkcols) throws SQLException {
-        return fkcols.getString(5);     
+        return fkcols.getString(1);     
     }
     
     @Override
-    public String getReferencedTableCatalogName(DatabaseMetaData meta, ResultSet fkcols) throws SQLException {       
+    public String getReferencingTableCatalogName(DatabaseMetaData meta, ResultSet fkcols) throws SQLException {       
         return null;
     }
     
     @Override
-    public String getReferencedTableSchemaName(DatabaseMetaData meta, ResultSet fkcols) throws SQLException {        
+    public String getReferencingTableSchemaName(DatabaseMetaData meta, ResultSet fkcols) throws SQLException {        
         return fkcols.getString(5);
     }
 

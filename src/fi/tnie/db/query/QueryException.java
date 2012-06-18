@@ -20,4 +20,8 @@ public class QueryException extends Exception {
 		super(msg, cause);	
 	}
 	
+	public QueryException(String msg) {
+		super(msg);
+	}
+	
 }

@@ -19,7 +19,7 @@ import fi.tnie.db.query.DataObjectQuery;
 public class QueryExecutorTest
 	extends AbstractUnitTest {
 	
-	public void testQuery() throws EntityException, SQLException, QueryException {
+	public void testQuery() throws EntityException, SQLException, QueryException, ClassNotFoundException {
 		Implementation imp = getImplementation();
 		Connection c = getContext().newConnection();
 		LiteralCatalog.getInstance();

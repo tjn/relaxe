@@ -77,7 +77,8 @@ public class AbstractPrimitiveAccessor<
 		
 	public S get() 
 		throws EntityRuntimeException {
-		return getHolder().value();
+		H h = getHolder();
+		return (h == null) ? null : h.value();
 	}
 
 	public E getTarget() {

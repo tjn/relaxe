@@ -165,8 +165,8 @@ public class Builder
 	    		ms.add(mt);	    		
 	    			    		
 	    		for (Column c : t.columns()) {
-	    			DataTypeImpl d = new DataTypeImpl(c.getDataType());
-	    			mt.add(new DefaultMutableColumn(mt, c.getUnqualifiedName(), d));	    			
+	    			DataTypeImpl d = new DataTypeImpl(c.getDataType());	    			
+	    			mt.add(new DefaultMutableColumn(mt, c.getUnqualifiedName(), d, c.isAutoIncrement()));	    			
 				}	    		
 			}
 		}

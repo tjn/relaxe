@@ -32,7 +32,8 @@ public class SimpleTestContext
     private String jdbcURL;
     private Properties driverConfig;
             
-    public SimpleTestContext(Implementation impl, Driver driver, String jdbcURL, Properties driverConfig) {            
+    public SimpleTestContext(Implementation impl, Driver driver, String jdbcURL, Properties driverConfig)
+    	throws ClassNotFoundException {            
         super();
         this.implementation = impl;            
         this.driver = driver;
@@ -45,7 +46,7 @@ public class SimpleTestContext
     
     public SimpleTestContext(Implementation impl, String host, String database, String user, String passwd) {            
         super();                
-		Driver d = load(impl.driverClassName());
+		Driver d = load(impl.defaultDriverClassName());
 		String url = impl.createJdbcUrl(host, database);		
 		Properties drvcfg = new Properties();
 		drvcfg.setProperty("user", user);		
@@ -144,10 +145,11 @@ public class SimpleTestContext
     }
     
 	@Override
-	public Connection newConnection() throws SQLException {
-		Driver d = getImplementation().getDriver();		
+	public Connection newConnection() throws SQLException {		
+		Driver d = this.driver;		
 		Properties cfg = getDriverConfig();
 		Connection c = d.connect(getJdbcURL(), cfg);				
+
 		return c;
 	}
 }

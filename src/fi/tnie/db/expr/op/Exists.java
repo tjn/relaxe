@@ -5,6 +5,7 @@ package fi.tnie.db.expr.op;
 
 import fi.tnie.db.expr.CompoundElement;
 import fi.tnie.db.expr.ElementVisitor;
+import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.Predicate;
 import fi.tnie.db.expr.SelectStatement;
@@ -19,7 +20,7 @@ public class Exists
 	 * 
 	 */
 	private static final long serialVersionUID = 7282243674920197042L;
-	private SelectStatement query;
+	private QueryExpression query;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -27,7 +28,7 @@ public class Exists
 	protected Exists() {
 	}
 
-	public Exists(SelectStatement query) {
+	public Exists(QueryExpression query) {
 		super();
 		
 		if (query == null) {

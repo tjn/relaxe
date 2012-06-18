@@ -86,6 +86,10 @@ public class PGInsert
 	public static class ReturningClause
 		extends AbstractClause {
 			
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7588547880513689368L;
 		private ValueElement e;
 	
 		public ReturningClause() {

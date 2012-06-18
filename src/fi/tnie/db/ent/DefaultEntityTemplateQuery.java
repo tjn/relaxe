@@ -76,6 +76,8 @@ public class DefaultEntityTemplateQuery<
 	private transient Map<EntityQuerySortKey<?>, ColumnReference> sortKeyColumnMap = new HashMap<EntityQuerySortKey<?>, ColumnReference>();	
 	private transient Map<EntityQueryPredicate<?>, ColumnReference> predicateColumnMap = new HashMap<EntityQueryPredicate<?>, ColumnReference>();
 	
+	private transient Map<EntityQueryPredicate<?>, TableReference> tableReferenceMap = new HashMap<EntityQueryPredicate<?>, TableReference>();
+	
 	private transient List<ColumnReference> rootPrimaryKey; // NS	
 	private Q template;
 					
@@ -118,27 +120,38 @@ public class DefaultEntityTemplateQuery<
 		if (table == null) {
 			throw new NullPointerException("EntityMetaData.getBaseTable()");
 		}		
-	
+				
+		List<EntityQueryPredicate<?>> apl = new ArrayList<EntityQueryPredicate<?>>();		
+		addTemplatePredicates(root, apl);
+			
 		DefaultTableExpression q = new DefaultTableExpression();
 		HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>> visited = new HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>>();
 
 		AbstractTableReference tref = fromTemplate(root, null, null, null, q, visited);
-		
 		
 		logger().debug("ref: " + tref);		
 		logger().debug("originMap: " + originMap);
 		logger().debug("metaDataMap: " + metaDataMap);
 		
 		q.setFrom(new From(tref));
+								
+		List<EntityQueryPredicate<?>> pl = apl;		
 		
-		List<EntityQueryPredicate<?>> pl = root.allPredicates();
-		
-		if (pl != null && (!pl.isEmpty())) {			
+		if (pl != null && (!pl.isEmpty())) {
+			
+//			EntityQueryPredicateContext pc = new EntityQueryPredicateContext() {				
+//				@Override
+//				public TableReference getTableReference(EntityQueryPredicate<?> p) {
+//					return tableReferenceMap.get(p);
+//				}
+//			};
+						
 			Predicate ap = null;
 			
 			for (EntityQueryPredicate<?> p : pl) {
+				TableReference ptr = tableReferenceMap.get(p);				
 				ColumnReference cr = predicateColumnMap.get(p);				
-				Predicate qp = p.predicate(cr);
+				Predicate qp = p.predicate(ptr, cr);
 				ap = AndPredicate.newAnd(ap, qp);
 			}
 			
@@ -180,6 +193,36 @@ public class DefaultEntityTemplateQuery<
 		}
 		
 		logger().debug("init - exit");
+	}
+	
+	
+	
+	private <
+		QA extends Attribute,
+		QR extends Reference,
+		QT extends ReferenceType<QA, QR, QT, QE, QH, QF, QM, QC>,
+		QE extends Entity<QA, QR, QT, QE, QH, QF, QM, QC>,
+		QH extends ReferenceHolder<QA, QR, QT, QE, QH, QM, QC>,
+		QF extends EntityFactory<QE, QH, QM, QF, QC>,
+		QM extends EntityMetaData<QA, QR, QT, QE, QH, QF, QM, QC>,
+		QC extends Content,
+		QQ extends EntityQueryTemplate<QA, QR, QT, QE, QH, QF, QM, QC, QQ>
+	>
+	
+	void addTemplatePredicates(QQ qt, List<EntityQueryPredicate<?>> apl) {
+		apl.addAll(qt.allPredicates());
+		
+		QM meta = qt.getMetaData();		
+		Set<QR> rs = meta.relationships();
+		
+		for (QR qr : rs) {
+			EntityKey<QA, QR, QT, QE, QH, QF, QM, QC, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(qr);
+			EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?> t = qt.getTemplate(k);
+			
+			if (t != null) {
+				addTemplatePredicates(t.self(), apl);
+			}
+		}
 	}
 
 
@@ -246,8 +289,7 @@ public class DefaultEntityTemplateQuery<
 		}					
 
 		addAttributes(template, s, tref);
-		
-		
+				
 		List<EntityQueryPredicate<MA>> ps = template.predicates();
 		
 		for (EntityQueryPredicate<MA> k : ps) {
@@ -257,8 +299,10 @@ public class DefaultEntityTemplateQuery<
 			if (a != null) {			
 				Column c = meta.getColumn(a);
 				cref = new ColumnReference(tref, c);
-				predicateColumnMap.put(k, cref);
+				predicateColumnMap.put(k, cref);				
 			}
+						
+			tableReferenceMap.put(k, tref);
 		}		
 		
 		List<EntityQuerySortKey<MA>> keys = template.sortKeys();
@@ -294,8 +338,7 @@ public class DefaultEntityTemplateQuery<
 	>
 	AbstractTableReference processReferences(KQ template, AbstractTableReference qref, TableReference tref, DefaultTableExpression q, Set<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>> visited) throws EntityRuntimeException, CyclicTemplateException {
 		
-		logger().debug("processReferences - enter");
-		
+		logger().debug("processReferences - enter");		
 
 		KM meta = template.getMetaData();
 		
@@ -343,6 +386,8 @@ public class DefaultEntityTemplateQuery<
 	void addAttributes(DQ template, Select s, TableReference tref) throws EntityRuntimeException {
 		DM meta = template.getMetaData();
 		Set<MA> as = meta.attributes();
+		
+		Set<Column> pks = meta.getPKDefinition();
 						
 		for (MA a : as) {
 			EntityQueryTemplateAttribute ta = template.get(a);
@@ -352,6 +397,11 @@ public class DefaultEntityTemplateQuery<
 			}
 			
 			Column c = meta.getColumn(a);
+			
+			if (pks.contains(c)) {
+				continue;
+			}			
+			
 			ColumnReference cref = new ColumnReference(tref, c);
 			
 			getColumnMap().put(ta, cref);

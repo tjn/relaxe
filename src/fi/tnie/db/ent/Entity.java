@@ -15,6 +15,7 @@ import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
+import fi.tnie.db.rpc.StringHolder;
 import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.rpc.VarcharHolder;
@@ -28,6 +29,7 @@ import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
+import fi.tnie.db.ent.value.StringKey;
 import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
@@ -154,6 +156,28 @@ public interface Entity<
 	
 	H ref();
 	
+
+	public <
+		P extends PrimitiveType<P>,
+		SH extends StringHolder<P>,
+		K extends StringKey<A, T, E, P, SH, K>
+	>
+	SH getString(K k) throws EntityRuntimeException;
+	
+	public <
+		P extends PrimitiveType<P>,
+		SH extends StringHolder<P>,
+		K extends StringKey<A, T, E, P, SH, K>
+	>
+	void setString(K k, SH s) throws EntityRuntimeException;	
+		
+	public <
+		P extends PrimitiveType<P>,
+		SH extends StringHolder<P>,
+		K extends StringKey<A, T, E, P, SH, K>
+	>
+	void setString(K k, String s) throws EntityRuntimeException;	
+	
 	IntegerHolder getInteger(IntegerKey<A, T, E> k)
 		throws EntityRuntimeException;
 	VarcharHolder getVarchar(VarcharKey<A, T, E> k)
@@ -275,6 +299,25 @@ public interface Entity<
 		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
 	> 
 	boolean has(K key);
+	
+	
+	
+	/**
+	 * 
+	 *  
+	 * @param <VV>
+	 * @param <VT>
+	 * @param <VH>
+	 * @param <K>
+	 * @param key
+	 */
+	public <		
+		VV extends Serializable,
+		VT extends PrimitiveType<VT>,
+		VH extends PrimitiveHolder<VV, VT>,	
+		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
+	> 
+	boolean match(K key, E another);	
 	
 //	/**
 //	 * Returns true if and only if this entity has currently the value holder set for the reference named by <code>r</code>.

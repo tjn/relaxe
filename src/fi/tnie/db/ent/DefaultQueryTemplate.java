@@ -75,7 +75,7 @@ public abstract class DefaultQueryTemplate<
 		RQ extends EntityQueryTemplate<RA, RR, RT, RE, RH, RF, RM, RC, RQ>
 	>	 
 	void setTemplate(RK k, RQ newTemplate) {
-		getTemplateMap().put(k.name(), newTemplate);		
+		getTemplateMap().put(k.name(), newTemplate);
 	};
 	
 	private Map<A, EntityQueryTemplateAttribute> getAttributeMap() {

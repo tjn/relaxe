@@ -22,7 +22,7 @@ import fi.tnie.db.ui.action.Action;
 
 public class DefaultDataObjectPagerTest extends AbstractUnitTest {
 	
-	public void testPager() throws SQLException {
+	public void testPager() throws SQLException, ClassNotFoundException {
 		
 		LiteralCatalog.getInstance();
 		

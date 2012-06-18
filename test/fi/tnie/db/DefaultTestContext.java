@@ -5,6 +5,7 @@ package fi.tnie.db;
 
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -51,7 +52,7 @@ public class DefaultTestContext
 	}
 
 	@Override
-	public Catalog getCatalog() throws SQLException, QueryException {
+	public Catalog getCatalog() throws SQLException, QueryException, ClassNotFoundException {
 		if (catalog == null) {
 			Connection c = newConnection();
 			CatalogFactory cf = this.implementation.catalogFactory();
@@ -69,10 +70,12 @@ public class DefaultTestContext
 	}
 
 	@Override
-	public Connection newConnection() throws SQLException {
+	public Connection newConnection() throws SQLException, ClassNotFoundException {
 		Implementation imp = getImplementation();
-		Driver drv = imp.getDriver();
-		Connection c = drv.connect(jdbcUrl, jdbcProperties);		
+//		Driver drv = imp.getDriver();		
+//		Connection c = drv.connect(jdbcUrl, jdbcProperties);
+		Class.forName(imp.defaultDriverClassName());
+		Connection c = DriverManager.getConnection(jdbcUrl, jdbcProperties);		
 		return c;
 	}
 	

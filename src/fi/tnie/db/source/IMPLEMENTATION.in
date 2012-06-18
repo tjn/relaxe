@@ -166,7 +166,7 @@ public class {{table-impl-class}}
 
     @Override       
     public {{table-interface}}MetaData getMetaData() {      
-        return {{table-interface}}MetaData.instance;
+        return {{table-interface}}MetaData.getInstance();
     }
     
     public static class FactoryImpl

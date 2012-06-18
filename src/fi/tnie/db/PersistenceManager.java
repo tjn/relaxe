@@ -6,6 +6,7 @@ package fi.tnie.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedHashMap;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Content;
@@ -34,6 +35,8 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.env.GeneratedKeyHandler;
 import fi.tnie.db.env.Implementation;
+import fi.tnie.db.exec.QueryProcessor;
+import fi.tnie.db.exec.QueryProcessorAdapter;
 import fi.tnie.db.expr.Assignment;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Default;
@@ -50,6 +53,8 @@ import fi.tnie.db.expr.ValueParameter;
 import fi.tnie.db.expr.ValueRow;
 import fi.tnie.db.expr.op.AndPredicate;
 import fi.tnie.db.expr.op.Comparison;
+import fi.tnie.db.log.JavaLogger;
+import fi.tnie.db.log.Logger;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
@@ -70,20 +75,9 @@ public class PersistenceManager<
     M extends EntityMetaData<A, R, T, E, H, F, M, C>,
     C extends Content
 >
-{	
-//    private class PMQuery
-//        extends DefaultEntityQuery<A, R, T, E, F, M>
-//    {
-//        /**
-//		 * 
-//		 */
-//		private static final long serialVersionUID = -1285004174865437785L;
-//
-//		public PMQuery(M meta) throws EntityException {
-//            super(meta);
-//        }
-//    }
-    
+{
+	private static final QueryProcessor NO_OPERATION = new QueryProcessorAdapter();
+	    
     private class PMTemplate
 	    extends DefaultQueryTemplate<A, R, T, E, H, F, M, C, PMTemplate>
     	implements EntityQueryTemplate<A, R, T, E, H, F, M, C, PMTemplate>
@@ -121,9 +115,7 @@ public class PersistenceManager<
     private E target;    
     private Implementation implementation = null;
 
-    private static Logger logger = Logger.getLogger(PersistenceManager.class);
-    
-//    private QT queryTemplate;
+    private static Logger logger = JavaLogger.getLogger(PersistenceManager.class);
     
     private MergeMode mergeMode;        
     
@@ -186,7 +178,7 @@ public class PersistenceManager<
     		names.add(col.getColumnName());
     	}
 
-    	M m = target.getMetaData();
+//    	M m = target.getMetaData();
 
     	for (R r : meta.relationships()) {
             ForeignKey fk = meta.getForeignKey(r);
@@ -273,37 +265,6 @@ public class PersistenceManager<
     			
     			EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
     			processKey(ek, am);
-    			   			   			
-    			
-//    			ForeignKey fk = meta.getForeignKey(r);   			  			
-//		        		        
-//		        
-//		        
-//		        // TODO: try to use keys instead to get rid of refs() and getRef 
-//		        		        		        
-//		        Entity<?,?,?,?,?,?,?> ref = pe.getRef(r);
-//		
-//		        if (ref == null) {
-//		            for (Column c : fk.columns().keySet()) {
-//		            	if (!am.containsKey(c)) {
-//		            		am.put(c, null);
-//		            	}
-//		            }
-//		        }
-//		        else {
-//		            for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
-//		                Column fc = ce.getValue();
-//		                PrimitiveHolder<?, ?> ph = ref.get(fc);
-//		                
-//		                Column column = ce.getKey();
-//		                
-//		        		if (ph != null) {    		    		    		
-//		    	    		ValueParameter<?, ?> vp = createParameter(column, ph);    		
-//		    	    		am.put(column, new Assignment(column.getColumnName(), vp));
-//		        		}                    
-//		            }
-//		        }
-//    		}
 	    }    	
     	
     	for (Map.Entry<Column, Assignment> e : am.entrySet()) {
@@ -379,15 +340,6 @@ public class PersistenceManager<
 			  	}                    
 		     }
 		  }
-
-				
-                
-//        // TODO: try to use keys instead to get rid of refs() and getRef 
-//        		        		        
-//        Entity<?,?,?,?,?,?,?> ref = pe.getRef(r);
-//
-    	
-    	
 	}
 
 
@@ -463,32 +415,82 @@ public class PersistenceManager<
 			ps = QueryHelper.doClose(ps);
 		}
 	}
-
-    public void merge(Connection c) 
-    	throws CyclicTemplateException, EntityException, SQLException, QueryException  {
-    	
-    	Implementation imp = getImplementation();
-    	M meta = getTarget().getMetaData();    	
-        PMTemplate qt = new PMTemplate(meta);
-        
-        EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> eq = qt.newQuery();        
-        TableReference tref = eq.getTableRef();        
-    	Predicate pkp = getPKPredicate(tref, getTarget());
-    	logger().debug("merge: pkp=" + pkp);
-    	
+    
+    private E sync(EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> query, Predicate pkp, Connection c) 
+		throws EntityException, SQLException, QueryException  {
     	E stored = null;
 
-    	if (pkp != null) {    	
-    		eq.getTableExpression().getWhere().setSearchCondition(pkp);
-    		EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate>(imp);
+    	if (pkp != null) {
+//    		M meta = getTarget().getMetaData();    	
+//            PMTemplate qt = new PMTemplate(meta);        
+//            EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> eq = qt.newQuery();        
+            
+    		query.getTableExpression().getWhere().setSearchCondition(pkp);
+    		EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate>(getImplementation());
 //    		QueryResult<EntityDataObject<E>> qr = ee.execute(eq, false, c);
-    		EntityQueryResult<A, R, T, E, H, F, M, C, PMTemplate> er = ee.execute(eq, null, c);
+    		EntityQueryResult<A, R, T, E, H, F, M, C, PMTemplate> er = ee.execute(query, null, c);
     		QueryResult<EntityDataObject<E>> qr = er.getContent();    		
     		List<? extends EntityDataObject<E>> cl = qr.getContent();
     		logger().debug("merge: cl.size()=" + cl.size());
     		
     		stored = cl.isEmpty() ? null : cl.get(0).getRoot(); 
     	}
+    	
+    	return stored;
+    }
+    
+    
+    public E sync(Connection c)
+    	throws EntityException, SQLException, QueryException  {
+    	
+//    	Implementation imp = getImplementation();
+    	M meta = getTarget().getMetaData();    	
+        PMTemplate qt = new PMTemplate(meta);
+        
+        EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> eq = qt.newQuery();
+        qt.addAllAttributes();
+        TableReference tref = eq.getTableRef();        
+    	Predicate pkp = getPKPredicate(tref, getTarget());
+
+    	E stored = null;
+
+    	if (pkp != null) {
+    		stored = sync(eq, pkp, c);    		
+    	}
+    	
+    	return stored;
+    }
+
+    	
+
+    public void merge(Connection c) 
+    	throws CyclicTemplateException, EntityException, SQLException, QueryException  {
+    	
+//    	Implementation imp = getImplementation();
+    	M meta = getTarget().getMetaData();    	
+        PMTemplate qt = new PMTemplate(meta);        
+        EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> eq = qt.newQuery();        
+        TableReference tref = eq.getTableRef();        
+    	Predicate pkp = getPKPredicate(tref, getTarget());
+//    	logger().debug("merge: pkp=" + pkp);
+//    	
+    	E stored = null;
+
+    	if (pkp != null) {
+    		stored = sync(eq, pkp, c);    		
+//    		eq.getTableExpression().getWhere().setSearchCondition(pkp);
+//    		EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate>(imp);
+////    		QueryResult<EntityDataObject<E>> qr = ee.execute(eq, false, c);
+//    		EntityQueryResult<A, R, T, E, H, F, M, C, PMTemplate> er = ee.execute(eq, null, c);
+//    		QueryResult<EntityDataObject<E>> qr = er.getContent();    		
+//    		List<? extends EntityDataObject<E>> cl = qr.getContent();
+//    		logger().debug("merge: cl.size()=" + cl.size());
+//    		
+//    		stored = cl.isEmpty() ? null : cl.get(0).getRoot(); 
+    	}
+    	
+//    	E stored = sync(pkp, c);
+    	
     	
     	logger().debug("merge: stored=" + stored);    	
     	    	
@@ -562,24 +564,37 @@ public class PersistenceManager<
     	UpdateStatement q = createUpdateStatement();
 
     	if (q != null) {
-    		PreparedStatement ps = null;
-
     		try {
-    			String qs = q.generate();
-    			logger().debug("qs: " + qs);
-    			ps = c.prepareStatement(qs);
-    			logger().debug("ps sh: " + System.identityHashCode(ps));
-    			q.traverse(null, createAssignmentVisitor(ps));
-    			int ins = ps.executeUpdate();
-    			logger().debug("updated: " + ins);
+	    		StatementExecutor se = new StatementExecutor(getImplementation());
+	    		se.execute(q, c, NO_OPERATION);
     		}
     		catch (SQLException e) {
     			logger().error(e.getMessage(), e);
     			throw new EntityException(e.getMessage(), e);
     		}
-    		finally {
-    			ps = QueryHelper.doClose(ps);
+    		catch (QueryException e) {
+    			logger().error(e.getMessage(), e);
+    			throw new EntityException(e.getMessage(), e);
     		}
+    		    		
+//    		PreparedStatement ps = null;
+//
+//    		try {
+//    			String qs = q.generate();
+//    			logger().debug("qs: " + qs);
+//    			ps = c.prepareStatement(qs);
+//    			logger().debug("ps sh: " + System.identityHashCode(ps));
+//    			q.traverse(null, createAssignmentVisitor(ps));
+//    			int ins = ps.executeUpdate();
+//    			logger().debug("updated: " + ins);
+//    		}
+//    		catch (SQLException e) {
+//    			logger().error(e.getMessage(), e);
+//    			throw new EntityException(e.getMessage(), e);
+//    		}
+//    		finally {
+//    			ps = QueryHelper.doClose(ps);
+//    		}
     	}
     }
 

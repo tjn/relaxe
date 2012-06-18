@@ -39,11 +39,18 @@ public class QueryGenerator
 	@Override
 	public VisitContext visit(Token next) {
 		if (previous != null) {
-//			if (previous.isOrdinary() && next.isOrdinary()) {
-//				buffer.append(" ");
-//			}
+			if (previous.isOrdinary() && next.isOrdinary()) {
+				buffer.append(" ");
+			}			
+			
+			String ts = previous.getTerminalSymbol();
+			
+			if (ts != null && ts.equals("?")) {
+				buffer.append(" ");
+			}
+			
 		    
-		    buffer.append(" ");
+//		    buffer.append(" ");
 			
 //			if (previous.isOrdinary()) {
 //			    buffer.append(" ");

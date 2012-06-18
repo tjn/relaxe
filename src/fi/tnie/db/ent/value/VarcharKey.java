@@ -17,7 +17,7 @@ public final class VarcharKey<
 	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
 	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
 >
-	extends AbstractPrimitiveKey<A, T, E, String, VarcharType, VarcharHolder, VarcharKey<A, T, E>>
+	extends StringKey<A, T, E, VarcharType, VarcharHolder, VarcharKey<A, T, E>>
 {
 	/**
 	 *

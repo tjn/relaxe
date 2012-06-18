@@ -136,6 +136,8 @@ public class DefaultTableMapper
             s = "pub";
         }
         
+        s = s.replace("_", "");
+        
         n.append(s);        
         
         return n.toString();

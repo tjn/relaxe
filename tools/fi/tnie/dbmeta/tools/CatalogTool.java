@@ -251,7 +251,7 @@ public abstract class CatalogTool {
              setJdbcConfig(jdbcConfig);
              setImplementation(impl);             
                                                   
-             Class.forName(impl.driverClassName());                        
+             Class.forName(impl.defaultDriverClassName());                        
              Connection c = createConnection();
              
              CatalogFactory cf = impl.catalogFactory();

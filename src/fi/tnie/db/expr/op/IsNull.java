@@ -35,7 +35,7 @@ public class IsNull
 	protected void traverseContent(VisitContext vc, ElementVisitor v) {
 		vc = v.start(vc, this);					
 		expression.traverse(vc, v);
-		SQLKeyword.IS.traverse(vc, v);		
+		SQLKeyword.IS.traverse(vc, v);
 		SQLKeyword.NULL.traverse(vc, v);
 		v.end(this);
 	}

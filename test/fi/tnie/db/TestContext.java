@@ -13,6 +13,6 @@ import fi.tnie.db.query.QueryException;
 public interface TestContext {
 
     public Implementation getImplementation();
-    public Connection newConnection() throws SQLException;    
-    public Catalog getCatalog() throws SQLException, QueryException;
+    public Connection newConnection() throws SQLException, ClassNotFoundException;    
+    public Catalog getCatalog() throws SQLException, QueryException, ClassNotFoundException;
 }

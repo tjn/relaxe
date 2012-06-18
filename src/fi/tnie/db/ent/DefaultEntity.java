@@ -20,6 +20,7 @@ import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
+import fi.tnie.db.ent.value.StringKey;
 import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
@@ -31,6 +32,7 @@ import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
+import fi.tnie.db.rpc.StringHolder;
 import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.rpc.VarcharHolder;
@@ -186,6 +188,38 @@ public abstract class DefaultEntity<
 	public VarcharHolder getVarchar(VarcharKey<A, T, E> k) {
 		return getVarcharValueMap().get(k.name());
 	}
+
+	
+	@Override
+	public <
+		P extends PrimitiveType<P>,
+		SH extends StringHolder<P>,
+		K extends StringKey<A, T, E, P, SH, K>
+	>
+	SH getString(K k) throws EntityRuntimeException {
+		SH sh = get(k.self());
+		return sh;
+	}
+	
+	@Override
+	public <
+		P extends PrimitiveType<P>,
+		SH extends StringHolder<P>,
+		K extends StringKey<A, T, E, P, SH, K>
+	>
+	void setString(K k, SH s) throws EntityRuntimeException {		
+		set(k.self(), s);
+	}
+	
+	@Override
+	public <
+		P extends PrimitiveType<P>,
+		SH extends StringHolder<P>,
+		K extends StringKey<A, T, E, P, SH, K>
+	>
+	void setString(K k, String s) throws EntityRuntimeException {		
+		set(k.self(), k.newHolder(s));
+	}	
 
 	private Map<A, TimestampHolder> getTimestampValueMap() {
 		if (timestampValueMap == null) {
@@ -469,6 +503,8 @@ public abstract class DefaultEntity<
 		ReferenceHolder<?, ?, ?, ?, ?, ?, ?> rh = getRef(k.self());
 		return rh;
 	};
+	
+	
 	
 //	public boolean has(R r) {
 //		if (r == null || this.refs == null) {

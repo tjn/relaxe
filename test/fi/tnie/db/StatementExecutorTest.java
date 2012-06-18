@@ -29,7 +29,7 @@ public class StatementExecutorTest extends DBMetaTestCase {
 	
 	
 	
-	public void testFetch() throws SQLException, QueryException, EntityException {
+	public void testFetch() throws SQLException, QueryException, EntityException, ClassNotFoundException {
 		TestContext tc = getTestContext(null);		
 		Connection c = tc.newConnection();
 		LiteralCatalog.getInstance();
@@ -56,7 +56,7 @@ public class StatementExecutorTest extends DBMetaTestCase {
 		c.close();
 	}
 
-	public void testPGInsert() throws SQLException, QueryException, EntityException {
+	public void testPGInsert() throws SQLException, QueryException, EntityException, ClassNotFoundException {
 		PGImplementation pg = new PGImplementation();
 		TestContext tc = getTestContext(pg);		
 		Connection c = tc.newConnection();

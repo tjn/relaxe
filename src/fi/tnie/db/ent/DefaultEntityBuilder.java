@@ -55,16 +55,12 @@ public abstract class DefaultEntityBuilder<
 
 	@Override
 	public E read(DataObject src) {
-		E ne = getMetaData().getFactory().newInstance();
-//		HourReport ne = getFactory().newInstance();
+		E ne = getMetaData().getFactory().newInstance();		
+		int nc = copy(src, ne, this.primaryKeyWriterList);
 		
-		copy(src, ne, this.primaryKeyWriterList);
-
-		// final IE me = ne.unify(getIdentityContext());
-		
-//		if (me == null) {
-//			return null;
-//		}
+		if (nc > 0) {
+			return null;
+		}
 						
 		copy(src, ne, this.attributeWriterList);
 		return ne;

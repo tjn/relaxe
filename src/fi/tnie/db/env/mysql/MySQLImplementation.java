@@ -52,7 +52,7 @@ public class MySQLImplementation
     }
 
     @Override
-    public String driverClassName() {
+    public String defaultDriverClassName() {
         return "com.mysql.jdbc.Driver";
     }
 
@@ -106,16 +106,16 @@ public class MySQLImplementation
 						em.getBaseTable());
 			}
 									
-			if (rs.next()) {				
+//			if (rs.next()) {				
 				DefaultAttributeWriterFactory wf = new DefaultAttributeWriterFactory();				
 				ConstantColumnResolver cr = new ConstantColumnResolver(col);				
 				AbstractAttributeWriter<A, T, E, ?, ?, ?, ?> aw = wf.createWriter(em, cr, 1);				
 				aw.write(rs, target);
-			}
-			else {
-				String cn = em.getBaseTable().getQualifiedName() + "." + col.getUnqualifiedName();
-				throw new EntityException("can not get auto-increment key for column (" + cn + ")");
-			}
+//			}
+//			else {
+//				String cn = em.getBaseTable().getQualifiedName() + "." + col.getUnqualifiedName();
+//				throw new EntityException("can not get auto-increment key for column (" + cn + ")");
+//			}
 		}
 
 		private Column findAutoIncrementColumn(BaseTable tbl) {

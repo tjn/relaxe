@@ -33,6 +33,11 @@ public abstract class AbstractAttributeWriter<
 		
 	public AbstractAttributeWriter(K key, int index) {
 		super();
+		
+		if (key == null) {
+			throw new NullPointerException("key");
+		}
+		
 		this.key = key;
 		this.index = index;
 	}

@@ -120,7 +120,7 @@ public abstract class AbstractUnitTest
 		return logger;
 	}
 	
-	public Connection newConnection() throws SQLException {
+	public Connection newConnection() throws SQLException, ClassNotFoundException {
 		return getContext().newConnection();
 	}
 }

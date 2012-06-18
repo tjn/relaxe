@@ -55,21 +55,24 @@ public class LiteralCatalog
 		private String name; 
 		private LiteralTable table;
 		private DataTypeImpl type;
+		private String autoIncrement;
 					
-		public ColumnInitializer(LiteralTable table, String name, DataTypeImpl type) {
+		public ColumnInitializer(LiteralTable table, String name, DataTypeImpl type, String autoIncrement) {
 			this.table = table;
 			this.name = name;
 			this.type = type;
+			this.autoIncrement = autoIncrement;
 		}
 		
 		public Column init(LiteralColumn c) {
 			LiteralCatalog cat = LiteralCatalog.getInstance();			
 			Identifier n = cat.env().createIdentifier(this.name);
 			DefaultMutableTable mt = cat.getMutableTableMap().get(this.table);						
-			DefaultMutableColumn mc = (mt == null) ? null : new DefaultMutableColumn(mt, n, this.type);
+			DefaultMutableColumn mc = (mt == null) ? null : new DefaultMutableColumn(mt, n, this.type, this.autoIncrement);
 			
-			if (mc != null) {
+			if (mc != null) {				
 				cat.getMutableColumnMap().put(c, mc);
+				
 			}			
 			
 			return mc;

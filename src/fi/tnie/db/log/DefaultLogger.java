@@ -34,7 +34,7 @@ public class DefaultLogger
 	}
 
 	@Override
-	public void error(String msg, Exception t) {
+	public void error(String msg, Throwable t) {
 		// TODO Auto-generated method stub		
 	}
 
@@ -55,5 +55,11 @@ public class DefaultLogger
 	@Override
 	public void fatal(String msg) {
 //		Window.alert("FATAL: " + msg);
+	}
+
+	@Override
+	public void warn(String msg) {
+		
+		
 	}
 }

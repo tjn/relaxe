@@ -15,7 +15,7 @@ import fi.tnie.db.ent.Reference;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
-public interface EntityQueryPager<
+public interface EntityDataObjectPager<
 	A extends Attribute,
 	R extends Reference,	
 	T extends ReferenceType<A, R, T, E, H, F, M, C>,
@@ -26,9 +26,8 @@ public interface EntityQueryPager<
 	C extends Content,
 	RP extends EntityQueryResult<A, R, T, E, H, F, M, C, QT>,
 	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>,	
-	P extends EntityQueryPager<A, R, T, E, H, F, M, C, RP, QT, P>
+	P extends EntityDataObjectPager<A, R, T, E, H, F, M, C, RP, QT, P>
 > 
 	extends DataObjectPager<EntityDataObject<E>, RP, P>
-{
-	void fetchFirst();	
+{		
 }

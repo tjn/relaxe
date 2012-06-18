@@ -32,7 +32,7 @@ public abstract class AbstractEntityQueryPager<
 	EP extends AbstractEntityQueryPager<A, R, T, E, H, F, M, C, QT, RP, RF, EP>
 >
 	extends DefaultPager<QT, RP, EP, RF>
-	implements EntityQueryPager<A, R, T, E, H, F, M, C, RP, QT, EP>
+	implements EntityDataObjectPager<A, R, T, E, H, F, M, C, RP, QT, EP>
 {	
 	public AbstractEntityQueryPager(QT template, RF fetcher, int initialPageSize, Map<SimplePager.Command, ValueModel<String>> nmm) {
 		super(template, fetcher, initialPageSize, nmm);

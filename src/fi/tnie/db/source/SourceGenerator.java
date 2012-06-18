@@ -643,10 +643,27 @@ public class SourceGenerator {
 			buf.append(un.getName());
 			buf.append("\", ");										
 			generateNewDataType(buf, c.getDataType());
+			buf.append(", ");			
+			buf.append(autoIncrementConstant(c));			
 			buf.append(")),\n");									
 		}
 		
 		buf.append(";\n");
+	}
+
+	private String autoIncrementConstant(Column c) {
+		Boolean ai = c.isAutoIncrement();
+		
+		if (ai == null) {
+			return "null";
+		}
+		else {
+			StringBuilder buf = new StringBuilder();
+			buf.append("\"");						
+			buf.append(ai.booleanValue() ? "YES" : "NO");
+			buf.append("\"");
+			return buf.toString();
+		}
 	}	
 
 	private String generateColumnList(Catalog cat) {
@@ -677,10 +694,12 @@ public class SourceGenerator {
 					buf.append(un.getName());
 					buf.append("\", ");										
 					generateNewDataType(buf, c.getDataType());
-					buf.append("),\n");									
+					buf.append(", ");					
+					buf.append(autoIncrementConstant(c));					
+					buf.append(")),\n");									
 				}
 			}
-		}		
+		}
 		
 		return buf.toString();
 	}
@@ -1957,7 +1976,7 @@ public class SourceGenerator {
 		JavaType source = tm.entityType(referencing, Part.INTERFACE);
 		JavaType target = tm.entityType(referenced, Part.INTERFACE);
 		
-		nb.append(target.getUnqualifiedName());
+		nb.append(target.getQualifiedName());
 		nb.append(".");
 		nb.append("Key<");		
 		nb.append(source.getUnqualifiedName());

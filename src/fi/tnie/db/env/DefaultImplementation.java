@@ -26,7 +26,7 @@ public abstract class DefaultImplementation
 
 	private ValueExtractorFactory valueExtractorFactory; 
 	private ValueAssignerFactory valueAssignerFactory;	
-	private Driver driver;
+//	private Driver driver;
 	
 	private AttributeWriterFactory attributeWriterFactory;
 	
@@ -75,28 +75,28 @@ public abstract class DefaultImplementation
 		return new DefaultValueAssignerFactory();
 	}
 	
-	@Override
-	public Driver getDriver() {
-		if (driver == null) {
-			try {
-				this.driver = createDriver();
-			}
-			catch (Exception e) {
-				logger().error(e.getMessage(), e);
-			}
-		}
-		
-		return this.driver;
-	}
+//	@Override
+//	public Driver getDriver() {
+//		if (driver == null) {
+//			try {
+//				this.driver = createDriver();
+//			}
+//			catch (Exception e) {
+//				logger().error(e.getMessage(), e);
+//			}
+//		}
+//		
+//		return this.driver;
+//	}
 	
 	private static Logger logger() {
 		return DefaultImplementation.logger;
 	}
 		
-	protected Driver createDriver() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-		Class<?> c = Class.forName(driverClassName());
-		Driver d = (Driver) c.newInstance();
-		return d;
-	}
+//	protected Driver createDriver() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+//		Class<?> c = Class.forName(driverClassName());
+//		Driver d = (Driver) c.newInstance();
+//		return d;
+//	}
 	
 }

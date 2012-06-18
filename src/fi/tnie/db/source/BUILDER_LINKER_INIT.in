@@ -11,8 +11,10 @@
 		ll.add(new Linker() {							
 			@Override
 			public void link(fi.tnie.db.ent.DataObject src, {{table-interface}} dest) {
-				{{referenced-table-interface-qualified}} np = nb.read(src);								
-				pk.set(dest, np);
+				if (dest != null) {
+					{{referenced-table-interface-qualified}} np = nb.read(src);								
+					pk.set(dest, np);
+				}
 			}
 		});
 	} 

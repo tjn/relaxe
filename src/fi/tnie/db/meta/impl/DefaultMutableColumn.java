@@ -45,7 +45,18 @@ public class DefaultMutableColumn
 		super();
 	}
 	
-	public DefaultMutableColumn(DefaultMutableTable t, Identifier name, DataTypeImpl type) {
+	public DefaultMutableColumn(DefaultMutableTable t, Identifier name, DataTypeImpl type, String autoIncrement) {
+		this(t, name, type);
+		this.autoIncrement = autoIncrement;
+	}
+	
+	public DefaultMutableColumn(DefaultMutableTable t, Identifier name, DataTypeImpl type, Boolean autoIncrement) {
+		this(t, name, type);
+		String ai = (autoIncrement == null) ? null : (autoIncrement.booleanValue() ? "YES" : "NO");		
+		this.autoIncrement = ai;
+	}
+	
+	private DefaultMutableColumn(DefaultMutableTable t, Identifier name, DataTypeImpl type) {
 		if (t == null || name == null || type == null) {
 			throw new NullPointerException();
 		}

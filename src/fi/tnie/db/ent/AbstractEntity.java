@@ -241,7 +241,28 @@ public abstract class AbstractEntity<
 			pk.reset(self());
 		}		
 	}
-	
+
+	public <
+		VV extends java.io.Serializable, 
+		VT extends fi.tnie.db.types.PrimitiveType<VT>, 
+		VH extends fi.tnie.db.rpc.PrimitiveHolder<VV,VT>, 
+		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,VV,VT,VH,K>
+	> 
+	boolean match(K key, E another) {
+		VH a = get(key);
+		
+		if (a == null) {
+			return false;
+		}
+		
+		VH b = another.get(key);
+		
+		if (b == null) {
+			return false;
+		}
+		
+		return a.contentEquals(b);		
+	};
 
 }
  

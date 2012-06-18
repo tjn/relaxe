@@ -320,7 +320,7 @@ public class TestSuiteBuilder
   }
 
   private TestSuite createSuite(final Implementation env, Driver driver, Properties drvcfg, Properties srvcfg) 
-      throws SQLException 
+      throws SQLException, ClassNotFoundException 
   {            
       assertNotNull(env);
       assertNotNull(driver);
@@ -382,9 +382,9 @@ public class TestSuiteBuilder
       logger().debug("driver-jars: " + jars);
                 
       URLClassLoader ucl = new URLClassLoader(urls);
-      logger().debug("loading driver: " + env.driverClassName());
+      logger().debug("loading driver: " + env.defaultDriverClassName());
                     
-      Class<?> drvcls = Class.forName(env.driverClassName(), true, ucl);
+      Class<?> drvcls = Class.forName(env.defaultDriverClassName(), true, ucl);
           
       logger().debug("drvcls: " + drvcls);
       driver = (Driver) drvcls.newInstance();

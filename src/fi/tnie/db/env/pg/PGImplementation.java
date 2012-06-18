@@ -98,7 +98,7 @@ public class PGImplementation
 
 
     @Override
-    public String driverClassName() {
+    public String defaultDriverClassName() {
         return "org.postgresql.Driver";
     }
 

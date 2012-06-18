@@ -20,7 +20,8 @@ public abstract class AbstractPrimitiveKey<
 	V extends Serializable,
 	P extends PrimitiveType<P>,
 	H extends PrimitiveHolder<V, P>,
-	K extends PrimitiveKey<A, T, E, V, P, H, K>>
+	K extends PrimitiveKey<A, T, E, V, P, H, K>
+>
 	implements PrimitiveKey<A, T, E, V, P, H, K> {
 	
 	/**

@@ -25,7 +25,7 @@ public abstract class Tool {
 	public void run(Implementation env, String jdbcUrl, Properties jdbcConfig) 
 		throws Exception {
 	        		
-	    String driverName = env.driverClassName();
+	    String driverName = env.defaultDriverClassName();
 	    logger().debug("loading " + driverName);
 		Class<?> driverClass = Class.forName(driverName);
 		logger().debug("driver loaded.");

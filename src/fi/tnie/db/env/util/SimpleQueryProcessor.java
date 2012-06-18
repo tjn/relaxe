@@ -21,7 +21,7 @@ public class SimpleQueryProcessor implements QueryProcessor {
 	private String statement;
 	private int rows;
 	private String columnDelimiter;
-	
+			
 	public SimpleQueryProcessor(PrintWriter out) {
 		this(out, ";");
 	}
@@ -126,6 +126,34 @@ public class SimpleQueryProcessor implements QueryProcessor {
 		out.println("row(s) affected: " + updateCount);
 	}
 	
-	
+
+	public static long process(ResultSet rs, QueryProcessor qp) 
+	   throws SQLException {
+
+	    qp.prepare();
+	         
+	    long ordinal = 0;
+	    
+	    try {        
+	        qp.startQuery(rs.getMetaData());
+	                
+	        while (rs.next()) {
+	            ordinal++;
+	            qp.process(rs, ordinal);
+	        }
+	                
+	        qp.endQuery();                  
+	    }
+	    catch (Throwable e) {
+//	        logger().error(e.getMessage(), e);
+	        qp.abort(e);
+	    }
+	    finally {
+	        qp.finish();
+	    }
+	    
+	    return ordinal;
+	}
 	
 }
+

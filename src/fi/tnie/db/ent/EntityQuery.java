@@ -22,7 +22,7 @@ public interface EntityQuery<
 	C extends Content,
 	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
 >
-	extends Request, QueryExpressionSource	
+	extends Request, QueryExpressionSource, EntityQueryContext
 {	
 	DefaultTableExpression getTableExpression()
 		throws EntityException;
