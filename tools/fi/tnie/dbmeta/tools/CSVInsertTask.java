@@ -31,6 +31,7 @@ import fi.tnie.db.meta.ColumnMap;
 import fi.tnie.db.meta.DataType;
 import fi.tnie.db.meta.Table;
 import fi.tnie.db.rpc.VarcharHolder;
+import fi.tnie.db.tools.CatalogTool;
 import fi.tnie.db.types.VarcharType;
 
 class CSVInsertTask

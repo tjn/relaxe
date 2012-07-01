@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.dbmeta.tools;
+package fi.tnie.db.tools;
 
 import java.io.File;
 import java.io.IOException;
