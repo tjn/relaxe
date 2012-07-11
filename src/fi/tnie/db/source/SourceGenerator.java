@@ -140,7 +140,10 @@ public class SourceGenerator {
 		PACKAGE_NAME,
 		LITERAL_CONTEXT_PACKAGE_NAME,
 		
-
+		/**
+		 * Full name of the literal catalog -class.
+		 */
+		LITERAL_CATALOG_NAME,
 	    /**
 	     * Pattern which is replaced with the package name of the type being generated in template files.
 	     */
@@ -1021,7 +1024,7 @@ public class SourceGenerator {
                     File root = getSourceDir(s, Part.INTERFACE);
                     write(root, intf, generateFactoryInterface(s, intf, tm, types), generated, gm);
 
-                    root = getSourceDir(s, Part.IMPLEMENTATION);
+                    root = getSourceDir(s, Part.IMPLEMENTATION);                                                                                                    
                     write(root, fimp, generateFactoryImplementation(s, fimp, tm, types), generated, gm);
                                        
                     CharSequence src = generateSchemaFactoryMethodImplementation(s, tm, types);
@@ -1326,7 +1329,7 @@ public class SourceGenerator {
 	    return src;
 	}
 
-    private CharSequence generateFactoryImplementation(Schema s, JavaType impl, TableMapper tm, Collection<TypeInfo> types)
+    private String generateFactoryImplementation(Schema s, JavaType impl, TableMapper tm, Collection<TypeInfo> types)
         throws IOException {
 
         JavaType intf = tm.factoryType(s, Part.INTERFACE);
@@ -1342,6 +1345,8 @@ public class SourceGenerator {
         }
             
         // addImport(impl, tm.literalContextType(), il);        
+        
+        src = replaceAll(src, Tag.LITERAL_CATALOG_NAME, tm.literalContextType().getQualifiedName());        
         src = replaceAll(src, Tag.LITERAL_CONTEXT_PACKAGE_NAME, tm.literalContextType().getPackageName());                
 
         src = replacePackageAndImports(src, impl, il);
