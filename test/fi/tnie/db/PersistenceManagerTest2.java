@@ -18,6 +18,7 @@ import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
@@ -39,6 +40,7 @@ public class PersistenceManagerTest2 extends TestCase  {
 	
 	private Connection connection = null;
 	private LiteralCatalog catalog;
+	private UnificationContext identityContext; 
 	
 	private static Logger logger = Logger.getLogger(PersistenceManagerTest2.class);
 	
@@ -46,6 +48,7 @@ public class PersistenceManagerTest2 extends TestCase  {
 	protected void setUp() throws Exception {
 		this.connection = createConnection();		
 		this.catalog = LiteralCatalog.getInstance();
+		this.identityContext = new SimpleUnificationContext();		
 	}
 	
 	public Connection createConnection() throws SQLException {
@@ -319,7 +322,7 @@ public class PersistenceManagerTest2 extends TestCase  {
 		C extends Content
 	>
 	PersistenceManager<A, R, T, E, H, F, M, C> create(E e, Implementation impl) {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, impl);
+		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, impl, this.identityContext);
 		return pm;
 	}
 	

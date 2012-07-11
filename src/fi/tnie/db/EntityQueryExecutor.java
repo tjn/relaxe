@@ -24,6 +24,7 @@ import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.FetchOptions;
+import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.expr.SelectStatement;
@@ -48,13 +49,14 @@ public class EntityQueryExecutor<
 //	private Implementation implementation;	
 	private static Logger logger = Logger.getLogger(EntityQueryExecutor.class);
 	
-	private QueryExecutor executor;
-	 
+	private QueryExecutor executor;	
+	private UnificationContext identityContext;
 	
-	public EntityQueryExecutor(Implementation implementation) {
+	public EntityQueryExecutor(Implementation implementation, UnificationContext identityContext) {
 		super();
 		executor = new QueryExecutor(implementation);
 //		this.implementation = implementation;
+		this.identityContext = identityContext;
 	}
 
 	public EntityQueryResult<A, R, T, E, H, F, M, C, QT> execute(EntityQuery<A, R, T, E, H, F, M, C, QT> query, FetchOptions opts, Connection c) 
@@ -63,8 +65,11 @@ public class EntityQueryExecutor<
 		QueryExecutor se = getExecutor();		
 		Implementation imp = se.getImplementation();
 		
-		List<EntityDataObject<E>> content = new ArrayList<EntityDataObject<E>>();		
-		EntityReader<?, ?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M, C>(imp, query, content);
+		List<EntityDataObject<E>> content = new ArrayList<EntityDataObject<E>>();
+		
+		// IdentityMapContext<A, R, T, E, H, F, M, C> imc = new DefaultIdentityMapContext<A, R, T, E, H, F, M, C>();			
+		
+		EntityReader<?, ?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M, C>(imp, query, content, this.identityContext);
 		
 		QueryExecutor.SliceStatement sb = se.createStatement(query, opts, c);
 				

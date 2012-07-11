@@ -16,6 +16,7 @@ import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
+import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.query.QueryException;
@@ -35,25 +36,30 @@ public class EntityReader<
 	extends EntityBuilderManager<A, R, T, E, H, F, M, C> {
 	
 	private List<EntityDataObject<E>> content;
+//	private EntityIdentityMap<A, R, T, E, H> identityMapContext;
+//	private IdentityContext identityContext;
 	
-	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, C, ?> query) 
+//	private transient EntityIdentityMap<A, R, T, E, H> identityMap;
+	
+	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext identityContext) 
 		throws QueryException {
-		this(imp, query, new ArrayList<EntityDataObject<E>>());
+		this(imp, query, new ArrayList<EntityDataObject<E>>(), identityContext);
 	}
 
-	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, C, ?> query, List<EntityDataObject<E>> result) 
+	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, C, ?> query, List<EntityDataObject<E>> result, UnificationContext identityContext) 
 		throws QueryException {
-		super(imp, query);
-		
+		super(imp, query, identityContext);
+				
 		if (result == null) {
 			throw new NullPointerException("result");
 		}
 		
-		this.content = result;
+		this.content = result;		
+//		this.identityMap = query.getMetaData().getIdentityMap(identityContext);
 	}
-	
+		
 	@Override
-	public void process(EntityDataObject<E> e) {
+	public void process(EntityDataObject<E> e) {		
 		content.add(e);
 	}
 

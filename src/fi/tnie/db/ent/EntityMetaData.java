@@ -52,12 +52,13 @@ public interface EntityMetaData<
 
 	F getFactory();
 	
-	EntityBuilder<E> newBuilder(TableReference tableRef, EntityBuildContext ctx)
+	EntityBuilder<E> newBuilder(TableReference tableRef, EntityBuildContext ctx, UnificationContext identityContext)
 		throws EntityException;
-		
-	EntityIdentityMap<A, R, T, E> getIdentityMap(IdentityContext ctx);
-	E unify(IdentityContext ctx, E e) throws EntityRuntimeException;
-	void dispose(IdentityContext ctx);
+	
+	EntityIdentityMap<A, R, T, E, H> createIdentityMap();	
+	EntityIdentityMap<A, R, T, E, H> getIdentityMap(UnificationContext ctx);
+	H unify(UnificationContext ctx, E e) throws EntityRuntimeException;
+	void dispose(UnificationContext ctx);
 
 	/**
 	 * Unmodifiable set containing the names of the attributes which are applicable to entities this object represents.

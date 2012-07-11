@@ -25,6 +25,7 @@ import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.EntityQueryTemplateAttribute;
 import fi.tnie.db.ent.FetchOptions;
+import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.PredicateAttributeTemplate;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
@@ -136,7 +137,7 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 		QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
 	>
 	EntityQueryExecutor<A, R, T, E, H, F, M, C, QT> createExecutor(M meta, Implementation imp) {
-		return new EntityQueryExecutor<A, R, T, E, H, F, M, C, QT>(imp);
+		return new EntityQueryExecutor<A, R, T, E, H, F, M, C, QT>(imp, getIdentityContext());
 	}
 	
 	
@@ -460,12 +461,17 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 	        Project.MetaData,
 	        Project.Content,
 	        Project.QueryTemplate
-	      >(getImplementation());
+	      >(getImplementation(), getIdentityContext());
 
 		Connection c = newConnection();
 		
 		qe.execute(q, null, c);
 		
 		c.close();
+	}
+	
+	
+	private UnificationContext getIdentityContext(){
+		return new SimpleUnificationContext();
 	}
 }

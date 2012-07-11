@@ -32,7 +32,7 @@ public abstract class PGTestCase
 	private Implementation implementation;
 
 	public PGTestCase() {
-		super("org.postgresql.Driver", "tester", "password", "dbmeta_test");	
+		super("org.postgresql.Driver", "tester", "password", "test", null);	
 	}
 	
 
@@ -75,7 +75,7 @@ public abstract class PGTestCase
 	}
 	
 	private PGRestore pg() {	    
-	    return new PGRestore(getUserid(), getPasswd(), getDatabase());        
+	    return new PGRestore(getUserid(), getPassword(), getDatabase());        
     }
 
 

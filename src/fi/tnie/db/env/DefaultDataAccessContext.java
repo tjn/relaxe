@@ -63,7 +63,7 @@ public class DefaultDataAccessContext<I extends Implementation>
 			
 			return new AbstractDataAccessSession<I>(implementation, c) {
 				@Override
-				public void close() {
+				protected void closed() {
 					connectionManager.release(c);
 				}
 			};

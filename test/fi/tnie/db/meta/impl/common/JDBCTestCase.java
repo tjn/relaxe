@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -41,17 +42,16 @@ import junit.framework.TestCase;
 public abstract class JDBCTestCase
 	extends TestCase {
 	
-	private Connection connection;
-	
-	private String userid;
-	private String passwd;
+	private Connection connection;	
+	private Properties jdbcConfig;
 	private String database;
 	private String driverClass;
 	
 	private static Logger logger = Logger.getLogger(JDBCTestCase.class);
 	
-	protected JDBCTestCase(String driverClass) {
-		this(driverClass, "tester", "password", "dbmeta_test");	
+	protected JDBCTestCase(String driverClass, Properties jdbcConfig) {
+		this(driverClass, "tester", "password", "dbmeta_test", jdbcConfig);
+		
 	}
 	
 	protected RunResult exec(List<String> args) 
@@ -59,10 +59,8 @@ public abstract class JDBCTestCase
 	    return Launcher.doExec(args);
 	}
 	
-	protected JDBCTestCase(String driverClass, String userid, String passwd, String database) {
+	protected JDBCTestCase(String driverClass, String userid, String passwd, String database, Properties config) {
 		super();
-		this.userid = userid;
-		this.passwd = passwd;
 		this.database = database;
 		this.driverClass = driverClass;
 		
@@ -76,7 +74,16 @@ public abstract class JDBCTestCase
 		
 		if (database == null) {
 			throw new NullPointerException("'database' must not be null");
-		}						
+		}
+		
+		if (config == null) {
+			config = new Properties();
+		}
+		
+		config.setProperty("user", userid);
+		config.setProperty("password", passwd);
+		
+		this.jdbcConfig = config;
 	}
 
 	protected abstract String getDatabaseURL();
@@ -124,7 +131,7 @@ public abstract class JDBCTestCase
 	    throws SQLException {
 		if (connection == null) {
 	        String url = getDatabaseURL();
-	        this.connection = DriverManager.getConnection(url, getUserid(), getPasswd());
+	        this.connection = DriverManager.getConnection(url, this.jdbcConfig);
 	        logger().debug("connection reserved");            
         }
 
@@ -132,11 +139,11 @@ public abstract class JDBCTestCase
 	}
 
 	protected String getUserid() {
-		return userid;
+		return getJdbcConfig().getProperty("user");
 	}
 
-	protected String getPasswd() {
-		return passwd;
+	protected String getPassword() {
+		return getJdbcConfig().getProperty("password");
 	}
 
 	protected String getDatabase() {
@@ -549,6 +556,14 @@ public abstract class JDBCTestCase
     }
     
     protected abstract Implementation getImplementation();
-	
+
+	public Properties getJdbcConfig() {
+		if (jdbcConfig == null) {
+			jdbcConfig = new Properties();			
+		}
+
+		return jdbcConfig;
+	}
+
 }
 

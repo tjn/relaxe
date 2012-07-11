@@ -10,20 +10,22 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.Reference;
+import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
 public abstract class AbstractIdentityMap<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, R, T, E, ?, ?, ?, ?>,
+	T extends ReferenceType<A, R, T, E, H, ?, ?, ?>,
+	E extends Entity<A, R, T, E, H, ?, ?, ?>,
+	H extends ReferenceHolder<A, R, T, E, H, ?, ?>,
 	K
 >
-	implements EntityIdentityMap<A, R, T, E> {
+	implements EntityIdentityMap<A, R, T, E, H> {
 		
 	private Map<K, E> entityMap;
 	
-	public E get(E e) 
+	public H get(E e) 
 		throws EntityRuntimeException {
 		if (e == null) {
 			throw new NullPointerException("e");
@@ -35,7 +37,8 @@ public abstract class AbstractIdentityMap<
 			return null;
 		}
 		
-		Map<K, E> m = getEntityMap();		
+		Map<K, E> m = getEntityMap();
+		
 		E u = m.get(k);
 		
 		if (u == null) {
@@ -43,7 +46,7 @@ public abstract class AbstractIdentityMap<
 			u = e;
 		}
 		
-		return u;
+		return u.ref();
 	}
 	
 	public Map<K, E> getEntityMap() {
@@ -57,5 +60,4 @@ public abstract class AbstractIdentityMap<
 	
 	protected abstract K identify(E src) 
 		throws EntityRuntimeException;
-
 }

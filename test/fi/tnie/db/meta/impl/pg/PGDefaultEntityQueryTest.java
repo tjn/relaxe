@@ -7,8 +7,10 @@ import java.sql.Connection;
 import java.sql.Statement;
 
 import fi.tnie.db.EntityReader;
+import fi.tnie.db.SimpleUnificationContext;
 import fi.tnie.db.StatementExecutor;
 import fi.tnie.db.ent.EntityDataObject;
+import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGCatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
@@ -84,9 +86,11 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	Statement st = c.createStatement();
     	
 //    	ValueExtractorFactory vef = imp.getValueExtractorFactory();
+    	
+    	UnificationContext ic = new SimpleUnificationContext();
     	    	    	    	
     	EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData, HourReport.Content> eb
-    		= new EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData, HourReport.Content>(imp, e);
+    		= new EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData, HourReport.Content>(imp, e, ic);
     	    	    	    	
     	PGImplementation impl = new PGImplementation();
     	

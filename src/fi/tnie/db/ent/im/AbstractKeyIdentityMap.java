@@ -11,20 +11,23 @@ import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.AbstractPrimitiveKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
+import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
 
 public class AbstractKeyIdentityMap<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, R, T, E, ?, ?, ?, ?>,
+	T extends ReferenceType<A, R, T, E, RH, ?, ?, ?>,
+	E extends Entity<A, R, T, E, RH, ?, ?, ?>,
+	RH extends ReferenceHolder<A, R, T, E, RH, ?, ?>,
 	V extends Serializable,
 	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<V, P>,	
+	H extends PrimitiveHolder<V, P>,
+	
 	K extends AbstractPrimitiveKey<A, T, E, V, P, H, K>
 >
-	extends AbstractIdentityMap<A, R, T, E, V>
+	extends AbstractIdentityMap<A, R, T, E, RH, V>
 {
 	private K key;
 	

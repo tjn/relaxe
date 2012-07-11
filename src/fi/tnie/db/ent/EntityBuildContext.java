@@ -9,5 +9,5 @@ public interface EntityBuildContext {
 	DataObject.MetaData getInputMetaData();		
 	EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> getQuery();
 	AttributeWriterFactory getAttributeWriterFactory();	
-	ColumnResolver getColumnResolver();
+	ColumnResolver getColumnResolver();	
 }

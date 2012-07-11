@@ -4,7 +4,6 @@
 package fi.tnie.db.env.gae;
 
 import fi.tnie.db.env.mysql.MySQLImplementation;
-import fi.tnie.db.meta.impl.mysql.MySQLEnvironment;
 
 /**
  * @author Administrator

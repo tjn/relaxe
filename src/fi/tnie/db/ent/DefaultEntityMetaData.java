@@ -59,9 +59,7 @@ public abstract class DefaultEntityMetaData<
 	private Map<Column, Set<R>> columnReferenceMap;		
 	private Map<A, PrimitiveKey<A, T, E, ?, ?, ?, ?>> keyMap;
 	
-	private transient Map<IdentityContext, EntityIdentityMap<A, R, T, E>> identityContextMap;
-	
-//	private Map<Column, Key<A, ?, ?, ?, E, ?>> columnKeyMap;
+	private transient Map<UnificationContext, EntityIdentityMap<A, R, T, E, H>> unificationContextMap;
 
 	protected DefaultEntityMetaData() {
 	}
@@ -314,47 +312,44 @@ public abstract class DefaultEntityMetaData<
 	public fi.tnie.db.ent.value.CharKey<A, T, E> getCharKey(A name) {		
 		return key(name, getCharKeyMap());
 	}
-	
-		
+			
 	protected java.util.Map<A, IntegerKey<A, T, E>> getIntegerKeyMap() {
-		return null;
+		return Collections.emptyMap();
 	}
-
-	
-	
+		
 	protected java.util.Map<A, IntervalKey.YearMonth<A, T, E>> getYearMonthIntervalKeyMap() {
-		return null;
+		return Collections.emptyMap();
 	}
 	
 	protected java.util.Map<A, IntervalKey.DayTime<A, T, E>> getDayTimeIntervalKeyMap() {
-		return null;
+		return Collections.emptyMap();
 	}
 		
 	protected java.util.Map<A, VarcharKey<A, T, E>> getVarcharKeyMap() {
-		return null;
+		return Collections.emptyMap();
 	}
 	protected java.util.Map<A, CharKey<A, T, E>> getCharKeyMap() {
-		return null;
+		return Collections.emptyMap();
 	}	
 	
 	protected java.util.Map<A, DateKey<A, T, E>> getDateKeyMap() {
-		return null;
+		return Collections.emptyMap();
 	}
 	
 	protected java.util.Map<A, TimestampKey<A, T, E>> getTimestampKeyMap() {
-		return null;
+		return Collections.emptyMap();
 	}
 
 	protected Map<A, TimeKey<A, T, E>> getTimeKeyMap() {
-		return null;
+		return Collections.emptyMap();
 	}	
 	
 	protected java.util.Map<A, DoubleKey<A, T, E>> getDoubleKeyMap() {
-		return null;
+		return Collections.emptyMap();
 	}
 	
 	protected java.util.Map<A, DecimalKey<A, T, E>> getDecimalKeyMap() {
-		return null;
+		return Collections.emptyMap();
 	}
 	
     @Override
@@ -482,23 +477,23 @@ public abstract class DefaultEntityMetaData<
 		return (src == null) ? null : src.get(name);
 	}
 	
-	protected EntityIdentityMap<A, R, T, E> createIdentityMap() {
+	public EntityIdentityMap<A, R, T, E, H> createIdentityMap() {
 		return new DefaultIdentityMap();
 	}
 
 	@Override
-	public EntityIdentityMap<A, R, T, E> getIdentityMap(final IdentityContext ctx) {
+	public EntityIdentityMap<A, R, T, E, H> getIdentityMap(final UnificationContext ctx) {
 		if (ctx == null) {
 			throw new NullPointerException("ctx");
 		}
 				
-		final Map<IdentityContext, EntityIdentityMap<A, R, T, E>> icm = getIdentityContextMap();
-		EntityIdentityMap<A, R, T, E> im = icm.get(ctx);
+		final Map<UnificationContext, EntityIdentityMap<A, R, T, E, H>> icm = getIdentityContextMap();
+		EntityIdentityMap<A, R, T, E, H> im = icm.get(ctx);
 		
 		if (im == null) {
 			im = createIdentityMap();			
 			icm.put(ctx, im);
-			ctx.add(new ContextRegistration() {				
+			ctx.add(new ContextRegistration() {		
 				@Override
 				public void remove() {
 					icm.remove(ctx);
@@ -509,41 +504,35 @@ public abstract class DefaultEntityMetaData<
 		return im;
 	}
 	
-	
-	private Map<IdentityContext, EntityIdentityMap<A, R, T, E>> getIdentityContextMap() {
-		if (identityContextMap == null) {
-			identityContextMap = new HashMap<IdentityContext, EntityIdentityMap<A,R,T,E>>();			
+	private Map<UnificationContext, EntityIdentityMap<A, R, T, E, H>> getIdentityContextMap() {
+		if (unificationContextMap == null) {
+			unificationContextMap = new HashMap<UnificationContext, EntityIdentityMap<A, R, T, E, H>>();			
 		}
 
-		return identityContextMap;
+		return unificationContextMap;
 	}
 
 	
 	private class DefaultIdentityMap
-		implements EntityIdentityMap<A, R, T, E> {
+		implements EntityIdentityMap<A, R, T, E, H> {
 
 		@Override
-		public E get(E v) {
-			return v;
-		}
-		
+		public H get(E v) {
+			return v.ref();
+		}		
 	}
 	
-	public E unify(IdentityContext ctx, E e) throws EntityRuntimeException {
-		EntityIdentityMap<A, R, T, E> im = getIdentityMap(ctx);
+	public H unify(UnificationContext ctx, E e) throws EntityRuntimeException {
+		EntityIdentityMap<A, R, T, E, H> im = getIdentityMap(ctx);
 		return im.get(e);
 	}
 	
 	@Override
-	public void dispose(IdentityContext ctx) {
+	public void dispose(UnificationContext ctx) {
 		if (ctx == null) {
 			throw new NullPointerException("ctx");
 		}
 		
 		getIdentityContextMap().remove(ctx);
 	}
-
-	
-	
-	
 }

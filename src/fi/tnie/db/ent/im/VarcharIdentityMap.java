@@ -7,6 +7,7 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.VarcharKey;
+import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.types.VarcharType;
@@ -14,10 +15,11 @@ import fi.tnie.db.types.VarcharType;
 public class VarcharIdentityMap<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, R, T, E, ?, ?, ?, ?>	
-	>
-	extends AbstractKeyIdentityMap<A, R, T, E, String, VarcharType, VarcharHolder, VarcharKey<A, T, E>>
+	T extends ReferenceType<A, R, T, E, H, ?, ?, ?>,
+	E extends Entity<A, R, T, E, H, ?, ?, ?>,
+	H extends ReferenceHolder<A, R, T, E, H, ?, ?>	
+>
+	extends AbstractKeyIdentityMap<A, R, T, E, H, String, VarcharType, VarcharHolder, VarcharKey<A, T, E>>
 {		
 	public VarcharIdentityMap(VarcharKey<A, T, E> key) {
 		super(key);

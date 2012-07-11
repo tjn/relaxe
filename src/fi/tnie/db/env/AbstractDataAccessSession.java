@@ -11,6 +11,7 @@ import java.util.List;
 import fi.tnie.db.EntityQueryExecutor;
 import fi.tnie.db.PersistenceManager;
 import fi.tnie.db.QueryExecutor;
+import fi.tnie.db.SimpleUnificationContext;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.CyclicTemplateException;
@@ -25,6 +26,7 @@ import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.FetchOptions;
+import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.QueryExpressionSource;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.query.QueryException;
@@ -41,11 +43,13 @@ public abstract class AbstractDataAccessSession<I extends Implementation>
 		
 	private Connection connection;
 	private I implementation;
+	private UnificationContext identityContext;
 	
 	public AbstractDataAccessSession(I implementation, Connection connection) {
 		super();		
 		this.implementation = implementation;
-		this.connection = connection;		
+		this.connection = connection;
+		this.identityContext = new SimpleUnificationContext();
 	}
 
 	@Override
@@ -53,7 +57,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation>
 		A extends Attribute, R extends Reference, T extends ReferenceType<A, R, T, E, H, F, M, C>, E extends Entity<A, R, T, E, H, F, M, C>, H extends ReferenceHolder<A, R, T, E, H, M, C>, F extends EntityFactory<E, H, M, F, C>, M extends EntityMetaData<A, R, T, E, H, F, M, C>, C extends Content
 	> 
 	void delete(E e) throws EntityException {						
-		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, implementation());
+		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, implementation(), this.identityContext);
 		pm.delete(this.connection);
 	}
 
@@ -73,7 +77,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation>
 		C extends Content
 	> 
 	E insert(E e) throws EntityException {
-		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, implementation());
+		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, implementation(), this.identityContext);
 		pm.insert(this.connection);
 		return e;
 	}
@@ -92,7 +96,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation>
 	> 
 	E sync(E e) throws EntityException {
 		try {
-			PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, implementation());
+			PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, implementation(), this.identityContext);
 			E result = pm.sync(getConnection());
 			return result;
 		} 
@@ -117,7 +121,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation>
 	> 
 	E merge(E e) throws EntityException {
 		try {		
-			PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, implementation());
+			PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, implementation(), this.identityContext);
 			pm.merge(this.connection);		
 			return e;
 		}
@@ -144,23 +148,47 @@ public abstract class AbstractDataAccessSession<I extends Implementation>
 		C extends Content
 	> 
 	E update(E e) throws EntityException {
-		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, implementation());
+		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, implementation(), this.identityContext);
 		pm.update(this.connection);		
 		return e;
 	}
 	
-	public abstract void close()
-		throws DataAccessException;
+	protected void closing()
+		throws DataAccessException {		
+	}
+	
+	protected void closed()
+		throws DataAccessException {
+	}
+	
+	public final void close()
+		throws DataAccessException {
+		
+		try {
+			closing();
+		}
+		finally {
+			if (identityContext != null) {
+				this.identityContext.close();
+				this.identityContext = null;
+			}			
+			
+			closed();
+		}
+	}
 	
 	@Override
 	public void commit() throws DataAccessException {
 		checkClosed();
 		
 		try {
-			this.connection.commit();
+			this.connection.commit();			
 		}
 		catch (SQLException e) {
 			throw new DataAccessException(e.getMessage(), e);
+		}
+		finally {
+			flush();
 		}
 	}
 
@@ -173,9 +201,11 @@ public abstract class AbstractDataAccessSession<I extends Implementation>
 		}
 		catch (SQLException e) {
 			throw new DataAccessException(e.getMessage(), e);
-		}	
-	}
-	
+		}
+		finally {
+			flush();
+		}
+	}	
 	
 	private void checkClosed() 
 		throws DataAccessException {
@@ -201,7 +231,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation>
 			throws EntityException {
 		
 		try {
-			EntityQueryExecutor<A, R, T, E, H, F, M, C, QT> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, C, QT>(this.implementation());
+			EntityQueryExecutor<A, R, T, E, H, F, M, C, QT> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, C, QT>(this.implementation(), this.identityContext);
 			EntityQueryResult<A, R, T, E, H, F, M, C, QT> result = ee.execute(query, opts, this.connection);
 			return result;
 		} 
@@ -272,5 +302,10 @@ public abstract class AbstractDataAccessSession<I extends Implementation>
 		}
 		
 		return el;
+	}
+	
+	@Override
+	public void flush() {
+		identityContext.close();
 	}
 }

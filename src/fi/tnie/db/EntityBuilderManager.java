@@ -17,7 +17,7 @@ import fi.tnie.db.ent.EntityBuilder;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.EntityRuntimeException;
-import fi.tnie.db.ent.IdentityContext;
+import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.MutableEntityDataObject;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
@@ -43,19 +43,20 @@ public class EntityBuilderManager<
 	
 	private static Logger logger = Logger.getLogger(EntityBuilderManager.class);
 	
-	private IdentityContext identityContext = new SimpleIdentityContext();	
+	private UnificationContext identityContext;
 	private EntityBuildContext context;
 	
 	private Implementation implementation;
 	
 	private EntityBuilder<E> rootBuilder;
 						
-	public EntityBuilderManager(Implementation imp, EntityQuery<A, R, T, E, H, F, M, C, ?> query) 
+	public EntityBuilderManager(Implementation imp, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext identityContext) 
 		throws QueryException {
 		super(imp.getValueExtractorFactory(), query);
 		this.implementation = imp;
 		this.query = query;
-		this.meta = query.getMetaData();		
+		this.meta = query.getMetaData();
+		this.identityContext = identityContext;
 	}
 	
 	@Override
@@ -66,8 +67,8 @@ public class EntityBuilderManager<
 			AttributeWriterFactory wf = implementation.getAttributeWriterFactory();			
 			
 			context = new DefaultEntityBuildContext(getMetaData(), this.query, wf, null);				
-			TableReference rootRef = query.getTableRef();				
-			this.rootBuilder = this.meta.newBuilder(rootRef, context);
+			TableReference rootRef = query.getTableRef();
+			this.rootBuilder = this.meta.newBuilder(rootRef, context, identityContext);
 		}
 		catch (EntityException e) {
 			throw new EntityRuntimeException(e.getMessage(), e);
@@ -98,9 +99,18 @@ public class EntityBuilderManager<
 	@Override
 	protected void put(MutableEntityDataObject<E> o) {
 //		logger().debug("put - enter");				
-		E result = rootBuilder.read(o);		
+		E result = rootBuilder.read(o);
+
+		//		result = read(result);					
+		
 		o.setRoot(result);		
 		process(o);
+	}
+
+	protected E read(E result) {
+				
+		
+		return result;
 	}
 
 	public void process(EntityDataObject<E> e) {		
@@ -113,7 +123,7 @@ public class EntityBuilderManager<
 	}	
 
 
-	private IdentityContext getIdentityContext() {
+	private UnificationContext getIdentityContext() {
 		return identityContext;
 	}
 

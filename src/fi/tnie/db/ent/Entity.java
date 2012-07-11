@@ -232,7 +232,7 @@ public interface Entity<
 	
 	public E copy();
 
-	E unify(IdentityContext ctx);
+//	E unify(IdentityContext ctx);
 		
 	boolean isIdentified() throws EntityRuntimeException;
 

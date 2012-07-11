@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.env;
 
-import java.sql.Driver;
-
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.DefaultAttributeWriterFactory;

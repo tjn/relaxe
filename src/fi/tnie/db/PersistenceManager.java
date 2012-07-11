@@ -6,7 +6,6 @@ package fi.tnie.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedHashMap;
@@ -27,6 +26,7 @@ import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.EntityRuntimeException;
+import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.Reference;
 //import fi.tnie.db.ent.DefaultEntityQuery;
 import fi.tnie.db.ent.Entity;
@@ -114,6 +114,7 @@ public class PersistenceManager<
 
     private E target;    
     private Implementation implementation = null;
+    private UnificationContext identityContext;
 
     private static Logger logger = JavaLogger.getLogger(PersistenceManager.class);
     
@@ -426,7 +427,7 @@ public class PersistenceManager<
 //            EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> eq = qt.newQuery();        
             
     		query.getTableExpression().getWhere().setSearchCondition(pkp);
-    		EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate>(getImplementation());
+    		EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate>(getImplementation(), identityContext);
 //    		QueryResult<EntityDataObject<E>> qr = ee.execute(eq, false, c);
     		EntityQueryResult<A, R, T, E, H, F, M, C, PMTemplate> er = ee.execute(query, null, c);
     		QueryResult<EntityDataObject<E>> qr = er.getContent();    		
@@ -616,11 +617,11 @@ public class PersistenceManager<
         return PersistenceManager.logger;
     }
     
-    public PersistenceManager(E target, Implementation implementation) {
-    	this(target, implementation, MergeMode.UNIDENTIFIED);    	
+    public PersistenceManager(E target, Implementation implementation, UnificationContext identityContext) {
+    	this(target, implementation, MergeMode.UNIDENTIFIED, identityContext);    	
     }
 
-    public PersistenceManager(E target, Implementation implementation, MergeMode mergeStrategy) {
+    public PersistenceManager(E target, Implementation implementation, MergeMode mergeStrategy, UnificationContext identityContext) {
         super();
 
         if (target == null) {
@@ -724,7 +725,7 @@ public class PersistenceManager<
 		DC extends Content
 	>
 	PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> create(DE e, Implementation impl) {
-		PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC>(e, impl, getMergeMode());
+		PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC>(e, impl, getMergeMode(), identityContext);
 		return pm;
 	}
 

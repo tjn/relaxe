@@ -112,5 +112,12 @@ public interface EntitySession {
 		QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
 	>
 	List<E> load(QT qt, FetchOptions opts)
-		throws EntityException;	
+		throws EntityException;
+	
+	/**
+	 * 
+	 */
+	void flush();
+	
+	
 }

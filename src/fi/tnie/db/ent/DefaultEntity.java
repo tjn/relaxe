@@ -436,10 +436,10 @@ public abstract class DefaultEntity<
 		return dest;				
 	}
 	
-	@Override
-	public E unify(IdentityContext ctx) {	
-		return getMetaData().unify(ctx, self());
-	}
+//	@Override
+//	public E unify(IdentityContext ctx) {	
+//		return getMetaData().unify(ctx, self());
+//	}
 
 	public <		
 		VV extends Serializable,

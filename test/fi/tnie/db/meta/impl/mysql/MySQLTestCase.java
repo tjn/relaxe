@@ -35,7 +35,7 @@ public abstract class MySQLTestCase
 	private Implementation implementation;
 
 	public MySQLTestCase() {
-		super("com.mysql.jdbc.Driver", "tester", "password", "dbmeta_test");	
+		super("com.mysql.jdbc.Driver", "tester", "password", "dbmeta_test", null);	
 	}
 
 	@Override

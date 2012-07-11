@@ -6,6 +6,7 @@ package fi.tnie.db.ent;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.tnie.db.ent.im.EntityIdentityMap;
 import fi.tnie.db.expr.ColumnExpr;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.TableReference;
@@ -34,12 +35,17 @@ public abstract class DefaultEntityBuilder<
 	
 	private List<AttributeWriter<A, T, E, ?, ?, ?, ?>> attributeWriterList = 
 		new ArrayList<AttributeWriter<A, T, E,?,?,?,?>>();
+	
+	private EntityIdentityMap<A, R, T, E, H> identityMap;
 
-	public DefaultEntityBuilder(TableReference tableRef, EntityBuildContext ctx) 
+	public DefaultEntityBuilder(TableReference tableRef, EntityBuildContext ctx, UnificationContext identityContext) 
 		throws EntityException {
 		super();
 		this.tableRef = tableRef;
-		
+			
+		M meta = getMetaData();		
+		this.identityMap = meta.getIdentityMap(identityContext);
+						
 		int cc = ctx.getInputMetaData().getColumnCount();
 						
 		for (int i = 1; i <= cc; i++) {
@@ -59,11 +65,17 @@ public abstract class DefaultEntityBuilder<
 		int nc = copy(src, ne, this.primaryKeyWriterList);
 		
 		if (nc > 0) {
+			// referenced primary key contained nulls => not identified
 			return null;
 		}
-						
-		copy(src, ne, this.attributeWriterList);
-		return ne;
+		
+		H eh = identityMap.get(ne);
+		
+		if (eh.value() != ne) {
+			copy(src, ne, this.attributeWriterList);			
+		}
+		
+		return eh.value();
 	}
 	
 	/**	
