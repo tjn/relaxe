@@ -3,10 +3,6 @@
  */
 package fi.tnie.db.tools;
 
-import java.sql.Connection;
-
-import fi.tnie.db.meta.Catalog;
-
 public class KeyInspector
 	extends CatalogTool {
 

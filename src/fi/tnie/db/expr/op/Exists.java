@@ -8,7 +8,6 @@ import fi.tnie.db.expr.ElementVisitor;
 import fi.tnie.db.expr.QueryExpression;
 import fi.tnie.db.expr.SQLKeyword;
 import fi.tnie.db.expr.Predicate;
-import fi.tnie.db.expr.SelectStatement;
 import fi.tnie.db.expr.Symbol;
 import fi.tnie.db.expr.VisitContext;
 

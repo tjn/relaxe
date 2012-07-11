@@ -24,14 +24,8 @@ public interface TableMapper {
 	JavaType entityType(Table table, Part part);	
 	
 	AttributeInfo getAttributeInfo(Table table, Column c);
-//	Class<?> getAttributeHolderType(Table table, Column c);
-//	Class<?> getAttributeKeyType(Table table, Column c);
-//	Class<?> getAttributeValueType(Table table, Column c);
-//	Class<?> getAttributeType(Table table, Column c);
 	JavaType factoryType(Schema schema, Part part);	
 	JavaType catalogContextType();
 	JavaType literalContextType();
 	String getRootPackage();
-	
-	
 }
