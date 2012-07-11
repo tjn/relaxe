@@ -50,13 +50,12 @@ public class EntityQueryExecutor<
 	private static Logger logger = Logger.getLogger(EntityQueryExecutor.class);
 	
 	private QueryExecutor executor;	
-	private UnificationContext identityContext;
+	private UnificationContext unificationContext;
 	
-	public EntityQueryExecutor(Implementation implementation, UnificationContext identityContext) {
+	public EntityQueryExecutor(Implementation implementation, UnificationContext unificationContext) {
 		super();
 		executor = new QueryExecutor(implementation);
-//		this.implementation = implementation;
-		this.identityContext = identityContext;
+		this.unificationContext = unificationContext;
 	}
 
 	public EntityQueryResult<A, R, T, E, H, F, M, C, QT> execute(EntityQuery<A, R, T, E, H, F, M, C, QT> query, FetchOptions opts, Connection c) 
@@ -67,9 +66,7 @@ public class EntityQueryExecutor<
 		
 		List<EntityDataObject<E>> content = new ArrayList<EntityDataObject<E>>();
 		
-		// IdentityMapContext<A, R, T, E, H, F, M, C> imc = new DefaultIdentityMapContext<A, R, T, E, H, F, M, C>();			
-		
-		EntityReader<?, ?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M, C>(imp, query, content, this.identityContext);
+		EntityReader<?, ?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M, C>(imp, query, content, this.unificationContext);
 		
 		QueryExecutor.SliceStatement sb = se.createStatement(query, opts, c);
 				

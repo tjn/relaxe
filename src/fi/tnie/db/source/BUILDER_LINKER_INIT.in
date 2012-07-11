@@ -6,7 +6,7 @@
 
 	if (tref != null) {
 		{{referenced-table-interface-qualified}}.MetaData pm = pk.getTarget();
-		final {{referenced-table-interface-qualified}}.Builder nb = pm.newBuilder(tref, ctx, identityContext);						
+		final {{referenced-table-interface-qualified}}.Builder nb = pm.newBuilder(tref, ctx, unificationContext);						
 
 		ll.add(new Linker() {							
 			@Override

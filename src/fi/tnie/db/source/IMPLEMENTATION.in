@@ -106,9 +106,9 @@ public class {{table-impl-class}}
 				void link(fi.tnie.db.ent.DataObject src, {{table-interface}} dest);
 			}
 			
-			public BuilderImpl(fi.tnie.db.expr.TableReference tableRef, fi.tnie.db.ent.EntityBuildContext ctx, fi.tnie.db.ent.IdentityContext identityContext) 
+			public BuilderImpl(fi.tnie.db.expr.TableReference tableRef, fi.tnie.db.ent.EntityBuildContext ctx, fi.tnie.db.ent.UnificationContext unificationContext) 
 				throws fi.tnie.db.ent.EntityException {
-				super(tableRef, ctx, identityContext);
+				super(tableRef, ctx, unificationContext);
 				
 				MetaData m = getMetaData();
 				
@@ -141,9 +141,9 @@ public class {{table-impl-class}}
 		
 
 		@Override
-		public Builder newBuilder(TableReference tableRef, EntityBuildContext ctx, fi.tnie.db.ent.IdentityContext identityContext)
+		public Builder newBuilder(TableReference tableRef, EntityBuildContext ctx, fi.tnie.db.ent.UnificationContext unificationContext)
 			throws fi.tnie.db.ent.EntityException {
-			return new BuilderImpl(tableRef, ctx, identityContext);
+			return new BuilderImpl(tableRef, ctx, unificationContext);
 		}	
 
 		@Override

@@ -114,7 +114,7 @@ public class PersistenceManager<
 
     private E target;    
     private Implementation implementation = null;
-    private UnificationContext identityContext;
+    private UnificationContext unificationContext;
 
     private static Logger logger = JavaLogger.getLogger(PersistenceManager.class);
     
@@ -231,7 +231,7 @@ public class PersistenceManager<
     	final M meta = pe.getMetaData();
     	TableReference tref = new TableReference(meta.getBaseTable());
     	
-    	Set<Column> pkcols = meta.getPKDefinition();
+//    	Set<Column> pkcols = meta.getPKDefinition();
 
     	Predicate p = getPKPredicate(tref, pe);
 
@@ -427,7 +427,7 @@ public class PersistenceManager<
 //            EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> eq = qt.newQuery();        
             
     		query.getTableExpression().getWhere().setSearchCondition(pkp);
-    		EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate>(getImplementation(), identityContext);
+    		EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate>(getImplementation(), unificationContext);
 //    		QueryResult<EntityDataObject<E>> qr = ee.execute(eq, false, c);
     		EntityQueryResult<A, R, T, E, H, F, M, C, PMTemplate> er = ee.execute(query, null, c);
     		QueryResult<EntityDataObject<E>> qr = er.getContent();    		
@@ -617,11 +617,11 @@ public class PersistenceManager<
         return PersistenceManager.logger;
     }
     
-    public PersistenceManager(E target, Implementation implementation, UnificationContext identityContext) {
-    	this(target, implementation, MergeMode.UNIDENTIFIED, identityContext);    	
+    public PersistenceManager(E target, Implementation implementation, UnificationContext unificationContext) {
+    	this(target, implementation, MergeMode.UNIDENTIFIED, unificationContext);    	
     }
 
-    public PersistenceManager(E target, Implementation implementation, MergeMode mergeStrategy, UnificationContext identityContext) {
+    public PersistenceManager(E target, Implementation implementation, MergeMode mergeStrategy, UnificationContext unificationContext) {
         super();
 
         if (target == null) {
@@ -725,7 +725,7 @@ public class PersistenceManager<
 		DC extends Content
 	>
 	PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> create(DE e, Implementation impl) {
-		PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC>(e, impl, getMergeMode(), identityContext);
+		PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC>(e, impl, getMergeMode(), unificationContext);
 		return pm;
 	}
 

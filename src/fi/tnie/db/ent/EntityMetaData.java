@@ -52,7 +52,7 @@ public interface EntityMetaData<
 
 	F getFactory();
 	
-	EntityBuilder<E> newBuilder(TableReference tableRef, EntityBuildContext ctx, UnificationContext identityContext)
+	EntityBuilder<E> newBuilder(TableReference tableRef, EntityBuildContext ctx, UnificationContext unificationContext)
 		throws EntityException;
 	
 	EntityIdentityMap<A, R, T, E, H> createIdentityMap();	

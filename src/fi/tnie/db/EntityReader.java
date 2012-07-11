@@ -2,7 +2,7 @@
  * Copyright (c) 2009-2013 Topi Nieminen
  */
 /**
- * 
+ *
  */
 package fi.tnie.db;
 
@@ -34,37 +34,33 @@ public class EntityReader<
 	C extends Content
 >
 	extends EntityBuilderManager<A, R, T, E, H, F, M, C> {
-	
+
 	private List<EntityDataObject<E>> content;
-//	private EntityIdentityMap<A, R, T, E, H> identityMapContext;
-//	private IdentityContext identityContext;
-	
-//	private transient EntityIdentityMap<A, R, T, E, H> identityMap;
-	
-	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext identityContext) 
+
+	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext unificationContext)
 		throws QueryException {
-		this(imp, query, new ArrayList<EntityDataObject<E>>(), identityContext);
+		this(imp, query, new ArrayList<EntityDataObject<E>>(), unificationContext);
 	}
 
-	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, C, ?> query, List<EntityDataObject<E>> result, UnificationContext identityContext) 
+	public EntityReader(Implementation imp, EntityQuery<A, R, T, E, H, F, M, C, ?> query, List<EntityDataObject<E>> result, UnificationContext identityContext)
 		throws QueryException {
 		super(imp, query, identityContext);
-				
+
 		if (result == null) {
 			throw new NullPointerException("result");
 		}
-		
-		this.content = result;		
+
+		this.content = result;
 //		this.identityMap = query.getMetaData().getIdentityMap(identityContext);
 	}
-		
+
 	@Override
-	public void process(EntityDataObject<E> e) {		
+	public void process(EntityDataObject<E> e) {
 		content.add(e);
 	}
 
 	public List<EntityDataObject<E>> getContent() {
 		return content;
 	}
-	
+
 }

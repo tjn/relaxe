@@ -38,13 +38,13 @@ public abstract class DefaultEntityBuilder<
 	
 	private EntityIdentityMap<A, R, T, E, H> identityMap;
 
-	public DefaultEntityBuilder(TableReference tableRef, EntityBuildContext ctx, UnificationContext identityContext) 
+	public DefaultEntityBuilder(TableReference tableRef, EntityBuildContext ctx, UnificationContext unificationContext) 
 		throws EntityException {
 		super();
 		this.tableRef = tableRef;
 			
 		M meta = getMetaData();		
-		this.identityMap = meta.getIdentityMap(identityContext);
+		this.identityMap = meta.getIdentityMap(unificationContext);
 						
 		int cc = ctx.getInputMetaData().getColumnCount();
 						

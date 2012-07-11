@@ -78,7 +78,7 @@ public interface {{table-interface}}
 		{{implemented-has-key-list}}
 	{		
 		@Override
-		public Builder newBuilder(TableReference tableRef, EntityBuildContext ctx, fi.tnie.db.ent.IdentityContext identityContext)
+		public Builder newBuilder(TableReference tableRef, EntityBuildContext ctx, fi.tnie.db.ent.UnificationContext unificationContext)
 			throws fi.tnie.db.ent.EntityException;
 	}
 	
