@@ -20,15 +20,26 @@ public class IntegerHolder
 	
 //	public static final IntegerType TYPE = IntegerType.TYPE;
 	
+	private static IntegerHolder[] small;
+		
+	static {
+		small = new IntegerHolder[256];
+		                          
+		for (int i = 0; i < small.length; i++) {
+			small[i] = new IntegerHolder(i);			
+		}
+	}
+		
 	public static IntegerHolder valueOf(int v) {
 		/**
 		 * Possibly cache small ints later like java.lang.Integer
 		 */
-		return new IntegerHolder(v);
+		return (v >= 0 && v < small.length) ? small[v] : new IntegerHolder(v);		
+		// return new IntegerHolder(v);
 	}
 	
 	public static IntegerHolder valueOf(Integer v) {
-		return v == null ? NULL_HOLDER : valueOf(v.intValue());
+		return (v == null) ? NULL_HOLDER : valueOf(v.intValue());
 	}
 	
 	public static IntegerHolder.Factory factory() {
