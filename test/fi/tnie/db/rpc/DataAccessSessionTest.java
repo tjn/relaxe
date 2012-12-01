@@ -15,10 +15,10 @@ import fi.tnie.db.env.DefaultConnectionManager;
 import fi.tnie.db.env.DefaultDataAccessContext;
 import fi.tnie.db.env.DriverManagerConnectionFactory;
 import fi.tnie.db.env.Implementation;
-import fi.tnie.db.gen.ent.LiteralCatalog;
-import fi.tnie.db.gen.ent.personal.HourReport;
-import fi.tnie.db.gen.ent.personal.Organization;
-import fi.tnie.db.gen.ent.personal.Project;
+import fi.tnie.db.gen.pg.ent.LiteralCatalog;
+import fi.tnie.db.gen.pg.ent.personal.HourReport;
+import fi.tnie.db.gen.pg.ent.personal.Organization;
+import fi.tnie.db.gen.pg.ent.personal.Project;
 import fi.tnie.db.meta.impl.pg.PGTestCase;
 import fi.tnie.db.service.DataAccessException;
 import fi.tnie.db.service.DataAccessSession;
@@ -30,16 +30,21 @@ public class DataAccessSessionTest
 
 	public void testLoad() throws DataAccessException, EntityException, IllegalArgumentException, IllegalAccessException, IOException {
 		
-		LiteralCatalog.getInstance();
+		// fi.tnie.db.gen.pg.ent.LiteralCatalog.getInstance();
 		
 		String jdbcURL = getDatabaseURL();
+		
+		logger().debug("testLoad: jdbcURL=" + jdbcURL);
 		
 		DriverManagerConnectionFactory cf = new DriverManagerConnectionFactory();
 		DefaultConnectionManager cm = new DefaultConnectionManager(cf, jdbcURL, getJdbcConfig());
 		DefaultDataAccessContext<Implementation> dctx = new DefaultDataAccessContext<Implementation>(getImplementation(), cm);
 		
-		DataAccessSession das = dctx.newSession();				
+		DataAccessSession das = dctx.newSession();		
+		assertNotNull(das);
+		
 		EntitySession es = das.asEntitySession();
+		assertNotNull(es);
 		
 		HourReport.QueryTemplate qt = new HourReport.QueryTemplate();
 		qt.addAllAttributes();

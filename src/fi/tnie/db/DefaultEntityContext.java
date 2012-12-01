@@ -118,14 +118,14 @@ public class DefaultEntityContext
 //				this is ugly, isn't it:
 				Entity<?,?,?,?,?,?,?,?> prototype = (Entity<?,?,?,?,?,?,?,?>) m.newInstance();								
 				meta = prototype.getMetaData();			
-				meta.bind(t);
+				// meta.bind(t);
 				
 				register(meta);				
 			}
-			catch (EntityException e) {
-				logger().error(e.getMessage(), e);
-				throw e;
-			}
+//			catch (EntityException e) {
+//				logger().error(e.getMessage(), e);
+//				throw e;
+//			}
 			catch (Exception e) {
 				logger().error(e.getMessage(), e);
 				throw new EntityException(e.getMessage(), e);

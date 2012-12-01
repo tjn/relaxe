@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import fi.tnie.db.gen.ent.LiteralCatalog;
-import fi.tnie.db.gen.ent.personal.HourReport;
-import fi.tnie.db.gen.ent.personal.HourReportImpl;
+import fi.tnie.db.gen.pg.ent.LiteralCatalog;
+import fi.tnie.db.gen.pg.ent.personal.HourReport;
+import fi.tnie.db.gen.pg.ent.personal.HourReportImpl;
 import fi.tnie.db.rpc.IntegerHolder;
 
 public class Inspector {

@@ -24,6 +24,7 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.expr.SchemaName;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.feature.Dependency;
 import fi.tnie.db.feature.Feature;
@@ -253,9 +254,9 @@ public class BuilderTest
         Identifier pub = env.createIdentifier(SCHEMA_PUBLIC);
         
         for (EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> m : mm.values()) {
-			Schema s = m.getBaseTable().getSchema();
-			
-			if (icmp.compare(s.getUnqualifiedName(), pub) == 0) {
+			SchemaName sn = m.getBaseTable().getName().getQualifier();
+						
+			if (icmp.compare(sn.getSchemaName(), pub) == 0) {
 				inpub++;
 			}
 		}

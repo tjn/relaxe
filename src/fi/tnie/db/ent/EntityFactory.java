@@ -14,6 +14,6 @@ public interface EntityFactory<
 > {
 	E newInstance();
 	H newHolder(E value);
-	M getMetaData();	
+	M getMetaData();
 	F self();
 }

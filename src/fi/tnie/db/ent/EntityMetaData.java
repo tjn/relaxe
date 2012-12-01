@@ -20,7 +20,6 @@ import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.meta.BaseTable;
-import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.rpc.ReferenceHolder;
@@ -112,8 +111,8 @@ public interface EntityMetaData<
 	ForeignKey getForeignKey(R r);
 	Set<Column> getPKDefinition();
 
-	void bind(BaseTable table)
-		throws EntityException;
+//	void bind(BaseTable table)
+//		throws EntityException;
 
 	/**
 	 * Returns a set of the references the column <code>c</code> is part of.
@@ -123,11 +122,11 @@ public interface EntityMetaData<
 	 */
 	Set<R> getReferences(Column c);
 
-	/**
-	 * Returns an object identical to getBaseTable().getSchema().getCatalog()
-	 * @return
-	 */
-	Catalog getCatalog();
+//	/**
+//	 * Returns an object identical to getBaseTable().getSchema().getCatalog()
+//	 * @return
+//	 */
+//	Catalog getCatalog();
 
 	T type();
 

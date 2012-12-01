@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.build.Builder;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;
-import fi.tnie.db.gen.ent.personal.Person;
+import fi.tnie.db.gen.pg.ent.personal.Person;
 import fi.tnie.util.io.FileProcessor;
 import fi.tnie.util.io.IOHelper;
 

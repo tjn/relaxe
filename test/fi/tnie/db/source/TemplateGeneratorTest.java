@@ -13,7 +13,7 @@ import javax.xml.transform.TransformerException;
 import fi.tnie.db.AbstractUnitTest;
 import fi.tnie.db.TestContext;
 import fi.tnie.db.ent.EntityException;
-import fi.tnie.db.gen.ent.LiteralCatalog;
+import fi.tnie.db.gen.pg.ent.LiteralCatalog;
 import fi.tnie.db.query.QueryException;
 
 public class TemplateGeneratorTest extends AbstractUnitTest {

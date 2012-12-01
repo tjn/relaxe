@@ -61,8 +61,8 @@ public class DefaultSchemaElement
 
 	@Override
 	public SchemaElementName getName() {
-		if (qualifiedName == null) {
-			qualifiedName = new SchemaElementName(this);
+		if (qualifiedName == null) {			
+			qualifiedName = new SchemaElementName(schema.getUnqualifiedName(), this);
 		}
 
 		return qualifiedName;

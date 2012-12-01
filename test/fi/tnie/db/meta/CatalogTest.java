@@ -32,7 +32,13 @@ public class CatalogTest
     	assertNotNull(t.getUnqualifiedName().getName());
     	assertTrue(t.getQualifiedName().contains(t.getUnqualifiedName().getName()));
     			
-    	assertNotNull(t.getSchema());
+//    	assertNotNull(t.getSchema());
+    	
+    	assertNotNull(t.getName());
+    	assertNotNull(t.getName().getQualifier());
+    	assertNotNull(t.getName().getQualifier().getSchemaName());
+    	assertNotNull(t.getName().getQualifier().getSchemaName().getName());
+    	assertNotNull(t.getQualifiedName());    	
     			
     	PrimaryKey pk = t.getPrimaryKey();	
     	

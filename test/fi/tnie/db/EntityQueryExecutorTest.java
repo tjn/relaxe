@@ -32,14 +32,12 @@ import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.OrderBy;
 import fi.tnie.db.expr.ValueExpression;
-import fi.tnie.db.gen.ent.LiteralCatalog;
-import fi.tnie.db.gen.ent.personal.HourReport;
-import fi.tnie.db.gen.ent.personal.Organization;
-import fi.tnie.db.gen.ent.personal.Person;
-import fi.tnie.db.gen.ent.personal.Project;
-import fi.tnie.db.gen.ent.personal.HourReport.MetaData;
-import fi.tnie.db.gen.ent.personal.HourReport.Query;
-import fi.tnie.db.gen.ent.personal.HourReport.Type;
+import fi.tnie.db.gen.pg.ent.LiteralCatalog;
+import fi.tnie.db.gen.pg.ent.personal.HourReport;
+import fi.tnie.db.gen.pg.ent.personal.Organization;
+import fi.tnie.db.gen.pg.ent.personal.Person;
+import fi.tnie.db.gen.pg.ent.personal.Project;
+import fi.tnie.db.gen.pg.ent.personal.HourReport.Query;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.query.QueryResult;
 import fi.tnie.db.rpc.IntervalHolder;
@@ -85,7 +83,7 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 			
 			// Query q = template.newQuery(limit, offset);
 			
-			EntityQueryResult<HourReport.Attribute, HourReport.Reference, Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData, HourReport.Content, HourReport.QueryTemplate> er = qe.execute(q, opts, c);
+			EntityQueryResult<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData, HourReport.Content, HourReport.QueryTemplate> er = qe.execute(q, opts, c);
 			assertNotNull(er);
 			
 			DataObjectQueryResult<EntityDataObject<HourReport>> qr = er.getContent(); 
@@ -269,7 +267,7 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 			Person p = ph.value();
 			
 			if (p != null) {
-				Set<fi.tnie.db.gen.ent.personal.Person.Attribute> as = p.attributes();
+				Set<fi.tnie.db.gen.pg.ent.personal.Person.Attribute> as = p.attributes();
 				assertEquals(3, as.size());
 				assertTrue(as.contains(Person.Attribute.ID));
 				assertTrue(as.contains(Person.Attribute.DATE_OF_BIRTH));
@@ -347,7 +345,7 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 		HourReport.QueryTemplate ht = new HourReport.QueryTemplate();
 		ht.addAllAttributes();
 		
-		PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p = 
+		PredicateAttributeTemplate<fi.tnie.db.gen.pg.ent.personal.HourReport.Attribute> p = 
 			PredicateAttributeTemplate.eq(HourReport.Attribute.ID, (Integer) null);
 		
 		ht.addPredicate(p);
@@ -367,14 +365,14 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 	
 	
 	public void testNullPredicate() throws Exception {
-		PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p = PredicateAttributeTemplate.eq(HourReport.Attribute.ID, (Integer) null);
+		PredicateAttributeTemplate<fi.tnie.db.gen.pg.ent.personal.HourReport.Attribute> p = PredicateAttributeTemplate.eq(HourReport.Attribute.ID, (Integer) null);
 		QueryResult<EntityDataObject<HourReport>> qr = executeWithPredicate(p);
 		assertNotNull(qr);
 		assertEquals(0, qr.size());
 	}
 	
 	public void testIntPredicate() throws Exception {
-		PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p = 
+		PredicateAttributeTemplate<fi.tnie.db.gen.pg.ent.personal.HourReport.Attribute> p = 
 			PredicateAttributeTemplate.eq(HourReport.Attribute.ID, Integer.valueOf(30));
 		
 		QueryResult<EntityDataObject<HourReport>> qr = executeWithPredicate(p);
@@ -384,7 +382,7 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 	
 	
 	public void testStringPredicate() throws Exception {
-		PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p = 
+		PredicateAttributeTemplate<fi.tnie.db.gen.pg.ent.personal.HourReport.Attribute> p = 
 			PredicateAttributeTemplate.eq(HourReport.Attribute.COMMENT, "palaveri");
 		
 		QueryResult<EntityDataObject<HourReport>> qr = executeWithPredicate(p);
@@ -392,7 +390,7 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 		assertEquals(5, qr.size());
 	}
 	
-	public QueryResult<EntityDataObject<HourReport>> executeWithPredicate(PredicateAttributeTemplate<fi.tnie.db.gen.ent.personal.HourReport.Attribute> p) throws Exception {
+	public QueryResult<EntityDataObject<HourReport>> executeWithPredicate(PredicateAttributeTemplate<fi.tnie.db.gen.pg.ent.personal.HourReport.Attribute> p) throws Exception {
 		HourReport.QueryTemplate ht = new HourReport.QueryTemplate();
 		ht.addAllAttributes();
 		
@@ -436,7 +434,7 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 		cpt.add(Person.Attribute.FIRST_NAME, Person.Attribute.LAST_NAME);
 		st.setTemplate(Organization.FK_COMPANY_CEO, cpt);
 		
-		fi.tnie.db.gen.ent.personal.Project.Query q = qt.newQuery();
+		fi.tnie.db.gen.pg.ent.personal.Project.Query q = qt.newQuery();
 		
 		String qs = q.getQueryExpression().generate();
 		logger().debug("testProject: qs=" + qs);

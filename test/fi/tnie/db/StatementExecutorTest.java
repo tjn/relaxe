@@ -17,7 +17,7 @@ import fi.tnie.db.expr.Select;
 import fi.tnie.db.expr.SelectStatement;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.expr.pg.PGInsert;
-import fi.tnie.db.gen.ent.LiteralCatalog;
+import fi.tnie.db.gen.pg.ent.LiteralCatalog;
 import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.meta.Table;
 import fi.tnie.db.query.QueryException;
@@ -65,8 +65,12 @@ public class StatementExecutorTest extends DBMetaTestCase {
 		StatementExecutor se  = new StatementExecutor(pg);
 				
 		Table t = LiteralCatalog.LiteralBaseTable.PERSONAL_HOUR_REPORT;		
-		assertNotNull(t.getSchema());
-		assertNotNull(t.getSchema().getUnqualifiedName());
+		// assertNotNull(t.getSchema());
+//		assertNotNull(t.getSchema().getUnqualifiedName());
+		assertNotNull(t.getName());
+		assertNotNull(t.getName().getQualifier());
+		assertNotNull(t.getName().getQualifier().getSchemaName());
+		assertNotNull(t.getName().getQualifier().getSchemaName().getName());
 		PGInsert pgi = new PGInsert(t);
 		
 		pgi.generate();

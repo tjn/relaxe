@@ -15,18 +15,14 @@ import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGCatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.SelectStatement;
-import fi.tnie.db.gen.ent.LiteralCatalog;
-import fi.tnie.db.gen.ent.personal.HourReport;
-import fi.tnie.db.gen.ent.personal.Organization;
-import fi.tnie.db.gen.ent.personal.PersonalFactory;
-import fi.tnie.db.gen.ent.personal.Project;
-import fi.tnie.db.gen.ent.personal.HourReport.MetaData;
-import fi.tnie.db.gen.ent.personal.HourReport.Reference;
-import fi.tnie.db.gen.ent.personal.HourReport.Type;
-import fi.tnie.db.gen.ent.personal.Organization.Content;
-import fi.tnie.db.gen.ent.personal.Project.Holder;
+import fi.tnie.db.gen.pg.ent.LiteralCatalog;
+import fi.tnie.db.gen.pg.ent.personal.HourReport;
+import fi.tnie.db.gen.pg.ent.personal.Organization;
+import fi.tnie.db.gen.pg.ent.personal.PersonalFactory;
+import fi.tnie.db.gen.pg.ent.personal.Project;
 import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.rpc.DateHolder;
+import fi.tnie.db.rpc.Holder;
 
 public class PGDefaultEntityQueryTest extends DBMetaTestCase {
 
@@ -56,7 +52,7 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	Organization org = pf.newOrganization();
     	Project proj = pf.newProject();
     	
-    	Content oc = org.getContent();
+    	Organization.Content oc = org.getContent();
     	    	
     	proj.getContent().setName("project name");
     	oc.name().set("org name");
@@ -68,8 +64,8 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	
     	proj.setRef(Project.FK_SUPPLIER, org.ref());
     	
-    	Project.Key<?, Reference, Type, HourReport, ?, ?, MetaData, ?> k = HourReport.FK_HHR_PROJECT;
-    	Holder h = k.get(hr);
+    	Project.Key<?, HourReport.Reference, HourReport.Type, HourReport, ?, ?, HourReport.MetaData, ?> k = HourReport.FK_HHR_PROJECT;
+    	Holder<?, ?> h = k.get(hr);
     	assertNotNull(h);
     	assertSame(proj.ref(), h);
     	

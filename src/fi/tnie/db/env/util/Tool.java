@@ -22,7 +22,7 @@ public abstract class Tool {
 
 	private static Logger logger = Logger.getLogger(Tool.class);
 	
-	public void run(Implementation env, String jdbcUrl, Properties jdbcConfig) 
+	private void run(Implementation env, String jdbcUrl, Properties jdbcConfig) 
 		throws Exception {
 	        		
 	    String driverName = env.defaultDriverClassName();

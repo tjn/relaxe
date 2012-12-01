@@ -24,8 +24,12 @@ public final class SchemaElementName
 	protected SchemaElementName() {
 	}
 	
-	public SchemaElementName(SchemaElement e) {
-		this(new SchemaName(e.getSchema()), e.getUnqualifiedName());
+	public SchemaElementName(Identifier schemaName, SchemaElement e) {
+		this(null, schemaName, e);		
+	}
+	
+	public SchemaElementName(Identifier catalogName, Identifier schemaName, SchemaElement e) {		
+		this(new SchemaName(catalogName, schemaName), e.getUnqualifiedName());
 	}
 	
 	public SchemaElementName(SchemaName qualifier, Identifier name) {
@@ -35,9 +39,7 @@ public final class SchemaElementName
 	}
 	
 	public SchemaElementName(Identifier catalog, Identifier schema, Identifier name) {
-		super();		
-		this.qualifier = new SchemaName(catalog, schema);
-		this.name = name;
+		this(new SchemaName(catalog, schema), name);		
 	}	
 	
 	@Override

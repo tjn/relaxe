@@ -704,11 +704,9 @@ public class PersistenceManager<
 		return getImplementation().getSyntax();
 	}
 
-
 	public Implementation getImplementation() {
 		return implementation;
 	}
-
 
 	public void setImplementation(Implementation implementation) {
 		this.implementation = implementation;

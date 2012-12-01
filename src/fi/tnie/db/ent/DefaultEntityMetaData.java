@@ -22,7 +22,6 @@ import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.meta.BaseTable;
-import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
@@ -47,7 +46,7 @@ public abstract class DefaultEntityMetaData<
 	 */
 	private static final long serialVersionUID = -8331822446687395204L;
 
-	private BaseTable baseTable;
+//	private BaseTable baseTable;
 
 	private Set<A> attributes;
 	private Map<A, Column> attributeMap;
@@ -63,13 +62,12 @@ public abstract class DefaultEntityMetaData<
 
 	protected DefaultEntityMetaData() {
 	}
-
-	@Override
-	public void bind(BaseTable table) {
-		this.baseTable = table;
-		populateAttributes(table);
-		populateReferences(table);
-	}
+	
+//	private void bind(BaseTable table) {
+//		this.baseTable = table;
+//		populateAttributes(table);
+//		populateReferences(table);
+//	}
 
 	protected abstract void populateAttributes(BaseTable table);
 
@@ -182,10 +180,10 @@ public abstract class DefaultEntityMetaData<
 		return this.relationships;
 	}
 
-	@Override
-	public BaseTable getBaseTable() {
-		return this.baseTable;
-	}
+//	@Override
+//	public BaseTable getBaseTable() {
+//		return this.baseTable;
+//	}
 
 	@Override
 	public Column getColumn(A a) {
@@ -216,11 +214,11 @@ public abstract class DefaultEntityMetaData<
 		return this.columnReferenceMap.get(c);
 	}
 
-	@Override
-	public Catalog getCatalog() {
-	    BaseTable table = getBaseTable();
-	    return (table == null) ? null : table.getSchema().getCatalog();
-	}
+//	@Override
+//	public Catalog getCatalog() {
+//	    BaseTable table = getBaseTable();
+//	    return (table == null) ? null : table.getSchema().getCatalog();
+//	}
 	
 	public fi.tnie.db.types.PrimitiveType<?> getAttributeType(A attribute) {
 		if (attribute == null) {

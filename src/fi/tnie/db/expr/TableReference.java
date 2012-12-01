@@ -63,7 +63,9 @@ public class TableReference
 	public SchemaElementName getTableName()
 		throws IllegalIdentifierException {
 		if (tableName == null) {
-			tableName = new SchemaElementName(getTable());			
+//			tableName = new SchemaElementName(getTable());
+			SchemaElementName sen = getTable().getName();
+			tableName = sen;
 		}
 
 		return tableName;

@@ -29,6 +29,7 @@ import fi.tnie.db.ent.value.TimestampAccessor;
 import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.ent.value.VarcharAccessor;
 import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.expr.SchemaName;
 import fi.tnie.db.map.AttributeInfo;
 import fi.tnie.db.map.JavaType;
 import fi.tnie.db.map.TableMapper;
@@ -64,7 +65,8 @@ public class DefaultTableMapper
 	private String contextPackage;
 			
 	private Map<Part, JavaType> createEntityTypeMap(Table table) {	    		
-		String pkg = getPackageName(table.getSchema());		
+//		String pkg = getPackageName(table.getSchema());		
+		String pkg = getPackageName(table.getName().getQualifier());
 		String u = getSimpleName(table);
 	
 		EnumMap<Part, JavaType> types = new EnumMap<Part, JavaType>(Part.class);
@@ -120,7 +122,7 @@ public class DefaultTableMapper
     }
     
     
-    private String getPackageName(Schema schema) {
+    private String getPackageName(SchemaName schema) {
         StringBuffer n = new StringBuffer();
         
         String p = getRootPackage();
@@ -130,7 +132,8 @@ public class DefaultTableMapper
             n.append(".");
         }
         
-        String s = schema.getUnqualifiedName().getName();
+//        String s = schema.getUnqualifiedName().getName();
+        String s = schema.getSchemaName().getName();
 
         if (s.equals("public")) {
             s = "pub";
@@ -374,9 +377,8 @@ public class DefaultTableMapper
 //    }
 
     @Override
-    public JavaType factoryType(Schema schema, Part part) {
-        
-        String p = getPackageName(schema);
+    public JavaType factoryType(Schema schema, Part part) {        
+        String p = getPackageName(new SchemaName(schema, true));
         String n = getSimpleName(schema.getUnqualifiedName());
                 
         if (part == Part.INTERFACE) {

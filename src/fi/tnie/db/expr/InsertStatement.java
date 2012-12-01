@@ -109,7 +109,9 @@ public class InsertStatement
 		
 	protected SchemaElementName getTableName() {
 		if (tableName == null) {
-			tableName = new SchemaElementName(this.target);
+			SchemaElementName sen = this.target.getName();			
+//			tableName = new SchemaElementName(this.target);
+			tableName = sen;
 		}
 
 		return tableName;

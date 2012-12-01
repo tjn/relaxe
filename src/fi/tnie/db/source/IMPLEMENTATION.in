@@ -49,6 +49,17 @@ public class {{table-impl-class}}
         private static {{table-interface}}MetaData instance = null;
         private static final {{table-interface}}.Factory factory = new FactoryImpl();
         
+        static {
+        	{{literal-catalog-name}}.getInstance();
+        }
+        
+        
+        @Override
+        public BaseTable getBaseTable() {
+        	return {{literal-catalog-name}}.LiteralBaseTable.{{literal-table-enum}};
+        }
+        
+        
 {{attribute-key-map-list}}
 
 {{reference-key-map-list}}
@@ -58,7 +69,13 @@ public class {{table-impl-class}}
     
         public {{table-interface}}MetaData() {
             super({{table-interface}}.Attribute.class, {{table-interface}}.Reference.class);
+            
+            // updated
+            
             {{meta-data-initialization}}
+            
+    		populateAttributes(getBaseTable());
+			populateReferences(getBaseTable());    
         }
         
         @Override

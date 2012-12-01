@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityContext;
 import fi.tnie.db.map.TableMapper;
@@ -109,13 +108,7 @@ public class LiteralCatalog
 				{{new-environment-expr}}
 			);
 			
-			try {
-				LiteralCatalog.instance.populate();
-			} 
-			catch (EntityException e) {			
-				// TODO: throw runtime exception
-				LiteralCatalog.instance = null;				
-			}
+			LiteralCatalog.instance.populate();
 		}
 		
 		return LiteralCatalog.instance;
@@ -129,7 +122,7 @@ public class LiteralCatalog
 		// populate();
 	}
 
-	private void populate() throws EntityException {			
+	private void populate() {			
 		for (LiteralSchema s : LiteralSchema.values()) {			
 			s.bind();
 		}
@@ -173,15 +166,11 @@ public class LiteralCatalog
 //		Not sure if GWT compiler honors this behavior, though.
 	}
 	
-	private void populateMetaMap(Map<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> mm) 
-		throws EntityException {
+	private void populateMetaMap(Map<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> mm) {
 {{meta-map-population}}
 	}
 	
-	private void add(Map<String, EntityMetaData<?,?,?,?,?,?,?,?>> mm, LiteralBaseTable t, EntityMetaData<?,?,?,?,?,?,?,?> meta) 
-		throws EntityException {
-		BaseTable baseTable = t.getTable();
-		meta.bind(baseTable);
+	private void add(Map<String, EntityMetaData<?,?,?,?,?,?,?,?>> mm, LiteralBaseTable t, EntityMetaData<?,?,?,?,?,?,?,?> meta) {
 		mm.put(t.getQualifiedName(), meta);		
 	}
 	
@@ -316,8 +305,7 @@ public class LiteralCatalog
 		public String getQualifiedName() {
 			return this.table.getQualifiedName();
 		}
-
-		@Override
+		
 		public Schema getSchema() {
 			return this.schema;
 		}
@@ -389,8 +377,7 @@ public class LiteralCatalog
 		public String getQualifiedName() {
 			return this.table.getQualifiedName();
 		}
-
-		@Override
+		
 		public Schema getSchema() {
 			return this.schema;
 		}
@@ -489,8 +476,7 @@ public class LiteralCatalog
 		public String getQualifiedName() {
 			return this.foreignKey.getQualifiedName();
 		}
-
-		@Override
+		
 		public Schema getSchema() {
 			return this.foreignKey.getSchema();
 		}
@@ -573,8 +559,7 @@ public class LiteralCatalog
 		public String getQualifiedName() {
 			return this.primaryKey.getQualifiedName();
 		}
-
-		@Override
+		
 		public Schema getSchema() {
 			return this.primaryKey.getSchema();
 		}
@@ -634,8 +619,7 @@ public class LiteralCatalog
 		return this.metaMap.get(table.getQualifiedName());
 	}
 
-	private Map<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> getMetaMap() 
-		throws EntityException {
+	private Map<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> getMetaMap() {
 		if (metaMap == null) {
 			metaMap = new HashMap<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>>();
 			populateMetaMap(metaMap);			

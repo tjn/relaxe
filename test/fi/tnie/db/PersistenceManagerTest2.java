@@ -22,14 +22,14 @@ import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.value.DateKey;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
-import fi.tnie.db.gen.ent.LiteralCatalog;
-import fi.tnie.db.gen.ent.personal.HourReport;
-import fi.tnie.db.gen.ent.personal.Organization;
-import fi.tnie.db.gen.ent.personal.Person;
-import fi.tnie.db.gen.ent.personal.PersonalFactory;
-import fi.tnie.db.gen.ent.personal.Project;
-import fi.tnie.db.gen.ent.personal.Person.Reference;
-import fi.tnie.db.gen.ent.personal.Person.Type;
+import fi.tnie.db.gen.pg.ent.LiteralCatalog;
+import fi.tnie.db.gen.pg.ent.personal.HourReport;
+import fi.tnie.db.gen.pg.ent.personal.Organization;
+import fi.tnie.db.gen.pg.ent.personal.Person;
+import fi.tnie.db.gen.pg.ent.personal.PersonalFactory;
+import fi.tnie.db.gen.pg.ent.personal.Project;
+import fi.tnie.db.gen.pg.ent.personal.Person.Reference;
+import fi.tnie.db.gen.pg.ent.personal.Person.Type;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.rpc.IntegerHolder;
@@ -93,7 +93,7 @@ public class PersistenceManagerTest2 extends TestCase  {
         PGImplementation impl = new PGImplementation();
         
         PersistenceManager<
-        	fi.tnie.db.gen.ent.personal.Person.Attribute, Reference, Type, Person, Person.Holder, Person.Factory, Person.MetaData, Person.Content> pm = 
+        	fi.tnie.db.gen.pg.ent.personal.Person.Attribute, Reference, Type, Person, Person.Holder, Person.Factory, Person.MetaData, Person.Content> pm = 
        		create(p.self(), impl);
                                 
 //        PersistenceManager<Attribute, Reference, Query, 
@@ -154,12 +154,12 @@ public class PersistenceManagerTest2 extends TestCase  {
 //        hr.id().set(null);
         hr.setRef(HourReport.FK_HHR_EMPLOYER, org.ref());
         
-        PersistenceManager<fi.tnie.db.gen.ent.personal.HourReport.Attribute, 
-        	fi.tnie.db.gen.ent.personal.HourReport.Reference, 
-        	fi.tnie.db.gen.ent.personal.HourReport.Type, 
+        PersistenceManager<fi.tnie.db.gen.pg.ent.personal.HourReport.Attribute, 
+        	fi.tnie.db.gen.pg.ent.personal.HourReport.Reference, 
+        	fi.tnie.db.gen.pg.ent.personal.HourReport.Type, 
         	HourReport,
-        	fi.tnie.db.gen.ent.personal.HourReport.Holder,
-        	fi.tnie.db.gen.ent.personal.HourReport.Factory,
+        	fi.tnie.db.gen.pg.ent.personal.HourReport.Holder,
+        	fi.tnie.db.gen.pg.ent.personal.HourReport.Factory,
         	HourReport.MetaData,
         	HourReport.Content
         > hrm =
@@ -225,12 +225,12 @@ public class PersistenceManagerTest2 extends TestCase  {
 	    	    
 	    // hr.setRef(HourReport.FK_HHR_EMPLOYER, org.ref());
     
-	    PersistenceManager<fi.tnie.db.gen.ent.personal.HourReport.Attribute, 
-	    	fi.tnie.db.gen.ent.personal.HourReport.Reference, 
-	    	fi.tnie.db.gen.ent.personal.HourReport.Type, 
+	    PersistenceManager<fi.tnie.db.gen.pg.ent.personal.HourReport.Attribute, 
+	    	fi.tnie.db.gen.pg.ent.personal.HourReport.Reference, 
+	    	fi.tnie.db.gen.pg.ent.personal.HourReport.Type, 
 	    	HourReport,
-	    	fi.tnie.db.gen.ent.personal.HourReport.Holder,
-	    	fi.tnie.db.gen.ent.personal.HourReport.Factory,
+	    	fi.tnie.db.gen.pg.ent.personal.HourReport.Holder,
+	    	fi.tnie.db.gen.pg.ent.personal.HourReport.Factory,
 	    	HourReport.MetaData,
 	    	HourReport.Content
 	    > hrm =

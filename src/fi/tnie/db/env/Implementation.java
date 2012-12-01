@@ -18,6 +18,12 @@ public interface Implementation
 	 * @return
 	 */
 	CatalogFactory catalogFactory();
+	
+	/**
+	 * Returns fully qualified class name of the JDBC driver for this implementation. 
+	 * 
+	 * @return
+	 */
 	String defaultDriverClassName();
 	SQLSyntax getSyntax();
 	
@@ -31,7 +37,6 @@ public interface Implementation
 	String createJdbcUrl(String host, int port, String database);
 	
 	SerializableEnvironment environment();
-		
 	
 //	Driver getDriver();			
 }
