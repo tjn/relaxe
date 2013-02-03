@@ -59,15 +59,15 @@ public abstract class BinaryRelationModel<V>
 		}
 	}
 	
-	public class Eq<V>
-		extends BinaryRelationModel<V>
+	public class Eq<T>
+		extends BinaryRelationModel<T>
 	{
-		public Eq(ValueModel<V> a, ValueModel<V> b) {
+		public Eq(ValueModel<T> a, ValueModel<T> b) {
 			super(a, b);
 		}
 		
 		@Override
-		protected Boolean apply(V a, V b) {		
+		protected Boolean apply(T a, T b) {		
 			return Boolean.valueOf(a.equals(b));
 		}
 	}
