@@ -3,23 +3,20 @@
  */
 package fi.tnie.db.env.mysql;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import fi.tnie.db.AbstractAttributeWriter;
-import fi.tnie.db.DefaultAttributeWriterFactory;
+import java.sql.ResultSetMetaData;
+import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.ColumnResolver;
 import fi.tnie.db.ent.ConstantColumnResolver;
 import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.CatalogFactory;
+import fi.tnie.db.env.DefaultGeneratedKeyHandler;
 import fi.tnie.db.env.DefaultImplementation;
 import fi.tnie.db.env.GeneratedKeyHandler;
 import fi.tnie.db.expr.DefaultSQLSyntax;
 import fi.tnie.db.expr.DeleteStatement;
-import fi.tnie.db.expr.InsertStatement;
 import fi.tnie.db.expr.MySQLDeleteStatement;
 import fi.tnie.db.expr.Predicate;
 import fi.tnie.db.expr.SQLSyntax;
@@ -76,46 +73,80 @@ public class MySQLImplementation
 
 	@Override
 	public GeneratedKeyHandler generatedKeyHandler() {
-		return new MySQLGeneratedKeyHandler();
+		return new MySQLGeneratedKeyHandler(getValueExtractorFactory());
 	}
 
-    private final class MySQLGeneratedKeyHandler implements GeneratedKeyHandler {
+    private final class MySQLGeneratedKeyHandler 
+    	extends DefaultGeneratedKeyHandler {
+    	
+//		@Override
+//		public
+//		<
+//		    A extends Attribute,
+//		    R extends Reference,
+//		    T extends ReferenceType<A, R, T, E, ?, ?, M, ?>,
+//		    E extends Entity<A, R, T, E, ?, ?, M, ?>,
+//			M extends EntityMetaData<A, R, T, E, ?, ?, M, ?>
+//		>
+//		void processGeneratedKeys(
+//			InsertStatement ins, E target, ResultSet rs)
+//			throws EntityException, SQLException {
+//
+//			M em = target.getMetaData();
+//
+////			ResultSet is expected to contain single column: GENERATED_KEY
+//
+//			// MySQL supports max one auto-increment column per table:
+//			Column col = findAutoIncrementColumn(em.getBaseTable());
+//
+//			if (col == null) {
+//				throw new EntityException(
+//						"unable to find AUTO_INCREMENT column from table " +
+//						em.getBaseTable());
+//			}
+//			
+//									
+////			if (rs.next()) {				
+////				DefaultAttributeWriterFactory wf = new DefaultAttributeWriterFactory();				
+////				ConstantColumnResolver cr = new ConstantColumnResolver(col);				
+////				AbstractAttributeWriter<A, T, E, ?, ?, ?, ?> aw = wf.createWriter(em, cr, 1);				
+////				aw.write(rs, target);
+////			}
+////			else {
+////				String cn = em.getBaseTable().getQualifiedName() + "." + col.getUnqualifiedName();
+////				throw new EntityException("can not get auto-increment key for column (" + cn + ")");
+////			}
+//		}
+    
+		public MySQLGeneratedKeyHandler(ValueExtractorFactory valueExtractorFactory) {
+			super(valueExtractorFactory);
+		}
+
 		@Override
-		public
+		protected 
 		<
-		    A extends Attribute,
-		    R extends Reference,
-		    T extends ReferenceType<A, R, T, E, ?, ?, M, ?>,
-		    E extends Entity<A, R, T, E, ?, ?, M, ?>,
+			A extends Attribute,
+			R extends Reference,
+			T extends ReferenceType<A, R, T, E, ?, ?, M, ?>,
+			E extends Entity<A, R, T, E, ?, ?, M, ?>,
 			M extends EntityMetaData<A, R, T, E, ?, ?, M, ?>
 		>
-		void processGeneratedKeys(
-			InsertStatement ins, E target, ResultSet rs)
-			throws EntityException, SQLException {
-
-			M em = target.getMetaData();
-
+		ColumnResolver createColumnResolver(ResultSetMetaData meta, M em)
+			throws RuntimeException {
 //			ResultSet is expected to contain single column: GENERATED_KEY
-
+			BaseTable table = em.getBaseTable();
+	
 			// MySQL supports max one auto-increment column per table:
-			Column col = findAutoIncrementColumn(em.getBaseTable());
-
+			Column col = findAutoIncrementColumn(table);
+			//
 			if (col == null) {
-				throw new EntityException(
+				throw new RuntimeException(
 						"unable to find AUTO_INCREMENT column from table " +
 						em.getBaseTable());
 			}
-									
-//			if (rs.next()) {				
-				DefaultAttributeWriterFactory wf = new DefaultAttributeWriterFactory();				
-				ConstantColumnResolver cr = new ConstantColumnResolver(col);				
-				AbstractAttributeWriter<A, T, E, ?, ?, ?, ?> aw = wf.createWriter(em, cr, 1);				
-				aw.write(rs, target);
-//			}
-//			else {
-//				String cn = em.getBaseTable().getQualifiedName() + "." + col.getUnqualifiedName();
-//				throw new EntityException("can not get auto-increment key for column (" + cn + ")");
-//			}
+	
+			ConstantColumnResolver cr = new ConstantColumnResolver(col);
+			return cr;
 		}
 
 		private Column findAutoIncrementColumn(BaseTable tbl) {
