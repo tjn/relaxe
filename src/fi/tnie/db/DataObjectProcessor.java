@@ -50,6 +50,9 @@ public abstract class DataObjectProcessor<O extends MutableDataObject>
 		for (int i = 1; i <= cc; i++) {
 			String col = m.getColumnLabel(i);
 			
+//			int t = m.getColumnType(i);
+//			String tn = m.getColumnTypeName(i);
+			
 			ValueExtractor<?, ?, ?> ve = vef.createExtractor(m, i);
 			
 			if (ve == null) {

@@ -4,21 +4,17 @@
 package fi.tnie.db.ent.value;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.rpc.Decimal;
 import fi.tnie.db.rpc.DecimalHolder;
+import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.DecimalType;
-import fi.tnie.db.types.PrimitiveType;
-import fi.tnie.db.types.ReferenceType;
 
 public final class DecimalKey<
-	A extends Attribute, 
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
+	A extends Attribute,
+	E extends HasDecimal<A, E>
 >
-	extends AbstractPrimitiveKey<A, T, E, Decimal, DecimalType, DecimalHolder, DecimalKey<A, T, E>>
+	extends AbstractPrimitiveKey<A, E, Decimal, DecimalType, DecimalHolder, DecimalKey<A, E>>
 {
 
 	/**
@@ -32,24 +28,21 @@ public final class DecimalKey<
 	private DecimalKey() {
 	}
 
-	private DecimalKey(EntityMetaData<A, ?, T, E, ?, ?, ?, ?> meta, A name) {
-		super(meta, name);
-		meta.addKey(this);
+	private DecimalKey(HasDecimalKey<A, E> meta, A name) {
+		super(name);
+		meta.register(this);
 	}
 	
 	public static <
-		X extends Attribute,
-		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?, ?>,
-		T extends Entity<X, ?, Z, T, ?, ?, ?, ?>
+		X extends Attribute,		
+		T extends HasDecimal<X, T>
 	>
-	DecimalKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?, ?> meta, X a) {
-		DecimalKey<X, Z, T> k = meta.getDecimalKey(a);
+	DecimalKey<X, T> get(HasDecimalKey<X, T> meta, X a) {
+		DecimalKey<X, T> k = meta.getDecimalKey(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = meta.getAttributeType(a);
-			
-			if (t != null && t.getSqlType() == PrimitiveType.DOUBLE) {
-				k = new DecimalKey<X, Z, T>(meta, a);
+			if (DecimalType.TYPE.equals(a.type())) {
+				k = new DecimalKey<X, T>(meta, a);
 			}			
 		}
 				
@@ -83,7 +76,12 @@ public final class DecimalKey<
 	}
 	
 	@Override
-	public DecimalKey<A, T, E> self() {
+	public DecimalKey<A, E> self() {
 		return this;
+	}
+	
+	@Override
+	public DecimalHolder as(PrimitiveHolder<?, ?, ?> holder) {
+		return DecimalHolder.of(holder);
 	}
 }

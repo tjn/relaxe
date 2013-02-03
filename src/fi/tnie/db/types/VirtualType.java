@@ -6,12 +6,16 @@ package fi.tnie.db.types;
 public abstract class VirtualType<T extends PrimitiveType<T>, P extends PrimitiveType<P>, V extends PrimitiveType<V>>
 	extends PrimitiveType<T> {
 		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -377670690526020985L;
+
 	public abstract V virtualized();	
 	public abstract P implementedAs();
 		
 	@Override
 	public int getSqlType() {
 		return implementedAs().getSqlType();
-	}
-	
+	}	
 }

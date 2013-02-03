@@ -7,17 +7,15 @@ import java.io.Serializable;
 
 public class FetchOptions
 	implements Serializable
-{
-	
+{	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5894929494069252288L;
 	private long offset;
-	private Long pageSize;
 	private Adjustment adjustment;
-	private Long count;
-	private boolean cardinality;
+	private Integer count;
+	private boolean fetchCardinality;
 	
 	enum Adjustment {
 		NONE,
@@ -31,8 +29,8 @@ public class FetchOptions
 	protected FetchOptions() {
 	}
 	
-	public FetchOptions(int pageSize, long offset) {
-		this(Long.valueOf(pageSize), offset);
+	public FetchOptions(int count, long offset) {
+		this(Integer.valueOf(count), offset);
 	}
 	
 	/**
@@ -41,23 +39,22 @@ public class FetchOptions
 	 * @param pageSize
 	 * @param offset
 	 */	
-	public FetchOptions(Long pageSize, long offset) {
-		this(pageSize, offset, Adjustment.AUTO, null, true);
+	public FetchOptions(Integer pageSize, long offset) {
+		this(pageSize, offset, Adjustment.AUTO, true);
 	}
 	
-	public FetchOptions(Long pageSize, long offset, Adjustment adjust, Long count, boolean cardinality) {
+	public FetchOptions(Integer count, long offset, Adjustment adjust, boolean cardinality) {
 		super();
 		this.offset = offset;
-		this.pageSize = pageSize;
-		this.adjustment = adjust;
 		this.count = count;
-		this.cardinality = cardinality;
+		this.adjustment = adjust;		
+		this.fetchCardinality = cardinality;
 	}
 	
 	public FetchOptions(long offset) {
 		super();
 		this.offset = offset;
-		this.pageSize = null;
+		this.count = null;
 		this.adjustment = Adjustment.NONE;
 	}
 
@@ -66,19 +63,15 @@ public class FetchOptions
 		return this.offset;
 	}
 	
-	public Long getPageSize() {
-		return pageSize;
-	}
-	
 	public Adjustment getAdjustment() {
 		return adjustment;
 	}
 	
-	public Long getCount() {
+	public Integer getCount() {
 		return count;
 	}
 	
 	public boolean getCardinality() {
-		return cardinality;		
+		return fetchCardinality;		
 	}
 }

@@ -3,19 +3,19 @@
  */
 package fi.tnie.db.map;
 
-import fi.tnie.db.meta.Column;
-import fi.tnie.db.meta.Table;
 import fi.tnie.db.types.PrimitiveType;
 
 public interface AttributeInfo {
-
-	Table getTable();
-	Column getColumn();
+	
+//	DataType getColumnType();
 	Class<?> getHolderType();
 	Class<?> getKeyType();
 	Class<?> getAccessorType();
 	Class<?> getAttributeType();
-	Class<?> getIdentityMapType();
+	Class<?> getIdentityMapType();	
+	Class<?> getContainerType();
+	Class<?> getContainerMetaType();
+	
 	PrimitiveType<?> getPrimitiveType();
 
 	

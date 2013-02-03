@@ -20,4 +20,9 @@ public class DateType
 	public int getSqlType() {
 		return PrimitiveType.DATE;
 	}
+	
+	@Override
+	public DateType self() {
+		return this;
+	}
 }

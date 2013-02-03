@@ -3,6 +3,7 @@
  */
 package fi.tnie.db;
 
+import fi.tnie.db.meta.DataType;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.rpc.IntegerHolder;
@@ -18,14 +19,14 @@ public class DefaultValueAssignerFactory
 		
 		
 	@Override
-	public <T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T>> ParameterAssignment create(H holder) {
+	public <T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T, H>> ParameterAssignment create(H holder, DataType columnType) {
 		ParameterAssignment pa = null;
 				
-		PrimitiveHolder<?, ?> ph = holder;
+		PrimitiveHolder<?, ?, ?> ph = holder;
 		int t = ph.getSqlType();
 						
 		switch (t) {
-			case PrimitiveType.INTEGER:				 
+			case PrimitiveType.INTEGER:	 
 				pa = createIntegerAssignment(ph.asIntegerHolder());
 				break;
 			case PrimitiveType.VARCHAR:	
@@ -40,14 +41,12 @@ public class DefaultValueAssignerFactory
 			case PrimitiveType.TIMESTAMP:	
 				pa = createTimestampAssignment(ph.asTimestampHolder());
 				break;				
-			case PrimitiveType.OTHER:	
-				// TODO: 
-//				PrimitiveType should have type-name as an additional information: 
-				pa = createIntervalAssignment((IntervalHolder.DayTime) ph);
+			case PrimitiveType.OTHER:
+				if ("interval_dt".equals(columnType.getTypeName())) {				
+					pa = createIntervalAssignment((IntervalHolder.DayTime) ph);
+				}
 				break;
 			case PrimitiveType.DISTINCT:	
-				// TODO: 
-//				PrimitiveType should have type-name as an additional information: 
 				pa = createIntervalAssignment((IntervalHolder.YearMonth) ph);
 				break;								
 		default:

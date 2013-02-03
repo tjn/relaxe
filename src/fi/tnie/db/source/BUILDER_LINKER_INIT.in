@@ -4,9 +4,9 @@
 	fi.tnie.db.meta.ForeignKey fk = m.getForeignKey(pk.name());				
 	fi.tnie.db.expr.TableReference tref = ctx.getQuery().getReferenced(tableRef, fk);
 
-	if (tref != null) {
+	if (tableRef != null || tref != null) {
 		{{referenced-table-interface-qualified}}.MetaData pm = pk.getTarget();
-		final {{referenced-table-interface-qualified}}.Builder nb = pm.newBuilder(tref, ctx, unificationContext);						
+		final {{referenced-table-interface-qualified}}.Builder nb = pm.newBuilder(tableRef, fk, tref, ctx, unificationContext);						
 
 		ll.add(new Linker() {							
 			@Override
@@ -17,5 +17,5 @@
 				}
 			}
 		});
-	} 
+ 	} 
 }

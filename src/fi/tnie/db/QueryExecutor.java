@@ -14,7 +14,7 @@ import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.DataObjectQueryResult;
 import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.ent.QueryExpressionSource;
-import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.expr.CountFunction;
 import fi.tnie.db.expr.DefaultTableExpression;
 import fi.tnie.db.expr.From;
@@ -35,25 +35,25 @@ public class QueryExecutor {
 
 	private static Logger logger = Logger.getLogger(QueryExecutor.class);
 	
-	private Implementation implementation;
+	private PersistenceContext persistenceContext;
 
-	public QueryExecutor(Implementation implementation) {
+	public QueryExecutor(PersistenceContext persistenceContext) {
 		super();
-		this.implementation = implementation;
+		this.persistenceContext = persistenceContext;
 	}
 	
 	public DataObjectQueryResult<DataObject> execute(QueryExpressionSource qes, FetchOptions opts, Connection c) throws QueryException, SQLException {
 		
-		Implementation imp = getImplementation();
+		PersistenceContext pc = getPersistenceContext();
 		
 		SliceStatement ss = createStatement(qes, opts, c);
 		SelectStatement statement = ss.getStatement();
 		
-		ValueExtractorFactory vef = imp.getValueExtractorFactory();
+		ValueExtractorFactory vef = pc.getValueExtractorFactory();
 		List<DataObject> dest = new ArrayList<DataObject>();		
 		DataObjectReader r = new DataObjectReader(vef, statement, dest);
 			
-		StatementExecutor sx = new StatementExecutor(imp);
+		StatementExecutor sx = new StatementExecutor(pc);
 				
 		Query q = new Query(statement);		
 		QueryTime qt = sx.execute(statement, c, r);
@@ -70,74 +70,72 @@ public class QueryExecutor {
 	public SliceStatement createStatement(QueryExpressionSource qes, FetchOptions opts, Connection c) 
 		throws QueryException, SQLException {
 		
-	Implementation imp = getImplementation();	
-	StatementExecutor sx = new StatementExecutor(imp);
-	
-//	if (logger().isDebugEnabled()) {
-//		logger().debug("execute: query=" + qe.generate());
-//	}
-	
-	QueryExpression qe = qes.getQueryExpression();		
-	SelectStatement qs = new SelectStatement(qe.getTableExpr());
-
-	Long available = null;			
-	
-	long oo = 0;
-	Long pageSize = null;
-
-	if (opts != null) {
-		oo = opts.getOffset();
-		pageSize = opts.getPageSize();			
-	}
-			
-	logger().info("execute: oo=" + oo);
-			
-	if ((opts != null && opts.getCardinality()) || oo < 0) {			
-		SelectStatement cs = createCountQuery(qs);
-		DataObject result = sx.fetchFirst(cs, c);
+		PersistenceContext pc = getPersistenceContext();	
+		StatementExecutor sx = new StatementExecutor(pc);
 		
-		PrimitiveHolder<?, ?> h = result.get(0);
-		logger().debug("execute: h=" + h);
-		available = h.asLongHolder().value();
-	}
-	
-	logger().info("execute: available=" + available);
-	
-	Limit limit = (pageSize == null) ? null : new Limit(pageSize.longValue());
-	
-	long op = oo;
-	
-	if (oo < 0) {
-		op = available.longValue();
-					
-		if (pageSize != null) {
-			long ps = pageSize.longValue();
-			long pp = op % ps;
-			
-			if (pp == 0) {
-				op -= ps;
-			}
-			else {
-				op -= pp;
-			}
-		}			
-	}		
-	
-	
-	// TODO: do something with this
-	OrderBy ob = qe.getOrderBy();
-	
-	if (ob == null) {
-		ob = new OrderBy();
-		ob.add(new OrderBy.OrdinalSortKey(1));
-	}		
-	 
-	Offset offset = new Offset(op);
-	qs = new SelectStatement(qe.getTableExpr(), ob, limit, offset);
-	
+	//	if (logger().isDebugEnabled()) {
+	//		logger().debug("execute: query=" + qe.generate());
+	//	}
 		
-	return new SliceStatement(qs, available, op);
-}
+		QueryExpression qe = qes.getQueryExpression();		
+		SelectStatement qs = new SelectStatement(qe.getTableExpr());
+	
+		Long available = null;			
+		
+		long oo = 0;
+		Integer pageSize = null;
+	
+		if (opts != null) {
+			oo = opts.getOffset();
+			pageSize = opts.getCount();			
+		}
+				
+		logger().info("execute: oo=" + oo);
+				
+		if ((opts != null && opts.getCardinality()) || oo < 0) {			
+			SelectStatement cs = createCountQuery(qs);
+			DataObject result = sx.fetchFirst(cs, c);
+			
+			PrimitiveHolder<?, ?, ?> h = result.get(0);
+			logger().debug("execute: h=" + h);
+			available = h.asLongHolder().value();
+		}
+		
+		logger().info("execute: available=" + available);
+		
+		Limit limit = (pageSize == null) ? null : new Limit(pageSize.intValue());
+		
+		long op = oo;
+		
+		if (oo < 0) {
+			op = available.longValue();
+						
+			if (pageSize != null) {
+				long ps = pageSize.longValue();
+				long pp = op % ps;
+				
+				if (pp == 0) {
+					op -= ps;
+				}
+				else {
+					op -= pp;
+				}
+			}			
+		}
+		
+		// TODO: do something with this
+		OrderBy ob = qe.getOrderBy();
+		
+		if (ob == null) {
+			ob = new OrderBy();
+			ob.add(new OrderBy.OrdinalSortKey(1));
+		}		
+		 
+		Offset offset = new Offset(op);
+		qs = new SelectStatement(qe.getTableExpr(), ob, limit, offset);
+				
+		return new SliceStatement(qs, available, op);
+	}
 	
 	public static class SliceStatement {
 		private SelectStatement statement;
@@ -169,8 +167,8 @@ public class QueryExecutor {
 		return QueryExecutor.logger;
 	}
 	
-	public Implementation getImplementation() {
-		return implementation;
+	public PersistenceContext getPersistenceContext() {
+		return persistenceContext;
 	}
 	
 	private SelectStatement createCountQuery(SelectStatement qs) {

@@ -14,7 +14,7 @@ import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 
 public abstract class ValueExtractor
-	<V extends Serializable, T extends PrimitiveType<T>, H extends PrimitiveHolder<V, T>>
+	<V extends Serializable, T extends PrimitiveType<T>, H extends PrimitiveHolder<V, T, H>>
 	implements Extractor {
 	
 	private int column;

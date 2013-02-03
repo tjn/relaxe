@@ -3,7 +3,8 @@
  */
 package fi.tnie.db;
 
-import fi.tnie.db.ent.AttributeWriterFactory;
+import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.AttributeMapping;
 import fi.tnie.db.ent.ColumnResolver;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.EntityBuildContext;
@@ -13,26 +14,25 @@ import fi.tnie.db.ent.DataObject.MetaData;
 public class DefaultEntityBuildContext 
 	implements EntityBuildContext {
 
-	private AttributeWriterFactory attributeWriterFactory;
+//	private AttributeWriterFactory attributeWriterFactory;
 	private ColumnResolver columnResolver;
 	private DataObject.MetaData inputMetaData;
 	private EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> query;
 		
 	public DefaultEntityBuildContext(
 			MetaData inputMetaData,
-			EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> query, 
-			AttributeWriterFactory attributeWriterFactory,
+			EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> query,
+			
 			ColumnResolver columnResolver) {
 		super();
 		this.inputMetaData = inputMetaData;
-		this.query = query;
-		this.attributeWriterFactory = attributeWriterFactory;
+		this.query = query;		
 		this.columnResolver = columnResolver;		
 	}
 	
-	public AttributeWriterFactory getAttributeWriterFactory() {
-		return attributeWriterFactory;
-	}
+//	public AttributeWriterFactory getAttributeWriterFactory() {
+//		return attributeWriterFactory;
+//	}
 	
 	public ColumnResolver getColumnResolver() {
 		return columnResolver;
@@ -45,4 +45,11 @@ public class DefaultEntityBuildContext
 	public EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> getQuery() {
 		return query;
 	}
+
+	@Override
+	public <A extends Attribute> AttributeMapping getAttributeMapping(A a) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }

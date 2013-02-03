@@ -4,20 +4,17 @@
 package fi.tnie.db.ent.value;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.rpc.IntegerHolder;
+import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.IntegerType;
 import fi.tnie.db.types.PrimitiveType;
-import fi.tnie.db.types.ReferenceType;
 
 public final class IntegerKey<
-	A extends Attribute,	
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
+	A extends Attribute,
+	E extends HasInteger<A, E>
 >
-	extends AbstractPrimitiveKey<A, T, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, T, E>>
+	extends AbstractPrimitiveKey<A, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, E>>	
 {	
 	/**
 	 *
@@ -30,25 +27,24 @@ public final class IntegerKey<
 	private IntegerKey() {
 	}
 
-	private IntegerKey(EntityMetaData<A, ?, T, E, ?, ?, ?, ?> meta, A name) {
-		super(meta, name);
-		meta.addKey(this);
+	private IntegerKey(HasIntegerKey<A, E> meta, A name) {
+		super(name);
+		meta.register(this);
 	}
 	
 	public static <
-		X extends Attribute,		 
-		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?, ?>,
-		T extends Entity<X, ?, Z, T, ?, ?, ?, ?>
+		X extends Attribute,
+		T extends HasInteger<X, T>
 	>
-	IntegerKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?, ?> meta, X a) {
-		IntegerKey<X, Z, T> k = meta.getIntegerKey(a);
+	IntegerKey<X, T> get(HasIntegerKey<X, T> meta, X a) {
+		IntegerKey<X, T> k = meta.getIntegerKey(a);
 		
 		if (k == null) {
 			PrimitiveType<?> t = a.type();
 			
-			if (t != null && t.getSqlType() == PrimitiveType.INTEGER) {
-				k = new IntegerKey<X, Z, T>(meta, a);
-			}			
+			if (t != null && IntegerType.TYPE.equals(t)) {
+				k = new IntegerKey<X, T>(meta, a);
+			}
 		}
 				
 		return k;
@@ -59,14 +55,12 @@ public final class IntegerKey<
 		return IntegerType.TYPE;
 	}
 	
-	public void set(E e, IntegerHolder newValue) 
-		throws EntityRuntimeException {
+	public void set(E e, IntegerHolder newValue) {
 		e.setInteger(this, newValue);
 	}
 	
-	public IntegerHolder get(E e) 
-		throws EntityRuntimeException {
-		return e.getInteger(this);
+	public IntegerHolder get(E e) {
+		return e.getInteger(self());
 	}
 	
 	@Override
@@ -75,13 +69,22 @@ public final class IntegerKey<
 	}
 
 	@Override
-	public void copy(E src, E dest) 
-		throws EntityRuntimeException {
+	public void copy(E src, E dest) {
 		dest.setInteger(this, src.getInteger(this));
 	}
 
 	@Override
-	public IntegerKey<A, T, E> self() {
+	public IntegerKey<A, E> self() {
 		return this;
+	}
+
+	@Override
+	public void reset(E dest) throws EntityRuntimeException {
+		dest.setInteger(this, IntegerHolder.NULL_HOLDER);
+	}
+		
+	@Override
+	public IntegerHolder as(PrimitiveHolder<?, ?, ?> unknown) {
+		return unknown.asIntegerHolder();
 	}
 }

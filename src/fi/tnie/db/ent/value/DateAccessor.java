@@ -6,17 +6,14 @@ package fi.tnie.db.ent.value;
 import java.util.Date;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.types.DateType;
-import fi.tnie.db.types.ReferenceType;
 
 public class DateAccessor<
-	A extends Attribute,	
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,	
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
+	A extends Attribute,
+	E extends HasDate<A, E>
 	>
-	extends AbstractPrimitiveAccessor<A, T, E, Date, DateType, DateHolder, DateKey<A, T, E>> {
+	extends AbstractPrimitiveAccessor<A, E, Date, DateType, DateHolder, DateKey<A, E>> {
 
 	/**
 	 *
@@ -30,7 +27,12 @@ public class DateAccessor<
 	private DateAccessor() {
 	}
 
-	public DateAccessor(E target, DateKey<A, T, E> k) {
+	public DateAccessor(E target, DateKey<A, E> k) {
 		super(target, k);
+	}
+
+	@Override
+	public void setHolder(DateHolder newHolder) {
+		getTarget().setDate(key(), newHolder);
 	}
 }

@@ -3,6 +3,9 @@
  */
 package fi.tnie.db.ent;
 
+import fi.tnie.db.ent.value.HasInteger;
+import fi.tnie.db.ent.value.HasString;
+import fi.tnie.db.ent.value.HasVarchar;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.ent.value.VarcharKey;
@@ -116,7 +119,7 @@ public abstract class PredicateAttributeTemplate<A extends Attribute>
 		Equals(M meta, A attribute, ValueExpression ve) {
 			this(attribute, ve);
 			
-			PrimitiveType<?> pt = meta.getAttributeType(attribute);
+			PrimitiveType<?> pt = attribute.type();			
 			
 			if (pt.getSqlType() != ve.getType()) {
 				throw new IllegalArgumentException("type mismatch: " + attribute + ": " + pt.getSqlType() + "; " + ve.getType());
@@ -178,9 +181,9 @@ public abstract class PredicateAttributeTemplate<A extends Attribute>
 	public static 
 	<
 		A extends Attribute,
-		E extends Entity<A, ?, ?, E, ?, ?, ?, ?>
+		E extends HasInteger<A, E>
 	>
-	PredicateAttributeTemplate<A> eq(E e, IntegerKey<A, ?, E> k) {
+	PredicateAttributeTemplate<A> eq(E e, IntegerKey<A, E> k) {
 		IntegerHolder h = k.get(e);		
 		return eq(k.name(), h.value());
 	}
@@ -188,9 +191,9 @@ public abstract class PredicateAttributeTemplate<A extends Attribute>
 	public static 
 	<
 		A extends Attribute,
-		E extends Entity<A, ?, ?, E, ?, ?, ?, ?>
+		E extends HasVarchar<A, E> & HasString<A, E>
 	>
-	PredicateAttributeTemplate<A> eq(E e, VarcharKey<A, ?, E> k) {
+	PredicateAttributeTemplate<A> eq(E e, VarcharKey<A, E> k) {
 		VarcharHolder h = k.get(e);		
 		return eq(k.name(), h.value());
 	}
@@ -199,7 +202,7 @@ public abstract class PredicateAttributeTemplate<A extends Attribute>
 	public static 
 	<
 		A extends Attribute,
-		K extends PrimitiveKey<A, ?, ?, ?, ?, ?, K>
+		K extends PrimitiveKey<A, ?, ?, ?, ?, K>
 	>
 	PredicateAttributeTemplate<A> isNotNull(K k) {
 		return new NotNull<A>(k.name());		
@@ -208,7 +211,7 @@ public abstract class PredicateAttributeTemplate<A extends Attribute>
 	public static 
 	<
 		A extends Attribute,
-		K extends PrimitiveKey<A, ?, ?, ?, ?, ?, K>
+		K extends PrimitiveKey<A, ?, ?, ?, ?, K>
 	>
 	PredicateAttributeTemplate<A> isNull(K k) {
 		return new Null<A>(k.name());		

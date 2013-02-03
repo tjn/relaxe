@@ -37,6 +37,7 @@ public abstract class Holder<V extends Serializable, T extends Type<T>>
 		
 		V a = value();
 		Object b = another.value();
+					
 		
 		boolean result = 
 				(a == null) ? 
@@ -49,8 +50,12 @@ public abstract class Holder<V extends Serializable, T extends Type<T>>
 
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
 		if (obj == null) {
-			throw new NullPointerException("obj");
+			return false;
 		}
 		
 		if (!getClass().equals(obj.getClass())) {

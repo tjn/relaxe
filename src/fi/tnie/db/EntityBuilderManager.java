@@ -6,7 +6,6 @@ package fi.tnie.db;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.AttributeWriterFactory;
 import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.EntityException;
@@ -20,7 +19,7 @@ import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.MutableEntityDataObject;
 import fi.tnie.db.ent.Reference;
-import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.rpc.ReferenceHolder;
@@ -45,15 +44,16 @@ public class EntityBuilderManager<
 	
 	private UnificationContext identityContext;
 	private EntityBuildContext context;
-	
-	private Implementation implementation;
+		
+	private PersistenceContext persistenceContext = null;
 	
 	private EntityBuilder<E> rootBuilder;
+		
 						
-	public EntityBuilderManager(Implementation imp, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext identityContext) 
+	public EntityBuilderManager(PersistenceContext persistenceContext, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext identityContext) 
 		throws QueryException {
-		super(imp.getValueExtractorFactory(), query);
-		this.implementation = imp;
+		super(persistenceContext.getValueExtractorFactory(), query);
+		this.persistenceContext = persistenceContext;
 		this.query = query;
 		this.meta = query.getMetaData();
 		this.identityContext = identityContext;
@@ -64,11 +64,9 @@ public class EntityBuilderManager<
 		throws EntityRuntimeException {
 		
 		try {		
-			AttributeWriterFactory wf = implementation.getAttributeWriterFactory();			
-			
-			context = new DefaultEntityBuildContext(getMetaData(), this.query, wf, null);				
+			context = new DefaultEntityBuildContext(getMetaData(), this.query, null);				
 			TableReference rootRef = query.getTableRef();
-			this.rootBuilder = this.meta.newBuilder(rootRef, context, identityContext);
+			this.rootBuilder = this.meta.newBuilder(null, null, rootRef, context, identityContext);
 		}
 		catch (EntityException e) {
 			throw new EntityRuntimeException(e.getMessage(), e);

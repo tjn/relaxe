@@ -9,7 +9,7 @@ import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.TimeType;
 
 public class TimeHolder
-	extends PrimitiveHolder<Date, TimeType> {
+	extends PrimitiveHolder<Date, TimeType, TimeHolder> {
 			
 	/**
 	 * 
@@ -52,5 +52,14 @@ public class TimeHolder
 	@Override
 	public TimeHolder asTimeHolder() {
 		return this;
+	}
+
+	@Override
+	public TimeHolder self() {
+		return this;
+	}
+
+	public static TimeHolder of(PrimitiveHolder<?, ?, ?> holder) {
+		return holder.asTimeHolder();
 	}
 }

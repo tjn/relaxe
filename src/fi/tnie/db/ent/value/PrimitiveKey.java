@@ -6,22 +6,19 @@ package fi.tnie.db.ent.value;
 import java.io.Serializable;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
-import fi.tnie.db.types.ReferenceType;
 
 public interface PrimitiveKey<
-	A extends Attribute,
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>,
+	A extends Attribute,	
+	E,
 	V extends Serializable,
 	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<V, P>,	
-	K extends PrimitiveKey<A, T, E, V, P, H, K>
+	H extends PrimitiveHolder<V, P, H>,	
+	K extends PrimitiveKey<A, E, V, P, H, K>
 >
-	extends Key<T, E, P, K>, Serializable
+	extends Key<E, P, K>, Serializable
 {
 	P type();
 	A name();
@@ -36,8 +33,18 @@ public interface PrimitiveKey<
 	 *  
 	 * @param dest
 	 */
-	public void reset(E dest) throws EntityRuntimeException;
+	void reset(E dest) throws EntityRuntimeException;
 		
 	K self();
 		
+	/**
+	 * If the type of the given holder is the same type type of this key, returns holder as a holder of type <code>H</code>. 
+	 * Otherwise, returns <code>null</code>. 
+	 *  
+	 * @param holder
+	 * 
+	 * @throws NullPointerException if <code>holder</code> is <code>null</code>.
+	 */
+	H as(PrimitiveHolder<?, ?, ?> holder);
+
 }

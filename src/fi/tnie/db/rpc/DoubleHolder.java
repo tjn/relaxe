@@ -8,7 +8,7 @@ import fi.tnie.db.types.PrimitiveType;
 
 
 public class DoubleHolder
-	extends PrimitiveHolder<Double, DoubleType> {
+	extends PrimitiveHolder<Double, DoubleType, DoubleHolder> {
 			
 	/**
 	 * 
@@ -53,5 +53,19 @@ public class DoubleHolder
 	@Override
 	public int getSqlType() {
 		return PrimitiveType.INTEGER;
+	}
+
+	@Override
+	public DoubleHolder self() {
+		return this;
+	}
+	
+	@Override
+	public DoubleHolder asDoubleHolder() {
+		return this;
+	}
+
+	public static DoubleHolder of(PrimitiveHolder<?, ?, ?> holder) {
+		return holder.asDoubleHolder();
 	}
 }

@@ -6,20 +6,16 @@ package fi.tnie.db.ent.value;
 import java.util.Date;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.EntityRuntimeException;
+import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.types.PrimitiveType;
-import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.types.TimeType;
 
 public final class TimeKey<
-	A extends Attribute, 
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
+	A extends Attribute,
+	E extends HasTime<A, E>
 >
-	extends AbstractPrimitiveKey<A, T, E, Date, TimeType, TimeHolder, TimeKey<A, T, E>>
+	extends AbstractPrimitiveKey<A, E, Date, TimeType, TimeHolder, TimeKey<A, E>>
 {
 	/**
 	 *
@@ -32,24 +28,23 @@ public final class TimeKey<
 	private TimeKey() {
 	}
 
-	private TimeKey(EntityMetaData<A, ?, T, E, ?, ?, ?, ?> meta, A name) {
-		super(meta, name);
-		meta.addKey(this);
+	private TimeKey(HasTimeKey<A, E> meta, A name) {
+		super(name);
+		meta.register(this);
 	}
 	
 	public static <
 		X extends Attribute,
-		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?, ?>,
-		T extends Entity<X, ?, Z, T, ?, ?, ?, ?>
+		T extends HasTime<X, T>
 	>
-	TimeKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?, ?> meta, X a) {
-		TimeKey<X, Z, T> k = meta.getTimeKey(a);
+	TimeKey<X, T> get(HasTimeKey<X, T> meta, X a) {
+		TimeKey<X, T> k = meta.getTimeKey(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = meta.getAttributeType(a);
+			PrimitiveType<?> t = a.type();
 			
-			if (t != null && t.getSqlType() == PrimitiveType.TIME) {
-				k = new TimeKey<X, Z, T>(meta, a);
+			if (TimeType.TYPE.equals(t)) {
+				k = new TimeKey<X, T>(meta, a);
 			}			
 		}
 				
@@ -61,13 +56,11 @@ public final class TimeKey<
 		return TimeType.TYPE;
 	}
 
-	public void set(E e, TimeHolder newValue) 
-		throws EntityRuntimeException {
+	public void set(E e, TimeHolder newValue) {
 		e.setTime(this, newValue);
 	}
 	
-	public TimeHolder get(E e) 
-		throws EntityRuntimeException {
+	public TimeHolder get(E e) {
 		return e.getTime(this);
 	}
 	
@@ -77,14 +70,18 @@ public final class TimeKey<
 	}
 
 	@Override
-	public void copy(E src, E dest) 
-		throws EntityRuntimeException {
+	public void copy(E src, E dest) {
 		dest.setTime(this, src.getTime(this));		
 	}
 
 	@Override
-	public TimeKey<A, T, E> self() {
+	public TimeKey<A, E> self() {
 		return this;
+	}
+
+	@Override
+	public TimeHolder as(PrimitiveHolder<?, ?, ?> holder) {
+		return TimeHolder.of(holder);
 	}
 
 }

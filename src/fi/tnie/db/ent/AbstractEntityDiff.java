@@ -73,8 +73,8 @@ public abstract class AbstractEntityDiff<
 		Map<A, Change> cm = new HashMap<A, Change>();
 
 		for (A a : meta.attributes()) {
-			PrimitiveHolder<?, ?> o = original.value(a);
-			PrimitiveHolder<?, ?> m = modified.value(a);
+			PrimitiveHolder<?, ?, ?> o = original.value(a);
+			PrimitiveHolder<?, ?, ?> m = modified.value(a);
 
 			if ((o == null && m == null) || (o == m)) {
 				continue;
@@ -139,8 +139,8 @@ public abstract class AbstractEntityDiff<
 	private
 	<P extends Entity<?, ?, ?, ?, ?, ?, ?, ?>>
 	boolean primaryKeyDiffers(P o, P m) throws EntityRuntimeException {
-		Map<Column, PrimitiveHolder<?,?>> a = o.getPrimaryKey();
-		Map<Column, PrimitiveHolder<?,?>> b = m.getPrimaryKey();
+		Map<Column, PrimitiveHolder<?,?,?>> a = o.getPrimaryKey();
+		Map<Column, PrimitiveHolder<?,?,?>> b = m.getPrimaryKey();
 
 		if (a == null || b == null) {
 			return a != b;

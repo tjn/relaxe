@@ -18,5 +18,10 @@ public class CharType
 	@Override
 	public int getSqlType() {
 		return PrimitiveType.CHAR;
+	}
+
+	@Override
+	public CharType self() {
+		return this;
 	}	
 }

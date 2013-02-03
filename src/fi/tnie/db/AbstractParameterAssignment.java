@@ -11,7 +11,7 @@ import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 
 
-public abstract class AbstractParameterAssignment<V extends Serializable, T extends PrimitiveType<T>, H extends PrimitiveHolder<V, T>>
+public abstract class AbstractParameterAssignment<V extends Serializable, T extends PrimitiveType<T>, H extends PrimitiveHolder<V, T, H>>
 	implements ParameterAssignment {	
 	private H holder;
 	
@@ -19,12 +19,17 @@ public abstract class AbstractParameterAssignment<V extends Serializable, T exte
 		super();
 		this.holder = value;
 	}
+	
+	protected H holder() {
+		return holder;
+	}
 
 	public void assign(PreparedStatement ps, int ordinal) 
 		throws SQLException {
 		
+				
 		V v = holder.value();
-		
+						
 		if (v == null) {
 			ps.setNull(ordinal, holder.getSqlType());
 		}

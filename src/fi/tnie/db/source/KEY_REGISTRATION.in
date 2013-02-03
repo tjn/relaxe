@@ -1,0 +1,19 @@
+
+		@Override
+		public void register({{attribute-key-type-canonical-name}}<Attribute, {{table-interface}}> key) {
+			if (key == null) {
+				throw new NullPointerException();
+			}
+			
+			get{{attribute-key-type-simple-name}}Map().put(key.name(), key);
+			getKeyMap().put(key.name(), key);
+		}
+				
+		@Override
+		public {{attribute-key-type-canonical-name}}<Attribute, {{table-interface}}> get{{attribute-key-type-simple-name}}(Attribute a) {
+			if (a == null) {
+				return null;
+			}
+		
+			return get{{attribute-key-type-simple-name}}Map().get(a);
+		}

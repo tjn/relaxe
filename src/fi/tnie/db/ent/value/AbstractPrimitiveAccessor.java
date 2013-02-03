@@ -6,22 +6,19 @@ package fi.tnie.db.ent.value;
 import java.io.Serializable;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
-import fi.tnie.db.types.ReferenceType;
 
-public class AbstractPrimitiveAccessor<
-	A extends Attribute,		
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>,
+public abstract class AbstractPrimitiveAccessor<
+	A extends Attribute,
+	E,
 	S extends Serializable,
 	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<S, P>,	
-	K extends PrimitiveKey<A, T, E, S, P, H, K>
+	H extends PrimitiveHolder<S, P, H>,	
+	K extends PrimitiveKey<A, E, S, P, H, K>
 	>
-	implements PrimitiveAccessor<A, T, E, S, P, H, K>
+	implements PrimitiveAccessor<A, E, S, P, H, K>
 {
 	/**
 	 *
@@ -60,14 +57,15 @@ public class AbstractPrimitiveAccessor<
 		return this.key;
 	}
 
-	public void setHolder(H newHolder)
-		throws EntityRuntimeException {
-		getTarget().set(this.key, newHolder);
+//	public abstract void setHolder(H newHolder);
+	
+	public void setHolder(H newHolder) {
+		key().set(getTarget(), newHolder);
 	}
 
 	public H getHolder() 
-		throws EntityRuntimeException {
-		return getTarget().get(this.key);		
+		throws EntityRuntimeException {		
+		return this.key().get(getTarget());				
 	}
 
 	public void set(S newValue) 

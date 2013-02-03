@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.map;
 
-import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
 
@@ -20,10 +19,10 @@ public interface TableMapper {
 		FACTORY,
 		METADATA
 	}
-				
-	JavaType entityType(Table table, Part part);	
 	
-	AttributeInfo getAttributeInfo(Table table, Column c);
+		
+	JavaType entityType(Table table, Part part);	
+		
 	JavaType factoryType(Schema schema, Part part);	
 	JavaType catalogContextType();
 	JavaType literalContextType();

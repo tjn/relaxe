@@ -5,13 +5,12 @@ package fi.tnie.db.env;
 
 import fi.tnie.db.ValueAssignerFactory;
 import fi.tnie.db.ValueExtractorFactory;
-import fi.tnie.db.ent.AttributeWriterFactory;
 import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.SerializableEnvironment;
 
 public interface Implementation
-	extends Environment {
+	extends Environment, PersistenceContext {
 
 	/** Creates a factory to build entire catalog in this environment. 
 	 * 
@@ -28,7 +27,7 @@ public interface Implementation
 	SQLSyntax getSyntax();
 	
 	GeneratedKeyHandler generatedKeyHandler();
-	AttributeWriterFactory getAttributeWriterFactory();
+//	AttributeWriterFactory getAttributeWriterFactory();
 	ValueExtractorFactory getValueExtractorFactory();			
 	ValueAssignerFactory getValueAssignerFactory();
 	

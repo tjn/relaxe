@@ -8,7 +8,7 @@ import fi.tnie.db.types.PrimitiveType;
 
 
 public class DecimalHolder
-	extends PrimitiveHolder<Decimal, DecimalType> {
+	extends PrimitiveHolder<Decimal, DecimalType, DecimalHolder> {
 			
 	/**
 	 * 
@@ -50,5 +50,19 @@ public class DecimalHolder
 	@Override
 	public int getSqlType() {
 		return PrimitiveType.DECIMAL;
+	}
+
+	@Override
+	public DecimalHolder self() {
+		return this;
+	}
+	
+	@Override
+	public DecimalHolder asDecimalHolder() {
+		return this;
+	}
+	
+	public static DecimalHolder of(PrimitiveHolder<?, ?, ?> holder) {
+		return holder.asDecimalHolder();
 	}
 }

@@ -4,20 +4,16 @@
 package fi.tnie.db.ent.value;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.rpc.CharHolder;
+import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.CharType;
-import fi.tnie.db.types.PrimitiveType;
-import fi.tnie.db.types.ReferenceType;
 
 public final class CharKey<
-	A extends Attribute,
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
+	A extends Attribute,	
+	E extends HasChar<A, E> & HasString<A, E>
 >
-	extends AbstractPrimitiveKey<A, T, E, String, CharType, CharHolder, CharKey<A, T, E>>
+	extends StringKey<A, E, CharType, CharHolder, CharKey<A, E>>
 {
 	/**
 	 *
@@ -30,29 +26,27 @@ public final class CharKey<
 	private CharKey() {
 	}
 	
-	private CharKey(EntityMetaData<A, ?, T, E, ?, ?, ?, ?> meta, A name) {
-		super(meta, name);
-		meta.addKey(this);
+	private CharKey(HasCharKey<A, E> meta, A name) {
+		super(name);
+		meta.register(this);
 	}	
 	
 	public static <
-		X extends Attribute,	
-		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?, ?>,
-		T extends Entity<X, ?, Z, T, ?, ?, ?, ?>
+		X extends Attribute,
+		T extends HasChar<X, T> & HasString<X, T>
 	>
-	CharKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?, ?> meta, X a) {
-		CharKey<X, Z, T> k = meta.getCharKey(a);
+	CharKey<X, T> get(HasCharKey<X, T> meta, X a) {
+		CharKey<X, T> k = meta.getCharKey(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = meta.getAttributeType(a);
-			
-			if (t != null && t.getSqlType() == PrimitiveType.CHAR) {
-				k = new CharKey<X, Z, T>(meta, a);
+			if (CharType.TYPE.equals(a.type())) {
+				k = new CharKey<X, T>(meta, a);
 			}
 		}
 				
 		return k;
-	}	
+	}
+
 
 	@Override
 	public CharType type() {
@@ -81,7 +75,12 @@ public final class CharKey<
 	}
 	
 	@Override
-	public CharKey<A, T, E> self() {	
+	public CharKey<A, E> self() {	
 		return this;
+	}
+	
+	@Override
+	public CharHolder as(PrimitiveHolder<?, ?, ?> holder) {
+		return CharHolder.of(holder);
 	}
 }

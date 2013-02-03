@@ -10,19 +10,17 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
-import fi.tnie.db.types.ReferenceType;
 
 public class PrimitiveStamper<
-	A extends Attribute,	
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>,	
+	A extends Attribute,
+	E extends Entity<A, ?, ?, E, ?, ?, ?, ?>,	
 	S extends Serializable,
 	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<S, P>,	
-	K extends PrimitiveKey<A, T, E, S, P, H, K>
+	H extends PrimitiveHolder<S, P, H>,	
+	K extends PrimitiveKey<A, E, S, P, H, K>
 	>
-	extends AbstractPrimitiveAccessor<A, T, E, S, P, H, K>
-	implements Mutator<A, T, E, S, P, H, K>
+	extends AbstractPrimitiveAccessor<A, E, S, P, H, K>
+	implements Mutator<A, E, S, P, H, K>
 {
 
 	/**

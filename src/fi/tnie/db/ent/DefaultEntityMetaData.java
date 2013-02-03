@@ -11,16 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fi.tnie.db.ent.im.EntityIdentityMap;
-import fi.tnie.db.ent.value.CharKey;
-import fi.tnie.db.ent.value.DateKey;
-import fi.tnie.db.ent.value.DecimalKey;
-import fi.tnie.db.ent.value.DoubleKey;
-import fi.tnie.db.ent.value.IntegerKey;
-import fi.tnie.db.ent.value.IntervalKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
-import fi.tnie.db.ent.value.TimeKey;
-import fi.tnie.db.ent.value.TimestampKey;
-import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
@@ -56,8 +47,7 @@ public abstract class DefaultEntityMetaData<
 	private Set<R> relationships;
 	private Map<R, ForeignKey> referenceMap;
 	private Map<Column, Set<R>> columnReferenceMap;		
-	private Map<A, PrimitiveKey<A, T, E, ?, ?, ?, ?>> keyMap;
-	
+		
 	private transient Map<UnificationContext, EntityIdentityMap<A, R, T, E, H>> unificationContextMap;
 
 	protected DefaultEntityMetaData() {
@@ -69,10 +59,11 @@ public abstract class DefaultEntityMetaData<
 //		populateReferences(table);
 //	}
 
-	protected abstract void populateAttributes(BaseTable table);
+	protected abstract Set<Column> populate(BaseTable table);
+	
+	
 
-
-	protected void populateAttributes(Set<A> attributes, Map<A, Column> attributeMap, BaseTable table) {
+	protected void populateAttributes(Set<A> attributes, Map<A, Column> attributeMap, BaseTable table, Set<Column> pkc) {
 
 		// EnumSet<K> attributes = EnumSet.allOf(keyType);
 		// EnumMap<K, Column> attributeMap = new EnumMap<K, Column>(keyType);
@@ -81,9 +72,7 @@ public abstract class DefaultEntityMetaData<
 		//	this.attributeMap = new EnumMap<A, Column>(atype);
 		Map<Column, A> columnMap = new HashMap<Column, A>();
 
-		//	EnumSet<A> pka = EnumSet.noneOf(atype);
-
-		Set<Column> pkc = new HashSet<Column>();
+		//	EnumSet<A> pka = EnumSet.noneOf(atype);	
 
 		for (A a : attributes) {
 //			Column c = table.columnMap().get(a);
@@ -104,18 +93,18 @@ public abstract class DefaultEntityMetaData<
 		}
 
 		this.attributes = attributes;
-		this.attributeMap = attributeMap;
-		this.pkcols = Collections.unmodifiableSet(pkc);
+		this.attributeMap = attributeMap;		
 		this.columnMap = columnMap;
+		this.pkcols = Collections.unmodifiableSet(pkc);
 	}
 
 	protected Column map(BaseTable table, A a) {
 		return table.columnMap().get(a.identifier());
 	}
 
-	protected abstract void populateReferences(BaseTable table);
+	// protected abstract void populateReferences(BaseTable table);
 
-	protected void populateReferences(Set<R> relationships, Map<R, ForeignKey> referenceMap, BaseTable table) {
+	protected void populateReferences(Set<R> relationships, Map<R, ForeignKey> referenceMap, BaseTable table, Set<Column> pkc) {
 //		this.references = EnumSet.allOf(rtype);
 //		this.referenceMap = new EnumMap<R, ForeignKey>(rtype);
 //
@@ -132,6 +121,12 @@ public abstract class DefaultEntityMetaData<
 				referenceMap.put(r, fk);
 				populateColumnReferenceMap(fk, r, rm);
 			}
+			
+			for (Column fkcol : fk.columns().keySet()) {
+				if (fkcol.isPrimaryKeyColumn())  {
+					pkc.add(fkcol);
+				}
+			}
 		}
 
 		// Ensure all the column-sets are unmodifiable after the call.
@@ -146,9 +141,9 @@ public abstract class DefaultEntityMetaData<
 		}
 
 		this.columnReferenceMap = rm;
-
 		this.relationships = Collections.unmodifiableSet(relationships);
 		this.referenceMap = referenceMap;
+		this.pkcols = Collections.unmodifiableSet(pkc);
 	}
 
 	protected abstract ForeignKey map(BaseTable table, R r);
@@ -168,7 +163,7 @@ public abstract class DefaultEntityMetaData<
 				}
 
 				rs.add(r);
-			}
+			}			
 		}
 	}
 
@@ -220,16 +215,13 @@ public abstract class DefaultEntityMetaData<
 //	    return (table == null) ? null : table.getSchema().getCatalog();
 //	}
 	
-	public fi.tnie.db.types.PrimitiveType<?> getAttributeType(A attribute) {
-		if (attribute == null) {
-			throw new NullPointerException("attribute");
-		}
-		
-		return attribute.type();
-		
-//		Column c = getColumn(attribute);
-//		return PrimitiveType.get(c.getDataType().getDataType());		
-	};
+//	public fi.tnie.db.types.PrimitiveType<?> getAttributeType(A attribute) {
+//		if (attribute == null) {
+//			throw new NullPointerException("attribute");
+//		}
+//		
+//		return attribute.type();
+//	};
 
 	
 //	@Override
@@ -237,32 +229,32 @@ public abstract class DefaultEntityMetaData<
 //		add(key);
 //	}
 
-	private void add(fi.tnie.db.ent.value.PrimitiveKey<A,T,E,?,?,?,?> key) {
-		if (key == null) {
-			throw new NullPointerException("key");
-		}
-		
-		getKeyMap().put(key.name(), key);
-	}
+//	private void add(fi.tnie.db.ent.value.PrimitiveKey<A,T,E,?,?,?,?> key) {
+//		if (key == null) {
+//			throw new NullPointerException("key");
+//		}
+//		
+//		getKeyMap().put(key.name(), key);
+//	}
 	
 	
-	public fi.tnie.db.ent.value.PrimitiveKey<A,T,E,?,?,?,?> getKey(A attribute) {
-		if (attribute == null) {
-			throw new NullPointerException("attribute");
-		}
-				
-		return getKeyMap().get(attribute);
-	}
-	
-	protected 
-	<K extends PrimitiveKey<A, T, E, ?, ?, ?, ?>>
-	void addAttributeKey(K key, Map<A, K> am) {
-		add(key);
-		
-		if (am != null) {
-			am.put(key.name(), key);
-		}
-	}
+//	public fi.tnie.db.ent.value.PrimitiveKey<A,T,E,?,?,?,?> getKey(A attribute) {
+//		if (attribute == null) {
+//			throw new NullPointerException("attribute");
+//		}
+//				
+//		return getKeyMap().get(attribute);
+//	}
+//	
+//	protected 
+//	<K extends PrimitiveKey<A, E, ?, ?, ?, ?>>
+//	void addAttributeKey(K key, Map<A, K> am) {
+////		add(key);
+//		
+//		if (am != null) {
+//			am.put(key.name(), key);
+//		}
+//	}
 	
 //	private java.util.Map<A, fi.tnie.db.ent.value.VarcharKey<A, E>> varcharKeyMap = new java.util.HashMap<A, fi.tnie.db.ent.value.VarcharKey<A, E>>();
 //	private java.util.Map<A, fi.tnie.db.ent.value.IntegerKey<A, E>> integerKeyMap = new java.util.HashMap<A, fi.tnie.db.ent.value.IntegerKey<A, E>>();
@@ -271,164 +263,164 @@ public abstract class DefaultEntityMetaData<
 //	private java.util.Map<A, fi.tnie.db.ent.value.DoubleKey<A, E>> doubleKeyMap = new java.util.HashMap<A, fi.tnie.db.ent.value.DoubleKey<A, E>>();
 //	private java.util.Map<A, fi.tnie.db.ent.value.CharKey<A, E>> charKeyMap = new java.util.HashMap<A, fi.tnie.db.ent.value.CharKey<A, E>>();
 	
-	public fi.tnie.db.ent.value.IntegerKey<A, T, E> getIntegerKey(A name) {
-		return key(name, getIntegerKeyMap());
-	}
+//	public fi.tnie.db.ent.value.IntegerKey<A, E> getIntegerKey(A name) {
+//		return key(name, getIntegerKeyMap());
+//	}
+//	
+//	public fi.tnie.db.ent.value.IntervalKey.YearMonth<A, T, E> getYearMonthIntervalKey(A name) {		
+//		return key(name, getYearMonthIntervalKeyMap());		
+//	}
+//	
+//	public fi.tnie.db.ent.value.IntervalKey.DayTime<A, T, E> getDayTimeIntervalKey(A name) {		
+//		return key(name, getDayTimeIntervalKeyMap());		
+//	}	
+//
+//	public fi.tnie.db.ent.value.VarcharKey<A, T, E> getVarcharKey(A name) {		 
+//		return key(name, getVarcharKeyMap());
+//	}
+//	
+//	public fi.tnie.db.ent.value.TimestampKey<A, T, E> getTimestampKey(A name) {		
+//		return key(name, getTimestampKeyMap());
+//	}
+//
+//	public fi.tnie.db.ent.value.TimeKey<A, T, E> getTimeKey(A name) {		
+//		return key(name, getTimeKeyMap());
+//	}
+//	
+//	public fi.tnie.db.ent.value.DateKey<A, T, E> getDateKey(A name) {		
+//		return key(name, getDateKeyMap());
+//	}
+//	
+//	public fi.tnie.db.ent.value.DoubleKey<A, T, E> getDoubleKey(A name) {		
+//		return key(name, getDoubleKeyMap());
+//	}
+//	
+//	public fi.tnie.db.ent.value.DecimalKey<A, T, E> getDecimalKey(A name) {		
+//		return key(name, getDecimalKeyMap());
+//	}	
+//	
+//	public fi.tnie.db.ent.value.CharKey<A, T, E> getCharKey(A name) {		
+//		return key(name, getCharKeyMap());
+//	}
+//			
+//	protected java.util.Map<A, IntegerKey<A, T, E>> getIntegerKeyMap() {
+//		return Collections.emptyMap();
+//	}
+//		
+//	protected java.util.Map<A, IntervalKey.YearMonth<A, T, E>> getYearMonthIntervalKeyMap() {
+//		return Collections.emptyMap();
+//	}
+//	
+//	protected java.util.Map<A, IntervalKey.DayTime<A, T, E>> getDayTimeIntervalKeyMap() {
+//		return Collections.emptyMap();
+//	}
+//		
+//	protected java.util.Map<A, VarcharKey<A, T, E>> getVarcharKeyMap() {
+//		return Collections.emptyMap();
+//	}
+//	protected java.util.Map<A, CharKey<A, T, E>> getCharKeyMap() {
+//		return Collections.emptyMap();
+//	}	
+//	
+//	protected java.util.Map<A, DateKey<A, T, E>> getDateKeyMap() {
+//		return Collections.emptyMap();
+//	}
+//	
+//	protected java.util.Map<A, TimestampKey<A, T, E>> getTimestampKeyMap() {
+//		return Collections.emptyMap();
+//	}
+//
+//	protected Map<A, TimeKey<A, T, E>> getTimeKeyMap() {
+//		return Collections.emptyMap();
+//	}	
+//	
+//	protected java.util.Map<A, DoubleKey<A, T, E>> getDoubleKeyMap() {
+//		return Collections.emptyMap();
+//	}
+//	
+//	protected java.util.Map<A, DecimalKey<A, T, E>> getDecimalKeyMap() {
+//		return Collections.emptyMap();
+//	}
+//	
+//    @Override
+//    public void addKey(DoubleKey<A, T, E> key) {
+//    	addAttributeKey(key, getDoubleKeyMap());    	
+//    }
+//    
+//    @Override
+//    public void addKey(DecimalKey<A, T, E> key) {
+//    	addAttributeKey(key, getDecimalKeyMap());    	
+//    }
+//		
+//    @Override
+//    public void addKey(IntegerKey<A, T, E> key) {
+//    	addAttributeKey(key, getIntegerKeyMap());
+//    }
+//    
+//    @Override
+//    public void addKey(CharKey<A, T, E> key) {        	
+//    	addAttributeKey(key, getCharKeyMap());    	
+//    }
+//    
+//    @Override
+//    public void addKey(VarcharKey<A, T, E> key) {        	
+//    	addAttributeKey(key, getVarcharKeyMap());    	
+//    }    
+//
+//    @Override
+//    public void addKey(DateKey<A, T, E> key) {        	
+//    	addAttributeKey(key, getDateKeyMap());    	
+//    }
+//
+//    @Override
+//    public void addKey(TimestampKey<A, T, E> key) {        	
+//    	addAttributeKey(key, getTimestampKeyMap());    	
+//    }
+//
+//    @Override
+//    public void addKey(TimeKey<A, T, E> key) {        	
+//    	addAttributeKey(key, getTimeKeyMap());    	
+//    }
+//
+//    @Override
+//    public void addKey(IntervalKey.YearMonth<A, T, E> key) {        	
+//    	addAttributeKey(key, getYearMonthIntervalKeyMap());    	
+//    }
+//
+//    @Override
+//    public void addKey(IntervalKey.DayTime<A, T, E> key) {        	
+//    	addAttributeKey(key, getDayTimeIntervalKeyMap());    	
+//    }    
+//
+//	private Map<A, PrimitiveKey<A, T, E, ?, ?, ?, ?>> getKeyMap() {
+//		if (keyMap == null) {
+//			keyMap = createKeyMap();
+//			
+//			if (keyMap == null) {
+//				throw new NullPointerException(getClass() + ".createKeyMap()");
+//			}
+//		}
+//
+//		return keyMap;
+//	}
 	
-	public fi.tnie.db.ent.value.IntervalKey.YearMonth<A, T, E> getYearMonthIntervalKey(A name) {		
-		return key(name, getYearMonthIntervalKeyMap());		
-	}
-	
-	public fi.tnie.db.ent.value.IntervalKey.DayTime<A, T, E> getDayTimeIntervalKey(A name) {		
-		return key(name, getDayTimeIntervalKeyMap());		
-	}	
-
-	public fi.tnie.db.ent.value.VarcharKey<A, T, E> getVarcharKey(A name) {		 
-		return key(name, getVarcharKeyMap());
-	}
-	
-	public fi.tnie.db.ent.value.TimestampKey<A, T, E> getTimestampKey(A name) {		
-		return key(name, getTimestampKeyMap());
-	}
-
-	public fi.tnie.db.ent.value.TimeKey<A, T, E> getTimeKey(A name) {		
-		return key(name, getTimeKeyMap());
-	}
-	
-	public fi.tnie.db.ent.value.DateKey<A, T, E> getDateKey(A name) {		
-		return key(name, getDateKeyMap());
-	}
-	
-	public fi.tnie.db.ent.value.DoubleKey<A, T, E> getDoubleKey(A name) {		
-		return key(name, getDoubleKeyMap());
-	}
-	
-	public fi.tnie.db.ent.value.DecimalKey<A, T, E> getDecimalKey(A name) {		
-		return key(name, getDecimalKeyMap());
-	}	
-	
-	public fi.tnie.db.ent.value.CharKey<A, T, E> getCharKey(A name) {		
-		return key(name, getCharKeyMap());
-	}
-			
-	protected java.util.Map<A, IntegerKey<A, T, E>> getIntegerKeyMap() {
-		return Collections.emptyMap();
-	}
-		
-	protected java.util.Map<A, IntervalKey.YearMonth<A, T, E>> getYearMonthIntervalKeyMap() {
-		return Collections.emptyMap();
-	}
-	
-	protected java.util.Map<A, IntervalKey.DayTime<A, T, E>> getDayTimeIntervalKeyMap() {
-		return Collections.emptyMap();
-	}
-		
-	protected java.util.Map<A, VarcharKey<A, T, E>> getVarcharKeyMap() {
-		return Collections.emptyMap();
-	}
-	protected java.util.Map<A, CharKey<A, T, E>> getCharKeyMap() {
-		return Collections.emptyMap();
-	}	
-	
-	protected java.util.Map<A, DateKey<A, T, E>> getDateKeyMap() {
-		return Collections.emptyMap();
-	}
-	
-	protected java.util.Map<A, TimestampKey<A, T, E>> getTimestampKeyMap() {
-		return Collections.emptyMap();
-	}
-
-	protected Map<A, TimeKey<A, T, E>> getTimeKeyMap() {
-		return Collections.emptyMap();
-	}	
-	
-	protected java.util.Map<A, DoubleKey<A, T, E>> getDoubleKeyMap() {
-		return Collections.emptyMap();
-	}
-	
-	protected java.util.Map<A, DecimalKey<A, T, E>> getDecimalKeyMap() {
-		return Collections.emptyMap();
-	}
-	
-    @Override
-    public void addKey(DoubleKey<A, T, E> key) {
-    	addAttributeKey(key, getDoubleKeyMap());    	
-    }
-    
-    @Override
-    public void addKey(DecimalKey<A, T, E> key) {
-    	addAttributeKey(key, getDecimalKeyMap());    	
-    }
-		
-    @Override
-    public void addKey(IntegerKey<A, T, E> key) {
-    	addAttributeKey(key, getIntegerKeyMap());
-    }
-    
-    @Override
-    public void addKey(CharKey<A, T, E> key) {        	
-    	addAttributeKey(key, getCharKeyMap());    	
-    }
-    
-    @Override
-    public void addKey(VarcharKey<A, T, E> key) {        	
-    	addAttributeKey(key, getVarcharKeyMap());    	
-    }    
-
-    @Override
-    public void addKey(DateKey<A, T, E> key) {        	
-    	addAttributeKey(key, getDateKeyMap());    	
-    }
-
-    @Override
-    public void addKey(TimestampKey<A, T, E> key) {        	
-    	addAttributeKey(key, getTimestampKeyMap());    	
-    }
-
-    @Override
-    public void addKey(TimeKey<A, T, E> key) {        	
-    	addAttributeKey(key, getTimeKeyMap());    	
-    }
-
-    @Override
-    public void addKey(IntervalKey.YearMonth<A, T, E> key) {        	
-    	addAttributeKey(key, getYearMonthIntervalKeyMap());    	
-    }
-
-    @Override
-    public void addKey(IntervalKey.DayTime<A, T, E> key) {        	
-    	addAttributeKey(key, getDayTimeIntervalKeyMap());    	
-    }    
-
-	private Map<A, PrimitiveKey<A, T, E, ?, ?, ?, ?>> getKeyMap() {
-		if (keyMap == null) {
-			keyMap = createKeyMap();
-			
-			if (keyMap == null) {
-				throw new NullPointerException(getClass() + ".createKeyMap()");
-			}
-		}
-
-		return keyMap;
-	}
-	
-	protected Map<A, PrimitiveKey<A, T, E, ?, ?, ?, ?>> createKeyMap() {
-		return new HashMap<A, PrimitiveKey<A, T, E, ?, ?, ?, ?>>();
-	}
-
-	protected <
-		V extends Serializable, 
-		P extends PrimitiveType<P>,
-		PH extends PrimitiveHolder<V, P>,
-		K extends PrimitiveKey<A, T, E, V, P, PH, K>
-	>
-	K key(K key, A name) {
-		if (name == null) {
-			throw new NullPointerException("name");
-		}
-								
-		return key.name().equals(name) ? key : null;
-	}
+//	protected Map<A, PrimitiveKey<A, T, E, ?, ?, ?, ?>> createKeyMap() {
+//		return new HashMap<A, PrimitiveKey<A, T, E, ?, ?, ?, ?>>();
+//	}
+//
+//	protected <
+//		V extends Serializable, 
+//		P extends PrimitiveType<P>,
+//		PH extends PrimitiveHolder<V, P, PH>,
+//		K extends PrimitiveKey<A, T, E, V, P, PH, K>
+//	>
+//	K key(K key, A name) {
+//		if (name == null) {
+//			throw new NullPointerException("name");
+//		}
+//								
+//		return key.name().equals(name) ? key : null;
+//	}
 
 //	private Map<Column, Key<A, ?, ?, ?, E, ?>> getColumnKeyMap() {
 //		if (columnKeyMap == null) {
@@ -464,8 +456,8 @@ public abstract class DefaultEntityMetaData<
 	protected <
 		V extends Serializable, 
 		P extends PrimitiveType<P>,
-		PH extends PrimitiveHolder<V, P>,
-		K extends PrimitiveKey<A, T, E, V, P, PH, K>
+		PH extends PrimitiveHolder<V, P, PH>,
+		K extends PrimitiveKey<A, E, V, P, PH, K>
 	>
 	K key(A name, Map<A, K> src) {
 		if (name == null) {

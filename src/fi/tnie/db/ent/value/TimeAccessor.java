@@ -6,17 +6,14 @@ package fi.tnie.db.ent.value;
 import java.util.Date;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.TimeHolder;
-import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.types.TimeType;
 
 public class TimeAccessor<
 	A extends Attribute,	
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,	
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
+	E extends HasTime<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, T, E, Date, TimeType, TimeHolder, TimeKey<A, T, E>> {
+	extends AbstractPrimitiveAccessor<A, E, Date, TimeType, TimeHolder, TimeKey<A, E>> {
 
 	/**
 	 * 
@@ -30,7 +27,7 @@ public class TimeAccessor<
 	private TimeAccessor() {
 	}
 
-	public TimeAccessor(E target, TimeKey<A, T, E> k) {
+	public TimeAccessor(E target, TimeKey<A, E> k) {
 		super(target, k);
 	}
 }

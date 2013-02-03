@@ -10,7 +10,7 @@ import fi.tnie.db.types.TimestampType;
 
 
 public class TimestampHolder
-	extends PrimitiveHolder<Date, TimestampType> {
+	extends PrimitiveHolder<Date, TimestampType, TimestampHolder> {
 			
 	/**
 	 * 
@@ -53,5 +53,14 @@ public class TimestampHolder
 	@Override
 	public TimestampHolder asTimestampHolder() {
 		return this;
+	}
+
+	@Override
+	public TimestampHolder self() {
+		return this;
+	}
+	
+	public static TimestampHolder of(PrimitiveHolder<?, ?, ?> holder) {
+		return holder.asTimestampHolder();
 	}
 }

@@ -6,8 +6,8 @@ package fi.tnie.db.rpc;
 import fi.tnie.db.types.IntervalType;
 import fi.tnie.db.types.PrimitiveType;
 
-public abstract class IntervalHolder<V extends Interval<?>, T extends PrimitiveType<T>>
-	extends PrimitiveHolder<V, T> {
+public abstract class IntervalHolder<V extends Interval<?>, T extends PrimitiveType<T>, H extends IntervalHolder<V, T, H>>
+	extends PrimitiveHolder<V, T, H> {
 	
 	private V value;
 
@@ -18,7 +18,7 @@ public abstract class IntervalHolder<V extends Interval<?>, T extends PrimitiveT
 
 	
 	public static class YearMonth
-		extends IntervalHolder<Interval.YearMonth, IntervalType.YearMonth> {
+		extends IntervalHolder<Interval.YearMonth, IntervalType.YearMonth, IntervalHolder.YearMonth> {
 
 		/**
 		 * 
@@ -48,11 +48,20 @@ public abstract class IntervalHolder<V extends Interval<?>, T extends PrimitiveT
 		public YearMonth asYearMonthIntervalHolder() {
 			return this;
 		}
+
+		@Override
+		public YearMonth self() {		
+			return this;
+		}
+		
+		public static IntervalHolder.YearMonth of(PrimitiveHolder<?, ?, ?> holder) {
+			return holder.asYearMonthIntervalHolder();
+		}
 	}
 	
 	
 	public static class DayTime
-		extends IntervalHolder<Interval.DayTime, IntervalType.DayTime> {
+		extends IntervalHolder<Interval.DayTime, IntervalType.DayTime, IntervalHolder.DayTime> {
 			
 		/**
 		 * 
@@ -80,6 +89,15 @@ public abstract class IntervalHolder<V extends Interval<?>, T extends PrimitiveT
 		
 		@Override
 		public IntervalHolder.DayTime asDayTimeIntervalHolder() {
+			return this;
+		}
+		
+		public static IntervalHolder.DayTime of(PrimitiveHolder<?, ?, ?> holder) {
+			return holder.asDayTimeIntervalHolder();
+		}
+
+		@Override
+		public DayTime self() {
 			return this;
 		}
 	}	

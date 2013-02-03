@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 
-public class StringAssignment<T extends PrimitiveType<T>, H extends PrimitiveHolder<String, T>>	
+public class StringAssignment<T extends PrimitiveType<T>, H extends PrimitiveHolder<String, T, H>>	
 	extends AbstractParameterAssignment<String, T, H> {
 
 	public StringAssignment(H value) {

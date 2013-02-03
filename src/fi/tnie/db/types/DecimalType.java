@@ -19,4 +19,9 @@ public class DecimalType
 	public int getSqlType() {
 		return PrimitiveType.DECIMAL;
 	}
+	
+	@Override
+	public DecimalType self() {
+		return this;
+	}
 }

@@ -16,7 +16,6 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
-import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.paging.EntityFetcher;
@@ -47,26 +46,23 @@ public class SynchronousEntityFetcher<
 	}
 
 	@Override
-	public void fetch(QT queryTemplate, FetchOptions opts, Receiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>> receiver) 
-		throws EntityRuntimeException {
-		
+	public void fetch(QT queryTemplate, FetchOptions opts, Receiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>> receiver, Receiver<Throwable> errorReceiver) {		
 		try {
 			EntityQuery<A, R, T, E, H, F, M, C, QT> q = queryTemplate.newQuery();
 			EntityQueryResult<A, R, T, E, H, F, M, C, QT> qr = executor.execute(q, opts, this.connection);
 			receiver.receive(qr);			
 		}
 		catch (SQLException e) {
-			throw new EntityRuntimeException(e.getMessage()); 
+			errorReceiver.receive(e);
 		} 
 		catch (CyclicTemplateException e) {
-			throw new EntityRuntimeException(e.getMessage());
+			errorReceiver.receive(e);
 		} 
 		catch (QueryException e) {
-			throw new EntityRuntimeException(e.getMessage());
+			errorReceiver.receive(e);
 		} 
 		catch (EntityException e) {
-			throw new EntityRuntimeException(e.getMessage());
+			errorReceiver.receive(e);
 		}
 	}
-
 }

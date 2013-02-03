@@ -6,20 +6,16 @@ package fi.tnie.db.ent.value;
 import java.util.Date;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
+import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.TimestampHolder;
-import fi.tnie.db.types.PrimitiveType;
-import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.types.TimestampType;
 
 public final class TimestampKey<	
-	A extends Attribute, 
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
+	A extends Attribute,
+	E extends HasTimestamp<A, E>
 >
-	extends AbstractPrimitiveKey<A, T, E, Date, TimestampType, TimestampHolder, TimestampKey<A, T, E>>
+	extends AbstractPrimitiveKey<A, E, Date, TimestampType, TimestampHolder, TimestampKey<A, E>>
 {
 	/**
 	 *
@@ -32,24 +28,21 @@ public final class TimestampKey<
 	private TimestampKey() {
 	}
 
-	private TimestampKey(EntityMetaData<A, ?, T, E, ?, ?, ?, ?> meta, A name) {
-		super(meta, name);
-		meta.addKey(this);
+	private TimestampKey(HasTimestampKey<A, E> meta, A name) {
+		super(name);
+		meta.register(this);
 	}
 	
 	public static <
-		X extends Attribute,		 
-		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?, ?>,		
-		T extends Entity<X, ?, Z, T, ?, ?, ?, ?>
+		X extends Attribute,
+		T extends HasTimestamp<X, T>
 	>
-	TimestampKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?, ?> meta, X a) {
-		TimestampKey<X, Z, T> k = meta.getTimestampKey(a);
+	TimestampKey<X, T> get(HasTimestampKey<X, T> meta, X a) {
+		TimestampKey<X, T> k = meta.getTimestampKey(a);
 		
-		if (k == null) {
-			PrimitiveType<?> t = meta.getAttributeType(a);
-			
-			if (t != null && t.getSqlType() == PrimitiveType.TIMESTAMP) {
-				k = new TimestampKey<X, Z, T>(meta, a);
+		if (k == null) {						
+			if (TimestampType.TYPE.equals(a.type())) {
+				k = new TimestampKey<X, T>(meta, a);
 			}			
 		}
 				
@@ -75,15 +68,21 @@ public final class TimestampKey<
 	public TimestampHolder newHolder(Date newValue) {
 		return TimestampHolder.valueOf(newValue);
 	}
-
+	
+	
 	@Override
 	public void copy(E src, E dest) 
-		throws EntityRuntimeException {
+		throws EntityRuntimeException {		
 		dest.setTimestamp(this, src.getTimestamp(this));		
 	}
 
 	@Override
-	public TimestampKey<A, T, E> self() {
+	public TimestampKey<A, E> self() {
 		return this;
+	}
+
+	@Override
+	public TimestampHolder as(PrimitiveHolder<?, ?, ?> holder) {
+		return TimestampHolder.of(holder);
 	}
 }

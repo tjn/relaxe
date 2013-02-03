@@ -118,22 +118,22 @@ public class DefaultEntityTemplateQuery<
 		BaseTable table = getMetaData().getBaseTable();
 
 		if (table == null) {
-			throw new NullPointerException("EntityMetaData.getBaseTable()");
+			throw new NullPointerException("DefaultEntityTemplateQuery: getMetaData().getBaseTable()");
 		}		
 				
 		List<EntityQueryPredicate<?>> apl = new ArrayList<EntityQueryPredicate<?>>();		
 		addTemplatePredicates(root, apl);
 			
-		DefaultTableExpression q = new DefaultTableExpression();
+		DefaultTableExpression te = new DefaultTableExpression();
 		HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>> visited = new HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>>();
 
-		AbstractTableReference tref = fromTemplate(root, null, null, null, q, visited);
+		AbstractTableReference tref = fromTemplate(root, null, null, null, te, visited);
 		
 		logger().debug("ref: " + tref);		
 		logger().debug("originMap: " + originMap);
 		logger().debug("metaDataMap: " + metaDataMap);
 		
-		q.setFrom(new From(tref));
+		te.setFrom(new From(tref));
 								
 		List<EntityQueryPredicate<?>> pl = apl;		
 		
@@ -155,12 +155,12 @@ public class DefaultEntityTemplateQuery<
 				ap = AndPredicate.newAnd(ap, qp);
 			}
 			
-			q.setWhere(new Where(ap));
+			te.setWhere(new Where(ap));
 		}	
 		
 		
 				
-		this.query = q;
+		this.query = te;
 		
 		List<EntityQuerySortKey<?>> sortKeyList = root.allSortKeys();
 					
@@ -168,7 +168,7 @@ public class DefaultEntityTemplateQuery<
 			this.queryExpression = this.query;
 		}		
 		else {
-			OrderBy ob = q.getOrderBy();
+			OrderBy ob = te.getOrderBy();
 			
 			if (ob == null) {
 				ob = new OrderBy();
@@ -188,7 +188,7 @@ public class DefaultEntityTemplateQuery<
 //			Limit le = (this.limit == null) ? null : new Limit(limit.longValue());
 //			Offset oe = (this.offset == null) ? null : new Offset(this.offset.longValue());
 			
-			SelectStatement sq = new SelectStatement(q, ob, null, null);			
+			SelectStatement sq = new SelectStatement(te, ob, null, null);			
 			this.queryExpression = sq;
 		}
 		
@@ -278,6 +278,11 @@ public class DefaultEntityTemplateQuery<
 		}
 					
 		Set<Column> pkcols = meta.getPKDefinition();
+				
+//		if (pkcols.isEmpty()) {
+//			throw new IllegalArgumentException("no primary key columns for table " + meta.getBaseTable().getQualifiedName());
+//		}
+		
 		
 		for (Column c : pkcols) {
 			ColumnReference cref = new ColumnReference(tref, c);
@@ -524,6 +529,10 @@ public class DefaultEntityTemplateQuery<
 		
 	@Override
 	public TableReference getReferenced(TableReference referencing, ForeignKey fk) {
+		if (referencing == null) {
+			return null;
+		}
+		
 		JoinKey k = new JoinKey(referencing, fk);
 		TableReference r = getReferenceMap().get(k);
 		return r;

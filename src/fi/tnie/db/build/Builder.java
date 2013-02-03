@@ -22,11 +22,13 @@ import org.apache.log4j.Logger;
 
 import fi.tnie.db.DefaultEntityContext;
 import fi.tnie.db.DefaultTableMapper;
+import fi.tnie.db.DefaultTypeMapper;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.feature.Features;
 import fi.tnie.db.feature.SQLGenerationException;
 import fi.tnie.db.map.TableMapper;
+import fi.tnie.db.map.TypeMapper;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
@@ -67,6 +69,7 @@ public class Builder
     private File templateDir;    
                
     private transient TableMapper tableMapper;
+    private transient TypeMapper typeMapper;
     
     private SchemaFilter schemaFilter;
     
@@ -90,7 +93,11 @@ public class Builder
         new SimpleOption("catalog-context-package", "c", new Argument(false), "Java package name for generated catalog context classes.");  
 
     public static final Option OPTION_INCLUDE_ONLY_SCHEMAS = 
-        new SimpleOption("only-schemas", "o", new Argument("only-schemas", 1, null), "Schema names to include.");  
+        new SimpleOption("only-schemas", "o", new Argument("only-schemas", 1, null), "Schema names to include.");
+    
+    public static final Option OPTION_TYPE_MAPPER_IMPLEMENTATION = 
+        new SimpleOption("type-mapper-implementation", "m", new Argument(false), "Class name of the implementation to be used as a type mapper");  
+    
 
     private static Logger logger = Logger.getLogger(Builder.class);
     
@@ -109,6 +116,7 @@ public class Builder
         addOption(p, OPTION_CATALOG_CONTEXT_PACKAGE);        
 //        addOption(p, OPTION_SCHEMA);        
         addOption(p, OPTION_INCLUDE_ONLY_SCHEMAS);
+        addOption(p, OPTION_TYPE_MAPPER_IMPLEMENTATION);
     }
         
     @Override
@@ -120,7 +128,30 @@ public class Builder
         String gen = cl.value(require(cl, OPTION_GENERATED_DIR));
         String tem = cl.value(require(cl, OPTION_TEMPLATE_DIR));
         String pkg = cl.value(require(cl, OPTION_ROOT_PACKAGE));
-        String ccp = cl.value(OPTION_CATALOG_CONTEXT_PACKAGE);
+        String ccp = cl.value(OPTION_CATALOG_CONTEXT_PACKAGE);        
+        String tmi = cl.value(OPTION_TYPE_MAPPER_IMPLEMENTATION);
+                
+        TypeMapper tym = null;
+        
+        
+        if (tmi == null) {
+        	tym = new DefaultTypeMapper();
+        }
+        else {
+        	try {
+        		logger().debug("loading type mapper -class: " + tmi);
+        		Class<?> tmc = Class.forName(tmi);
+        		logger().debug("instantiating type mapper...");        		
+        		tym = (TypeMapper) tmc.newInstance();
+        		logger().debug("type mapper instantiated");
+        	}
+        	catch (Exception e) {
+        		logger().error(e.getMessage(), e);
+        		throw new ToolConfigurationException("Unable to instantiate type mapper: " + tmi + " (" + e.getMessage() + ")", e);
+			}
+        }
+        
+        
         
         List<String> schemas = cl.values(OPTION_INCLUDE_ONLY_SCHEMAS);
         
@@ -227,6 +258,7 @@ public class Builder
         setTemplateDir(new File(tem));
         setRootPackage(pkg);
         setCatalogContextPackage(ccp);
+        setTypeMapper(tym);
         
     }
 
@@ -383,7 +415,7 @@ public class Builder
         
         TableMapper tm = getTableMapper();       
         SourceGenerator gen = new SourceGenerator(sourceRoot, getSchemaFilter());              
-        Properties current = gen.run(cat, tm);
+        Properties current = gen.run(cat, tm, getTypeMapper());
         
         IOHelper.doStore(current, sourceList.getPath(), "List of the generated source files");            
     }
@@ -499,6 +531,14 @@ public class Builder
 
 	public void setSchemaFilter(SchemaFilter schemaFilter) {
 		this.schemaFilter = schemaFilter;
+	}
+
+	public TypeMapper getTypeMapper() {
+		return typeMapper;
+	}
+
+	public void setTypeMapper(TypeMapper typeMapper) {
+		this.typeMapper = typeMapper;
 	}
 	
 	

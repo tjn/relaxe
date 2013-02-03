@@ -24,12 +24,12 @@ public abstract class VirtualHolder<
 	S extends Serializable,
 	T extends Serializable,
 	I extends PrimitiveType<I>,
-	H extends PrimitiveHolder<T, I>,
+	H extends PrimitiveHolder<T, I, H>,
 	V extends PrimitiveType<V>,
 	Z extends VirtualType<Z, I, V>,
 	VH extends VirtualHolder<S, T, I, H, V, Z, VH>
 >
-	extends PrimitiveHolder<S, Z> {
+	extends PrimitiveHolder<S, Z, VH> {
 
 	/**
 	 * 

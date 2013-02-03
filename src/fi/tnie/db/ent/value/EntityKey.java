@@ -47,7 +47,7 @@ public interface EntityKey<
 	RC extends Content,
 	K extends EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, K>	
 >
-	extends Key<T, E, RT, K>
+	extends Key<E, RT, K>
 {	
 	R name();	
 	RH newHolder(RE newValue);	

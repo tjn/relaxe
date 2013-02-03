@@ -6,11 +6,10 @@ package fi.tnie.db.rpc;
 import java.util.Date;
 
 import fi.tnie.db.types.DateType;
-import fi.tnie.db.types.PrimitiveType;
 
 
 public class DateHolder
-	extends PrimitiveHolder<Date, DateType> {
+	extends PrimitiveHolder<Date, DateType, DateHolder> {
 		
 	/**
 	 * 
@@ -47,12 +46,16 @@ public class DateHolder
 	}
 	
 	@Override
-	public int getSqlType() {
-		return PrimitiveType.DATE;
-	}
-	
-	@Override
 	public DateHolder asDateHolder() {
 		return this;
+	}
+
+	@Override
+	public DateHolder self() {
+		return this;
+	}
+	
+	public static DateHolder as(PrimitiveHolder<?, ?, ?> holder) {
+		return holder.asDateHolder();
 	}
 }

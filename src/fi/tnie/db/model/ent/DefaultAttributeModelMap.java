@@ -24,7 +24,7 @@ public abstract class DefaultAttributeModelMap<
 	E extends Entity<A, ?, T, E, ?, ?, ?, C>,
 	V extends Serializable,
 	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<V, P>,
+	H extends PrimitiveHolder<V, P, H>,
 	C extends Content,
 	D extends AttributeModelMap<A, V, P, H, T, E, D>	
 	>
@@ -56,7 +56,7 @@ public abstract class DefaultAttributeModelMap<
 
 	
 	public <
-		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,V,P,H,K>
+		K extends fi.tnie.db.ent.value.PrimitiveKey<A,E,V,P,H,K>
 	> 
 	MutableValueModel<H> attr(final K k) throws EntityRuntimeException {
 		if (k == null) {
@@ -85,7 +85,7 @@ public abstract class DefaultAttributeModelMap<
 	}
 
 	public <		 
-		K extends PrimitiveKey<A, T, E, V, P, H, K>
+		K extends PrimitiveKey<A, E, V, P, H, K>
 	> 
 	MutableValueModel<H> createValueModel(K k, H initialValue) {
 		MutableValueModel<H> nm = new DefaultMutableValueModel<H>(initialValue);

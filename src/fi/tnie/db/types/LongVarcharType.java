@@ -6,6 +6,10 @@ package fi.tnie.db.types;
 public class LongVarcharType
 	extends PrimitiveType<LongVarcharType> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3990820153117029057L;
 	public static final LongVarcharType TYPE = new LongVarcharType();
 	
 	private LongVarcharType() {
@@ -13,6 +17,11 @@ public class LongVarcharType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.LONGNVARCHAR;
+		return PrimitiveType.LONGVARCHAR;
+	}
+	
+	@Override
+	public LongVarcharType self() {
+		return this;
 	}
 }

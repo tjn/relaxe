@@ -7,32 +7,15 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
-import fi.tnie.db.rpc.CharHolder;
-import fi.tnie.db.rpc.DateHolder;
-import fi.tnie.db.rpc.DecimalHolder;
-import fi.tnie.db.rpc.DoubleHolder;
-import fi.tnie.db.rpc.IntegerHolder;
-import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.rpc.StringHolder;
-import fi.tnie.db.rpc.TimeHolder;
-import fi.tnie.db.rpc.TimestampHolder;
-import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
-import fi.tnie.db.ent.value.CharKey;
-import fi.tnie.db.ent.value.DateKey;
-import fi.tnie.db.ent.value.DecimalKey;
-import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.EntityKey;
-import fi.tnie.db.ent.value.IntegerKey;
-import fi.tnie.db.ent.value.IntervalKey;
+import fi.tnie.db.ent.value.HasString;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.ent.value.StringKey;
-import fi.tnie.db.ent.value.TimeKey;
-import fi.tnie.db.ent.value.TimestampKey;
-import fi.tnie.db.ent.value.VarcharKey;
 import fi.tnie.db.meta.Column;
 
 public interface Entity<
@@ -46,14 +29,15 @@ public interface Entity<
 	C extends Content
 >
 	extends
+	HasString<A, E>,
 	Serializable
 {
 
 	<
 		S extends Serializable,
 		P extends PrimitiveType<P>,
-		PH extends PrimitiveHolder<S, P>,
-		K extends PrimitiveKey<A, T, E, S, P, PH, K>
+		PH extends PrimitiveHolder<S, P, PH>,
+		K extends PrimitiveKey<A, E, S, P, PH, K>
 	>
 	PH get(K k)
 		throws EntityRuntimeException;
@@ -74,8 +58,8 @@ public interface Entity<
 	<
 		S extends Serializable,
 		P extends PrimitiveType<P>,
-		RH extends PrimitiveHolder<S, P>,
-		K extends PrimitiveKey<A, T, E, S, P, RH, K>
+		RH extends PrimitiveHolder<S, P, RH>,
+		K extends PrimitiveKey<A, E, S, P, RH, K>
 	>
 	void set(K k, RH newValue)
 		throws EntityRuntimeException;
@@ -97,7 +81,7 @@ public interface Entity<
 	>
 	void setRef(K k, RH newValue);
 
-	PrimitiveHolder<?, ?> value(A attribute) throws EntityRuntimeException;
+	PrimitiveHolder<?, ?, ?> value(A attribute) throws EntityRuntimeException;
 
 
 
@@ -122,7 +106,7 @@ public interface Entity<
 	 * @throws NullPointerException If <code>c</code> is <code>null</code>.
 	 */
 
-	PrimitiveHolder<?, ?> get(Column c) throws NullPointerException, EntityRuntimeException;
+	PrimitiveHolder<?, ?, ?> get(Column c) throws NullPointerException, EntityRuntimeException;
 
 	/***
 	 * Returns the value of the corresponding column.
@@ -144,7 +128,7 @@ public interface Entity<
 
 	EntityDiff<A, R, T, E> diff(E another) throws EntityRuntimeException;
 
-	Map<Column, PrimitiveHolder<?, ?>> getPrimaryKey() throws EntityRuntimeException;
+	Map<Column, PrimitiveHolder<?, ?, ?>> getPrimaryKey() throws EntityRuntimeException;
 
 	/**
 	 * Returns the meta-data object which describes the structure of this object.
@@ -159,74 +143,74 @@ public interface Entity<
 
 	public <
 		P extends PrimitiveType<P>,
-		SH extends StringHolder<P>,
-		K extends StringKey<A, T, E, P, SH, K>
+		SH extends StringHolder<P, SH>,		
+		K extends StringKey<A, E, P, SH, K>
 	>
 	SH getString(K k) throws EntityRuntimeException;
 
 	public <
 		P extends PrimitiveType<P>,
-		SH extends StringHolder<P>,
-		K extends StringKey<A, T, E, P, SH, K>
+		SH extends StringHolder<P, SH>,
+		K extends StringKey<A, E, P, SH, K>
 	>
 	void setString(K k, SH s) throws EntityRuntimeException;
 
 	public <
 		P extends PrimitiveType<P>,
-		SH extends StringHolder<P>,
-		K extends StringKey<A, T, E, P, SH, K>
+		SH extends StringHolder<P, SH>,
+		K extends StringKey<A, E, P, SH, K>
 	>
 	void setString(K k, String s) throws EntityRuntimeException;
 
-	IntegerHolder getInteger(IntegerKey<A, T, E> k)
-		throws EntityRuntimeException;
-	VarcharHolder getVarchar(VarcharKey<A, T, E> k)
-		throws EntityRuntimeException;
-	DateHolder getDate(DateKey<A, T, E> k)
-		throws EntityRuntimeException;
-	TimestampHolder getTimestamp(TimestampKey<A, T, E> k)
-		throws EntityRuntimeException;
-	TimeHolder getTime(TimeKey<A, T, E> k)
-		throws EntityRuntimeException;
-	CharHolder getChar(CharKey<A, T, E> k)
-		throws EntityRuntimeException;
-	DoubleHolder getDouble(DoubleKey<A, T, E> k)
-		throws EntityRuntimeException;
-	DecimalHolder getDecimal(DecimalKey<A, T, E> k)
-		throws EntityRuntimeException;
+//	IntegerHolder getInteger(IntegerKey<A, E> k)
+//		throws EntityRuntimeException;
+//	VarcharHolder getVarchar(VarcharKey<A, E> k)
+//		throws EntityRuntimeException;
+//	DateHolder getDate(DateKey<A, E> k)
+//		throws EntityRuntimeException;
+//	TimestampHolder getTimestamp(TimestampKey<A, E> k)
+//		throws EntityRuntimeException;
+//	TimeHolder getTime(TimeKey<A, E> k)
+//		throws EntityRuntimeException;
+//	CharHolder getChar(CharKey<A, E> k)
+//		throws EntityRuntimeException;
+//	DoubleHolder getDouble(DoubleKey<A, E> k)
+//		throws EntityRuntimeException;
+//	DecimalHolder getDecimal(DecimalKey<A, E> k)
+//		throws EntityRuntimeException;
+//
+//	IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, E> k);
+//	IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, E> k);
 
-	IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, T, E> k);
-	IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, T, E> k);
+//	void setInteger(IntegerKey<A, E> k, IntegerHolder newValue)
+//		throws EntityRuntimeException;
 
-	void setInteger(IntegerKey<A, T, E> k, IntegerHolder newValue)
-		throws EntityRuntimeException;
-
-	void setVarchar(VarcharKey<A, T, E> k, VarcharHolder newValue)
-		throws EntityRuntimeException;
-
-	void setChar(CharKey<A, T, E> k, CharHolder newValue)
-		throws EntityRuntimeException;
-
-	void setDate(DateKey<A, T, E> k, DateHolder newValue)
-		throws EntityRuntimeException;
-
-	void setTimestamp(TimestampKey<A, T, E> k, TimestampHolder newValue)
-		throws EntityRuntimeException;
-
-	void setTime(TimeKey<A, T, E> k, TimeHolder newValue)
-		throws EntityRuntimeException;
-
-	void setDecimal(DecimalKey<A, T, E> k, DecimalHolder newValue)
-		throws EntityRuntimeException;
-
-	void setDouble(DoubleKey<A, T, E> k, DoubleHolder newValue)
-		throws EntityRuntimeException;
-
-	void setInterval(IntervalKey.YearMonth<A, T, E> k, IntervalHolder.YearMonth newValue)
-		throws EntityRuntimeException;
-
-	void setInterval(IntervalKey.DayTime<A, T, E> k, IntervalHolder.DayTime newValue)
-		throws EntityRuntimeException;
+//	void setVarchar(VarcharKey<A, E> k, VarcharHolder newValue)
+//		throws EntityRuntimeException;
+//
+//	void setChar(CharKey<A, E> k, CharHolder newValue)
+//		throws EntityRuntimeException;
+//
+//	void setDate(DateKey<A, E> k, DateHolder newValue)
+//		throws EntityRuntimeException;
+//
+//	void setTimestamp(TimestampKey<A, E> k, TimestampHolder newValue)
+//		throws EntityRuntimeException;
+//
+//	void setTime(TimeKey<A, E> k, TimeHolder newValue)
+//		throws EntityRuntimeException;
+//
+//	void setDecimal(DecimalKey<A, E> k, DecimalHolder newValue)
+//		throws EntityRuntimeException;
+//
+//	void setDouble(DoubleKey<A, E> k, DoubleHolder newValue)
+//		throws EntityRuntimeException;
+//
+//	void setInterval(IntervalKey.YearMonth<A, E> k, IntervalHolder.YearMonth newValue)
+//		throws EntityRuntimeException;
+//
+//	void setInterval(IntervalKey.DayTime<A, E> k, IntervalHolder.DayTime newValue)
+//		throws EntityRuntimeException;
 
 	public E self();
 
@@ -252,8 +236,8 @@ public interface Entity<
 	public <
 		VV extends Serializable,
 		VT extends PrimitiveType<VT>,
-		VH extends PrimitiveHolder<VV, VT>,
-		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
+		VH extends PrimitiveHolder<VV, VT, VH>,
+		K extends PrimitiveKey<A, E, VV, VT, VH, K>
 	>
 	void remove(K key);
 
@@ -293,8 +277,8 @@ public interface Entity<
 	public <
 		VV extends Serializable,
 		VT extends PrimitiveType<VT>,
-		VH extends PrimitiveHolder<VV, VT>,
-		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
+		VH extends PrimitiveHolder<VV, VT, VH>,
+		K extends PrimitiveKey<A, E, VV, VT, VH, K>
 	>
 	boolean has(K key);
 
@@ -312,8 +296,8 @@ public interface Entity<
 	public <
 		VV extends Serializable,
 		VT extends PrimitiveType<VT>,
-		VH extends PrimitiveHolder<VV, VT>,
-		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
+		VH extends PrimitiveHolder<VV, VT, VH>,
+		K extends PrimitiveKey<A, E, VV, VT, VH, K>
 	>
 	boolean match(K key, E another);
 

@@ -7,21 +7,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fi.tnie.db.map.AttributeInfo;
-import fi.tnie.db.meta.Column;
-import fi.tnie.db.meta.Table;
 import fi.tnie.db.types.PrimitiveType;
 
 public class DefaultAttributeInfo
 	implements AttributeInfo {
 	
-	private Table table;
-	private Column column;
+//	private Table table;
+//	private Column column;
 	private Class<?> attributeType;
 	private Class<?> holderType;
 	private Class<?> keyType;
 	private Class<?> accessorType;
 	private Class<?> identityMapType;
-//	private Class<PrimitiveType<?>> primitiveType;
+	private Class<?> containerType;
+	private Class<?> containerMetaType;
+	
 	private PrimitiveType<?> primitiveType;
 	
 	private static Map<Class<?>, Class<?>> primitiveTypeMap = new HashMap<Class<?>, Class<?>>();
@@ -37,11 +37,13 @@ public class DefaultAttributeInfo
 	}
 	
 	
-	public DefaultAttributeInfo(Table table, Column column) {
-		super();
-		this.table = table;
-		this.column = column;
-	}	
+//	public DefaultAttributeInfo(Table table, Column column) {
+//		super();
+//		this.table = table;
+//		this.column = column;
+//	}
+	
+	
 	
 //	@Override
 //	public Class<?> getPrimitiveType() {
@@ -53,9 +55,18 @@ public class DefaultAttributeInfo
 		return this.attributeType;
 	}
 
-	@Override
-	public Column getColumn() {
-		return this.column;
+//	private Column getColumn() {
+//		return this.column;
+//	}
+	
+//	@Override
+//	public DataType getColumnType() {
+//		return getColumn().getDataType();
+//	}
+	
+
+	public DefaultAttributeInfo() {
+		super();
 	}
 
 	@Override
@@ -68,10 +79,10 @@ public class DefaultAttributeInfo
 		return this.keyType;
 	}
 
-	@Override
-	public Table getTable() {
-		return this.table;
-	}
+//	@Override
+//	public Table getTable() {
+//		return this.table;
+//	}
 
 	@Override
 	public Class<?> getAccessorType() {
@@ -108,5 +119,24 @@ public class DefaultAttributeInfo
 
 	public void setIdentityMapType(Class<?> identityMapType) {
 		this.identityMapType = identityMapType;
-	}	
+	}
+
+	public Class<?> getContainerType() {
+		return containerType;
+	}
+
+	public void setContainerType(Class<?> containerType) {
+		this.containerType = containerType;
+	}
+
+	public Class<?> getContainerMetaType() {
+		return containerMetaType;
+	}
+
+	public void setContainerMetaType(Class<?> containerMetaType) {
+		this.containerMetaType = containerMetaType;
+	}
+	
+	
+	
 }

@@ -9,8 +9,8 @@ import java.io.Serializable;
 import fi.tnie.db.types.OtherType;
 import fi.tnie.db.types.PrimitiveType;
 
-public abstract class OtherHolder<V extends Serializable, T extends OtherType<T>>
-	extends PrimitiveHolder<V, T> {
+public abstract class OtherHolder<V extends Serializable, T extends OtherType<T>, H extends OtherHolder<V, T, H>>
+	extends PrimitiveHolder<V, T, H> {
 
 	/**
 	 * 
@@ -26,13 +26,19 @@ public abstract class OtherHolder<V extends Serializable, T extends OtherType<T>
 	}
 
 	@Override
-	public T getType() {
-		// TODO:
-		return null; // OtherType.TYPE;
-	}
+	public abstract T getType();
 	
 	@Override
 	public final int getSqlType() {
 		return PrimitiveType.OTHER;
 	}
+
+	
+	@Override
+	public OtherHolder<?, ?, ?> asOtherHolder(String typeName) {
+		return getType().getName().equals(typeName) ? self() : null;
+	}
+	
+	@Override
+	public abstract H self();
 }

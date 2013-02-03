@@ -9,10 +9,13 @@ import java.util.Set;
 
 import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
+import fi.tnie.db.ent.value.StringKey;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
+import fi.tnie.db.rpc.StringHolder;
+import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.ReferenceType;
 
 
@@ -36,7 +39,7 @@ public abstract class AbstractEntity<
 //	public abstract Map<A, PrimitiveHolder<?, ?>> values();		
 //	protected abstract Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> references();
 	
-	public PrimitiveHolder<?, ?> get(Column column) throws NullPointerException, EntityRuntimeException {
+	public PrimitiveHolder<?, ?, ?> get(Column column) throws NullPointerException, EntityRuntimeException {
 		
 		if (column == null) {
 			throw new NullPointerException("column");
@@ -45,12 +48,14 @@ public abstract class AbstractEntity<
 		M m = getMetaData();
 		
 		A a = m.getAttribute(column);
-				
-		PrimitiveKey<A, ?, E, ?, ?, ?, ?> k = m.getKey(a);
-				
-		if (k != null) {
-			return k.get(self());			
-		}	
+		
+		if (a != null) {				
+			PrimitiveKey<A, E, ?, ?, ?, ?> k = m.getKey(a);
+					
+			if (k != null) {
+				return k.get(self());			
+			}	
+		}
 								
 		// column may be part of multiple
 		// overlapping foreign-keys:				
@@ -114,7 +119,7 @@ public abstract class AbstractEntity<
 	public abstract E self();
 	
 	
-	public EntityDiff<A, R, T, E> diff(E another) throws EntityRuntimeException {
+	public EntityDiff<A, R, T, E> diff(E another) {
 		final E self = self();
 								
 		if (this == another || another == null) {
@@ -124,11 +129,11 @@ public abstract class AbstractEntity<
 		return new EntitySnapshotDiff<A, R, T, E, M>(self, another);
 	}
 	
-	public Map<Column, PrimitiveHolder<?,?>> getPrimaryKey() throws EntityRuntimeException {
-		Map<Column, PrimitiveHolder<?,?>> pk = new HashMap<Column, PrimitiveHolder<?,?>>(); 
+	public Map<Column, PrimitiveHolder<?,?,?>> getPrimaryKey() {
+		Map<Column, PrimitiveHolder<?,?,?>> pk = new HashMap<Column, PrimitiveHolder<?,?,?>>(); 
 		
 		for (Column pkcol : getMetaData().getPKDefinition()) {
-			PrimitiveHolder<?,?> v = get(pkcol);
+			PrimitiveHolder<?,?,?> v = get(pkcol);
 			
 			if ((v == null) || v.isNull()) {
 				return null;
@@ -167,8 +172,16 @@ public abstract class AbstractEntity<
 		}
 				
 		for (A a : as) {
-			PrimitiveKey<A, ?, E, ?, ?, ?, ?> key = meta.getKey(a);
-			PrimitiveHolder<?, ?> v = null;
+			PrimitiveKey<A, E, ?, ?, ?, ?> key = meta.getKey(a);
+			
+			if (key == null) {
+				buf.append("<no key for attribute: ");
+				buf.append(a);
+				buf.append(">");
+				continue;
+			}					
+			
+			PrimitiveHolder<?, ?, ?> v = null;
 			buf.append(key.name());
 			buf.append("=");
 			
@@ -228,7 +241,7 @@ public abstract class AbstractEntity<
 	 * @throws EntityRuntimeException 
 	 */	
 	@Override
-	public boolean isIdentified() throws EntityRuntimeException {
+	public boolean isIdentified() {
 		return getPrimaryKey() != null;
 	}
 	
@@ -237,7 +250,7 @@ public abstract class AbstractEntity<
 		M meta = getMetaData();
 		
 		for (A a : as) {
-			PrimitiveKey<A, T, E, ?, ?, ?, ?> pk = meta.getKey(a);
+			PrimitiveKey<A, E, ?, ?, ?, ?> pk = meta.getKey(a);
 			pk.reset(self());
 		}		
 	}
@@ -245,8 +258,8 @@ public abstract class AbstractEntity<
 	public <
 		VV extends java.io.Serializable, 
 		VT extends fi.tnie.db.types.PrimitiveType<VT>, 
-		VH extends fi.tnie.db.rpc.PrimitiveHolder<VV,VT>, 
-		K extends fi.tnie.db.ent.value.PrimitiveKey<A,T,E,VV,VT,VH,K>
+		VH extends fi.tnie.db.rpc.PrimitiveHolder<VV, VT, VH>, 
+		K extends fi.tnie.db.ent.value.PrimitiveKey<A, E, VV, VT, VH, K>
 	> 
 	boolean match(K key, E another) {
 		VH a = get(key);
@@ -263,6 +276,38 @@ public abstract class AbstractEntity<
 		
 		return a.contentEquals(b);		
 	};
+	
+	@Override
+	public <
+		P extends PrimitiveType<P>,
+		SH extends StringHolder<P, SH>,
+		K extends StringKey<A, E, P, SH, K>
+	>
+	SH getString(K k) {
+		SH sh = get(k.self());
+		return sh;
+	}
+	
+	@Override
+	public <
+		P extends PrimitiveType<P>,
+		SH extends StringHolder<P, SH>,
+		K extends StringKey<A, E, P, SH, K>
+	>
+	void setString(K k, SH s) {		
+		set(k.self(), s);
+	}
+	
+	@Override
+	public <
+		P extends PrimitiveType<P>,
+		SH extends StringHolder<P, SH>,
+		K extends StringKey<A, E, P, SH, K>
+	>
+	void setString(K k, String s) {		
+		set(k.self(), k.newHolder(s));
+	}	
+
 
 }
  

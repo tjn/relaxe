@@ -4,20 +4,16 @@
 package fi.tnie.db.ent.value;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
+import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.VarcharHolder;
-import fi.tnie.db.types.PrimitiveType;
-import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.types.VarcharType;
 
 public final class VarcharKey<
-	A extends Attribute,	
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
+	A extends Attribute,
+	E extends HasVarchar<A, E> & HasString<A, E>
 >
-	extends StringKey<A, T, E, VarcharType, VarcharHolder, VarcharKey<A, T, E>>
+	extends StringKey<A, E, VarcharType, VarcharHolder, VarcharKey<A, E>>
 {
 	/**
 	 *
@@ -30,24 +26,21 @@ public final class VarcharKey<
 	private VarcharKey() {
 	}
 
-	private VarcharKey(EntityMetaData<A, ?, T, E, ?, ?, ?, ?> meta, A name) {
-		super(meta, name);
-		meta.addKey(this);
+	private VarcharKey(HasVarcharKey<A, E> meta, A name) {
+		super(name);
+		meta.register(this);
 	}
 	
 	public static <
-		X extends Attribute,		
-		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?, ?>,
-		T extends Entity<X, ?, Z, T, ?, ?, ?, ?>
+		X extends Attribute,
+		T extends HasVarchar<X, T> & HasString<X, T>
 	>
-	VarcharKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?, ?> meta, X a) {
-		VarcharKey<X, Z, T> k = meta.getVarcharKey(a);
+	VarcharKey<X, T> get(HasVarcharKey<X, T> meta, X a) {
+		VarcharKey<X, T> k = meta.getVarcharKey(a);
 		
-		if (k == null) {
-			PrimitiveType<?> t = meta.getAttributeType(a);
-			
-			if (t != null && t.getSqlType() == PrimitiveType.VARCHAR) {
-				k = new VarcharKey<X, Z, T>(meta, a);
+		if (k == null) {						
+			if (VarcharType.TYPE.equals(a.type())) {
+				k = new VarcharKey<X, T>(meta, a);
 			}			
 		}
 				
@@ -81,7 +74,12 @@ public final class VarcharKey<
 	}
 	
 	@Override
-	public VarcharKey<A, T, E> self() {
+	public VarcharKey<A, E> self() {
 		return this;
+	}
+	
+	@Override
+	public VarcharHolder as(PrimitiveHolder<?, ?, ?> holder) {
+		return VarcharHolder.of(holder);
 	}
 }

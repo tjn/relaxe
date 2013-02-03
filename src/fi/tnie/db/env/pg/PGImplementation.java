@@ -3,31 +3,20 @@
  */
 package fi.tnie.db.env.pg;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.util.Comparator;
 
-import fi.tnie.db.AbstractAttributeWriter;
-import fi.tnie.db.DefaultAttributeWriterFactory;
 import fi.tnie.db.DefaultValueExtractorFactory;
-import fi.tnie.db.ResultSetColumnResolver;
-import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.AttributeWriterFactory;
-import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.EntityMetaData;
-import fi.tnie.db.ent.Reference;
+import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.env.CatalogFactory;
+import fi.tnie.db.env.AbstractGeneratedKeyHandler;
 import fi.tnie.db.env.DefaultImplementation;
 import fi.tnie.db.env.GeneratedKeyHandler;
 import fi.tnie.db.expr.DefaultSQLSyntax;
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.expr.InsertStatement;
 import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.expr.ddl.ColumnDefinition;
 import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.impl.pg.PGEnvironment;
-import fi.tnie.db.types.ReferenceType;
 
 public class PGImplementation
 	extends DefaultImplementation {
@@ -54,47 +43,61 @@ public class PGImplementation
     public ColumnDefinition serialColumnDefinition(String columnName, boolean big) {
     	return this.environment.serialColumnDefinition(columnName, big);
     }
-
-    private final class PGGeneratedKeyHandler implements GeneratedKeyHandler {
+    
+    public static class PGGeneratedKeyHandler 
+    	extends AbstractGeneratedKeyHandler {
     	
-		public PGGeneratedKeyHandler() {
-			super();			
-		}
+    	private ValueExtractorFactory extractorFactory;
 
-		@Override
-		public <
-			A extends Attribute,
-			R extends Reference,
-			T extends ReferenceType<A, R, T, E, ?, ?, M, ?>,
-			E extends Entity<A, R, T, E, ?, ?, M, ?>,
-			M extends EntityMetaData<A, R, T, E, ?, ?, M, ?>
-		>
-		void processGeneratedKeys(
-				InsertStatement ins, E target, ResultSet rs) throws SQLException {
-//				int cc = rs.getMetaData().getColumnCount();
-//
-////				logger().debug("getGeneratedKeys: ");
-//		
-//			if (rs.next()) {
-				ResultSetMetaData meta = rs.getMetaData();
-				M em = target.getMetaData();
-											
-				ResultSetMetaData rsmd = rs.getMetaData();
-				
-				int cc = rsmd.getColumnCount();
-				DefaultAttributeWriterFactory wf = new DefaultAttributeWriterFactory();				
-				ResultSetColumnResolver cr = new ResultSetColumnResolver(em.getBaseTable(), meta);
-																												
-				for (int i = 1; i <= cc; i++) {
-					AbstractAttributeWriter<A, T, E, ?, ?, ?, ?> w = wf.createWriter(em, cr, i);
-					
-					if (w != null) {
-						w.write(rs, target);
-					}
-				}
-//			}
+		public PGGeneratedKeyHandler(ValueExtractorFactory extractorFactory) {
+			super();
+			this.extractorFactory = extractorFactory;
 		}
-	}
+		
+		@Override
+		protected ValueExtractorFactory getValueExtractorFactory() {
+			return this.extractorFactory;
+		}
+    }
+
+//    public static class PGGeneratedKeyHandler implements GeneratedKeyHandler {
+//    	
+//    	private PersistenceContext context;
+//    	
+//		public PGGeneratedKeyHandler(PersistenceContext context) {
+//			super();			
+//			this.context = context;
+//		}
+//
+//		@Override
+//		public <
+//			A extends Attribute,
+//			R extends Reference,
+//			T extends ReferenceType<A, R, T, E, ?, ?, M, ?>,
+//			E extends Entity<A, R, T, E, ?, ?, M, ?>,
+//			M extends EntityMetaData<A, R, T, E, ?, ?, M, ?>
+//		>
+//		void processGeneratedKeys(
+//				InsertStatement ins, E target, ResultSet rs) throws SQLException {
+//			ResultSetMetaData meta = rs.getMetaData();
+//			M em = target.getMetaData();
+//										
+//			ResultSetMetaData rsmd = rs.getMetaData();
+//			
+//			int cc = rsmd.getColumnCount();
+//			
+//			AttributeWriterFactory wf = context.getAttributeWriterFactory();								
+//			ResultSetColumnResolver cr = new ResultSetColumnResolver(em.getBaseTable(), meta);
+//																											
+//			for (int i = 1; i <= cc; i++) {
+//				AbstractAttributeWriter<A, E> w = wf.createWriter(em, cr, i);
+//				
+//				if (w != null) {
+//					w.write(rs, target);
+//				}
+//			}
+//		}
+//	}
 
 
     @Override
@@ -120,7 +123,7 @@ public class PGImplementation
 	@Override
 	public GeneratedKeyHandler generatedKeyHandler() {
 		if (generatedKeyHandler == null) {			
-			generatedKeyHandler = new PGGeneratedKeyHandler();
+			generatedKeyHandler = new PGGeneratedKeyHandler(getValueExtractorFactory());
 		}
 
 		return generatedKeyHandler;
@@ -168,10 +171,10 @@ public class PGImplementation
 //		return driver;
 //	}
 
-	@Override
-	protected AttributeWriterFactory createAttributeWriterFactory() {
-		return new PGAttributeWriterFactory();
-	}
+//	@Override
+//	protected DefaultAttributeWriterFactory createAttributeWriterFactory() {
+//		return new PGAttributeWriterFactory();
+//	}
 
-	
+		
 }

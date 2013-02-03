@@ -31,4 +31,9 @@ public class CharYearMonthHolder
 	public CharHolder implementedAs() {
 		return this.implementedAs;
 	}
+
+	@Override
+	public CharYearMonthHolder self() {
+		return this;
+	}
 }

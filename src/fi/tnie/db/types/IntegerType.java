@@ -20,4 +20,9 @@ public class IntegerType
 	public int getSqlType() {
 		return PrimitiveType.INTEGER;
 	}
+	
+	@Override
+	public IntegerType self() {
+		return this;
+	}
 }

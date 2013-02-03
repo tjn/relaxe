@@ -3,6 +3,7 @@
  */
 package fi.tnie.db;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -148,12 +149,13 @@ public class PersistenceManager<
     	Set<Column> pks = meta.getPKDefinition();
     	    	
     	ElementList<ColumnName> names = new ElementList<ColumnName>();
+    	
 
     	for (A a : meta.attributes()) {
     		logger().debug("createInsertStatement: a=" + a);
     		
     		Column col = meta.getColumn(a);
-    		PrimitiveHolder<?, ?> holder = pe.value(a);
+    		PrimitiveHolder<?, ?, ?> holder = pe.value(a);
     		
     		if (holder == null) {
     			newRow.add(new Default(col));
@@ -174,7 +176,7 @@ public class PersistenceManager<
     			continue;    			
     		}
     		
-    		ValueParameter<?, ?> p = createParameter(col, holder);
+    		ValueParameter<?, ?> p = createParameter(col, holder.self());
             newRow.add(p);
     		names.add(col.getColumnName());
     	}
@@ -194,8 +196,8 @@ public class PersistenceManager<
 
             if (ref == null) {
                 for (Column c : fk.columns().keySet()) {                	
-                	PrimitiveHolder<?, ?> nh = PrimitiveType.nullHolder(c.getDataType().getDataType());                	                	
-                	ValueParameter<?, ?> vp = createParameter(c, nh);
+                	PrimitiveHolder<?, ?, ?> nh = PrimitiveType.nullHolder(c.getDataType().getDataType());                	                	
+                	ValueParameter<?, ?> vp = createParameter(c, nh.self());
                     newRow.add(vp);
                     names.add(c.getColumnName());
                 }
@@ -203,8 +205,8 @@ public class PersistenceManager<
             else {
                 for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
                     Column fc = ce.getValue();
-                    PrimitiveHolder<?, ?> o = ref.get(fc);
-                    ValueParameter<?, ?> p = createParameter(ce.getKey(), o);
+                    PrimitiveHolder<?, ?, ?> o = ref.get(fc);
+                    ValueParameter<?, ?> p = createParameter(ce.getKey(), o.self());
                     newRow.add(p);
                     names.add(ce.getKey().getColumnName());
                 }
@@ -218,8 +220,9 @@ public class PersistenceManager<
 
 
 	private <
+		V extends Serializable,
 		P extends PrimitiveType<P>, 
-		PH extends PrimitiveHolder<?, P>
+		PH extends PrimitiveHolder<V, P, PH>
 	>
 	ValueParameter<P, PH> createParameter(Column col, PH holder) {
 		return new ValueParameter<P, PH>(col, holder);
@@ -230,8 +233,7 @@ public class PersistenceManager<
 
     	final M meta = pe.getMetaData();
     	TableReference tref = new TableReference(meta.getBaseTable());
-    	
-//    	Set<Column> pkcols = meta.getPKDefinition();
+   	
 
     	Predicate p = getPKPredicate(tref, pe);
 
@@ -243,10 +245,10 @@ public class PersistenceManager<
 
     	for (A a : meta.attributes()) {
     		Column col = meta.getColumn(a);
-    		PrimitiveHolder<?, ?> ph = pe.value(a);
+    		PrimitiveHolder<?, ?, ?> ph = pe.value(a);
     		
     		if (ph != null) {    		    		    		
-	    		ValueParameter<?, ?> vp = createParameter(col, ph);    		
+	    		ValueParameter<?, ?> vp = createParameter(col, ph.self());    		
 	    		assignments.add(new Assignment(col.getColumnName(), vp));
     		}
     	}
@@ -329,14 +331,14 @@ public class PersistenceManager<
 			  
 		      for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
 		          Column fc = ce.getValue();		          		          
-		          PrimitiveHolder<?, ?> ph = re.get(fc);
+		          PrimitiveHolder<?, ?, ?> ph = re.get(fc);
 		          
 		          logger().debug("rc: " + fc + " => " + ph);
 		          
 		          Column column = ce.getKey();
 		          
 		          if (ph != null) {    		    		    		
-			  		ValueParameter<?, ?> vp = createParameter(column, ph);    		
+			  		ValueParameter<?, ?> vp = createParameter(column, ph.self());    		
 				    am.put(column, new Assignment(column.getColumnName(), vp));
 			  	}                    
 		     }
@@ -667,7 +669,7 @@ public class PersistenceManager<
         Predicate p = null;
 
         for (Column col : pkcols) {
-            PrimitiveHolder<?, ?> o = pe.get(col);
+            PrimitiveHolder<?, ?, ?> o = pe.get(col);
 
             // to successfully create a pk predicate
             // every component must be set:
@@ -676,7 +678,7 @@ public class PersistenceManager<
             }
 
             ColumnReference cr = new ColumnReference(tref, col);
-            ValueParameter<?, ?> param = createParameter(col, o);
+            ValueParameter<?, ?> param = createParameter(col, o.self());
             p = AndPredicate.newAnd(p, eq(cr, param));
         }
 

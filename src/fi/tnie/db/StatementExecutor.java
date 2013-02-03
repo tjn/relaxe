@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.DataObject;
-import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.exec.QueryProcessor;
 import fi.tnie.db.expr.SelectStatement;
 import fi.tnie.db.expr.Statement;
@@ -25,10 +25,10 @@ public class StatementExecutor {
 	private ValueAssignerFactory valueAssignerFactory = null; 
 	private ValueExtractorFactory valueExtractorFactory = null;
 		
-	public StatementExecutor(Implementation implementation) {
+	public StatementExecutor(PersistenceContext persistenceContext) {
 		super();
-		this.valueAssignerFactory = implementation.getValueAssignerFactory();
-		this.valueExtractorFactory = implementation.getValueExtractorFactory();
+		this.valueAssignerFactory = persistenceContext.getValueAssignerFactory();
+		this.valueExtractorFactory = persistenceContext.getValueExtractorFactory();
 	}
 
 	public DataObject fetchFirst(SelectStatement statement, Connection c) throws SQLException, QueryException {

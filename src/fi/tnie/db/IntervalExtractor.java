@@ -10,8 +10,8 @@ import fi.tnie.db.rpc.Interval;
 import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.types.IntervalType;
 
-public abstract class IntervalExtractor<V extends Interval<V>, T extends IntervalType<T>, H extends IntervalHolder<V, T>> 
-	extends ValueExtractor<V, T, IntervalHolder<V, T>> {
+public abstract class IntervalExtractor<V extends Interval<V>, T extends IntervalType<T>, H extends IntervalHolder<V, T, H>> 
+	extends ValueExtractor<V, T, H> {
 
 	public IntervalExtractor(int column) {
 		super(column);

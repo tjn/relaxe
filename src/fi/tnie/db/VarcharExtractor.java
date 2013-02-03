@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.types.VarcharType;
 
-class VarcharExtractor
+public class VarcharExtractor
 	extends ValueExtractor<String, VarcharType, VarcharHolder>
 {
 	public VarcharExtractor(int column) {

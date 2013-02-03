@@ -11,6 +11,7 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.value.AbstractEntityKey;
 import fi.tnie.db.expr.TableReference;
+import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.types.*;
 import fi.tnie.db.rpc.ReferenceHolder;
 
@@ -24,7 +25,7 @@ public interface {{table-interface}}
         {{table-interface}}.Factory,
         {{table-interface}}.MetaData,
         {{table-interface}}.Content
-    > {{reference-list}} {
+    > {{reference-list}} {{attribute-container-interface-list}} {
     
 	class Type extends ReferenceType<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content> {
 		private static final long serialVersionUID = 1L;
@@ -75,10 +76,10 @@ public interface {{table-interface}}
 			
 	interface MetaData
 		extends fi.tnie.db.ent.EntityMetaData<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content>		
-		{{implemented-has-key-list}}
+		{{implemented-has-key-list}} {{attribute-key-container-interface-list}}
 	{		
 		@Override
-		public Builder newBuilder(TableReference tableRef, EntityBuildContext ctx, fi.tnie.db.ent.UnificationContext unificationContext)
+		public Builder newBuilder(TableReference referencing, ForeignKey referencedBy, TableReference tableRef, EntityBuildContext ctx, fi.tnie.db.ent.UnificationContext unificationContext)
 			throws fi.tnie.db.ent.EntityException;
 	}
 	
@@ -102,8 +103,7 @@ public interface {{table-interface}}
 		@Override
 		public QueryTemplate self() {
 			return this;
-		}		
-		
+		}
 
 		@Override
 		public {{table-interface}}.Query newQuery() {			

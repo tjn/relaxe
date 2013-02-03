@@ -6,6 +6,7 @@ package fi.tnie.db.expr;
 import java.util.Collections;
 import java.util.List;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.DataType;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 
@@ -15,7 +16,7 @@ import fi.tnie.db.types.PrimitiveType;
  * @author tnie
  *
  */
-public abstract class Parameter<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T>>
+public abstract class Parameter<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T, H>>
 	extends SimpleElement
 	implements ValueExpression, SelectListElement, Token {
 	
@@ -24,7 +25,8 @@ public abstract class Parameter<T extends PrimitiveType<T>, H extends PrimitiveH
 	 */
 	private static final long serialVersionUID = 3615036325774581065L;
 	private String name;
-	private int type;
+//	private int dataType;
+	private DataType columnType;
 	private ColumnName columnName;
 	
 	/**
@@ -35,12 +37,15 @@ public abstract class Parameter<T extends PrimitiveType<T>, H extends PrimitiveH
 		
 	public Parameter(Column column) {
 		this.columnName = column.getColumnName();
-		this.type = column.getDataType().getDataType();
+		this.columnType = column.getDataType();
+//		this.dataType = this.columnType.getDataType();
+//		this.typeName = column.getDataType().getTypeName();		
+//		this.type = column.getDataType().getDataType();
 	}
 
 	@Override
 	public int getType() {
-		return this.type;
+		return this.columnType.getDataType();
 	}
 	
 	public abstract H getValue();
@@ -87,6 +92,10 @@ public abstract class Parameter<T extends PrimitiveType<T>, H extends PrimitiveH
 		}
 		
 		return this;
+	}
+	
+	public DataType getColumnType() {
+		return this.columnType;
 	}
 	
 	@Override

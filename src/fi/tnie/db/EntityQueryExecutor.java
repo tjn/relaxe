@@ -26,7 +26,7 @@ import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.Reference;
-import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.expr.SelectStatement;
 import fi.tnie.db.query.Query;
 import fi.tnie.db.query.QueryException;
@@ -52,9 +52,9 @@ public class EntityQueryExecutor<
 	private QueryExecutor executor;	
 	private UnificationContext unificationContext;
 	
-	public EntityQueryExecutor(Implementation implementation, UnificationContext unificationContext) {
+	public EntityQueryExecutor(PersistenceContext persistenceContext, UnificationContext unificationContext) {
 		super();
-		executor = new QueryExecutor(implementation);
+		executor = new QueryExecutor(persistenceContext);
 		this.unificationContext = unificationContext;
 	}
 
@@ -62,15 +62,15 @@ public class EntityQueryExecutor<
 		throws SQLException, QueryException, EntityException {
 		
 		QueryExecutor se = getExecutor();		
-		Implementation imp = se.getImplementation();
+		PersistenceContext pc = se.getPersistenceContext();
 		
 		List<EntityDataObject<E>> content = new ArrayList<EntityDataObject<E>>();
 		
-		EntityReader<?, ?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M, C>(imp, query, content, this.unificationContext);
+		EntityReader<?, ?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M, C>(pc, query, content, this.unificationContext);
 		
 		QueryExecutor.SliceStatement sb = se.createStatement(query, opts, c);
 				
-		StatementExecutor sx = new StatementExecutor(imp);
+		StatementExecutor sx = new StatementExecutor(pc);
 		
 		SelectStatement ss = sb.getStatement();
 		Query q = new Query(ss);		

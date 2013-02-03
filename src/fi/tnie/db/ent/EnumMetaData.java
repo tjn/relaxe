@@ -5,6 +5,9 @@ package fi.tnie.db.ent;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
+
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
@@ -28,8 +31,6 @@ public abstract class EnumMetaData<
 	 */
 	private static final long serialVersionUID = -8574938084185912154L;
 	
-	private String attributeTypeName;
-	private String referenceTypeName;
 	private transient Class<A> attributeType;
 	private transient Class<R> referenceType;
 	
@@ -44,22 +45,26 @@ public abstract class EnumMetaData<
 		super();
 		this.attributeType = attributeType;
 		this.referenceType = referenceType;
-		this.attributeTypeName = attributeType.getName();
-		this.referenceTypeName = referenceType.getName();
 	}
-
+	
 	@Override
-	protected void populateAttributes(BaseTable table) {		
+	protected Set<Column> populate(BaseTable table) {
+		Set<Column> pkc = new HashSet<Column>();
+		populateAttributes(table, pkc);
+		populateReferences(table, pkc);
+		return pkc;
+	}
+	
+	protected void populateAttributes(BaseTable table, Set<Column> pkc) {		
 		EnumSet<A> as = EnumSet.allOf(attributeType);
 		EnumMap<A, Column> am = new EnumMap<A, Column>(attributeType);		
-		populateAttributes(as, am, table);
+		populateAttributes(as, am, table, pkc);		
 	}
-
-	@Override
-	protected void populateReferences(BaseTable table) {
+	
+	protected void populateReferences(BaseTable table, Set<Column> pkc) {
 		EnumSet<R> rs = EnumSet.allOf(referenceType);
 		EnumMap<R, ForeignKey> rm = new EnumMap<R, ForeignKey>(referenceType);		
-		populateReferences(rs, rm, table);		
+		populateReferences(rs, rm, table, pkc);		
 	}
 		
 	public Class<A> getAttributeNameType() {
@@ -69,5 +74,4 @@ public abstract class EnumMetaData<
 	public Class<R> getReferenceNameType() {	
 		return this.referenceType;
 	}
-	
 }

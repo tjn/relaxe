@@ -10,7 +10,7 @@ import fi.tnie.db.meta.Column;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 
-public class ValueParameter<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T>>
+public class ValueParameter<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T, H>>
 	extends Parameter<T, H> {
 	
 	/**

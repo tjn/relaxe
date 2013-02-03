@@ -99,7 +99,7 @@ public abstract class DefaultQueryTemplate<
 		return templateMap;
 	}
 		
-	public void add(PrimitiveKey<A, T, E, ?, ?, ?, ?> ak) {
+	public void add(PrimitiveKey<A, E, ?, ?, ?, ?> ak) {
 		add(ak.name());
 	}
 	
@@ -125,8 +125,8 @@ public abstract class DefaultQueryTemplate<
 		remove(Arrays.asList(as));
 	}
 	
-	public void add(PrimitiveKey<A, T, E, ?, ?, ?, ?>[]  ks) {
-		for (PrimitiveKey<A, T, E, ?, ?, ?, ?> k : ks) {
+	public void add(PrimitiveKey<A, E, ?, ?, ?, ?>[]  ks) {
+		for (PrimitiveKey<A, E, ?, ?, ?, ?> k : ks) {
 			add(k.name());
 		}		
 	}

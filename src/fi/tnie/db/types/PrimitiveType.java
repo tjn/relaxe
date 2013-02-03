@@ -69,7 +69,7 @@ public abstract class PrimitiveType<T extends PrimitiveType<T>>
 	}
 	
 	public abstract int getSqlType();
-	
+			
 	public static class SerializableType
 		extends PrimitiveType<SerializableType> {
 		
@@ -79,26 +79,31 @@ public abstract class PrimitiveType<T extends PrimitiveType<T>>
 		private static final long serialVersionUID = 910829028354006706L;
 		
 		private int sqlType;
-		
+				
 		/**
 		 * No-argument constructor for GWT Serialization
 		 */		
 		private SerializableType() {	
 		}
 		
-		public SerializableType(int sqlType) {
+		public SerializableType(int sqlType, String name) {
 			this();
-			this.sqlType = sqlType;
+			this.sqlType = sqlType;		
 		}
 
 		@Override
 		public int getSqlType() {
 			return sqlType;
-		}	
+		}
+
+		@Override
+		public SerializableType self() {
+			return this;
+		}
 	}
 	
 	public static final class NullHolder<H>
-		extends PrimitiveHolder<Serializable, SerializableType>
+		extends PrimitiveHolder<Serializable, SerializableType, NullHolder<H>>
 	{
 		/**
 		 * 
@@ -147,7 +152,7 @@ public abstract class PrimitiveType<T extends PrimitiveType<T>>
 				
 		public NullHolder(int sqlType) {
 			super();
-			this.type = new SerializableType(sqlType);
+			this.type = new SerializableType(sqlType, null);
 		}
 
 		@Override
@@ -200,10 +205,15 @@ public abstract class PrimitiveType<T extends PrimitiveType<T>>
 		public VarcharHolder asVarcharHolder() {
 			return VarcharHolder.NULL_HOLDER;
 		}
+
+		@Override
+		public NullHolder<H> self() {
+			return this;
+		}
 	}
 		
-	public static PrimitiveHolder<?, ?> nullHolder(int t) {
-		PrimitiveHolder<?, ?> nh = null;
+	public static PrimitiveHolder<?, ?, ?> nullHolder(int t) {
+		PrimitiveHolder<?, ?, ?> nh = null;
 		
 		switch (t) {
 		case ARRAY:
@@ -225,7 +235,7 @@ public abstract class PrimitiveType<T extends PrimitiveType<T>>
 			nh = NullHolder.BOOLEAN;
 			break;
 		case CHAR:
-			nh = CharHolder.NULL_HOLDER;
+			nh = NullHolder.CHAR;
 			break;
 		case CLOB:
 			nh = NullHolder.CLOB;
@@ -320,5 +330,95 @@ public abstract class PrimitiveType<T extends PrimitiveType<T>>
 		}		
 		
 		return nh;
-	}	
+	}
+	
+	public OtherType<? extends T> asOtherType() {
+		return null;
+	}
+	
+	public ArrayType<? extends T, ?> asArrayType() {
+		return null;
+	}
+	
+	public abstract T self();
+	
+	
+	public static String getSQLTypeName(int t) {
+		switch (t) {
+			case ARRAY:
+				return "ARRAY";
+			case BIGINT:
+				return "BIGINT";
+			case BINARY:
+				return "BINARY";
+			case BIT:
+				return "BIT";
+			case BLOB:
+				return "BLOB";
+			case BOOLEAN:
+				return "BOOLEAN";
+			case CHAR:
+				return "CHAR";
+			case CLOB:
+				return "CLOB";
+			case DATALINK:
+				return "DATALINK";
+			case DATE:
+				return "DATE";
+			case DECIMAL:
+				return "DECIMAL";
+			case DISTINCT:
+				return "DISTINCT";
+			case DOUBLE:
+				return "DOUBLE";
+			case FLOAT:
+				return "FLOAT";
+			case INTEGER:
+				return "INTEGER";
+			case JAVA_OBJECT:
+				return "JAVA_OBJECT";
+			case LONGNVARCHAR:
+				return "LONGNVARCHAR";
+			case LONGVARBINARY:
+				return "LONGVARBINARY";
+			case LONGVARCHAR:
+				return "LONGVARCHAR";
+			case NCHAR:
+				return "NCHAR";
+			case NCLOB:
+				return "NCLOB";
+			case STRUCT:
+				return "STRUCT";
+			case NULL:
+				return "NULL";
+			case NUMERIC:
+				return "NUMERIC";
+			case NVARCHAR:
+				return "NVARCHAR";
+			case OTHER:
+				return "OTHER";
+			case REAL:
+				return "REAL";
+			case REF:
+				return "REF";
+			case ROWID:
+				return "ROWID";
+			case SMALLINT:
+				return "SMALLINT";
+			case SQLXML:
+				return "SQLXML";
+			case TIME:
+				return "TIME";
+			case TIMESTAMP:
+				return "TIMESTAMP";
+			case TINYINT:
+				return "TINYINT";
+			case VARBINARY:
+				return "VARBINARY";
+			case VARCHAR:
+				return "VARCHAR";				
+		}
+		
+		return new StringBuilder("UNKNOWN (").append(t).append(")").toString();		
+	}
 }

@@ -18,5 +18,10 @@ public class LongType
 	@Override
 	public int getSqlType() {
 		return PrimitiveType.BIGINT;
-	}	
+	}
+	
+	@Override
+	public LongType self() {
+		return this;
+	}
 }

@@ -9,7 +9,7 @@ import java.util.Date;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 
-public abstract class AbstractDateAssignment<T extends PrimitiveType<T>, H extends PrimitiveHolder<Date, T>>	
+public abstract class AbstractDateAssignment<T extends PrimitiveType<T>, H extends PrimitiveHolder<Date, T, H>>	
 	extends AbstractParameterAssignment<Date, T, H> {
 
 	public AbstractDateAssignment(H value) {

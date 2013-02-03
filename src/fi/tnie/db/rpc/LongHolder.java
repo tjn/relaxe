@@ -8,7 +8,7 @@ import fi.tnie.db.types.PrimitiveType;
 
 
 public class LongHolder
-	extends PrimitiveHolder<Long, LongType> {
+	extends PrimitiveHolder<Long, LongType, LongHolder> {
 			
 	/**
 	 * 
@@ -60,5 +60,14 @@ public class LongHolder
 	@Override
 	public LongHolder asLongHolder() {
 		return this;
+	}
+
+	@Override
+	public LongHolder self() {
+		return this;
+	}
+
+	public static LongHolder of(PrimitiveHolder<?, ?, ?> holder) {
+		return holder.asLongHolder();
 	}
 }

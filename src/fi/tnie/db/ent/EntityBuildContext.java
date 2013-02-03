@@ -8,6 +8,11 @@ public interface EntityBuildContext {
 
 	DataObject.MetaData getInputMetaData();		
 	EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> getQuery();
-	AttributeWriterFactory getAttributeWriterFactory();	
-	ColumnResolver getColumnResolver();	
+//	AttributeWriterFactory getAttributeWriterFactory();	
+	ColumnResolver getColumnResolver();
+		
+	<
+		A extends Attribute
+	>
+	AttributeMapping getAttributeMapping(A a);
 }

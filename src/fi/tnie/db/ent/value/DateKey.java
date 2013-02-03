@@ -6,20 +6,17 @@ package fi.tnie.db.ent.value;
 import java.util.Date;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.rpc.DateHolder;
+import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.DateType;
 import fi.tnie.db.types.PrimitiveType;
-import fi.tnie.db.types.ReferenceType;
 
 public final class DateKey<	
-	A extends Attribute,
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
+	A extends Attribute,	
+	E extends HasDate<A, E>
 >
-	extends AbstractPrimitiveKey<A, T, E, Date, DateType, DateHolder, DateKey<A, T, E>>
+	extends AbstractPrimitiveKey<A, E, Date, DateType, DateHolder, DateKey<A, E>>
 {
 	/**
 	 *
@@ -32,29 +29,29 @@ public final class DateKey<
 	private DateKey() {
 	}
 
-	private DateKey(EntityMetaData<A, ?, T, E, ?, ?, ?, ?> meta, A name) {
-		super(meta, name);
-		meta.addKey(this);
+	private DateKey(HasDateKey<A, E> meta, A name) {
+		super(name);
+		meta.register(this);
 	}
 	
 	public static <
 		X extends Attribute,
-		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?, ?>,
-		T extends Entity<X, ?, Z, T, ?, ?, ?, ?>
+		T extends HasDate<X, T>
 	>
-	DateKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?, ?> meta, X a) {
-		DateKey<X, Z, T> k = meta.getDateKey(a);
+	DateKey<X, T> get(HasDateKey<X, T> meta, X a) {
+		DateKey<X, T> k = meta.getDateKey(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = meta.getAttributeType(a);
+			PrimitiveType<?> t = a.type();
 			
-			if (t == DateType.TYPE) {
-				k = new DateKey<X, Z, T>(meta, a);
-			}			
+			if (t != null && DateType.TYPE.equals(t)) {
+				k = new DateKey<X, T>(meta, a);
+			}
 		}
 				
 		return k;
 	}
+
 	
 	@Override
 	public DateType type() {
@@ -83,7 +80,12 @@ public final class DateKey<
 	}
 
 	@Override
-	public DateKey<A, T, E> self() {
+	public DateKey<A, E> self() {
 		return this;		
+	}
+	
+	@Override
+	public DateHolder as(PrimitiveHolder<?, ?, ?> holder) {
+		return DateHolder.as(holder);
 	}
 }

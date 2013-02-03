@@ -3,11 +3,10 @@
  */
 package fi.tnie.db.rpc;
 
-import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.db.types.VarcharType;
 
 public class VarcharHolder
-	extends StringHolder<VarcharType> {
+	extends StringHolder<VarcharType, VarcharHolder> {
 
 	/**
 	 * 
@@ -44,13 +43,22 @@ public class VarcharHolder
 		return VarcharType.TYPE;
 	}
 	
-	@Override
-	public int getSqlType() {
-		return PrimitiveType.VARCHAR;
-	}
+//	@Override
+//	public int getSqlType() {
+//		return PrimitiveType.VARCHAR;
+//	}
 	
 	@Override
 	public VarcharHolder asVarcharHolder() {	
 		return this;
+	}
+
+	@Override
+	public VarcharHolder self() {
+		return this;
+	}
+	
+	public static VarcharHolder of(PrimitiveHolder<?, ?, ?> holder) {
+		return holder.asVarcharHolder();
 	}
 }

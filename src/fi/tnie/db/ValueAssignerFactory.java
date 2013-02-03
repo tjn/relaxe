@@ -3,14 +3,13 @@
  */
 package fi.tnie.db;
 
+import fi.tnie.db.meta.DataType;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 
 public interface ValueAssignerFactory {
-//	<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T>>	
-//	Assigner<T, H> get(H holder);
+
 	
-	
-	<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T>>
-	ParameterAssignment create(H holder);
+	<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T, H>>
+	ParameterAssignment create(H holder, DataType columnType);
 }

@@ -4,22 +4,19 @@
 package fi.tnie.db.ent.value;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.Interval;
 import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.types.IntervalType;
-import fi.tnie.db.types.ReferenceType;
 
 public class IntervalAccessor<
-	A extends Attribute,	
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,	
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>,
+	A extends Attribute,
+	E,
 	V extends Interval<V>, 
 	P extends IntervalType<P>, 
-	H extends IntervalHolder<V, P>,
-	K extends IntervalKey<A, T, E, V, P, H, K>
+	H extends IntervalHolder<V, P, H>,
+	K extends IntervalKey<A, E, V, P, H, K>
 >
-	extends AbstractPrimitiveAccessor<A, T, E, V, P, H, K> {
+	extends AbstractPrimitiveAccessor<A, E, V, P, H, K> {
 
 	/**
 	 *
@@ -37,11 +34,10 @@ public class IntervalAccessor<
 	}
 	
 	public static class DayTime<
-		A extends Attribute,
-		T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-		E extends Entity<A, ?, T, E, ?, ?, ?, ?>
+		A extends Attribute,		
+		E extends HasInterval.DayTime<A, E>
 	>
-		extends IntervalAccessor<A, T, E, Interval.DayTime, IntervalType.DayTime, IntervalHolder.DayTime, IntervalKey.DayTime<A, T, E>> {
+		extends IntervalAccessor<A, E, Interval.DayTime, IntervalType.DayTime, IntervalHolder.DayTime, IntervalKey.DayTime<A, E>> {
 
 		/**
 		 * 
@@ -55,18 +51,17 @@ public class IntervalAccessor<
 		private DayTime() {	
 		}
 
-		public DayTime(E target, IntervalKey.DayTime<A, T, E> k) {
+		public DayTime(E target, IntervalKey.DayTime<A, E> k) {
 			super(target, k);		
 		}
 	}
 	
 
 	public static class YearMonth<
-		A extends Attribute,
-		T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-		E extends Entity<A, ?, T, E, ?, ?, ?, ?>
+		A extends Attribute,		
+		E extends HasInterval.YearMonth<A, E>
 	>
-		extends IntervalAccessor<A, T, E, Interval.YearMonth, IntervalType.YearMonth, IntervalHolder.YearMonth, IntervalKey.YearMonth<A, T, E>> {
+		extends IntervalAccessor<A, E, Interval.YearMonth, IntervalType.YearMonth, IntervalHolder.YearMonth, IntervalKey.YearMonth<A, E>> {
 
 		/**
 		 * 
@@ -81,10 +76,9 @@ public class IntervalAccessor<
 		private YearMonth() {	
 		}
 		
-		public YearMonth(E target, IntervalKey.YearMonth<A, T, E> k) {
+		public YearMonth(E target, IntervalKey.YearMonth<A, E> k) {
 			super(target, k);		
-		}	
-		
+		}		
 	}
 
 }

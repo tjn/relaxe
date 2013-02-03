@@ -8,7 +8,7 @@ import fi.tnie.db.types.CharType;
 import fi.tnie.db.types.PrimitiveType;
 
 public class CharHolder
-	extends StringHolder<CharType> {
+	extends StringHolder<CharType, CharHolder> {
 
 	/**
 	 * 
@@ -49,6 +49,15 @@ public class CharHolder
 	@Override
 	public CharHolder asCharHolder() {
 		return this;
+	}
+
+	@Override
+	public CharHolder self() {
+		return this;
+	}
+
+	public static CharHolder of(PrimitiveHolder<?, ?, ?> holder) {
+		return holder.asCharHolder();
 	}
 	
 }

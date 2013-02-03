@@ -8,7 +8,7 @@ import fi.tnie.db.types.PrimitiveType;
 
 
 public class IntegerHolder
-	extends PrimitiveHolder<Integer, IntegerType> {
+	extends PrimitiveHolder<Integer, IntegerType, IntegerHolder> {
 			
 	/**
 	 * 
@@ -84,4 +84,14 @@ public class IntegerHolder
 	public IntegerHolder asIntegerHolder() {
 		return this;
 	}
+	
+	@Override
+	public IntegerHolder self() {
+		return this;
+	}
+
+	public static IntegerHolder as(PrimitiveHolder<?, ?, ?> holder) {
+		return holder.asIntegerHolder();
+	}
+
 }

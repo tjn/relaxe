@@ -7,14 +7,12 @@ import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.types.IntegerType;
-import fi.tnie.db.types.ReferenceType;
 
 public class IntegerAccessor<
-	A extends Attribute,	
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
+	A extends Attribute,
+	E extends Entity<A, ?, ?, E, ?, ?, ?, ?> & HasInteger<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, T, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, T, E>> {
+	extends AbstractPrimitiveAccessor<A, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, E>> {
 
 	/**
 	 *
@@ -28,7 +26,7 @@ public class IntegerAccessor<
 	private IntegerAccessor() {
 	}
 
-	public IntegerAccessor(E target, IntegerKey<A, T, E> k) {
+	public IntegerAccessor(E target, IntegerKey<A, E> k) {
 		super(target, k);
 	}
 }

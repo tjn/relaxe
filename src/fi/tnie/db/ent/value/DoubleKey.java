@@ -4,20 +4,17 @@
 package fi.tnie.db.ent.value;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.Entity;
-import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.rpc.DoubleHolder;
+import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.DoubleType;
 import fi.tnie.db.types.PrimitiveType;
-import fi.tnie.db.types.ReferenceType;
 
 public final class DoubleKey<	
-	A extends Attribute,
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>
+	A extends Attribute,	
+	E extends HasDouble<A, E>
 >
-	extends AbstractPrimitiveKey<A, T, E, Double, DoubleType, DoubleHolder, DoubleKey<A, T, E>>
+	extends AbstractPrimitiveKey<A, E, Double, DoubleType, DoubleHolder, DoubleKey<A, E>>
 {
 	/**
 	 *
@@ -30,24 +27,23 @@ public final class DoubleKey<
 	private DoubleKey() {
 	}
 
-	private DoubleKey(EntityMetaData<A, ?, T, E, ?, ?, ?, ?> meta, A name) {
-		super(meta, name);
-		meta.addKey(this);
+	private DoubleKey(HasDoubleKey<A, E> meta, A name) {
+		super(name);
+		meta.register(this);
 	}
 	
 	public static <
-		X extends Attribute,		 
-		Z extends ReferenceType<X, ?, Z, T, ?, ?, ?, ?>,
-		T extends Entity<X, ?, Z, T, ?, ?, ?, ?>
+		X extends Attribute,
+		T extends HasDouble<X, T>
 	>
-	DoubleKey<X, Z, T> get(EntityMetaData<X, ?, Z, T, ?, ?, ?, ?> meta, X a) {
-		DoubleKey<X, Z, T> k = meta.getDoubleKey(a);
+	DoubleKey<X, T> get(HasDoubleKey<X, T> meta, X a) {
+		DoubleKey<X, T> k = meta.getDoubleKey(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = meta.getAttributeType(a);
+			PrimitiveType<?> t = a.type();
 			
-			if (t != null && t.getSqlType() == PrimitiveType.DOUBLE) {
-				k = new DoubleKey<X, Z, T>(meta, a);
+			if (DoubleType.TYPE.equals(t)) {
+				k = new DoubleKey<X, T>(meta, a);
 			}			
 		}
 				
@@ -81,7 +77,12 @@ public final class DoubleKey<
 	}
 	
 	@Override
-	public DoubleKey<A, T, E> self() {
+	public DoubleKey<A, E> self() {
 		return this;
+	}
+	
+	@Override
+	public DoubleHolder as(PrimitiveHolder<?, ?, ?> holder) {
+		return DoubleHolder.of(holder);
 	}
 }

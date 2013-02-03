@@ -25,7 +25,7 @@ public class MutableDataObject
 	 */
 	private static final long serialVersionUID = 5199827695443766073L;
 	
-	private List<PrimitiveHolder<?, ?>> content;
+	private List<PrimitiveHolder<?, ?, ?>> content;
 	private MutableDataObject.MetaData metaData;
 				
 	public static class MetaData
@@ -105,18 +105,18 @@ public class MutableDataObject
 		
 		int cc = m.getColumnCount();
 		
-		this.content = new ArrayList<PrimitiveHolder<?,?>>(cc);
+		this.content = new ArrayList<PrimitiveHolder<?,?,?>>(cc);
 		
 		for (int i = 0; i < cc; i++) {
 			this.content.add(null);
 		}
 	}
 	
-	public void set(int index, PrimitiveHolder<?, ?> value) {
+	public void set(int index, PrimitiveHolder<?, ?, ?> value) {
 		this.content.set(index, value);
 	}	
 
-	public List<PrimitiveHolder<?, ?>> getContent() {		
+	public List<PrimitiveHolder<?, ?, ?>> getContent() {		
 		return content;
 	}
 
@@ -126,11 +126,11 @@ public class MutableDataObject
 	}
 
 	@Override
-	public PrimitiveHolder<?, ?> get(int index) {		
+	public PrimitiveHolder<?, ?, ?> get(int index) {		
 		return this.content.get(index);
 	}
 		
-	public PrimitiveHolder<?, ?> get(ColumnName a) {
+	public PrimitiveHolder<?, ?, ?> get(ColumnName a) {
 		int index = this.metaData.index(a);
 		return this.content.get(index);
 	}

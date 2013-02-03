@@ -12,7 +12,7 @@ import fi.tnie.db.rpc.Interval;
 import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.types.IntervalType;
 
-public abstract class IntervalAssignment<V extends Interval<V>, T extends IntervalType<T>, H extends IntervalHolder<V, T>>
+public abstract class IntervalAssignment<V extends Interval<V>, T extends IntervalType<T>, H extends IntervalHolder<V, T, H>>
 	extends AbstractParameterAssignment<V, T, H> {
 	
 	private static Logger logger = Logger.getLogger(IntervalAssignment.class);

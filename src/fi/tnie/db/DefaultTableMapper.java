@@ -3,60 +3,15 @@
  */
 package fi.tnie.db;
 
-import java.sql.Types;
-import java.util.Date;
 import java.util.EnumMap;
 import java.util.Map;
 
-import fi.tnie.db.ent.im.IntegerIdentityMap;
-import fi.tnie.db.ent.im.VarcharIdentityMap;
-import fi.tnie.db.ent.value.CharKey;
-import fi.tnie.db.ent.value.CharAccessor;
-import fi.tnie.db.ent.value.DateKey;
-import fi.tnie.db.ent.value.DateAccessor;
-import fi.tnie.db.ent.value.DecimalAccessor;
-import fi.tnie.db.ent.value.DecimalKey;
-import fi.tnie.db.ent.value.DoubleKey;
-import fi.tnie.db.ent.value.DoubleAccessor;
-import fi.tnie.db.ent.value.IntegerKey;
-import fi.tnie.db.ent.value.IntegerAccessor;
-import fi.tnie.db.ent.value.IntervalAccessor;
-import fi.tnie.db.ent.value.IntervalKey;
-import fi.tnie.db.ent.value.TimeAccessor;
-import fi.tnie.db.ent.value.TimeKey;
-import fi.tnie.db.ent.value.TimestampKey;
-import fi.tnie.db.ent.value.TimestampAccessor;
-import fi.tnie.db.ent.value.VarcharKey;
-import fi.tnie.db.ent.value.VarcharAccessor;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.SchemaName;
-import fi.tnie.db.map.AttributeInfo;
 import fi.tnie.db.map.JavaType;
 import fi.tnie.db.map.TableMapper;
-import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
-import fi.tnie.db.rpc.CharHolder;
-import fi.tnie.db.rpc.DateHolder;
-import fi.tnie.db.rpc.Decimal;
-import fi.tnie.db.rpc.DecimalHolder;
-import fi.tnie.db.rpc.DoubleHolder;
-import fi.tnie.db.rpc.IntegerHolder;
-import fi.tnie.db.rpc.Interval;
-import fi.tnie.db.rpc.IntervalHolder;
-import fi.tnie.db.rpc.TimeHolder;
-import fi.tnie.db.rpc.TimestampHolder;
-import fi.tnie.db.rpc.VarcharHolder;
-import fi.tnie.db.source.DefaultAttributeInfo;
-import fi.tnie.db.types.CharType;
-import fi.tnie.db.types.DateType;
-import fi.tnie.db.types.DecimalType;
-import fi.tnie.db.types.DoubleType;
-import fi.tnie.db.types.IntegerType;
-import fi.tnie.db.types.IntervalType;
-import fi.tnie.db.types.TimeType;
-import fi.tnie.db.types.TimestampType;
-import fi.tnie.db.types.VarcharType;
 
 public class DefaultTableMapper
 	implements TableMapper {
@@ -192,121 +147,124 @@ public class DefaultTableMapper
 		setContextPackage(contextPackage);
 	}
 	
-	
-    @Override
-    public AttributeInfo getAttributeInfo(Table table, Column c) { 
-        DefaultAttributeInfo a = new DefaultAttributeInfo(table, c);
-        
-        int type = c.getDataType().getDataType();
-
-        switch (type) {
-        case Types.CHAR:
-        	a.setAttributeType(String.class);
-        	a.setHolderType(CharHolder.class);
-        	a.setKeyType(CharKey.class);
-        	a.setAccessorType(CharAccessor.class);
-        	a.setPrimitiveType(CharType.TYPE);        	
-        case Types.VARCHAR:
-        	a.setAttributeType(String.class);
-        	a.setHolderType(VarcharHolder.class);
-        	a.setKeyType(VarcharKey.class);
-        	a.setAccessorType(VarcharAccessor.class);
-        	a.setPrimitiveType(VarcharType.TYPE);        	
-        	a.setIdentityMapType(VarcharIdentityMap.class);
-            break;            	
-        case Types.LONGNVARCHAR:
-        	break;
-        case Types.INTEGER:            
-        	a.setAttributeType(Integer.class);
-        	a.setHolderType(IntegerHolder.class);
-        	a.setKeyType(IntegerKey.class);
-        	a.setAccessorType(IntegerAccessor.class);
-        	a.setPrimitiveType(IntegerType.TYPE);
-        	a.setIdentityMapType(IntegerIdentityMap.class);
-            break;
-        case Types.TINYINT:            
-            break;
-        case Types.BIGINT:                        
-        case Types.BIT:
-                       
-        case Types.REAL:
-            break;
-        case Types.FLOAT:                
-        case Types.DOUBLE:
-        	a.setAttributeType(Double.class);
-        	a.setHolderType(DoubleHolder.class);
-        	a.setKeyType(DoubleKey.class);
-        	a.setAccessorType(DoubleAccessor.class);
-        	a.setPrimitiveType(DoubleType.TYPE);
-            break;
-        case Types.DECIMAL:
-        case Types.NUMERIC:
-        	a.setAttributeType(Decimal.class);
-        	a.setHolderType(DecimalHolder.class);
-        	a.setKeyType(DecimalKey.class);
-        	a.setAccessorType(DecimalAccessor.class);
-        	a.setPrimitiveType(DecimalType.TYPE);
-            break;        	
-        case Types.DATE:            
-        	a.setAttributeType(Date.class);
-        	a.setHolderType(DateHolder.class);
-        	a.setKeyType(DateKey.class);
-        	a.setAccessorType(DateAccessor.class);
-        	a.setPrimitiveType(DateType.TYPE);
-            break;
-            
-        case Types.TIME:            
-        	a.setAttributeType(Date.class);
-        	a.setHolderType(TimeHolder.class);
-        	a.setKeyType(TimeKey.class);
-        	a.setAccessorType(TimeAccessor.class);
-        	a.setPrimitiveType(TimeType.TYPE);
-            break;
-            
-        case Types.TIMESTAMP:
-        	a.setAttributeType(Date.class);
-        	a.setHolderType(TimestampHolder.class);
-        	a.setKeyType(TimestampKey.class);
-        	a.setAccessorType(TimestampAccessor.class);
-        	a.setPrimitiveType(TimestampType.TYPE);
-            break;
-            
-        case Types.DISTINCT:
-	        {
-	        	String tn = c.getDataType().getTypeName();
-	        	
-	        	if (tn.equals("interval_ym")) {        	
-		        	a.setAttributeType(Interval.YearMonth.class);
-		        	a.setHolderType(IntervalHolder.YearMonth.class);
-		        	a.setKeyType(IntervalKey.YearMonth.class);
-		        	a.setAccessorType(IntervalAccessor.YearMonth.class);
-		        	a.setPrimitiveType(IntervalType.YearMonth.TYPE);
-	        	}
-	        }
-         	
-        	break;
-            
-        case Types.OTHER:
-	        {
-	        	String tn = c.getDataType().getTypeName();
-	        	
-	        	if (tn.equals("interval")) {        	
-		        	a.setAttributeType(Interval.DayTime.class);
-		        	a.setHolderType(IntervalHolder.DayTime.class);
-		        	a.setKeyType(IntervalKey.DayTime.class);
-		        	a.setAccessorType(IntervalAccessor.DayTime.class);
-		        	a.setPrimitiveType(IntervalType.DayTime.TYPE);
-	        	}
-	        }
-        	break;
-            
-        default:                
-            break;
-    }
-
-    	
-    	return a;
-    }
+	    
+//    public AttributeInfo getAttributeInfo(Table table, Column c) { 
+//    	
+//    	// logger().is
+//    	
+//    	
+//        DefaultAttributeInfo a = new DefaultAttributeInfo(table, c);
+//        
+//        int type = c.getDataType().getDataType();                
+//
+//        switch (type) {
+//        case Types.CHAR:
+//        	a.setAttributeType(String.class);
+//        	a.setHolderType(CharHolder.class);
+//        	a.setKeyType(CharKey.class);
+//        	a.setAccessorType(CharAccessor.class);
+//        	a.setPrimitiveType(CharType.TYPE);        	
+//        case Types.VARCHAR:
+//        	a.setAttributeType(String.class);
+//        	a.setHolderType(VarcharHolder.class);
+//        	a.setKeyType(VarcharKey.class);
+//        	a.setAccessorType(VarcharAccessor.class);
+//        	a.setPrimitiveType(VarcharType.TYPE);        	
+//        	a.setIdentityMapType(VarcharIdentityMap.class);
+//            break;            	
+//        case Types.LONGNVARCHAR:
+//        	break;        	
+//        case Types.SMALLINT:        	
+//        case Types.INTEGER:
+//        case Types.TINYINT:
+//        	a.setAttributeType(Integer.class);
+//        	a.setHolderType(IntegerHolder.class);
+//        	a.setKeyType(IntegerKey.class);
+//        	a.setAccessorType(IntegerAccessor.class);
+//        	a.setPrimitiveType(IntegerType.TYPE);
+//        	a.setIdentityMapType(IntegerIdentityMap.class);
+//            break;
+//        case Types.BIGINT:                        
+//        case Types.BIT:
+//                       
+//        case Types.REAL:
+//            break;
+//        case Types.FLOAT:                
+//        case Types.DOUBLE:
+//        	a.setAttributeType(Double.class);
+//        	a.setHolderType(DoubleHolder.class);
+//        	a.setKeyType(DoubleKey.class);
+//        	a.setAccessorType(DoubleAccessor.class);
+//        	a.setPrimitiveType(DoubleType.TYPE);
+//            break;
+//        case Types.DECIMAL:
+//        case Types.NUMERIC:
+//        	a.setAttributeType(Decimal.class);
+//        	a.setHolderType(DecimalHolder.class);
+//        	a.setKeyType(DecimalKey.class);
+//        	a.setAccessorType(DecimalAccessor.class);
+//        	a.setPrimitiveType(DecimalType.TYPE);
+//            break;        	
+//        case Types.DATE:            
+//        	a.setAttributeType(Date.class);
+//        	a.setHolderType(DateHolder.class);
+//        	a.setKeyType(DateKey.class);
+//        	a.setAccessorType(DateAccessor.class);
+//        	a.setPrimitiveType(DateType.TYPE);
+//            break;
+//            
+//        case Types.TIME:            
+//        	a.setAttributeType(Date.class);
+//        	a.setHolderType(TimeHolder.class);
+//        	a.setKeyType(TimeKey.class);
+//        	a.setAccessorType(TimeAccessor.class);
+//        	a.setPrimitiveType(TimeType.TYPE);
+//            break;
+//            
+//        case Types.TIMESTAMP:
+//        	a.setAttributeType(Date.class);
+//        	a.setHolderType(TimestampHolder.class);
+//        	a.setKeyType(TimestampKey.class);
+//        	a.setAccessorType(TimestampAccessor.class);
+//        	a.setPrimitiveType(TimestampType.TYPE);
+//            break;
+//            
+//        case Types.DISTINCT:
+//	        {
+//	        	String tn = c.getDataType().getTypeName();
+//	        	
+//	        	if (tn.equals("interval_ym")) {        	
+//		        	a.setAttributeType(Interval.YearMonth.class);
+//		        	a.setHolderType(IntervalHolder.YearMonth.class);
+//		        	a.setKeyType(IntervalKey.YearMonth.class);
+//		        	a.setAccessorType(IntervalAccessor.YearMonth.class);
+//		        	a.setPrimitiveType(IntervalType.YearMonth.TYPE);
+//	        	}
+//	        }
+//         	
+//        	break;
+//            
+//        case Types.OTHER:
+//	        {
+//	        	String tn = c.getDataType().getTypeName();
+//	        	
+//	        	if (tn.equals("interval")) {        	
+//		        	a.setAttributeType(Interval.DayTime.class);
+//		        	a.setHolderType(IntervalHolder.DayTime.class);
+//		        	a.setKeyType(IntervalKey.DayTime.class);
+//		        	a.setAccessorType(IntervalAccessor.DayTime.class);
+//		        	a.setPrimitiveType(IntervalType.DayTime.TYPE);
+//	        	}
+//	        }
+//        	break;
+//            
+//        default:                
+//            break;
+//    }
+//
+//    	
+//    	return a;
+//    }
 
     	
 

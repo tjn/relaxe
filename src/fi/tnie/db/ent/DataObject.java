@@ -14,7 +14,7 @@ import fi.tnie.db.rpc.PrimitiveHolder;
 public interface DataObject	
 	extends Serializable
 {	
-	PrimitiveHolder<?, ?> get(int index);	
+	PrimitiveHolder<?, ?, ?> get(int index);	
 	MetaData meta();
 	
 	public interface MetaData

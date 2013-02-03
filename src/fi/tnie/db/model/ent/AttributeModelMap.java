@@ -18,7 +18,7 @@ public interface AttributeModelMap<
 	A extends Attribute,
 	V extends Serializable,
 	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<V, P>,
+	H extends PrimitiveHolder<V, P, H>,
 	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
 	E extends Entity<A, ?, T, E, ?, ?, ?, ?>,
 	D extends AttributeModelMap<A, V, P, H, T, E, D>
@@ -27,7 +27,7 @@ public interface AttributeModelMap<
 	D self();
 	
 	<			
-		K extends PrimitiveKey<A, T, E, V, P, H, K>
+		K extends PrimitiveKey<A, E, V, P, H, K>
 	>	
 	ValueModel<H> attr(K k) throws EntityRuntimeException;		
 }

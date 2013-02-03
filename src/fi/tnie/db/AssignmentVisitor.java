@@ -15,6 +15,7 @@ import fi.tnie.db.expr.ElementVisitorAdapter;
 import fi.tnie.db.expr.Parameter;
 import fi.tnie.db.expr.VisitContext;
 import fi.tnie.db.expr.VisitException;
+import fi.tnie.db.meta.DataType;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 
@@ -48,8 +49,8 @@ public class AssignmentVisitor extends ElementVisitorAdapter {
 
 	@Override
 	public VisitContext start(VisitContext vc, Parameter<?, ?> p) {								
-		try {
-			assign(ordinal, p.getValue());			
+		try {			
+			assign(ordinal, p.getValue(), p.getColumnType());			
 //			logger().debug(ordinal + ": pname: " + p.getName());
 //			logger().debug(ordinal + ": ph: " + h);
 			
@@ -67,12 +68,12 @@ public class AssignmentVisitor extends ElementVisitorAdapter {
 	}
 	
 	private	
-	<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T>>	
+	<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T, H>>	
 	void	
-	assign(int ord, H h) 
+	assign(int ord, H h, DataType columnType) 
 		throws SQLException {
-		
-		ParameterAssignment a = assignerFactory.create(h);
+						
+		ParameterAssignment a = assignerFactory.create(h, columnType);
 
 		if (a == null) {
 			throw new NullPointerException("no assignment for parameter[" + ord + "] of type " + h.getType() + ": " + h);

@@ -5,8 +5,8 @@ package fi.tnie.db.rpc;
 
 import fi.tnie.db.types.PrimitiveType;
 
-public abstract class StringHolder<T extends PrimitiveType<T>>
-	extends PrimitiveHolder<String, T> {
+public abstract class StringHolder<T extends PrimitiveType<T>, H extends StringHolder<T, H>>
+	extends PrimitiveHolder<String, T, H> {
 	
 	/**
 	 * 

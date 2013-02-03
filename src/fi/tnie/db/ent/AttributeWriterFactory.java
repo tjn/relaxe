@@ -3,10 +3,6 @@
  */
 package fi.tnie.db.ent;
 
-// import java.sql.SQLException;
-
-import fi.tnie.db.types.ReferenceType;
-
 public interface AttributeWriterFactory {
 	/**
 	 *
@@ -16,10 +12,9 @@ public interface AttributeWriterFactory {
 	 * @throws SQLException
 	 */
 	<
-		A extends Attribute, 
-		T extends ReferenceType<A, ?, T, E, ?, ?, M, ?>,
-		E extends Entity<A, ?, T, E, ?, ?, M, ?>,
-		M extends EntityMetaData<A, ?, T, E, ?, ?, M, ?> 
+		A extends Attribute,
+		E extends Entity<A, ?, ?, E, ?, ?, M, ?>,
+		M extends EntityMetaData<A, ?, ?, E, ?, ?, M, ?>
 	>
-	AttributeWriter<A, T, E, ?, ?, ?, ?> createWriter(M em, ColumnResolver cr, int index);
+	AttributeWriter<A, E> createWriter(M em, ColumnResolver cr, int index);
 }

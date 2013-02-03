@@ -5,20 +5,18 @@ package fi.tnie.db.ent.value;
 
 import java.io.Serializable;
 
-import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityRuntimeException;
-import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.types.Type;
 
-public interface Key<	
-	T extends ReferenceType<?, ?, T, E, ?, ?, ?, ?>,	
-	E extends Entity<?, ?, T, E, ?, ?, ?, ?>,
+public interface Key<
+	E,
 	V extends Type<V>,	
-	K extends Key<T, E, V, ? extends K>
+	K extends Key<E, V, K>
 >
 	extends Serializable
 {
 	V type();
+	
 	void copy(E src, E dest)
 		throws EntityRuntimeException;
 	

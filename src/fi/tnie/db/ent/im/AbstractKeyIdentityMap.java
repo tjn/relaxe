@@ -23,9 +23,9 @@ public class AbstractKeyIdentityMap<
 	RH extends ReferenceHolder<A, R, T, E, RH, ?, ?>,
 	V extends Serializable,
 	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<V, P>,
+	H extends PrimitiveHolder<V, P, H>,
 	
-	K extends AbstractPrimitiveKey<A, T, E, V, P, H, K>
+	K extends AbstractPrimitiveKey<A, E, V, P, H, K>
 >
 	extends AbstractIdentityMap<A, R, T, E, RH, V>
 {
