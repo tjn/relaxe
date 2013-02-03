@@ -62,7 +62,7 @@ public class OrdinaryIdentifier
 	
 		if (SQLKeyword.isKeyword(token.toUpperCase())) {
 			return fail(
-					"token '" + token + "' is identical to the keyword and " +
+					"token '" + token + "' is identical to a keyword and " +
 					"can not be used as a ordinary identifier", details);
 		}	
 		
