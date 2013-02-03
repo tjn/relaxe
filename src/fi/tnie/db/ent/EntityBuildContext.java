@@ -11,8 +11,4 @@ public interface EntityBuildContext {
 //	AttributeWriterFactory getAttributeWriterFactory();	
 	ColumnResolver getColumnResolver();
 		
-	<
-		A extends Attribute
-	>
-	AttributeMapping getAttributeMapping(A a);
 }

@@ -45,11 +45,4 @@ public class DefaultEntityBuildContext
 	public EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> getQuery() {
 		return query;
 	}
-
-	@Override
-	public <A extends Attribute> AttributeMapping getAttributeMapping(A a) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 }
