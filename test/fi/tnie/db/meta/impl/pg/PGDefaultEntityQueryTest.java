@@ -16,13 +16,13 @@ import fi.tnie.db.env.pg.PGCatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.SelectStatement;
 import fi.tnie.db.gen.pg.ent.LiteralCatalog;
-import fi.tnie.db.gen.pg.ent.personal.HourReport;
-import fi.tnie.db.gen.pg.ent.personal.Organization;
-import fi.tnie.db.gen.pg.ent.personal.PersonalFactory;
-import fi.tnie.db.gen.pg.ent.personal.Project;
+import fi.tnie.db.gen.pg.ent.pub.Actor;
+import fi.tnie.db.gen.pg.ent.pub.Category;
+import fi.tnie.db.gen.pg.ent.pub.Film;
+import fi.tnie.db.gen.pg.ent.pub.FilmActor;
+import fi.tnie.db.gen.pg.ent.pub.FilmCategory;
+import fi.tnie.db.gen.pg.ent.pub.PublicFactory;
 import fi.tnie.db.meta.DBMetaTestCase;
-import fi.tnie.db.rpc.DateHolder;
-import fi.tnie.db.rpc.Holder;
 
 public class PGDefaultEntityQueryTest extends DBMetaTestCase {
 
@@ -39,43 +39,101 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	return new PGImplementation();
     }
     
-    public void testConstructor() throws Exception {
+    public void testQuery1() throws Exception {
     	Connection c = getConnection();
     	assertNotNull(c);
+    	logger().debug(c.getMetaData().getURL());
     	
     	Implementation imp = implementation();
     	    	
     	LiteralCatalog cc = LiteralCatalog.getInstance();
-    	PersonalFactory pf = cc.newPersonalFactory();
     	    	
-    	HourReport hr = pf.newHourReport();
-    	Organization org = pf.newOrganization();
-    	Project proj = pf.newProject();
+    	FilmActor.QueryTemplate t = new FilmActor.QueryTemplate();
+    	FilmActor.Query faq = t.newQuery();    	
     	
-    	Organization.Content oc = org.getContent();
+    	String qs = faq.getQueryExpression().generate();
+    	    	   	
+    	logger().info("testThis: qs=" + qs);
     	    	
-    	proj.getContent().setName("project name");
-    	oc.name().set("org name");
-    	hr.setRef(HourReport.FK_HHR_PROJECT, proj.ref());
-    	// hr.setTravelTime();
-    	hr.getContent().setStartedAt(new java.util.Date());
-    	hr.set(HourReport.REPORT_DATE, DateHolder.NULL_HOLDER);
-//    	hr.set(HourReport.CREATED_AT, TimestampHolder.NULL_HOLDER);
+    	Statement st = c.createStatement();
+    	UnificationContext ic = new SimpleUnificationContext();
+    	    	    	    	
+    	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content> eb
+    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content>(imp, faq, ic);
+    	    	    	    	
+    	PGImplementation impl = new PGImplementation();    	
+    	StatementExecutor se = new StatementExecutor(impl);
     	
-    	proj.setRef(Project.FK_SUPPLIER, org.ref());
+    	SelectStatement ss = new SelectStatement(eb.getQuery().getQueryExpression());
+    	    	
+    	se.execute(ss, c, eb);
     	
-    	Project.Key<?, HourReport.Reference, HourReport.Type, HourReport, ?, ?, HourReport.MetaData, ?> k = HourReport.FK_HHR_PROJECT;
-    	Holder<?, ?> h = k.get(hr);
-    	assertNotNull(h);
-    	assertSame(proj.ref(), h);
+    	logger().info("testConstructor: eb.getContent().size()=" + eb.getContent().size());    	
+    	st.close();   	
+    	    	
+    	for (EntityDataObject<FilmActor> o : eb.getContent()) {
+//			logger().info("testConstructor: rpt=" + o);
+			FilmActor root = o.getRoot();			
+//			logger()debug("testConstructor: root=" + root);
+			
+			assertNull(root.getContent().lastUpdate().getHolder());
+			
+			{
+				Actor.Holder ah = root.getActor(FilmActor.ACTOR_ID_FKEY);
+				assertNotNull(ah);
+				assertFalse(ah.isNull());
+				assertNotNull(ah.value().getContent().getActorId());
+				assertEquals(1, ah.value().attributes().size());
+			}
+			
+			{
+				Film.Holder fh = root.getFilm(FilmActor.FILM_ID_FKEY);
+				assertNotNull(fh);
+				assertFalse(fh.isNull());
+				assertNotNull(fh.value().getContent().getFilmId());
+				assertEquals(1, fh.value().attributes().size());
+			}
+		}
+    }
+    
+    
+    public void testQuery2() throws Exception {
+    	Connection c = getConnection();
+    	assertNotNull(c);
+    	logger().debug(c.getMetaData().getURL());
+    	
+    	Implementation imp = implementation();
+    	    	
+    	LiteralCatalog cc = LiteralCatalog.getInstance();
+    	PublicFactory pf = cc.newPublicFactory();
+    	    	
+    	Film film = pf.newFilm();
+    	    	
+    	Category category = pf.newCategory();
+    	category.getContent().setName("project name");
+    	
+    	Actor actor = pf.newActor();
+    	Actor.Content ac = actor.getContent();
+    	ac.firstName().set("Emilio");
+    	ac.lastName().set("Bullock");
+    	    	
+    	FilmCategory fc = pf.newFilmCategory();
+    	fc.setFilm(FilmCategory.FILM_ID_FKEY, film.ref());
+    	fc.setCategory(FilmCategory.CATEGORY_ID_FKEY, category.ref());
+    	
+    	
+//    	Project.Key<?, HourReport.Reference, HourReport.Type, HourReport, ?, ?, HourReport.MetaData, ?> k = HourReport.FK_HHR_PROJECT;
+//    	Holder<?, ?> h = k.get(hr);
+//    	assertNotNull(h);
+//    	assertSame(filmCategory.ref(), h);
     	
 //    	DefaultEntityQuery<?, ?, ?, ?, ?> e = 
 //    		new DefaultEntityQuery<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.MetaData>(hr);
     	
-    	HourReport.QueryTemplate t = new HourReport.QueryTemplate();
-    	HourReport.Query e = t.newQuery();    	
+    	FilmActor.QueryTemplate t = new FilmActor.QueryTemplate();
+    	FilmActor.Query faq = t.newQuery();    	
     	
-    	String qs = e.getQueryExpression().generate();
+    	String qs = faq.getQueryExpression().generate();
     	    	   	
     	logger().info("testThis: qs=" + qs);
     	    	
@@ -85,8 +143,8 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	
     	UnificationContext ic = new SimpleUnificationContext();
     	    	    	    	
-    	EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData, HourReport.Content> eb
-    		= new EntityReader<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData, HourReport.Content>(imp, e, ic);
+    	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content> eb
+    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content>(imp, faq, ic);
     	    	    	    	
     	PGImplementation impl = new PGImplementation();
     	
@@ -102,12 +160,21 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
 //    	rs.close();
     	st.close();   	
     	    	
-    	for (EntityDataObject<HourReport> o : eb.getContent()) {
+    	for (EntityDataObject<FilmActor> o : eb.getContent()) {
 			logger().info("testConstructor: rpt=" + o);
-			HourReport root = o.getRoot();			
+			FilmActor root = o.getRoot();			
 			logger().debug("testConstructor: root=" + root);
-			Project.Holder ph = root.getProject(HourReport.FK_HHR_PROJECT);
-			logger().info("testConstructor: rpt.project=" + ph);    		
+			
+			Actor.Holder ah = root.getActor(FilmActor.ACTOR_ID_FKEY);
+			assertNotNull(ah);
+			assertFalse(ah.isNull());
+			
+			Film.Holder fh = root.getFilm(FilmActor.FILM_ID_FKEY);
+			assertNotNull(fh);
+			assertFalse(ah.isNull());
+			
+			// Project.Holder ph = root.getProject(HourReport.FK_HHR_PROJECT);
+//			logger().info("testConstructor: rpt.project=" + ph);    		
 		}
     }
     

@@ -4,17 +4,11 @@
 package fi.tnie.db.meta.impl.hsqldb;
 
 
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
 import fi.tnie.db.AbstractUnitTest;
 import fi.tnie.db.TestContext;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.hsqldb.HSQLDBImplementation;
-import fi.tnie.db.env.util.ResultSetWriter;
 import fi.tnie.db.query.QueryException;
 
 public class HSQLDBTest

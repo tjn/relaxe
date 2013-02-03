@@ -27,7 +27,6 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.build.Builder;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;
-import fi.tnie.db.gen.pg.ent.personal.Person;
 import fi.tnie.util.io.FileProcessor;
 import fi.tnie.util.io.IOHelper;
 
@@ -360,7 +359,7 @@ public class TestSuiteBuilder
      addSuite(createTestsFor(Builder.class, tctx), ts);     
      addSuite(createTestsFor(DefaultEntityContext.class, tctx), ts);
      addSuite(createTestsFor(PersistenceManager.class, tctx), ts);     
-     addSuite(createTestsFor(Person.class, tctx), ts);
+//     addSuite(createTestsFor(Person.class, tctx), ts);
                     
      return ts;
   }

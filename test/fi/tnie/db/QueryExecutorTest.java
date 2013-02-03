@@ -22,9 +22,11 @@ public class QueryExecutorTest
 	public void testQuery() throws EntityException, SQLException, QueryException, ClassNotFoundException {
 		Implementation imp = getImplementation();
 		Connection c = getContext().newConnection();
+				
+		
 		LiteralCatalog.getInstance();
 		
-		LiteralBaseTable t = LiteralCatalog.LiteralBaseTable.TICKETS_TICKET;
+		LiteralBaseTable t = LiteralCatalog.LiteralBaseTable.PUBLIC_CITY;
 		
 		DataObjectQuery q = new DataObjectQuery(t);
 		DataObjectQueryResult<DataObject> rs = null;

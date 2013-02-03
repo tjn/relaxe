@@ -41,7 +41,7 @@ public class SimpleTestContext
         this.driverConfig = driverConfig;
     }
     public SimpleTestContext(Implementation impl) {
-    	this(impl, null, "test", "test", "test");
+    	this(impl, null, "pagila", "relaxe_tester", "password");
     }
     
     public SimpleTestContext(Implementation impl, String host, String database, String user, String passwd) {            

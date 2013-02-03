@@ -16,7 +16,7 @@ import fi.tnie.db.ent.DataObjectQueryResult;
 import fi.tnie.db.gen.pg.ent.LiteralCatalog;
 import fi.tnie.db.gen.pg.ent.LiteralCatalog.LiteralBaseTable;
 import fi.tnie.db.model.ValueModel;
-import fi.tnie.db.paging.SimplePager.Command;
+import fi.tnie.db.paging.SimplePagerModel.Command;
 import fi.tnie.db.query.DataObjectQuery;
 import fi.tnie.db.ui.action.Action;
 
@@ -30,7 +30,7 @@ public class DefaultDataObjectPagerTest extends AbstractUnitTest {
 		QueryExecutor qx = new QueryExecutor(getImplementation());
 		
 		SynchronousDataObjectFetcher f = new SynchronousDataObjectFetcher(qx, c);
-		DataObjectQuery q = new DataObjectQuery(LiteralBaseTable.TICKETS_TICKET);
+		DataObjectQuery q = new DataObjectQuery(LiteralBaseTable.PUBLIC_CITY);
 		
 		Map<Command, String> nm = new EnumMap<Command, String>(Command.class);
 		
@@ -40,7 +40,7 @@ public class DefaultDataObjectPagerTest extends AbstractUnitTest {
 		nm.put(Command.NEXT, ">>");
 		nm.put(Command.LAST, ">>>");		
 		
-		Map<Command, ValueModel<String>> nmm = DefaultPager.createNameModelMap(nm);		
+		Map<Command, ValueModel<String>> nmm = DefaultPagerModel.createNameModelMap(nm);		
 							
 		DefaultDataObjectPager p = new DefaultDataObjectPager(q, f, 20, nmm);
 		
@@ -52,7 +52,7 @@ public class DefaultDataObjectPagerTest extends AbstractUnitTest {
 		assertEquals(0, cp.getOffset());
 		assertEquals(20, cp.getContent().size());
 		
-		Action a = p.getAction(SimplePager.Command.NEXT);
+		Action a = p.getAction(SimplePagerModel.Command.NEXT);
 		boolean e = a.execute();
 		assertTrue(e);
 		cp = p.getCurrentPage();

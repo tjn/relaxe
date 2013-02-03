@@ -53,8 +53,9 @@ public abstract class AbstractUnitTest
 		Implementation imp = getImplementation();		
 		String h = getHost();
 		String d = getDatabase();		
-		SimpleTestContext tc = new SimpleTestContext(imp, h, d, getUser(), "test");
-			
+		SimpleTestContext tc = new SimpleTestContext(imp, h, d, getUser(), "password");
+		
+				
 		
 		return tc;
 	}
@@ -80,7 +81,7 @@ public abstract class AbstractUnitTest
 	}
 	
 	public String createDatabase() {
-		return "test";
+		return "pagila";
 	}
 
 	public String getUser() {
@@ -92,7 +93,7 @@ public abstract class AbstractUnitTest
 	}
 
 	private String createUser() {
-		return "test";
+		return "relaxe_tester";
 	}
 
 	public final Implementation getImplementation() {

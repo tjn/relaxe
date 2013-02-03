@@ -51,14 +51,14 @@ public class ArtificialResultSet
             this.javaType = javaType;
         }
         
-        private String getLabel() {
+        public String getLabel() {
             return label;
         }
         private String getName() {
             return name;
         }
         
-        private int getType() {
+        public int getType() {
             return type;
         }
         private Class<?> getJavaType() {

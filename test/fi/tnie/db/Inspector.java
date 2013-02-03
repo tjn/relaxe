@@ -13,11 +13,10 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import fi.tnie.db.gen.pg.ent.LiteralCatalog;
-import fi.tnie.db.gen.pg.ent.personal.HourReport;
-import fi.tnie.db.gen.pg.ent.personal.HourReportImpl;
+import fi.tnie.db.gen.pg.ent.pub.Film;
+import fi.tnie.db.gen.pg.ent.pub.FilmImpl;
 import fi.tnie.db.rpc.IntegerHolder;
 
 public class Inspector {
@@ -34,11 +33,11 @@ public class Inspector {
 		
 		LiteralCatalog cat = LiteralCatalog.getInstance();
 	
-		HourReportImpl hr = new HourReportImpl();
-		hr.setInteger(HourReport.ID, IntegerHolder.valueOf(1));
+		Film film = new FilmImpl();
+		film.setInteger(Film.FILM_ID, IntegerHolder.valueOf(1));
 		
 		Inspector i = new Inspector();
-		i.inspect(hr);
+		i.inspect(film);
 		
 		System.err.println("instance-count: " + i.getInstanceCount());
 		System.err.println("reference-count: " + i.getReferenceCount());

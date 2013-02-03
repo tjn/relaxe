@@ -4,7 +4,6 @@
 package fi.tnie.db;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -75,6 +74,9 @@ public class DefaultTestContext
 //		Driver drv = imp.getDriver();		
 //		Connection c = drv.connect(jdbcUrl, jdbcProperties);
 		Class.forName(imp.defaultDriverClassName());
+		
+		
+		
 		Connection c = DriverManager.getConnection(jdbcUrl, jdbcProperties);		
 		return c;
 	}

@@ -31,14 +31,16 @@ public class StatementExecutorTest extends DBMetaTestCase {
 	
 	public void testFetch() throws SQLException, QueryException, EntityException, ClassNotFoundException {
 		TestContext tc = getTestContext(null);		
-		Connection c = tc.newConnection();
+		Connection c = getConnection();
+		
+		// TODO: try to eliminate need for this:
 		LiteralCatalog.getInstance();
 		
 		StatementExecutor se  = new StatementExecutor(tc.getImplementation());
 				
 		Select select = new Select();
 		select.add(new CountFunction());
-		From from = new From(new TableReference(LiteralCatalog.LiteralBaseTable.PERSONAL_HOUR_REPORT));
+		From from = new From(new TableReference(LiteralCatalog.LiteralBaseTable.PUBLIC_ACTOR));
 		
 		DefaultTableExpression qe = new DefaultTableExpression(select, from, null, null);
 		SelectStatement ss = new SelectStatement(qe.getQueryExpression());
@@ -47,7 +49,7 @@ public class StatementExecutorTest extends DBMetaTestCase {
 		assertNotNull(result);
 		logger().debug("testFetch: result=" + result);
 		
-		PrimitiveHolder<?, ?> h = result.get(0);
+		PrimitiveHolder<?, ?, ?> h = result.get(0);
 		logger().debug("testFetch: h=" + h);
 		LongHolder lh = h.asLongHolder();
 		assertNotNull(lh);
@@ -64,7 +66,7 @@ public class StatementExecutorTest extends DBMetaTestCase {
 		
 		StatementExecutor se  = new StatementExecutor(pg);
 				
-		Table t = LiteralCatalog.LiteralBaseTable.PERSONAL_HOUR_REPORT;		
+		Table t = LiteralCatalog.LiteralBaseTable.PUBLIC_COUNTRY;		
 		// assertNotNull(t.getSchema());
 //		assertNotNull(t.getSchema().getUnqualifiedName());
 		assertNotNull(t.getName());

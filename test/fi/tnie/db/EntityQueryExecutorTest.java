@@ -4,20 +4,13 @@
 package fi.tnie.db;
 
 import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.DataObjectQueryResult;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityDataObject;
-import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQueryExpressionSortKey;
@@ -28,20 +21,15 @@ import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.PredicateAttributeTemplate;
 import fi.tnie.db.ent.Reference;
-import fi.tnie.db.env.Implementation;
-import fi.tnie.db.env.pg.PGImplementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.expr.OrderBy;
 import fi.tnie.db.expr.ValueExpression;
 import fi.tnie.db.gen.pg.ent.LiteralCatalog;
-import fi.tnie.db.gen.pg.ent.personal.HourReport;
-import fi.tnie.db.gen.pg.ent.personal.Organization;
-import fi.tnie.db.gen.pg.ent.personal.Person;
-import fi.tnie.db.gen.pg.ent.personal.Project;
-import fi.tnie.db.gen.pg.ent.personal.HourReport.Query;
-import fi.tnie.db.query.QueryException;
+import fi.tnie.db.gen.pg.ent.pub.Film;
+import fi.tnie.db.gen.pg.ent.pub.Language;
 import fi.tnie.db.query.QueryResult;
-import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
+import fi.tnie.db.test.PagilaPersistenceContext;
 import fi.tnie.db.types.ReferenceType;
 
 public class EntityQueryExecutorTest extends AbstractUnitTest {
@@ -52,42 +40,43 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 		LiteralCatalog.getInstance();
 	}
 	
-	private QueryResult<EntityDataObject<HourReport>> execute(HourReport.QueryTemplate template) throws Exception {
+	private QueryResult<EntityDataObject<Film>> execute(Film.QueryTemplate template) throws Exception {
 		return execute(template, null);		
 	}
 	
-	private QueryResult<EntityDataObject<HourReport>> execute(HourReport.QueryTemplate template, FetchOptions opts) throws Exception {
+	private QueryResult<EntityDataObject<Film>> execute(Film.QueryTemplate template, FetchOptions opts) throws Exception {
 		return execute(template.newQuery(), opts);
 	}
 
 
 	
-	private QueryResult<EntityDataObject<HourReport>> execute(Query q, FetchOptions opts) throws Exception {
-		Implementation imp = new PGImplementation();
+	private QueryResult<EntityDataObject<Film>> execute(Film.Query q, FetchOptions opts) throws Exception {
+		// Implementation imp = new PGImplementation();
+		PersistenceContext pc = new PagilaPersistenceContext();
 		
-		Connection c = newConnection(imp);
-		
+		Connection c = newConnection();
+				
 		try {
 			EntityQueryExecutor<
-				HourReport.Attribute, 
-				HourReport.Reference, 
-				HourReport.Type, 
-				HourReport, 
-				HourReport.Holder, 
-				HourReport.Factory, 
-				HourReport.MetaData,
-				HourReport.Content,
-				HourReport.QueryTemplate				
-			> qe = createExecutor(HourReport.Type.TYPE.getMetaData(), imp);
+				Film.Attribute, 
+				Film.Reference, 
+				Film.Type, 
+				Film, 
+				Film.Holder, 
+				Film.Factory, 
+				Film.MetaData,
+				Film.Content,
+				Film.QueryTemplate				
+			> qe = createExecutor(Film.Type.TYPE.getMetaData(), pc);
 			
 			
 			// Query q = template.newQuery(limit, offset);
 			
-			EntityQueryResult<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.Holder, HourReport.Factory, HourReport.MetaData, HourReport.Content, HourReport.QueryTemplate> er = qe.execute(q, opts, c);
+			EntityQueryResult<Film.Attribute, Film.Reference, Film.Type, Film, Film.Holder, Film.Factory, Film.MetaData, Film.Content, Film.QueryTemplate> er = qe.execute(q, opts, c);
 			assertNotNull(er);
 			
-			DataObjectQueryResult<EntityDataObject<HourReport>> qr = er.getContent(); 
-			// QueryResult<EntityDataObject<HourReport>> qr = qe.execute(q, true, c);
+			DataObjectQueryResult<EntityDataObject<Film>> qr = er.getContent(); 
+			// QueryResult<EntityDataObject<Film>> qr = qe.execute(q, true, c);
 			assertNotNull(qr);
 			
 			DataObject.MetaData meta = qr.getMeta();
@@ -111,16 +100,16 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 		}
 	}
 
-	private Connection newConnection(Implementation imp) throws Exception {
-		Properties cfg = new Properties();
-		cfg.setProperty("user", "test");
-		cfg.setProperty("password", "test");
-		
-		String url = imp.createJdbcUrl("127.0.0.1", "test");
-		Class.forName(imp.defaultDriverClassName());
-		Connection c = DriverManager.getConnection(url, cfg);
-		return c;
-	}
+//	private Connection newConnection(Implementation imp) throws Exception {
+//		Properties cfg = new Properties();
+//		cfg.setProperty("user", "test");
+//		cfg.setProperty("password", "test");
+//		
+//		String url = imp.createJdbcUrl("relaxe_test");
+//		Class.forName(imp.defaultDriverClassName());
+//		Connection c = DriverManager.getConnection(url, cfg);
+//		return c;
+//	}
 	
 
 	public <
@@ -134,168 +123,170 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 		C extends Content,
 		QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
 	>
-	EntityQueryExecutor<A, R, T, E, H, F, M, C, QT> createExecutor(M meta, Implementation imp) {
-		return new EntityQueryExecutor<A, R, T, E, H, F, M, C, QT>(imp, getIdentityContext());
+	EntityQueryExecutor<A, R, T, E, H, F, M, C, QT> createExecutor(M meta, PersistenceContext persistenceContext) {
+		return new EntityQueryExecutor<A, R, T, E, H, F, M, C, QT>(persistenceContext, getIdentityContext());
 	}
 	
 	
 	public void testExecute3() throws Exception {		
-		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate(); 
+		Film.QueryTemplate hrq = new Film.QueryTemplate(); 
 		hrq.addAllAttributes();
-				
-		Organization.QueryTemplate oq = new Organization.QueryTemplate();
-		oq.addAllAttributes();
-				
-		hrq.setTemplate(HourReport.FK_HHR_EMPLOYER, oq);
 		
-		QueryResult<EntityDataObject<HourReport>> qr = execute(hrq, null);
+		Language.QueryTemplate lq = new Language.QueryTemplate();
+		lq.addAllAttributes();
+				
+		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, lq);
+				
+		QueryResult<EntityDataObject<Film>> qr = execute(hrq, null);
 		
 		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
 		
-		List<? extends EntityDataObject<HourReport>> el = qr.getContent();
+		List<? extends EntityDataObject<Film>> el = qr.getContent();
 		assertNotNull(el);
 		
-		for (EntityDataObject<HourReport> eo : el) {
+		for (EntityDataObject<Film> eo : el) {
 			assertNotNull(eo);
-			HourReport hr = eo.getRoot();
+			Film hr = eo.getRoot();
 			assertNotNull(hr);
 			
-			Organization.Holder oh = hr.getOrganization(HourReport.FK_HHR_EMPLOYER);
-			assertNotNull(oh);
-			Organization org = oh.value();
-			assertNotNull(org);
-			assertTrue(org.isIdentified());
+			Language.Holder lh = hr.getLanguage(Film.LANGUAGE_ID_FKEY);
+			assertNotNull(lh);
+			
+			Language lang = lh.value();
+			assertNotNull(lang);
+			assertTrue(lang.isIdentified());
 		}
 
 	}
 
 	public void testExecute4() throws Exception {
-		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate(); 
+		Film.QueryTemplate hrq = new Film.QueryTemplate(); 
 		hrq.addAllAttributes();
 				
-		Organization.QueryTemplate oq = new Organization.QueryTemplate();		
+		Language.QueryTemplate oq = new Language.QueryTemplate();		
 		oq.remove(oq.getMetaData().attributes());					
-		hrq.setTemplate(HourReport.FK_HHR_EMPLOYER, oq);
-		
-		QueryResult<EntityDataObject<HourReport>> qr = execute(hrq);
+		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, oq);
+				
+		QueryResult<EntityDataObject<Film>> qr = execute(hrq);
 		
 		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
 		
-		List<? extends EntityDataObject<HourReport>> el = qr.getContent();
+		List<? extends EntityDataObject<Film>> el = qr.getContent();
 		assertNotNull(el);
 		
-		for (EntityDataObject<HourReport> eo : el) {
+		for (EntityDataObject<Film> eo : el) {
 			assertNotNull(eo);
-			HourReport hr = eo.getRoot();
+			Film hr = eo.getRoot();
 			assertNotNull(hr);
 			
-			Organization.Holder oh = hr.getOrganization(HourReport.FK_HHR_EMPLOYER);
+			Language.Holder oh = hr.getLanguage(Film.LANGUAGE_ID_FKEY);
 			assertNotNull(oh);
-			Organization org = oh.value();
+			Language org = oh.value();
 			assertNotNull(org);
 			assertTrue(org.isIdentified());
 		}
 	}
 	
 	public void testExecute5() throws Exception {
-		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate(); 
+		Film.QueryTemplate hrq = new Film.QueryTemplate(); 
 		hrq.addAllAttributes();
 							
-		hrq.setTemplate(HourReport.FK_HHR_EMPLOYER, (Organization.QueryTemplate) null);
+		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, (Language.QueryTemplate) null);
 		
-		QueryResult<EntityDataObject<HourReport>> qr = execute(hrq);
+		QueryResult<EntityDataObject<Film>> qr = execute(hrq);
 		
 		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
 		
-		List<? extends EntityDataObject<HourReport>> el = qr.getContent();
+		List<? extends EntityDataObject<Film>> el = qr.getContent();
 		assertNotNull(el);
 		
-		for (EntityDataObject<HourReport> eo : el) {
+		for (EntityDataObject<Film> eo : el) {
 			assertNotNull(eo);
-			HourReport hr = eo.getRoot();
+			Film hr = eo.getRoot();
 			assertNotNull(hr);
 			
-			Organization.Holder oh = hr.getOrganization(HourReport.FK_HHR_EMPLOYER);
+			Language.Holder oh = hr.getLanguage(Film.LANGUAGE_ID_FKEY);
 			assertNull(oh);
 		}
 	}
 	
 	public void testExecute6() throws Exception {
-		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate(); 
+		Film.QueryTemplate hrq = new Film.QueryTemplate(); 
 		hrq.addAllAttributes();
 		
-		Project.QueryTemplate jt = new Project.QueryTemplate();
+		Language.QueryTemplate jt = new Language.QueryTemplate();
 		jt.addAllAttributes();		
-		hrq.setTemplate(HourReport.FK_HHR_PROJECT, jt);
+		hrq.setTemplate(Film.ORIGINAL_LANGUAGE_ID_FKEY, jt);
 							
-		Organization.QueryTemplate ot = new Organization.QueryTemplate();
+		
+		Language.QueryTemplate ot = new Language.QueryTemplate();
 		ot.remove(ot.getMetaData().attributes());
 		
-		hrq.setTemplate(HourReport.FK_HHR_EMPLOYER, ot);
+		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, ot);
 		
-		Person.QueryTemplate pt = new Person.QueryTemplate();
-		pt.add(Person.Attribute.DATE_OF_BIRTH, Person.Attribute.LAST_NAME);
-		ot.setTemplate(Organization.FK_COMPANY_CEO, pt);
-		
-		QueryResult<EntityDataObject<HourReport>> qr = execute(hrq);
-		
-		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
-		
-		List<? extends EntityDataObject<HourReport>> el = qr.getContent();
-		assertNotNull(el);
-		
-		for (EntityDataObject<HourReport> eo : el) {
-			assertNotNull(eo);
-			HourReport hr = eo.getRoot();
-			assertNotNull(hr);
-			
-			IntervalHolder.DayTime dt = hr.getInterval(HourReport.TRAVEL_TIME);
-			assertNotNull(dt);
-			
-			Project.Holder jh = hr.getProject(HourReport.FK_HHR_PROJECT);
-			assertNotNull(jh);
-			assertNotNull(jh.value());			
-			
-			Organization.Holder oh = hr.getOrganization(HourReport.FK_HHR_EMPLOYER);
-			assertNotNull(oh);
-			Organization org = oh.value();
-			assertNotNull(org);
-			assertTrue(org.isIdentified());
-			Person.Holder ph = org.getPerson(Organization.FK_COMPANY_CEO);
-			assertNotNull(ph);
-			
-			Person p = ph.value();
-			
-			if (p != null) {
-				Set<fi.tnie.db.gen.pg.ent.personal.Person.Attribute> as = p.attributes();
-				assertEquals(3, as.size());
-				assertTrue(as.contains(Person.Attribute.ID));
-				assertTrue(as.contains(Person.Attribute.DATE_OF_BIRTH));
-				assertTrue(as.contains(Person.Attribute.LAST_NAME));
-				
-			}
-		}
+//		Person.QueryTemplate pt = new Person.QueryTemplate();
+//		pt.add(Person.Attribute.DATE_OF_BIRTH, Person.Attribute.LAST_NAME);
+//		ot.setTemplate(Language.FK_COMPANY_CEO, pt);
+//		
+//		QueryResult<EntityDataObject<Film>> qr = execute(hrq);
+//		
+//		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
+//		
+//		List<? extends EntityDataObject<Film>> el = qr.getContent();
+//		assertNotNull(el);
+//		
+//		for (EntityDataObject<Film> eo : el) {
+//			assertNotNull(eo);
+//			Film hr = eo.getRoot();
+//			assertNotNull(hr);
+//			
+//			IntervalHolder.DayTime dt = hr.getInterval(Film.TRAVEL_TIME);
+//			assertNotNull(dt);
+//			
+//			Language.Holder jh = hr.getLanguage(Film.ORIGINAL_LANGUAGE_ID_FKEY);
+//			assertNotNull(jh);
+//			assertNotNull(jh.value());			
+//			
+//			Language.Holder oh = hr.getLanguage(Film.LANGUAGE_ID_FKEY);
+//			assertNotNull(oh);
+//			Language org = oh.value();
+//			assertNotNull(org);
+//			assertTrue(org.isIdentified());
+//			Person.Holder ph = org.getPerson(Language.FK_COMPANY_CEO);
+//			assertNotNull(ph);
+//			
+//			Person p = ph.value();
+//			
+//			if (p != null) {
+//				Set<Person.Attribute> as = p.attributes();
+//				assertEquals(3, as.size());
+//				assertTrue(as.contains(Person.Attribute.ID));
+//				assertTrue(as.contains(Person.Attribute.DATE_OF_BIRTH));
+//				assertTrue(as.contains(Person.Attribute.LAST_NAME));
+//				
+//			}
+//		}
 	}
 	
 	public void testExecuteLimits() throws Exception {
-		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate();
+		Film.QueryTemplate hrq = new Film.QueryTemplate();
 				
 		hrq.addAllAttributes();
 		
-		EntityQueryTemplateAttribute rd = hrq.get(HourReport.Attribute.REPORT_DATE);		
+		EntityQueryTemplateAttribute rd = hrq.get(Film.Attribute.LAST_UPDATE);		
 				
-		Query q3 = hrq.newQuery();								
+		Film.Query q3 = hrq.newQuery();								
 		
-		QueryResult<EntityDataObject<HourReport>> qr = execute(q3, new FetchOptions(3, 3));		
+		QueryResult<EntityDataObject<Film>> qr = execute(q3, new FetchOptions(3, 3));		
 		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
 		
-		List<? extends EntityDataObject<HourReport>> el = qr.getContent();
+		List<? extends EntityDataObject<Film>> el = qr.getContent();
 		assertNotNull(el);
 		
 		logger().debug("testExecuteQuery: size=" + el.size());		
 		assertTrue(el.size() <= 3);
 		
-		Query q36 = q3.getTemplate().newQuery();
+		Film.Query q36 = q3.getTemplate().newQuery();
 		qr = execute(q36, new FetchOptions(3, 6));
 		
 		
@@ -315,20 +306,20 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 		
 	public void testExecuteSort() throws Exception {
 		
-		HourReport.QueryTemplate hrq = new HourReport.QueryTemplate();
+		Film.QueryTemplate hrq = new Film.QueryTemplate();
 		hrq.addAllAttributes();
 		
-		Organization.QueryTemplate ot = new Organization.QueryTemplate();
+		Language.QueryTemplate ot = new Language.QueryTemplate();
 
-		hrq.setTemplate(HourReport.FK_HHR_EMPLOYER, ot);
-		hrq.desc(ot, Organization.Attribute.NAME);
+		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, ot);
+		hrq.desc(ot, Language.Attribute.NAME);
 				
-		hrq.asc(ot, Organization.Attribute.YTUNNUS);
-		hrq.desc(HourReport.Attribute.REPORT_DATE);
+		hrq.asc(ot, Language.Attribute.LAST_UPDATE);
+		hrq.desc(Film.Attribute.LAST_UPDATE);
 		
-		hrq.addSortKey(EntityQueryExpressionSortKey.<HourReport.Attribute>newSortKey(new OrderBy.OrdinalSortKey(1)));
+		hrq.addSortKey(EntityQueryExpressionSortKey.<Film.Attribute>newSortKey(new OrderBy.OrdinalSortKey(1)));
 		
-		Query q = hrq.newQuery();
+		Film.Query q = hrq.newQuery();
 		
 		logger().info("testExecuteSort: q.getColumnMap()=" + q.getColumnMap());		
 						
@@ -342,22 +333,22 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 	}
 
 	public void testNotNullPredicate() throws Exception {
-		HourReport.QueryTemplate ht = new HourReport.QueryTemplate();
+		Film.QueryTemplate ht = new Film.QueryTemplate();
 		ht.addAllAttributes();
 		
-		PredicateAttributeTemplate<fi.tnie.db.gen.pg.ent.personal.HourReport.Attribute> p = 
-			PredicateAttributeTemplate.eq(HourReport.Attribute.ID, (Integer) null);
+		PredicateAttributeTemplate<Film.Attribute> p = 
+			PredicateAttributeTemplate.eq(Film.Attribute.FILM_ID, (Integer) null);
 		
 		ht.addPredicate(p);
 		
-		Organization.QueryTemplate ot = new Organization.QueryTemplate();
+		Language.QueryTemplate ot = new Language.QueryTemplate();
 
-		ht.setTemplate(HourReport.FK_HHR_EMPLOYER, ot);
-		ht.desc(ot, Organization.Attribute.NAME);				
+		ht.setTemplate(Film.LANGUAGE_ID_FKEY, ot);
+		ht.desc(ot, Language.Attribute.NAME);				
 		
-		Query q = ht.newQuery();
+		Film.Query q = ht.newQuery();
 		
-		QueryResult<EntityDataObject<HourReport>> qr = execute(q, null);
+		QueryResult<EntityDataObject<Film>> qr = execute(q, null);
 		assertNotNull(qr);
 		assertEquals(0, qr.size());
 		
@@ -365,45 +356,45 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 	
 	
 	public void testNullPredicate() throws Exception {
-		PredicateAttributeTemplate<fi.tnie.db.gen.pg.ent.personal.HourReport.Attribute> p = PredicateAttributeTemplate.eq(HourReport.Attribute.ID, (Integer) null);
-		QueryResult<EntityDataObject<HourReport>> qr = executeWithPredicate(p);
+		PredicateAttributeTemplate<Film.Attribute> p = PredicateAttributeTemplate.eq(Film.Attribute.FILM_ID, (Integer) null);
+		QueryResult<EntityDataObject<Film>> qr = executeWithPredicate(p);
 		assertNotNull(qr);
 		assertEquals(0, qr.size());
 	}
 	
 	public void testIntPredicate() throws Exception {
-		PredicateAttributeTemplate<fi.tnie.db.gen.pg.ent.personal.HourReport.Attribute> p = 
-			PredicateAttributeTemplate.eq(HourReport.Attribute.ID, Integer.valueOf(30));
+		PredicateAttributeTemplate<Film.Attribute> p = 
+			PredicateAttributeTemplate.eq(Film.Attribute.FILM_ID, Integer.valueOf(30));
 		
-		QueryResult<EntityDataObject<HourReport>> qr = executeWithPredicate(p);
+		QueryResult<EntityDataObject<Film>> qr = executeWithPredicate(p);
 		assertNotNull(qr);
 		assertEquals(1, qr.size());
 	}
 	
 	
 	public void testStringPredicate() throws Exception {
-		PredicateAttributeTemplate<fi.tnie.db.gen.pg.ent.personal.HourReport.Attribute> p = 
-			PredicateAttributeTemplate.eq(HourReport.Attribute.COMMENT, "palaveri");
+		PredicateAttributeTemplate<Film.Attribute> p = 
+			PredicateAttributeTemplate.eq(Film.Attribute.TITLE, "BASIC EASY");
 		
-		QueryResult<EntityDataObject<HourReport>> qr = executeWithPredicate(p);
+		QueryResult<EntityDataObject<Film>> qr = executeWithPredicate(p);
 		assertNotNull(qr);
-		assertEquals(5, qr.size());
+		assertEquals(1, qr.size());
 	}
 	
-	public QueryResult<EntityDataObject<HourReport>> executeWithPredicate(PredicateAttributeTemplate<fi.tnie.db.gen.pg.ent.personal.HourReport.Attribute> p) throws Exception {
-		HourReport.QueryTemplate ht = new HourReport.QueryTemplate();
+	public QueryResult<EntityDataObject<Film>> executeWithPredicate(PredicateAttributeTemplate<Film.Attribute> p) throws Exception {
+		Film.QueryTemplate ht = new Film.QueryTemplate();
 		ht.addAllAttributes();
 		
 		ht.addPredicate(p);
 		
-		Organization.QueryTemplate ot = new Organization.QueryTemplate();
+		Language.QueryTemplate ot = new Language.QueryTemplate();
 
-		ht.setTemplate(HourReport.FK_HHR_EMPLOYER, ot);
-		ht.desc(ot, Organization.Attribute.NAME);				
+		ht.setTemplate(Film.LANGUAGE_ID_FKEY, ot);
+		ht.desc(ot, Language.Attribute.NAME);				
 		
-		Query q = ht.newQuery();
+		Film.Query q = ht.newQuery();
 		
-		QueryResult<EntityDataObject<HourReport>> qr = execute(q, null);
+		QueryResult<EntityDataObject<Film>> qr = execute(q, null);
 		assertNotNull(qr);
 		return qr;
 		
@@ -411,63 +402,7 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 
 	
 	
-	public void testProject() throws SQLException, QueryException, EntityException, ClassNotFoundException {
-		Project.QueryTemplate qt = new Project.QueryTemplate();
-		
-		qt.add(
-				Project.Attribute.ALIAS, 
-				Project.Attribute.NAME
-//				, 
-//				Project.Attribute.CREATED_AT
-		);
-		
-		Organization.QueryTemplate ct = new Organization.QueryTemplate();
-		ct.add(Organization.Attribute.NAME);		
-		qt.setTemplate(Project.FK_CLIENT, ct);
-		
-		Organization.QueryTemplate st = new Organization.QueryTemplate();
-		st.add(Organization.Attribute.NAME);	
-				
-		qt.setTemplate(Project.FK_SUPPLIER, st);
-		
-		Person.QueryTemplate cpt = new Person.QueryTemplate();
-		cpt.add(Person.Attribute.FIRST_NAME, Person.Attribute.LAST_NAME);
-		st.setTemplate(Organization.FK_COMPANY_CEO, cpt);
-		
-		fi.tnie.db.gen.pg.ent.personal.Project.Query q = qt.newQuery();
-		
-		String qs = q.getQueryExpression().generate();
-		logger().debug("testProject: qs=" + qs);
 
-		EntityQueryExecutor<
-			Project.Attribute,
-	        Project.Reference,        
-	        Project.Type,
-	        Project,
-	        Project.Holder,		
-	        Project.Factory,
-	        Project.MetaData,
-	        Project.Content,
-	        Project.QueryTemplate
-	    > qe = new EntityQueryExecutor<
-	        Project.Attribute,
-	        Project.Reference,        
-	        Project.Type,
-	        Project,
-	        Project.Holder,		
-	        Project.Factory,
-	        Project.MetaData,
-	        Project.Content,
-	        Project.QueryTemplate
-	      >(getImplementation(), getIdentityContext());
-
-		Connection c = newConnection();
-		
-		qe.execute(q, null, c);
-		
-		c.close();
-	}
-	
 	
 	private UnificationContext getIdentityContext(){
 		return new SimpleUnificationContext();

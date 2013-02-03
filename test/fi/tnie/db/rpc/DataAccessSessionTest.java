@@ -15,10 +15,8 @@ import fi.tnie.db.env.DefaultConnectionManager;
 import fi.tnie.db.env.DefaultDataAccessContext;
 import fi.tnie.db.env.DriverManagerConnectionFactory;
 import fi.tnie.db.env.Implementation;
-import fi.tnie.db.gen.pg.ent.LiteralCatalog;
-import fi.tnie.db.gen.pg.ent.personal.HourReport;
-import fi.tnie.db.gen.pg.ent.personal.Organization;
-import fi.tnie.db.gen.pg.ent.personal.Project;
+import fi.tnie.db.gen.pg.ent.pub.Film;
+import fi.tnie.db.gen.pg.ent.pub.Language;
 import fi.tnie.db.meta.impl.pg.PGTestCase;
 import fi.tnie.db.service.DataAccessException;
 import fi.tnie.db.service.DataAccessSession;
@@ -26,7 +24,6 @@ import fi.tnie.db.service.EntitySession;
 
 public class DataAccessSessionTest 
 	extends PGTestCase {
-
 
 	public void testLoad() throws DataAccessException, EntityException, IllegalArgumentException, IllegalAccessException, IOException {
 		
@@ -46,22 +43,22 @@ public class DataAccessSessionTest
 		EntitySession es = das.asEntitySession();
 		assertNotNull(es);
 		
-		HourReport.QueryTemplate qt = new HourReport.QueryTemplate();
-		qt.addAllAttributes();
 		
-		Project.QueryTemplate pt = new Project.QueryTemplate();
-		pt.addAllAttributes();		
-		qt.setTemplate(HourReport.FK_HHR_PROJECT, pt);
 				
-		Organization.QueryTemplate ot = new Organization.QueryTemplate();
-		ot.addAllAttributes();		
-		pt.setTemplate(Project.FK_CLIENT, ot);
+		Film.QueryTemplate fq = new Film.QueryTemplate();
+		fq.addAllAttributes();
+		
+		Language.QueryTemplate pt = new Language.QueryTemplate();
+		pt.addAllAttributes();		
+		fq.setTemplate(Film.LANGUAGE_ID_FKEY, pt);
+
+		fq.setTemplate(Film.ORIGINAL_LANGUAGE_ID_FKEY, pt);
 				
 		FetchOptions fo = new FetchOptions(20, 0);
-		List<HourReport> load = es.load(qt, fo);
+		List<Film> load = es.load(fq, fo);
 		
 		logger().debug("testLoad again: result set size: " + load.size());
-		es.load(qt, fo);
+		es.load(fq, fo);
 
 		
 		Inspector inspector = new Inspector();						
