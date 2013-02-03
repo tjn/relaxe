@@ -37,17 +37,17 @@ public class DefaultEntityQueryPager<
 	public DefaultEntityQueryPager(
 			QT template, 
 			Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, C, QT>, Receiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>>> fetcher, 
-			Map<SimplePager.Command, ValueModel<String>> nmm) {
+			Map<SimplePagerModel.Command, ValueModel<String>> nmm) {
 		this(template, fetcher, 20, nmm);
 	}
 	
 	public DefaultEntityQueryPager(QT template, Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, C, QT>, Receiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>>> fetcher, 
-			Map<SimplePager.Command, String> nm, int initialPageSize) {
+			Map<SimplePagerModel.Command, String> nm, int initialPageSize) {
 		super(template, fetcher, initialPageSize, createNameModelMap(nm));
 	}
 	
 	public DefaultEntityQueryPager(QT template, Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, C, QT>, Receiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>>> fetcher, 
-			int initialPageSize, Map<SimplePager.Command, ValueModel<String>> nmm) {
+			int initialPageSize, Map<SimplePagerModel.Command, ValueModel<String>> nmm) {
 		super(template, fetcher, initialPageSize, nmm);
 	}
 

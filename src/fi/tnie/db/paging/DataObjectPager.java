@@ -12,7 +12,7 @@ public interface DataObjectPager<
 	R extends Serializable & HasDataObjectQueryResult<O>, 
 	P extends DataObjectPager<O, R, P>
 >
-	extends SimplePager<R, P> {
+	extends SimplePagerModel<R, P> {
 	
 	
 }

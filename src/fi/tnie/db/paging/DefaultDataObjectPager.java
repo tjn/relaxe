@@ -10,12 +10,12 @@ import fi.tnie.db.ent.DataObjectQueryResult;
 import fi.tnie.db.ent.QueryExpressionSource;
 import fi.tnie.db.model.ValueModel;
 import fi.tnie.db.paging.DataObjectPager;
-import fi.tnie.db.paging.DefaultPager;
+import fi.tnie.db.paging.DefaultPagerModel;
 import fi.tnie.db.paging.Fetcher;
 import fi.tnie.db.paging.Receiver;
 
 public class DefaultDataObjectPager
-	extends DefaultPager<
+	extends DefaultPagerModel<
 		QueryExpressionSource, 
 		DataObjectQueryResult<DataObject>, 
 		DefaultDataObjectPager, 

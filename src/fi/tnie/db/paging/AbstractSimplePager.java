@@ -9,10 +9,10 @@ import fi.tnie.db.model.ImmutableValueModel;
 
 public abstract class AbstractSimplePager<
 	RP extends Serializable, 
-	P extends Pager<RP, P, SimplePager.Command>
+	P extends PagerModel<RP, P, SimplePagerModel.Command>
 >
-	extends AbstractPager<RP, P,  SimplePager.Command> 
-	implements SimplePager<RP, P> {
+	extends AbstractPagerModel<RP, P,  SimplePagerModel.Command> 
+	implements SimplePagerModel<RP, P> {
 
 	
 	/* 

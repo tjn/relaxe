@@ -5,12 +5,12 @@ package fi.tnie.db.paging;
 
 import java.io.Serializable;
 
-public class PagingEvent<T extends Serializable, P extends Pager<T, P, X>, X> {
+public class PagerModelEvent<T extends Serializable, P extends PagerModel<T, P, X>, X> {
 	
 	private P pager;
 	private X action;
 			
-	public PagingEvent(P pager, X action) {
+	public PagerModelEvent(P pager, X action) {
 		super();
 		this.pager = pager;
 		this.action = action;

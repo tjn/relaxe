@@ -40,8 +40,7 @@ public class QueryResult<T>
 	public QueryResult(Query request, List<? extends T> content) {
 		super(request);
 		this.content = content;
-	}
-	
+	}	
 
 	public List<? extends T> getContent() {
 		if (content == null) {

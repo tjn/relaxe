@@ -23,10 +23,10 @@ import fi.tnie.db.model.ValueModel;
 import fi.tnie.db.ui.action.AbstractAction;
 import fi.tnie.db.ui.action.Action;
 
-public abstract class DefaultPager<	
+public abstract class DefaultPagerModel<	
 	Q,
 	R extends ResultPage,
-	P extends SimplePager<R, P>,
+	P extends SimplePagerModel<R, P>,
 	F extends Fetcher<Q, R, Receiver<R>>
 >
 	extends AbstractSimplePager<R, P> {
@@ -36,7 +36,7 @@ public abstract class DefaultPager<
 	private R result;	
 	private PageSizeModel pageSize;
 	
-	private Map<SimplePager.Command, Action> actionMap;
+	private Map<SimplePagerModel.Command, Action> actionMap;
 	
 	private BooleanModel hasPreviousPage;
 	private BooleanModel hasNextPage;
@@ -49,7 +49,7 @@ public abstract class DefaultPager<
 	private ImmutableValueModel<Long> currentPageOffset;
 
 	
-	public DefaultPager(Q template, F fetcher, Map<SimplePager.Command, String> nm, int initialPageSize) {
+	public DefaultPagerModel(Q template, F fetcher, Map<SimplePagerModel.Command, String> nm, int initialPageSize) {
 		this(template, fetcher, initialPageSize, createNameModelMap(nm));		
 	}
 
@@ -68,7 +68,7 @@ public abstract class DefaultPager<
 		return nmm;
 	}
 
-	public DefaultPager(Q template, F fetcher, int initialPageSize, Map<SimplePager.Command, ValueModel<String>> nmm) {
+	public DefaultPagerModel(Q template, F fetcher, int initialPageSize, Map<SimplePagerModel.Command, ValueModel<String>> nmm) {
 		super();
 		
 		if (template == null) {
@@ -130,11 +130,11 @@ public abstract class DefaultPager<
 	
 
 	@Override
-	public Action getAction(fi.tnie.db.paging.SimplePager.Command command) {
+	public Action getAction(fi.tnie.db.paging.SimplePagerModel.Command command) {
 		return this.actionMap.get(command);
 	}
 	
-	protected FetchOptions getOptionsFor(final SimplePager.Command command) {
+	protected FetchOptions getOptionsFor(final SimplePagerModel.Command command) {
 		FetchOptions opts = null;
 		final int ps = pageSize();
 		final long co = currentOffset();
@@ -166,7 +166,7 @@ public abstract class DefaultPager<
 		return opts;
 	}
 	
-	protected void fetch(final SimplePager.Command command) {
+	protected void fetch(final SimplePagerModel.Command command) {
 		FetchOptions opts = getOptionsFor(command);
 		fetch(command, opts);		
 	}
@@ -176,7 +176,7 @@ public abstract class DefaultPager<
 	}
 	
 	
-	protected void fetch(final SimplePager.Command command, FetchOptions opts) {
+	protected void fetch(final SimplePagerModel.Command command, FetchOptions opts) {
 		Receiver<R> rr = new Receiver<R>() {
 			@Override
 			public void receive(R result) {
@@ -184,7 +184,7 @@ public abstract class DefaultPager<
 			}
 		};
 		
-		this.fetcher.fetch(template.get(), opts, rr);
+		this.fetcher.fetch(template.get(), opts, rr, null);
 	}
 	
 	protected void received(R result, Command command) {
@@ -194,7 +194,7 @@ public abstract class DefaultPager<
 		currentPageSize.set(Integer.valueOf(result.size()));				
 		availableModel.set(result.available());		
 		
-		fireEvent(new PagingEvent<R, P, Command>(self(), command));
+		fireEvent(new PagerModelEvent<R, P, Command>(self(), command));
 	}
 
 	public R getCurrentPage() {

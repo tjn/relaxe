@@ -6,17 +6,71 @@ package fi.tnie.db.paging;
 import java.io.Serializable;
 
 import fi.tnie.db.model.Registration;
-import fi.tnie.db.ui.action.Action;
 
-/**
- * @param <T> Type of the page(s) this pager browses.
- * @param <P> Type of the pager itself 
- * @param <C> Type of the paging command applicable with this pager 
- */
-public interface Pager<T extends Serializable, P extends Pager<T, P, C>, C> {
-		
-	Registration addPagingEventListener(PagingEventHandler<T, P, C> listener);		
-	Action getAction(C command);
+public interface Pager<
+	Q,
+	E extends Serializable,
+	P extends Page<E>,	
+	G extends Pager<Q, E, P, G>	
+> {	
+	enum State {
+		IDLE,
+		LOADING
+	}
 	
-	T getCurrentPage();
+	boolean firstPage();
+	boolean nextPage();
+	boolean previousPage();		
+	boolean refresh();
+	boolean lastPage();
+	boolean previous();
+	boolean next();	
+		
+	boolean fetch(int page, int index);
+	
+	/** 
+	 * In the current page, set the current element the selection to the selected index.
+	 * 
+	 * @param index
+	 * @return
+	 */
+	boolean select(int index);
+	
+	/**
+	 * The current element on the current page.
+	 * 
+	 * @return
+	 */
+	E get();
+					
+	P getCurrentPage();
+	State getState();
+	
+	void setQuery(Q query);
+	Q getQuery();
+	
+	Registration addPagerEventHandler(PagerEventHandler<G> handler);
+	
+	enum Flags {
+		LOAD_STATE,		
+		LOAD_FAILURE,
+		INDEX,
+		PAGE,
+	}	
+	
+	/**
+	 * Index of the current element in the element list of the current page.
+	 * 
+	 * Returns <code>null</code> if there's no current page or the current page is empty. 
+	 *  
+	 * @return
+	 */
+	Integer index();
+	
+	int getPageSize();
+		
+	boolean isFirstElement();
+	boolean isLastElement();	
+	
+	public G self();
 }
