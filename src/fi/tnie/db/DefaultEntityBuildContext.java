@@ -3,8 +3,6 @@
  */
 package fi.tnie.db;
 
-import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.ent.AttributeMapping;
 import fi.tnie.db.ent.ColumnResolver;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.EntityBuildContext;
