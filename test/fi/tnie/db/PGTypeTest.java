@@ -14,15 +14,14 @@ import java.sql.Statement;
 import java.sql.Types;
 
 
+import fi.tnie.db.meta.impl.pg.PGTest;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.test.MPAARating;
 import fi.tnie.db.types.PrimitiveType;
 
-public class TypeTest
-	extends AbstractUnitTest
+public class PGTypeTest
+	extends PGTest
 {
-	
-	
 	
 	public void testColumnTypes() throws SQLException, QueryException, ClassNotFoundException {
 		Connection c = getCurrent().newConnection();

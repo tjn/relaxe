@@ -15,6 +15,7 @@ import fi.tnie.db.env.DefaultConnectionManager;
 import fi.tnie.db.env.DefaultDataAccessContext;
 import fi.tnie.db.env.DriverManagerConnectionFactory;
 import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.gen.pg.ent.pub.Film;
 import fi.tnie.db.gen.pg.ent.pub.Language;
 import fi.tnie.db.meta.impl.pg.PGTestCase;
@@ -35,7 +36,8 @@ public class DataAccessSessionTest
 		
 		DriverManagerConnectionFactory cf = new DriverManagerConnectionFactory();
 		DefaultConnectionManager cm = new DefaultConnectionManager(cf, jdbcURL, getJdbcConfig());
-		DefaultDataAccessContext<Implementation> dctx = new DefaultDataAccessContext<Implementation>(getImplementation(), cm);
+		// TODO: add type parameter
+		DefaultDataAccessContext<PGImplementation> dctx = new DefaultDataAccessContext<PGImplementation>(getImplementation(), cm);
 		
 		DataAccessSession das = dctx.newSession();		
 		assertNotNull(das);

@@ -13,12 +13,11 @@ import javax.xml.transform.TransformerException;
 import fi.tnie.db.AbstractUnitTest;
 import fi.tnie.db.TestContext;
 import fi.tnie.db.ent.EntityException;
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.gen.pg.ent.LiteralCatalog;
 import fi.tnie.db.query.QueryException;
 
-public class TemplateGeneratorTest extends AbstractUnitTest {
-
-	
+public abstract class TemplateGeneratorTest<I extends Implementation<I>> extends AbstractUnitTest<I> {
 	
 	@Override
 	protected void init() {
@@ -34,7 +33,7 @@ public class TemplateGeneratorTest extends AbstractUnitTest {
 		LiteralCatalog cat = LiteralCatalog.getInstance();				
 		TemplateGenerator g = new TemplateGenerator(tdir, cat);
 		
-		TestContext tc = getCurrent();
+		TestContext<I> tc = getCurrent();
 		assertNotNull(tc);
 		
 		assertNotNull(cat);

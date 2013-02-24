@@ -114,7 +114,7 @@ public class PersistenceManager<
 	}
 
     private E target;    
-    private Implementation implementation = null;
+    private Implementation<?> implementation = null;
     private UnificationContext unificationContext;
 
     private static Logger logger = JavaLogger.getLogger(PersistenceManager.class);
@@ -619,11 +619,11 @@ public class PersistenceManager<
         return PersistenceManager.logger;
     }
     
-    public PersistenceManager(E target, Implementation implementation, UnificationContext unificationContext) {
+    public PersistenceManager(E target, Implementation<?> implementation, UnificationContext unificationContext) {
     	this(target, implementation, MergeMode.UNIDENTIFIED, unificationContext);    	
     }
 
-    public PersistenceManager(E target, Implementation implementation, MergeMode mergeStrategy, UnificationContext unificationContext) {
+    public PersistenceManager(E target, Implementation<?> implementation, MergeMode mergeStrategy, UnificationContext unificationContext) {
         super();
 
         if (target == null) {
@@ -706,11 +706,11 @@ public class PersistenceManager<
 		return getImplementation().getSyntax();
 	}
 
-	public Implementation getImplementation() {
+	public Implementation<?> getImplementation() {
 		return implementation;
 	}
 
-	public void setImplementation(Implementation implementation) {
+	public void setImplementation(Implementation<?> implementation) {
 		this.implementation = implementation;
 	}
 	
@@ -724,7 +724,7 @@ public class PersistenceManager<
 		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM, DC>,
 		DC extends Content
 	>
-	PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> create(DE e, Implementation impl) {
+	PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> create(DE e, Implementation<?> impl) {
 		PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC>(e, impl, getMergeMode(), unificationContext);
 		return pm;
 	}

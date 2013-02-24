@@ -32,9 +32,13 @@ import fi.tnie.db.types.ReferenceType;
  *
  */
 public class MySQLImplementation
-	extends DefaultImplementation {
+	extends DefaultImplementation<MySQLImplementation> {
 
-    private MySQLSyntax syntax;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6946031278704702178L;
+	private MySQLSyntax syntax;
     private MySQLEnvironment environment;
     
 	@Override
@@ -185,5 +189,15 @@ public class MySQLImplementation
 
 		return environment;
 	}
+
+	@Override
+	public MySQLImplementation getImplementation() {
+		return this;
+	}
+
 	
+	@Override
+	public MySQLImplementation self() {
+		return this;
+	}
 }

@@ -19,9 +19,13 @@ import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.impl.pg.PGEnvironment;
 
 public class PGImplementation
-	extends DefaultImplementation {
+	extends DefaultImplementation<PGImplementation> {
 
-    private SQLSyntax syntax;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7298329938853171504L;
+	private SQLSyntax syntax;
     private PGGeneratedKeyHandler generatedKeyHandler;
     private PGEnvironment environment;
     
@@ -162,6 +166,11 @@ public class PGImplementation
 	public SerializableEnvironment environment() {
 		return this.environment;		
 	}
+
+	@Override
+	public PGImplementation getImplementation() {
+		return this;
+	}
 		
 //	public java.sql.Driver getDriver() {		
 //		if (driver == null) {
@@ -176,5 +185,9 @@ public class PGImplementation
 //		return new PGAttributeWriterFactory();
 //	}
 
-		
+
+	@Override
+	public PGImplementation self() {
+		return this;
+	}
 }

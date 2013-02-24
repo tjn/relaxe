@@ -11,25 +11,24 @@ import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.env.Implementation;
-import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.log.DefaultLogger;
 
-public abstract class AbstractUnitTest
+public abstract class AbstractUnitTest<I extends Implementation<I>>
 	extends TestCase {
 		
 	private Logger logger;
 	
-	private TestContext current;
+	private TestContext<I> current;
 	
 	/**
 	 * Context variables:
 	 */
-	private Implementation implementation;
+	private I implementation;
 	private String host;
 	private String database;
 	private String user;		
 				
-	public TestContext getCurrent() {
+	public TestContext<I> getCurrent() {
 		return current;
 	}
 	
@@ -41,7 +40,7 @@ public abstract class AbstractUnitTest
 		init();
 	}	
 	
-	protected final TestContext getContext() {
+	protected final TestContext<I> getContext() {
 		if (current == null) {
 			current = createContext();			
 		}
@@ -49,11 +48,11 @@ public abstract class AbstractUnitTest
 		return current;
 	}
 
-	protected TestContext createContext() {
-		Implementation imp = getImplementation();		
+	protected TestContext<I> createContext() {
+		I imp = getImplementation();		
 		String h = getHost();
 		String d = getDatabase();		
-		SimpleTestContext tc = new SimpleTestContext(imp, h, d, getUser(), "password");
+		SimpleTestContext<I> tc = new SimpleTestContext<I>(imp, h, d, getUser(), "password");
 		
 				
 		
@@ -96,7 +95,7 @@ public abstract class AbstractUnitTest
 		return "relaxe_tester";
 	}
 
-	public final Implementation getImplementation() {
+	public final I getImplementation() {
 		if (implementation == null) {
 			implementation = createImplementation();			
 		}
@@ -105,9 +104,7 @@ public abstract class AbstractUnitTest
 	}
 	
 	
-	protected Implementation createImplementation() {
-		return new PGImplementation();
-	}
+	protected abstract I createImplementation();
 	
 	protected void init() {
 		

@@ -10,9 +10,9 @@ import fi.tnie.db.env.Implementation;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.query.QueryException;
 
-public interface TestContext {
+public interface TestContext<I extends Implementation<I>> {
 
-    public Implementation getImplementation();
+    public I getImplementation();
     public Connection newConnection() throws SQLException, ClassNotFoundException;    
     public Catalog getCatalog() throws SQLException, QueryException, ClassNotFoundException;
 }

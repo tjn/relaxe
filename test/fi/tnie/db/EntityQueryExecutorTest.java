@@ -21,7 +21,9 @@ import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.PredicateAttributeTemplate;
 import fi.tnie.db.ent.Reference;
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.PersistenceContext;
+import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.OrderBy;
 import fi.tnie.db.expr.ValueExpression;
 import fi.tnie.db.gen.pg.ent.LiteralCatalog;
@@ -32,7 +34,7 @@ import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.test.PagilaPersistenceContext;
 import fi.tnie.db.types.ReferenceType;
 
-public class EntityQueryExecutorTest extends AbstractUnitTest {
+public abstract class EntityQueryExecutorTest<I extends Implementation<I>> extends AbstractUnitTest<I> {
 	
 		
 	@Override
@@ -51,8 +53,8 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 
 	
 	private QueryResult<EntityDataObject<Film>> execute(Film.Query q, FetchOptions opts) throws Exception {
-		// Implementation imp = new PGImplementation();
-		PersistenceContext pc = new PagilaPersistenceContext();
+		PGImplementation imp = new PGImplementation();
+		PersistenceContext<?> pc = new PagilaPersistenceContext(imp);
 		
 		Connection c = newConnection();
 				
@@ -123,7 +125,7 @@ public class EntityQueryExecutorTest extends AbstractUnitTest {
 		C extends Content,
 		QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
 	>
-	EntityQueryExecutor<A, R, T, E, H, F, M, C, QT> createExecutor(M meta, PersistenceContext persistenceContext) {
+	EntityQueryExecutor<A, R, T, E, H, F, M, C, QT> createExecutor(M meta, PersistenceContext<?> persistenceContext) {
 		return new EntityQueryExecutor<A, R, T, E, H, F, M, C, QT>(persistenceContext, getIdentityContext());
 	}
 	

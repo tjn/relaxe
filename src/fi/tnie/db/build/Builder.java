@@ -296,7 +296,7 @@ public class Builder
 //            Catalog cat = getCatalog();            
             
 //            Environment env = cat.getEnvironment();            
-            Implementation impl = getImplementation();
+            Implementation<?> impl = getImplementation();
             
             c.setAutoCommit(false);        
             CatalogFactory cf = impl.catalogFactory();          

@@ -24,7 +24,8 @@ import fi.tnie.db.gen.pg.ent.pub.FilmCategory;
 import fi.tnie.db.gen.pg.ent.pub.PublicFactory;
 import fi.tnie.db.meta.DBMetaTestCase;
 
-public class PGDefaultEntityQueryTest extends DBMetaTestCase {
+public class PGDefaultEntityQueryTest 
+	extends DBMetaTestCase<PGImplementation> {
 
     @Override
 	public PGCatalogFactory factory() {    	
@@ -35,7 +36,7 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     }
     
     @Override
-    protected Implementation implementation() {
+    protected PGImplementation implementation() {
     	return new PGImplementation();
     }
     
@@ -44,7 +45,7 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	assertNotNull(c);
     	logger().debug(c.getMetaData().getURL());
     	
-    	Implementation imp = implementation();
+    	PGImplementation imp = implementation();
     	    	
     	LiteralCatalog cc = LiteralCatalog.getInstance();
     	    	
@@ -102,7 +103,7 @@ public class PGDefaultEntityQueryTest extends DBMetaTestCase {
     	assertNotNull(c);
     	logger().debug(c.getMetaData().getURL());
     	
-    	Implementation imp = implementation();
+    	Implementation<?> imp = implementation();
     	    	
     	LiteralCatalog cc = LiteralCatalog.getInstance();
     	PublicFactory pf = cc.newPublicFactory();

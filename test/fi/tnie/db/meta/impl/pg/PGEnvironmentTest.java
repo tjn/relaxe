@@ -3,13 +3,13 @@
  */
 package fi.tnie.db.meta.impl.pg;
 
-import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.meta.DBMetaTestCase;
 
-public class PGEnvironmentTest 
-	extends DBMetaTestCase {
+public class PGEnvironmentTest
+	extends DBMetaTestCase<PGImplementation> {
 	
 //	@Override
 //	public void restore() throws IOException, InterruptedException {
@@ -19,10 +19,11 @@ public class PGEnvironmentTest
 	public void testCreateIdentifier() 
 		throws Exception {
 	    
-		Implementation env = getEnvironmentContext().getImplementation();
+		PGImplementation env = implementation();
 		// PGEnvironment env = newEnv();		
 		 
 		final Identifier a = env.createIdentifier("abc");		
+		
 		assertTrue(a.isOrdinary());
 				
 		final Identifier b = env.createIdentifier("Abc");
@@ -174,7 +175,8 @@ public class PGEnvironmentTest
 	
 	
 	public void testIllegalIdentifier() throws Exception {
-		Implementation env = getEnvironmentContext().getImplementation();
+		// Implementation env = getEnvironmentContext().getImplementation();
+		PGImplementation env = implementation();
 		
 		try {
 			env.createIdentifier("");
@@ -190,4 +192,9 @@ public class PGEnvironmentTest
 		assertFalse(id + " is not not valid as an ordinary", id.isOrdinary());
 	}
 	
+
+	@Override
+	protected PGImplementation implementation() {
+		return new PGImplementation();
+	}
 }

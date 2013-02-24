@@ -8,6 +8,7 @@ import java.sql.SQLException;
 
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.EntityException;
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.env.util.ResultSetWriter;
 import fi.tnie.db.expr.CountFunction;
@@ -24,13 +25,11 @@ import fi.tnie.db.query.QueryException;
 import fi.tnie.db.rpc.LongHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
 
-public class StatementExecutorTest extends DBMetaTestCase {
-
-	
+public abstract class StatementExecutorTest<I extends Implementation<I>> extends DBMetaTestCase<I> {
 	
 	
 	public void testFetch() throws SQLException, QueryException, EntityException, ClassNotFoundException {
-		TestContext tc = getTestContext(null);		
+		TestContext<I> tc = getTestContext(null);		
 		Connection c = getConnection();
 		
 		// TODO: try to eliminate need for this:
@@ -59,12 +58,13 @@ public class StatementExecutorTest extends DBMetaTestCase {
 	}
 
 	public void testPGInsert() throws SQLException, QueryException, EntityException, ClassNotFoundException {
-		PGImplementation pg = new PGImplementation();
-		TestContext tc = getTestContext(pg);		
+		// PGImplementation pg = new PGImplementation();
+		I imp = implementation();
+		TestContext<I> tc = getTestContext(imp);		
 		Connection c = tc.newConnection();
 		LiteralCatalog.getInstance();
 		
-		StatementExecutor se  = new StatementExecutor(pg);
+		StatementExecutor se  = new StatementExecutor(imp);
 				
 		Table t = LiteralCatalog.LiteralBaseTable.PUBLIC_COUNTRY;		
 		// assertNotNull(t.getSchema());

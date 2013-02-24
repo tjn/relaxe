@@ -8,7 +8,7 @@ import java.util.List;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
 
-public class ImplementationVariable<I extends Implementation> {
+public class ImplementationVariable<I extends Implementation<I>> {
 		
 	private I value;
 		

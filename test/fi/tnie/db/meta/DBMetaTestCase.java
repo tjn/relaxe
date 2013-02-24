@@ -27,13 +27,12 @@ import fi.tnie.db.SimpleTestContext;
 import fi.tnie.db.TestContext;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;
-import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.query.QueryException;
 import junit.framework.TestCase;
 
-public abstract class DBMetaTestCase
+public abstract class DBMetaTestCase<I extends Implementation<I>> 
     extends TestCase
-    implements DBMetaTest, HasTestContext {
+    implements DBMetaTest, HasTestContext<I> {
     
     public static final String SCHEMA_PUBLIC = "public";
     public static final String TABLE_CONTINENT = "continent";
@@ -47,7 +46,7 @@ public abstract class DBMetaTestCase
     
     private ClassLoader classLoaderForGenerated = null;
     
-    private TestContext testContext;
+    private TestContext<I> testContext;
           
     protected int read(ResultSet rs, int col, Collection<String> dest) 
         throws SQLException {
@@ -133,8 +132,8 @@ public abstract class DBMetaTestCase
         return DBMetaTestCase.logger;
     }
 
-    public void init(Implementation impl) {
-    	init(new SimpleTestContext(impl));
+    public void init(I impl) {
+    	init(new SimpleTestContext<I>(impl));
     }
     
     @Override
@@ -176,9 +175,7 @@ public abstract class DBMetaTestCase
         this.connection.setAutoCommit(false);
     }
     
-    protected Implementation implementation() {
-    	return new PGImplementation();
-    }
+    protected abstract I implementation();
     
     
 	@Override
@@ -298,19 +295,19 @@ public abstract class DBMetaTestCase
         return this.classLoaderForGenerated;
     }
 
-	public TestContext getTestContext(Implementation imp) throws SQLException, QueryException {
+	public TestContext<I> getTestContext(I imp) throws SQLException, QueryException {
 		if (testContext == null) {
 			if (imp == null) {
-				imp = new PGImplementation();
+				imp = implementation();
 			}
 			
-			testContext = new DefaultTestContext(imp);			
+			testContext = new DefaultTestContext<I>(imp);			
 		}
 
 		return testContext;
 	}
 
-	public void setTestContext(TestContext testContext) {
+	public void setTestContext(TestContext<I> testContext) {
 		this.testContext = testContext;
 	}
 	

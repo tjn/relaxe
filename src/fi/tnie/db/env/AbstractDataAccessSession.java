@@ -38,7 +38,7 @@ import fi.tnie.db.service.QuerySession;
 import fi.tnie.db.service.StatementSession;
 import fi.tnie.db.types.ReferenceType;
 
-public abstract class AbstractDataAccessSession<I extends Implementation>
+public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	implements DataAccessSession, EntitySession, QuerySession, StatementSession {
 		
 	private Connection connection;

@@ -16,10 +16,14 @@ import fi.tnie.db.meta.impl.DefaultEnvironment;
  * We should not to require implementation object to be serializable.
  */
 
-public abstract class DefaultImplementation
+public abstract class DefaultImplementation<I extends Implementation<I>>
 	extends DefaultEnvironment
-	implements Implementation {
+	implements Implementation<I> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 399585651114432619L;
 	private ValueExtractorFactory valueExtractorFactory; 
 	private ValueAssignerFactory valueAssignerFactory;	
 //	private Driver driver;

@@ -60,7 +60,7 @@ public abstract class CatalogTool {
     private Catalog catalog;
     private boolean verbose;
         
-    private Implementation implementation;
+    private Implementation<?> implementation;
     
     private String jdbcURL;
     private Properties jdbcConfig;
@@ -183,11 +183,11 @@ public abstract class CatalogTool {
              
             String environmentTypeName = cl.value(OPTION_ENV);
             
-            Implementation env = null;
+            Implementation<?> env = null;
             
             if (environmentTypeName != null) {
                 Class<?> environmentType = Class.forName(environmentTypeName);
-                env = (Implementation) environmentType.newInstance();                
+                env = (Implementation<?>) environmentType.newInstance();                
             }
 
             String jdbcDriverConfigPath = cl.value(require(cl, OPTION_JDBC_CONFIG));            
@@ -214,7 +214,7 @@ public abstract class CatalogTool {
         }
      }
     
-     public void init(String jdbcURL, Properties jdbcConfig, Implementation impl)
+     public void init(String jdbcURL, Properties jdbcConfig, Implementation<?> impl)
          throws ToolConfigurationException, ToolException {
 
          try {
@@ -244,7 +244,8 @@ public abstract class CatalogTool {
                  }  
                  
                  Class<?> implementationType = Class.forName(implementationTypeName);
-                 impl = (Implementation) implementationType.newInstance();                 
+                 Object io = implementationType.newInstance();                 
+                 impl = (Implementation<?>) io;                 
              }
              
              setJdbcURL(jdbcURL);
@@ -358,11 +359,11 @@ public abstract class CatalogTool {
         return c;
     }
 
-    public Implementation getImplementation() {
+    public Implementation<?> getImplementation() {
         return implementation;
     }
 
-    public void setImplementation(Implementation environment) {
+    public void setImplementation(Implementation<?> environment) {
     	if (environment == null) {
 			throw new NullPointerException();
 		}

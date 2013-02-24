@@ -9,8 +9,8 @@ import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.SerializableEnvironment;
 
-public interface Implementation
-	extends Environment, PersistenceContext {
+public interface Implementation<I extends Implementation<I>>
+	extends Environment, PersistenceContext<I> {
 
 	/** Creates a factory to build entire catalog in this environment. 
 	 * 
@@ -36,6 +36,8 @@ public interface Implementation
 	String createJdbcUrl(String host, int port, String database);
 	
 	SerializableEnvironment environment();
+	
+	I self();
 	
 //	Driver getDriver();			
 }

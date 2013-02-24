@@ -35,16 +35,16 @@ public class QueryExecutor {
 
 	private static Logger logger = Logger.getLogger(QueryExecutor.class);
 	
-	private PersistenceContext persistenceContext;
+	private PersistenceContext<?> persistenceContext;
 
-	public QueryExecutor(PersistenceContext persistenceContext) {
+	public QueryExecutor(PersistenceContext<?> persistenceContext) {
 		super();
 		this.persistenceContext = persistenceContext;
 	}
 	
 	public DataObjectQueryResult<DataObject> execute(QueryExpressionSource qes, FetchOptions opts, Connection c) throws QueryException, SQLException {
 		
-		PersistenceContext pc = getPersistenceContext();
+		PersistenceContext<?> pc = getPersistenceContext();
 		
 		SliceStatement ss = createStatement(qes, opts, c);
 		SelectStatement statement = ss.getStatement();
@@ -70,7 +70,7 @@ public class QueryExecutor {
 	public SliceStatement createStatement(QueryExpressionSource qes, FetchOptions opts, Connection c) 
 		throws QueryException, SQLException {
 		
-		PersistenceContext pc = getPersistenceContext();	
+		PersistenceContext<?> pc = getPersistenceContext();	
 		StatementExecutor sx = new StatementExecutor(pc);
 		
 	//	if (logger().isDebugEnabled()) {
@@ -167,7 +167,7 @@ public class QueryExecutor {
 		return QueryExecutor.logger;
 	}
 	
-	public PersistenceContext getPersistenceContext() {
+	public PersistenceContext<?> getPersistenceContext() {
 		return persistenceContext;
 	}
 	

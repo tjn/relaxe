@@ -13,7 +13,7 @@ import fi.tnie.db.query.QueryException;
 
 public interface EnvironmentTestContext {
 
-    public Implementation getImplementation();
+    public Implementation<?> getImplementation();
     public Connection connect() throws SQLException;
     public Driver getDriver();
     public Catalog getCatalog() throws SQLException, QueryException;

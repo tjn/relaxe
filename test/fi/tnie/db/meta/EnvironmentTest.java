@@ -8,8 +8,8 @@ import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.meta.DBMetaTestCase;
 
-public class EnvironmentTest 
-	extends DBMetaTestCase {
+public abstract class EnvironmentTest<I extends Implementation<I>> 
+	extends DBMetaTestCase<I> {
 	
 //	@Override
 //	public void restore() throws IOException, InterruptedException {
@@ -19,7 +19,7 @@ public class EnvironmentTest
 	public void testCreateIdentifier() 
 		throws Exception {
 	    
-		Implementation env = getEnvironmentContext().getImplementation();
+		Implementation<?> env = getEnvironmentContext().getImplementation();
 		// PGEnvironment env = newEnv();		
 		 
 		final Identifier a = env.createIdentifier("abc");		
@@ -37,7 +37,7 @@ public class EnvironmentTest
 	
 	
 	public void testIllegalIdentifier() throws Exception {
-		Implementation env = getEnvironmentContext().getImplementation();
+		Implementation<?> env = getEnvironmentContext().getImplementation();
 		
 		try {
 			env.createIdentifier("");

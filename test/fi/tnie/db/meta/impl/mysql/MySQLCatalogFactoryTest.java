@@ -21,8 +21,10 @@ import fi.tnie.db.meta.impl.DefaultCatalogMap;
 import fi.tnie.db.meta.impl.DefaultMutableCatalog;
 import fi.tnie.db.meta.impl.DefaultMutableSchema;
 
-public class MySQLCatalogFactoryTest extends DBMetaTestCase {
+public class MySQLCatalogFactoryTest extends DBMetaTestCase<MySQLImplementation> {
 
+	private MySQLImplementation implementation = new MySQLImplementation();
+	
     public void testGetCatalogNameFromSchemas() 
         throws SQLException {
         assertNotNull(getEnvironmentContext());
@@ -133,7 +135,7 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase {
     
     public void testCreateCatalog() 
         throws Exception {                
-    	Implementation impl = getEnvironmentContext().getImplementation();
+    	Implementation<?> impl = getEnvironmentContext().getImplementation();
         DefaultCatalogFactory factory = factory();                
         Connection c = getConnection();        
         String current = c.getCatalog();
@@ -157,7 +159,11 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase {
     
     @Override
 	public MySQLCatalogFactory factory() {        
-        return new MySQLCatalogFactory(new MySQLImplementation().environment());        
+        return new MySQLCatalogFactory(implementation().environment());        
     }
-
+    
+    @Override
+    protected MySQLImplementation implementation() {
+       	return this.implementation;
+    }
 }

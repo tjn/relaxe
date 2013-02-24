@@ -25,7 +25,7 @@ public class StatementExecutor {
 	private ValueAssignerFactory valueAssignerFactory = null; 
 	private ValueExtractorFactory valueExtractorFactory = null;
 		
-	public StatementExecutor(PersistenceContext persistenceContext) {
+	public StatementExecutor(PersistenceContext<?> persistenceContext) {
 		super();
 		this.valueAssignerFactory = persistenceContext.getValueAssignerFactory();
 		this.valueExtractorFactory = persistenceContext.getValueExtractorFactory();

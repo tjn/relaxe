@@ -29,7 +29,7 @@ public abstract class PGTestCase
 	public static final String TABLE_CONTINENT = "continent";
 	public static final String TABLE_COUNTRY = "country";
 	
-	private Implementation implementation;
+	private PGImplementation implementation;
 
 	public PGTestCase() {
 		super("org.postgresql.Driver", "tester", "password", "test", null);	
@@ -150,7 +150,7 @@ public abstract class PGTestCase
     }
 
     @Override
-    protected Implementation getImplementation() {
+    protected PGImplementation getImplementation() {
     	if (implementation == null) {
 			implementation = new PGImplementation();			
 		}

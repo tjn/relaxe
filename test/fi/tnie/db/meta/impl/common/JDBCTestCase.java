@@ -555,7 +555,7 @@ public abstract class JDBCTestCase
         return null;
     }
     
-    protected abstract Implementation getImplementation();
+    protected abstract Implementation<?> getImplementation();
 
 	public Properties getJdbcConfig() {
 		if (jdbcConfig == null) {

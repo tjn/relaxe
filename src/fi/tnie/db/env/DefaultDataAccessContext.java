@@ -11,7 +11,7 @@ import fi.tnie.db.service.DataAccessContext;
 import fi.tnie.db.service.DataAccessException;
 import fi.tnie.db.service.DataAccessSession;
 
-public class DefaultDataAccessContext<I extends Implementation>
+public class DefaultDataAccessContext<I extends Implementation<I>>
 	implements DataAccessContext {
 	
 	private I implementation;

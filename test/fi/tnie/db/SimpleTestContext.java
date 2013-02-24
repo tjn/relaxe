@@ -21,18 +21,18 @@ import fi.tnie.db.query.QueryException;
  * @author Administrator
  *
  */
-public class SimpleTestContext
-    implements EnvironmentTestContext, TestContext {
+public class SimpleTestContext<I extends Implementation<I>>
+    implements EnvironmentTestContext, TestContext<I> {
 	
 	private static Logger logger = Logger.getLogger(SimpleTestContext.class);
 
     private Catalog catalog;
-    private Implementation implementation;
+    private I implementation;
     private Driver driver;
     private String jdbcURL;
     private Properties driverConfig;
             
-    public SimpleTestContext(Implementation impl, Driver driver, String jdbcURL, Properties driverConfig)
+    public SimpleTestContext(I impl, Driver driver, String jdbcURL, Properties driverConfig)
     	throws ClassNotFoundException {            
         super();
         this.implementation = impl;            
@@ -40,11 +40,11 @@ public class SimpleTestContext
         this.jdbcURL = jdbcURL;
         this.driverConfig = driverConfig;
     }
-    public SimpleTestContext(Implementation impl) {
+    public SimpleTestContext(I impl) {
     	this(impl, null, "pagila", "relaxe_tester", "password");
     }
     
-    public SimpleTestContext(Implementation impl, String host, String database, String user, String passwd) {            
+    public SimpleTestContext(I impl, String host, String database, String user, String passwd) {            
         super();                
 		Driver d = load(impl.defaultDriverClassName());
 		String url = impl.createJdbcUrl(host, database);		
@@ -73,10 +73,10 @@ public class SimpleTestContext
         this.catalog = catalog;
     }
     
-    public Implementation getImplementation() {
+    public I getImplementation() {
         return implementation;
     }
-    public void setImplementation(Implementation environment) {
+    public void setImplementation(I environment) {
         this.implementation = environment;
     }
     

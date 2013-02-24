@@ -6,8 +6,10 @@ package fi.tnie.db.env;
 import fi.tnie.db.ValueAssignerFactory;
 import fi.tnie.db.ValueExtractorFactory;
 
-public interface PersistenceContext {
+public interface PersistenceContext<I extends Implementation<I>> {
 	
+	
+	I getImplementation();
 	
 //	GeneratedKeyHandler generatedKeyHandler();	
 	ValueExtractorFactory getValueExtractorFactory();			

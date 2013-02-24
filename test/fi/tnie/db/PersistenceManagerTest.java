@@ -17,6 +17,7 @@ import fi.tnie.db.env.Implementation;
 import fi.tnie.db.gen.pg.ent.pub.Actor;
 import fi.tnie.db.gen.pg.ent.pub.Film;
 import fi.tnie.db.gen.pg.ent.pub.FilmActor;
+import fi.tnie.db.gen.pg.ent.pub.Language;
 import fi.tnie.db.gen.pg.ent.pub.PublicFactory;
 import fi.tnie.db.gen.pg.ent.pub.Actor.Factory;
 import fi.tnie.db.gen.pg.ent.pub.Actor.Holder;
@@ -29,7 +30,7 @@ import fi.tnie.db.query.QueryException;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
-public class PersistenceManagerTest extends DBMetaTestCase  {
+public abstract class PersistenceManagerTest<I extends Implementation<I>> extends DBMetaTestCase<I>  {
 		
     public void testMerge() 
         throws Exception {
@@ -74,6 +75,11 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
 	    Film f = pf.newFilm();
 	    Film.Content fc = f.getContent();
 	    fc.setTitle("New Film");
+	    
+	    
+	    Language lang = pf.newLanguage();
+	    lang.getContent().setName("English");	    	    
+	    f.setLanguage(Film.LANGUAGE_ID_FKEY, lang.ref());
 	    
 	    FilmActor filmActor = pf.newFilmActor();
 	    
@@ -122,7 +128,7 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
 		C extends Content
 	>
-	void merge(E e, Implementation impl, Connection c) throws CyclicTemplateException, EntityException, SQLException, QueryException {
+	void merge(E e, Implementation<?> impl, Connection c) throws CyclicTemplateException, EntityException, SQLException, QueryException {
 		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, impl, null);
 		pm.merge(c);		
 	}
@@ -137,7 +143,7 @@ public class PersistenceManagerTest extends DBMetaTestCase  {
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
 		C extends Content
 	>
-	void delete(E e, Implementation impl, Connection c) throws CyclicTemplateException, EntityException, SQLException, QueryException {
+	void delete(E e, Implementation<?> impl, Connection c) throws CyclicTemplateException, EntityException, SQLException, QueryException {
 		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, impl, null);
 		pm.delete(c);		
 	}

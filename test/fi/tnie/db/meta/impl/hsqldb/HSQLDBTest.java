@@ -12,20 +12,20 @@ import fi.tnie.db.env.hsqldb.HSQLDBImplementation;
 import fi.tnie.db.query.QueryException;
 
 public class HSQLDBTest
-	extends AbstractUnitTest
+	extends AbstractUnitTest<HSQLDBImplementation>
 {	
 	public HSQLDBTest() {
 		super();	
 	}
 		
 	@Override
-	protected Implementation createImplementation() {
+	protected HSQLDBImplementation createImplementation() {
 		return new HSQLDBImplementation();
 	}
 		
 	public void testA() throws SQLException {		
 		logger().debug("enter: " + getName());
-		TestContext imp = getContext();
+		TestContext<HSQLDBImplementation> imp = getContext();
 		
 		assertNotNull(imp);
 		logger().debug("exit: " + getName());
@@ -34,7 +34,7 @@ public class HSQLDBTest
 	
 	public void testConnection() throws SQLException, QueryException {
 		
-		TestContext imp = getContext();
+		TestContext<HSQLDBImplementation> imp = getContext();
 //		Driver d = imp.getImplementation().getDriver();		
 //		
 //		Connection c = d.connect("jdbc:hsqldb:mem:test", null);

@@ -46,8 +46,8 @@ import fi.tnie.util.io.IOHelper;
 import fi.tnie.util.io.Launcher;
 import fi.tnie.util.io.RunResult;
 
-public class BuilderTest 
-	extends DBMetaTestCase {
+public abstract class BuilderTest<I extends Implementation<I>> 
+	extends DBMetaTestCase<I> {
     
     // public static final String ROOT_PACKAGE = "fi.tnie.testapp";
     
@@ -113,7 +113,7 @@ public class BuilderTest
         Catalog cat = getCatalog();
         assertNotNull(cat);
         
-        Implementation impl = getEnvironmentContext().getImplementation();
+        Implementation<?> impl = getEnvironmentContext().getImplementation();
         
         Builder b = new Builder();
         b.setImplementation(impl);

@@ -9,13 +9,14 @@ import java.sql.Time;
 import java.util.Date;
 import java.util.TimeZone;
 
+import junit.framework.TestCase;
+
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.AbstractUnitTest;
 import fi.tnie.db.rpc.Interval.DayTime;
 import fi.tnie.db.rpc.Interval.YearMonth;
 
-public class IntervalTest extends AbstractUnitTest {
+public class IntervalTest extends TestCase {
 	
 	private static Logger logger = Logger.getLogger(IntervalTest.class);
 	
@@ -253,5 +254,9 @@ public class IntervalTest extends AbstractUnitTest {
 		logger().debug("testDayTimeConstructor: dt=" + dt);
 		logger().debug("testDayTimeConstructor: hh=" + dt.getHour());
 		logger().debug("testDayTimeConstructor: min=" + dt.getMinute());
+	}
+	
+	private static Logger logger() {
+		return IntervalTest.logger;
 	}
 }

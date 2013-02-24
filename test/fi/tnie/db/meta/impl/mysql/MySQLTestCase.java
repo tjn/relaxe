@@ -32,7 +32,7 @@ public abstract class MySQLTestCase
 	public static final String TABLE_CONTINENT = "continent";
 	public static final String TABLE_COUNTRY = "country";
 	
-	private Implementation implementation;
+	private Implementation<?> implementation;
 
 	public MySQLTestCase() {
 		super("com.mysql.jdbc.Driver", "tester", "password", "dbmeta_test", null);	
@@ -164,7 +164,7 @@ public abstract class MySQLTestCase
 	
 	
 	@Override
-	protected Implementation getImplementation() {
+	protected Implementation<?> getImplementation() {
 		if (implementation == null) {
 			implementation = new MySQLImplementation();			
 		}

@@ -16,7 +16,5 @@ public class ColumnDomain
 	 */
 	private static final long serialVersionUID = -5500506069865254194L;
 	private Identifier domainName;
-        
-    
-    
+
 }

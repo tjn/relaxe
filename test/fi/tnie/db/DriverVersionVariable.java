@@ -9,7 +9,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import fi.tnie.db.env.Implementation;
 
-public class DriverVersionVariable<I extends Implementation> {
+public class DriverVersionVariable<I extends Implementation<I>> {
 	
 	private ClassLoader loader; 
 	

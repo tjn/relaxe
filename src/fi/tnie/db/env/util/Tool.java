@@ -21,8 +21,8 @@ import fi.tnie.db.query.QueryException;
 public abstract class Tool {
 
 	private static Logger logger = Logger.getLogger(Tool.class);
-	
-	private void run(Implementation env, String jdbcUrl, Properties jdbcConfig) 
+		
+	private void run(Implementation<?> env, String jdbcUrl, Properties jdbcConfig) 
 		throws Exception {
 	        		
 	    String driverName = env.defaultDriverClassName();
@@ -57,7 +57,7 @@ public abstract class Tool {
 		}
 		
 		try {
-			run(env, c);
+			run(env.self(), c);
 		}
 		finally {
 		    close(c);		    
@@ -75,7 +75,9 @@ public abstract class Tool {
 	    }
     }
 
-    public abstract void run(Implementation env, Connection c)
+    public abstract 
+    <I extends Implementation<I>>    
+    void run(I env, Connection c)
 		throws QueryException, IOException, SQLGenerationException, SQLException;
 
 	public static Logger logger() {

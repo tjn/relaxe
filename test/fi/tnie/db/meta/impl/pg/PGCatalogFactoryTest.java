@@ -24,7 +24,9 @@ import fi.tnie.db.meta.impl.DefaultMutableCatalog;
 import fi.tnie.db.meta.impl.DefaultMutableSchema;
 import fi.tnie.db.query.QueryException;
 
-public class PGCatalogFactoryTest extends DBMetaTestCase {
+public class PGCatalogFactoryTest extends DBMetaTestCase<PGImplementation> {
+	
+	private PGImplementation implementation = new PGImplementation();
 
     public void testGetCatalogNameFromSchemas() 
         throws SQLException, QueryException {
@@ -176,7 +178,7 @@ public class PGCatalogFactoryTest extends DBMetaTestCase {
     
     public void testCreateCatalog() 
         throws Exception {                
-        Implementation impl = getEnvironmentContext().getImplementation();
+        Implementation<?> impl = getEnvironmentContext().getImplementation();
         PGCatalogFactory factory = factory();                
         Connection c = getConnection();        
         String current = c.getCatalog();
@@ -222,5 +224,10 @@ public class PGCatalogFactoryTest extends DBMetaTestCase {
         
         
     }
+
+	@Override
+	protected PGImplementation implementation() {
+		return this.implementation;
+	}
     
 }

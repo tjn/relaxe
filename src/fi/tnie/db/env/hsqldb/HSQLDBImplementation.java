@@ -14,9 +14,13 @@ import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.impl.hsqldb.HSQLDBEnvironment;
 
 public class HSQLDBImplementation
-	extends DefaultImplementation {
+	extends DefaultImplementation<HSQLDBImplementation> {
 
-    private SQLSyntax syntax;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3193274599509436285L;
+	private SQLSyntax syntax;
     private GeneratedKeyHandler generatedKeyHandler;
     private HSQLDBEnvironment environment;
     
@@ -193,6 +197,11 @@ public class HSQLDBImplementation
 	public SerializableEnvironment environment() {
 		return this.environment;		
 	}
+
+	@Override
+	public HSQLDBImplementation getImplementation() {
+		return this;
+	}
 	
 		
 //	public java.sql.Driver getDriver() {		
@@ -208,5 +217,10 @@ public class HSQLDBImplementation
 //		return new PGAttributeWriterFactory();
 //	}
 
+	
+	@Override
+	public HSQLDBImplementation self() {
+		return this;
+	}
 	
 }

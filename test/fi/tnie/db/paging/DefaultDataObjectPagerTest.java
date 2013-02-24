@@ -13,6 +13,7 @@ import fi.tnie.db.QueryExecutor;
 import fi.tnie.db.SynchronousDataObjectFetcher;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.DataObjectQueryResult;
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.gen.pg.ent.LiteralCatalog;
 import fi.tnie.db.gen.pg.ent.LiteralCatalog.LiteralBaseTable;
 import fi.tnie.db.model.ValueModel;
@@ -20,7 +21,7 @@ import fi.tnie.db.paging.SimplePagerModel.Command;
 import fi.tnie.db.query.DataObjectQuery;
 import fi.tnie.db.ui.action.Action;
 
-public class DefaultDataObjectPagerTest extends AbstractUnitTest {
+public abstract class DefaultDataObjectPagerTest<I extends Implementation<I>> extends AbstractUnitTest<I> {
 	
 	public void testPager() throws SQLException, ClassNotFoundException {
 		
@@ -59,8 +60,6 @@ public class DefaultDataObjectPagerTest extends AbstractUnitTest {
 				
 		assertNotNull(cp);
 		assertEquals(20, cp.getOffset());
-		assertEquals(20, cp.getContent().size());
-		
+		assertEquals(20, cp.getContent().size());		
 	}
-
 }

@@ -3,39 +3,39 @@
  */
 package fi.tnie.db;
 
+import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.model.DefaultMutableValueModel;
 import fi.tnie.db.model.ValueModel;
 
-public class DefaultContextModel {
+public abstract class DefaultContextModel
+	<I extends Implementation<I>>
+{
 	
-	private ValueModel<TestContext> contextModel;
+	private ValueModel<TestContext<I>> contextModel;
 	
-	private static DefaultContextModel instance;
+	// private static DefaultContextModel<I> instance;
 	
-	public void init(ValueModel<TestContext> cm) {
+	public void init(ValueModel<TestContext<I>> cm) {
 		this.contextModel = cm;
 	}
 	
-	public static DefaultContextModel getInstance() {
-		if (instance == null) {
-			instance = new DefaultContextModel();			
-		}
-
-		return instance;
-	}
+//	public static DefaultContextModel<TestContext<I>> getInstance() {
+//		if (instance == null) {
+//			instance = new DefaultContextModel<TestContext<I>>();			
+//		}
+//
+//		return instance;
+//	}
 	
-	public TestContext getContext() {
+	public TestContext<I> getContext() {
 		if (this.contextModel == null) {
-			TestContext tc = createDefaultContext();
-			this.contextModel = new DefaultMutableValueModel<TestContext>(tc);
+			TestContext<I> tc = createDefaultContext();
+			this.contextModel = new DefaultMutableValueModel<TestContext<I>>(tc);
 		}
 		
 		return this.contextModel.get();
 	}
 
-	private TestContext createDefaultContext() {
-		return new SimpleTestContext(new PGImplementation());		
-	}
-	
+	protected abstract TestContext<I> createDefaultContext();	
 }

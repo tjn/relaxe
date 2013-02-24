@@ -52,7 +52,7 @@ public class EntityQueryExecutor<
 	private QueryExecutor executor;	
 	private UnificationContext unificationContext;
 	
-	public EntityQueryExecutor(PersistenceContext persistenceContext, UnificationContext unificationContext) {
+	public EntityQueryExecutor(PersistenceContext<?> persistenceContext, UnificationContext unificationContext) {
 		super();
 		executor = new QueryExecutor(persistenceContext);
 		this.unificationContext = unificationContext;
@@ -62,7 +62,7 @@ public class EntityQueryExecutor<
 		throws SQLException, QueryException, EntityException {
 		
 		QueryExecutor se = getExecutor();		
-		PersistenceContext pc = se.getPersistenceContext();
+		PersistenceContext<?> pc = se.getPersistenceContext();
 		
 		List<EntityDataObject<E>> content = new ArrayList<EntityDataObject<E>>();
 		

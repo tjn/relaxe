@@ -16,11 +16,11 @@ import fi.tnie.db.query.QueryException;
 import fi.tnie.db.query.QueryTime;
 import fi.tnie.db.query.DataObjectQuery;
 
-public class QueryExecutorTest
-	extends AbstractUnitTest {
+public abstract class QueryExecutorTest<I extends Implementation<I>>
+	extends AbstractUnitTest<I> {
 	
 	public void testQuery() throws EntityException, SQLException, QueryException, ClassNotFoundException {
-		Implementation imp = getImplementation();
+		I imp = getImplementation();
 		Connection c = getContext().newConnection();
 				
 		

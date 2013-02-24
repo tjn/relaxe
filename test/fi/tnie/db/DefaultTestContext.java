@@ -13,20 +13,20 @@ import fi.tnie.db.env.Implementation;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.query.QueryException;
 
-public class DefaultTestContext
-	implements TestContext {
+public class DefaultTestContext<I extends Implementation<I>>
+	implements TestContext<I> {
 
 	private Catalog catalog;
-	private Implementation implementation;
+	private I implementation;
 	// private Connection connection;		
 	private Properties jdbcProperties;
 	private String jdbcUrl;
 	
-	public DefaultTestContext(Implementation imp) throws SQLException, QueryException {
+	public DefaultTestContext(I imp) throws SQLException, QueryException {
 		this(imp, "test");
 	}
 		
-	public DefaultTestContext(Implementation imp, String database) throws SQLException, QueryException {		
+	public DefaultTestContext(I imp, String database) throws SQLException, QueryException {		
 		Properties config = createJdbcProperties();
 		init(imp, database, config);
 	}
@@ -38,7 +38,7 @@ public class DefaultTestContext
 		return config;
 	}
 
-	private void init(Implementation imp, String database, Properties jdbcProperties) throws SQLException, QueryException {		
+	private void init(I imp, String database, Properties jdbcProperties) throws SQLException, QueryException {		
 				
 		if (imp == null) {
 			throw new NullPointerException("implementation");
@@ -64,13 +64,13 @@ public class DefaultTestContext
 	}
 
 	@Override
-	public Implementation getImplementation() {
+	public I getImplementation() {
 		return this.implementation;
 	}
 
 	@Override
 	public Connection newConnection() throws SQLException, ClassNotFoundException {
-		Implementation imp = getImplementation();
+		I imp = getImplementation();
 //		Driver drv = imp.getDriver();		
 //		Connection c = drv.connect(jdbcUrl, jdbcProperties);
 		Class.forName(imp.defaultDriverClassName());

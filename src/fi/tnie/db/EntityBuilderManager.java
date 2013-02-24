@@ -45,12 +45,12 @@ public class EntityBuilderManager<
 	private UnificationContext identityContext;
 	private EntityBuildContext context;
 		
-	private PersistenceContext persistenceContext = null;
+	private PersistenceContext<?> persistenceContext = null;
 	
 	private EntityBuilder<E> rootBuilder;
 		
 						
-	public EntityBuilderManager(PersistenceContext persistenceContext, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext identityContext) 
+	public EntityBuilderManager(PersistenceContext<?> persistenceContext, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext identityContext) 
 		throws QueryException {
 		super(persistenceContext.getValueExtractorFactory(), query);
 		this.persistenceContext = persistenceContext;

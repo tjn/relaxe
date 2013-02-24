@@ -167,7 +167,8 @@ public class TestSuiteBuilder
         assertNotNull("no key 'env-type' in impl-config for " + impl, environmentTypeName);        
         
         Class<?> environmentType = Class.forName(environmentTypeName);            
-        Implementation env = (Implementation) environmentType.newInstance();
+        Implementation<?> env = (Implementation<?>) environmentType.newInstance();
+//        env.self()
         
         IOHelper ioh = new IOHelper();
                 
@@ -202,8 +203,8 @@ public class TestSuiteBuilder
                     driverSuite.addTest(driverConfigSuite);
                                         
                     for (File s : servers) {
-                        Properties srvcfg = ioh.load(s.getAbsolutePath());                                                
-                        TestSuite test = createSuite(env, driver, drvcfg, srvcfg);                        
+                        Properties srvcfg = ioh.load(s.getAbsolutePath());                        
+                        TestSuite test = createSuite(env.self(), driver, drvcfg, srvcfg);                        
                         addSuite(test, driverConfigSuite);                        
                     }                    
                 }
@@ -318,7 +319,9 @@ public class TestSuiteBuilder
           ((jardir == null) ? "" : "@" + jardir.getPath());
   }
 
-  private TestSuite createSuite(final Implementation env, Driver driver, Properties drvcfg, Properties srvcfg) 
+  private 
+  <I extends Implementation<I>>
+  TestSuite createSuite(final I env, Driver driver, Properties drvcfg, Properties srvcfg) 
       throws SQLException, ClassNotFoundException 
   {            
       assertNotNull(env);
@@ -333,7 +336,7 @@ public class TestSuiteBuilder
       boolean a = driver.acceptsURL(url);
       assertTrue("JDBC driver " + driverInfo(driver) + " does dot accept url: " + url, a);
       
-      SimpleTestContext tctx = new SimpleTestContext(env, driver, url, drvcfg);
+      SimpleTestContext<I> tctx = new SimpleTestContext<I>(env, driver, url, drvcfg);
 //      suite.setCurrent(tctx);          
 //      dest.add(suite);
       
@@ -345,10 +348,10 @@ public class TestSuiteBuilder
   }
   
   
-  private TestSuite createEnvironmentTestSuite(SimpleTestContext tctx) {
+  private TestSuite createEnvironmentTestSuite(SimpleTestContext<?> tctx) {
      TestSuite ts = new TestSuite("env");
      
-     final Implementation env = tctx.getImplementation();
+     final Implementation<?> env = tctx.getImplementation();
           
      addSuite(createTestsFor(Implementation.class, tctx), ts);
      addSuite(createTestsFor(env.getClass(), tctx), ts);
@@ -365,7 +368,7 @@ public class TestSuiteBuilder
   }
 
 @SuppressWarnings("deprecation")
-  private static Driver loadDriver(final Implementation env, File jardir) {      
+  private static Driver loadDriver(final Implementation<?> env, File jardir) {      
     Driver driver = null;
       
     try {
@@ -488,7 +491,7 @@ public class TestSuiteBuilder
 //        return injected;
 //    }
 
-    private TestSuite createTestsFor(Class<?> klass, final SimpleTestContext ctx) {    
+    private TestSuite createTestsFor(Class<?> klass, final SimpleTestContext<?> ctx) {    
         
         String testClass = klass.getName() + "Test";
         TestSuite suite = null;

@@ -14,8 +14,8 @@ import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.query.QueryException;
 
 
-public class CatalogTest 
-    extends DBMetaTestCase {
+public abstract class CatalogTest<I extends Implementation<I>> 
+    extends DBMetaTestCase<I> {
 
     
     protected void testBaseTable(BaseTable t) {
@@ -144,7 +144,7 @@ public class CatalogTest
     public void testIdentifierComparator() 
     	throws SQLException {
     	
-    	Implementation env = getEnvironmentContext().getImplementation();
+    	Implementation<?> env = getEnvironmentContext().getImplementation();
     	Comparator<Identifier> icmp = env.identifierComparator();
     		
     	{

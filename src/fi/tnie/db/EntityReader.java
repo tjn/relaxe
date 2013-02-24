@@ -37,12 +37,12 @@ public class EntityReader<
 
 	private List<EntityDataObject<E>> content;
 
-	public EntityReader(PersistenceContext pc, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext unificationContext)
+	public EntityReader(PersistenceContext<?> pc, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext unificationContext)
 		throws QueryException {
 		this(pc, query, new ArrayList<EntityDataObject<E>>(), unificationContext);
 	}
 
-	public EntityReader(PersistenceContext pc, EntityQuery<A, R, T, E, H, F, M, C, ?> query, List<EntityDataObject<E>> result, UnificationContext identityContext)
+	public EntityReader(PersistenceContext<?> pc, EntityQuery<A, R, T, E, H, F, M, C, ?> query, List<EntityDataObject<E>> result, UnificationContext identityContext)
 		throws QueryException {
 		super(pc, query, identityContext);
 
