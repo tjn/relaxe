@@ -9,7 +9,7 @@ import fi.tnie.db.ValueExtractorFactory;
 public interface PersistenceContext<I extends Implementation<I>> {
 	
 	I getImplementation();	
-//	GeneratedKeyHandler generatedKeyHandler();	
+	GeneratedKeyHandler generatedKeyHandler();	
 	ValueExtractorFactory getValueExtractorFactory();			
 	ValueAssignerFactory getValueAssignerFactory();
 

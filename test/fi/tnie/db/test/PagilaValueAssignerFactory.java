@@ -70,7 +70,7 @@ public class PagilaValueAssignerFactory
 		
 		@Override
 		protected void close(Array array) {
-			// free not implemented in PG
+			// free() -method is not implemented in PG
 		}
 	}
 }

@@ -13,6 +13,7 @@ import java.util.Set;
 
 import fi.tnie.db.StatementExecutor;
 import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.pg.PGCatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.env.util.ResultSetWriter;
@@ -225,9 +226,10 @@ public class PGCatalogFactoryTest extends DBMetaTestCase<PGImplementation> {
         
     }
 
-	@Override
-	protected PGImplementation implementation() {
+    @Override
+	protected PersistenceContext<PGImplementation> getPersistenceContext() {
 		return this.implementation;
 	}
-    
+	
+	
 }

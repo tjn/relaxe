@@ -47,12 +47,13 @@ public class EntityBuilderManager<
 	private EntityBuilder<E> rootBuilder;
 		
 						
-	public EntityBuilderManager(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext identityContext) 
+	public EntityBuilderManager(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext unificationContext) 
 		throws QueryException {
 		super(vef, query);		
 		this.query = query;
 		this.meta = query.getMetaData();
-		this.identityContext = identityContext;
+		
+		this.identityContext = unificationContext;
 	}
 	
 	@Override
@@ -70,8 +71,10 @@ public class EntityBuilderManager<
 	}
 	
 	@Override
-	public void finish() {	
-		getIdentityContext().close();
+	public void finish() {
+		if (getIdentityContext() != null) {
+			getIdentityContext().close();	
+		}
 	}
 	
 	

@@ -4,6 +4,7 @@
 package fi.tnie.db.meta;
 
 import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
@@ -55,10 +56,9 @@ public class PGEnvironmentTest
 		Identifier id = env.createIdentifier("1A");
 		assertFalse(id + " is not not valid as an ordinary", id.isOrdinary());
 	}
-	
+		
 	@Override
-	protected PGImplementation implementation() {
+	protected PersistenceContext<PGImplementation> getPersistenceContext() {
 		return this.implementation;
 	}
-	
 }

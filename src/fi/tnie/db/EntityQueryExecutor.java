@@ -105,9 +105,9 @@ public class EntityQueryExecutor<
 //		return implementation;
 //	}
 	
-	private static Logger logger() {
-		return EntityQueryExecutor.logger;
-	}	
+//	private static Logger logger() {
+//		return EntityQueryExecutor.logger;
+//	}	
 	
 		
 //	protected SliceStatement createStatement(QueryExpressionSource qes, FetchOptions opts, Connection c) 

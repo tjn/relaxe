@@ -13,6 +13,7 @@ import java.util.Set;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.DefaultCatalogFactory;
 import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.mysql.MySQLCatalogFactory;
 import fi.tnie.db.env.mysql.MySQLImplementation;
 import fi.tnie.db.meta.DBMetaTestCase;
@@ -23,7 +24,9 @@ import fi.tnie.db.meta.impl.DefaultMutableSchema;
 
 public class MySQLCatalogFactoryTest extends DBMetaTestCase<MySQLImplementation> {
 
-	private MySQLImplementation implementation = new MySQLImplementation();
+	// private MySQLImplementation implementation = new MySQLImplementation();
+	private PersistenceContext<MySQLImplementation> context = new MySQLImplementation();  
+	
 	
     public void testGetCatalogNameFromSchemas() 
         throws SQLException {
@@ -162,8 +165,9 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase<MySQLImplementation>
         return new MySQLCatalogFactory(implementation().environment());        
     }
     
+    
     @Override
-    protected MySQLImplementation implementation() {
-       	return this.implementation;
+    protected PersistenceContext<MySQLImplementation> getPersistenceContext() {
+       	return context;
     }
 }

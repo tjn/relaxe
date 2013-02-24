@@ -13,6 +13,7 @@ import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.pg.PGCatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.SelectStatement;
@@ -27,18 +28,18 @@ import fi.tnie.db.meta.DBMetaTestCase;
 
 public class PGDefaultEntityQueryTest 
 	extends DBMetaTestCase<PGImplementation> {
+	
+	
+	private PGImplementation implementation = new PGImplementation();
 
     @Override
-	public PGCatalogFactory factory() {    	
-    	implementation();
-    	
-        PGImplementation e = new PGImplementation();
-        return new PGCatalogFactory(e.getEnvironment());
+	public PGCatalogFactory factory() {   	
+    	return new PGCatalogFactory(implementation().getEnvironment());
     }
     
     @Override
     protected PGImplementation implementation() {
-    	return new PGImplementation();
+    	return implementation;
     }
     
     public void testQuery1() throws Exception {
@@ -218,5 +219,9 @@ public class PGDefaultEntityQueryTest
 //        testCatalogFactory(factory, getConnection());
 //    }
     
-    
+
+    @Override
+    protected PersistenceContext<PGImplementation> getPersistenceContext() {
+       	return implementation();
+    }
 }

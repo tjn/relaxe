@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.ent.im.EntityIdentityMap;
+import fi.tnie.db.ent.im.ReferenceIdentityMap;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.expr.ColumnExpr;
 import fi.tnie.db.expr.ColumnName;
@@ -56,8 +57,13 @@ public abstract class DefaultEntityBuilder<
 		ForeignKey map = (tableRef == null) ? referencedBy : null;
 			
 		M meta = getMetaData();	
-		
-		this.identityMap = meta.getIdentityMap(unificationContext);
+				
+		if (unificationContext == null) {
+			this.identityMap = new ReferenceIdentityMap<A, R, T, E, H>();
+		}
+		else {
+			this.identityMap = meta.getIdentityMap(unificationContext);	
+		}
 						
 		int cc = ctx.getInputMetaData().getColumnCount();
 						
@@ -77,11 +83,19 @@ public abstract class DefaultEntityBuilder<
 	public E read(DataObject src) {
 		E ne = getMetaData().getFactory().newInstance();
 		
+		logger().debug("read: " + ne);
+		
 		int nc = copy(src, ne, this.primaryKeyWriterList);
 		
 		if (nc > 0) {
 			// referenced primary key contained nulls => not identified
 			return null;
+		}
+		
+		if (!ne.isIdentified()) {
+//			// read by linker
+			logger().debug("read: not identified: " + ne);
+//			return null;
 		}
 		
 		H eh = identityMap.get(ne);

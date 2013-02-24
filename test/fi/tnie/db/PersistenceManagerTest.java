@@ -13,7 +13,9 @@ import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.ent.EntityFactory;
 import fi.tnie.db.ent.EntityMetaData;
+import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.gen.pg.ent.pub.Actor;
 import fi.tnie.db.gen.pg.ent.pub.Film;
 import fi.tnie.db.gen.pg.ent.pub.FilmActor;
@@ -31,6 +33,9 @@ import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
 public abstract class PersistenceManagerTest<I extends Implementation<I>> extends DBMetaTestCase<I>  {
+	
+	
+	private UnificationContext unificationContext;
 		
     public void testMerge() 
         throws Exception {
@@ -86,7 +91,7 @@ public abstract class PersistenceManagerTest<I extends Implementation<I>> extend
 	    filmActor.setActor(FilmActor.ACTOR_ID_FKEY, a.ref());
 	    filmActor.setFilm(FilmActor.FILM_ID_FKEY, f.ref());
 	    	    	    
-	    merge(filmActor, implementation(), c);
+	    merge(filmActor, getPersistenceContext(), c);
 	    c.commit();    
 	    
 	    assertTrue(filmActor.isIdentified());	    
@@ -113,11 +118,10 @@ public abstract class PersistenceManagerTest<I extends Implementation<I>> extend
 		C extends Content
 	>
 	PersistenceManager<A, R, T, E, H, F, M, C> create(E e) {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, implementation(), null);
+		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, getPersistenceContext(), getUnificationContext());
 		return pm;
 	}
-	
-	
+		
 	protected <
 		A extends Attribute, 
 		R extends fi.tnie.db.ent.Reference, 
@@ -128,8 +132,8 @@ public abstract class PersistenceManagerTest<I extends Implementation<I>> extend
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
 		C extends Content
 	>
-	void merge(E e, Implementation<?> impl, Connection c) throws CyclicTemplateException, EntityException, SQLException, QueryException {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, impl, null);
+	void merge(E e, PersistenceContext<?> pctx, Connection c) throws CyclicTemplateException, EntityException, SQLException, QueryException {
+		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, pctx, getUnificationContext());
 		pm.merge(c);		
 	}
 	
@@ -143,8 +147,8 @@ public abstract class PersistenceManagerTest<I extends Implementation<I>> extend
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
 		C extends Content
 	>
-	void delete(E e, Implementation<?> impl, Connection c) throws CyclicTemplateException, EntityException, SQLException, QueryException {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, impl, null);
+	void delete(E e, PersistenceContext<?> pctx, Connection c) throws CyclicTemplateException, EntityException, SQLException, QueryException {
+		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, pctx, getUnificationContext());
 		pm.delete(c);		
 	}
 	
@@ -159,7 +163,7 @@ public abstract class PersistenceManagerTest<I extends Implementation<I>> extend
 		C extends Content
 	>
 	void merge(E e) throws CyclicTemplateException, EntityException, SQLException, QueryException {		
-		merge(e, implementation(), getConnection());		
+		merge(e, getPersistenceContext(), getConnection());		
 	}
 	
 	protected <
@@ -173,6 +177,14 @@ public abstract class PersistenceManagerTest<I extends Implementation<I>> extend
 		C extends Content
 	>
 	void delete(E e) throws CyclicTemplateException, EntityException, SQLException, QueryException {
-		merge(e, implementation(), getConnection());		
+		merge(e, getPersistenceContext(), getConnection());		
+	}
+
+	protected UnificationContext getUnificationContext() {
+		return unificationContext;
+	}
+
+	protected void setUnificationContext(UnificationContext unificationContext) {
+		this.unificationContext = unificationContext;
 	}		
 }

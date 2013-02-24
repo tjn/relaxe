@@ -76,7 +76,7 @@ public class AssignmentVisitor extends ElementVisitorAdapter {
 		ParameterAssignment a = assignerFactory.create(h, columnType);
 
 		if (a == null) {
-			throw new NullPointerException("no assignment for parameter[" + ord + "] of type " + h.getType() + ": " + h);
+			throw new NullPointerException("no assignment for parameter[" + ord + "] of type " + h.getType() + ": " + h + " with assigner factory: " + assignerFactory);
 		}
 		
 		a.assign(preparedStatement, ord);

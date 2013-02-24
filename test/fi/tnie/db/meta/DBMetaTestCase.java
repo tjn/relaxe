@@ -27,6 +27,7 @@ import fi.tnie.db.SimpleTestContext;
 import fi.tnie.db.TestContext;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.query.QueryException;
 import junit.framework.TestCase;
 
@@ -175,7 +176,11 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
         this.connection.setAutoCommit(false);
     }
     
-    protected abstract I implementation();
+    protected I implementation() {
+    	return getPersistenceContext().getImplementation();
+    }
+    
+    protected abstract PersistenceContext<I> getPersistenceContext();
     
     
 	@Override
@@ -311,6 +316,7 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
 		this.testContext = testContext;
 	}
 	
+
 	
 
 }
