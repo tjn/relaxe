@@ -6,6 +6,7 @@ package fi.tnie.db;
 import fi.tnie.db.meta.DataType;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
+import fi.tnie.db.rpc.DecimalHolder;
 import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
@@ -40,6 +41,10 @@ public class DefaultValueAssignerFactory
 				break;				
 			case PrimitiveType.TIMESTAMP:	
 				pa = createTimestampAssignment(ph.asTimestampHolder());
+				break;
+			case PrimitiveType.DECIMAL:	 
+			case PrimitiveType.NUMERIC:
+				pa = createDecimalAssignment(ph.asDecimalHolder());
 				break;				
 			case PrimitiveType.OTHER:
 				if ("interval_dt".equals(columnType.getTypeName())) {				
@@ -97,9 +102,9 @@ public class DefaultValueAssignerFactory
 		return new DateAssignment(h);
 	}
 
-//	protected ParameterAssignment createDecimalAssignment(DecimalHolder h) {
-//		return new DecimalAssignment(h);
-//	}
+	protected ParameterAssignment createDecimalAssignment(DecimalHolder h) {
+		return new DecimalAssignment(h);
+	}
 //
 //	protected ParameterAssignment createDistinctAssignment(DistinctHolder h) {
 //		return new DistinctAssignment(h);
