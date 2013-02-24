@@ -19,7 +19,6 @@ import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.MutableEntityDataObject;
 import fi.tnie.db.ent.Reference;
-import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.rpc.ReferenceHolder;
@@ -45,15 +44,12 @@ public class EntityBuilderManager<
 	private UnificationContext identityContext;
 	private EntityBuildContext context;
 		
-	private PersistenceContext<?> persistenceContext = null;
-	
 	private EntityBuilder<E> rootBuilder;
 		
 						
-	public EntityBuilderManager(PersistenceContext<?> persistenceContext, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext identityContext) 
+	public EntityBuilderManager(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext identityContext) 
 		throws QueryException {
-		super(persistenceContext.getValueExtractorFactory(), query);
-		this.persistenceContext = persistenceContext;
+		super(vef, query);		
 		this.query = query;
 		this.meta = query.getMetaData();
 		this.identityContext = identityContext;

@@ -18,7 +18,6 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQuery;
 import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.Reference;
-import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
@@ -37,14 +36,14 @@ public class EntityReader<
 
 	private List<EntityDataObject<E>> content;
 
-	public EntityReader(PersistenceContext<?> pc, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext unificationContext)
+	public EntityReader(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext unificationContext)
 		throws QueryException {
-		this(pc, query, new ArrayList<EntityDataObject<E>>(), unificationContext);
+		this(vef, query, new ArrayList<EntityDataObject<E>>(), unificationContext);
 	}
 
-	public EntityReader(PersistenceContext<?> pc, EntityQuery<A, R, T, E, H, F, M, C, ?> query, List<EntityDataObject<E>> result, UnificationContext identityContext)
+	public EntityReader(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, C, ?> query, List<EntityDataObject<E>> result, UnificationContext identityContext)
 		throws QueryException {
-		super(pc, query, identityContext);
+		super(vef, query, identityContext);
 
 		if (result == null) {
 			throw new NullPointerException("result");

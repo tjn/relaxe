@@ -10,6 +10,9 @@ import fi.tnie.db.types.PrimitiveType;
 public interface ValueAssignerFactory {
 
 	
-	<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T, H>>
+	<	
+		T extends PrimitiveType<T>, 
+		H extends PrimitiveHolder<?, T, H>
+	>
 	ParameterAssignment create(H holder, DataType columnType);
 }

@@ -9,6 +9,7 @@ import java.sql.Statement;
 import fi.tnie.db.EntityReader;
 import fi.tnie.db.SimpleUnificationContext;
 import fi.tnie.db.StatementExecutor;
+import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.EntityDataObject;
 import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.env.Implementation;
@@ -58,9 +59,11 @@ public class PGDefaultEntityQueryTest
     	    	
     	Statement st = c.createStatement();
     	UnificationContext ic = new SimpleUnificationContext();
+    	
+    	ValueExtractorFactory vef = imp.getValueExtractorFactory();
     	    	    	    	
     	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content> eb
-    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content>(imp, faq, ic);
+    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content>(vef, faq, ic);
     	    	    	    	
     	PGImplementation impl = new PGImplementation();    	
     	StatementExecutor se = new StatementExecutor(impl);
@@ -143,9 +146,11 @@ public class PGDefaultEntityQueryTest
 //    	ValueExtractorFactory vef = imp.getValueExtractorFactory();
     	
     	UnificationContext ic = new SimpleUnificationContext();
+    	
+    	ValueExtractorFactory vef = imp.getValueExtractorFactory();
     	    	    	    	
     	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content> eb
-    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content>(imp, faq, ic);
+    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content>(vef, faq, ic);
     	    	    	    	
     	PGImplementation impl = new PGImplementation();
     	

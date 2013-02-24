@@ -66,7 +66,7 @@ public class EntityQueryExecutor<
 		
 		List<EntityDataObject<E>> content = new ArrayList<EntityDataObject<E>>();
 		
-		EntityReader<?, ?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M, C>(pc, query, content, this.unificationContext);
+		EntityReader<?, ?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M, C>(pc.getValueExtractorFactory(), query, content, this.unificationContext);
 		
 		QueryExecutor.SliceStatement sb = se.createStatement(query, opts, c);
 				
