@@ -33,7 +33,7 @@ public abstract class DefaultEntityBuilder<
 	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
 	C extends Content
 >
-	implements EntityBuilder<E> {
+	implements EntityBuilder<E, H> {
 	
 	private static Logger logger = Logger.getLogger(DefaultEntityBuilder.class);
 
@@ -80,7 +80,7 @@ public abstract class DefaultEntityBuilder<
 	public abstract M getMetaData();
 
 	@Override
-	public E read(DataObject src) {
+	public H read(DataObject src) {
 		E ne = getMetaData().getFactory().newInstance();
 		
 		logger().debug("read: " + ne);
@@ -100,11 +100,14 @@ public abstract class DefaultEntityBuilder<
 		
 		H eh = identityMap.get(ne);
 		
-		if (eh.value() != ne) {
-			copy(src, ne, this.attributeWriterList);			
+		
+		if (eh != null) {		
+			if (eh.value() != ne) {
+				copy(src, ne, this.attributeWriterList);			
+			}
 		}
 		
-		return eh.value();
+		return eh;
 	}
 	
 	/**	

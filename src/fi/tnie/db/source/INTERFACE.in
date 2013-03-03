@@ -82,9 +82,9 @@ public interface {{table-interface}}
 		public Builder newBuilder(TableReference referencing, ForeignKey referencedBy, TableReference tableRef, EntityBuildContext ctx, fi.tnie.db.ent.UnificationContext unificationContext)
 			throws fi.tnie.db.ent.EntityException;
 	}
-	
-	interface Builder extends EntityBuilder<{{table-interface}}> {
-		{{table-interface}} read(DataObject src);	
+		
+	interface Builder extends EntityBuilder<{{table-interface}}, {{table-interface}}.Holder> {
+		{{table-interface}}.Holder read(DataObject src);	
 	}
 	
 	public class QueryTemplate

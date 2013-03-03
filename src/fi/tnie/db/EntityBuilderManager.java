@@ -44,7 +44,7 @@ public class EntityBuilderManager<
 	private UnificationContext identityContext;
 	private EntityBuildContext context;
 		
-	private EntityBuilder<E> rootBuilder;
+	private EntityBuilder<E, H> rootBuilder;
 		
 						
 	public EntityBuilderManager(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext unificationContext) 
@@ -96,11 +96,11 @@ public class EntityBuilderManager<
 	@Override
 	protected void put(MutableEntityDataObject<E> o) {
 //		logger().debug("put - enter");				
-		E result = rootBuilder.read(o);
+		H result = rootBuilder.read(o);
 
 		//		result = read(result);					
 		
-		o.setRoot(result);		
+		o.setRoot(result.value());		
 		process(o);
 	}
 

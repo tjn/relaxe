@@ -83,10 +83,7 @@ public interface Entity<
 
 	PrimitiveHolder<?, ?, ?> value(A attribute) throws EntityRuntimeException;
 
-
-
 	C getContent();
-
 
 	/***
 	 * Returns the value of the corresponding column.
@@ -162,58 +159,7 @@ public interface Entity<
 	>
 	void setString(K k, String s) throws EntityRuntimeException;
 
-//	IntegerHolder getInteger(IntegerKey<A, E> k)
-//		throws EntityRuntimeException;
-//	VarcharHolder getVarchar(VarcharKey<A, E> k)
-//		throws EntityRuntimeException;
-//	DateHolder getDate(DateKey<A, E> k)
-//		throws EntityRuntimeException;
-//	TimestampHolder getTimestamp(TimestampKey<A, E> k)
-//		throws EntityRuntimeException;
-//	TimeHolder getTime(TimeKey<A, E> k)
-//		throws EntityRuntimeException;
-//	CharHolder getChar(CharKey<A, E> k)
-//		throws EntityRuntimeException;
-//	DoubleHolder getDouble(DoubleKey<A, E> k)
-//		throws EntityRuntimeException;
-//	DecimalHolder getDecimal(DecimalKey<A, E> k)
-//		throws EntityRuntimeException;
-//
-//	IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, E> k);
-//	IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, E> k);
-
-//	void setInteger(IntegerKey<A, E> k, IntegerHolder newValue)
-//		throws EntityRuntimeException;
-
-//	void setVarchar(VarcharKey<A, E> k, VarcharHolder newValue)
-//		throws EntityRuntimeException;
-//
-//	void setChar(CharKey<A, E> k, CharHolder newValue)
-//		throws EntityRuntimeException;
-//
-//	void setDate(DateKey<A, E> k, DateHolder newValue)
-//		throws EntityRuntimeException;
-//
-//	void setTimestamp(TimestampKey<A, E> k, TimestampHolder newValue)
-//		throws EntityRuntimeException;
-//
-//	void setTime(TimeKey<A, E> k, TimeHolder newValue)
-//		throws EntityRuntimeException;
-//
-//	void setDecimal(DecimalKey<A, E> k, DecimalHolder newValue)
-//		throws EntityRuntimeException;
-//
-//	void setDouble(DoubleKey<A, E> k, DoubleHolder newValue)
-//		throws EntityRuntimeException;
-//
-//	void setInterval(IntervalKey.YearMonth<A, E> k, IntervalHolder.YearMonth newValue)
-//		throws EntityRuntimeException;
-//
-//	void setInterval(IntervalKey.DayTime<A, E> k, IntervalHolder.DayTime newValue)
-//		throws EntityRuntimeException;
-
 	public E self();
-
 	public E copy();
 
 	boolean isIdentified() throws EntityRuntimeException;

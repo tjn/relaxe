@@ -3,8 +3,17 @@
  */
 package fi.tnie.db.ent;
 
+import fi.tnie.db.rpc.ReferenceHolder;
+
 public interface EntityBuilder<
-	E extends Entity<?, ?, ?, ?, ?, ?, ?, ?>> {
+	E extends Entity<?, ?, ?, E, H, ?, ?, ?>,
+	H extends ReferenceHolder<?, ?, ?, E, H, ?, ?>
+> {	
 	
-	E read(DataObject src);
+	/**
+	 * Attempts
+	 * @param src
+	 * @return
+	 */
+	H read(DataObject src);
 }

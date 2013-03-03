@@ -124,47 +124,6 @@ public class {{table-impl-class}}
 		public {{table-interface}}.MetaData self() {
 			return this;
 		}		
-		
-		public static class BuilderImpl
-			extends fi.tnie.db.ent.DefaultEntityBuilder<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content>
-			implements Builder {
-			
-			private Linker[] linkerList = {};
-									
-			private interface Linker {
-				void link(fi.tnie.db.ent.DataObject src, {{table-interface}} dest);
-			}
-			
-			public BuilderImpl(TableReference referencing, ForeignKey referencedBy, fi.tnie.db.expr.TableReference tableRef, fi.tnie.db.ent.EntityBuildContext ctx, fi.tnie.db.ent.UnificationContext unificationContext) 
-				throws fi.tnie.db.ent.EntityException {
-				super(referencing, referencedBy, tableRef, ctx, unificationContext);
-				
-				MetaData m = getMetaData();
-				
-				List<Linker> ll = new ArrayList<Linker>();				
-				
-				// {{builder-linker-init}}
-				
-				this.linkerList = ll.toArray(this.linkerList);
-			}
-
-			@Override
-			public MetaData getMetaData() {			
-				return {{table-interface}}MetaData.getInstance();
-			}
-			
-			@Override
-			public {{table-interface}} read(fi.tnie.db.ent.DataObject src) {			
-				{{table-interface}} e = super.read(src);
-				
-				for (Linker lnk : linkerList) {
-					lnk.link(src, e);
-				}								
-				
-				return e;
-			}
-		}		
-		
 			
 		// {{key-accessor-list}}
 		
@@ -183,7 +142,48 @@ public class {{table-impl-class}}
 			
 			return entityKeyMap.get(ref);
 		}
-    }    
+    }
+    
+	public static class BuilderImpl
+		extends fi.tnie.db.ent.DefaultEntityBuilder<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content>
+		implements Builder {
+		
+		private Linker[] linkerList = {};
+								
+		private interface Linker {
+			void link(fi.tnie.db.ent.DataObject src, {{table-interface}}.Holder dest);
+		}
+		
+		public BuilderImpl(TableReference referencing, ForeignKey referencedBy, fi.tnie.db.expr.TableReference tableRef, fi.tnie.db.ent.EntityBuildContext ctx, fi.tnie.db.ent.UnificationContext unificationContext) 
+			throws fi.tnie.db.ent.EntityException {
+			super(referencing, referencedBy, tableRef, ctx, unificationContext);
+			
+			MetaData m = getMetaData();
+			
+			List<Linker> ll = new ArrayList<Linker>();				
+			
+			// {{builder-linker-init}}
+			
+			this.linkerList = ll.toArray(this.linkerList);
+		}
+
+		@Override
+		public MetaData getMetaData() {			
+			return {{table-interface}}MetaData.getInstance();
+		}
+		
+		@Override
+		public {{table-interface}}.Holder read(fi.tnie.db.ent.DataObject src) {			
+			{{table-interface}}.Holder e = super.read(src);
+			
+			for (Linker lnk : linkerList) {
+				lnk.link(src, e);
+			}								
+			
+			return e;
+		}
+	}		
+        
         
 	/**
 	 * 

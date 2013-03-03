@@ -80,8 +80,7 @@ public abstract class PersistenceManagerTest<I extends Implementation<I>> extend
 	    Film f = pf.newFilm();
 	    Film.Content fc = f.getContent();
 	    fc.setTitle("New Film");
-	    
-	    
+	    	    
 	    Language lang = pf.newLanguage();
 	    lang.getContent().setName("English");	    	    
 	    f.setLanguage(Film.LANGUAGE_ID_FKEY, lang.ref());
@@ -104,6 +103,12 @@ public abstract class PersistenceManagerTest<I extends Implementation<I>> extend
 	    
 	    assertTrue(f.isIdentified());
 	    delete(f);
+	    c.commit();
+	    
+	    assertTrue(lang.isIdentified());
+	    logger().debug("testMergeDependent: lang.getContent().getLanguageId()=" + lang.getContent().getLanguageId());
+	    
+	    delete(lang);
 	    c.commit();
 	}
 

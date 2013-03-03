@@ -6,7 +6,6 @@ package fi.tnie.db.source;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,7 +14,6 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +23,7 @@ import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.build.SchemaFilter;
@@ -33,7 +32,6 @@ import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.SchemaElementName;
 import fi.tnie.db.expr.SchemaName;
-import fi.tnie.db.expr.ddl.SQLType;
 import fi.tnie.db.map.AttributeInfo;
 import fi.tnie.db.map.JavaType;
 import fi.tnie.db.map.TableMapper;
@@ -310,11 +308,11 @@ public class SourceGenerator {
     	
         Map<File, String> gm = new HashMap<File, String>();
         Properties generated = new Properties();
-         
+        
         List<JavaType> ccil = new ArrayList<JavaType>();
         Map<JavaType, CharSequence> fm = new HashMap<JavaType, CharSequence>();
         
-        SerializableEnvironment env = cat.getEnvironment();
+//        SerializableEnvironment env = cat.getEnvironment();
         
         for (Schema s : cat.schemas().values()) {
         	if (schemaFilter.accept(s)) {        	

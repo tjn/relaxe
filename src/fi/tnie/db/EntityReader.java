@@ -50,7 +50,6 @@ public class EntityReader<
 		}
 
 		this.content = result;
-//		this.identityMap = query.getMetaData().getIdentityMap(identityContext);
 	}
 
 	@Override

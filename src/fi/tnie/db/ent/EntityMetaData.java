@@ -37,7 +37,7 @@ public interface EntityMetaData<
 
 	F getFactory();
 	
-	EntityBuilder<E> newBuilder(TableReference referencing, ForeignKey referencedBy, TableReference tableRef, EntityBuildContext ctx, UnificationContext unificationContext)
+	EntityBuilder<E, H> newBuilder(TableReference referencing, ForeignKey referencedBy, TableReference tableRef, EntityBuildContext ctx, UnificationContext unificationContext)
 		throws EntityException;
 	
 	EntityIdentityMap<A, R, T, E, H> createIdentityMap();	

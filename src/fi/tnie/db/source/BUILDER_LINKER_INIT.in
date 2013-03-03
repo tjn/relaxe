@@ -10,10 +10,10 @@
 
 		ll.add(new Linker() {							
 			@Override
-			public void link(fi.tnie.db.ent.DataObject src, {{table-interface}} dest) {
-				if (dest != null) {
-					{{referenced-table-interface-qualified}} np = nb.read(src);								
-					pk.set(dest, np);
+			public void link(fi.tnie.db.ent.DataObject src, {{table-interface}}.Holder dest) {
+				if (dest != null && (!dest.isNull())) {
+					{{referenced-table-interface-qualified}}.Holder np = nb.read(src);								
+					pk.set(dest.value(), np);
 				}
 			}
 		});
