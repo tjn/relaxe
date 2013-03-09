@@ -44,7 +44,7 @@ public class MPAARatingHolder
 	}
 	
 	public static MPAARatingHolder valueOf(String s) {
-		return (s == null) ? NULL_HOLDER : valueOf(MPAARating.valueOf(s));
+		return (s == null) ? NULL_HOLDER : valueOf(MPAARating.parse(s));
 	}
 	
 	public static MPAARatingHolder valueOf(OtherHolder<?, ?, ?> h) {

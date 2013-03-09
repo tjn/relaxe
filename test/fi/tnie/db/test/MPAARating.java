@@ -25,5 +25,8 @@ public enum MPAARating
 //    'NC-17'
 
 	
-	
+	public static MPAARating parse(String s) {
+		String n = s.replace('-', '_');
+		return MPAARating.valueOf(n);
+	}
 }
