@@ -142,7 +142,6 @@ public class PersistenceManager<
         logger().debug("createInsertStatement: pe=" + pe);        
     	ValueRow newRow = new ValueRow();
 
-//    	M meta = pe.getMetaData();
     	final M meta = pe.getMetaData();
     	BaseTable t = meta.getBaseTable();
     	
@@ -256,19 +255,9 @@ public class PersistenceManager<
     	Map<Column, Assignment> am = new LinkedHashMap<Column, Assignment>();
     	
     	for (R r : meta.relationships()) {
-    		    		
-    		
-//    		if (!pe.has(r)) {
-//    			logger().debug("createUpdateStatement: no ref=" + r);
-//    		}
-//    		else {
-    			
-    			// EntityKey<R, T, E, M, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);
-    			// EntityMetaData<?, ?, ?, ?, ?, ?, ?> t = k.getTarget();
-    			
-    			EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
-    			processKey(ek, am);
-	    }    	
+   			EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
+   			processKey(ek, am);
+	    }
     	
     	for (Map.Entry<Column, Assignment> e : am.entrySet()) {
     		Assignment a = e.getValue();
@@ -424,13 +413,8 @@ public class PersistenceManager<
     	E stored = null;
 
     	if (pkp != null) {
-//    		M meta = getTarget().getMetaData();    	
-//            PMTemplate qt = new PMTemplate(meta);        
-//            EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> eq = qt.newQuery();        
-            
     		query.getTableExpression().getWhere().setSearchCondition(pkp);
     		EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate>(getPersistenceContext(), getUnificationContext());
-//    		QueryResult<EntityDataObject<E>> qr = ee.execute(eq, false, c);
     		EntityQueryResult<A, R, T, E, H, F, M, C, PMTemplate> er = ee.execute(query, null, c);
     		QueryResult<EntityDataObject<E>> qr = er.getContent();    		
     		List<? extends EntityDataObject<E>> cl = qr.getContent();
@@ -445,8 +429,7 @@ public class PersistenceManager<
     
     public E sync(Connection c)
     	throws EntityException, SQLException, QueryException  {
-    	
-//    	Implementation imp = getImplementation();
+
     	M meta = getTarget().getMetaData();    	
         PMTemplate qt = new PMTemplate(meta);
         
@@ -469,31 +452,17 @@ public class PersistenceManager<
     public void merge(Connection c) 
     	throws CyclicTemplateException, EntityException, SQLException, QueryException  {
     	
-//    	Implementation imp = getImplementation();
     	M meta = getTarget().getMetaData();    	
         PMTemplate qt = new PMTemplate(meta);        
         EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> eq = qt.newQuery();        
         TableReference tref = eq.getTableRef();        
     	Predicate pkp = getPKPredicate(tref, getTarget());
-//    	logger().debug("merge: pkp=" + pkp);
-//    	
+
     	E stored = null;
 
     	if (pkp != null) {
     		stored = sync(eq, pkp, c);    		
-//    		eq.getTableExpression().getWhere().setSearchCondition(pkp);
-//    		EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate>(imp);
-////    		QueryResult<EntityDataObject<E>> qr = ee.execute(eq, false, c);
-//    		EntityQueryResult<A, R, T, E, H, F, M, C, PMTemplate> er = ee.execute(eq, null, c);
-//    		QueryResult<EntityDataObject<E>> qr = er.getContent();    		
-//    		List<? extends EntityDataObject<E>> cl = qr.getContent();
-//    		logger().debug("merge: cl.size()=" + cl.size());
-//    		
-//    		stored = cl.isEmpty() ? null : cl.get(0).getRoot(); 
     	}
-    	
-//    	E stored = sync(pkp, c);
-    	
     	
     	logger().debug("merge: stored=" + stored);    	
     	    	
@@ -554,8 +523,6 @@ public class PersistenceManager<
 		}
 	}
     
-    
-    
 
 	public void update(Connection c) throws EntityException {
     	Predicate pkp = getPKPredicate();
@@ -579,25 +546,6 @@ public class PersistenceManager<
     			logger().error(e.getMessage(), e);
     			throw new EntityException(e.getMessage(), e);
     		}
-    		    		
-//    		PreparedStatement ps = null;
-//
-//    		try {
-//    			String qs = q.generate();
-//    			logger().debug("qs: " + qs);
-//    			ps = c.prepareStatement(qs);
-//    			logger().debug("ps sh: " + System.identityHashCode(ps));
-//    			q.traverse(null, createAssignmentVisitor(ps));
-//    			int ins = ps.executeUpdate();
-//    			logger().debug("updated: " + ins);
-//    		}
-//    		catch (SQLException e) {
-//    			logger().error(e.getMessage(), e);
-//    			throw new EntityException(e.getMessage(), e);
-//    		}
-//    		finally {
-//    			ps = QueryHelper.doClose(ps);
-//    		}
     	}
     }
 
@@ -651,7 +599,6 @@ public class PersistenceManager<
 
     public void setTarget(E target) {
         this.target = target;
-//        this.query = null;
     }
 
     public Predicate getPKPredicate(TableReference tref, E pe)
@@ -691,15 +638,6 @@ public class PersistenceManager<
     	return Comparison.eq(a, b);        
     }
 
-//
-//    private PMQuery getQuery() throws EntityException {
-//        if (this.query == null) {
-//            this.query = new PMQuery(getTarget().getMetaData());
-//        }
-//
-//        return this.query;
-//    }
-
 	public GeneratedKeyHandler getKeyHandler() {
 		return getPersistenceContext().generatedKeyHandler();
 	}
@@ -730,7 +668,6 @@ public class PersistenceManager<
 		PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC>(e, pc, getMergeMode(), getUnificationContext());
 		return pm;
 	}
-
 
 	private MergeMode getMergeMode() {
 		return mergeMode;
