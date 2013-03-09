@@ -14,6 +14,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.query.QueryException;
 
@@ -40,7 +41,9 @@ public class SimpleTestContext<I extends Implementation<I>>
         this.jdbcURL = jdbcURL;
         this.driverConfig = driverConfig;
     }
+    
     public SimpleTestContext(I impl) {
+    	// TODO: remove user name
     	this(impl, null, "pagila", "relaxe_tester", "password");
     }
     
@@ -151,5 +154,10 @@ public class SimpleTestContext<I extends Implementation<I>>
 		Connection c = d.connect(getJdbcURL(), cfg);				
 
 		return c;
+	}
+	@Override
+	public PersistenceContext<I> getPersistenceContext() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

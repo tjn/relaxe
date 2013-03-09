@@ -25,8 +25,8 @@ import fi.tnie.db.query.QueryException;
 import fi.tnie.db.rpc.LongHolder;
 import fi.tnie.db.rpc.PrimitiveHolder;
 
-public abstract class StatementExecutorTest<I extends Implementation<I>> extends DBMetaTestCase<I> {
-	
+public abstract class StatementExecutorTest<I extends Implementation<I>> 
+	extends DBMetaTestCase<I> {	
 	
 	public void testFetch() throws SQLException, QueryException, EntityException, ClassNotFoundException {
 		TestContext<I> tc = getTestContext(null);		
@@ -35,7 +35,7 @@ public abstract class StatementExecutorTest<I extends Implementation<I>> extends
 		// TODO: try to eliminate need for this:
 		LiteralCatalog.getInstance();
 		
-		StatementExecutor se  = new StatementExecutor(tc.getImplementation());
+		StatementExecutor se  = new StatementExecutor(tc.getPersistenceContext());
 				
 		Select select = new Select();
 		select.add(new CountFunction());
@@ -64,7 +64,7 @@ public abstract class StatementExecutorTest<I extends Implementation<I>> extends
 		Connection c = tc.newConnection();
 		LiteralCatalog.getInstance();
 		
-		StatementExecutor se  = new StatementExecutor(imp);
+		StatementExecutor se  = new StatementExecutor(getPersistenceContext());
 				
 		Table t = LiteralCatalog.LiteralBaseTable.PUBLIC_COUNTRY;		
 		// assertNotNull(t.getSchema());

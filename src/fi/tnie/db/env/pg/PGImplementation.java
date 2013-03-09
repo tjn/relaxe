@@ -25,8 +25,7 @@ public class PGImplementation
 	 * 
 	 */
 	private static final long serialVersionUID = 7298329938853171504L;
-	private SQLSyntax syntax;
-    private PGGeneratedKeyHandler generatedKeyHandler;
+	private SQLSyntax syntax;    
     private PGEnvironment environment;
     
 	public PGImplementation() {
@@ -124,15 +123,6 @@ public class PGImplementation
         return syntax;
     }
 
-	@Override
-	public GeneratedKeyHandler generatedKeyHandler() {
-		if (generatedKeyHandler == null) {			
-			generatedKeyHandler = new PGGeneratedKeyHandler(getValueExtractorFactory());
-		}
-
-		return generatedKeyHandler;
-	}
-
 	public PGEnvironment getEnvironment() {
 		return environment;
 	}
@@ -167,11 +157,6 @@ public class PGImplementation
 		return this.environment;		
 	}
 
-	@Override
-	public PGImplementation getImplementation() {
-		return this;
-	}
-		
 //	public java.sql.Driver getDriver() {		
 //		if (driver == null) {
 //			driver = new org.postgresql.Driver();

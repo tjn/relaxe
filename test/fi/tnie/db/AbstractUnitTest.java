@@ -11,6 +11,8 @@ import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
+import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.log.DefaultLogger;
 
 public abstract class AbstractUnitTest<I extends Implementation<I>>
@@ -23,7 +25,8 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	/**
 	 * Context variables:
 	 */
-	private I implementation;
+	private PersistenceContext<I> persistenceContext;
+	// private I implementation;
 	private String host;
 	private String database;
 	private String user;		
@@ -49,7 +52,8 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	}
 
 	protected TestContext<I> createContext() {
-		I imp = getImplementation();		
+		// I imp = getImplementation();
+		I imp = getPersistenceContext().getImplementation();
 		String h = getHost();
 		String d = getDatabase();		
 		SimpleTestContext<I> tc = new SimpleTestContext<I>(imp, h, d, getUser(), "password");
@@ -94,17 +98,15 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	private String createUser() {
 		return "relaxe_tester";
 	}
-
-	public final I getImplementation() {
-		if (implementation == null) {
-			implementation = createImplementation();			
+	
+	protected PersistenceContext<I> getPersistenceContext() {
+		if (persistenceContext == null) {
+			persistenceContext = createPersistenceContext();			
 		}
 
-		return implementation;
+		return persistenceContext;
+		
 	}
-	
-	
-	protected abstract I createImplementation();
 	
 	protected void init() {
 		
@@ -121,4 +123,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	public Connection newConnection() throws SQLException, ClassNotFoundException {
 		return getContext().newConnection();
 	}
+	
+	
+	protected abstract PersistenceContext<I> createPersistenceContext();
 }

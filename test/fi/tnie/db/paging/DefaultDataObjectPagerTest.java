@@ -14,6 +14,7 @@ import fi.tnie.db.SynchronousDataObjectFetcher;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.DataObjectQueryResult;
 import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.gen.pg.ent.LiteralCatalog;
 import fi.tnie.db.gen.pg.ent.LiteralCatalog.LiteralBaseTable;
 import fi.tnie.db.model.ValueModel;
@@ -28,7 +29,9 @@ public abstract class DefaultDataObjectPagerTest<I extends Implementation<I>> ex
 		LiteralCatalog.getInstance();
 		
 		Connection c = newConnection();
-		QueryExecutor qx = new QueryExecutor(getImplementation());
+		
+		
+		QueryExecutor qx = new QueryExecutor(getPersistenceContext());
 		
 		SynchronousDataObjectFetcher f = new SynchronousDataObjectFetcher(qx, c);
 		DataObjectQuery q = new DataObjectQuery(LiteralBaseTable.PUBLIC_CITY);
@@ -62,4 +65,8 @@ public abstract class DefaultDataObjectPagerTest<I extends Implementation<I>> ex
 		assertEquals(20, cp.getOffset());
 		assertEquals(20, cp.getContent().size());		
 	}
+	
+	
+	@Override
+	protected abstract PersistenceContext<I> getPersistenceContext();
 }

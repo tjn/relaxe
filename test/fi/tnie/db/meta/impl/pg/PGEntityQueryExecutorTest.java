@@ -3,17 +3,21 @@
  */
 package fi.tnie.db.meta.impl.pg;
 
+import fi.tnie.db.EntityQueryExecutorTest;
 import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.env.pg.PGPersistenceContext;
-import fi.tnie.db.meta.DBMetaTestCase;
 
-public class PGTestCase
-	extends DBMetaTestCase<PGImplementation> {
+public class PGEntityQueryExecutorTest 
+	extends EntityQueryExecutorTest<PGImplementation> {
+	
+	@Override
+	public void testExecute3() throws Exception {	
+		super.testExecute3();
+	}
 
 	@Override
 	protected PersistenceContext<PGImplementation> createPersistenceContext() {
 		return new PGPersistenceContext();
 	}
-
 }

@@ -14,14 +14,14 @@ import fi.tnie.db.service.DataAccessSession;
 public class DefaultDataAccessContext<I extends Implementation<I>>
 	implements DataAccessContext {
 	
-	private I implementation;
+	private PersistenceContext<I> persistenceContext;
 	private ConnectionManager connectionManager;
 			
-	public DefaultDataAccessContext(I implementation, String jdbcURL, Properties jdbcConfig) {
+	public DefaultDataAccessContext(PersistenceContext<I> persistenceContext, String jdbcURL, Properties jdbcConfig) {
 		super();
 		
-		if (implementation == null) {
-			throw new NullPointerException("implementation");
+		if (persistenceContext == null) {
+			throw new NullPointerException("persistenceContext");
 		}
 		
 		if (jdbcURL == null) {
@@ -29,22 +29,22 @@ public class DefaultDataAccessContext<I extends Implementation<I>>
 		}
 				
 		ConnectionFactory cf = new DriverManagerConnectionFactory();
-		this.implementation = implementation;
+		this.persistenceContext = persistenceContext;
 		this.connectionManager = new DefaultConnectionManager(cf, jdbcURL, jdbcConfig);
 	}
 
-	public DefaultDataAccessContext(I implementation, ConnectionManager connectionManager) {
+	public DefaultDataAccessContext(PersistenceContext<I> persistenceContext, ConnectionManager connectionManager) {
 		super();
 		
-		if (implementation == null) {
-			throw new NullPointerException("implementation");
+		if (persistenceContext == null) {
+			throw new NullPointerException("persistenceContext");
 		}
 		
 		if (connectionManager == null) {
 			throw new NullPointerException("connectionManager");
 		}
 		
-		this.implementation = implementation;
+		this.persistenceContext = persistenceContext;
 		this.connectionManager = connectionManager;
 	}
 	
@@ -52,8 +52,8 @@ public class DefaultDataAccessContext<I extends Implementation<I>>
 		return connectionManager;
 	}
 	
-	public I getImplementation() {
-		return implementation;
+	public PersistenceContext<I> getPersistenceContext() {
+		return persistenceContext;
 	}
 	
 	@Override
@@ -61,7 +61,7 @@ public class DefaultDataAccessContext<I extends Implementation<I>>
 		try {
 			final Connection c = connectionManager.reserve();
 			
-			return new AbstractDataAccessSession<I>(implementation, c) {
+			return new AbstractDataAccessSession<I>(getPersistenceContext(), c) {
 				@Override
 				protected void closed() {
 					connectionManager.release(c);

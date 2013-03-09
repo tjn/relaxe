@@ -10,7 +10,7 @@ import fi.tnie.db.query.QueryException;
 
 
 public class PGDumpMetaTest
-	extends PGTestCase {
+	extends PGJDBCTestCase {
 	
 	@Override
 	public void restore() throws IOException, InterruptedException {

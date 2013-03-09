@@ -27,28 +27,19 @@ import fi.tnie.db.gen.pg.ent.pub.PublicFactory;
 import fi.tnie.db.meta.DBMetaTestCase;
 
 public class PGDefaultEntityQueryTest 
-	extends DBMetaTestCase<PGImplementation> {
+	extends PGTestCase {
 	
-	
-	private PGImplementation implementation = new PGImplementation();
-
     @Override
 	public PGCatalogFactory factory() {   	
     	return new PGCatalogFactory(implementation().getEnvironment());
     }
-    
-    @Override
-    protected PGImplementation implementation() {
-    	return implementation;
-    }
-    
+        
     public void testQuery1() throws Exception {
     	Connection c = getConnection();
     	assertNotNull(c);
     	logger().debug(c.getMetaData().getURL());
     	
-    	PGImplementation imp = implementation();
-    	    	
+    	PersistenceContext<PGImplementation> pc = getPersistenceContext();    	    	    	
     	LiteralCatalog cc = LiteralCatalog.getInstance();
     	    	
     	FilmActor.QueryTemplate t = new FilmActor.QueryTemplate();
@@ -61,13 +52,12 @@ public class PGDefaultEntityQueryTest
     	Statement st = c.createStatement();
     	UnificationContext ic = new SimpleUnificationContext();
     	
-    	ValueExtractorFactory vef = imp.getValueExtractorFactory();
+    	ValueExtractorFactory vef = pc.getValueExtractorFactory();
     	    	    	    	
     	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content> eb
     		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content>(vef, faq, ic);
-    	    	    	    	
-    	PGImplementation impl = new PGImplementation();    	
-    	StatementExecutor se = new StatementExecutor(impl);
+    	    	
+    	StatementExecutor se = new StatementExecutor(pc);
     	
     	SelectStatement ss = new SelectStatement(eb.getQuery().getQueryExpression());
     	    	
@@ -152,10 +142,8 @@ public class PGDefaultEntityQueryTest
     	    	    	    	
     	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content> eb
     		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content>(vef, faq, ic);
-    	    	    	    	
-    	PGImplementation impl = new PGImplementation();
-    	
-    	StatementExecutor se = new StatementExecutor(impl);
+    	   	
+    	StatementExecutor se = new StatementExecutor(getPersistenceContext());
     	
     	SelectStatement ss = new SelectStatement(eb.getQuery().getQueryExpression());
     	se.execute(ss, c, eb);
@@ -220,8 +208,4 @@ public class PGDefaultEntityQueryTest
 //    }
     
 
-    @Override
-    protected PersistenceContext<PGImplementation> getPersistenceContext() {
-       	return implementation();
-    }
 }

@@ -48,6 +48,7 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
     private ClassLoader classLoaderForGenerated = null;
     
     private TestContext<I> testContext;
+    private PersistenceContext<I> persistenceContext;
           
     protected int read(ResultSet rs, int col, Collection<String> dest) 
         throws SQLException {
@@ -180,7 +181,16 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
     	return getPersistenceContext().getImplementation();
     }
     
-    protected abstract PersistenceContext<I> getPersistenceContext();
+    protected PersistenceContext<I> getPersistenceContext() {
+    	if (persistenceContext == null) {
+			persistenceContext = createPersistenceContext();			
+		}
+
+		return persistenceContext;
+    }
+    
+    
+    protected abstract PersistenceContext<I> createPersistenceContext();
     
     
 	@Override
@@ -302,11 +312,7 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
 
 	public TestContext<I> getTestContext(I imp) throws SQLException, QueryException {
 		if (testContext == null) {
-			if (imp == null) {
-				imp = implementation();
-			}
-			
-			testContext = new DefaultTestContext<I>(imp);			
+			testContext = new DefaultTestContext<I>(getPersistenceContext());			
 		}
 
 		return testContext;
@@ -317,6 +323,5 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
 	}
 	
 
-	
-
+			
 }

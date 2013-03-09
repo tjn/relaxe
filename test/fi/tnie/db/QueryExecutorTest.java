@@ -19,8 +19,7 @@ import fi.tnie.db.query.DataObjectQuery;
 public abstract class QueryExecutorTest<I extends Implementation<I>>
 	extends AbstractUnitTest<I> {
 	
-	public void testQuery() throws EntityException, SQLException, QueryException, ClassNotFoundException {
-		I imp = getImplementation();
+	public void testQuery() throws EntityException, SQLException, QueryException, ClassNotFoundException {		
 		Connection c = getContext().newConnection();
 				
 		
@@ -31,7 +30,7 @@ public abstract class QueryExecutorTest<I extends Implementation<I>>
 		DataObjectQuery q = new DataObjectQuery(t);
 		DataObjectQueryResult<DataObject> rs = null;
 								
-		QueryExecutor qe = new QueryExecutor(imp);
+		QueryExecutor qe = new QueryExecutor(getPersistenceContext());
 		FetchOptions opts = new FetchOptions(10, 10);
 		
 		rs = qe.execute(q, opts, c);

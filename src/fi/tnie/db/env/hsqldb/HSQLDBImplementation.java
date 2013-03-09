@@ -4,9 +4,7 @@
 package fi.tnie.db.env.hsqldb;
 
 import fi.tnie.db.env.CatalogFactory;
-import fi.tnie.db.env.DefaultGeneratedKeyHandler;
 import fi.tnie.db.env.DefaultImplementation;
-import fi.tnie.db.env.GeneratedKeyHandler;
 import fi.tnie.db.expr.DefaultSQLSyntax;
 import fi.tnie.db.expr.SQLSyntax;
 import fi.tnie.db.expr.ddl.ColumnDefinition;
@@ -21,7 +19,6 @@ public class HSQLDBImplementation
 	 */
 	private static final long serialVersionUID = -3193274599509436285L;
 	private SQLSyntax syntax;
-    private GeneratedKeyHandler generatedKeyHandler;
     private HSQLDBEnvironment environment;
     
 	public HSQLDBImplementation() {
@@ -155,14 +152,6 @@ public class HSQLDBImplementation
         return syntax;
     }
 
-	@Override
-	public GeneratedKeyHandler generatedKeyHandler() {
-		if (generatedKeyHandler == null) {			
-			generatedKeyHandler = new DefaultGeneratedKeyHandler(getValueExtractorFactory());
-		}
-
-		return generatedKeyHandler;
-	}
 
 	public HSQLDBEnvironment getEnvironment() {
 		return environment;
@@ -197,12 +186,6 @@ public class HSQLDBImplementation
 	public SerializableEnvironment environment() {
 		return this.environment;		
 	}
-
-	@Override
-	public HSQLDBImplementation getImplementation() {
-		return this;
-	}
-	
 		
 //	public java.sql.Driver getDriver() {		
 //		if (driver == null) {

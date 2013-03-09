@@ -6,14 +6,14 @@ package fi.tnie.db.meta;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.pg.PGImplementation;
+import fi.tnie.db.env.pg.PGPersistenceContext;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.meta.DBMetaTestCase;
+import fi.tnie.db.meta.impl.pg.PGTestCase;
 
 public class PGEnvironmentTest 
-	extends DBMetaTestCase<PGImplementation> {
-	
-	private PGImplementation implementation = new PGImplementation();
+	extends PGTestCase {
 	
 //	@Override
 //	public void restore() throws IOException, InterruptedException {
@@ -55,10 +55,5 @@ public class PGEnvironmentTest
 		
 		Identifier id = env.createIdentifier("1A");
 		assertFalse(id + " is not not valid as an ordinary", id.isOrdinary());
-	}
-		
-	@Override
-	protected PersistenceContext<PGImplementation> getPersistenceContext() {
-		return this.implementation;
 	}
 }

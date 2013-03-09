@@ -6,7 +6,7 @@ package fi.tnie.db.meta.impl.pg;
 import java.io.IOException;
 
 public class PGBuilderTest
-	extends PGTestCase {
+	extends PGJDBCTestCase {
     
     @Override
     protected void setUp() throws Exception {

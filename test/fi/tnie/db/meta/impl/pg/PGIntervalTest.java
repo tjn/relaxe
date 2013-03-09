@@ -11,7 +11,7 @@ import java.sql.Statement;
 import java.sql.Types;
 
 public class PGIntervalTest
-	extends PGTestCase {
+	extends PGJDBCTestCase {
 		
 	@Override
 	protected void setUp() throws Exception {

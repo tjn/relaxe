@@ -127,11 +127,10 @@ public abstract class DefaultEntityBuilder<
 			if (w == null) {
 				throw new NullPointerException("attribute writer was null");
 			}
-						
-			
+									
 			PrimitiveHolder<?, ?, ?> h = w.write(src, dest);
 			
-			if (h.isNull()) {
+			if (h == null || h.isNull()) {
 				n++;
 			}
 		}

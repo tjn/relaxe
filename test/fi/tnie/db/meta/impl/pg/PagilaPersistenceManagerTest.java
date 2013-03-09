@@ -13,8 +13,6 @@ import fi.tnie.db.test.PagilaPersistenceContext;
 public class PagilaPersistenceManagerTest
 	extends PersistenceManagerTest<PGImplementation> {
 		
-	private PersistenceContext<PGImplementation> persistenceContext = new PagilaPersistenceContext();
-	
 	private UnificationContext unificationContext = new SimpleUnificationContext();
 	
 	@Override
@@ -32,10 +30,8 @@ public class PagilaPersistenceManagerTest
 		super.testMergeDependent();
 	}
 
-	
-		
 	@Override
-	protected PersistenceContext<PGImplementation> getPersistenceContext() {
-		return this.persistenceContext;
+	protected PersistenceContext<PGImplementation> createPersistenceContext() {
+		return new PagilaPersistenceContext();
 	}
 }

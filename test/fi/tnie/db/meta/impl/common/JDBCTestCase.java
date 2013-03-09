@@ -515,22 +515,24 @@ public abstract class JDBCTestCase
 	
     public void truncate(Catalog cat) throws QueryException, SQLException {        
         Connection c = getConnection();     
-        
-        
+                
         List<Statement> statements = truncation(cat);
                 
-        StatementExecutor e = new StatementExecutor(getImplementation());
+        // TODO: Inherit from the base class with getPersistenceContext(); 
+        fail("not implemented.");
         
-        QueryProcessor qp = createQueryProcessor();
-        
-        c.setAutoCommit(false);
-                        
-        for (Statement s : statements) {
-            String q = s.generate();
-            logger().debug(q);
-            e.execute(s, c, qp);
-            c.commit();
-        }
+//        StatementExecutor e = new StatementExecutor(getImplementation());
+//        
+//        QueryProcessor qp = createQueryProcessor();
+//        
+//        c.setAutoCommit(false);
+//                        
+//        for (Statement s : statements) {
+//            String q = s.generate();
+//            logger().debug(q);
+//            e.execute(s, c, qp);
+//            c.commit();
+//        }
     }
 
     protected QueryProcessor createQueryProcessor() {

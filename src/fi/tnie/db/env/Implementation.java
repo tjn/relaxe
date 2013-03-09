@@ -10,7 +10,7 @@ import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.SerializableEnvironment;
 
 public interface Implementation<I extends Implementation<I>>
-	extends Environment, PersistenceContext<I> {
+	extends Environment {
 
 	/** Creates a factory to build entire catalog in this environment. 
 	 * 
@@ -26,7 +26,7 @@ public interface Implementation<I extends Implementation<I>>
 	String defaultDriverClassName();
 	SQLSyntax getSyntax();
 	
-	GeneratedKeyHandler generatedKeyHandler();
+//	GeneratedKeyHandler generatedKeyHandler();
 //	AttributeWriterFactory getAttributeWriterFactory();
 	ValueExtractorFactory getValueExtractorFactory();			
 	ValueAssignerFactory getValueAssignerFactory();

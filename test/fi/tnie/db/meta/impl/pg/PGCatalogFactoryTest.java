@@ -25,9 +25,10 @@ import fi.tnie.db.meta.impl.DefaultMutableCatalog;
 import fi.tnie.db.meta.impl.DefaultMutableSchema;
 import fi.tnie.db.query.QueryException;
 
-public class PGCatalogFactoryTest extends DBMetaTestCase<PGImplementation> {
+public class PGCatalogFactoryTest 
+	extends PGTestCase {
 	
-	private PGImplementation implementation = new PGImplementation();
+//	private PGImplementation implementation = new PGImplementation();
 
     public void testGetCatalogNameFromSchemas() 
         throws SQLException, QueryException {
@@ -35,9 +36,7 @@ public class PGCatalogFactoryTest extends DBMetaTestCase<PGImplementation> {
                 
         DatabaseMetaData meta = meta();                
         PGCatalogFactory f = factory();
-        
-        PGImplementation imp = new PGImplementation();
-        
+                        
         // f.prepare(meta);
                 
         String catalog = getConnection().getCatalog();
@@ -69,8 +68,9 @@ public class PGCatalogFactoryTest extends DBMetaTestCase<PGImplementation> {
 	        
 	        ByteArrayOutputStream os = new ByteArrayOutputStream();
 	        ResultSetWriter w = new ResultSetWriter(os, true);
+	                
 	        
-	        StatementExecutor se = new StatementExecutor(imp);
+	        StatementExecutor se = new StatementExecutor(getPersistenceContext());
 	        se.apply(w, at);
 	        
 	        String rs = new String(os.toByteArray());
@@ -221,15 +221,6 @@ public class PGCatalogFactoryTest extends DBMetaTestCase<PGImplementation> {
         }
         catch (IllegalStateException e) {
             // OK
-        }
-        
-        
-    }
-
-    @Override
-	protected PersistenceContext<PGImplementation> getPersistenceContext() {
-		return this.implementation;
-	}
-	
-	
+        }        
+    }	
 }

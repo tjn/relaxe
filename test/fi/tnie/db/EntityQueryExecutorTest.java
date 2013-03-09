@@ -23,7 +23,6 @@ import fi.tnie.db.ent.PredicateAttributeTemplate;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.PersistenceContext;
-import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.OrderBy;
 import fi.tnie.db.expr.ValueExpression;
 import fi.tnie.db.gen.pg.ent.LiteralCatalog;
@@ -31,7 +30,6 @@ import fi.tnie.db.gen.pg.ent.pub.Film;
 import fi.tnie.db.gen.pg.ent.pub.Language;
 import fi.tnie.db.query.QueryResult;
 import fi.tnie.db.rpc.ReferenceHolder;
-import fi.tnie.db.test.PagilaPersistenceContext;
 import fi.tnie.db.types.ReferenceType;
 
 public abstract class EntityQueryExecutorTest<I extends Implementation<I>> extends AbstractUnitTest<I> {
@@ -53,8 +51,12 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 
 	
 	private QueryResult<EntityDataObject<Film>> execute(Film.Query q, FetchOptions opts) throws Exception {
-		PGImplementation imp = new PGImplementation();
-		PersistenceContext<?> pc = new PagilaPersistenceContext(imp);
+		
+				
+//		PGImplementation imp = new PGImplementation();
+//		PersistenceContext<?> pc = new PagilaPersistenceContext(imp);
+		
+		PersistenceContext<I> pc = getPersistenceContext();
 		
 		Connection c = newConnection();
 				
@@ -112,7 +114,7 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 //		Connection c = DriverManager.getConnection(url, cfg);
 //		return c;
 //	}
-	
+		
 
 	public <
 		A extends Attribute,
@@ -330,7 +332,7 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 		
 		qs = qs.toLowerCase();
 		
-		assertTrue(qs.matches(".+order +by.+name.+desc.+ytunnus.+report_date.+desc.*"));
+		assertTrue(qs.matches(".+order +by.+1.*"));
 		
 	}
 

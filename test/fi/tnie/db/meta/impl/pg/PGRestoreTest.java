@@ -4,7 +4,7 @@
 package fi.tnie.db.meta.impl.pg;
 
 public class PGRestoreTest
-	extends PGTestCase {
+	extends PGJDBCTestCase {
 	
 	@Override
 	protected void setUp() throws Exception {	

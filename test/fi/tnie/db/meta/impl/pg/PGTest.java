@@ -6,7 +6,9 @@ package fi.tnie.db.meta.impl.pg;
 
 import fi.tnie.db.AbstractUnitTest;
 import fi.tnie.db.TestContext;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.pg.PGImplementation;
+import fi.tnie.db.env.pg.PGPersistenceContext;
 
 public class PGTest
 	extends AbstractUnitTest<PGImplementation>
@@ -29,9 +31,10 @@ public class PGTest
 		logger().debug("exit: " + getName());
 	}
 
+
 	@Override
-	protected PGImplementation createImplementation() {
-		return new PGImplementation();
+	protected PersistenceContext<PGImplementation> createPersistenceContext() {
+		return new PGPersistenceContext(new PGImplementation());
 	}
 
 }

@@ -12,7 +12,7 @@ import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.query.QueryException;
 
 public class PGWellKnownTableTest
-	extends PGTestCase {
+	extends PGJDBCTestCase {
 	
 	public static final String COL_CONTINENT_ID = "id";
 	public static final String COL_COUNTRY_CONTINENT = "continent";

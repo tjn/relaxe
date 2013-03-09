@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.query.QueryException;
 
@@ -17,18 +18,17 @@ public class DefaultTestContext<I extends Implementation<I>>
 	implements TestContext<I> {
 
 	private Catalog catalog;
-	private I implementation;
-	// private Connection connection;		
+	private PersistenceContext<I> persistenceContext;
 	private Properties jdbcProperties;
 	private String jdbcUrl;
 	
-	public DefaultTestContext(I imp) throws SQLException, QueryException {
-		this(imp, "test");
+	public DefaultTestContext(PersistenceContext<I> persistenceContext) throws SQLException, QueryException {
+		this(persistenceContext, "test");
 	}
 		
-	public DefaultTestContext(I imp, String database) throws SQLException, QueryException {		
+	public DefaultTestContext(PersistenceContext<I> persistenceContext, String database) throws SQLException, QueryException {		
 		Properties config = createJdbcProperties();
-		init(imp, database, config);
+		init(persistenceContext, database, config);
 	}
 
 	protected Properties createJdbcProperties() {
@@ -38,15 +38,15 @@ public class DefaultTestContext<I extends Implementation<I>>
 		return config;
 	}
 
-	private void init(I imp, String database, Properties jdbcProperties) throws SQLException, QueryException {		
+	private void init(PersistenceContext<I> persistenceContext, String database, Properties jdbcProperties) throws SQLException, QueryException {		
 				
-		if (imp == null) {
-			throw new NullPointerException("implementation");
+		if (persistenceContext == null) {
+			throw new NullPointerException("persistenceContext");
 		}
 		
-		this.implementation = imp;
+		this.persistenceContext = persistenceContext;
 		this.jdbcProperties = jdbcProperties;		
-		this.jdbcUrl = imp.createJdbcUrl(database);
+		this.jdbcUrl = persistenceContext.getImplementation().createJdbcUrl(database);
 		
 	}
 
@@ -54,7 +54,7 @@ public class DefaultTestContext<I extends Implementation<I>>
 	public Catalog getCatalog() throws SQLException, QueryException, ClassNotFoundException {
 		if (catalog == null) {
 			Connection c = newConnection();
-			CatalogFactory cf = this.implementation.catalogFactory();
+			CatalogFactory cf = getImplementation().catalogFactory();
 			this.catalog = cf.create(c);
 			c.close();
 			
@@ -65,7 +65,7 @@ public class DefaultTestContext<I extends Implementation<I>>
 
 	@Override
 	public I getImplementation() {
-		return this.implementation;
+		return this.persistenceContext.getImplementation();
 	}
 
 	@Override
@@ -81,4 +81,8 @@ public class DefaultTestContext<I extends Implementation<I>>
 		return c;
 	}
 	
+	@Override
+	public PersistenceContext<I> getPersistenceContext() {
+		return this.persistenceContext;
+	}
 }

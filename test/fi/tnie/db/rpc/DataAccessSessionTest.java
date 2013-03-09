@@ -16,15 +16,17 @@ import fi.tnie.db.env.DefaultDataAccessContext;
 import fi.tnie.db.env.DriverManagerConnectionFactory;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
+import fi.tnie.db.env.pg.PGPersistenceContext;
 import fi.tnie.db.gen.pg.ent.pub.Film;
 import fi.tnie.db.gen.pg.ent.pub.Language;
+import fi.tnie.db.meta.impl.pg.PGJDBCTestCase;
 import fi.tnie.db.meta.impl.pg.PGTestCase;
 import fi.tnie.db.service.DataAccessException;
 import fi.tnie.db.service.DataAccessSession;
 import fi.tnie.db.service.EntitySession;
 
 public class DataAccessSessionTest 
-	extends PGTestCase {
+	extends PGJDBCTestCase {
 
 	public void testLoad() throws DataAccessException, EntityException, IllegalArgumentException, IllegalAccessException, IOException {
 		
@@ -36,8 +38,11 @@ public class DataAccessSessionTest
 		
 		DriverManagerConnectionFactory cf = new DriverManagerConnectionFactory();
 		DefaultConnectionManager cm = new DefaultConnectionManager(cf, jdbcURL, getJdbcConfig());
-		// TODO: add type parameter
-		DefaultDataAccessContext<PGImplementation> dctx = new DefaultDataAccessContext<PGImplementation>(getImplementation(), cm);
+		
+		// TODO: make class abstract
+		PGPersistenceContext pc = new PGPersistenceContext(getImplementation());
+
+		DefaultDataAccessContext<PGImplementation> dctx = new DefaultDataAccessContext<PGImplementation>(pc, cm);
 		
 		DataAccessSession das = dctx.newSession();		
 		assertNotNull(das);

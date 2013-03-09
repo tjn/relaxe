@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import fi.tnie.db.query.QueryException;
 
 public class MySQLDumpMetaTest
-	extends MySQLTestCase {
+	extends MySQLJDBCTestCase {
 	
 	
 	@Override
