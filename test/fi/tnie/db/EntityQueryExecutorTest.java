@@ -47,11 +47,8 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 	private QueryResult<EntityDataObject<Film>> execute(Film.QueryTemplate template, FetchOptions opts) throws Exception {
 		return execute(template.newQuery(), opts);
 	}
-
-
 	
 	private QueryResult<EntityDataObject<Film>> execute(Film.Query q, FetchOptions opts) throws Exception {
-		
 				
 //		PGImplementation imp = new PGImplementation();
 //		PersistenceContext<?> pc = new PagilaPersistenceContext(imp);
@@ -160,7 +157,6 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 			assertNotNull(lang);
 			assertTrue(lang.isIdentified());
 		}
-
 	}
 
 	public void testExecute4() throws Exception {
@@ -404,6 +400,37 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 		
 	}
 
+	
+	public void testSharedReferenceQuery() throws Exception {		
+		Film.QueryTemplate hrq = new Film.QueryTemplate(); 
+		hrq.addAllAttributes();
+		
+		Language.QueryTemplate lq = new Language.QueryTemplate();
+		lq.addAllAttributes();
+				
+		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, lq);		
+		hrq.setTemplate(Film.ORIGINAL_LANGUAGE_ID_FKEY, lq);
+				
+		QueryResult<EntityDataObject<Film>> qr = execute(hrq, null);
+		
+		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
+		
+		List<? extends EntityDataObject<Film>> el = qr.getContent();
+		assertNotNull(el);
+		
+		for (EntityDataObject<Film> eo : el) {
+			assertNotNull(eo);
+			Film hr = eo.getRoot();
+			assertNotNull(hr);
+			
+			Language.Holder lh = hr.getLanguage(Film.LANGUAGE_ID_FKEY);
+			assertNotNull(lh);
+			
+			Language lang = lh.value();
+			assertNotNull(lang);
+			assertTrue(lang.isIdentified());
+		}
+	}
 	
 	
 

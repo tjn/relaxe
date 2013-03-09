@@ -15,4 +15,9 @@ public class PagilaEntityQueryExecutorTest
 	protected PersistenceContext<PGImplementation> createPersistenceContext() {
 		return new PagilaPersistenceContext();
 	}
+	
+	@Override
+	public void testSharedReferenceQuery() throws Exception {
+		super.testSharedReferenceQuery();
+	}
 }

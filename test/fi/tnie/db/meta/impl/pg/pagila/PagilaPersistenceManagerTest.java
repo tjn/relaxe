@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.meta.impl.pg;
+package fi.tnie.db.meta.impl.pg.pagila;
 
 import fi.tnie.db.PersistenceManagerTest;
 import fi.tnie.db.SimpleUnificationContext;
