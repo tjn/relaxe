@@ -125,7 +125,8 @@ public class DefaultEntityTemplateQuery<
 		addTemplatePredicates(root, apl);
 			
 		DefaultTableExpression te = new DefaultTableExpression();
-		HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>> visited = new HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>>();
+		Map<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>, TableReference> visited = 
+			new HashMap<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>, TableReference>();
 
 		AbstractTableReference tref = fromTemplate(root, null, null, null, te, visited);
 		
@@ -242,18 +243,20 @@ public class DefaultEntityTemplateQuery<
 			MQ template, 
 			AbstractTableReference qref, ForeignKey fk, TableReference referencing, 
 			DefaultTableExpression q,
-			Set<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>> visited)
+			Map<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>, TableReference> visited)
 		throws CyclicTemplateException, EntityRuntimeException {
 		
 		logger().debug("fromTemplate - enter: " + template);
 		logger().debug("fromTemplate - fk: " + fk);
 		
-		if (visited.contains(template)) {
-			throw new CyclicTemplateException(template);
-		}
-		else {
-			visited.add(template);
-		}		
+//		if (visited.contains(template)) {
+//			throw new CyclicTemplateException(template);
+//		}
+//		else {
+//			visited.add(template);
+//		}
+		
+//		visited.put(template, qref);
 			
 		
 		Select s = getSelect(q);
@@ -261,8 +264,32 @@ public class DefaultEntityTemplateQuery<
 		
 		final boolean root = (qref == null);
 		
-		final TableReference tref = (qref == null) ? getTableRef() : new TableReference(meta.getBaseTable());		
-		getMetaDataMap().put(tref, meta);
+		boolean visitedBefore = visited.containsKey(template);
+		
+		TableReference tr = null;
+		
+		if (qref == null) {
+			tr = getTableRef();
+			visited.put(template, tr);
+			getMetaDataMap().put(tr, meta);
+		}
+		else {
+			tr = visited.get(template);
+			
+			if (tr == null) {
+				tr = new TableReference(meta.getBaseTable());
+				visited.put(template, tr);
+				getMetaDataMap().put(tr, meta);
+			}			
+		}
+		
+//			(qref == null) ? getTableRef() :							
+			
+		final TableReference tref = tr;
+			
+//		final TableReference tref = 
+//				(qref == null) ? getTableRef() :							
+//				new TableReference(meta.getBaseTable());
 				
 		if (referencing != null) {
 			JoinKey j = new JoinKey(referencing, fk);
@@ -341,7 +368,7 @@ public class DefaultEntityTemplateQuery<
 		KC extends Content,
 		KQ extends EntityQueryTemplate<KA, KR, KT, KE, KH, KF, KM, KC, KQ>		
 	>
-	AbstractTableReference processReferences(KQ template, AbstractTableReference qref, TableReference tref, DefaultTableExpression q, Set<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>> visited) throws EntityRuntimeException, CyclicTemplateException {
+	AbstractTableReference processReferences(KQ template, AbstractTableReference qref, TableReference tref, DefaultTableExpression q, Map<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>, TableReference> visited) throws EntityRuntimeException, CyclicTemplateException {
 		
 		logger().debug("processReferences - enter");		
 
