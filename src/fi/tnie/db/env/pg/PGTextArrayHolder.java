@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.test;
+package fi.tnie.db.env.pg;
 
 import fi.tnie.db.rpc.ArrayValue;
 import fi.tnie.db.rpc.PrimitiveHolder;

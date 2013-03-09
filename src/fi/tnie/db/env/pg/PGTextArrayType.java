@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.test;
+package fi.tnie.db.env.pg;
 
 import fi.tnie.db.types.ArrayType;
 import fi.tnie.db.types.VarcharType;

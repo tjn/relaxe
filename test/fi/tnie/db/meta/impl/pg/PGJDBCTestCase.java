@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import fi.tnie.db.env.CatalogFactory;
-import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;

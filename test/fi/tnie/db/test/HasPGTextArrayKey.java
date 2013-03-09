@@ -4,6 +4,7 @@
 package fi.tnie.db.test;
 
 import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.env.pg.PGTextArrayKey;
 
 public interface HasPGTextArrayKey<
 	A extends Attribute,

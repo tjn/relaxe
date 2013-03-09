@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.test;
+package fi.tnie.db.env.pg;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
 import fi.tnie.db.ent.value.AbstractPrimitiveAccessor;
-import fi.tnie.db.rpc.ArrayValue;
 import fi.tnie.db.rpc.StringArray;
+import fi.tnie.db.test.HasPGTextArray;
 
 public class PGTextArrayAccessor<
 	A extends Attribute,

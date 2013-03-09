@@ -24,7 +24,6 @@ import fi.tnie.db.gen.pg.ent.pub.Film;
 import fi.tnie.db.gen.pg.ent.pub.FilmActor;
 import fi.tnie.db.gen.pg.ent.pub.FilmCategory;
 import fi.tnie.db.gen.pg.ent.pub.PublicFactory;
-import fi.tnie.db.meta.DBMetaTestCase;
 
 public class PGDefaultEntityQueryTest 
 	extends PGTestCase {

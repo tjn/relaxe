@@ -1,13 +1,15 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.test;
+package fi.tnie.db.env.pg;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.value.AbstractArrayKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.StringArray;
+import fi.tnie.db.test.HasPGTextArray;
+import fi.tnie.db.test.HasPGTextArrayKey;
 import fi.tnie.db.types.ArrayType;
 import fi.tnie.db.types.VarcharType;
 

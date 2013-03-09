@@ -24,12 +24,16 @@ public class PGValueExtractorFactory extends DefaultValueExtractorFactory {
 						
 		ValueExtractor<?, ?, ?> ve = null;
 		
+		
 		if (sqltype == Types.OTHER && "interval".equals(ctn)) {		
 			ve = createDayTimeIntervalExtractor(col);
 		}
 		else if (sqltype == Types.OTHER && "interval_ym".equals(ctn)) {				
 			ve = createYearMonthIntervalExtractor(col);
 		}		
+		else if (sqltype == Types.ARRAY && PGTextArrayType.TYPE.getName().equals(ctn)) {
+			ve = new PGTextArrayExtractor(col);
+		}
 		else {
 			ve = super.createExtractor(meta, col);
 		}	

@@ -10,7 +10,6 @@ import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.AbstractGeneratedKeyHandler;
 import fi.tnie.db.env.DefaultImplementation;
-import fi.tnie.db.env.GeneratedKeyHandler;
 import fi.tnie.db.expr.DefaultSQLSyntax;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.SQLSyntax;

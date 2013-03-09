@@ -13,12 +13,10 @@ import java.util.Set;
 
 import fi.tnie.db.StatementExecutor;
 import fi.tnie.db.env.Implementation;
-import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.pg.PGCatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.env.util.ResultSetWriter;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.impl.DefaultCatalogMap;
 import fi.tnie.db.meta.impl.DefaultMutableCatalog;
