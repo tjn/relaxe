@@ -182,7 +182,7 @@ public abstract class PersistenceManagerTest<I extends Implementation<I>> extend
 		C extends Content
 	>
 	void delete(E e) throws CyclicTemplateException, EntityException, SQLException, QueryException {
-		merge(e, getPersistenceContext(), getConnection());		
+		delete(e, getPersistenceContext(), getConnection());		
 	}
 
 	protected UnificationContext getUnificationContext() {
