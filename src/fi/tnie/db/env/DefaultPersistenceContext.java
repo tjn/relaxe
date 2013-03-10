@@ -3,14 +3,8 @@
  */
 package fi.tnie.db.env;
 
-import org.apache.log4j.Logger;
-
-import fi.tnie.db.DefaultValueAssignerFactory;
-import fi.tnie.db.DefaultValueExtractorFactory;
 import fi.tnie.db.ValueAssignerFactory;
 import fi.tnie.db.ValueExtractorFactory;
-import fi.tnie.db.env.mysql.MySQLImplementation;
-import fi.tnie.db.meta.impl.DefaultEnvironment;
 
 /**
  * TODO: This needs to be fixed. DefaultImplementation should not extend a DefaultEnvironment.

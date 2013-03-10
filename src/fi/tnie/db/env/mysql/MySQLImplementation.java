@@ -5,7 +5,6 @@ package fi.tnie.db.env.mysql;
 
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.DefaultImplementation;
-import fi.tnie.db.env.GeneratedKeyHandler;
 import fi.tnie.db.expr.DefaultSQLSyntax;
 import fi.tnie.db.expr.DeleteStatement;
 import fi.tnie.db.expr.MySQLDeleteStatement;

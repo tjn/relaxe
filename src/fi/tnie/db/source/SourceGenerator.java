@@ -47,7 +47,6 @@ import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaElement;
 import fi.tnie.db.meta.SchemaElementMap;
-import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.Table;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.types.PrimitiveType;
