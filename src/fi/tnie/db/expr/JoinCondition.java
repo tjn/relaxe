@@ -4,7 +4,7 @@
 package fi.tnie.db.expr;
 
 public abstract class JoinCondition 
-	extends CompoundElement 
+	extends CompoundElement
 	implements Predicate {
 	
 	/**

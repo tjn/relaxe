@@ -11,16 +11,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-//import org.apache.log4j.Logger;
-
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.expr.AbstractTableReference;
 import fi.tnie.db.expr.DefaultTableExpression;
-import fi.tnie.db.expr.ForeignKeyJoinCondition;
 import fi.tnie.db.expr.From;
+import fi.tnie.db.expr.MultiForeignKeyJoinCondition;
 import fi.tnie.db.expr.OrderBy;
 import fi.tnie.db.expr.Predicate;
 import fi.tnie.db.expr.QueryExpression;
@@ -79,6 +76,24 @@ public class DefaultEntityTemplateQuery<
 	private transient Map<EntityQueryPredicate<?>, TableReference> tableReferenceMap = new HashMap<EntityQueryPredicate<?>, TableReference>();
 	
 	private transient List<ColumnReference> rootPrimaryKey; // NS	
+		
+	public static final class Entry {				
+		private Map<ForeignKey, TableReference> referenceMap;
+		
+		public Entry() {
+			super();			
+		}
+		
+		public Map<ForeignKey, TableReference> getReferenceMap() {
+			if (referenceMap == null) {
+				referenceMap = new HashMap<ForeignKey, TableReference>();				
+			}
+
+			return referenceMap;
+		}
+	}
+	
+	
 	private Q template;
 					
 	/**
@@ -97,14 +112,14 @@ public class DefaultEntityTemplateQuery<
 		this.type = rootTemplate.getMetaData().type();
 	}
 
-	public DefaultEntityTemplateQuery(Q root, boolean init) 
-		throws CyclicTemplateException, EntityRuntimeException {
-		this(root);
-	
-		if (init) {
-			init();
-		}
-	}
+//	private DefaultEntityTemplateQuery(Q root, boolean init) 
+//		throws CyclicTemplateException, EntityRuntimeException {
+//		this(root);
+//	
+//		if (init) {
+//			init();
+//		}
+//	}
 
 	private void init() throws CyclicTemplateException, EntityRuntimeException {
 		if (isInitialized()) {
@@ -121,14 +136,28 @@ public class DefaultEntityTemplateQuery<
 			throw new NullPointerException("DefaultEntityTemplateQuery: getMetaData().getBaseTable()");
 		}		
 				
-		List<EntityQueryPredicate<?>> apl = new ArrayList<EntityQueryPredicate<?>>();		
-		addTemplatePredicates(root, apl);
+		List<EntityQueryPredicate<?>> apl = new ArrayList<EntityQueryPredicate<?>>();
+		
+		{
+			Set<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>> visited = 
+				new HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>>();		
+			addTemplatePredicates(root, apl, visited);
+		}
 			
 		DefaultTableExpression te = new DefaultTableExpression();
-		Map<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>, TableReference> visited = 
+		
+		Set<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>> visited = 
+			new HashSet<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>>();
+		
+		Map<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>, TableReference> trm = 
 			new HashMap<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>, TableReference>();
+		
+		Map<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>, Entry> rem = 
+			new HashMap<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>, Entry>();
+			
+		this.rootRef = populateTableReferenceMap(root, trm, rem);		
 
-		AbstractTableReference tref = fromTemplate(root, null, null, null, te, visited);
+		AbstractTableReference tref = fromTemplate(null, root, null, null, null, te, visited, trm, rem);
 		
 		logger().debug("ref: " + tref);		
 		logger().debug("originMap: " + originMap);
@@ -210,7 +239,7 @@ public class DefaultEntityTemplateQuery<
 		QQ extends EntityQueryTemplate<QA, QR, QT, QE, QH, QF, QM, QC, QQ>
 	>
 	
-	void addTemplatePredicates(QQ qt, List<EntityQueryPredicate<?>> apl) {
+	void addTemplatePredicates(QQ qt, List<EntityQueryPredicate<?>> apl, Set<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>> visited) {
 		apl.addAll(qt.allPredicates());
 		
 		QM meta = qt.getMetaData();		
@@ -221,9 +250,68 @@ public class DefaultEntityTemplateQuery<
 			EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?> t = qt.getTemplate(k);
 			
 			if (t != null) {
-				addTemplatePredicates(t.self(), apl);
+				if (!visited.contains(t)) {
+					visited.add(t);
+					addTemplatePredicates(t.self(), apl, visited);
+				}
 			}
 		}
+	}
+	
+	
+	
+	private <
+		QA extends Attribute,
+		QR extends Reference,
+		QT extends ReferenceType<QA, QR, QT, QE, QH, QF, QM, QC>,
+		QE extends Entity<QA, QR, QT, QE, QH, QF, QM, QC>,
+		QH extends ReferenceHolder<QA, QR, QT, QE, QH, QM, QC>,
+		QF extends EntityFactory<QE, QH, QM, QF, QC>,
+		QM extends EntityMetaData<QA, QR, QT, QE, QH, QF, QM, QC>,
+		QC extends Content,
+		QQ extends EntityQueryTemplate<QA, QR, QT, QE, QH, QF, QM, QC, QQ>
+	>	
+	TableReference populateTableReferenceMap(
+			QQ template, 
+			Map<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>, TableReference> rm,
+			Map<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>, Entry> rem) {
+		TableReference tref = rm.get(template);
+		
+		if (tref != null) {
+			// already visited
+			return tref;			
+		}
+		
+		QM meta = template.getMetaData();		
+		tref = new TableReference(meta.getBaseTable());		
+		rm.put(template, tref);
+		
+		getMetaDataMap().put(tref, meta);
+		
+		Set<QR> rs = meta.relationships();
+		
+		for (QR qr : rs) {
+			EntityKey<QA, QR, QT, QE, QH, QF, QM, QC, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(qr);
+			EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?> t = template.getTemplate(k);
+			
+			if (t != null) {								
+				TableReference rr = populateTableReferenceMap(t.self(), rm, rem);
+				Entry e = rem.get(template);
+				
+				if (e == null) {
+					e = new Entry();
+					rem.put(template, e);
+				}
+				
+				ForeignKey fk = meta.getForeignKey(qr);				
+				e.getReferenceMap().put(fk, rr);
+				
+				JoinKey j = new JoinKey(tref, fk);
+				getReferenceMap().put(j, rr);				
+			}					
+		}
+		
+		return tref;
 	}
 
 
@@ -240,21 +328,25 @@ public class DefaultEntityTemplateQuery<
 		MQ extends EntityQueryTemplate<MA, MR, MT, ME, MH, MF, MM, MC, MQ>
 	>
 	AbstractTableReference fromTemplate(
+			EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?> parent,
 			MQ template, 
-			AbstractTableReference qref, ForeignKey fk, TableReference referencing, 
+			AbstractTableReference qref, 
+			ForeignKey fk, 
+			TableReference referencing, 
 			DefaultTableExpression q,
-			Map<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>, TableReference> visited)
+			Set<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>> visited,
+			Map<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>, TableReference> rm,
+			Map<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>, Entry> rem)
 		throws CyclicTemplateException, EntityRuntimeException {
 		
 		logger().debug("fromTemplate - enter: " + template);
 		logger().debug("fromTemplate - fk: " + fk);
 		
-//		if (visited.contains(template)) {
-//			throw new CyclicTemplateException(template);
-//		}
-//		else {
-//			visited.add(template);
-//		}
+		if (visited.contains(template)) {
+			return qref;
+		}
+
+		visited.add(template);		
 		
 //		visited.put(template, qref);
 			
@@ -264,44 +356,49 @@ public class DefaultEntityTemplateQuery<
 		
 		final boolean root = (qref == null);
 		
-		boolean visitedBefore = visited.containsKey(template);
+		final TableReference tref = rm.get(template);
 		
-		TableReference tr = null;
-		
-		if (qref == null) {
-			tr = getTableRef();
-			visited.put(template, tr);
-			getMetaDataMap().put(tr, meta);
-		}
-		else {
-			tr = visited.get(template);
-			
-			if (tr == null) {
-				tr = new TableReference(meta.getBaseTable());
-				visited.put(template, tr);
-				getMetaDataMap().put(tr, meta);
-			}			
-		}
-		
-//			(qref == null) ? getTableRef() :							
-			
-		final TableReference tref = tr;
+//		TableReference tr = null;
+//		
+//		if (qref == null) {
+//			tr = getTableRef();
+//			visited.put(template, tr);
+//			getMetaDataMap().put(tr, meta);
+//		}
+//		else {
+//			tr = visited.get(template);
+//			
+//			if (tr == null) {
+//				tr = new TableReference(meta.getBaseTable());
+//				visited.put(template, tr);
+//				getMetaDataMap().put(tr, meta);
+//			}			
+//		}
+//		
+////			(qref == null) ? getTableRef() :							
+//			
+//		final TableReference tref = tr;
 			
 //		final TableReference tref = 
 //				(qref == null) ? getTableRef() :							
 //				new TableReference(meta.getBaseTable());
 				
-		if (referencing != null) {
-			JoinKey j = new JoinKey(referencing, fk);
-			getReferenceMap().put(j, tref);
-		}
+//		if (referencing != null) {
+//			JoinKey j = new JoinKey(referencing, fk);
+//			getReferenceMap().put(j, tref);
+//		}
 		
 		if (qref == null) {
 			qref = tref;
 		}
 		else {
-			ForeignKeyJoinCondition jc = new ForeignKeyJoinCondition(fk, referencing, tref);
-			qref = qref.leftJoin(tref, jc);
+			Entry e = rem.get(parent);
+			
+			if (e != null) {			
+				Map<ForeignKey, TableReference> krm = e.getReferenceMap();			
+				MultiForeignKeyJoinCondition mc = new MultiForeignKeyJoinCondition(referencing, krm);									
+				qref = qref.leftJoin(tref, mc);
+			}
 		}
 					
 		Set<Column> pkcols = meta.getPKDefinition();
@@ -352,7 +449,7 @@ public class DefaultEntityTemplateQuery<
 		
 		getOriginMap().put(Integer.valueOf(s.getColumnCount()), tref);
 		
-		qref = processReferences(template, qref, tref, q, visited);
+		qref = processReferences(template, qref, tref, q, visited, rm, rem);
 						
 		return qref;
 	}
@@ -368,12 +465,19 @@ public class DefaultEntityTemplateQuery<
 		KC extends Content,
 		KQ extends EntityQueryTemplate<KA, KR, KT, KE, KH, KF, KM, KC, KQ>		
 	>
-	AbstractTableReference processReferences(KQ template, AbstractTableReference qref, TableReference tref, DefaultTableExpression q, Map<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>, TableReference> visited) throws EntityRuntimeException, CyclicTemplateException {
+	AbstractTableReference processReferences(
+			KQ template, 
+			AbstractTableReference qref, 
+			TableReference tref, 
+			DefaultTableExpression q, 
+			Set<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>> visited, 
+			Map<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>, TableReference> rm,
+			Map<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>, Entry> rem)
+		throws EntityRuntimeException, CyclicTemplateException {
 		
 		logger().debug("processReferences - enter");		
 
-		KM meta = template.getMetaData();
-		
+		KM meta = template.getMetaData();		
 		Set<KR> rs = meta.relationships();
 		
 		for (KR kr : rs) {
@@ -387,12 +491,46 @@ public class DefaultEntityTemplateQuery<
 
 				if (fk == null) {
 					throw new NullPointerException("can not find fk by relationship: " + kr);
-				}							
+				}
 				
-				qref = fromTemplate(t.self(), qref, fk, tref, q, visited);
+				qref = fromTemplate(template.self(), t.self(), qref, fk, tref, q, visited, rm, rem);
 			}									
 		}
-	
+		
+		
+//		Map<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>, List<ForeignKey>> tkmap = 
+//			new HashMap<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>, List<ForeignKey>>(); 
+//
+//		for (KR kr : rs) {
+//			EntityKey<KA, KR, KT, KE, KH, KF, KM, KC, ?, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(kr);
+//			EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?> t = template.getTemplate(ek);
+//			
+//			logger().debug("ref-template for: " + ek + " => " + t);
+//			
+//			if (t != null) {
+//				ForeignKey fk = meta.getForeignKey(kr);
+//
+//				if (fk == null) {
+//					throw new NullPointerException("can not find fk by relationship: " + kr);
+//				}
+//				
+//				List<ForeignKey> klist = tkmap.get(t);
+//				
+//				if (klist == null) {
+//					klist = new ArrayList<ForeignKey>();
+//					tkmap.put(t, klist);
+//				}
+//				
+//				klist.add(fk);
+//			}									
+//		}
+		
+//		for (KR kr : tkmap) {
+//			
+//		}
+//		
+//		qref = fromTemplate(t.self(), qref, fk, tref, q, visited);
+
 		logger().debug("processReferences - exit");
 		
 		return qref;

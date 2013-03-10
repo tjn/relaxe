@@ -410,7 +410,9 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 				
 		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, lq);		
 		hrq.setTemplate(Film.ORIGINAL_LANGUAGE_ID_FKEY, lq);
-				
+						
+		lq.addPredicate(PredicateAttributeTemplate.isNotNull(Language.LANGUAGE_ID));
+						
 		QueryResult<EntityDataObject<Film>> qr = execute(hrq, null);
 		
 		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
@@ -420,21 +422,29 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 		
 		for (EntityDataObject<Film> eo : el) {
 			assertNotNull(eo);
-			Film hr = eo.getRoot();
-			assertNotNull(hr);
+			Film film = eo.getRoot();
+			assertNotNull(film);
 			
-			Language.Holder lh = hr.getLanguage(Film.LANGUAGE_ID_FKEY);
+			logger().debug("testSharedReferenceQuery: film=" + film);
+			
+			Language.Holder lh = film.getLanguage(Film.LANGUAGE_ID_FKEY);
 			assertNotNull(lh);
 			
 			Language lang = lh.value();
 			assertNotNull(lang);
 			assertTrue(lang.isIdentified());
+			
+			Language.Holder oh = film.getLanguage(Film.ORIGINAL_LANGUAGE_ID_FKEY);
+			assertNotNull(oh);
+			assertNotNull(oh.value());
+			
+			assertSame(oh, lh);
+		
+			Entity<?, ?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.ORIGINAL_LANGUAGE_ID_FKEY.name());
+			assertNotNull(e);	
 		}
 	}
-	
-	
-
-	
+		
 	private UnificationContext getIdentityContext(){
 		return new SimpleUnificationContext();
 	}
