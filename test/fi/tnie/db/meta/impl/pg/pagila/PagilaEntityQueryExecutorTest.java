@@ -17,7 +17,13 @@ public class PagilaEntityQueryExecutorTest
 	}
 	
 	@Override
-	public void testSharedReferenceQuery() throws Exception {
-		super.testSharedReferenceQuery();
+	public void testSharedReferenceQuery1() throws Exception {
+		super.testSharedReferenceQuery1();
+	}
+	
+	
+	@Override
+	public void testSharedReferenceQuery2() throws Exception {
+		super.testSharedReferenceQuery2();
 	}
 }

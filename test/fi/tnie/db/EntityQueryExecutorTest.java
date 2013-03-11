@@ -401,7 +401,7 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 	}
 
 	
-	public void testSharedReferenceQuery() throws Exception {		
+	public void testSharedReferenceQuery1() throws Exception {		
 		Film.QueryTemplate hrq = new Film.QueryTemplate(); 
 		hrq.addAllAttributes();
 		
@@ -442,6 +442,49 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 		
 			Entity<?, ?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.ORIGINAL_LANGUAGE_ID_FKEY.name());
 			assertNotNull(e);	
+		}
+	}
+	
+	
+	public void testSharedReferenceQuery2() throws Exception {		
+		Film.QueryTemplate hrq = new Film.QueryTemplate(); 
+		hrq.addAllAttributes();
+		
+		Language.QueryTemplate lq = new Language.QueryTemplate();
+		lq.addAllAttributes();
+				
+		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, lq);		
+		hrq.setTemplate(Film.ORIGINAL_LANGUAGE_ID_FKEY, lq);
+								
+		QueryResult<EntityDataObject<Film>> qr = execute(hrq, null);
+		
+		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
+		
+		List<? extends EntityDataObject<Film>> el = qr.getContent();
+		assertNotNull(el);
+		
+		for (EntityDataObject<Film> eo : el) {
+			assertNotNull(eo);
+			Film film = eo.getRoot();
+			assertNotNull(film);
+			
+			logger().debug("testSharedReferenceQuery: film=" + film);
+			
+			Language.Holder lh = film.getLanguage(Film.LANGUAGE_ID_FKEY);
+			assertNotNull(lh);
+			
+			Language lang = lh.value();
+			assertNotNull(lang);
+			assertTrue(lang.isIdentified());
+			
+			Language.Holder oh = film.getLanguage(Film.ORIGINAL_LANGUAGE_ID_FKEY);
+			assertNotNull(oh);
+			assertNotNull(oh.value());
+			
+			assertSame(oh, lh);
+		
+			Entity<?, ?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.ORIGINAL_LANGUAGE_ID_FKEY.name());
+			assertNotNull(e);			
 		}
 	}
 		
