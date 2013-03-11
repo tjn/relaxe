@@ -30,6 +30,8 @@ public interface EntityQueryTemplate<
 	
 	EntityQueryTemplateAttribute get(A a)
 		throws EntityRuntimeException;
+		
+	public int getTemplateCount();
 
 	EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?> getTemplate(EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> k);
 

@@ -286,4 +286,9 @@ public abstract class DefaultQueryTemplate<
 	public List<EntityQueryPredicate<A>> predicates() {
 		return Collections.unmodifiableList(getPredicateList());
 	}
+	
+	@Override
+	public int getTemplateCount() {
+		return (templateMap == null) ? 0 : templateMap.size();
+	}
 }

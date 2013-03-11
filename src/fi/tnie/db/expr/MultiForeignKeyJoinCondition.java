@@ -71,7 +71,7 @@ public class MultiForeignKeyJoinCondition
 
 		return this.condition;		
 	}
-	
+		
 	
 	@Override
 	public Predicate parenthesize() {

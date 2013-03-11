@@ -258,8 +258,6 @@ public class DefaultEntityTemplateQuery<
 		}
 	}
 	
-	
-	
 	private <
 		QA extends Attribute,
 		QR extends Reference,
@@ -349,7 +347,6 @@ public class DefaultEntityTemplateQuery<
 		visited.add(template);		
 		
 //		visited.put(template, qref);
-			
 		
 		Select s = getSelect(q);
 		MM meta = template.getMetaData();
@@ -357,37 +354,7 @@ public class DefaultEntityTemplateQuery<
 		final boolean root = (qref == null);
 		
 		final TableReference tref = rm.get(template);
-		
-//		TableReference tr = null;
-//		
-//		if (qref == null) {
-//			tr = getTableRef();
-//			visited.put(template, tr);
-//			getMetaDataMap().put(tr, meta);
-//		}
-//		else {
-//			tr = visited.get(template);
-//			
-//			if (tr == null) {
-//				tr = new TableReference(meta.getBaseTable());
-//				visited.put(template, tr);
-//				getMetaDataMap().put(tr, meta);
-//			}			
-//		}
-//		
-////			(qref == null) ? getTableRef() :							
-//			
-//		final TableReference tref = tr;
-			
-//		final TableReference tref = 
-//				(qref == null) ? getTableRef() :							
-//				new TableReference(meta.getBaseTable());
 				
-//		if (referencing != null) {
-//			JoinKey j = new JoinKey(referencing, fk);
-//			getReferenceMap().put(j, tref);
-//		}
-		
 		if (qref == null) {
 			qref = tref;
 		}
@@ -395,9 +362,8 @@ public class DefaultEntityTemplateQuery<
 			Entry e = rem.get(parent);
 			
 			if (e != null) {			
-				Map<ForeignKey, TableReference> krm = e.getReferenceMap();			
-				MultiForeignKeyJoinCondition mc = new MultiForeignKeyJoinCondition(referencing, krm);									
-				qref = qref.leftJoin(tref, mc);
+				Map<ForeignKey, TableReference> krm = e.getReferenceMap();				
+				qref = join(qref, tref, template, referencing, krm);
 			}
 		}
 					
@@ -454,6 +420,32 @@ public class DefaultEntityTemplateQuery<
 		return qref;
 	}
 	
+	/**
+	 * Defines how to join tables references <code>rhs</code> and <code>lhs</code>.
+	 *
+	 * 
+	 *   
+	 * @param rhs
+	 * @param lhs
+	 * @param referencing
+	 * @param krm
+	 * @return
+	 */
+	protected <
+		QT extends EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, QT>
+	>	
+	AbstractTableReference join(AbstractTableReference rhs, TableReference lhs, QT template, TableReference referencing, Map<ForeignKey, TableReference> krm) {		
+		MultiForeignKeyJoinCondition mc = new MultiForeignKeyJoinCondition(referencing, krm);
+		
+		boolean inner = (krm.size() > 1 || template.getTemplateCount() > 0);
+		
+		AbstractTableReference joined = inner ? rhs.innerJoin(lhs, mc) : rhs.leftJoin(lhs, mc);
+		
+		return joined;
+	}
+	
+	
+
 	private	<
 		KA extends Attribute,
 		KR extends Reference,
