@@ -410,11 +410,24 @@ public class Builder
     
     private void generateSources(Catalog cat, File sourceRoot)
             throws QueryException, IOException {
+    	
+    	
+        TableMapper tm = getTableMapper();       
+        SourceGenerator gen = new SourceGenerator(sourceRoot, getSchemaFilter());
+                
+        StringBuilder details = new StringBuilder();
+        
+        if (gen.check(cat, getTypeMapper(), details) > 0) {
+        	logger().error(details);        	
+        	return;
+        }    	
+    	
+    	
         final File sourceList = getSourceList(sourceRoot);            
         remove(sourceList);
         
-        TableMapper tm = getTableMapper();       
-        SourceGenerator gen = new SourceGenerator(sourceRoot, getSchemaFilter());              
+        
+        
         Properties current = gen.run(cat, tm, getTypeMapper());
         
         IOHelper.doStore(current, sourceList.getPath(), "List of the generated source files");            

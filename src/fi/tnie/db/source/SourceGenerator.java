@@ -14,6 +14,7 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ import fi.tnie.db.map.TableMapper.Part;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.ColumnMap;
 import fi.tnie.db.meta.DataType;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.ForeignKey;
@@ -288,6 +290,145 @@ public class SourceGenerator {
 		return SourceGenerator.logger;
 	}
 	
+	
+	public int check(Catalog cat, TypeMapper tm, StringBuilder buf) {
+		
+		List<String> errorList = new ArrayList<String>();
+		
+		int total = 0;
+								
+        for (Schema s : cat.schemas().values()) {
+        	if (schemaFilter.accept(s)) {
+        		for (BaseTable table : s.baseTables().values()) {        			
+        			ColumnMap cm = table.columnMap();
+        			
+        			for (Column c : cm.values()) {
+        				errorList.clear();
+        				        				
+        				int errors = processAttributeInfo(table, c, tm, errorList);
+        				
+        				if (errors > 0) {
+        					buf.append(formatColumnMappingError(table, c, errorList));
+        					total += errors;
+        				}
+					}        			
+				}        		
+        	}
+        }        
+        
+        if (total > 0) {
+        	
+        }
+        		
+        return total;
+	}	
+	
+	
+	
+	private String formatColumnMappingError(BaseTable table, Column c, List<String> errorList) {
+
+		StringBuilder buf = new StringBuilder();		
+		SchemaElementName n = table.getName();
+		
+		Map<String, String> data = new LinkedHashMap<String, String>();
+				
+		
+		data.put("schema", n.getQualifier().getSchemaName().getName());
+		data.put("table", n.getUnqualifiedName().getName());
+		data.put("column", c.getColumnName().getName());
+		
+		DataType type = c.getDataType();
+				
+		data.put("jdbc-data-type", Integer.toString(type.getDataType()));
+		data.put("jdbc-type-name", PrimitiveType.getSQLTypeName(type.getDataType()));		
+		data.put("type-name", type.getTypeName());
+		data.put("char-octet-length", Integer.toString(type.getCharOctetLength()));
+		data.put("decimal-digits", Integer.toString(type.getDecimalDigits()));
+		data.put("num-prec-radix", Integer.toString(type.getNumPrecRadix()));
+
+		for (Map.Entry<String, String> e : data.entrySet()) {
+			buf.append(e.getKey());
+			buf.append("\t");
+			buf.append(e.getValue());			
+			buf.append("\n");
+		}		
+		
+		buf.append("\n");
+		buf.append("error-count\t");
+		buf.append(errorList.size());
+		buf.append("\n");
+		
+		int ordinal = 0;
+		
+		for (String e : errorList) {
+			buf.append(Integer.toString(++ordinal));
+			buf.append("\t");			
+			buf.append(e);
+			buf.append("\n");
+		}
+		
+		
+		buf.append("\n");
+		
+		return buf.toString();
+	}
+
+	private int processAttributeInfo(Table table, Column column, TypeMapper mapper, List<String> errorList) {
+				
+		AttributeInfo info = mapper.getAttributeInfo(table, column);
+								
+		if (info == null) {
+			errorList.add("no attribute info");
+			return 1;
+		}
+		
+		int count = 0;
+				
+		
+		if (info.getAttributeType() == null) {
+			errorList.add("no attribute type (value type)");
+			count++;			
+		}
+		
+		if (info.getHolderType() == null) {
+			errorList.add("no holder type");
+			count++;			
+		}
+
+		if (info.getPrimitiveType() == null) {
+			errorList.add("no primitive type");
+			count++;			
+		}		
+
+		if (info.getAccessorType() == null) {
+			errorList.add("no accessor type");
+			count++;			
+		}
+				
+		if (info.getKeyType() == null) {
+			errorList.add("no key type");
+			count++;			
+		}
+
+		if (info.getContainerType() == null) {
+			errorList.add("no container type");
+			count++;			
+		}
+		
+		if (info.getContainerMetaType() == null) {
+			errorList.add("no container meta type");
+			count++;			
+		}
+						
+//		if (column.isPrimaryKeyColumn() && info.getIdentityMapType() == null) {
+//			errorList.add("no identity map type for primary key column");
+//			count++;			
+//		}
+		
+		return count;
+		
+	}
+
 	/**
 	 * Generates the Java sources for the catalog.
 	 * 
@@ -300,8 +441,7 @@ public class SourceGenerator {
 	 * @return
 	 * @throws QueryException
 	 * @throws IOException
-	 */
-	
+	 */	
     public Properties run(Catalog cat, TableMapper tm, TypeMapper typeMapper)
         throws QueryException, IOException {
     	
@@ -1445,6 +1585,8 @@ public class SourceGenerator {
 
 //		Sample output: "private IntegerHolder a = null;"
 //		Sample output: "private IntegerHolder b = null;, etc..."
+				
+		buf.append("\n// formatAttributeHolderAccessors - enter\n");
 		
 		List<Column> cols = columns;
 				
@@ -1523,6 +1665,7 @@ public class SourceGenerator {
 				buf.append("\n");
 			}
 			
+			buf.append("default:\n");			
 			buf.append("\n}\n");
 			
 			// end of method:
@@ -1560,6 +1703,8 @@ public class SourceGenerator {
 				buf.append("\n");
 			}
 			
+			buf.append("default:\n");
+			
 			// end-switch
 			buf.append("\n}\n");
 			
@@ -1568,6 +1713,8 @@ public class SourceGenerator {
 			// end-of-method
 			buf.append("\n}\n");
 		}
+		
+		buf.append("\n// formatAttributeHolderAccessors - exit\n");
 	}
 		
 	private void appendThrowNpe(StringBuffer buf, String className, final String methodName, String argument) {
