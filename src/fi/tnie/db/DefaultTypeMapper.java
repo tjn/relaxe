@@ -148,7 +148,7 @@ public class DefaultTypeMapper
 	        	da.setPrimitiveType(IntegerType.TYPE);
 	        	da.setIdentityMapType(IntegerIdentityMap.class);
 	        	da.setContainerType(HasInteger.class);
-	        	da.setContainerMetaType(HasIntegerKey.class);       	
+	        	da.setContainerMetaType(HasIntegerKey.class);
 	            break;
 	        case Types.BIGINT:                        
 	        case Types.BIT:
