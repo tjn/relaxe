@@ -126,6 +126,7 @@ public class DefaultTypeMapper
 	        	da.setContainerType(HasChar.class);
 	        	da.setContainerMetaType(HasCharKey.class);
 	        case Types.VARCHAR:
+	        case Types.LONGVARCHAR:
 	        	da.setAttributeType(String.class);
 	        	da.setHolderType(VarcharHolder.class);
 	        	da.setKeyType(VarcharKey.class);
