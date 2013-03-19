@@ -6,7 +6,7 @@ if "%TYPE_MAPPER_IMPLEMENTATION%" == "" GOTO :set_default_type_mapper
 
 :generate
 
-tstamp
+REM tstamp
 
 SET ROOT=%~dp0..
 SET JARDIR=%ROOT%\lib
