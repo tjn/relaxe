@@ -32,7 +32,8 @@ public abstract class StringArrayHolder<
 	}
 	
 	public StringArrayHolder(H value) {
-		this.content = value.content;
+		StringArrayHolder<E, T, H> h = value;
+		this.content = h.content;
 	}
 	
 	public String[] getContent() {
