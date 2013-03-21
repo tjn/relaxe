@@ -16,8 +16,7 @@ public class IntegerHolder
 	private static final long serialVersionUID = -7895663698067736815L;
 	private Integer value;	
 	public static final IntegerHolder NULL_HOLDER = new IntegerHolder();
-	private static final IntegerHolder.Factory FACTORY = new IntegerHolder.Factory();
-	
+		
 //	public static final IntegerType TYPE = IntegerType.TYPE;
 	
 	private static IntegerHolder[] small;
@@ -41,11 +40,7 @@ public class IntegerHolder
 	public static IntegerHolder valueOf(Integer v) {
 		return (v == null) ? NULL_HOLDER : valueOf(v.intValue());
 	}
-	
-	public static IntegerHolder.Factory factory() {
-		return FACTORY;
-	}
-	
+			
 	public IntegerHolder(int value) {
 		this.value = Integer.valueOf(value);
 	}
