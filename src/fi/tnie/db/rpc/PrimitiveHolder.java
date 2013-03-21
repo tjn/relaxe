@@ -71,7 +71,12 @@ public abstract class PrimitiveHolder<V extends Serializable, T extends Primitiv
 	
 	public LongHolder asLongHolder() {
 		return null;
+	}
+	
+	public BooleanHolder asBooleanHolder() {
+		return null;
 	}	
+
 
 	public OtherHolder<?, ?, ?> asOtherHolder(String typeName) {
 		return null;
