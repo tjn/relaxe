@@ -22,12 +22,14 @@ public class MySQLDeleteStatement
 	}		
 	
 	@Override
-	public void traverseContent(VisitContext vc, ElementVisitor v) {
+	public void traverseContent(VisitContext vc, ElementVisitor v) {		
+		// DELETE FROM R USING <schema>.<table> R WHERE ...
+		
 		SQLKeyword.DELETE.traverse(vc, v);		
 		SQLKeyword.FROM.traverse(vc, v);		
-		TableReference tref = getTarget();				
-		SchemaElementName n = tref.getTableName();
-		n.traverse(vc, v);		
+		TableReference tref = getTarget();
+		OrdinaryIdentifier cn = tref.getCorrelationName(v.getContext());
+		cn.traverse(vc, v);		
 		MySQLKeyword.USING.traverse(vc, v);				
 		tref.traverse(vc, v);	
 		getWhere().traverse(vc, v);
