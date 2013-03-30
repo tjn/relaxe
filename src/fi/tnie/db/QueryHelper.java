@@ -47,20 +47,20 @@ public class QueryHelper {
 	}
 	
 
-	public ResultSet close(ResultSet st) {
-		if (st != null) {
+	public ResultSet close(ResultSet rs) {
+		if (rs != null) {
 			try {
-				st.close();
+				rs.close();
 			} 
 			catch (SQLException e) {			
-				closeError(st, e);
+				closeError(rs, e);
 			}
 		}
 		
 		return null;
 	}
 
-	public void closeError(ResultSet st, SQLException e) {		
+	public void closeError(ResultSet rs, SQLException e) {		
 	}
 
     public static Connection doClose(Connection c) {
