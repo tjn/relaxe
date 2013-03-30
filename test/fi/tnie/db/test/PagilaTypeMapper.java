@@ -11,10 +11,15 @@ import fi.tnie.db.ent.value.HasInteger;
 import fi.tnie.db.ent.value.HasIntegerKey;
 import fi.tnie.db.ent.value.HasInterval;
 import fi.tnie.db.ent.value.HasIntervalKey;
+import fi.tnie.db.ent.value.HasVarchar;
+import fi.tnie.db.ent.value.HasVarcharKey;
 import fi.tnie.db.ent.value.IntegerAccessor;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntervalAccessor;
 import fi.tnie.db.ent.value.IntervalKey;
+import fi.tnie.db.ent.value.VarcharAccessor;
+import fi.tnie.db.ent.value.VarcharKey;
+import fi.tnie.db.env.pg.PGTSVectorType;
 import fi.tnie.db.env.pg.PGTextArrayAccessor;
 import fi.tnie.db.env.pg.PGTextArrayHolder;
 import fi.tnie.db.env.pg.PGTextArrayKey;
@@ -23,12 +28,14 @@ import fi.tnie.db.rpc.IntegerHolder;
 import fi.tnie.db.rpc.Interval;
 import fi.tnie.db.rpc.IntervalHolder;
 import fi.tnie.db.rpc.StringArray;
+import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.source.DefaultAttributeInfo;
 import fi.tnie.db.types.ArrayType;
 import fi.tnie.db.types.DistinctType;
 import fi.tnie.db.types.IntegerType;
 import fi.tnie.db.types.IntervalType;
 import fi.tnie.db.types.OtherType;
+import fi.tnie.db.types.VarcharType;
 
 public class PagilaTypeMapper
 	extends DefaultTypeMapper {
@@ -98,6 +105,21 @@ public class PagilaTypeMapper
         	info.setContainerMetaType(HasPGTextArrayKey.class);
 						
 			registerArrayType(PGTextArrayType.TYPE, info);						
+		}
+		
+		
+		{
+			DefaultAttributeInfo info = new DefaultAttributeInfo();
+			
+        	info.setAttributeType(String.class);
+        	info.setHolderType(VarcharHolder.class);
+        	info.setKeyType(VarcharKey.class);
+        	info.setAccessorType(VarcharAccessor.class);
+        	info.setPrimitiveType(VarcharType.TYPE);
+        	info.setContainerType(HasVarchar.class);
+        	info.setContainerMetaType(HasVarcharKey.class);
+						
+			registerOtherType(PGTSVectorType.TYPE, info);						
 		}
 		
 

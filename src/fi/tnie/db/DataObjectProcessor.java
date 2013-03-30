@@ -56,8 +56,10 @@ public abstract class DataObjectProcessor<O extends MutableDataObject>
 			ValueExtractor<?, ?, ?> ve = vef.createExtractor(m, i);
 			
 			if (ve == null) {
+				ve = vef.createExtractor(m, i);
+				
 				throw new NullPointerException(
-						"no extractor for column " + col + ":" + m.getColumnType(i) + "; " + m.getColumnTypeName(i)); 
+						"no extractor for column " + col + ":" + m.getColumnType(i) + "; " + m.getColumnTypeName(i) + ", vef: " + vef); 
 			}
 			
 			xa[i - 1] = ve;

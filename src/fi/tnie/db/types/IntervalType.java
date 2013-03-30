@@ -4,7 +4,7 @@
 package fi.tnie.db.types;
 
 public abstract class IntervalType<I extends IntervalType<I>> 
-	extends PrimitiveType<I> {
+	extends OtherType<I> {
 	
 	/**
 	 * 
@@ -29,6 +29,11 @@ public abstract class IntervalType<I extends IntervalType<I>>
 		public YearMonth self() {
 			return this;
 		}
+
+		@Override
+		public String getName() {
+			return "interval_ym";
+		}
 	}
 	
 	public static class DayTime
@@ -48,13 +53,13 @@ public abstract class IntervalType<I extends IntervalType<I>>
 		public DayTime self() {
 			return this;
 		}
+
+		@Override
+		public String getName() {
+			return "interval";
+		}
 	}	
 
 	protected IntervalType() {
-	}
-	
-	@Override
-	public int getSqlType() {
-		return PrimitiveType.OTHER;
 	}	
 }

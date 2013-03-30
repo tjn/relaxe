@@ -9,18 +9,32 @@ import java.sql.Types;
 
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.meta.DataType;
+
 public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 
 	private static Logger logger = Logger.getLogger(DefaultValueExtractorFactory.class);
 	
 	@Override
-	public	
-	ValueExtractor<?, ?, ?> createExtractor(ResultSetMetaData meta, int col) 
-		throws SQLException {
-		ValueExtractor<?, ?, ?> e = null;
+	public final ValueExtractor<?, ?, ?> createExtractor(DataType dataType, int col)
+			throws SQLException {
+		int sqltype = dataType.getDataType();
+		String typeName = dataType.getTypeName();
+		return createExtractor(sqltype, typeName, col);
+	}
+	
+	@Override
+	public final ValueExtractor<?, ?, ?> createExtractor(ResultSetMetaData meta, int col) 
+		throws SQLException {		
 		int sqltype = meta.getColumnType(col);
+		String typeName = meta.getColumnTypeName(col);
+		return createExtractor(sqltype, typeName, col);
+	}
+			
+	protected ValueExtractor<?, ?, ?> createExtractor(int sqltype, String typename, int col) 
+		throws SQLException {
 		
-		String typename = meta.getColumnTypeName(col);
+		ValueExtractor<?, ?, ?> e = null;
 	
 		switch (sqltype) {
 			case Types.INTEGER:					
@@ -30,11 +44,12 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 				break;
 			case Types.BIGINT:
 				e = createLongExtractor(col);
-				break;
+				break;				
 			case Types.VARCHAR:
+			case Types.LONGVARCHAR:
 				e = createVarcharExtractor(col);
 				break;
-			case Types.CHAR:
+			case Types.CHAR:			
 				e = createCharExtractor(col);
 				break;
 			case Types.DATE:				
@@ -49,28 +64,30 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 			case Types.NUMERIC:
 			case Types.DECIMAL:
 				e = createDecimalExtractor(col);
-				break;				
+				break;		
+			case Types.REAL:
 			case Types.FLOAT:
+				// TODO: treat real and float as Floats
 			case Types.DOUBLE:
 				e = createDoubleExtractor(col);
-				break;				
+				break;			
+			case Types.BINARY:
+			case Types.VARBINARY:				
+			case Types.LONGVARBINARY:
+				e = createLongVarBinaryExtractor(col);
+				break;
 			default:
-				logger().debug("createExtractor: type=" + sqltype);
-				logger().debug("createExtractor: typename=" + typename);
-				// 
-	//			e = new ObjectExtractor(colno);
+				logger().info("createExtractor: type=" + sqltype);
+				logger().info("createExtractor: typename=" + typename);
 				break;
 			}
-		
-		
-			// logger().debug("createExtractor - exit " + meta.getColumnLabel(col) + ": " + sqltype + " => " + e);
 			
 			return e;
 		}
 	
 
 	public IntegerExtractor createIntegerExtractor(int col) {
-		return new IntegerExtractor(col);
+		return IntegerExtractor.forColumn(col);
 	}
 	
 	public DoubleExtractor createDoubleExtractor(int col) {
@@ -106,25 +123,28 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 		return new LongExtractor(col);
 	}
 	
+	public LongVarBinaryExtractor createLongVarBinaryExtractor(int col) {
+		return new LongVarBinaryExtractor(col);
+	}
 	
-		private static Logger logger() {
-			return DefaultValueExtractorFactory.logger;
-		}
 		
-		/**
-		 * Returns <code>null</code>. Default factory  
-		 */
-		@Override
-		public IntervalExtractor.DayTime createDayTimeIntervalExtractor(int col) {
-			return new SQLIntervalExtractor.DayTime(col);
-		}
+	/**
+	 * Returns <code>null</code>. Default factory  
+	 */
+	@Override
+	public IntervalExtractor.DayTime createDayTimeIntervalExtractor(int col) {
+		return new SQLIntervalExtractor.DayTime(col);
+	}
 
 
-		@Override
-		public IntervalExtractor.YearMonth createYearMonthIntervalExtractor(int col) {
-			return new SQLIntervalExtractor.YearMonth(col);
-		}
+	@Override
+	public IntervalExtractor.YearMonth createYearMonthIntervalExtractor(int col) {
+		return new SQLIntervalExtractor.YearMonth(col);
+	}
 
+	private static Logger logger() {
+		return DefaultValueExtractorFactory.logger;
+	}
 
 
 //		<V extends Serializable, P extends PrimitiveType<P>, H extends PrimitiveHolder<V, P>>

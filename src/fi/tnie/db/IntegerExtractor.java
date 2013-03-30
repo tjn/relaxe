@@ -14,7 +14,21 @@ import fi.tnie.db.types.IntegerType;
 
 public class IntegerExtractor
 	extends ValueExtractor<Integer, IntegerType, IntegerHolder>
-{
+{	
+	private static final IntegerExtractor[] PERMANENT = new IntegerExtractor[10];
+	
+	public static IntegerExtractor forColumn(int column) {
+		int index = column - 1;
+		
+		IntegerExtractor e = (index >= 0 && index < PERMANENT.length) ? PERMANENT[index] : new IntegerExtractor(column);
+		
+		if (e == null) {
+			PERMANENT[index] = e = new IntegerExtractor(column);			
+		}
+		
+		return e;		
+	}
+	
 	public IntegerExtractor(int column) {
 		super(column);			
 	}

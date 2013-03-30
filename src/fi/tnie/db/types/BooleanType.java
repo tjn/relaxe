@@ -18,7 +18,7 @@ public class BooleanType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.BIT;
+		return PrimitiveType.BOOLEAN;
 	}
 	
 	@Override

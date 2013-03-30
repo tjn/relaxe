@@ -8,8 +8,11 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
+
 import fi.tnie.db.ent.im.IntegerIdentityMap;
 import fi.tnie.db.ent.im.VarcharIdentityMap;
+import fi.tnie.db.ent.value.BooleanAccessor;
+import fi.tnie.db.ent.value.BooleanKey;
 import fi.tnie.db.ent.value.CharKey;
 import fi.tnie.db.ent.value.CharAccessor;
 import fi.tnie.db.ent.value.DateKey;
@@ -18,6 +21,8 @@ import fi.tnie.db.ent.value.DecimalAccessor;
 import fi.tnie.db.ent.value.DecimalKey;
 import fi.tnie.db.ent.value.DoubleKey;
 import fi.tnie.db.ent.value.DoubleAccessor;
+import fi.tnie.db.ent.value.HasBoolean;
+import fi.tnie.db.ent.value.HasBooleanKey;
 import fi.tnie.db.ent.value.HasChar;
 import fi.tnie.db.ent.value.HasCharKey;
 import fi.tnie.db.ent.value.HasDate;
@@ -28,6 +33,8 @@ import fi.tnie.db.ent.value.HasDouble;
 import fi.tnie.db.ent.value.HasDoubleKey;
 import fi.tnie.db.ent.value.HasInteger;
 import fi.tnie.db.ent.value.HasIntegerKey;
+import fi.tnie.db.ent.value.HasLongVarBinary;
+import fi.tnie.db.ent.value.HasLongVarBinaryKey;
 import fi.tnie.db.ent.value.HasTime;
 import fi.tnie.db.ent.value.HasTimeKey;
 import fi.tnie.db.ent.value.HasTimestamp;
@@ -36,6 +43,9 @@ import fi.tnie.db.ent.value.HasVarchar;
 import fi.tnie.db.ent.value.HasVarcharKey;
 import fi.tnie.db.ent.value.IntegerKey;
 import fi.tnie.db.ent.value.IntegerAccessor;
+import fi.tnie.db.ent.value.LongVarBinary;
+import fi.tnie.db.ent.value.LongVarBinaryAccessor;
+import fi.tnie.db.ent.value.LongVarBinaryKey;
 import fi.tnie.db.ent.value.TimeAccessor;
 import fi.tnie.db.ent.value.TimeKey;
 import fi.tnie.db.ent.value.TimestampKey;
@@ -45,24 +55,29 @@ import fi.tnie.db.ent.value.VarcharAccessor;
 import fi.tnie.db.map.AttributeInfo;
 import fi.tnie.db.map.TypeMapper;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.DataType;
 import fi.tnie.db.meta.Table;
+import fi.tnie.db.rpc.BooleanHolder;
 import fi.tnie.db.rpc.CharHolder;
 import fi.tnie.db.rpc.DateHolder;
 import fi.tnie.db.rpc.Decimal;
 import fi.tnie.db.rpc.DecimalHolder;
 import fi.tnie.db.rpc.DoubleHolder;
 import fi.tnie.db.rpc.IntegerHolder;
+import fi.tnie.db.rpc.LongVarBinaryHolder;
 import fi.tnie.db.rpc.TimeHolder;
 import fi.tnie.db.rpc.TimestampHolder;
 import fi.tnie.db.rpc.VarcharHolder;
 import fi.tnie.db.source.DefaultAttributeInfo;
 import fi.tnie.db.types.ArrayType;
+import fi.tnie.db.types.BooleanType;
 import fi.tnie.db.types.CharType;
 import fi.tnie.db.types.DateType;
 import fi.tnie.db.types.DecimalType;
 import fi.tnie.db.types.DistinctType;
 import fi.tnie.db.types.DoubleType;
 import fi.tnie.db.types.IntegerType;
+import fi.tnie.db.types.LongVarBinaryType;
 import fi.tnie.db.types.OtherType;
 import fi.tnie.db.types.TimeType;
 import fi.tnie.db.types.TimestampType;
@@ -114,8 +129,9 @@ public class DefaultTypeMapper
     public AttributeInfo getAttributeInfo(Table table, Column c) {
     	DefaultAttributeInfo da = new DefaultAttributeInfo();
         
-        int type = c.getDataType().getDataType();                
-
+    	DataType dataType = c.getDataType();
+        int type = dataType.getDataType();
+        
         switch (type) {
 	        case Types.CHAR:
 	        	da.setAttributeType(String.class);
@@ -150,9 +166,20 @@ public class DefaultTypeMapper
 	        	da.setContainerType(HasInteger.class);
 	        	da.setContainerMetaType(HasIntegerKey.class);
 	            break;
-	        case Types.BIGINT:                        
+	        case Types.BIGINT:
+	        	break;
 	        case Types.BIT:
-	                       
+	        	if (dataType.getSize() > 1) {
+	        		break;
+	        	}	        	
+	        case Types.BOOLEAN:
+	        	da.setAttributeType(Boolean.class);
+	        	da.setHolderType(BooleanHolder.class);
+	        	da.setKeyType(BooleanKey.class);
+	        	da.setAccessorType(BooleanAccessor.class);
+	        	da.setPrimitiveType(BooleanType.TYPE);	        	
+	        	da.setContainerType(HasBoolean.class);
+	        	da.setContainerMetaType(HasBooleanKey.class);	                       
 	        case Types.REAL:
 	            break;
 	        case Types.FLOAT:                
@@ -195,6 +222,18 @@ public class DefaultTypeMapper
 	        	da.setContainerMetaType(HasTimeKey.class);        	
 	            break;
 	            
+	        case Types.BINARY:
+	        case Types.VARBINARY:
+	        case Types.LONGVARBINARY:
+	        	da.setAttributeType(LongVarBinary.class);
+	        	da.setHolderType(LongVarBinaryHolder.class);
+	        	da.setKeyType(LongVarBinaryKey.class);
+	        	da.setAccessorType(LongVarBinaryAccessor.class);
+	        	da.setPrimitiveType(LongVarBinaryType.TYPE);
+	        	da.setContainerType(HasLongVarBinary.class);
+	        	da.setContainerMetaType(HasLongVarBinaryKey.class);
+	            break;
+	            
 	        case Types.TIMESTAMP:
 	        	da.setAttributeType(Date.class);
 	        	da.setHolderType(TimestampHolder.class);
@@ -203,7 +242,7 @@ public class DefaultTypeMapper
 	        	da.setPrimitiveType(TimestampType.TYPE);
 	        	da.setContainerType(HasTimestamp.class);
 	        	da.setContainerMetaType(HasTimestampKey.class);
-	            break;
+	            break;	            
 	            
 	        case Types.DISTINCT:
 		        {

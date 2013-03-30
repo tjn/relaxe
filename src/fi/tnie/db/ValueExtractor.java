@@ -14,11 +14,9 @@ import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.types.PrimitiveType;
 
 public abstract class ValueExtractor
-	<V extends Serializable, T extends PrimitiveType<T>, H extends PrimitiveHolder<V, T, H>>
-	implements Extractor {
+	<V extends Serializable, T extends PrimitiveType<T>, H extends PrimitiveHolder<V, T, H>> {
 	
 	private int column;
-	private H last = null;
 
 	public ValueExtractor(int column) {
 		super();			
@@ -29,19 +27,6 @@ public abstract class ValueExtractor
 		return column;
 	}
 
-	public H last() {
-		return this.last;
-	}
-
 	public abstract H extractValue(ResultSet rs)
-		throws SQLException;
-	
-	public void extract(ResultSet rs)
-		throws SQLException {
-		this.last = extractValue(rs);
-		set(this.last);
-	}
-		
-	protected void set(H value) {	
-	}	
+		throws SQLException;	
 }

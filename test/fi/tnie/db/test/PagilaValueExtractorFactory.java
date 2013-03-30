@@ -4,31 +4,43 @@
 package fi.tnie.db.test;
 
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+
+import fi.tnie.db.IntegerExtractor;
 import fi.tnie.db.ValueExtractor;
+import fi.tnie.db.VarcharExtractor;
+import fi.tnie.db.env.pg.PGTSVectorType;
 import fi.tnie.db.env.pg.PGValueExtractorFactory;
 
 public class PagilaValueExtractorFactory extends PGValueExtractorFactory {
 
 //	private static Logger logger = Logger.getLogger(PGValueExtractorFactory.class);
+
+	
 	
 	@Override
 	public	
-	ValueExtractor<?, ?, ?> createExtractor(ResultSetMetaData meta, int col) 
+	ValueExtractor<?, ?, ?> createExtractor(int sqltype, String typename, int col) 
 		throws SQLException {		
-		
-		int sqltype = meta.getColumnType(col);
-		String ctn = meta.getColumnTypeName(col);
 						
 		ValueExtractor<?, ?, ?> ve = null;
 		
-		if (sqltype == Types.OTHER && MPAARatingType.TYPE.getName().equals(ctn)) {		
-			ve = new MPAARatingExtractor(col);
+		if (sqltype == Types.OTHER) {
+			if (MPAARatingType.TYPE.getName().equals(typename)) {
+				ve = new MPAARatingExtractor(col);	
+			}
+			else if (PGTSVectorType.TYPE.getName().equals(typename)) {
+				ve = new VarcharExtractor(col);
+			}			
+		}
+		else if (sqltype == Types.DISTINCT) {
+			if (YearType.TYPE.getName().equals(typename)) {
+				ve = IntegerExtractor.forColumn(col);
+			}
 		}
 		else {
-			ve = super.createExtractor(meta, col);
+			ve = super.createExtractor(sqltype, typename, col);
 		}	
 		
 		return ve;

@@ -9,33 +9,44 @@ import java.sql.Types;
 import fi.tnie.db.DefaultValueExtractorFactory;
 import fi.tnie.db.IntervalExtractor;
 import fi.tnie.db.ValueExtractor;
+import fi.tnie.db.types.IntervalType;
 
 public class PGValueExtractorFactory extends DefaultValueExtractorFactory {
 
 //	private static Logger logger = Logger.getLogger(PGValueExtractorFactory.class);
 	
+	
+//	@Override
+//	protected ValueExtractor<?, ?, ?> createExtractor(int sqltype,
+//			String typename, int col) throws SQLException {
+//		// TODO Auto-generated method stub
+//		return super.createExtractor(sqltype, typename, col);
+//	}
+	
 	@Override
 	public	
-	ValueExtractor<?, ?, ?> createExtractor(ResultSetMetaData meta, int col) 
+	ValueExtractor<?, ?, ?> createExtractor(int sqltype, String typename, int col) 
 		throws SQLException {		
 		
-		int sqltype = meta.getColumnType(col);
-		String ctn = meta.getColumnTypeName(col);
+//		int sqltype = meta.getColumnType(col);
+//		String ctn = meta.getColumnTypeName(col);
 						
 		ValueExtractor<?, ?, ?> ve = null;
-		
-		
-		if (sqltype == Types.OTHER && "interval".equals(ctn)) {		
-			ve = createDayTimeIntervalExtractor(col);
+				
+		if (sqltype == Types.OTHER) {
+			if (IntervalType.DayTime.TYPE.getName().equals(typename)) {
+				ve = createDayTimeIntervalExtractor(col);	
+			}
+			
+			if (IntervalType.YearMonth.TYPE.getName().equals(typename)) {
+				ve = createYearMonthIntervalExtractor(col);
+			}			
 		}
-		else if (sqltype == Types.OTHER && "interval_ym".equals(ctn)) {				
-			ve = createYearMonthIntervalExtractor(col);
-		}		
-		else if (sqltype == Types.ARRAY && PGTextArrayType.TYPE.getName().equals(ctn)) {
+		else if (sqltype == Types.ARRAY && PGTextArrayType.TYPE.getName().equals(typename)) {
 			ve = new PGTextArrayExtractor(col);
 		}
 		else {
-			ve = super.createExtractor(meta, col);
+			ve = super.createExtractor(sqltype, typename, col);
 		}	
 		
 		return ve;

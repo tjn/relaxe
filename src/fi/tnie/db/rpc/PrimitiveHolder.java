@@ -84,6 +84,10 @@ public abstract class PrimitiveHolder<V extends Serializable, T extends Primitiv
 	
 	public ArrayHolder<?, ?, ?, ?, ?> asArrayHolder(String typeName) {
 		return null;
+	}
+	
+	public LongVarBinaryHolder asLongVarBinaryHolder() {
+		return null;
 	}	
 
 	/**

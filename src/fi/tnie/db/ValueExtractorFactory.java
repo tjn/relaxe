@@ -6,6 +6,8 @@ package fi.tnie.db;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
+import fi.tnie.db.meta.DataType;
+
 public interface ValueExtractorFactory {
 	
 	/**
@@ -16,6 +18,9 @@ public interface ValueExtractorFactory {
 	 * @throws SQLException
 	 */
 	ValueExtractor<?, ?, ?> createExtractor(ResultSetMetaData meta, int col) 
+		throws SQLException;
+	
+	ValueExtractor<?, ?, ?> createExtractor(DataType dataType, int col) 
 		throws SQLException;
 
 	
