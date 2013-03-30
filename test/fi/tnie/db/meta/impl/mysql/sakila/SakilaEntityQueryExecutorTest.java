@@ -1,10 +1,13 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db;
+package fi.tnie.db.meta.impl.mysql.sakila;
 
 import java.sql.Connection;
 import java.util.List;
+
+import fi.tnie.db.EntityQueryExecutor;
+import fi.tnie.db.SimpleUnificationContext;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.DataObject;
@@ -18,27 +21,21 @@ import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
 import fi.tnie.db.ent.EntityQueryTemplateAttribute;
 import fi.tnie.db.ent.FetchOptions;
-import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.ent.PredicateAttributeTemplate;
 import fi.tnie.db.ent.Reference;
-import fi.tnie.db.env.Implementation;
+import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.env.PersistenceContext;
+import fi.tnie.db.env.mysql.MySQLImplementation;
 import fi.tnie.db.expr.OrderBy;
 import fi.tnie.db.expr.ValueExpression;
-import fi.tnie.db.gen.pg.ent.LiteralCatalog;
-import fi.tnie.db.gen.pg.ent.pub.Film;
-import fi.tnie.db.gen.pg.ent.pub.Language;
+import fi.tnie.db.gen.sakila.ent.sakila.Film;
+import fi.tnie.db.gen.sakila.ent.sakila.Language;
 import fi.tnie.db.query.QueryResult;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.ReferenceType;
 
-public abstract class EntityQueryExecutorTest<I extends Implementation<I>> extends AbstractUnitTest<I> {
-	
-		
-	@Override
-	protected void init() {				
-		LiteralCatalog.getInstance();
-	}
+public class SakilaEntityQueryExecutorTest 
+	extends SakilaTestCase {
 	
 	private QueryResult<EntityDataObject<Film>> execute(Film.QueryTemplate template) throws Exception {
 		return execute(template, null);		
@@ -49,11 +46,7 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 	}
 	
 	private QueryResult<EntityDataObject<Film>> execute(Film.Query q, FetchOptions opts) throws Exception {
-				
-//		PGImplementation imp = new PGImplementation();
-//		PersistenceContext<?> pc = new PagilaPersistenceContext(imp);
-		
-		PersistenceContext<I> pc = getPersistenceContext();
+		PersistenceContext<MySQLImplementation> pc = getPersistenceContext();
 		
 		Connection c = newConnection();
 				
@@ -136,7 +129,7 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 		Language.QueryTemplate lq = new Language.QueryTemplate();
 		lq.addAllAttributes();
 				
-		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, lq);
+		hrq.setTemplate(Film.LANGUAGE, lq);
 				
 		QueryResult<EntityDataObject<Film>> qr = execute(hrq, null);
 		
@@ -150,7 +143,7 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 			Film hr = eo.getRoot();
 			assertNotNull(hr);
 			
-			Language.Holder lh = hr.getLanguage(Film.LANGUAGE_ID_FKEY);
+			Language.Holder lh = hr.getLanguage(Film.LANGUAGE);
 			assertNotNull(lh);
 			
 			Language lang = lh.value();
@@ -165,7 +158,7 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 				
 		Language.QueryTemplate oq = new Language.QueryTemplate();		
 		oq.remove(oq.getMetaData().attributes());					
-		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, oq);
+		hrq.setTemplate(Film.LANGUAGE, oq);
 				
 		QueryResult<EntityDataObject<Film>> qr = execute(hrq);
 		
@@ -179,7 +172,7 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 			Film hr = eo.getRoot();
 			assertNotNull(hr);
 			
-			Language.Holder oh = hr.getLanguage(Film.LANGUAGE_ID_FKEY);
+			Language.Holder oh = hr.getLanguage(Film.LANGUAGE);
 			assertNotNull(oh);
 			Language org = oh.value();
 			assertNotNull(org);
@@ -191,7 +184,7 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 		Film.QueryTemplate hrq = new Film.QueryTemplate(); 
 		hrq.addAllAttributes();
 							
-		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, (Language.QueryTemplate) null);
+		hrq.setTemplate(Film.LANGUAGE, (Language.QueryTemplate) null);
 		
 		QueryResult<EntityDataObject<Film>> qr = execute(hrq);
 		
@@ -205,7 +198,7 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 			Film hr = eo.getRoot();
 			assertNotNull(hr);
 			
-			Language.Holder oh = hr.getLanguage(Film.LANGUAGE_ID_FKEY);
+			Language.Holder oh = hr.getLanguage(Film.LANGUAGE);
 			assertNull(oh);
 		}
 	}
@@ -216,13 +209,13 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 		
 		Language.QueryTemplate jt = new Language.QueryTemplate();
 		jt.addAllAttributes();		
-		hrq.setTemplate(Film.ORIGINAL_LANGUAGE_ID_FKEY, jt);
+		hrq.setTemplate(Film.LANGUAGE_ORIGINAL, jt);
 							
 		
 		Language.QueryTemplate ot = new Language.QueryTemplate();
 		ot.remove(ot.getMetaData().attributes());
 		
-		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, ot);
+		hrq.setTemplate(Film.LANGUAGE, ot);
 		
 //		Person.QueryTemplate pt = new Person.QueryTemplate();
 //		pt.add(Person.Attribute.DATE_OF_BIRTH, Person.Attribute.LAST_NAME);
@@ -243,11 +236,11 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 //			IntervalHolder.DayTime dt = hr.getInterval(Film.TRAVEL_TIME);
 //			assertNotNull(dt);
 //			
-//			Language.Holder jh = hr.getLanguage(Film.ORIGINAL_LANGUAGE_ID_FKEY);
+//			Language.Holder jh = hr.getLanguage(Film.LANGUAGE_ORIGINAL);
 //			assertNotNull(jh);
 //			assertNotNull(jh.value());			
 //			
-//			Language.Holder oh = hr.getLanguage(Film.LANGUAGE_ID_FKEY);
+//			Language.Holder oh = hr.getLanguage(Film.LANGUAGE);
 //			assertNotNull(oh);
 //			Language org = oh.value();
 //			assertNotNull(org);
@@ -311,7 +304,7 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 		
 		Language.QueryTemplate ot = new Language.QueryTemplate();
 
-		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, ot);
+		hrq.setTemplate(Film.LANGUAGE, ot);
 		hrq.desc(ot, Language.Attribute.NAME);
 				
 		hrq.asc(ot, Language.Attribute.LAST_UPDATE);
@@ -343,7 +336,7 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 		
 		Language.QueryTemplate ot = new Language.QueryTemplate();
 
-		ht.setTemplate(Film.LANGUAGE_ID_FKEY, ot);
+		ht.setTemplate(Film.LANGUAGE, ot);
 		ht.desc(ot, Language.Attribute.NAME);				
 		
 		Film.Query q = ht.newQuery();
@@ -389,7 +382,7 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 		
 		Language.QueryTemplate ot = new Language.QueryTemplate();
 
-		ht.setTemplate(Film.LANGUAGE_ID_FKEY, ot);
+		ht.setTemplate(Film.LANGUAGE, ot);
 		ht.desc(ot, Language.Attribute.NAME);				
 		
 		Film.Query q = ht.newQuery();
@@ -408,8 +401,8 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 		Language.QueryTemplate lq = new Language.QueryTemplate();
 		lq.addAllAttributes();
 				
-		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, lq);		
-		hrq.setTemplate(Film.ORIGINAL_LANGUAGE_ID_FKEY, lq);
+		hrq.setTemplate(Film.LANGUAGE, lq);		
+		hrq.setTemplate(Film.LANGUAGE_ORIGINAL, lq);
 						
 		lq.addPredicate(PredicateAttributeTemplate.isNotNull(Language.LANGUAGE_ID));
 						
@@ -427,20 +420,20 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 			
 			logger().debug("testSharedReferenceQuery: film=" + film);
 			
-			Language.Holder lh = film.getLanguage(Film.LANGUAGE_ID_FKEY);
+			Language.Holder lh = film.getLanguage(Film.LANGUAGE);
 			assertNotNull(lh);
 			
 			Language lang = lh.value();
 			assertNotNull(lang);
 			assertTrue(lang.isIdentified());
 			
-			Language.Holder oh = film.getLanguage(Film.ORIGINAL_LANGUAGE_ID_FKEY);
+			Language.Holder oh = film.getLanguage(Film.LANGUAGE_ORIGINAL);
 			assertNotNull(oh);
 			assertNotNull(oh.value());
 			
 			assertSame(oh, lh);
 		
-			Entity<?, ?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.ORIGINAL_LANGUAGE_ID_FKEY.name());
+			Entity<?, ?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.LANGUAGE_ORIGINAL.name());
 			assertNotNull(e);	
 		}
 	}
@@ -453,8 +446,8 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 		Language.QueryTemplate lq = new Language.QueryTemplate();
 		lq.addAllAttributes();
 				
-		hrq.setTemplate(Film.LANGUAGE_ID_FKEY, lq);		
-		hrq.setTemplate(Film.ORIGINAL_LANGUAGE_ID_FKEY, lq);
+		hrq.setTemplate(Film.LANGUAGE, lq);		
+		hrq.setTemplate(Film.LANGUAGE_ORIGINAL, lq);
 								
 		QueryResult<EntityDataObject<Film>> qr = execute(hrq, null);
 		
@@ -470,20 +463,20 @@ public abstract class EntityQueryExecutorTest<I extends Implementation<I>> exten
 			
 			logger().debug("testSharedReferenceQuery: film=" + film);
 			
-			Language.Holder lh = film.getLanguage(Film.LANGUAGE_ID_FKEY);
+			Language.Holder lh = film.getLanguage(Film.LANGUAGE);
 			assertNotNull(lh);
 			
 			Language lang = lh.value();
 			assertNotNull(lang);
 			assertTrue(lang.isIdentified());
 			
-			Language.Holder oh = film.getLanguage(Film.ORIGINAL_LANGUAGE_ID_FKEY);
+			Language.Holder oh = film.getLanguage(Film.LANGUAGE_ORIGINAL);
 			assertNotNull(oh);
 			assertNotNull(oh.value());
 			
 			assertSame(oh, lh);
 		
-			Entity<?, ?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.ORIGINAL_LANGUAGE_ID_FKEY.name());
+			Entity<?, ?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.LANGUAGE_ORIGINAL.name());
 			assertNotNull(e);			
 		}
 	}

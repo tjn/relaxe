@@ -13,8 +13,8 @@ public class AllTests {
 				"Test for fi.tnie.db.meta.impl.pg.pagila");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(PagilaEntityQueryExecutorTest.class);
+		suite.addTestSuite(PagilaDataAccessSessionTest.class);
 		suite.addTestSuite(PagilaPersistenceManagerTest.class);
-		// suite.addTest(AllTests.suite());
 		//$JUnit-END$
 		return suite;
 	}

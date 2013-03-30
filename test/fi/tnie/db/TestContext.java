@@ -5,6 +5,7 @@ package fi.tnie.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.PersistenceContext;
@@ -18,4 +19,6 @@ public interface TestContext<I extends Implementation<I>> {
     public PersistenceContext<I> getPersistenceContext();    
     public Connection newConnection() throws SQLException, ClassNotFoundException;    
     public Catalog getCatalog() throws SQLException, QueryException, ClassNotFoundException;
+    public String getJdbcURL();
+	public Properties getJdbcConfig();
 }

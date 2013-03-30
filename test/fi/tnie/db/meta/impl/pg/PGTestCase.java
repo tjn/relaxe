@@ -15,5 +15,13 @@ public class PGTestCase
 	protected PersistenceContext<PGImplementation> createPersistenceContext() {
 		return new PGPersistenceContext();
 	}
-
+	
+	@Override
+	protected String getDatabase() {
+		return "pagila";
+	}
+	
+	protected String getUsername() {
+		return "relaxe";
+	}	
 }

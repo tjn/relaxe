@@ -1,46 +1,48 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.rpc;
+package fi.tnie.db.meta.impl.pg.pagila;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.List;
+import java.util.Properties;
 
 import fi.tnie.db.Inspector;
-import fi.tnie.db.ent.EntityException;
+import fi.tnie.db.TestContext;
 import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.env.DefaultConnectionManager;
 import fi.tnie.db.env.DefaultDataAccessContext;
 import fi.tnie.db.env.DriverManagerConnectionFactory;
-import fi.tnie.db.env.Implementation;
+import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.pg.PGImplementation;
-import fi.tnie.db.env.pg.PGPersistenceContext;
 import fi.tnie.db.gen.pg.ent.pub.Film;
 import fi.tnie.db.gen.pg.ent.pub.Language;
-import fi.tnie.db.meta.impl.pg.PGJDBCTestCase;
-import fi.tnie.db.meta.impl.pg.PGTestCase;
-import fi.tnie.db.service.DataAccessException;
 import fi.tnie.db.service.DataAccessSession;
 import fi.tnie.db.service.EntitySession;
 
-public class DataAccessSessionTest 
-	extends PGJDBCTestCase {
+public class PagilaDataAccessSessionTest 
+	extends AbstractPagilaTestCase {
 
-	public void testLoad() throws DataAccessException, EntityException, IllegalArgumentException, IllegalAccessException, IOException {
+	public void testLoad() throws Exception {		
+		logger().debug("testLoad - enter");
 		
 		// fi.tnie.db.gen.pg.ent.LiteralCatalog.getInstance();
 		
-		String jdbcURL = getDatabaseURL();
+		TestContext<PGImplementation> tc = getTestContext();
+				
+		String jdbcURL = tc.getJdbcURL();
+		Properties config = tc.getJdbcConfig();
+		
 		
 		logger().debug("testLoad: jdbcURL=" + jdbcURL);
+		logger().debug("testLoad: jdbcConfig=" + config);
 		
 		DriverManagerConnectionFactory cf = new DriverManagerConnectionFactory();
-		DefaultConnectionManager cm = new DefaultConnectionManager(cf, jdbcURL, getJdbcConfig());
+		DefaultConnectionManager cm = new DefaultConnectionManager(cf, jdbcURL, config);
 		
 		// TODO: make class abstract
-		PGPersistenceContext pc = new PGPersistenceContext(getImplementation());
+		PersistenceContext<PGImplementation> pc = getPersistenceContext();
 
 		DefaultDataAccessContext<PGImplementation> dctx = new DefaultDataAccessContext<PGImplementation>(pc, cm);
 		
@@ -48,10 +50,8 @@ public class DataAccessSessionTest
 		assertNotNull(das);
 		
 		EntitySession es = das.asEntitySession();
-		assertNotNull(es);
-		
-		
-				
+		assertNotNull(es);	
+						
 		Film.QueryTemplate fq = new Film.QueryTemplate();
 		fq.addAllAttributes();
 		
@@ -83,19 +83,9 @@ public class DataAccessSessionTest
 		das.close();
 		
 		logger().debug("testLoad: data.size()=" + data.size());
-				
-//		logger().debug("testLoad: inspector.getInstanceCount() : " + inspector.getInstanceCount());
-//		logger().debug("testLoad: inspector.getReferenceCount(): " + inspector.getReferenceCount());
-		
-		
-		
-		
-		
+		logger().debug("testLoad: inspector.getInstanceCount() : " + inspector.getInstanceCount());
+		logger().debug("testLoad: inspector.getReferenceCount(): " + inspector.getReferenceCount());
+		logger().debug("testLoad - exit");
 	}
-	
-
-	
-	
-	
-	
+		
 }

@@ -8,10 +8,11 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+
+import org.postgresql.util.PGobject;
 
 
 import fi.tnie.db.meta.impl.pg.PGTest;
@@ -47,7 +48,7 @@ public class PGTypeTest
 									
 //			logger().debug("client-info:" + c.getClientInfo());
 						
-			dumpMetaData(st, "SELECT * FROM public.film");
+			dumpMetaDataWithSamples(st, "SELECT * FROM public.film");
 			
 			DatabaseMetaData meta = c.getMetaData();
 			
@@ -126,54 +127,43 @@ public class PGTypeTest
 						
 			c.close();
 		}
-		
-		
-		
-		
-		
 	}
-
-	private void dumpMetaData(Statement st, String q) throws SQLException {
-		ResultSet rs = st.executeQuery(q);
-		ResultSetMetaData meta = rs.getMetaData();
-		int cc = meta.getColumnCount();
+	
+	public void testFullText() throws Exception {
+		Connection c = null;
+		Statement st = null;
 		
-		logger().debug(q);
+		try {
+			c = getCurrent().newConnection();
+			st = c.createStatement();
 		
-		boolean content = rs.next();
-		
-		for (int i = 1; i <= cc; i++) {
-			String label = meta.getColumnLabel(i);
-			String name = meta.getColumnName(i);
-			String className = meta.getColumnClassName(i);
-			int type = meta.getColumnType(i);
-			String typeName = meta.getColumnTypeName(i);
-						
-			Object o = content ? rs.getObject(i) : null;
-			String s = content ? rs.getString(i) : null;
+			ResultSet rs = st.executeQuery("SELECT film_id, fulltext FROM public.film WHERE film_id = 1");
 			
-			logger().debug("ordinal   : " + i);
-			logger().debug("label     : " + label);
-			logger().debug("name      : " + name);
-			logger().debug("type      : " + type + " (" + PrimitiveType.getSQLTypeName(type) + ")");
-			logger().debug("typeName  : " + typeName);
-			logger().debug("className : " + className);
-			logger().debug("content   : " + content);
-			logger().debug("object    : " + o);
-			logger().debug("objType   : " + ((o == null) ? null : o.getClass().getName()));
-			logger().debug("string    : " + (s));
-			
-			if (o != null && o instanceof java.sql.Array) {
-				Array a = (Array) o;
-				logger().debug("arrayBaseType   : " + a.getBaseType() + " (" + PrimitiveType.getSQLTypeName(a.getBaseType()) + ")");
-				logger().debug("arrayBaseTypeName  : " + a.getBaseTypeName());
+			if (rs.next()) {
+				Object fulltext = rs.getObject(2);				
+				logger().debug("testFullText: fulltext=" + fulltext);
+				logger().debug("testFullText: fulltext-type=" + ((fulltext == null) ? null : fulltext.getClass()));
+				
+				PGobject pgo = (PGobject) fulltext;
+				logger().debug("testFullText: pgo.getType()=" + pgo.getType());
+				logger().debug("testFullText: pgo.getValue()=" + pgo.getValue());
+				
+				
+				String fts = rs.getString(2);
+				logger().debug("testFullText: fts=" + fts);
+				
+				
+				
 			}
 			
-						
-			logger().debug("");
+			rs = QueryHelper.doClose(rs);
+			
+			
 		}
-		
-		rs.close();
+		finally {
+			close(st);
+			close(c);
+		}
 	}
 
 }

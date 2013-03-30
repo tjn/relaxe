@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.meta.impl.pg.pagila;
+package fi.tnie.db.meta.impl.mysql.sakila;
 
 import java.sql.Connection;
 
@@ -10,34 +10,34 @@ import fi.tnie.db.AbstractPersistenceManagerTest;
 import fi.tnie.db.SimpleUnificationContext;
 import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.env.PersistenceContext;
-import fi.tnie.db.env.pg.PGImplementation;
-import fi.tnie.db.gen.pg.ent.pub.Actor;
-import fi.tnie.db.gen.pg.ent.pub.Film;
-import fi.tnie.db.gen.pg.ent.pub.FilmActor;
-import fi.tnie.db.gen.pg.ent.pub.Language;
-import fi.tnie.db.gen.pg.ent.pub.PublicFactory;
-import fi.tnie.db.gen.pg.ent.pub.Actor.Factory;
-import fi.tnie.db.gen.pg.ent.pub.Actor.Holder;
-import fi.tnie.db.gen.pg.ent.pub.Actor.MetaData;
-import fi.tnie.db.gen.pg.ent.pub.Actor.Reference;
-import fi.tnie.db.gen.pg.ent.pub.Actor.Type;
-import fi.tnie.db.gen.pg.ent.pub.impl.PublicFactoryImpl;
-import fi.tnie.db.test.PagilaPersistenceContext;
+import fi.tnie.db.env.mysql.MySQLImplementation;
+import fi.tnie.db.gen.sakila.ent.sakila.Film;
+import fi.tnie.db.gen.sakila.ent.sakila.FilmActor;
+import fi.tnie.db.gen.sakila.ent.sakila.Language;
+import fi.tnie.db.gen.sakila.ent.sakila.SakilaFactory;
+import fi.tnie.db.gen.sakila.ent.sakila.impl.SakilaFactoryImpl;
+import fi.tnie.db.gen.sakila.ent.sakila.Actor;
+import fi.tnie.db.gen.sakila.ent.sakila.Actor.Factory;
+import fi.tnie.db.gen.sakila.ent.sakila.Actor.Holder;
+import fi.tnie.db.gen.sakila.ent.sakila.Actor.MetaData;
+import fi.tnie.db.gen.sakila.ent.sakila.Actor.Reference;
+import fi.tnie.db.gen.sakila.ent.sakila.Actor.Type;
+import fi.tnie.db.test.SakilaPersistenceContext;
 
-public class PagilaPersistenceManagerTest
-	extends AbstractPersistenceManagerTest<PGImplementation> {
+public class SakilaPersistenceManagerTest
+	extends AbstractPersistenceManagerTest<MySQLImplementation> {
 		
 	private UnificationContext unificationContext = new SimpleUnificationContext();
-	
+
     public void testMerge() 
-	    throws Exception {
-	    
+    	throws Exception {
+    
 	    Connection c = getConnection();
 	    assertFalse(c.getAutoCommit());
 	    
-	    PublicFactory pf = new PublicFactoryImpl(); 
+	    SakilaFactory sf = new SakilaFactoryImpl(); 
 	    
-	    Actor a = pf.newActor();
+	    Actor a = sf.newActor();
 	    Actor.Content ac = a.getContent();        
 	    ac.setFirstName("Dana");
 	    ac.setLastName("Brooks");
@@ -62,7 +62,7 @@ public class PagilaPersistenceManagerTest
 	    Connection c = getConnection();
 	    assertFalse(c.getAutoCommit());
 	            
-	    PublicFactory pf = new PublicFactoryImpl(); 
+	    SakilaFactory pf = new SakilaFactoryImpl(); 
 	    
 	    Actor a = pf.newActor();
 	    Actor.Content ac = a.getContent();        
@@ -75,12 +75,12 @@ public class PagilaPersistenceManagerTest
 	    	    
 	    Language lang = pf.newLanguage();
 	    lang.getContent().setName("English");	    	    
-	    f.setLanguage(Film.LANGUAGE_ID_FKEY, lang.ref());
+	    f.setLanguage(Film.LANGUAGE, lang.ref());
 	    
 	    FilmActor filmActor = pf.newFilmActor();
 	    
-	    filmActor.setActor(FilmActor.ACTOR_ID_FKEY, a.ref());
-	    filmActor.setFilm(FilmActor.FILM_ID_FKEY, f.ref());
+	    filmActor.setActor(FilmActor.ACTOR, a.ref());
+	    filmActor.setFilm(FilmActor.FILM, f.ref());
 	    	    	    
 	    merge(filmActor, getPersistenceContext(), c);
 	    c.commit();    
@@ -102,8 +102,8 @@ public class PagilaPersistenceManagerTest
 	    
 	    delete(lang);
 	    c.commit();
-	}
-	
+	}    
+    
 	public void testMergeDependent1() throws Exception {
 		setUnificationContext(unificationContext);
 		testMergeDependent();		
@@ -114,18 +114,14 @@ public class PagilaPersistenceManagerTest
 		testMergeDependent();
 	}
 
-	@Override
-	protected PersistenceContext<PGImplementation> createPersistenceContext() {
-		return new PagilaPersistenceContext();
-	}
 
 	@Override
-	protected String getDatabase() {
-		return "pagila";
+	protected PersistenceContext<MySQLImplementation> createPersistenceContext() {
+		return new SakilaPersistenceContext();
 	}
 	
 	@Override
-	protected String getUsername() {
-		return "relaxe_tester";
-	}
+	protected String getDatabase() {
+		return "sakila";
+	}	
 }

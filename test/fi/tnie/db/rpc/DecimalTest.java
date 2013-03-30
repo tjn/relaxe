@@ -3,18 +3,21 @@
  */
 package fi.tnie.db.rpc;
 
-import java.util.logging.Logger;
+
+import fi.tnie.db.Log4JLogger;
+import fi.tnie.db.log.Logger;
 
 import junit.framework.TestCase;
 
 public class DecimalTest extends TestCase {
 
-	private static Logger logger = Logger.getLogger(DecimalTest.class.getName());
+	private static Logger logger = Log4JLogger.getLogger(DecimalTest.class);
 	
 	public void testToString() {
 		Decimal d = null;
-
+		
 		d = Decimal.valueOf(1000, 1);
+				
 		logger().info("testToString: d=" + d);
 		assertEquals("100.0", d.toString());
 				
@@ -43,7 +46,7 @@ public class DecimalTest extends TestCase {
         Decimal a = new Decimal(12345, 3);       
         Decimal b = new Decimal(12345, 2);       
         Decimal c = a.add(b);       
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         assertEquals("135.795", c.toString());
         assertEquals(3, c.getScale());
         assertEquals(135795, c.getUnscaled());
@@ -53,7 +56,7 @@ public class DecimalTest extends TestCase {
         Decimal a = new Decimal(-1, 2);       
         Decimal b = new Decimal(-2, 3); 
         Decimal c = a.add(b);       
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         assertEquals(3, c.getScale());
         assertEquals(-12, c.getUnscaled());       
         assertEquals("-0.012", c.toString());
@@ -62,7 +65,7 @@ public class DecimalTest extends TestCase {
     public void testAdd3() {
         Decimal a = new Decimal(12345, 3);
         Decimal c = a.add(12);       
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         assertEquals(24345, c.getUnscaled());
         assertEquals(3, c.getScale());
     }
@@ -73,7 +76,7 @@ public class DecimalTest extends TestCase {
         Decimal b = new Decimal(2, 3); 
         //  0.03 / 0.002 => 15
         Decimal c = a.divide(b);       
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         assertEquals(15, c.getUnscaled());
         assertEquals(0, c.getScale());
     }
@@ -82,12 +85,12 @@ public class DecimalTest extends TestCase {
     	// 0.02    	
         Decimal a = new Decimal(2, 2);         
         Decimal c = a.normalized();       
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         
     	// 0.020    	
         a = new Decimal(20, 3);         
         c = a.normalized();       
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         
     }
     
@@ -118,28 +121,28 @@ public class DecimalTest extends TestCase {
         a = new Decimal(3, 0);       
         b = new Decimal(1, 0);        
         c = a.subtract(b);            
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         assertEquals(0, c.getScale());
         assertEquals(2, c.getUnscaled());      
 
         a = new Decimal(1, 0);       
         b = new Decimal(3, 0);        
         c = a.subtract(b);            
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         assertEquals(0, c.getScale());
         assertEquals(-2, c.getUnscaled());      
 
         a = new Decimal(10, 1);       
         b = new Decimal(100, 2);        
         c = a.subtract(b);            
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         assertEquals(2, c.getScale());
         assertEquals(0, c.getUnscaled());      
 
         a = new Decimal(50, 2);       
         b = new Decimal(20, 1);        
         c = a.subtract(b);            
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         assertEquals(2, c.getScale());
         assertEquals(-150, c.getUnscaled());     
 
@@ -148,27 +151,27 @@ public class DecimalTest extends TestCase {
     public void testToString2() {
         Decimal a = null;
         a = new Decimal(-12, 3);
-        System.out.println("a: " + a);
+        logger().info("a: " + a);
         assertEquals("-0.012", a.toString());
        
         a = new Decimal(12, 3);
-        System.out.println("a: " + a);
+        logger().info("a: " + a);
         assertEquals("0.012", a.toString());
        
         a = new Decimal(123, 3);
-        System.out.println("a: " + a);
+        logger().info("a: " + a);
         assertEquals("0.123", a.toString());
 
         a = new Decimal(-123, 3);
-        System.out.println("a: " + a);
+        logger().info("a: " + a);
         assertEquals("-0.123", a.toString());
 
         a = new Decimal(12000, 3);
-        System.out.println("a: " + a);
+        logger().info("a: " + a);
         assertEquals("12.000", a.toString());
 
         a = new Decimal(-12000, 3);
-        System.out.println("a: " + a);
+        logger().info("a: " + a);
         assertEquals("-12.000", a.toString());
     }
     
@@ -181,20 +184,20 @@ public class DecimalTest extends TestCase {
     	Decimal c = null; 
 
     	a = new Decimal(123000, 4);     
-        System.out.println("a: " + a);
+        logger().info("a: " + a);
         assertEquals(4, a.getScale());
         assertEquals(123000, a.getUnscaled());       
         assertEquals("12.3000", a.toString());
         
         c = a.normalized();        
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         assertEquals(1, c.getScale());
         assertEquals(123, c.getUnscaled());
         assertEquals("12.3", c.toString());
 
         a = new Decimal(123000, 6);
         c = a.normalized();        
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         assertEquals(3, c.getScale());
         assertEquals(123, c.getUnscaled());
         assertEquals("0.123", c.toString());        
@@ -205,7 +208,7 @@ public class DecimalTest extends TestCase {
 		Decimal c;
 		a = new Decimal(123000, 2);
         c = a.normalized();        
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         assertEquals(0, c.getScale());
         assertEquals(1230, c.getUnscaled());
         assertEquals("1230", c.toString());
@@ -216,7 +219,7 @@ public class DecimalTest extends TestCase {
 		Decimal c;
 		a = new Decimal(-123000, 2);
         c = a.normalized();        
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         assertEquals(0, c.getScale());
         assertEquals(-1230, c.getUnscaled());
         assertEquals("-1230", c.toString());
@@ -227,7 +230,7 @@ public class DecimalTest extends TestCase {
 		Decimal c;
 		a = new Decimal(-123000, 4);
         c = a.normalized();        
-        System.out.println("c: " + c);
+        logger().info("c: " + c);
         assertEquals(1, c.getScale());
         assertEquals(-123, c.getUnscaled());
         assertEquals("-12.3", c.toString());
@@ -292,8 +295,6 @@ public class DecimalTest extends TestCase {
 		logger().info("testNormalize: a=" + a);
 		assertEquals(2, a.getUnscaled());
 		assertEquals(0, a.getScale());
-		
-		
-	}	
+	}
 	
 }

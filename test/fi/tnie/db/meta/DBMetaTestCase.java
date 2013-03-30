@@ -11,9 +11,12 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -39,7 +42,7 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
     public static final String TABLE_CONTINENT = "continent";
     public static final String TABLE_COUNTRY = "country";
     
-    private static Logger logger = Logger.getLogger(DBMetaTestCase.class);
+    private Logger logger = Logger.getLogger(getClass());
     private EnvironmentTestContext environmentContext = null;
     
     private Connection connection = null;    
@@ -49,6 +52,8 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
     
     private TestContext<I> testContext;
     private PersistenceContext<I> persistenceContext;
+    
+    private List<Connection> connectionList = new ArrayList<Connection>();
           
     protected int read(ResultSet rs, int col, Collection<String> dest) 
         throws SQLException {
@@ -130,15 +135,42 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
         
         assertTrue(!baseTables.keySet().isEmpty());
     }
-    public static Logger logger() {
-        return DBMetaTestCase.logger;
+    public Logger logger() {
+//        return DBMetaTestCase.logger;
+        return this.logger;
     }
 
     public void init(I impl) {
-    	init(new SimpleTestContext<I>(impl));
+    	init(new SimpleTestContext<I>(impl, null, getDatabase(), getUsername(), getPassword()));
     }
-    
-    @Override
+       
+    /**
+	 * Get the password to copy to jdbc properties.  
+	 * 
+	 * Default implementation return the value <code>password</code>.
+	 * 
+	 * @return
+	 */
+	protected String getPassword() {
+		return "password";
+	}
+
+	/**
+	 * Get the username to copy to jdbc properties.  
+	 * 
+	 * Defaults to <code>getDatabase()</code>
+	 * 
+	 * @return
+	 */
+	protected String getUsername() {		
+		return getDatabase();
+	}
+
+
+	protected abstract String getDatabase();
+	
+
+	@Override
     public void init(EnvironmentTestContext ctx) {
         
         logger().debug("\n\ninit()");
@@ -165,6 +197,12 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
         Connection c = this.environmentContext.connect();
         assertNotNull(c);
         return c;
+    }
+    
+    public Connection newConnection() throws SQLException {
+    	Connection c = connect();
+    	this.connectionList.add(c);
+    	return c;
     }
     
     
@@ -195,6 +233,12 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
     
 	@Override
     protected void tearDown() throws Exception {
+		for (Connection c : connectionList) {
+			QueryHelper.doClose(c);
+		}		
+		
+		connectionList.clear();		
+		
         this.connection = QueryHelper.doClose(this.connection);
         super.tearDown();
     }
@@ -312,16 +356,32 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
 
 	public TestContext<I> getTestContext(I imp) throws SQLException, QueryException {
 		if (testContext == null) {
-			testContext = new DefaultTestContext<I>(getPersistenceContext());			
+			testContext = createTestContext();			
 		}
 
 		return testContext;
 	}
 
+
+
+	protected DefaultTestContext<I> createTestContext() throws SQLException,
+			QueryException {
+		return new DefaultTestContext<I>(getPersistenceContext(), getDatabase(), getJdbcConfig());
+	}
+
+	protected Properties getJdbcConfig() {
+		Properties defaults = new Properties();
+		defaults.setProperty("user", getUsername());
+		defaults.setProperty("password", getPassword());
+		return defaults;
+	}
+
+
 	public void setTestContext(TestContext<I> testContext) {
 		this.testContext = testContext;
 	}
-	
 
+	
+	
 			
 }

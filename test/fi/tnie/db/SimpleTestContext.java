@@ -47,6 +47,7 @@ public class SimpleTestContext<I extends Implementation<I>>
     	this(impl, null, "pagila", "relaxe_tester", "password");
     }
     
+    
     public SimpleTestContext(I impl, String host, String database, String user, String passwd) {            
         super();                
 		Driver d = load(impl.defaultDriverClassName());
@@ -101,6 +102,7 @@ public class SimpleTestContext<I extends Implementation<I>>
         this.driver = driver;
     }
 
+    @Override
     public String getJdbcURL() {
         return jdbcURL;
     }
@@ -151,13 +153,19 @@ public class SimpleTestContext<I extends Implementation<I>>
 	public Connection newConnection() throws SQLException {		
 		Driver d = this.driver;		
 		Properties cfg = getDriverConfig();
-		Connection c = d.connect(getJdbcURL(), cfg);				
+		Connection c = d.connect(getJdbcURL(), cfg);
+		
+		c.setAutoCommit(false);
 
 		return c;
 	}
 	@Override
 	public PersistenceContext<I> getPersistenceContext() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Properties getJdbcConfig() {
+		return (Properties) this.driverConfig.clone();
 	}
 }

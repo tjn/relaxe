@@ -1,22 +1,21 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.meta.impl.mysql;
+package fi.tnie.db.meta.impl.mysql.sakila;
 
-import fi.tnie.db.AbstractUnitTest;
 import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.mysql.MySQLImplementation;
-import fi.tnie.db.env.mysql.MySQLPersistenceContext;
+import fi.tnie.db.meta.impl.mysql.MySQLTestCase;
+import fi.tnie.db.test.SakilaPersistenceContext;
 
-public class MySQLTestCase
-	extends AbstractUnitTest<MySQLImplementation> {
+public abstract class SakilaTestCase
+	extends MySQLTestCase {
 	
 	@Override
 	protected PersistenceContext<MySQLImplementation> createPersistenceContext() {
-		return new MySQLPersistenceContext();
+		return new SakilaPersistenceContext();
 	}
-	
-	
+		
 	@Override
 	public String getDatabase() {
 		return "sakila";

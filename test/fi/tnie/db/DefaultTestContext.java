@@ -20,34 +20,41 @@ public class DefaultTestContext<I extends Implementation<I>>
 	private Catalog catalog;
 	private PersistenceContext<I> persistenceContext;
 	private Properties jdbcProperties;
-	private String jdbcUrl;
+	private String jdbcURL;
 	
-	public DefaultTestContext(PersistenceContext<I> persistenceContext) throws SQLException, QueryException {
-		this(persistenceContext, "test");
-	}
+//	public DefaultTestContext(PersistenceContext<I> persistenceContext) {
+//		this(persistenceContext, "test");
+//	}
 		
-	public DefaultTestContext(PersistenceContext<I> persistenceContext, String database) throws SQLException, QueryException {		
-		Properties config = createJdbcProperties();
-		init(persistenceContext, database, config);
+//	public DefaultTestContext(PersistenceContext<I> persistenceContext, String database) {
+//		init(persistenceContext, database, createJdbcProperties());
+//	}
+	
+	public DefaultTestContext(PersistenceContext<I> persistenceContext, String database, Properties jdbcProperties) {		
+		init(persistenceContext, null, null, database, jdbcProperties);
 	}
 
-	protected Properties createJdbcProperties() {
-		Properties config = new Properties();		
-		config.setProperty("user", "test");
-		config.setProperty("password", "test");		
-		return config;
-	}
+//	protected Properties createJdbcProperties() {
+//		Properties config = new Properties();		
+//		config.setProperty("user", "test");
+//		config.setProperty("password", "test");		
+//		return config;
+//	}
 
-	private void init(PersistenceContext<I> persistenceContext, String database, Properties jdbcProperties) throws SQLException, QueryException {		
+	private void init(PersistenceContext<I> persistenceContext, String host, Integer port, String database, Properties jdbcProperties) {		
 				
 		if (persistenceContext == null) {
 			throw new NullPointerException("persistenceContext");
 		}
 		
 		this.persistenceContext = persistenceContext;
-		this.jdbcProperties = jdbcProperties;		
-		this.jdbcUrl = persistenceContext.getImplementation().createJdbcUrl(database);
-		
+		this.jdbcProperties = jdbcProperties;
+		I imp = persistenceContext.getImplementation();
+		this.jdbcURL = (port == null) ? imp.createJdbcUrl(host, database) : imp.createJdbcUrl(host, port.intValue(), database);		
+	}
+	
+	public String getJdbcURL() {
+		return jdbcURL;
 	}
 
 	@Override
@@ -77,12 +84,17 @@ public class DefaultTestContext<I extends Implementation<I>>
 		
 		
 		
-		Connection c = DriverManager.getConnection(jdbcUrl, jdbcProperties);		
+		Connection c = DriverManager.getConnection(jdbcURL, jdbcProperties);		
 		return c;
 	}
 	
 	@Override
 	public PersistenceContext<I> getPersistenceContext() {
 		return this.persistenceContext;
+	}
+	
+	@Override
+	public Properties getJdbcConfig() {
+		return this.jdbcProperties;
 	}
 }

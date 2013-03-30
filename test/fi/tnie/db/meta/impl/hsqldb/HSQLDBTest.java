@@ -28,6 +28,16 @@ public class HSQLDBTest
 	}
 	
 	
+	@Override
+	public String getDatabase() {
+		return "test";
+	}
+	
+	@Override
+	public String getUser() {
+		return null;
+	}
+	
 	public void testConnection() throws SQLException, QueryException {
 		
 		TestContext<HSQLDBImplementation> imp = getContext();

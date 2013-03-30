@@ -5,30 +5,40 @@ package fi.tnie.db.meta.impl.pg;
 
 
 import fi.tnie.db.AbstractUnitTest;
-import fi.tnie.db.TestContext;
+
 import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.env.pg.PGPersistenceContext;
 
-public class PGTest
+public abstract class PGTest
 	extends AbstractUnitTest<PGImplementation>
 {	
 	public PGTest() {
 		super();	
 	}
 		
-	public void testA() {		
-		logger().debug("enter: " + getName());
-		TestContext<PGImplementation> imp = getContext();
-		assertNotNull(imp);
-		logger().debug("exit: " + getName());
+//	public void testA() {		
+//		logger().debug("enter: " + getName());
+//		TestContext<PGImplementation> imp = getContext();
+//		assertNotNull(imp);
+//		logger().debug("exit: " + getName());
+//	}
+//
+//	public void testB() {		
+//		logger().debug("enter: " + getName());
+//		TestContext<PGImplementation> imp = getContext();
+//		assertNotNull(imp);
+//		logger().debug("exit: " + getName());
+//	}
+	
+	@Override
+	public String getDatabase() {
+		return "pagila";
 	}
-
-	public void testB() {		
-		logger().debug("enter: " + getName());
-		TestContext<PGImplementation> imp = getContext();
-		assertNotNull(imp);
-		logger().debug("exit: " + getName());
+	
+	@Override
+	public String getUser() {
+		return "relaxe_tester";
 	}
 
 

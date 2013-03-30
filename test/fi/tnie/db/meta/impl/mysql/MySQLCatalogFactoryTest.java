@@ -17,12 +17,13 @@ import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.mysql.MySQLCatalogFactory;
 import fi.tnie.db.env.mysql.MySQLImplementation;
 import fi.tnie.db.env.mysql.MySQLPersistenceContext;
+import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.impl.DefaultCatalogMap;
 import fi.tnie.db.meta.impl.DefaultMutableCatalog;
 import fi.tnie.db.meta.impl.DefaultMutableSchema;
 
-public class MySQLCatalogFactoryTest extends MySQLTestCase {
+public class MySQLCatalogFactoryTest extends DBMetaTestCase<MySQLImplementation> {
 
 	
     public void testGetCatalogNameFromSchemas() 
@@ -122,10 +123,10 @@ public class MySQLCatalogFactoryTest extends MySQLTestCase {
         return getConnection().getMetaData();
     }
     
-//    private MySQLCatalogFactory factory() {
-//        MySQLEnvironment e = new MySQLEnvironment();
-//        return new MySQLCatalogFactory(e);
-//    }
+    public MySQLCatalogFactory factory() {
+        MySQLEnvironment e = new MySQLEnvironment();
+        return new MySQLCatalogFactory(e);
+    }
     
     public void testCreate() 
         throws Exception {        
@@ -157,13 +158,18 @@ public class MySQLCatalogFactoryTest extends MySQLTestCase {
         factory.populateForeignKeys(cm, meta);
     }
     
-    @Override
-	public MySQLCatalogFactory factory() {        
-        return new MySQLCatalogFactory(implementation().environment());        
-    }    
+//    @Override
+//	public MySQLCatalogFactory factory() {        
+//        return new MySQLCatalogFactory(implementation().environment());        
+//    }    
     
     @Override
-    protected PersistenceContext<MySQLImplementation> getPersistenceContext() {
+    protected PersistenceContext<MySQLImplementation> createPersistenceContext() {
        	return new MySQLPersistenceContext();
     }
+
+	@Override
+	protected String getDatabase() {
+		return "sakila";
+	}
 }

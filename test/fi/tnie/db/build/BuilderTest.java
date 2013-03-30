@@ -51,7 +51,7 @@ public abstract class BuilderTest<I extends Implementation<I>>
     
     // public static final String ROOT_PACKAGE = "fi.tnie.testapp";
     
-    private static Logger logger = Logger.getLogger(BuilderTest.class);
+    // private static Logger logger = Logger.getLogger(BuilderTest.class);
         
 //    private String rootPackage = null;
     private File sourceDir = null;
@@ -273,9 +273,9 @@ public abstract class BuilderTest<I extends Implementation<I>>
         logger().debug("generation OK.");
     }
 
-    public static Logger logger() {
-        return BuilderTest.logger;
-    }
+//    public Logger logger() {
+//        return BuilderTest.logger;
+//    }
     
     
     private EntityContext load(String n, ClassLoader cl) 
