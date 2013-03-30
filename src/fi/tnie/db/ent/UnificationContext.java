@@ -8,6 +8,4 @@ public interface UnificationContext
 {	
 	public void close();
 	public void add(ContextRegistration r);	
-	// boolean contains(ContextRegistration r);
-	
 }

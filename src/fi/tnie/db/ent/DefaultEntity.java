@@ -4,7 +4,6 @@
 package fi.tnie.db.ent;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Set;
 
 import fi.tnie.db.ent.value.EntityKey;
@@ -53,119 +52,10 @@ public abstract class DefaultEntity<
 	 *
 	 */
 	private static final long serialVersionUID = 3498823449580706161L;
-//	private Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> refs;
-			
-//	private List<Map<A, ?>> valueMapList;
-//	
-//	private Map<A, VarcharHolder> varcharValueMap;
-//	private Map<A, IntegerHolder> intValueMap;
-//	private Map<A, CharHolder> charValueMap;
-//	private Map<A, DateHolder> dateValueMap;
-//	private Map<A, TimestampHolder> timestampValueMap;
-//	private Map<A, TimeHolder> timeValueMap;
-//	private Map<A, DoubleHolder> doubleValueMap;
-//	private Map<A, DecimalHolder> decimalValueMap;
-//	
-//	private Map<A, IntervalHolder.YearMonth> yearMonthIntervalValueMap;
-//	private Map<A, IntervalHolder.DayTime> dayTimeIntervalValueMap;
-	
-//	private static Logger logger = Logger.getLogger(DefaultEntity.class);
 
 	protected DefaultEntity() {
 		super();
 	}
-
-//	@Override
-//	protected Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> references() {
-//		if (refs == null) {
-//			refs = new HashMap<R, ReferenceHolder<?,?,?,?,?,?>>();
-//		}
-//
-//		return refs;
-//	}
-
-//	private Map<A, IntegerHolder> getIntValueMap() {
-//		if (intValueMap == null) {
-//			intValueMap = new HashMap<A, IntegerHolder>();
-//			getValueMapList().add(intValueMap);
-//		}
-//
-//		return intValueMap;
-//	}
-//
-//	private Map<A, VarcharHolder> getVarcharValueMap() {
-//		if (varcharValueMap == null) {
-//			varcharValueMap = new HashMap<A, VarcharHolder>();
-//			getValueMapList().add(varcharValueMap);
-//		}
-//
-//		return varcharValueMap;
-//	}
-//
-//	private Map<A, DateHolder> getDateValueMap() {
-//		if (dateValueMap == null) {
-//			dateValueMap = new HashMap<A, DateHolder>();
-//			getValueMapList().add(dateValueMap);
-//		}
-//
-//		return dateValueMap;
-//	}
-//
-//	@Override
-//	public DateHolder getDate(DateKey<A, T, E> k) {
-//		return getDateValueMap().get(k.name());	
-//	}
-//
-//	private Map<A, DoubleHolder> getDoubleValueMap() {
-//		if (doubleValueMap == null) {
-//			doubleValueMap = new HashMap<A, DoubleHolder>();
-//			getValueMapList().add(doubleValueMap);
-//		}
-//
-//		return doubleValueMap;
-//	}
-//	
-//	private Map<A, DecimalHolder> getDecimalValueMap() {
-//		if (decimalValueMap == null) {
-//			decimalValueMap = new HashMap<A, DecimalHolder>();
-//			getValueMapList().add(decimalValueMap);
-//		}
-//
-//		return decimalValueMap;
-//	}
-//
-//	@Override
-//	public DoubleHolder getDouble(DoubleKey<A, T, E> k) {
-//		return getDoubleValueMap().get(k.name());	
-//	}	
-//
-//	@Override
-//	public DecimalHolder getDecimal(DecimalKey<A, T, E> k) {
-//		return getDecimalValueMap().get(k.name());	
-//	}	
-//
-//	@Override
-//	public IntegerHolder getInteger(IntegerKey<A, T, E> k) {
-//		return getIntValueMap().get(k.name());
-//	}
-//	
-//	@Override
-//	public fi.tnie.db.rpc.IntervalHolder.DayTime getInterval(IntervalKey.DayTime<A, T, E> k) {
-//		return getDayTimeIntervalValueMap().get(k.name());
-//	}
-	
-//	@Override
-//	public fi.tnie.db.rpc.IntervalHolder.YearMonth getInterval(IntervalKey.YearMonth<A, T, E> k) {
-//		return getYearMonthIntervalValueMap().get(k.name());
-//	}
-//	
-//	
-//
-//	@Override
-//	public VarcharHolder getVarchar(VarcharKey<A, T, E> k) {
-//		return getVarcharValueMap().get(k.name());
-//	}
-
 	
 	@Override
 	public <
@@ -179,41 +69,6 @@ public abstract class DefaultEntity<
 	}
 		
 
-//	private Map<A, TimestampHolder> getTimestampValueMap() {
-//		if (timestampValueMap == null) {
-//			timestampValueMap = new HashMap<A, TimestampHolder>();
-//			getValueMapList().add(timestampValueMap);
-//		}
-//
-//		return timestampValueMap;
-//	}
-//	
-//	private Map<A, TimeHolder> getTimeValueMap() {
-//		if (timeValueMap == null) {
-//			timeValueMap = new HashMap<A, TimeHolder>();
-//		}
-//
-//		return timeValueMap;
-//	}
-//
-//	@Override
-//	public TimestampHolder getTimestamp(TimestampKey<A, T, E> k) {
-//		return getTimestampValueMap().get(k.name());
-//	}
-//	
-//	@Override
-//	public TimeHolder getTime(TimeKey<A, T, E> k) {
-//		return getTimeValueMap().get(k.name());
-//	}
-//	
-//	private Map<A, CharHolder> getCharValueMap() {
-//		if (charValueMap == null) {
-//			charValueMap = new HashMap<A, CharHolder>();
-//			getValueMapList().add(charValueMap);
-//		}
-//
-//		return charValueMap;
-//	}
 
 	public <
 		S extends Serializable, 
@@ -223,80 +78,25 @@ public abstract class DefaultEntity<
 	> 
 	void set(K k, PH newValue) throws EntityRuntimeException {
 		k.set(self(), newValue);		
-	};
-
-//	@Override
-//	public CharHolder getChar(CharKey<A, T, E> k) {
-//		return getCharValueMap().get(k.name());
-//	}
+	}
 
 	public PrimitiveHolder<?, ?, ?> get(A attribute) throws EntityRuntimeException {
 		return getMetaData().getKey(attribute).get(self());
 	}
 
-//	@Override
-//	public void setInteger(IntegerKey<A, T, E> k, IntegerHolder newValue) {
-//		getIntValueMap().put(k.name(), newValue);		
-//	}
-//
-//	@Override
-//	public void setVarchar(VarcharKey<A, T, E> k, VarcharHolder newValue) {
-//		getVarcharValueMap().put(k.name(), newValue);		
-//	}
-//
-//	@Override
-//	public void setChar(CharKey<A, T, E> k, CharHolder newValue) {
-//		getCharValueMap().put(k.name(), newValue);		
-//	}
-//
-//	@Override
-//	public void setDate(DateKey<A, T, E> k, DateHolder newValue) {
-//		getDateValueMap().put(k.name(), newValue);		
-//	}
-//
-//	@Override
-//	public void setDouble(DoubleKey<A, T, E> k, DoubleHolder newValue) {
-//		getDoubleValueMap().put(k.name(), newValue);		
-//	}
-//
-//	@Override
-//	public void setDecimal(DecimalKey<A, T, E> k, DecimalHolder newValue) {
-//		getDecimalValueMap().put(k.name(), newValue);		
-//	}
-//
-//	@Override
-//	public void setTimestamp(TimestampKey<A, T, E> k, TimestampHolder newValue) {
-//		getTimestampValueMap().put(k.name(), newValue);		
-//	}
-//	
-//	@Override
-//	public void setTime(TimeKey<A, T, E> k, TimeHolder newValue) {
-//		getTimeValueMap().put(k.name(), newValue);		
-//	}
-//	
-//	@Override
-//	public void setInterval(IntervalKey.DayTime<A, T, E> k,
-//			fi.tnie.db.rpc.IntervalHolder.DayTime newValue) {
-//		getDayTimeIntervalValueMap().put(k.name(), newValue);
-//	}
-//	
-//	@Override
-//	public void setInterval(IntervalKey.YearMonth<A, T, E> k,
-//			fi.tnie.db.rpc.IntervalHolder.YearMonth newValue) {
-//		getYearMonthIntervalValueMap().put(k.name(), newValue);		
-//	}
 	
 	public fi.tnie.db.rpc.PrimitiveHolder<?,?,?> value(A attribute) throws EntityRuntimeException {
 		PrimitiveKey<A, E, ?, ?, ?, ?> key = getMetaData().getKey(attribute);
 		return key.get(self());
-	};
+	}
 
 	public <
 		S extends Serializable, 
 		P extends fi.tnie.db.types.PrimitiveType<P>, 
 		PH extends fi.tnie.db.rpc.PrimitiveHolder<S, P, PH>, 
 		K extends fi.tnie.db.ent.value.PrimitiveKey<A, E, S, P, PH, K>
-	> PH get(K k) throws EntityRuntimeException {
+	> 
+	PH get(K k) throws EntityRuntimeException {
 		return k.get(self());
 	}
 	
@@ -314,38 +114,7 @@ public abstract class DefaultEntity<
 		RK extends EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, RK>
 	> RH getRef(RK k) {
 		return k.get(self());
-	};
-	
-
-//	private Map<A, IntervalHolder.YearMonth> getYearMonthIntervalValueMap() {
-//		if (yearMonthIntervalValueMap == null) {
-//			yearMonthIntervalValueMap = new HashMap<A, IntervalHolder.YearMonth>();
-//			getValueMapList().add(yearMonthIntervalValueMap);
-//		}
-//
-//		return yearMonthIntervalValueMap;
-//	}
-//
-//	private Map<A, IntervalHolder.DayTime> getDayTimeIntervalValueMap() {
-//		if (dayTimeIntervalValueMap == null) {
-//			dayTimeIntervalValueMap = new HashMap<A, IntervalHolder.DayTime>();
-//			getValueMapList().add(dayTimeIntervalValueMap);
-//		}
-//
-//		return dayTimeIntervalValueMap;
-//	};
-	
-//	private Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> getRefs() {
-//		if (refs == null) {
-//			refs = new HashMap<R, ReferenceHolder<?, ?, ?, ?, ?, ?>>();			
-//		}
-//
-//		return refs;
-//	};
-	
-//	public <P extends fi.tnie.db.types.ReferenceType<P>, G extends fi.tnie.db.ent.Entity<?,?,P,G>, H extends fi.tnie.db.rpc.ReferenceHolder<?,?,P,G>, K extends fi.tnie.db.ent.value.EntityKey<A,R,T,E,P,G,H,? extends K>> void setRef(K k, H newValue) {
-//		getRefs().put(k.name(), newValue);
-//	}
+	}
 	
 	public <
 		RA extends Attribute,
@@ -360,12 +129,7 @@ public abstract class DefaultEntity<
 	> 
 	void setRef(RK k, RH newValue) {		
 		k.set(self(), newValue);
-	};
-	
-//	public Entity<?, ?, ?, ?, ?, ?, ?> getRef(R k) {
-//		ReferenceHolder<?, ?, ?, ?, ?, ?> rh = getRefs().get(k);				
-//		return (rh == null) ? null : rh.value();		
-//	}
+	}
 	
 	public Entity<?, ?, ?, ?, ?, ?, ?, ?> getRef(R r) {
 		EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = getMetaData().getEntityKey(r);
@@ -393,11 +157,6 @@ public abstract class DefaultEntity<
 		
 		return dest;				
 	}
-	
-//	@Override
-//	public E unify(IdentityContext ctx) {	
-//		return getMetaData().unify(ctx, self());
-//	}
 
 	public <		
 		VV extends Serializable,
@@ -431,47 +190,12 @@ public abstract class DefaultEntity<
 	}
 	
 	@Override
-	public Set<A> attributes() {
-		return Collections.emptySet();
-//		if (this.valueMapList == null) {
-//			return Collections.emptySet();
-//		}
-//		
-//		Set<A> as = new HashSet<A>();				
-//		
-//		for (Map<A, ?> vm : valueMapList) {
-//			if (!vm.isEmpty()) {			
-//				as.addAll(vm.keySet());
-//			}
-//		}
-//				
-//		return as;
-//		return 
-	}
-	
-//	private List<Map<A, ?>> getValueMapList() {
-//		if (valueMapList == null) {
-//			valueMapList = new ArrayList<Map<A, ?>>();			
-//		}
-//
-//		return valueMapList;
-//	}
+	public abstract Set<A> attributes();
 	
 	
 	public fi.tnie.db.rpc.ReferenceHolder<?,?,?,?,?,?,?> ref(R ref) {
 		EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = getMetaData().getEntityKey(ref);
 		ReferenceHolder<?, ?, ?, ?, ?, ?, ?> rh = getRef(k.self());
 		return rh;
-	};
-	
-	
-	
-//	public boolean has(R r) {
-//		if (r == null || this.refs == null) {
-//			return false;
-//		}
-//		
-//		ReferenceHolder<?, ?, ?, ?, ?, ?> rh = this.refs.get(r);		
-//		return (rh != null);		
-//	};
+	}	
 }

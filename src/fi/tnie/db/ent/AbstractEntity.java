@@ -88,28 +88,7 @@ public abstract class AbstractEntity<
 		ForeignKey fk = m.getForeignKey(r);
 		Column fkcol = fk.columns().get(column);		
 		return ref.get(fkcol);
-	}
-	
-//	public void set(R r, ReferenceHolder<?, ?, ?, ?, ?, ?> value) {
-//		if (r == null) {
-//			throw new NullPointerException("r");
-//		}
-//		
-//		if (value == null) {
-//			throw new NullPointerException("value");
-//		}
-//		
-//		if (r.type() != value.getType()) {
-//			throw new IllegalArgumentException("type mismatch: expected:" + r.type() + ", argument:" + value.getType());
-//		}		
-//		
-//		references().put(r, value);		
-//	}
-	
-	
-//	public ReferenceHolder<?, ?, ?, ?, ?, ?> ref(R ref) {    	
-//		return references().get(ref);    	
-//	}
+	}	
 
 	/**
 	 * Returns a type-safe self-reference. Implementation must return <code>this</code>.
