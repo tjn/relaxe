@@ -2289,8 +2289,8 @@ public class SourceGenerator {
 				
 //				Sample output: 
 //				@Override
-//				public IdentityMap<Attribute, Reference, Type, TestGeneratedKey, TestGeneratedKey.Holder> createIdentityMap() {
-//					return new IntIdentityMap<Attribute, Reference, Type, TestGeneratedKey, TestGeneratedKey.Holder>(TestGeneratedKey.ABC);
+//				public IdentityMap<Attribute, Reference, Type, TestGeneratedKey, TestGeneratedKey.Holder, TestGeneratedKey.MetaData> createIdentityMap() {
+//					return new IntIdentityMap<Attribute, Reference, Type, TestGeneratedKey, TestGeneratedKey.Holder, TestGeneratedKey.MetaData>(TestGeneratedKey.ABC);
 //				} 
 				
 				Class<?> aim = ai.getIdentityMapType();
@@ -2312,6 +2312,9 @@ public class SourceGenerator {
 					buf.append(", ");
 					buf.append(intf.getUnqualifiedName());
 					buf.append(".Holder");
+					buf.append(", ");
+					buf.append(intf.getUnqualifiedName());
+					buf.append(".MetaData");					
 					buf.append("> createIdentityMap() {\n");
 					buf.append("return new ");
 					buf.append(aim.getCanonicalName());
@@ -2324,6 +2327,9 @@ public class SourceGenerator {
 					buf.append(", ");
 					buf.append(intf.getUnqualifiedName());
 					buf.append(".Holder");
+					buf.append(", ");
+					buf.append(intf.getUnqualifiedName());
+					buf.append(".MetaData");					
 					buf.append(">(");
 					buf.append(intf.getUnqualifiedName());
 					buf.append(".");

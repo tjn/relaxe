@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityRuntimeException;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.AbstractPrimitiveKey;
@@ -18,16 +19,16 @@ import fi.tnie.db.types.ReferenceType;
 public class AbstractKeyIdentityMap<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, RH, ?, ?, ?>,
-	E extends Entity<A, R, T, E, RH, ?, ?, ?>,
-	RH extends ReferenceHolder<A, R, T, E, RH, ?, ?>,
+	T extends ReferenceType<A, R, T, E, RH, ?, M, ?>,
+	E extends Entity<A, R, T, E, RH, ?, M, ?>,
+	RH extends ReferenceHolder<A, R, T, E, RH, M, ?>,
+	M extends EntityMetaData<A, R, T, E, RH, ?, M, ?>,
 	V extends Serializable,
 	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<V, P, H>,
-	
+	H extends PrimitiveHolder<V, P, H>,	
 	K extends AbstractPrimitiveKey<A, E, V, P, H, K>
 >
-	extends AbstractIdentityMap<A, R, T, E, RH, V>
+	extends AbstractIdentityMap<A, R, T, E, RH, M, V>
 {
 	private K key;
 	

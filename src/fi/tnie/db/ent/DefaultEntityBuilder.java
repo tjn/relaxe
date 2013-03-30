@@ -43,7 +43,7 @@ public abstract class DefaultEntityBuilder<
 	private List<AttributeWriter<A, E>> primaryKeyWriterList = new ArrayList<AttributeWriter<A, E>>();
 	private List<AttributeWriter<A, E>> attributeWriterList = new ArrayList<AttributeWriter<A, E>>();
 			
-	private EntityIdentityMap<A, R, T, E, H> identityMap;
+	private EntityIdentityMap<A, R, T, E, H, M> identityMap;
 
 	public DefaultEntityBuilder(TableReference referencing, ForeignKey referencedBy, TableReference tableRef, EntityBuildContext ctx, UnificationContext unificationContext) 
 		throws EntityException {
@@ -59,7 +59,7 @@ public abstract class DefaultEntityBuilder<
 		M meta = getMetaData();	
 				
 		if (unificationContext == null) {
-			this.identityMap = new ReferenceIdentityMap<A, R, T, E, H>();
+			this.identityMap = new ReferenceIdentityMap<A, R, T, E, H, M>();
 		}
 		else {
 			this.identityMap = meta.getIdentityMap(unificationContext);	
