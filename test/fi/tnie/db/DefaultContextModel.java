@@ -4,7 +4,6 @@
 package fi.tnie.db;
 
 import fi.tnie.db.env.Implementation;
-import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.model.DefaultMutableValueModel;
 import fi.tnie.db.model.ValueModel;
 

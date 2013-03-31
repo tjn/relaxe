@@ -15,8 +15,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
 import fi.tnie.db.DefaultEntityContext;
 import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.ent.EntityContext;

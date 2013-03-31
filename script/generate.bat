@@ -15,7 +15,7 @@ SET TEMPLATE_DIR=%ROOT%\war\WEB-INF\templates
 SET ROOT_PACKAGE=fi.tnie.db.gen.%TARGET%.ent
 REM SET CC_PACKAGE=fi.tnie.db.%TARGET%.genctx
 SET CC_PACKAGE=fi.tnie.db.%TARGET%.genctx
-SET GENSRC=%ROOT%\out\%TARGET%\src
+SET GENSRC=%ROOT%\%IMPDIR%\%TARGET%\src\out
 
 MKDIR %ROOT%\gen 2> nul
 MKDIR %GENSRC% 2> nul
@@ -29,7 +29,7 @@ SET META_GEN_CLASSPATH=%META_GEN_CLASSPATH%;%JARDIR%\log4j.jar
 
 REM ready to go:
 REM echo would run: 
-java -classpath %META_GEN_CLASSPATH% fi.tnie.db.build.Builder -g %GENSRC% -t %TEMPLATE_DIR% -j %JDBC_CONFIG% -e %ENV% --root-package %ROOT_PACKAGE% --type-mapper-implementation %TYPE_MAPPER_IMPLEMENTATION% --catalog-context-package %CC_PACKAGE% -u %JDBC_URL% || echo generation failed
+java -classpath %META_GEN_CLASSPATH% fi.tnie.db.build.Builder -g %GENSRC% -t %TEMPLATE_DIR% -j %JDBC_CONFIG% -e %ENV% --root-package %ROOT_PACKAGE% --type-mapper-implementation %TYPE_MAPPER_IMPLEMENTATION% --catalog-context-package %CC_PACKAGE% %BUILDER_OPTS% -u %JDBC_URL% || echo generation failed
 GOTO :finally
 
 :no_target

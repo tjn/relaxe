@@ -29,7 +29,7 @@ public class PagilaDataAccessSessionTest
 		
 		// fi.tnie.db.gen.pg.ent.LiteralCatalog.getInstance();
 		
-		TestContext<PGImplementation> tc = getTestContext();
+		TestContext<PGImplementation> tc = getContext();
 				
 		String jdbcURL = tc.getJdbcURL();
 		Properties config = tc.getJdbcConfig();

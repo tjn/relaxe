@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.env.Implementation;
-import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.env.util.ResultSetWriter;
 import fi.tnie.db.expr.CountFunction;
 import fi.tnie.db.expr.DefaultTableExpression;

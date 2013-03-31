@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.env.pg;
 
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import fi.tnie.db.DefaultValueExtractorFactory;

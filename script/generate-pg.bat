@@ -1,13 +1,16 @@
 @echo off
 
-tstamp
+REM tstamp
 
 SET ROOT=%~dp0..
-SET TARGET=pg
-SET JDBC_CONFIG=%ROOT%\%TARGET%.properties
+REM SET TARGET=pg
+SET IMPDIR=pg
+SET JDBC_CONFIG=%ROOT%\config\%IMPDIR%\%TARGET%.properties
 SET ENV=fi.tnie.db.env.pg.PGImplementation
 
-SET META_GEN_CLASSPATH=%ROOT%\lib\postgresql-8.4-701.jdbc3.jar
+echo %TARGET%
+
+SET META_GEN_CLASSPATH=%ROOT%\lib\postgresql-9.2-1002.jdbc4.jar
 
 generate
 @echo on

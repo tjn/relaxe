@@ -54,7 +54,6 @@ import fi.tnie.db.expr.ValueParameter;
 import fi.tnie.db.expr.ValueRow;
 import fi.tnie.db.expr.op.AndPredicate;
 import fi.tnie.db.expr.op.Comparison;
-import fi.tnie.db.log.JavaLogger;
 import fi.tnie.db.log.Logger;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
@@ -117,7 +116,8 @@ public class PersistenceManager<
     private PersistenceContext<?> persistenceContext = null;
     private UnificationContext unificationContext;
 
-    private static Logger logger = JavaLogger.getLogger(PersistenceManager.class);
+    // private static Logger logger = JavaLogger.getLogger(PersistenceManager.class);
+    private static Logger logger = Log4JLogger.getLogger(PersistenceManager.class);
     
     private MergeMode mergeMode;        
     
@@ -654,10 +654,12 @@ public class PersistenceManager<
 	}
 
 	public PersistenceContext<?> getPersistenceContext() {
+		logger.debug("get persistenceContext: " + persistenceContext);		
 		return persistenceContext;
 	}
 
 	private void setPersistenceContext(PersistenceContext<?> persistenceContext) {
+		logger.debug("set persistenceContext: " + persistenceContext);		
 		this.persistenceContext = persistenceContext;
 	}
 	

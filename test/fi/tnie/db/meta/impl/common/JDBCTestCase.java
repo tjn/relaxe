@@ -17,7 +17,6 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.StatementExecutor;
 import fi.tnie.db.exec.QueryProcessor;
 import fi.tnie.db.expr.Statement;
 import fi.tnie.db.expr.ddl.DropConstraint;

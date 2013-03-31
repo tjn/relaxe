@@ -3,6 +3,8 @@
  */
 package fi.tnie.db;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -15,10 +17,17 @@ import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
 
+import fi.tnie.db.ent.Attribute;
+import fi.tnie.db.ent.Content;
+import fi.tnie.db.ent.Entity;
+import fi.tnie.db.ent.EntityFactory;
+import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.log.DefaultLogger;
+import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.PrimitiveType;
+import fi.tnie.db.types.ReferenceType;
 
 public abstract class AbstractUnitTest<I extends Implementation<I>>
 	extends TestCase {
@@ -37,8 +46,8 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	public TestContext<I> getCurrent() {
 		return current;
 	}
-	
 		
+	protected abstract String implementationTag();
 		
 	
 	@Override
@@ -49,7 +58,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		init();
 	}	
 	
-	protected final TestContext<I> getContext() {
+	protected final TestContext<I> getContext() throws IOException {
 		if (current == null) {
 			current = createContext();			
 		}
@@ -57,7 +66,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		return current;
 	}
 
-	protected TestContext<I> createContext() {
+	protected TestContext<I> createContext() throws IOException {
 		// I imp = getImplementation();
 		PersistenceContext<I> pc = getPersistenceContext();
 		String d = getDatabase();
@@ -68,11 +77,33 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		return tc;
 	}
 
-	protected Properties getJdbcConfig() {
+	protected Properties getJdbcConfig()
+		throws IOException {
 		Properties c = new Properties();
 		c.setProperty("user", getUser());
 		c.setProperty("password", getPassword());		
 		return c;
+	}
+	
+	protected Properties getJdbcConfigForDatabase() throws IOException {
+		String d = getDatabase();
+		StringBuilder buf = new StringBuilder("/").append(implementationTag()).append("/").append(d).append(".properties");
+		return getJdbcConfig(buf.toString());
+	}
+	
+	
+	protected Properties getJdbcConfig(String profile) 
+		throws IOException {
+		InputStream in = getClass().getResourceAsStream(profile);
+		
+		if (in == null) {
+			throw new IllegalArgumentException("no configuration file for profile: " + profile);
+		}
+		
+		Properties config = new Properties();
+		config.load(in);
+		in.close();
+		return config;		
 	}
 
 	public String getHost() {
@@ -80,7 +111,10 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	}
 	
 	public abstract String getDatabase();
-	public abstract String getUser();
+	
+	public String getUser() {
+		return null;
+	}
 	
 	public String getPassword() {
 		return "password"; 
@@ -107,7 +141,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		return logger;
 	}
 	
-	public Connection newConnection() throws SQLException, ClassNotFoundException {
+	public Connection newConnection() throws SQLException, ClassNotFoundException, IOException {
 		return getContext().newConnection();
 	}
 	
@@ -120,6 +154,10 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	
 	public Statement close(Statement st) {
 		return QueryHelper.doClose(st);
+	}
+	
+	public ResultSet close(ResultSet rs) {
+		return QueryHelper.doClose(rs);
 	}
 	
 	
@@ -205,5 +243,41 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 						
 			logger().debug("");
 		}
+	}
+
+
+	protected int executeUpdate(String q) throws Exception {
+		Connection c = null;
+		Statement st = null;
+		
+		try {		
+			c = newConnection();		
+			st = c.createStatement();		
+			
+			logger().debug("executing: " + q);
+			int u = st.executeUpdate(q);
+			logger().debug("executed: " + u);
+			return u;
+		}
+		finally {
+			st = QueryHelper.doClose(st);
+			c = QueryHelper.doClose(c);
+		}
+	}
+	
+	
+	protected <
+		A extends Attribute, 
+		R extends fi.tnie.db.ent.Reference, 
+		T extends ReferenceType<A, R, T, E, H, F, M, C>, 
+		E extends Entity<A, R, T, E, H, F, M, C>,
+		H extends ReferenceHolder<A, R, T, E, H, M, C>,
+		F extends EntityFactory<E, H, M, F, C>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
+		C extends Content
+	>
+	PersistenceManager<A, R, T, E, H, F, M, C> create(E e) {
+		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, getPersistenceContext(), null);
+		return pm;
 	}	
 }

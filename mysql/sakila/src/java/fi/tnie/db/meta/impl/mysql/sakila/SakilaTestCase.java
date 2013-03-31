@@ -5,11 +5,11 @@ package fi.tnie.db.meta.impl.mysql.sakila;
 
 import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.mysql.MySQLImplementation;
-import fi.tnie.db.meta.impl.mysql.MySQLTestCase;
+import fi.tnie.db.mysql.test.AbstractMySQLTestCase;
 import fi.tnie.db.test.SakilaPersistenceContext;
 
 public abstract class SakilaTestCase
-	extends MySQLTestCase {
+	extends AbstractMySQLTestCase {
 	
 	@Override
 	protected PersistenceContext<MySQLImplementation> createPersistenceContext() {
@@ -19,10 +19,5 @@ public abstract class SakilaTestCase
 	@Override
 	public String getDatabase() {
 		return "sakila";
-	}
-	
-	@Override
-	public String getUser() {
-		return "sakila";
-	}
+	}	
 }

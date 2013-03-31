@@ -4,7 +4,18 @@
 	<classpathentry kind="src" path="tools"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="out/pg/src"/>
-	<classpathentry kind="src" path="out/sakila/src"/>
+	<classpathentry kind="src" path="config"/>
+	<classpathentry kind="src" path="pg/pagila/src/java"/>
+	<classpathentry kind="src" path="pg/pagila/src/test"/>
+	<classpathentry kind="src" path="pg/common"/>
+	<classpathentry kind="src" path="pg/pagila/src/out"/>	
+	<classpathentry kind="src" path="mysql/common"/>
+	<classpathentry kind="src" path="mysql/samples/src/out"/>
+	<classpathentry kind="src" path="mysql/samples/src/java"/>
+	<classpathentry kind="src" path="mysql/samples/src/test"/>
+	<classpathentry kind="src" path="mysql/sakila/src/test"/>
+	<classpathentry kind="src" path="mysql/sakila/src/java"/>
+	<classpathentry kind="src" path="mysql/sakila/src/out"/>	
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache Log4J"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>

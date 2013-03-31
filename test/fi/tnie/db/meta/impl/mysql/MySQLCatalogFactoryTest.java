@@ -123,7 +123,8 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase<MySQLImplementation>
         return getConnection().getMetaData();
     }
     
-    public MySQLCatalogFactory factory() {
+    @Override
+	public MySQLCatalogFactory factory() {
         MySQLEnvironment e = new MySQLEnvironment();
         return new MySQLCatalogFactory(e);
     }

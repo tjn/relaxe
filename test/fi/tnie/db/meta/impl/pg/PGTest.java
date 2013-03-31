@@ -46,5 +46,9 @@ public abstract class PGTest
 	protected PersistenceContext<PGImplementation> createPersistenceContext() {
 		return new PGPersistenceContext(new PGImplementation());
 	}
-
+	
+	@Override
+	protected String implementationTag() {
+		return "pg";
+	}
 }

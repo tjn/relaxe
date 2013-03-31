@@ -71,7 +71,8 @@ public abstract class CatalogTool {
         this(CatalogTool.OPTION_HELP, 
                 CatalogTool.OPTION_ENV,
                 CatalogTool.OPTION_JDBC_URL,
-                CatalogTool.OPTION_JDBC_CONFIG);
+                CatalogTool.OPTION_JDBC_CONFIG,
+                CatalogTool.OPTION_SCHEMA);
     }
     
     public CatalogTool(Option... opts) {

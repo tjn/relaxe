@@ -4,7 +4,6 @@
 package fi.tnie.db.paging;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ import fi.tnie.db.ui.action.Action;
 
 public abstract class DefaultDataObjectPagerTest<I extends Implementation<I>> extends AbstractUnitTest<I> {
 	
-	public void testPager() throws SQLException, ClassNotFoundException {
+	public void testPager() throws Exception {
 		
 		LiteralCatalog.getInstance();
 		

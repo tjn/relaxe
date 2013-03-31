@@ -11,7 +11,6 @@ import fi.tnie.db.map.TableMapper;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.impl.pg.PGJDBCTestCase;
-import fi.tnie.db.meta.impl.pg.PGTestCase;
 
 public class PGDefaultEntityContextTest extends PGJDBCTestCase {
 	

@@ -4,13 +4,11 @@
 package fi.tnie.db.meta.impl.hsqldb;
 
 
-import java.sql.SQLException;
 import fi.tnie.db.AbstractUnitTest;
 import fi.tnie.db.TestContext;
 import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.hsqldb.HSQLDBImplementation;
 import fi.tnie.db.env.hsqldb.HSQLDBPersistenceContext;
-import fi.tnie.db.query.QueryException;
 
 public class HSQLDBTest
 	extends AbstractUnitTest<HSQLDBImplementation>
@@ -19,7 +17,7 @@ public class HSQLDBTest
 		super();	
 	}
 			
-	public void testA() throws SQLException {		
+	public void testA() throws Exception {		
 		logger().debug("enter: " + getName());
 		TestContext<HSQLDBImplementation> imp = getContext();
 		
@@ -38,7 +36,7 @@ public class HSQLDBTest
 		return null;
 	}
 	
-	public void testConnection() throws SQLException, QueryException {
+	public void testConnection() throws Exception {
 		
 		TestContext<HSQLDBImplementation> imp = getContext();
 //		Driver d = imp.getImplementation().getDriver();		
@@ -125,5 +123,10 @@ public class HSQLDBTest
 	@Override
 	protected PersistenceContext<HSQLDBImplementation> createPersistenceContext() {
 		return new HSQLDBPersistenceContext();
-	}	
+	}
+	
+	@Override
+	protected String implementationTag() {
+		return "hsqldb";
+	}
 }
