@@ -73,9 +73,9 @@ public abstract class AbstractGeneratedKeyHandler
 				PrimitiveKey<A, E, ?, ?, ?, ?> k = em.getKey(a);
 				logger().debug("a => k: " + (a) + " => " + k);
 				
-				ValueExtractor<?, ?, ?> ve = vef.createExtractor(rsmd, i);
-				logger().debug("a => x: " + (a) + " => " + ve);
-				write(k.self(), ve, rs, target);
+					// ValueExtractor<?, ?, ?> ve = vef.createExtractor(rsmd, i);
+					DataType type = ac.getDataType();
+					ValueExtractor<?, ?, ?> ve = vef.createExtractor(type, i);
 			}
 		}
 		
