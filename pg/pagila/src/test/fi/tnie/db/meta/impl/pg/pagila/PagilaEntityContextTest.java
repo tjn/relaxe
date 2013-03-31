@@ -1,20 +1,22 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db;
+package fi.tnie.db.meta.impl.pg.pagila;
 
 import java.net.MalformedURLException;
 import java.sql.SQLException;
 
+import fi.tnie.db.DefaultEntityContext;
+import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.ent.EntityException;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.map.TableMapper;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.DBMetaTestCase;
-import fi.tnie.db.pg.genctx.CatalogContext;
+import fi.tnie.db.pagila.genctx.CatalogContext;
 import fi.tnie.db.query.QueryException;
 
-public abstract class DefaultEntityContextTest<I extends Implementation<I>> extends DBMetaTestCase<I> {
+public abstract class PagilaEntityContextTest<I extends Implementation<I>> extends DBMetaTestCase<I> {
 
     public void testDefaultEntityContextCatalog() 
         throws EntityException, QueryException, SQLException, MalformedURLException {

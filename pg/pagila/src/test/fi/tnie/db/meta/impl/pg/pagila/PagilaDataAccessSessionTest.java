@@ -8,7 +8,6 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Properties;
 
-import fi.tnie.db.Inspector;
 import fi.tnie.db.TestContext;
 import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.env.DefaultConnectionManager;
@@ -16,8 +15,8 @@ import fi.tnie.db.env.DefaultDataAccessContext;
 import fi.tnie.db.env.DriverManagerConnectionFactory;
 import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.pg.PGImplementation;
-import fi.tnie.db.gen.pg.ent.pub.Film;
-import fi.tnie.db.gen.pg.ent.pub.Language;
+import fi.tnie.db.gen.pagila.ent.pub.Film;
+import fi.tnie.db.gen.pagila.ent.pub.Language;
 import fi.tnie.db.service.DataAccessSession;
 import fi.tnie.db.service.EntitySession;
 
@@ -27,7 +26,7 @@ public class PagilaDataAccessSessionTest
 	public void testLoad() throws Exception {		
 		logger().debug("testLoad - enter");
 		
-		// fi.tnie.db.gen.pg.ent.LiteralCatalog.getInstance();
+		// fi.tnie.db.gen.pagila.ent.LiteralCatalog.getInstance();
 		
 		TestContext<PGImplementation> tc = getContext();
 				
@@ -68,7 +67,7 @@ public class PagilaDataAccessSessionTest
 		es.load(fq, fo);
 
 		
-		Inspector inspector = new Inspector();						
+		PagilaInspector inspector = new PagilaInspector();						
 		inspector.inspect(load);
 		
 		logger().debug("testLoad: result set size: " + load.size());

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.meta.impl.pg;
+package fi.tnie.db.meta.impl.pg.pagila;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -17,15 +17,16 @@ import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.pg.PGCatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.SelectStatement;
-import fi.tnie.db.gen.pg.ent.LiteralCatalog;
-import fi.tnie.db.gen.pg.ent.pub.Actor;
-import fi.tnie.db.gen.pg.ent.pub.Category;
-import fi.tnie.db.gen.pg.ent.pub.Film;
-import fi.tnie.db.gen.pg.ent.pub.FilmActor;
-import fi.tnie.db.gen.pg.ent.pub.FilmCategory;
-import fi.tnie.db.gen.pg.ent.pub.PublicFactory;
+import fi.tnie.db.gen.pagila.ent.LiteralCatalog;
+import fi.tnie.db.gen.pagila.ent.pub.Actor;
+import fi.tnie.db.gen.pagila.ent.pub.Category;
+import fi.tnie.db.gen.pagila.ent.pub.Film;
+import fi.tnie.db.gen.pagila.ent.pub.FilmActor;
+import fi.tnie.db.gen.pagila.ent.pub.FilmCategory;
+import fi.tnie.db.gen.pagila.ent.pub.PublicFactory;
+import fi.tnie.db.meta.impl.pg.PGTestCase;
 
-public class PGDefaultEntityQueryTest 
+public class PagilaDefaultEntityQueryTest 
 	extends PGTestCase {
 	
     @Override

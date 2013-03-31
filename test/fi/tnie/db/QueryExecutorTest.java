@@ -8,22 +8,17 @@ import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.DataObjectQueryResult;
 import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.env.Implementation;
-import fi.tnie.db.gen.pg.ent.LiteralCatalog;
-import fi.tnie.db.gen.pg.ent.LiteralCatalog.LiteralBaseTable;
+import fi.tnie.db.meta.Table;
 import fi.tnie.db.query.QueryTime;
 import fi.tnie.db.query.DataObjectQuery;
 
 public abstract class QueryExecutorTest<I extends Implementation<I>>
 	extends AbstractUnitTest<I> {
 	
-	public void testQuery() throws Exception {		
+	public void testQuery(Table table) throws Exception {		
 		Connection c = getContext().newConnection();
 						
-		LiteralCatalog.getInstance();
-		
-		LiteralBaseTable t = LiteralCatalog.LiteralBaseTable.PUBLIC_CITY;
-		
-		DataObjectQuery q = new DataObjectQuery(t);
+		DataObjectQuery q = new DataObjectQuery(table);
 		DataObjectQueryResult<DataObject> rs = null;
 								
 		QueryExecutor qe = new QueryExecutor(getPersistenceContext());

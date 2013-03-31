@@ -4,7 +4,7 @@
 /**
  * 
  */
-package fi.tnie.db;
+package fi.tnie.db.meta.impl.pg.pagila;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -14,12 +14,13 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import fi.tnie.db.gen.pg.ent.LiteralCatalog;
-import fi.tnie.db.gen.pg.ent.pub.Film;
-import fi.tnie.db.gen.pg.ent.pub.FilmImpl;
+import fi.tnie.db.Counter;
+import fi.tnie.db.gen.pagila.ent.LiteralCatalog;
+import fi.tnie.db.gen.pagila.ent.pub.Film;
+import fi.tnie.db.gen.pagila.ent.pub.FilmImpl;
 import fi.tnie.db.rpc.IntegerHolder;
 
-public class Inspector {
+public class PagilaInspector {
 	
 	
 	private Object root = null;
@@ -36,7 +37,7 @@ public class Inspector {
 		Film film = new FilmImpl();
 		film.setInteger(Film.FILM_ID, IntegerHolder.valueOf(1));
 		
-		Inspector i = new Inspector();
+		PagilaInspector i = new PagilaInspector();
 		i.inspect(film);
 		
 		System.err.println("instance-count: " + i.getInstanceCount());

@@ -14,8 +14,7 @@ import fi.tnie.db.ent.DataObject;
 import fi.tnie.db.ent.DataObjectQueryResult;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.PersistenceContext;
-import fi.tnie.db.gen.pg.ent.LiteralCatalog;
-import fi.tnie.db.gen.pg.ent.LiteralCatalog.LiteralBaseTable;
+import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.model.ValueModel;
 import fi.tnie.db.paging.SimplePagerModel.Command;
 import fi.tnie.db.query.DataObjectQuery;
@@ -23,17 +22,13 @@ import fi.tnie.db.ui.action.Action;
 
 public abstract class DefaultDataObjectPagerTest<I extends Implementation<I>> extends AbstractUnitTest<I> {
 	
-	public void testPager() throws Exception {
-		
-		LiteralCatalog.getInstance();
-		
+	public void testPager(BaseTable table) throws Exception {			
 		Connection c = newConnection();
-		
-		
+				
 		QueryExecutor qx = new QueryExecutor(getPersistenceContext());
 		
 		SynchronousDataObjectFetcher f = new SynchronousDataObjectFetcher(qx, c);
-		DataObjectQuery q = new DataObjectQuery(LiteralBaseTable.PUBLIC_CITY);
+		DataObjectQuery q = new DataObjectQuery(table);
 		
 		Map<Command, String> nm = new EnumMap<Command, String>(Command.class);
 		

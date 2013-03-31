@@ -1,20 +1,21 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db;
+package fi.tnie.db.meta.impl.pg.pagila;
 
+import fi.tnie.db.SimpleUnificationContext;
 import fi.tnie.db.ent.im.EntityIdentityMap;
-import fi.tnie.db.gen.pg.ent.pub.Film;
-import fi.tnie.db.gen.pg.ent.pub.PublicFactory;
-import fi.tnie.db.gen.pg.ent.pub.Film.Attribute;
-import fi.tnie.db.gen.pg.ent.pub.Film.Holder;
-import fi.tnie.db.gen.pg.ent.pub.Film.MetaData;
-import fi.tnie.db.gen.pg.ent.pub.Film.Reference;
-import fi.tnie.db.gen.pg.ent.pub.Film.Type;
-import fi.tnie.db.gen.pg.ent.pub.impl.PublicFactoryImpl;
+import fi.tnie.db.gen.pagila.ent.pub.Film;
+import fi.tnie.db.gen.pagila.ent.pub.PublicFactory;
+import fi.tnie.db.gen.pagila.ent.pub.Film.Attribute;
+import fi.tnie.db.gen.pagila.ent.pub.Film.Holder;
+import fi.tnie.db.gen.pagila.ent.pub.Film.MetaData;
+import fi.tnie.db.gen.pagila.ent.pub.Film.Reference;
+import fi.tnie.db.gen.pagila.ent.pub.Film.Type;
+import fi.tnie.db.gen.pagila.ent.pub.impl.PublicFactoryImpl;
 import junit.framework.TestCase;
 
-public class SimpleUnificationContextTest extends TestCase {
+public class PagilaUnificationContextTest extends TestCase {
 
 	public void testUnify() {
 //		if (System.currentTimeMillis() > 0)

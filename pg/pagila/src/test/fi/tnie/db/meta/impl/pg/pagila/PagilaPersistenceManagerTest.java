@@ -11,17 +11,17 @@ import fi.tnie.db.SimpleUnificationContext;
 import fi.tnie.db.ent.UnificationContext;
 import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.pg.PGImplementation;
-import fi.tnie.db.gen.pg.ent.pub.Actor;
-import fi.tnie.db.gen.pg.ent.pub.Film;
-import fi.tnie.db.gen.pg.ent.pub.FilmActor;
-import fi.tnie.db.gen.pg.ent.pub.Language;
-import fi.tnie.db.gen.pg.ent.pub.PublicFactory;
-import fi.tnie.db.gen.pg.ent.pub.Actor.Factory;
-import fi.tnie.db.gen.pg.ent.pub.Actor.Holder;
-import fi.tnie.db.gen.pg.ent.pub.Actor.MetaData;
-import fi.tnie.db.gen.pg.ent.pub.Actor.Reference;
-import fi.tnie.db.gen.pg.ent.pub.Actor.Type;
-import fi.tnie.db.gen.pg.ent.pub.impl.PublicFactoryImpl;
+import fi.tnie.db.gen.pagila.ent.pub.Actor;
+import fi.tnie.db.gen.pagila.ent.pub.Film;
+import fi.tnie.db.gen.pagila.ent.pub.FilmActor;
+import fi.tnie.db.gen.pagila.ent.pub.Language;
+import fi.tnie.db.gen.pagila.ent.pub.PublicFactory;
+import fi.tnie.db.gen.pagila.ent.pub.Actor.Factory;
+import fi.tnie.db.gen.pagila.ent.pub.Actor.Holder;
+import fi.tnie.db.gen.pagila.ent.pub.Actor.MetaData;
+import fi.tnie.db.gen.pagila.ent.pub.Actor.Reference;
+import fi.tnie.db.gen.pagila.ent.pub.Actor.Type;
+import fi.tnie.db.gen.pagila.ent.pub.impl.PublicFactoryImpl;
 import fi.tnie.db.test.PagilaPersistenceContext;
 
 public class PagilaPersistenceManagerTest

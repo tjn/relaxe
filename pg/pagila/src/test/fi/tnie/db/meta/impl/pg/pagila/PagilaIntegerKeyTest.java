@@ -1,18 +1,20 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.ent.value;
+package fi.tnie.db.meta.impl.pg.pagila;
 
 import fi.tnie.db.ent.Attribute;
-import fi.tnie.db.gen.pg.ent.LiteralCatalog;
-import fi.tnie.db.gen.pg.ent.pub.Film;
+import fi.tnie.db.ent.value.HasInteger;
+import fi.tnie.db.ent.value.HasIntegerKey;
+import fi.tnie.db.ent.value.IntegerKey;
+import fi.tnie.db.gen.pagila.ent.LiteralCatalog;
+import fi.tnie.db.gen.pagila.ent.pub.Film;
 import fi.tnie.db.types.IntegerType;
 import junit.framework.TestCase;
 
-public class IntegerKeyTest extends TestCase {
+public class PagilaIntegerKeyTest extends TestCase {
 
-	public void testEquals() {
-		
+	public void testEquals() {		
 		LiteralCatalog litcat = LiteralCatalog.getInstance();
 		Film.MetaData meta = litcat.newPublicFactory().newFilm().getMetaData();
 		test(meta, Film.Attribute.FILM_ID);
