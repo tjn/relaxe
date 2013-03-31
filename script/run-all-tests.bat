@@ -1,7 +1,4 @@
 
-@CALL run-test.bat fi.tnie.db.SimpleUnificationContextTest
-@IF ERRORLEVEL 1 exit /B %ERRORLEVEL%
-
 @CALL run-test.bat fi.tnie.db.meta.impl.pg.pagila.AllTests
 @IF ERRORLEVEL 1 exit /B %ERRORLEVEL%
 

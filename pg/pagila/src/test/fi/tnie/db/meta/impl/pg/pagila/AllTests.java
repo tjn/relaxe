@@ -15,6 +15,7 @@ public class AllTests {
 		suite.addTestSuite(PagilaEntityQueryExecutorTest.class);
 		suite.addTestSuite(PagilaDataAccessSessionTest.class);
 		suite.addTestSuite(PagilaPersistenceManagerTest.class);
+		suite.addTestSuite(PagilaUnificationContextTest.class);		
 		//$JUnit-END$
 		return suite;
 	}
