@@ -598,6 +598,10 @@ public class PersistenceManager<
     }
 
     public void setTarget(E target) {
+    	if (target == null) {
+			throw new NullPointerException("target");
+		}
+    	
         this.target = target;
     }
 
