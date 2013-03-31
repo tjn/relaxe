@@ -71,6 +71,8 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		PersistenceContext<I> pc = getPersistenceContext();
 		String d = getDatabase();
 		Properties c = getJdbcConfig();
+		
+		logger().debug("jdbc config for context: " + c);
 								
 		DefaultTestContext<I> tc = new DefaultTestContext<I>(pc, d, c);		
 						
@@ -88,6 +90,9 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	protected Properties getJdbcConfigForDatabase() throws IOException {
 		String d = getDatabase();
 		StringBuilder buf = new StringBuilder("/").append(implementationTag()).append("/").append(d).append(".properties");
+		
+		logger().info("jdbc config: " + buf);
+		
 		return getJdbcConfig(buf.toString());
 	}
 	
