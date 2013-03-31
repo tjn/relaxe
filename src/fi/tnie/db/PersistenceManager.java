@@ -386,15 +386,18 @@ public class PersistenceManager<
 			logger().debug("q: " + qs);
 			int ins = ps.executeUpdate();
 			logger().debug("inserted: " + ins);
+			
+			GeneratedKeyHandler kh = getKeyHandler();
+			kh.processGeneratedKeys(q, pe, ps);
 
-			rs = ps.getGeneratedKeys();
-
-//			logger().debug(buf.toString());
-
-			if (rs.next()) {
-				GeneratedKeyHandler kh = getKeyHandler();
-				kh.processGeneratedKeys(q, pe, rs);
-			}
+//			rs = ps.getGeneratedKeys();
+//
+////			logger().debug(buf.toString());
+//			
+//			if (rs.next()) {
+//				GeneratedKeyHandler kh = getKeyHandler();
+//				kh.processGeneratedKeys(q, pe, rs);
+//			}
 			
 //				logger().debug(buf.toString());
 		}
