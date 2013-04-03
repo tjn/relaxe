@@ -42,7 +42,7 @@ public class OrdinaryIdentifier
 	
 	public static void validateOrdinary(String token) 
 		throws IllegalIdentifierException {
-		StringBuffer details = new StringBuffer();
+		StringBuilder details = new StringBuilder();
 		
 		if (!isValidOrdinary(token, details)) {
 			throw new IllegalIdentifierException(details.toString());
@@ -53,7 +53,7 @@ public class OrdinaryIdentifier
 		return isValidOrdinary(token, null);
 	}
 	
-	private static boolean isValidOrdinary(String token, StringBuffer details) {		
+	private static boolean isValidOrdinary(String token, StringBuilder details) {		
 		String p = "[A-Za-z][A-Za-z0-9_]*";
 		
 		if (!token.matches(p)) {

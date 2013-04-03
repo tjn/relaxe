@@ -21,9 +21,27 @@ public class FoldingComparator
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6545832196162079657L;
-	
+	private static final long serialVersionUID = 6545832196162079657L;	
 	private static final NullComparator.String nc = new NullComparator.String();
+		
+	public static final FoldingComparator UPPERCASE = new FoldingComparator() {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 8134439617694820125L;
+
+		protected String fold(String ordinaryIdentifier) {
+			return Folding.UPPERCASE.apply(ordinaryIdentifier);
+		}
+	};
+	
+	public static final FoldingComparator LOWERCASE = new FoldingComparator() {
+		private static final long serialVersionUID = 8134439617694820125L;
+
+		protected String fold(String ordinaryIdentifier) {
+			return Folding.LOWERCASE.apply(ordinaryIdentifier);
+		}
+	};
 
 	public FoldingComparator() {
 		super();

@@ -3,6 +3,10 @@
  */
 package fi.tnie.db.expr;
 
+import com.sun.org.apache.regexp.internal.recompile;
+
+import fi.tnie.db.meta.Folding;
+
 
 
 /**
@@ -71,9 +75,14 @@ public class ColumnName
 		v.start(vc, this);
 		v.end(this);
 	}
-		
-	public static ColumnName create(String name)
+	
+	public static ColumnName create(String name) {
+		return create(name, null);
+	}
+	
+			
+	public static ColumnName create(String name, Folding folding)
 		throws IllegalIdentifierException {		
-		return new ColumnName(AbstractIdentifier.create(name));				
+		return new ColumnName(AbstractIdentifier.create(name, folding));				
 	}
 }

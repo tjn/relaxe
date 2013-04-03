@@ -3,6 +3,8 @@
  */
 package fi.tnie.db.expr;
 
+import fi.tnie.db.meta.Folding;
+
 
 public abstract class AbstractIdentifier
 	extends SimpleElement
@@ -41,7 +43,7 @@ public abstract class AbstractIdentifier
 	
 	public abstract String getTerminalSymbol();	
 	
-	public static boolean isValid(String name, StringBuffer details) {
+	public static boolean isValid(String name, StringBuilder details) {
 		if (name == null) {
 			return fail("'name' must not be null", details);			
 		}
@@ -64,7 +66,7 @@ public abstract class AbstractIdentifier
 	public static void validate(String token)
 		throws IllegalIdentifierException {
 
-		StringBuffer details = new StringBuffer();
+		StringBuilder details = new StringBuilder();
 		
 		if (!isValid(token, details)) {
 			throw new IllegalIdentifierException(details.toString());
@@ -75,7 +77,7 @@ public abstract class AbstractIdentifier
 		return 128;
 	}
 	
-	static boolean fail(String msg, StringBuffer details) {
+	static boolean fail(String msg, StringBuilder details) {
 		if (details != null) {
 			details.append(msg);
 		}
@@ -83,7 +85,12 @@ public abstract class AbstractIdentifier
 		return false;
 	}
 	
-	public static Identifier create(String name)
+	public static Identifier create(String name) {
+		return create(name, Folding.UPPERCASE);
+	}
+	
+	
+	public static Identifier create(String name, Folding folding)
 		throws IllegalIdentifierException {
 	
 		if (name == null) {
@@ -95,7 +102,7 @@ public abstract class AbstractIdentifier
 		}
 					
 		return OrdinaryIdentifier.isValidOrdinary(name) ?
-				new OrdinaryIdentifier(name) : 
+				new OrdinaryIdentifier(folding.apply(name)) : 
 				new DelimitedIdentifier(name);
 	}
 	

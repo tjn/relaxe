@@ -31,7 +31,7 @@ public class DefaultMutableBaseTable
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected DefaultMutableBaseTable() {
+	public DefaultMutableBaseTable() {
 	}
 	
 	public DefaultMutableBaseTable(DefaultMutableSchema s, Identifier name) {
