@@ -9,10 +9,12 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeMap;
 
+import fi.tnie.db.expr.AbstractIdentifier;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
+import fi.tnie.db.meta.Environment;
+import fi.tnie.db.meta.FoldingComparator;
 import fi.tnie.db.meta.MetaObject;
-import fi.tnie.db.meta.SerializableEnvironment;
 
 public class DefaultElementMap<E extends MetaObject>
 	implements Serializable
@@ -22,7 +24,7 @@ public class DefaultElementMap<E extends MetaObject>
 	 */
 	private static final long serialVersionUID = -4942279888363203444L;
 	private TreeMap<Identifier, E> content = null;
-	private SerializableEnvironment environment;
+	private Environment environment;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -30,7 +32,7 @@ public class DefaultElementMap<E extends MetaObject>
 	protected DefaultElementMap() {
 	}
 
-	public DefaultElementMap(SerializableEnvironment environment) {
+	public DefaultElementMap(Environment environment) {
 		if (environment == null) {
 			throw new NullPointerException("'environment' must not be null");
 		}
@@ -53,8 +55,7 @@ public class DefaultElementMap<E extends MetaObject>
 	
 	public E get(String name)
 		throws IllegalIdentifierException {		
-		Identifier key = (name == null) ?
-				null : this.environment.createIdentifier(name);		
+		Identifier key = (name == null) ? null : environment.createIdentifier(name);		
 		return get(key);
 	}	
 	

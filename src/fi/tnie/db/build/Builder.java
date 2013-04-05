@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,16 +16,13 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.transform.TransformerException;
-
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.DefaultEntityContext;
 import fi.tnie.db.DefaultTableMapper;
 import fi.tnie.db.DefaultTypeMapper;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;
+import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.feature.Features;
 import fi.tnie.db.feature.SQLGenerationException;
 import fi.tnie.db.map.TableMapper;
@@ -45,9 +43,7 @@ import fi.tnie.db.meta.impl.DefaultMutableTable;
 import fi.tnie.db.meta.impl.DefaultMutableView;
 import fi.tnie.db.meta.impl.DefaultPrimaryKey;
 import fi.tnie.db.query.QueryException;
-import fi.tnie.db.source.NamingPolicy;
 import fi.tnie.db.source.SourceGenerator;
-import fi.tnie.db.source.TemplateGenerator;
 import fi.tnie.db.tools.CatalogTool;
 import fi.tnie.db.tools.ToolConfigurationException;
 import fi.tnie.db.tools.ToolException;
@@ -242,6 +238,10 @@ public class Builder
 	    	}
 	    }
 	    
+	    
+//	    CatalogPrinter cp = new CatalogPrinter(null);
+//	    cp.setCatalog(mc);	    	    
+	    
 	    setCatalog(mc);
 	        
 //	    final Set<String> ss = new TreeSet<String>(schemas);
@@ -270,16 +270,26 @@ public class Builder
         	logger().debug("createSchemaFilter: ALL_SCHEMAS");
         }
         else {
-        	final Set<String> ss = new TreeSet<String>(schemas);
+        	final Implementation<?> imp = getImplementation();
+        	final Comparator<Identifier> icmp = imp.identifierComparator();			
+
+        	final Set<Identifier> ss = new TreeSet<Identifier>(icmp);
+        	
+        	for (String schema : schemas) {
+        		ss.add(imp.createIdentifier(schema));
+			}        	
+        	
         	sf = new SchemaFilter() {				
 				@Override
 				public boolean accept(Schema s) {
-					String n = s.getUnqualifiedName().getName();
-					boolean include = ss.contains(s.getUnqualifiedName().getName());
-					logger().debug("include schema '" + n + "' ? " + include);
+					Identifier n = s.getUnqualifiedName();
+					boolean include = ss.contains(n);
+					logger().debug("include schema '" + n.getName() + "' ? " + include);
 					return include;
+					
 				}
 			};
+			
 
 			logger().debug("createSchemaFilter: only schemas: " + ss);
         }
@@ -433,18 +443,18 @@ public class Builder
         IOHelper.doStore(current, sourceList.getPath(), "List of the generated source files");            
     }
     
-	private void generateTemplates(Catalog cat, File templateRoot, NamingPolicy np)
-    	throws QueryException, IOException, XMLStreamException, TransformerException {
-	    final File templateList = getTemplateList(templateRoot);            
-	    remove(templateList);
-	    
-	    TableMapper tm = getTableMapper();
-	    DefaultEntityContext ec = new DefaultEntityContext(cat, null, tm);	    
-	    TemplateGenerator gen = new TemplateGenerator(templateRoot, ec);	    		    		                
-	    Properties current = gen.run(cat, np);
-	    
-	    IOHelper.doStore(current, templateList.getPath(), "List of the generated template files");            
-	}    
+//	private void generateTemplates(Catalog cat, File templateRoot, NamingPolicy np)
+//    	throws QueryException, IOException, XMLStreamException, TransformerException {
+//	    final File templateList = getTemplateList(templateRoot);            
+//	    remove(templateList);
+//	    
+//	    TableMapper tm = getTableMapper();
+//	    DefaultEntityContext ec = new DefaultEntityContext(cat, null, tm);	    
+//	    TemplateGenerator gen = new TemplateGenerator(templateRoot, ec);	    		    		                
+//	    Properties current = gen.run(cat, np);
+//	    
+//	    IOHelper.doStore(current, templateList.getPath(), "List of the generated template files");            
+//	}    
     
     public Builder() {
     }

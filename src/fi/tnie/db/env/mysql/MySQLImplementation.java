@@ -33,7 +33,7 @@ public class MySQLImplementation
 		return new MySQLCatalogFactory(this.environment());
 	}
 
-    @Override
+    
     public ColumnDefinition serialColumnDefinition(String columnName, boolean big) {
         // TODO add support (subclass ColumnDefinition to put AUTO_INCREMENT in the right spot)
         return null;

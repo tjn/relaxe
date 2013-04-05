@@ -115,7 +115,6 @@ public class DefaultMutableBaseTable
 		return (foreignKeys == null) ? DefaultMutableBaseTable.emptyForeignKeyMap : foreignKeys;
 	}
 
-	@Override
 	public SchemaElementMap<ForeignKey> references() {
 		return this.referencingKeys;
 	}

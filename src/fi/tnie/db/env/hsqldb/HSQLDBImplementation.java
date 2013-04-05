@@ -35,10 +35,10 @@ public class HSQLDBImplementation
 //		return this.environment.createIdentifierComparator();
 //	}
 
-    @Override
-    public ColumnDefinition serialColumnDefinition(String columnName, boolean big) {
-    	return this.environment.serialColumnDefinition(columnName, big);
-    }
+//    @Override
+//    public ColumnDefinition serialColumnDefinition(String columnName, boolean big) {
+//    	return this.environment.serialColumnDefinition(columnName, big);
+//    }
 
 //    private final class HSQLDBGeneratedKeyHandler implements GeneratedKeyHandler {
 //    	

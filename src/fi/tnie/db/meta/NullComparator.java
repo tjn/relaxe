@@ -58,4 +58,18 @@ public abstract class NullComparator<T>
 			return o1.compareTo(o2);
 		}		
 	}
+	
+	public static class CaseInsensitiveString
+		extends NullComparator<java.lang.String> {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 8421830410283422785L;
+	
+		@Override
+		public int compareNotNull(java.lang.String o1, java.lang.String o2) {
+			return o1.compareToIgnoreCase(o2);
+		}		
+	}
 }

@@ -255,6 +255,11 @@ public class LiteralCatalog
 			this.table = new DefaultMutableBaseTable(ms, t);			
 			getInstance().getMutableTableMap().put(this, this.table);			
 		}
+		
+		@Override
+		public Environment getEnvironment() {
+			return {{package-name}}.LiteralCatalog.getInstance().getEnvironment();
+		}
 
 		@Override
 		public SchemaElementMap<ForeignKey> foreignKeys() {
@@ -265,8 +270,7 @@ public class LiteralCatalog
 		public PrimaryKey getPrimaryKey() {
 			return this.table.getPrimaryKey();
 		}
-
-		@Override
+		
 		public SchemaElementMap<ForeignKey> references() {
 			return this.table.references();
 		}
@@ -390,6 +394,11 @@ public class LiteralCatalog
 		private DefaultMutableView getTable() {
 			return this.table;
 		};
+		
+		@Override
+		public Environment getEnvironment() {
+			return {{package-name}}.LiteralCatalog.getInstance().getEnvironment();
+		}
 	}
 	
 	
@@ -485,6 +494,11 @@ public class LiteralCatalog
 		public Identifier getUnqualifiedName() {
 			return this.foreignKey.getUnqualifiedName();
 		}
+		
+		@Override
+		public Environment getEnvironment() {
+			return {{package-name}}.LiteralCatalog.getInstance().getEnvironment();
+		}
 	}
 	
 	
@@ -574,6 +588,10 @@ public class LiteralCatalog
 			return this.primaryKey.getType();
 		}
 		
+		@Override
+		public Environment getEnvironment() {
+			return {{package-name}}.LiteralCatalog.getInstance().getEnvironment();
+		}
 	}	
 	
 	@Override

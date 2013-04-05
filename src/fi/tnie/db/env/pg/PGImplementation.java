@@ -40,11 +40,10 @@ public class PGImplementation
 	protected Comparator<Identifier> createIdentifierComparator() {
 		return this.environment.createIdentifierComparator();
 	}
-
-    @Override
-    public ColumnDefinition serialColumnDefinition(String columnName, boolean big) {
-    	return this.environment.serialColumnDefinition(columnName, big);
-    }
+    
+//    public ColumnDefinition serialColumnDefinition(String columnName, boolean big) {
+//    	return this.environment.serialColumnDefinition(columnName, big);
+//    }
     
     public static class PGGeneratedKeyHandler 
     	extends AbstractGeneratedKeyHandler {

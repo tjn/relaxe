@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -134,11 +135,18 @@ public class DefaultCatalogFactory implements CatalogFactory {
 
 			String cat = rs.getString(1);
 			String tbl = rs.getString(3);
+			String name = rs.getString(4);
 			
-			if (!tbl.equals(this.table.getName().getUnqualifiedName().getName())) {
+			final Identifier ti = getEnvironment().createIdentifier(tbl);
+			final Identifier ci = getEnvironment().createIdentifier(name);
+			
+			
+			Comparator<Identifier> ic = getEnvironment().identifierComparator();
+			
+			// if (!tbl.equals(this.table.getName().getUnqualifiedName().getName())) {
+			if (ic.compare(ti, this.table.getName().getUnqualifiedName()) != 0) {
 			    throw new RuntimeException("tbl name mismatch: " +
-			        tbl + " <> " + 
-			        this.table.getName().getUnqualifiedName().getName());
+			        ti + " <> " + this.table.getName().getUnqualifiedName().getName());
 			}
 
 			// TODO: implement MySQL / others
@@ -151,7 +159,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			// "' when populating table '" + this.table.getName() + "'");
 			// }
 
-			String name = rs.getString(4);
+			
 
 //			logger().debug("column: " + cat + "." + tbl + "." + name);
 
@@ -169,9 +177,8 @@ public class DefaultCatalogFactory implements CatalogFactory {
                 dataType.setSize(rs.getInt(7));
                 dataType.setDecimalDigits(rs.getInt(9));
                 dataType.setNumPrecRadix(rs.getInt(10));
-    			
-    			Identifier n = getEnvironment().createIdentifier(name);
-    			col = new DefaultMutableColumn(this.table, n, dataType, ai);
+    			    			
+    			col = new DefaultMutableColumn(this.table, ci, dataType, ai);
 			}
 					
 			col.setNullable(rs.getInt(11));
@@ -470,7 +477,14 @@ public class DefaultCatalogFactory implements CatalogFactory {
 		
 		final SerializableEnvironment env = getEnvironment();		
 //		logger().debug("enter");								
-		DatabaseMetaData meta = c.getMetaData();		
+		DatabaseMetaData meta = c.getMetaData();
+		
+		logger().info("catalog-factory: " + toString());	
+		logger().info("user: " + meta.getUserName());
+		logger().info("url: " + meta.getURL());
+		logger().info("environment: " + env.getClass());
+		logger().info("identifier-comparator: " + env.identifierComparator());
+		
 						
 		try  {						
 			prepare(meta);
@@ -485,7 +499,8 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			else {
 				Set<Identifier> names = new TreeSet<Identifier>(env.identifierComparator());
 				ResultSet cats = meta.getCatalogs();
-				cats = process(cats, new IdentifierReader(names, env), true);			
+				int cc = process(cats, new IdentifierReader(names, env), true);
+				logger().info("catalogs processed: " + cc);
 				logger().debug("catalogs: " + names);
 				
 				for (Identifier cn : names) {
@@ -623,9 +638,9 @@ public class DefaultCatalogFactory implements CatalogFactory {
 		}
 	}
 
-	protected void process(ResultSet rs, QueryProcessor qp) throws QueryException, SQLException {
+	protected int process(ResultSet rs, QueryProcessor qp) throws QueryException, SQLException {
 
-		long ordinal = 0;
+		int ordinal = 0;
 
 		qp.startQuery(rs.getMetaData());
 
@@ -636,13 +651,15 @@ public class DefaultCatalogFactory implements CatalogFactory {
 		logger().debug("rows processed: " + ordinal);
 
 		qp.endQuery();
+		
+		return ordinal;
 	}
 
-	protected ResultSet process(ResultSet rs, QueryProcessor qp, boolean close)
+	protected int process(ResultSet rs, QueryProcessor qp, boolean close)
 			throws QueryException, SQLException {
 
 		try {
-			process(rs, qp);
+			return process(rs, qp);
 		} 
 		finally {
 			if (close) {
@@ -650,8 +667,6 @@ public class DefaultCatalogFactory implements CatalogFactory {
 				rs = null;
 			}
 		}
-
-		return rs;
 	}
 
 
@@ -778,8 +793,8 @@ public class DefaultCatalogFactory implements CatalogFactory {
 		// ResultSet tables = meta.getTables(s.getCatalog().getName(), s.getName(),
 		// "%", types);
 		ResultSet tables = getTablesForSchema(meta, s);
-		tables = process(tables, new StringListReader(names, TABLE_NAME_COLUMN),
-				true);
+		int tc = process(tables, new StringListReader(names, TABLE_NAME_COLUMN), true);
+		logger().info("tables processed: " + tc);
 
 		// logger().debug("tables: " + names.size());
 
@@ -912,7 +927,11 @@ public class DefaultCatalogFactory implements CatalogFactory {
 			// ResultSet rs = meta.getColumns(c.getName(), s.getName(), t.getName(),
 			// "%");
 			ResultSet rs = getColumnsForTable(meta, t);
-			process(rs, new ColumnReader(t, meta), true);
+			int columnCount = process(rs, new ColumnReader(t, meta), true);
+			
+			logger().info(t.getQualifiedName() + ": column count: " + columnCount);
+			logger().info(t.getQualifiedName() + ": column-list: " + t.columns());
+			
 		}
 	}
 	
@@ -1005,6 +1024,7 @@ public class DefaultCatalogFactory implements CatalogFactory {
 		String cp = getCatalogPattern(t.getMutableSchema());
 		String sp = getSchemaPattern(t.getMutableSchema());
 		
+		logger().debug("getColumnsForTable:");
 		logger().debug("table: " + t.getUnqualifiedName().getName());
 		logger().debug("cp: " + cp);
 		logger().debug("sp: " + sp);		

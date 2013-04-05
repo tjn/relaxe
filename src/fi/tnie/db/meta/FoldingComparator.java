@@ -3,9 +3,6 @@
  */
 package fi.tnie.db.meta;
 
-import java.io.Serializable;
-import java.util.Comparator;
-
 import fi.tnie.db.expr.Identifier;
 
 /**
@@ -14,15 +11,14 @@ import fi.tnie.db.expr.Identifier;
  * @author Administrator
  */
 
-public class FoldingComparator
-	implements Comparator<Identifier>, Serializable
-	{
+public abstract class FoldingComparator
+	extends AbstractIdentifierComparator {
 		
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6545832196162079657L;	
-	private static final NullComparator.String nc = new NullComparator.String();
+	private static final NullComparator.String nameComparator = new NullComparator.String();
 		
 	public static final FoldingComparator UPPERCASE = new FoldingComparator() {
 		/**
@@ -30,33 +26,38 @@ public class FoldingComparator
 		 */
 		private static final long serialVersionUID = 8134439617694820125L;
 
-		protected String fold(String ordinaryIdentifier) {
-			return Folding.UPPERCASE.apply(ordinaryIdentifier);
+		@Override
+		public Folding getFolding() {
+			return Folding.UPPERCASE;
 		}
 	};
 	
 	public static final FoldingComparator LOWERCASE = new FoldingComparator() {
 		private static final long serialVersionUID = 8134439617694820125L;
 
-		protected String fold(String ordinaryIdentifier) {
-			return Folding.LOWERCASE.apply(ordinaryIdentifier);
+		@Override
+		public Folding getFolding() {
+			return Folding.LOWERCASE;
 		}
 	};
+	
+	public abstract Folding getFolding();
 
 	public FoldingComparator() {
 		super();
 	}
 
+		
 	@Override
-	public int compare(Identifier o1, Identifier o2) {				
-		return nc.compare(name(o1), name(o2));
+	protected int compare(String n1, String n2) {
+		return nameComparator.compare(n1, n2);
 	}
 	
 	protected String fold(String ordinaryIdentifier) {
-		return ordinaryIdentifier.toUpperCase();
+		return getFolding().apply(ordinaryIdentifier);
 	}
 	
-	private String name(Identifier ident) {
+	protected String name(Identifier ident) {
 		if (ident == null) {
 			return null;
 		}

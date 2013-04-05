@@ -19,7 +19,7 @@ public class HSQLDBEnvironment
 	 */
 	private static final long serialVersionUID = -2968383567147338099L;
 
-	@Override
+	
 	public ColumnDefinition serialColumnDefinition(String columnName, boolean big) {
 		return null;		
 //		Identifier n = createIdentifier(columnName);                

@@ -7,6 +7,7 @@ import java.util.List;
 
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.Table;
 
 public abstract class DefaultMutableTable
@@ -29,6 +30,11 @@ public abstract class DefaultMutableTable
 		super(s, name);		
 		s.add(this);
 	}	
+	
+	@Override
+	public SerializableEnvironment getEnvironment() {
+		return getSchema().getCatalog().getEnvironment();
+	}
 		
 	public boolean add(DefaultMutableColumn c) {
 		return getColumnMap().add(c);

@@ -7,10 +7,9 @@ import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.DataType;
-import fi.tnie.db.meta.MetaObject;
 
 public class ImmutableColumn
-	implements Column, MetaObject
+	implements Column
 {	
 	/**
 	 * 

@@ -9,7 +9,9 @@ import fi.tnie.db.expr.SchemaElementName;
 public interface SchemaElement
 	extends MetaObject {
 	// Schema getSchema();	
-	public SchemaElementName getName();
+	
+	Environment getEnvironment();
+	SchemaElementName getName();
 	
 	Identifier getUnqualifiedName();
 	String getQualifiedName();

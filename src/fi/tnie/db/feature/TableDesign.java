@@ -58,8 +58,9 @@ public class TableDesign {
         }
         
         public void serial(String name) {
-            ColumnDefinition cd = env().serialColumnDefinition(name, false);                
-            add(cd);            
+//        	TODO: FIX ME        	
+//            ColumnDefinition cd = env().serialColumnDefinition(name, false);                
+//            add(cd);            
         }
         
         public Environment env() {

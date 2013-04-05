@@ -5,9 +5,9 @@ package fi.tnie.db.meta;
 
 import java.util.Comparator;
 
+import fi.tnie.db.expr.DelimitedIdentifier;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
-import fi.tnie.db.expr.ddl.ColumnDefinition;
 
 public interface Environment {
 	
@@ -32,13 +32,8 @@ public interface Environment {
 	 */
 	Identifier createIdentifier(String name)
 		throws IllegalIdentifierException;
-
-	/***
-	 * 
-	 * 
-	 * @param columnName
-	 * @return
-	 */
-	ColumnDefinition serialColumnDefinition(String columnName, boolean big);
+	
+//	DelimitedIdentifier createDelimitedIdentifier(String name)
+//		throws IllegalIdentifierException;
 }
 

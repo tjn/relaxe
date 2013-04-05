@@ -76,7 +76,7 @@ public class DefaultSchemaElement
 		return getEnvironment().identifierComparator();
 	}
 	
-	protected SerializableEnvironment getEnvironment() {
+	public SerializableEnvironment getEnvironment() {
 		return getSchema().getCatalog().getEnvironment();
 	}
 	
