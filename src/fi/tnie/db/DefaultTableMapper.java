@@ -87,9 +87,8 @@ public class DefaultTableMapper
             n.append(".");
         }
         
-//        String s = schema.getUnqualifiedName().getName();
-        String s = schema.getSchemaName().getName();
-
+        String s = schema.getSchemaName().getName().toLowerCase();
+        
         if (s.equals("public")) {
             s = "pub";
         }
