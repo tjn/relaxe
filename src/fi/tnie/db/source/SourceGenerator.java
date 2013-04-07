@@ -3557,7 +3557,7 @@ public class SourceGenerator {
         for (int i = 0; i < len; i++) {
             char c = identifier.charAt(i);
 
-            if (c == '_') {
+            if (c == '_' || c == ' ') {
                 upper = true;
                 continue;
             }
