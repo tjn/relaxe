@@ -265,9 +265,7 @@ public class PagilaEntityQueryExecutorTest
 		Film.QueryTemplate hrq = new Film.QueryTemplate();
 				
 		hrq.addAllAttributes();
-		
-		EntityQueryTemplateAttribute rd = hrq.get(Film.Attribute.LAST_UPDATE);		
-				
+	
 		Film.Query q3 = hrq.newQuery();								
 		
 		QueryResult<EntityDataObject<Film>> qr = execute(q3, new FetchOptions(3, 3));		
