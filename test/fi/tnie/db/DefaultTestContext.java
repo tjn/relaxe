@@ -33,6 +33,10 @@ public class DefaultTestContext<I extends Implementation<I>>
 	public DefaultTestContext(PersistenceContext<I> persistenceContext, String database, Properties jdbcProperties) {		
 		init(persistenceContext, null, null, database, jdbcProperties);
 	}
+	
+	public DefaultTestContext(PersistenceContext<I> persistenceContext, String host, Integer port, String database, Properties jdbcProperties) {		
+		init(persistenceContext, host, port, database, jdbcProperties);
+	}
 
 //	protected Properties createJdbcProperties() {
 //		Properties config = new Properties();		

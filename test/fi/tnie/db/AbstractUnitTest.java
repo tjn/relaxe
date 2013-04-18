@@ -69,12 +69,14 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	protected TestContext<I> createContext() throws IOException {
 		// I imp = getImplementation();
 		PersistenceContext<I> pc = getPersistenceContext();
+		String h = getHost();
+		
 		String d = getDatabase();
+		
 		Properties c = getJdbcConfig();
 		
-		logger().debug("jdbc config for context: " + c);
-								
-		DefaultTestContext<I> tc = new DefaultTestContext<I>(pc, d, c);		
+		logger().debug("jdbc config for context: " + c);								
+		DefaultTestContext<I> tc = new DefaultTestContext<I>(pc, h, null, d, c);		
 						
 		return tc;
 	}

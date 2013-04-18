@@ -8,7 +8,6 @@ import fi.tnie.db.expr.SchemaElementName;
 
 public interface SchemaElement
 	extends MetaObject {
-	// Schema getSchema();	
 	
 	Environment getEnvironment();
 	SchemaElementName getName();

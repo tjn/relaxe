@@ -3,7 +3,14 @@
  */
 package fi.tnie.db.meta;
 
+
 public interface ColumnMap
 	extends ElementMap<Column> {
 	
+	/**
+	 * 
+	 * @param index
+	 * @return
+	 */
+	Column get(int index);	
 }

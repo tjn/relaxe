@@ -22,6 +22,7 @@ public class ResultSetWriter
 	private PrintWriter out;
 	private boolean closeAtEnd;
 	private String delimiter = "\t";
+	private long processed = 0;
 		
 	protected ResultSetWriter(File f) 
 		throws FileNotFoundException {
@@ -247,6 +248,12 @@ public class ResultSetWriter
 		}
 		
 		out.println(buf.toString());
+		processed++;
+	}
+	
+	
+	public long processed() {
+		return processed;
 	}
 	
 	@Override

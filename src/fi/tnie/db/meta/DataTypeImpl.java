@@ -1,11 +1,10 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.meta.impl;
+package fi.tnie.db.meta;
 
 import java.io.Serializable;
 
-import fi.tnie.db.meta.DataType;
 
 public class DataTypeImpl 
 	implements DataType, Serializable {

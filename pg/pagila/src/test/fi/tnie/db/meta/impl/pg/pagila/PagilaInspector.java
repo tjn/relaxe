@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import fi.tnie.db.Counter;
-import fi.tnie.db.gen.pagila.ent.LiteralCatalog;
 import fi.tnie.db.gen.pagila.ent.pub.Film;
 import fi.tnie.db.gen.pagila.ent.pub.FilmImpl;
 import fi.tnie.db.rpc.IntegerHolder;
@@ -32,7 +31,7 @@ public class PagilaInspector {
 			
 	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException {
 		
-		LiteralCatalog cat = LiteralCatalog.getInstance();
+//		LiteralCatalog cat = LiteralCatalog.getInstance();
 	
 		Film film = new FilmImpl();
 		film.setInteger(Film.FILM_ID, IntegerHolder.valueOf(1));

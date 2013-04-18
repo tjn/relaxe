@@ -15,7 +15,11 @@ public interface Column
 	 * @return
 	 */
 	boolean isDefinitelyNotNullable();
-	boolean isPrimaryKeyColumn();
+	
+	/**
+	 * 
+	 * @return
+	 */	
 	Boolean isAutoIncrement();	
-	public ColumnName getColumnName(); 
+	ColumnName getColumnName(); 
 }

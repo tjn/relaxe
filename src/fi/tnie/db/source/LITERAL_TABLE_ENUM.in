@@ -4,56 +4,48 @@ import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.DataType;
-import fi.tnie.db.meta.impl.DataTypeImpl;
-// {{imports}}
+import fi.tnie.db.meta.DataTypeImpl;
 
 
 public enum {{literal-table-enum}}
-	implements LiteralCatalog.LiteralColumn, LiteralCatalog.Initializable {
+	implements Column {
 	
 {{column-enum-list}}
 			
-	private Column column;
-	private LiteralCatalog.ColumnInitializer initializer;
+	private ColumnName name;	
+	private DataType type;
+	private boolean definitelyNotNullable;
+	private Boolean autoIncrementColumn;
 				
-	{{literal-table-enum}}(LiteralCatalog.ColumnInitializer ci) {
-		this.initializer = ci;		
+	{{literal-table-enum}}(Identifier name, DataType type, boolean definitelyNotNullable, Boolean autoIncrementColumn) {
+		this.name = new ColumnName(name);
+		this.type = type;
+		this.definitelyNotNullable = definitelyNotNullable;
+		this.autoIncrementColumn = autoIncrementColumn;		
 	}
 	
-	public void init() {
-		if (this.column == null) {
-			this.column = this.initializer.init(this);
-			this.initializer = null;
-		}			
-	}
-
 	@Override
 	public ColumnName getColumnName() {
-		return column.getColumnName();
+		return this.name;
 	}
 
 	@Override
 	public DataType getDataType() {
-		return column.getDataType();
+		return this.type;
 	}
 
 	@Override
 	public Boolean isAutoIncrement() {
-		return column.isAutoIncrement();
+		return this.autoIncrementColumn;
 	}
 
 	@Override
 	public boolean isDefinitelyNotNullable() {
-		return column.isDefinitelyNotNullable();
-	}
-
-	@Override
-	public boolean isPrimaryKeyColumn() {
-		return column.isPrimaryKeyColumn();
+		return definitelyNotNullable;
 	}
 
 	@Override
 	public Identifier getUnqualifiedName() {
-		return column.getUnqualifiedName();
+		return this.name;
 	}	
 }

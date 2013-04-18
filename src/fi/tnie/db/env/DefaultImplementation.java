@@ -9,7 +9,7 @@ import fi.tnie.db.DefaultValueAssignerFactory;
 import fi.tnie.db.DefaultValueExtractorFactory;
 import fi.tnie.db.ValueAssignerFactory;
 import fi.tnie.db.ValueExtractorFactory;
-import fi.tnie.db.meta.impl.DefaultEnvironment;
+import fi.tnie.db.meta.DefaultEnvironment;
 
 /**
  * TODO: This needs to be fixed. DefaultImplementation should not extend a DefaultEnvironment.

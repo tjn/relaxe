@@ -3,9 +3,5 @@ package {{package-name}};
 public class {{schema-factory-impl}} 
     implements {{schema-factory}} {
 
-	static {
-		{{literal-catalog-name}}.getInstance();
-	}
-    
 {{factory-method-list}}
 }

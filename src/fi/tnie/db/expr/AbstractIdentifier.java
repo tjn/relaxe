@@ -102,7 +102,7 @@ public abstract class AbstractIdentifier
 		}
 					
 		return OrdinaryIdentifier.isValidOrdinary(name) ?
-				new OrdinaryIdentifier(folding.apply(name)) : 
+				new OrdinaryIdentifier((folding == null) ? name : folding.apply(name)) : 
 				new DelimitedIdentifier(name);
 	}
 	

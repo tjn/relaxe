@@ -6,12 +6,11 @@
  */
 package fi.tnie.db.expr;
 
-import java.util.Map.Entry;
-
 import fi.tnie.db.expr.op.AndPredicate;
 import fi.tnie.db.expr.op.Comparison;
 import fi.tnie.db.expr.op.ParenthesizedPredicate;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.ColumnMap;
 import fi.tnie.db.meta.ForeignKey;
 
 public class ForeignKeyJoinCondition 
@@ -50,14 +49,25 @@ public class ForeignKeyJoinCondition
 		if (this.condition == null) {
 			Predicate jp = null;
 			
-			for (Entry<Column, Column> e : foreignKey.columns().entrySet()) {
-				Column a = e.getKey();				
-				Column b = e.getValue();
-							
+			ColumnMap cm = foreignKey.getColumnMap();
+			
+			for (Column a : cm.values()) {				
+				Column b = foreignKey.getReferenced(a);
+
 				jp = AndPredicate.newAnd(jp, Comparison.eq(
 						new ColumnReference(referencing, a),
-						new ColumnReference(referenced,  b)));
+						new ColumnReference(referenced,  b)));				
 			}
+			
+			
+//			for (Entry<Column, Column> e : foreignKey.column().entrySet()) {
+//				Column a = e.getKey();				
+//				Column b = e.getValue();
+//							
+//				jp = AndPredicate.newAnd(jp, Comparison.eq(
+//						new ColumnReference(referencing, a),
+//						new ColumnReference(referenced,  b)));
+//			}
 			
 			this.condition = jp;
 

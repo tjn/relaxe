@@ -15,6 +15,7 @@ import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.expr.ColumnExpr;
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.TableReference;
+import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Table;
@@ -157,12 +158,16 @@ public abstract class DefaultEntityBuilder<
 			throw new NullPointerException("unresolved column for cn: " + cn.getName() + " in table " + table.getQualifiedName());
 		}		
 		
-		final Column resolved = (fk == null) ? col : fk.columns().get(col);
+//		final Column resolved = (fk == null) ? col : fk.columns().get(col);
+		final Column resolved = (fk == null) ? col : fk.getReferenced(col);
 		
 		if (resolved == null) {
 			return;
 //			throw new NullPointerException("unresolved column for cn: " + cn.getName() + " by fk " + fk.getQualifiedName() + " in table " + table.getQualifiedName());
 		}
+		
+		
+		final BaseTable pktbl = (fk == null) ? table.asBaseTable() : fk.getReferenced(); 
 		
 		ConstantColumnResolver cr = new ConstantColumnResolver(resolved);
 		
@@ -197,8 +202,12 @@ public abstract class DefaultEntityBuilder<
 //			return;
 //		}
 		
+//		List<AttributeWriter<A, E>> wl = 
+//			resolved.isPrimaryKeyColumn() ? this.primaryKeyWriterList : this.attributeWriterList;
+		
 		List<AttributeWriter<A, E>> wl = 
-			resolved.isPrimaryKeyColumn() ? this.primaryKeyWriterList : this.attributeWriterList;
+			pktbl.isPrimaryKeyColumn(resolved) ? this.primaryKeyWriterList : this.attributeWriterList;
+
 				
 		wl.add(w);
 	}			

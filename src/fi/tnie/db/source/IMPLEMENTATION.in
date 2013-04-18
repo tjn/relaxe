@@ -3,13 +3,25 @@ package {{package-name}};
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import fi.tnie.db.ent.EntityBuildContext;
 import fi.tnie.db.ent.EnumMetaData;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.meta.PrimaryKey;
+import fi.tnie.db.meta.ColumnMap;
+import fi.tnie.db.meta.SchemaElementMap;
+import fi.tnie.db.meta.ImmutableColumnMap;
+import fi.tnie.db.expr.SchemaElementName;
+import fi.tnie.db.expr.SchemaName;
 import fi.tnie.db.ent.value.*;
 import fi.tnie.db.expr.TableReference;
+import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.meta.Environment;
+import fi.tnie.db.types.ReferenceType;
+
 {{imports}}
 
 
@@ -30,7 +42,109 @@ public class {{table-impl-class}}
      */
     {{reference-key-class-list}}
 
-	{{attribute-container-implementation}}    
+	{{attribute-container-implementation}}
+	
+	
+	
+	private static class {{table-interface}}ForeignKeyMap
+		extends fi.tnie.db.meta.AbstractSchemaElementMap<ForeignKey> {
+		
+		// private static final long serialVersionUID = -4344734322943134268L;
+		
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		private {{table-interface}}ForeignKeyMap() {		
+		}
+		
+		private {{table-interface}}ForeignKeyMap(Environment environment, Map<Identifier, ForeignKey> content) {
+			super(environment, content);
+		}
+	}
+	
+	private static class {{table-interface}}ForeignKey
+		extends fi.tnie.db.ent.EntityTableForeignKey {
+		
+		private static final long serialVersionUID = -621396725083384123L;
+
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		private {{table-interface}}ForeignKey() {			
+		}
+		
+		private {{table-interface}}ForeignKey(BaseTable table, Identifier name,
+				ColumnMap columnMap, Map<Identifier, Identifier> columnPairMap,
+				ReferenceType<?, ?, ?, ?, ?, ?, ?, ?> type) {
+			super(table, name, columnMap, columnPairMap, type);		
+		}
+	}	
+		    
+		    
+	
+	
+	private static class {{table-interface}}Table
+		extends fi.tnie.db.meta.AbstractImmutableBaseTable {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7640632830490376459L;
+		private ColumnMap columnMap;
+		private PrimaryKey primaryKey;
+		private SchemaElementMap<ForeignKey> foreignKeys;
+		
+		{{base-table-column-variable-list}}
+		
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		@SuppressWarnings("unused")
+		private {{table-interface}}Table() {	
+		}
+
+		public {{table-interface}}Table(Environment env, SchemaElementName tableName) {
+			super(env, tableName);
+			
+			fi.tnie.db.meta.ImmutableColumnMap.Builder cmb = new fi.tnie.db.meta.ImmutableColumnMap.Builder(env);
+			
+			{{populate-column-map-block}}			
+			
+			this.columnMap = cmb.newColumnMap();
+			this.primaryKey = createPrimaryKey(env);
+			this.foreignKeys = createForeignKeyMap(env, columnMap);
+		}
+		
+		private PrimaryKey createPrimaryKey(Environment env) {
+//			ImmutablePrimaryKey.Builder pkb = new ImmutablePrimaryKey.Builder(this);
+//			pkb.add(columnMap.get(env.createIdentifier("A")));
+//			pkb.add(columnMap.get(env.createIdentifier("B")));			
+//			this.primaryKey = pkb.newConstraint();
+			{{create-primary-key-body}}		
+		}
+
+		private SchemaElementMap<ForeignKey> createForeignKeyMap(Environment env, ColumnMap columnMap) {
+			// Map<Identifier, ForeignKey> fkmap = new TreeMap<Identifier, ForeignKey>(env.identifierComparator());			
+			// fkmap.put(env.createIdentifier(""), new EntityTableForeignKey(Film.Type.TYPE));			
+			// return new ForeignKeyMap(env, fkmap);
+			{{create-foreign-key-map-body}}
+		}
+				
+		@Override
+		public ColumnMap columnMap() {
+			return this.columnMap;
+		}
+		
+		@Override
+		public PrimaryKey getPrimaryKey() {
+			return this.primaryKey;
+		}
+
+		@Override
+		public SchemaElementMap<ForeignKey> foreignKeys() {
+			return foreignKeys;		
+		}
+	}	
     
     public static class {{table-interface}}MetaData
         extends EnumMetaData
@@ -48,16 +162,12 @@ public class {{table-impl-class}}
     {
 		private static final long serialVersionUID = 1L;
         private static {{table-interface}}MetaData instance = null;
-        private static final {{table-interface}}.Factory factory = new FactoryImpl();
-        
-        static {
-        	{{literal-catalog-name}}.getInstance();
-        }
-        
+        private final {{table-interface}}.Factory factory = new FactoryImpl();
+        private fi.tnie.db.meta.BaseTable table;
         
         @Override
         public BaseTable getBaseTable() {
-        	return {{literal-catalog-name}}.LiteralBaseTable.{{literal-table-enum}};
+			{{create-get-base-table-body}}
         }
         
         private java.util.Map<Attribute, fi.tnie.db.ent.value.PrimitiveKey<Attribute, {{table-interface}}, ?, ?, ?, ?>> keyMap = new java.util.HashMap<Attribute, fi.tnie.db.ent.value.PrimitiveKey<Attribute, {{table-interface}}, ?, ?, ?, ?>>();        

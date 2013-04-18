@@ -29,19 +29,11 @@ import fi.tnie.db.map.TableMapper;
 import fi.tnie.db.map.TypeMapper;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.DataTypeImpl;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.Table;
-import fi.tnie.db.meta.impl.DataTypeImpl;
-import fi.tnie.db.meta.impl.DefaultForeignKey;
-import fi.tnie.db.meta.impl.DefaultMutableBaseTable;
-import fi.tnie.db.meta.impl.DefaultMutableCatalog;
-import fi.tnie.db.meta.impl.DefaultMutableColumn;
-import fi.tnie.db.meta.impl.DefaultMutableSchema;
-import fi.tnie.db.meta.impl.DefaultMutableTable;
-import fi.tnie.db.meta.impl.DefaultMutableView;
-import fi.tnie.db.meta.impl.DefaultPrimaryKey;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.source.SourceGenerator;
 import fi.tnie.db.tools.CatalogTool;
@@ -158,91 +150,93 @@ public class Builder
         	    
 	    Catalog cat = getCatalog();
 	    	    
-	    DefaultMutableCatalog mc = new DefaultMutableCatalog(cat.getEnvironment());
-	    
-	    Map<Schema, DefaultMutableSchema> sm = new HashMap<Schema, DefaultMutableSchema>();
-	    Map<Table, DefaultMutableBaseTable> tm = new HashMap<Table, DefaultMutableBaseTable>();
-	    
-	    for (Schema schema : cat.schemas().values()) {	    	
-	    	String n = schema.getUnqualifiedName().getName();
-	    	logger().debug("processing schema: '" + n + "'");
-	    	
-	    	if (!sf.accept(schema)) {
-	    		logger().debug("skipped schema: '" + n + "'");
-	    		continue;
-	    	}
-	    		    	
-	    	DefaultMutableSchema ms = new DefaultMutableSchema(schema.getUnqualifiedName());
-	    	ms.setCatalog(mc);
-	    	
-	    	sm.put(schema, ms);
-	    		    	
-	    	for (Table t : schema.tables().values()) {
-	    		DefaultMutableTable mt = null;
-	    		
-	    		if (t.isBaseTable()) {	    				    			
-	    			DefaultMutableBaseTable copy = new DefaultMutableBaseTable(ms, t.getUnqualifiedName());
-	    			tm.put(t, copy);
-	    			mt = copy;
-	    		}
-	    		else {	    				
-    				mt = new DefaultMutableView(ms, t.getUnqualifiedName());
-	    		}
-	    		
-	    		ms.add(mt);	    		
-	    			    		
-	    		for (Column c : t.columns()) {
-	    			DataTypeImpl d = new DataTypeImpl(c.getDataType());	    			
-	    			mt.add(new DefaultMutableColumn(mt, c.getUnqualifiedName(), d, c.isAutoIncrement()));	    			
-				}	    		
-			}
-		}
-	    
-	    for (Schema schema : cat.schemas().values()) {	    	
-	    	String n = schema.getUnqualifiedName().getName();
-	    	
-	    	if (!sf.accept(schema)) {
-	    		logger().debug("skipped schema: '" + n + "'");
-	    		continue;
-	    	}
-	    	
-	    	DefaultMutableSchema ms = sm.get(schema);
-	    	
-	    	for (PrimaryKey pk : schema.primaryKeys().values()) {
-	    		DefaultMutableBaseTable mt = tm.get(pk.getTable());	    		
-	    		List<DefaultMutableColumn> cols = new ArrayList<DefaultMutableColumn>();
-	    		
-	    		for (Column c : pk.columns()) {
-	    			DefaultMutableColumn cc = mt.columnMap().get(c.getUnqualifiedName().getName());
-	    			cols.add(cc);
-				}	    		
-	    		
-	    		new DefaultPrimaryKey(mt, pk.getUnqualifiedName(), cols);
-			}
-	    	
-	    	for (ForeignKey fk : schema.foreignKeys().values()) {
-	    		Map<Column, Column> cm = fk.columns();
-	    		DefaultMutableBaseTable referencing = tm.get(fk.getReferencing());
-	    		DefaultMutableBaseTable referenced = tm.get(fk.getReferenced());
-	    		
-	    		List<DefaultForeignKey.Pair> cplist = new ArrayList<DefaultForeignKey.Pair>();
-	    		
-	    		for (Map.Entry<Column, Column> e : cm.entrySet()) {
-	    			DefaultMutableColumn src = (DefaultMutableColumn) referencing.getColumn(e.getKey().getUnqualifiedName());
-	    			DefaultMutableColumn dest = (DefaultMutableColumn) referenced.getColumn(e.getValue().getUnqualifiedName());	    				    		
-	    			cplist.add(new DefaultForeignKey.Pair(src, dest));	
-				}	    		
-	    		
-	    		DefaultForeignKey copy = new DefaultForeignKey(ms, fk.getUnqualifiedName(), cplist);	    			    		
-	    		ms.add(copy);	    		
-	    	}
-	    }
+//	    DefaultMutableCatalog mc = new DefaultMutableCatalog(cat.getEnvironment());
+//	    
+//	    Map<Schema, DefaultMutableSchema> sm = new HashMap<Schema, DefaultMutableSchema>();
+//	    Map<Table, DefaultMutableBaseTable> tm = new HashMap<Table, DefaultMutableBaseTable>();
+//	    
+//	    for (Schema schema : cat.schemas().values()) {	    	
+//	    	String n = schema.getUnqualifiedName().getName();
+//	    	logger().debug("processing schema: '" + n + "'");
+//	    	
+//	    	if (!sf.accept(schema)) {
+//	    		logger().debug("skipped schema: '" + n + "'");
+//	    		continue;
+//	    	}
+//	    		    	
+//	    	DefaultMutableSchema ms = new DefaultMutableSchema(schema.getUnqualifiedName());
+//	    	ms.setCatalog(mc);
+//	    	
+//	    	sm.put(schema, ms);
+//	    		    	
+//	    	for (Table t : schema.tables().values()) {
+//	    		DefaultMutableTable mt = null;
+//	    		
+//	    		if (t.isBaseTable()) {	    				    			
+//	    			DefaultMutableBaseTable copy = new DefaultMutableBaseTable(ms, t.getUnqualifiedName());
+//	    			tm.put(t, copy);
+//	    			mt = copy;
+//	    		}
+//	    		else {	    				
+//    				mt = new DefaultMutableView(ms, t.getUnqualifiedName());
+//	    		}
+//	    		
+//	    		ms.add(mt);	    		
+//	    			    		
+//	    		for (Column c : t.columns()) {
+//	    			DataTypeImpl d = new DataTypeImpl(c.getDataType());	    			
+//	    			mt.add(new DefaultMutableColumn(mt, c.getUnqualifiedName(), d, c.isAutoIncrement()));	    			
+//				}	    		
+//			}
+//		}
+//	    
+//	    for (Schema schema : cat.schemas().values()) {	    	
+//	    	String n = schema.getUnqualifiedName().getName();
+//	    	
+//	    	if (!sf.accept(schema)) {
+//	    		logger().debug("skipped schema: '" + n + "'");
+//	    		continue;
+//	    	}
+//	    	
+//	    	DefaultMutableSchema ms = sm.get(schema);
+//	    	
+//	    	for (PrimaryKey pk : schema.primaryKeys().values()) {
+//	    		DefaultMutableBaseTable mt = tm.get(pk.getTable());	    		
+//	    		List<DefaultMutableColumn> cols = new ArrayList<DefaultMutableColumn>();
+//	    		
+//	    		for (Column c : pk.columns()) {
+//	    			DefaultMutableColumn cc = mt.columnMap().get(c.getUnqualifiedName().getName());
+//	    			cols.add(cc);
+//				}	    		
+//	    		
+//	    		new DefaultPrimaryKey(mt, pk.getUnqualifiedName(), cols);
+//			}
+//	    	
+//	    	for (ForeignKey fk : schema.foreignKeys().values()) {
+//	    		Map<Column, Column> cm = fk.columns();
+//	    		DefaultMutableBaseTable referencing = tm.get(fk.getReferencing());
+//	    		DefaultMutableBaseTable referenced = tm.get(fk.getReferenced());
+//	    		
+//	    		List<DefaultForeignKey.Pair> cplist = new ArrayList<DefaultForeignKey.Pair>();
+//	    		
+//	    		for (Map.Entry<Column, Column> e : cm.entrySet()) {
+//	    			DefaultMutableColumn src = (DefaultMutableColumn) referencing.getColumn(e.getKey().getUnqualifiedName());
+//	    			DefaultMutableColumn dest = (DefaultMutableColumn) referenced.getColumn(e.getValue().getUnqualifiedName());	    				    		
+//	    			cplist.add(new DefaultForeignKey.Pair(src, dest));	
+//				}	    		
+//	    		
+//	    		DefaultForeignKey copy = new DefaultForeignKey(ms, fk.getUnqualifiedName(), cplist);	    			    		
+//	    		ms.add(copy);	    		
+//	    	}
+//	    }
 	    
 	    
 //	    CatalogPrinter cp = new CatalogPrinter(null);
 //	    cp.setCatalog(mc);	    	    
 	    
-	    setCatalog(mc);
+//	    setCatalog(mc);
+	    
+	    setCatalog(cat);
 	        
 //	    final Set<String> ss = new TreeSet<String>(schemas);
 //	   

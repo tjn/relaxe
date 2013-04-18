@@ -7,8 +7,6 @@
 package fi.tnie.db.expr;
 
 import java.util.Map;
-import java.util.Map.Entry;
-
 import fi.tnie.db.expr.op.AndPredicate;
 import fi.tnie.db.expr.op.Comparison;
 import fi.tnie.db.expr.op.ParenthesizedPredicate;
@@ -53,17 +51,16 @@ public class MultiForeignKeyJoinCondition
 			for (Map.Entry<ForeignKey, TableReference> e : foreignKeyReferenceMap.entrySet()) {
 				ForeignKey key = e.getKey();
 				AbstractTableReference ref = e.getValue();
-
-				for (Entry<Column, Column> cp : key.columns().entrySet()) {
-					Column a = cp.getKey();				
-					Column b = cp.getValue();
+				
+				for (Column a : key.getColumnMap().values()) {									
+					Column b = key.getReferenced(a);
 					
 					Comparison pc = Comparison.eq(
 							new ColumnReference(referencing, a),
 							new ColumnReference(ref,  b));
 								
 					jp = AndPredicate.newAnd(jp, pc);
-				}				
+				}								
 			}
 			
 			this.condition = jp;

@@ -3,7 +3,7 @@
  */
 package fi.tnie.db.meta;
 
-import java.util.Map;
+import fi.tnie.db.expr.Identifier;
 
 public interface ForeignKey 
 	extends Constraint {
@@ -11,5 +11,8 @@ public interface ForeignKey
 	BaseTable getReferencing();
 	BaseTable getReferenced();
 	
-	public Map<Column, Column> columns();
+	ColumnMap getColumnMap();		
+		
+	Column getReferenced(Column referencingColumn);
+	Identifier getReferencedColumnName(Identifier referencingColumn);
 }

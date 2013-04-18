@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.source;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +31,9 @@ import org.apache.log4j.Logger;
 import fi.tnie.db.build.SchemaFilter;
 import fi.tnie.db.ent.im.EntityIdentityMap;
 import fi.tnie.db.expr.ColumnName;
+import fi.tnie.db.expr.DelimitedIdentifier;
 import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.expr.OrdinaryIdentifier;
 import fi.tnie.db.expr.SchemaElementName;
 import fi.tnie.db.expr.SchemaName;
 import fi.tnie.db.map.AttributeInfo;
@@ -43,8 +46,11 @@ import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ColumnMap;
 import fi.tnie.db.meta.DataType;
+import fi.tnie.db.meta.DataTypeImpl;
+import fi.tnie.db.meta.EmptyForeignKeyMap;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.meta.ImmutablePrimaryKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Schema;
 import fi.tnie.db.meta.SchemaElement;
@@ -190,6 +196,14 @@ public class SourceGenerator {
 		ROOT_PACKAGE_NAME_LITERAL,
 		
 		FACTORY_METHOD_LIST,
+				
+		BASE_TABLE_COLUMN_VARIABLE_LIST,
+		POPULATE_COLUMN_MAP_BLOCK,
+		CREATE_GET_BASE_TABLE_BODY,
+		CREATE_PRIMARY_KEY_BODY,
+		CREATE_FOREIGN_KEYS_BODY,
+		CREATE_FOREIGN_KEY_MAP_BODY,
+		
 		/**
 		 * Generated imports
 		 */
@@ -495,12 +509,12 @@ public class SourceGenerator {
 	        write(getSourceDir(), cc, src, generated, gm);
         }
 
-        {
-	        JavaType lc = tm.literalContextType();
-	        CharSequence src = generateLiteralContext(lc, cat, tm, il, fm);
-	        logger().debug("generated lit ctx: src={" + src + "}");
-	        writeIfGenerated(getSourceDir(), lc, src, generated, gm);
-        }
+//        {
+//	        JavaType lc = tm.literalContextType();
+//	        CharSequence src = generateLiteralContext(lc, cat, tm, il, fm);
+//	        logger().debug("generated lit ctx: src={" + src + "}");
+//	        writeIfGenerated(getSourceDir(), lc, src, generated, gm);
+//        }
         
         return generated;
     }
@@ -585,7 +599,7 @@ public class SourceGenerator {
     	
     	final String tsrc = getTemplateForLiteralInnerTable();  
     	
-    	StringBuffer buf = new StringBuffer();
+    	StringBuilder buf = new StringBuilder();
     	
     	EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
     	List<String> initList = new ArrayList<String>(); 
@@ -600,7 +614,7 @@ public class SourceGenerator {
     		for (Table t : s.tables().values()) {
     			String tn = getSimpleName(t);
     			
-    			StringBuffer ebuf = new StringBuffer();    			    			
+    			StringBuilder ebuf = new StringBuilder();    			    			
     			generateColumnListElements(t, ebuf, nq);
     			String cl = ebuf.toString();
     			String tc = replaceAll(tsrc, Tag.COLUMN_ENUM_LIST, cl);    			
@@ -625,7 +639,7 @@ public class SourceGenerator {
 		}
     	
     	final String tin = getTemplateForTableEnumInit();
-    	StringBuffer initCode = new StringBuffer();
+    	StringBuilder initCode = new StringBuilder();
     	
     	for (String it : initList) {
     		initCode.append(replaceAll(tin, Tag.TABLE_ENUM_INIT_TYPE, it));
@@ -641,7 +655,7 @@ public class SourceGenerator {
 	}
 	
 	private String generateMetaMapPopulation(Catalog cat, TableMapper tm) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 				
 		for (Schema s : cat.schemas().values()) {
 			if (!schemaFilter.accept(s)) {
@@ -671,7 +685,7 @@ public class SourceGenerator {
 	}
 
 	private String generateForeignKeyList(Catalog cat, TableMapper tm) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
 		
@@ -701,19 +715,29 @@ public class SourceGenerator {
 					BaseTable rt = fk.getReferenced();
 					JavaType jrt = tm.entityType(rt, Part.LITERAL_TABLE_ENUM);
 					
-					for (Map.Entry<Column, Column> e : fk.columns().entrySet()) {
-												
-						// buf.append(", LiteralCatalogColumn.");						
+//					for (Map.Entry<Column, Column> e : fk.columns().entrySet()) {
+//						buf.append(", ");
+//						buf.append(jkt.getQualifiedName());
+//						buf.append(".");
+//						buf.append(columnEnumeratedName(kt, e.getKey(), nq));
+//						buf.append(", ");
+//						buf.append(jrt.getQualifiedName());
+//						buf.append(".");
+//						buf.append(columnEnumeratedName(rt, e.getValue(), nq));
+//					}
+
+					for (Column a : fk.getColumnMap().values()) {
+						Column b = fk.getReferenced(a);
 						buf.append(", ");
 						buf.append(jkt.getQualifiedName());
 						buf.append(".");
-						buf.append(columnEnumeratedName(kt, e.getKey(), nq));
+						buf.append(columnEnumeratedName(kt, a, nq));
 						buf.append(", ");
 						buf.append(jrt.getQualifiedName());
 						buf.append(".");
-						buf.append(columnEnumeratedName(rt, e.getValue(), nq));
+						buf.append(columnEnumeratedName(rt, b, nq));
 					}
-					
+
 					buf.append("),\n");									
 				}
 			}
@@ -723,7 +747,7 @@ public class SourceGenerator {
 	}
 	
 	private String generatePrimaryKeyList(Catalog cat, TableMapper tm) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 
 		EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
 		
@@ -753,7 +777,7 @@ public class SourceGenerator {
 				buf.append(un.getName());
 				buf.append("\"");
 				
-				for (Column c : pk.columns()) {
+				for (Column c : pk.getColumnMap().values()) {
 					buf.append(", ");
 					// buf.append("LiteralCatalogColumn.");
 					buf.append(jt.getQualifiedName());
@@ -769,7 +793,7 @@ public class SourceGenerator {
 	}
 	
 //	private String generateColumnList(Table t) {
-//		StringBuffer buf = new StringBuffer();
+//		StringBuilder buf = new StringBuilder();
 //			
 //		Identifier sn = t.getSchema().getUnqualifiedName();
 //		Identifier tn = t.getUnqualifiedName();
@@ -794,35 +818,81 @@ public class SourceGenerator {
 		TABLE,
 		COLUMN
 	}
+	
+	private String columnConstantName(Column c) {
+		return columnEnumeratedName(null, c, EnumSet.of(NameQualification.COLUMN));
+	}
 
-	private void generateColumnListElements(Table t, StringBuffer buf, EnumSet<NameQualification> nq) {
+	private void generateColumnListElements(Table t, StringBuilder buf, EnumSet<NameQualification> nq) {
 		boolean b = t.isBaseTable();
-		String te = b ? "LiteralBaseTable" : "LiteralView"; 				
+		String te = b ? "LiteralBaseTable" : "LiteralView";
 		
-		for (Column c : t.columns()) {
+		Environment env = t.getEnvironment();
+		
+		String et = env.getClass().getName();
+				
+		
+		for (Column c : t.columnMap().values()) {
 			String cn = columnEnumeratedName(t, c, nq);			
 			String ten = tableEnumeratedName(t);					
 			Identifier un = c.getUnqualifiedName();
 			
-			// TODO: add 'autoinc' -info etc
-			
 			buf.append(cn);
-			buf.append("(");			
-			buf.append("new LiteralCatalog.ColumnInitializer(");
-			buf.append("LiteralCatalog.");
-			buf.append(te);
-			buf.append(".");
-			buf.append(ten);
-			buf.append(", \"");
+			buf.append("(");		
+			buf.append(et);
+			buf.append(".environment().");
+			buf.append("createIdentifier(\"");
 			buf.append(un.getName());
-			buf.append("\", ");										
+			buf.append("\")");
+			buf.append(", ");										
 			generateNewDataType(buf, c.getDataType());
 			buf.append(", ");			
-			buf.append(autoIncrementConstant(c));			
-			buf.append(")),\n");									
+			buf.append(definitelyNotNullableConstant(c));
+			buf.append(", ");
+			buf.append(autoIncrementBooleanConstant(c));			
+			buf.append("),\n");												
+			
+			// TODO: add 'autoinc' -info etc
+			
+//			buf.append(cn);
+//			buf.append("(");			
+//			buf.append("new LiteralCatalog.ColumnInitializer(");
+//			buf.append("LiteralCatalog.");
+//			buf.append(te);
+//			buf.append(".");
+//			buf.append(ten);
+//			buf.append(", \"");
+//			buf.append(un.getName());
+//			buf.append("\", ");										
+//			generateNewDataType(buf, c.getDataType());
+//			buf.append(", ");			
+//			buf.append(autoIncrementConstant(c));			
+//			buf.append(")),\n");									
 		}
 		
 		buf.append(";\n");
+	}
+	
+	
+	private String autoIncrementBooleanConstant(Column c) {
+		Boolean ai = c.isAutoIncrement();
+		
+		if (ai == null) {
+			return "null";
+		}
+		
+		StringBuilder buf = new StringBuilder(Boolean.class.getName());
+		buf.append('.');
+		buf.append(ai.booleanValue() ? "TRUE" : "FALSE");
+		return buf.toString();
+	}
+	
+	private String definitelyNotNullableConstant(Column c) {
+		return booleanConstant(c.isDefinitelyNotNullable());		
+	}
+	
+	private String booleanConstant(boolean v) {
+		return v ? "true" : "false";		
 	}
 
 	private String autoIncrementConstant(Column c) {
@@ -841,7 +911,7 @@ public class SourceGenerator {
 	}	
 
 	private String generateColumnList(Catalog cat) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 
 		for (Schema s : cat.schemas().values()) {
 			if (!schemaFilter.accept(s)) {
@@ -852,7 +922,7 @@ public class SourceGenerator {
 				boolean b = t.isBaseTable();
 				String te = b ? "LiteralBaseTable" : "LiteralView"; 				
 				
-				for (Column c : t.columns()) {
+				for (Column c : t.columnMap().values()) {
 					String cn = columnEnumeratedName(t, c);
 					String tn = tableEnumeratedName(t);					
 					Identifier un = c.getUnqualifiedName();
@@ -877,14 +947,25 @@ public class SourceGenerator {
 		
 		return buf.toString();
 	}
+	
+	
+	private String generateNewDataType(DataType t) {
+		StringBuilder buf = new StringBuilder();
+		generateNewDataType(buf, t);
+		return buf.toString();
+		
+	}
 	/**
 	 * Formats the expression: new DataTypeImpl(...)
 	 * @param buf
 	 * @param t
 	 */
-
-	private void generateNewDataType(StringBuffer buf, DataType t) {
-		buf.append("new DataTypeImpl(");				
+	
+	private void generateNewDataType(StringBuilder buf, DataType t) {
+		buf.append("new ");
+		buf.append(DataTypeImpl.class.getCanonicalName());
+		buf.append("(");
+		
 //		call: new DataTypeImpl(int dataType, String typeName, int charOctetLength, int decimalDigits, int numPrecRadix, int size)
 		buf.append(t.getDataType());
 		buf.append(", \"");
@@ -901,7 +982,7 @@ public class SourceGenerator {
 	}
 
 	private String generateBaseTableList(Catalog cat) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 
 		for (Schema s : cat.schemas().values()) {
 			if (!schemaFilter.accept(s)) {
@@ -928,7 +1009,7 @@ public class SourceGenerator {
 	private String generateViewList(Catalog cat) {
 		logger().debug("generateViewList - enter");
 		
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 
 		for (Schema s : cat.schemas().values()) {
 			if (!schemaFilter.accept(s)) {
@@ -961,7 +1042,7 @@ public class SourceGenerator {
 	}
 
 	private String generateSchemaList(Catalog cat) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 
 		for (Schema s : cat.schemas().values()) {
 			if (!schemaFilter.accept(s)) {
@@ -997,7 +1078,7 @@ public class SourceGenerator {
 	}
 	
 	private String enumeratedName(SchemaElement e) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 //		buf.append(e.getSchema().getUnqualifiedName().getName());
 		buf.append(e.getName().getQualifier().getSchemaName().getName());
 		
@@ -1012,7 +1093,7 @@ public class SourceGenerator {
 	}
 	
 	private String columnEnumeratedName(Table t, Column c, EnumSet<NameQualification> nq) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		if (nq.contains(NameQualification.SCHEMA)) {
 			// t.getSchema().getUnqualifiedName().getName();			
@@ -1030,7 +1111,8 @@ public class SourceGenerator {
 		}
 		
 		String n = buf.toString().toUpperCase();
-		return n.replace(' ', '_');		
+		
+		return normalize(n);		
 	}
 
 	private String normalize(String n) {
@@ -1062,7 +1144,7 @@ public class SourceGenerator {
 
 	private String generateFactoryMethodList(
 			Map<JavaType, CharSequence> fm) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
                 
         for (Map.Entry<JavaType, CharSequence> e : fm.entrySet()) {
             buf.append(formatSchemaFactoryMethod(e.getKey(), e.getValue()));
@@ -1386,7 +1468,7 @@ public class SourceGenerator {
     		ts.add(k.getReferenced());    		
 		}
     	
-    	StringBuffer buf = new StringBuffer();
+    	StringBuilder buf = new StringBuilder();
     	
 //    	JavaType intf = tm.entityType(t, Part.INTERFACE);
     	
@@ -1415,7 +1497,7 @@ public class SourceGenerator {
      */
     
 	private String referenceList(BaseTable t, TableMapper tm) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		Set<BaseTable> rs = referencedTables(t);
 		
@@ -1443,7 +1525,7 @@ public class SourceGenerator {
      */
     
 	private String attributeContainerInterfaceList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		Set<Class<?>> implemented = new LinkedHashSet<Class<?>>() ;
 		
@@ -1493,7 +1575,7 @@ public class SourceGenerator {
      */
     
 	private String attributeKeyContainerInterfaceList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		Set<Class<?>> implemented = new LinkedHashSet<Class<?>>() ;
 		
@@ -1543,7 +1625,7 @@ public class SourceGenerator {
      */
     
 	private String attributeContainerImplementation(Catalog cat, BaseTable t, TableMapper tam, TypeMapper tym) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		Map<Class<?>, List<Column>> attributeTypeMap = new HashMap<Class<?>, List<Column>>() ;
 		
@@ -1580,7 +1662,7 @@ public class SourceGenerator {
 	
 
     
-	private void formatAttributeHolderAccessors(Catalog cat, Class<?> kt, BaseTable table, List<Column> columns, TableMapper tam, TypeMapper tym, StringBuffer buf) {
+	private void formatAttributeHolderAccessors(Catalog cat, Class<?> kt, BaseTable table, List<Column> columns, TableMapper tam, TypeMapper tym, StringBuilder buf) {
 			
 
 //		Sample output: "private IntegerHolder a = null;"
@@ -1717,7 +1799,7 @@ public class SourceGenerator {
 		buf.append("\n// formatAttributeHolderAccessors - exit\n");
 	}
 		
-	private void appendThrowNpe(StringBuffer buf, String className, final String methodName, String argument) {
+	private void appendThrowNpe(StringBuilder buf, String className, final String methodName, String argument) {
 		if (argument == null) {
 			throw new NullPointerException("argument");
 		}		
@@ -1758,7 +1840,7 @@ public class SourceGenerator {
      */
     
 	private String attributeKeyContainerImplementation(Catalog cat, BaseTable t, TableMapper tam, TypeMapper tym) throws IOException {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		buf.append("\n// attributeKeyContainerImplementation() - enter\n");
 		
@@ -1842,7 +1924,7 @@ public class SourceGenerator {
 	
 	    EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
 	    
-	    StringBuffer ebuf = new StringBuffer();
+	    StringBuilder ebuf = new StringBuilder();
 		generateColumnListElements(t, ebuf, nq);
 		String cl = ebuf.toString();
 		src = replaceAll(src, Tag.COLUMN_ENUM_LIST, cl);
@@ -1865,11 +1947,11 @@ public class SourceGenerator {
 	   	   
        src = replaceAll(src, "{{schema-factory}}", factoryType.getUnqualifiedName());
 
-       StringBuffer code = new StringBuffer();
+       StringBuilder code = new StringBuilder();
 
        for (TypeInfo info : types) {
            String m = formatFactoryMethod(info, false);
-           a(code, m, 1);
+           line(code, m, 1);
        }
 
        src = replaceAll(src, "{{factory-method-list}}", code.toString());
@@ -1892,7 +1974,7 @@ public class SourceGenerator {
 	
 //	    src = replaceAll(src, "{{schema-factory}}", intf.getUnqualifiedName());
 //	
-//	    StringBuffer code = new StringBuffer();
+//	    StringBuilder code = new StringBuilder();
 //	
 //	    for (TypeInfo t : types) {
 //	        String m = formatFactoryMethod(t, true);
@@ -1931,11 +2013,11 @@ public class SourceGenerator {
         src = replaceAll(src, "{{schema-factory-impl}}", impl.getUnqualifiedName());
         src = replaceAll(src, "{{schema-factory}}", intf.getQualifiedName());
 
-        StringBuffer code = new StringBuffer();
+        StringBuilder code = new StringBuilder();
 
         for (TypeInfo t : types) {
             String m = formatFactoryMethod(t, true);
-            a(code, m, 1);
+            line(code, m, 1);
         }
 
         src = replaceAll(src, "{{factory-method-list}}", code.toString());
@@ -2025,7 +2107,7 @@ public class SourceGenerator {
 	}
 
 	private String imports(Collection<String> imports) {
-	    StringBuffer src = new StringBuffer();
+	    StringBuilder src = new StringBuilder();
 
 	    TreeSet<String> ts = new TreeSet<String>(imports);
 
@@ -2121,6 +2203,8 @@ public class SourceGenerator {
         List<String> il = new ArrayList<String>();
         addImport(impl, intf, il);
         addImport(impl, base, il);
+        
+        Tag tag = null;
 
         src = replacePackageAndImports(src, impl, il);
 
@@ -2131,6 +2215,14 @@ public class SourceGenerator {
         src = replaceAll(src, Tag.LITERAL_CATALOG_NAME, tam.literalContextType().getQualifiedName());
         
        	src = replaceAll(src, Tag.LITERAL_TABLE_ENUM, lt);
+       	
+       	tag = Tag.BASE_TABLE_COLUMN_VARIABLE_LIST;
+       	src = replaceAll(src, tag, generateBaseTableColumnVariableList(t, tag));
+       	
+       	src = replaceAll(src, Tag.POPULATE_COLUMN_MAP_BLOCK, generatePopulateColumnMapBlock(t, tam));
+       	src = replaceAll(src, Tag.CREATE_GET_BASE_TABLE_BODY, generateGetBaseTableBody(t, tam));
+       	src = replaceAll(src, Tag.CREATE_PRIMARY_KEY_BODY, generateCreatePrimaryKeyBody(t));
+       	src = replaceAll(src, Tag.CREATE_FOREIGN_KEY_MAP_BODY, generateCreateForeignKeyMapBody(t, tam));
                                 
         boolean qualify = hasAmbiguousSimpleNamesForReferenceKeys(t, tam);
         
@@ -2214,8 +2306,336 @@ public class SourceGenerator {
         return src;
 	}
 	
+	private String generatePopulateColumnMapBlock(BaseTable t, TableMapper tam) {
+		StringBuilder buf = new StringBuilder();
+
+		line(buf, "// generatePopulateColumnMapBlock //");
+		
+		line(buf, "{");
+		
+		int ordinal = 1;
+		
+		for (Column	c : t.columnMap().values()) {
+			line(buf, "cmb.add(",
+					columnConstantName(c),
+					", ",
+					Integer.toString(ordinal),
+					", ",
+					generateNewDataType(c.getDataType()),
+					", ",
+					autoIncrementBooleanConstant(c),
+					", ",
+					null,
+					", ",
+					definitelyNotNullableConstant(c),
+					", ",
+					null,
+			");");
+			
+			ordinal++;
+		}
+		
+		line(buf, "}");
+		
+		return buf.toString();
+	}
+
+	private String generateBaseTableColumnVariableList(BaseTable t, Tag tag) {
+		StringBuilder buf = new StringBuilder();
+		
+		tag(buf, tag);		
+		
+		ColumnMap columnMap = t.columnMap();
+		
+		for (Column c : columnMap.values()) {			
+			ColumnName cn = c.getColumnName();
+			String cc = columnConstantName(c);						
+			line(buf, "private final ", identifierDeclaration(cc, cn), ";");
+		}
+		
+		
+		return buf.toString();
+	}
+
+	private void tag(StringBuilder buf, Tag tag) {
+		line(buf, "// ", tag.getTag());
+	}
+
+	private String generateGetBaseTableBody(BaseTable t, TableMapper tam) {
+		StringBuilder buf = new StringBuilder();
+		
+		
+		line(buf, "// generateGetBaseTableBody //");
+
+		line(buf, "if (this.table == null) {");
+
+/**
+	Environment env = PGEnvironment.environment();
+	
+	fi.tnie.db.expr.Identifier c = env.createIdentifier("asdf");
+	fi.tnie.db.expr.Identifier s = env.createIdentifier("public");
+	fi.tnie.db.expr.Identifier t = env.createIdentifier("test");   
+	
+	fi.tnie.db.expr.SchemaName schemaName = new fi.tnie.db.expr.SchemaName(c, s);
+	SchemaElementName sen = new SchemaElementName(schemaName, t);
+
+	this.table = new ActorTable(env, sen);		
+ */
+		line(buf, "Environment env = ", t.getEnvironment().getClass().getCanonicalName(), ".environment();");
+		
+		SchemaElementName sen = t.getName();
+		
+		line(buf, identifierDeclaration("c", sen.getQualifier().getCatalogName()));
+		line(buf, identifierDeclaration("s", sen.getQualifier().getSchemaName()));
+		line(buf, identifierDeclaration("t", sen.getUnqualifiedName()));
+		
+		JavaType intf = tam.entityType(t, Part.INTERFACE);
+		
+		String snt = SchemaName.class.getCanonicalName();
+		String ent = SchemaElementName.class.getCanonicalName();
+				
+		line(buf, snt, " schemaName = new ", snt, "(c, s);");
+		line(buf, ent, " sen = new ", ent, "(schemaName, t);");
+		line(buf, "this.table = new ", intf.getUnqualifiedName(), "Table(env, sen);");
+		
+		line(buf, "}", 2);		
+		
+		line(buf, "return this.table;", 1);		
+		
+		return buf.toString();
+	}
+
+	private String generateCreateForeignKeyMapBody(BaseTable t, TableMapper tam) {
+		StringBuilder buf = new StringBuilder();
+		
+		line(buf, "// generateCreateForeignKeyMapBody //");
+		
+		JavaType intf = tam.entityType(t, Part.INTERFACE);
+		
+		SchemaElementMap<ForeignKey> fm = t.foreignKeys();
+		
+		if (fm.isEmpty()) {
+			line(buf, "return new ", EmptyForeignKeyMap.class.getCanonicalName(), "(env);");
+		}
+		else {
+			// Map<Identifier, ForeignKey> fkmap = new TreeMap<Identifier, ForeignKey>(env.identifierComparator());			
+			// fkmap.put(env.createIdentifier(""), new EntityTableForeignKey(Film.Type.TYPE));			
+			// return new <X>ForeignKeyMap(env, fkmap);
+			
+			line(buf, "java.util.Map<Identifier, ForeignKey> fkmap = new java.util.TreeMap<Identifier, ForeignKey>(env.identifierComparator());");
+						
+			for (ForeignKey fk : fm.values()) {
+				generateCreateForeignKeyBlock(buf, fk, t, tam);				
+			}			
+						
+			line(buf, "return new ", intf.getUnqualifiedName(), "ForeignKeyMap(env, fkmap);");
+		}
+		
+		return buf.toString();
+	}
+
+	private void generateCreateForeignKeyBlock(StringBuilder buf, ForeignKey fk, BaseTable t, TableMapper tam) {
+
+//		{	
+//			Identifier constraintName = env.createIdentifier("FK_NAME");
+//			
+//			ImmutableColumnMap.Builder cmi = new ImmutableColumnMap.Builder(env);
+//			
+//			Identifier c1 = ID;
+//			Identifier r1 = null;
+//			Identifier c2 = null;
+//			Identifier r2 = null;
+//			
+//			cmi.add(columnMap.get(c1));
+//			cmi.add(columnMap.get(c2));
+//			
+//			Map<Identifier, Identifier> cm = new TreeMap<Identifier, Identifier>(env.identifierComparator());
+//			cm.put(c1, r1);
+//			cm.put(c2, r2);
+//
+//			ColumnMap fkcm = cmi.newColumnMap();
+//
+//			ForeignKey fk = new ActorForeignKey(
+//					this,
+//					constraintName,
+//					fkcm,
+//					cm,						
+//					Film.Type.TYPE);				
+//							
+//			fkmap.put(fk.getUnqualifiedName(), fk);
+//		}		
+		
+		line(buf, "{");
+				
+		line(buf, identifierDeclaration("constraintName", fk.getUnqualifiedName()), ";");		
+		
+		line(buf, "ImmutableColumnMap.Builder cmi = new ImmutableColumnMap.Builder(env);");
+		
+		line(buf, "Map<Identifier, Identifier> cm = new TreeMap<Identifier, Identifier>(env.identifierComparator());");
+
+		Collection<Column> cl = fk.getColumnMap().values();
+		
+		int ordinal = 1;
+		
+		for (Column column : cl) {			
+			String o = Integer.toString(ordinal);
+						
+			line(buf, "Identifier c", o, " = ", columnConstantName(column), ";");
+			
+			String rn = "r" + o;
+			Identifier rc = fk.getReferencedColumnName(column.getUnqualifiedName());
+			
+			line(buf, identifierDeclaration(rn, rc), ";");
+			
+			line(buf, "cmi.add(columnMap.get(c", o, "));");
+			line(buf, "cm.put(c", o, ", r", o, ");");
+			
+			ordinal++;
+		}		
+		
+		line(buf, "ColumnMap fkcm = cmi.newColumnMap();", 2);
+
+//		ForeignKey fk = new ActorForeignKey(
+//		this,
+//		constraintName,
+//		fkcm,
+//		cm,						
+//		Film.Type.TYPE);
+		
+		JavaType ti = tam.entityType(t, Part.INTERFACE);
+		JavaType rt = tam.entityType(fk.getReferenced(), Part.INTERFACE);
+		
+		line(buf, "ForeignKey fk = new ", ti.getUnqualifiedName(), "ForeignKey(", 
+				"this, constraintName, fkcm, cm, ", rt.getQualifiedName(), ".Type.TYPE);");
+				
+		line(buf, "fkmap.put(constraintName, fk);");
+		
+		line(buf, "}");
+	}
+
+	private String generateCreatePrimaryKeyBody(BaseTable t) {
+		StringBuilder buf = new StringBuilder();
+		
+		line(buf, "// generateCreatePrimaryKeyBody: ");
+		
+		
+		PrimaryKey pk = t.getPrimaryKey();
+		
+		if (pk == null) {
+			line(buf, "return null; // Table does not have a primary key");
+			return buf.toString();
+		}
+		
+//		ImmutablePrimaryKey.Builder pkb = new ImmutablePrimaryKey.Builder(this);		
+//		pkb.add(columnMap.get(env.createIdentifier("A")));
+//		pkb.add(columnMap.get(env.createIdentifier("B")));			
+//		this.primaryKey = pkb.newConstraint();
+		
+		String kbi = ImmutablePrimaryKey.Builder.class.getCanonicalName();
+				
+		line(buf, kbi, " pkb = new ", kbi, "(this);");
+		
+		ColumnMap cm = pk.getColumnMap();
+		
+		int size = cm.size();
+		
+		for (int i = 0; i < size; i++) {
+			Column c = cm.get(i);
+//			ColumnName n = c.getColumnName();			
+//			columnConstantName(c);
+						
+//			line(buf, "{");		
+			line(buf, "pkb.add(columnMap.get(", columnConstantName(c) ,"));");
+//			line(buf, "}");
+		}		
+		
+		line(buf, "return pkb.newConstraint();", 1);
+		
+		return buf.toString();
+	}
+
+	private String identifierDeclaration(String variableName, Identifier n) {
+		StringBuilder buf = new StringBuilder();
+				
+		buf.append(Identifier.class.getCanonicalName());
+		buf.append(" ");
+		buf.append(variableName);		
+		buf.append(" = ");
+		
+		if (n == null) {
+			buf.append("null");
+		}
+		else {		
+			Class<?> ii = n.isOrdinary() ? OrdinaryIdentifier.class : DelimitedIdentifier.class;
+			
+			buf.append("new ");
+			buf.append(ii.getCanonicalName());
+			buf.append("(");
+			literal(buf, n.getName());
+			buf.append(")");
+		}
+		
+		buf.append(";");
+		
+		return buf.toString();
+	}
+	
+	private String literal(Identifier name) {
+		return literal(name == null ? null : name.getName());
+	}
+
+	private String literal(String name) {
+		StringBuilder buf = new StringBuilder();
+		literal(buf, name);
+		return buf.toString();
+	}
+	
+	private void literal(StringBuilder buf, String name) {
+		
+		if (name == null) {
+			buf.append("null");
+			return;
+		}
+		
+		buf.append('\"');
+		
+		int len = name.length();
+		
+		for (int i = 0; i < len; i++) {
+			char c = name.charAt(i);
+			
+			boolean escape = 
+				(c == '\b') &&
+				(c == '\t') &&
+				(c == '\n') &&
+				(c == '\f') &&
+				(c == '\r') &&
+				(c == '\\') &&
+				(c == '\"');
+						
+			if (escape) {
+				buf.append('\\');
+			}
+			
+			buf.append(c);
+		}
+		
+		buf.append('\"');
+	}
+
+	private void line(StringBuilder buf, String lc) {
+		line(buf, lc, 1);
+	}
+	
+	private void line(StringBuilder buf, String ... elems) {
+		for (int i = 0; i < elems.length; i++) {
+			boolean eol = (i == (elems.length - 1));
+			line(buf, elems[i], eol ? 1 : 0);
+		}		
+	}
+
 	private String attributesMethodStatementList(Catalog cat, BaseTable t, TableMapper tam, TypeMapper tym) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		buf.append("\n// attributesMethodStatementList() - enter\n");
 		
@@ -2262,7 +2682,7 @@ public class SourceGenerator {
 
 	private String builderLinkerInitList(BaseTable referencing, TableMapper tm,
 			boolean qualify) throws IOException {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 				
 		for (ForeignKey fk : referencing.foreignKeys().values()) {			
 			String c = formatBuilderLinkerInit(fk, tm);
@@ -2277,13 +2697,14 @@ public class SourceGenerator {
 	private String generateCreateIdentityMapMethod(BaseTable t, TableMapper tam, TypeMapper tm) {
 		PrimaryKey pk = t.getPrimaryKey();
 		
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		if (pk != null) {
-			List<? extends Column> cl = pk.columns();
+			// List<Column> cl = pk.columns();
+			ColumnMap cm = pk.getColumnMap();
 			
-			if (cl.size() == 1) {
-				Column col = cl.get(0);				
+			if (cm.size() == 1) {
+				Column col = cm.get(0);				
 				AttributeInfo ai = tm.getAttributeInfo(t, col);
 
 				
@@ -2346,7 +2767,7 @@ public class SourceGenerator {
 	}
 
 	private String referenceMapList(BaseTable t, TableMapper tm, boolean qualify) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		Map<BaseTable, JavaType> map = referenced(t, tm);
 		
@@ -2371,11 +2792,11 @@ public class SourceGenerator {
 //			return om.get(ok);
 //		}		
 		
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		JavaType ti = tm.entityType(referenced, Part.INTERFACE);
 					
-		final StringBuffer ktbuf = new StringBuffer();
+		final StringBuilder ktbuf = new StringBuilder();
 		ktbuf.append(ti.getQualifiedName());
 		ktbuf.append(".Key<");
 		ktbuf.append(referenceKeyTypeArgs(tm, t));
@@ -2497,7 +2918,7 @@ public class SourceGenerator {
 	}	
 	
 	private String referenceKeyClassList(BaseTable table, TableMapper tm, boolean qualify) {
-		StringBuffer buf = new StringBuffer();		
+		StringBuilder buf = new StringBuilder();		
 		Map<BaseTable, JavaType> map = referenced(table, tm);
 		
 		for (Entry<BaseTable, JavaType> r : map.entrySet()) {
@@ -2542,7 +2963,7 @@ public class SourceGenerator {
 		JavaType src = tm.entityType(referencing, Part.INTERFACE);		
 		JavaType target = tm.entityType(referenced, Part.INTERFACE);
 				
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		// Key implementation must be public to be GWT serializable
 		buf.append("public static class ");
@@ -2615,7 +3036,7 @@ public class SourceGenerator {
 	}
 	
 	private String referenceKeyReferenceTypeName(BaseTable referencing, BaseTable referenced, TableMapper tm, boolean qualify) {
-		StringBuffer nb = new StringBuffer();
+		StringBuilder nb = new StringBuilder();
 		
 		if (qualify) {
 			appendSchemaPrefix(referenced, nb);
@@ -2667,7 +3088,7 @@ public class SourceGenerator {
 		return nb.toString();
 	}
 
-	private void appendSchemaPrefix(SchemaElement element, StringBuffer nb) {
+	private void appendSchemaPrefix(SchemaElement element, StringBuilder nb) {
 		SchemaName n = element.getName().getQualifier();
 		String prefix = (n == null) ? "" : name(n.getSchemaName().getName());
 		nb.append(prefix);
@@ -2676,7 +3097,7 @@ public class SourceGenerator {
 		
 
 	private String referenceKeyImplementationName(BaseTable referenced, JavaType target, boolean qualify) {
-		StringBuffer nb = new StringBuffer();
+		StringBuilder nb = new StringBuilder();
 		
 		if (qualify) {
 			appendSchemaPrefix(referenced, nb);
@@ -2689,7 +3110,7 @@ public class SourceGenerator {
 	}
 	
 	private String referenceKeyMapVariable(BaseTable referenced, JavaType target, boolean qualify) {
-		StringBuffer nb = new StringBuffer();
+		StringBuilder nb = new StringBuilder();
 		
 		if (qualify) {
 			appendSchemaPrefix(referenced, nb);
@@ -2702,7 +3123,7 @@ public class SourceGenerator {
 	}
 	
 	private String referenceValueMapVariable(BaseTable referenced, JavaType target, boolean qualify) {
-		StringBuffer nb = new StringBuffer();
+		StringBuilder nb = new StringBuilder();
 		
 		if (qualify) {
 			appendSchemaPrefix(referenced, nb);
@@ -2716,7 +3137,7 @@ public class SourceGenerator {
 
 	private String valueVariableList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
 		List<Column> acl = getAttributeColumnList(cat, t, tym);        
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
 
         for (Column c : acl) {        	        	
             String code = formatValueVariable(t, c, tm, tym);
@@ -2728,7 +3149,7 @@ public class SourceGenerator {
 	
 	private String valueAccessorList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, boolean impl) {
 		List<Column> acl = getAttributeColumnList(cat, t, tym);        
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
 
         for (Column c : acl) {        	        	
             String code = formatValueAccessor(t, c, tm, tym, impl);
@@ -2743,7 +3164,7 @@ public class SourceGenerator {
 		
 		// private transient VarcharValue<Person.Attribute, Person> lastName;
 		
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 
 		AttributeInfo a = tym.getAttributeInfo(t, c);
 		
@@ -2775,7 +3196,7 @@ public class SourceGenerator {
 
 	private String keyTypeArgs(TableMapper tm, BaseTable t, boolean reference) {
 		JavaType intf = tm.entityType(t, Part.INTERFACE);
-		StringBuffer buf = new StringBuffer();		
+		StringBuilder buf = new StringBuilder();		
 		buf.append(reference ? getReferenceType() : getAttributeType());        
         buf.append(", ");
         buf.append(intf.getUnqualifiedName());
@@ -2784,7 +3205,7 @@ public class SourceGenerator {
 	
 	private String referenceKeyTypeArgs(TableMapper tm, BaseTable t) {
 		JavaType intf = tm.entityType(t, Part.INTERFACE);
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		String q = intf.getUnqualifiedName();
 
@@ -2837,7 +3258,7 @@ public class SourceGenerator {
 //	    	return this.lastName;
 //	    }		
 		
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 
 		AttributeInfo a = tym.getAttributeInfo(t, c);
 		
@@ -2902,7 +3323,7 @@ public class SourceGenerator {
 	}
 
 	private String metaDataInitialization(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, boolean qualify) {
-		StringBuffer buf = new StringBuffer();		
+		StringBuilder buf = new StringBuilder();		
 		buf.append(attributeKeyInitialization(cat, t, tm, tym));
 		buf.append(referenceKeyInitialization(cat, t, tm, qualify));		
         return buf.toString();	
@@ -2910,7 +3331,7 @@ public class SourceGenerator {
 
 	private String attributeKeyInitialization(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
 		List<Column> acl = getAttributeColumnList(cat, t, tym);        
-        StringBuffer content = new StringBuffer();        
+        StringBuilder content = new StringBuilder();        
         
         for (Column c : acl) {
         	AttributeInfo a = tym.getAttributeInfo(t, c);
@@ -2936,7 +3357,7 @@ public class SourceGenerator {
 	}
 
 	private String attributeKeyMapList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		Map<Class<?>, Integer> tom = keyTypeOccurenceMap(cat, t, tm, tym);		
 		// Map<Integer, Class<?>> ktm = typeKeyMap(t, tm);
 		
@@ -2963,7 +3384,7 @@ public class SourceGenerator {
 	
 	
 	private String referenceKeyMapList(BaseTable referencing, TableMapper tm, boolean qualify) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		Map<BaseTable, JavaType> map = referenced(referencing, tm);
 		
@@ -3015,7 +3436,7 @@ public class SourceGenerator {
 		Set<Identifier> fkcols = foreignKeyColumns(cat, t);
 		List<Column> attrs = new ArrayList<Column>();
 		
-		for (Column c : t.columns()) {
+		for (Column c : t.columnMap().values()) {
             if (!fkcols.contains(c.getColumnName())) {
                 attrs.add(c);
             }			
@@ -3026,7 +3447,7 @@ public class SourceGenerator {
 
 	private String attributeKeyList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
 		List<Column> acl = getAttributeColumnList(cat, t, tym);        
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
 
         for (Column c : acl) {
             String code = formatAttributeKey(t, c, tm, tym);
@@ -3037,7 +3458,7 @@ public class SourceGenerator {
     }
 	
 	private String referenceKeyList(BaseTable t, TableMapper tm) {
-		StringBuffer content = new StringBuffer();
+		StringBuilder content = new StringBuilder();
 		
 		for (ForeignKey fk : t.foreignKeys().values()) {
 		    String r = formatReferenceKey(fk, tm);
@@ -3053,7 +3474,7 @@ public class SourceGenerator {
     }	
 	
 	private String referenceKeyInitialization(Catalog cat, BaseTable t, TableMapper tm, boolean qualify) {
-		StringBuffer content = new StringBuffer();
+		StringBuilder content = new StringBuilder();
 		
 //		// sample output:
 //		{
@@ -3102,7 +3523,7 @@ public class SourceGenerator {
 		JavaType rt = tm.entityType(fk.getReferencing(), Part.INTERFACE);
 		JavaType it = tm.entityType(fk.getReferencing(), Part.IMPLEMENTATION);
 		
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 						
 		buf.append("public static final ");
 			
@@ -3162,7 +3583,7 @@ public class SourceGenerator {
 	}
 
 	private String formatAttributeKeyMap(BaseTable t, Class<?> keyType, int occurences, TableMapper tm) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 //        JavaType intf = tm.entityType(t, Part.INTERFACE);
                         
@@ -3219,7 +3640,7 @@ public class SourceGenerator {
 	}
 	
 	private String formatReferenceKeyMap(BaseTable t, BaseTable referenced, JavaType target, TableMapper tm, boolean qualify) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
         JavaType intf = tm.entityType(t, Part.INTERFACE);
         
@@ -3327,7 +3748,7 @@ public class SourceGenerator {
 	}	
 
 	private String formatAttributeKey(BaseTable t, Column c, TableMapper tm, TypeMapper tym) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 
 		AttributeInfo a = tym.getAttributeInfo(t, c);
 		
@@ -3405,12 +3826,12 @@ public class SourceGenerator {
 	}
 
 	private String accessors(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, boolean impl) {
-	    StringBuffer content = new StringBuffer();
+	    StringBuilder content = new StringBuilder();
 	    accessors(cat, t, content, tm, tym, impl);
 	    return content.toString();
 	}
 
-	private void accessors(Catalog cat, BaseTable t, StringBuffer content, TableMapper tm, TypeMapper tym, boolean impl) {
+	private void accessors(Catalog cat, BaseTable t, StringBuilder content, TableMapper tm, TypeMapper tym, boolean impl) {
 		List<Column> cols = getAttributeColumnList(cat, t, tym);
 
         for (Column c : cols) {
@@ -3437,7 +3858,7 @@ public class SourceGenerator {
         
         final String type = attributeType.getCanonicalName();
 
-        StringBuffer nb = new StringBuffer();
+        StringBuilder nb = new StringBuilder();
         final String n = name(c.getColumnName().getName());
         
         boolean b = attributeType.equals(Boolean.class);
@@ -3454,18 +3875,18 @@ public class SourceGenerator {
         a(nb, "()");
 
         if (!impl) {
-            a(nb, ";", 1);
+            line(nb, ";", 1);
         }
         else {
             // getter implementation
-            a(nb, " {", 1);
+            line(nb, " {", 1);
             
             // example: return id().get();
             
             a(nb, "return ");
             a(nb, vv);
-            a(nb, "().get();", 1);            
-            a(nb, "}", 2);
+            line(nb, "().get();", 1);            
+            line(nb, "}", 2);
         }
         
         if (holderType != null) {
@@ -3477,12 +3898,12 @@ public class SourceGenerator {
 	        a(nb, "newValue)");
 	
 	        if (!impl) {
-	            a(nb, ";", 1);
+	            line(nb, ";", 1);
 	        }
 	        else {
-	            a(nb, " {", 1);
+	            line(nb, " {", 1);
 	            a(nb, vv);
-	            a(nb, "().set(newValue);", 1);            
+	            line(nb, "().set(newValue);", 1);            
 	            
 //	            String hn = getSimpleName(holderType);
 //	            
@@ -3512,7 +3933,7 @@ public class SourceGenerator {
 //	                a(nb, ")");
 //	            }
 //	            a(nb, ");", 1);
-	            a(nb, "}", 2);
+	            line(nb, "}", 2);
 	        }
         }
 
@@ -3532,7 +3953,7 @@ public class SourceGenerator {
 	
 	
 	private String getKeyMapVariable(Class<?> keyType) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		String n = getSimpleName(keyType) + "Map";
 		
@@ -3551,7 +3972,7 @@ public class SourceGenerator {
      */
     public String name(CharSequence identifier) {
         int len = identifier.length();
-        StringBuffer nb = new StringBuffer(len);
+        StringBuilder nb = new StringBuilder(len);
         boolean upper = true;
 
         for (int i = 0; i < len; i++) {
@@ -3570,7 +3991,7 @@ public class SourceGenerator {
     }
 
     private String attrs(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         attrs(cat, t, tm, tym, buf);
         return buf.toString();
     }
@@ -3580,12 +4001,12 @@ public class SourceGenerator {
     		return identifier;
     	}
     	
-    	StringBuffer buf = new StringBuffer(identifier);
+    	StringBuilder buf = new StringBuilder(identifier);
     	buf.setCharAt(0, Character.toLowerCase(identifier.charAt(0)));
     	return buf.toString();
     }
 
-	private void attrs(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, StringBuffer content) {
+	private void attrs(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, StringBuilder content) {
 		List<Column> cols = getAttributeColumnList(cat, t, tym);
 		
  		for (Column c : cols) {
@@ -3620,12 +4041,12 @@ public class SourceGenerator {
 	}
 
 	private String refs(BaseTable t, TableMapper tm) {
-	    StringBuffer content = new StringBuffer();
+	    StringBuilder content = new StringBuilder();
 	    refs(t, content, tm);
 	    return content.toString();
 	}
 
-	private void refs(BaseTable t, StringBuffer content, TableMapper tm) {
+	private void refs(BaseTable t, StringBuilder content, TableMapper tm) {
 //		List<String> elements = new ArrayList<String>();
 		
 		
@@ -3660,7 +4081,7 @@ public class SourceGenerator {
 			expr = n;
 		}
 		else {
-			StringBuffer buf = new StringBuffer(n);
+			StringBuilder buf = new StringBuilder(n);
 			buf.append("(");
 			buf.append('"');
 			buf.append(kn);
@@ -3701,7 +4122,7 @@ public class SourceGenerator {
 
 
 //	private String queries(BaseTable t) {
-//	    StringBuffer content = new StringBuffer();
+//	    StringBuilder content = new StringBuilder();
 //	    queries(t, content);
 //	    return content.toString();
 //	}
@@ -3715,7 +4136,7 @@ public class SourceGenerator {
 		logger().debug("table: " + t.getQualifiedName());
 
 		for (ForeignKey fk : t.foreignKeys().values()) {
-			for (Column c : fk.columns().keySet()) {
+			for (Column c : fk.getColumnMap().values()) {
 				cs.add(c.getUnqualifiedName());
 			}
 		}
@@ -3739,7 +4160,7 @@ public class SourceGenerator {
 		return attr;
 	}
 
-//	private void indent(int indentLevel, StringBuffer dest) {
+//	private void indent(int indentLevel, StringBuilder dest) {
 //		String indent = "  ";
 //
 //		for (int level = 0; level < indentLevel; level++) {
@@ -3764,7 +4185,7 @@ public class SourceGenerator {
 		}
 
 		String[] elems = pkg.split(Pattern.quote("."));
-		StringBuffer path = new StringBuffer(elems[0]);
+		StringBuilder path = new StringBuilder(elems[0]);
 
 		for (int i = 1; i < elems.length; i++) {
 			path.append(File.separatorChar);
@@ -3815,11 +4236,11 @@ public class SourceGenerator {
         return this.wrapperMap;
     }
 
-	private void a(StringBuffer dest, String s) {
-	    a(dest, s, 0);
+	private void a(StringBuilder dest, String s) {
+	    line(dest, s, 0);
 	}
 
-	private void a(StringBuffer dest, String s, int eols) {
+	private void line(StringBuilder dest, String s, int eols) {
 	    dest.append(s);
 
 	    String sep = System.getProperty("line.separator");
@@ -3890,7 +4311,7 @@ public class SourceGenerator {
 	private String translate(String n) {
 		String[] tokens = n.split("_");
 		
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		for (int i = 0; i < tokens.length; i++) {
 			capitalize(tokens[i], buf);			
@@ -3899,7 +4320,7 @@ public class SourceGenerator {
 		return buf.toString();
 	}
 	
-	private void capitalize(String t, StringBuffer dest) {		
+	private void capitalize(String t, StringBuilder dest) {		
 		dest.append(Character.toUpperCase(t.charAt(0)));
 		
 		if (t.length() > 1) {
@@ -3907,7 +4328,7 @@ public class SourceGenerator {
 		}		
 	}
 	
-	private void decapitalize(String t, StringBuffer dest) {		
+	private void decapitalize(String t, StringBuilder dest) {		
 		dest.append(Character.toLowerCase(t.charAt(0)));
 		dest.append(t.substring(1));		
 	}

@@ -12,15 +12,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import fi.tnie.db.StatementExecutor;
-import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.pg.PGCatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.env.util.ResultSetWriter;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.SerializableEnvironment;
-import fi.tnie.db.meta.impl.DefaultCatalogMap;
-import fi.tnie.db.meta.impl.DefaultMutableCatalog;
-import fi.tnie.db.meta.impl.DefaultMutableSchema;
 import fi.tnie.db.query.QueryException;
 
 public class PGCatalogFactoryTest 
@@ -103,7 +98,7 @@ public class PGCatalogFactoryTest
         PGCatalogFactory f = factory();
         // f.prepare(meta);
                 
-        ResultSet pkcols = meta.getPrimaryKeys(null, null, TABLE_CONTINENT);
+        ResultSet pkcols = meta.getPrimaryKeys(null, null, TABLE_FILM);
         Set<String> names = new HashSet<String>();
         
         while (pkcols.next()) {
@@ -173,52 +168,4 @@ public class PGCatalogFactoryTest
         PGCatalogFactory factory = factory();
         testCatalogFactory(factory, getConnection());
     }
-    
-    
-    public void testCreateCatalog() 
-        throws Exception {                
-        Implementation<?> impl = getEnvironmentContext().getImplementation();
-        PGCatalogFactory factory = factory();                
-        Connection c = getConnection();        
-        String current = c.getCatalog();
-        DatabaseMetaData meta = meta();
-        
-        SerializableEnvironment env = impl.environment();
-        
-        
-                       
-        final DefaultMutableCatalog cat = new DefaultMutableCatalog(env, current);
-        final DefaultCatalogMap cm = new DefaultCatalogMap(env);
-        cm.add(cat);
-                    
-        DefaultMutableSchema schema = factory.createSchema(cat, impl.createIdentifier(SCHEMA_PUBLIC), meta);
-        assertNotNull(schema);
-        
-        factory.prepare(meta);
-        factory.populateSchema(schema, meta);               
-        
-        // factory.populateTables(meta, cm);        
-        factory.populatePrimaryKeys(cm, meta);
-        factory.populateForeignKeys(cm, meta);        
     }
-    
-    
-    public void testPrepare() 
-        throws SQLException {
-        PGCatalogFactory f = factory();
-        Connection c = getConnection();
-        assertNotNull(c);
-        String catalog = c.getCatalog();
-        assertNotNull(catalog);
-        
-        f.prepare(c.getMetaData());
-        
-        try {
-            f.prepare(c.getMetaData());
-            assertThrown(IllegalStateException.class);
-        }
-        catch (IllegalStateException e) {
-            // OK
-        }        
-    }	
-}

@@ -16,10 +16,8 @@ import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.DataType;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Schema;
-import fi.tnie.db.meta.impl.CatalogUI;
-import fi.tnie.db.meta.impl.DefaultMutableSchema;
 
-public class PrimaryKeyPrinter implements CatalogUI {
+public class PrimaryKeyPrinter {
 
 	private PrintWriter writer;
 	private static Logger logger = Logger.getLogger(PrimaryKeyPrinter.class);
@@ -31,9 +29,8 @@ public class PrimaryKeyPrinter implements CatalogUI {
 			this.writer = new PrintWriter(System.out);
 		}
 	}
-	
 
-	@Override
+	
 	public void setCatalog(Catalog c) {
 		print(c, this.writer, 0);
 	}
@@ -47,7 +44,7 @@ public class PrimaryKeyPrinter implements CatalogUI {
 			print("<no primary key>", w, indent);
 		}
 		else {
-			for (Column c : pk.columns()) {
+			for (Column c : pk.getColumnMap().values()) {
 				DataType t = c.getDataType();				
 				print(c.getColumnName() + " [" + t.getTypeName() + "(" + t.getSize() + ")]", w, indent);						
 			}
@@ -57,11 +54,11 @@ public class PrimaryKeyPrinter implements CatalogUI {
 	private void print(Catalog c, PrintWriter w, int indent) {		
 		for (Schema s : c.schemas().values()) {			
 			logger().info(s.getUnqualifiedName());
-			print((DefaultMutableSchema) s, w, indent + 1);			
+			print(s, w, indent + 1);			
 		}
 	}
 
-	private void print(DefaultMutableSchema s, PrintWriter w, int indent) {
+	private void print(Schema s, PrintWriter w, int indent) {
 		Set<String> visited = new HashSet<String>();
 		
 		for (BaseTable t : s.baseTables().values()) {			

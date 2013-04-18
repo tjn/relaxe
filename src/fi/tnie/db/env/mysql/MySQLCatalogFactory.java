@@ -9,16 +9,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
-import fi.tnie.db.env.DefaultCatalogFactory;
-import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.CatalogMap;
-import fi.tnie.db.meta.Schema;
-import fi.tnie.db.meta.impl.DefaultCatalogMap;
-import fi.tnie.db.meta.impl.DefaultMutableCatalog;
+import fi.tnie.db.env.DefaultCatalogFactory2;
+import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.expr.SchemaName;
+import fi.tnie.db.meta.ImmutableSchema;
+import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.impl.mysql.MySQLEnvironment;
-import fi.tnie.db.query.QueryException;
 
-public class MySQLCatalogFactory extends DefaultCatalogFactory {
+public class MySQLCatalogFactory extends DefaultCatalogFactory2 {
 
 	private static Logger logger = Logger.getLogger(MySQLCatalogFactory.class);
 	
@@ -55,19 +53,21 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
 	}
 	
 	@Override
-	protected String getCatalogPattern(Schema s) {		
+	protected String getCatalogPattern(SchemaName s) {
+		// yes, schema pattern
 		return super.getSchemaPattern(s);
 	}
 	
 	@Override
-	protected String getSchemaPattern(Schema s) {
+	protected String getSchemaPattern(SchemaName s) {
+		// yes, null
 		return null;		
 	}
 	
-	@Override
-	protected Schema getSchema(DefaultMutableCatalog catalog, String sch, String cat) {		
-		return catalog.schemas().get(sch);
-	}
+//	@Override
+//	protected Schema getSchema(DefaultMutableCatalog catalog, String sch, String cat) {		
+//		return catalog.schemas().get(sch);
+//	}
 	
 	
 	@Override
@@ -84,6 +84,16 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
     @Override
     public String getCatalogNameFromPrimaryKeys(DatabaseMetaData meta, ResultSet pkcols) throws SQLException {
         return null;     
+    }
+    
+    @Override
+    protected String getCatalogNameParameter(SchemaName s) {
+    	return s.getSchemaName().getName();
+    }
+    
+    @Override
+    protected String getSchemaNameParameter(SchemaName s) {
+    	return null;
     }
     
     @Override
@@ -106,14 +116,24 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory {
         return fkcols.getString(5);
     }
 
+//    @Override
+//    public CatalogMap createAll(Connection c) throws QueryException,
+//            SQLException {        
+//        DefaultCatalogMap cm = new DefaultCatalogMap(getEnvironment());        
+//        Catalog cat = this.create(c);
+//        cm.add((DefaultMutableCatalog) cat);
+//        return cm;
+//    }
+    
     @Override
-    public CatalogMap createAll(Connection c) throws QueryException,
-            SQLException {        
-        DefaultCatalogMap cm = new DefaultCatalogMap(getEnvironment());        
-        Catalog cat = this.create(c);
-        cm.add((DefaultMutableCatalog) cat);
-        return cm;
-    }
+	protected void addPrimaryKey(PrimaryKey pk, ImmutableSchema.Builder sb) {
+    	Identifier pkname = (pk == null) ? null : pk.getUnqualifiedName();
+    	String name = (pkname == null) ? null : pkname.getName();
+    	
+		if (name != null && (!"PRIMARY".equals(name))) {
+			sb.add(pk);
+		}
+	}	
 
     @Override
 	public String getCatalogName(Connection c) throws SQLException {

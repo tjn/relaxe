@@ -11,17 +11,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 import fi.tnie.db.env.CatalogFactory;
-import fi.tnie.db.env.DefaultCatalogFactory;
+import fi.tnie.db.env.DefaultCatalogFactory2;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.mysql.MySQLCatalogFactory;
 import fi.tnie.db.env.mysql.MySQLImplementation;
 import fi.tnie.db.env.mysql.MySQLPersistenceContext;
+import fi.tnie.db.meta.BaseTable;
+import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.DBMetaTestCase;
 import fi.tnie.db.meta.SerializableEnvironment;
-import fi.tnie.db.meta.impl.DefaultCatalogMap;
-import fi.tnie.db.meta.impl.DefaultMutableCatalog;
-import fi.tnie.db.meta.impl.DefaultMutableSchema;
+import fi.tnie.db.query.QueryException;
 
 public class MySQLCatalogFactoryTest extends DBMetaTestCase<MySQLImplementation> {
 
@@ -49,7 +49,7 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase<MySQLImplementation>
 
     public void testGetSchemaNameFromSchemas() throws SQLException {
         DatabaseMetaData meta = meta();
-        DefaultCatalogFactory f = factory();
+        DefaultCatalogFactory2 f = factory();
                 
         ResultSet schemas = f.getSchemas(meta);
         Set<String> names = new HashSet<String>();
@@ -63,9 +63,9 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase<MySQLImplementation>
 
     public void testGetSchemaNameFromPKs() throws SQLException {
         DatabaseMetaData meta = meta();
-        DefaultCatalogFactory f = factory();
+        MySQLCatalogFactory f = factory();
                 
-        ResultSet pkcols = meta.getPrimaryKeys(null, null, "continent");
+        ResultSet pkcols = meta.getPrimaryKeys(null, null, TABLE_LANGUAGE);
         Set<String> names = new HashSet<String>();
         
         while (pkcols.next()) {
@@ -134,36 +134,7 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase<MySQLImplementation>
         CatalogFactory factory = factory();        
         testCatalogFactory(factory, getConnection());
     }
-    
-    public void testCreateCatalog() 
-        throws Exception {                
-    	Implementation<?> impl = getEnvironmentContext().getImplementation();
-        DefaultCatalogFactory factory = factory();                
-        Connection c = getConnection();        
-        String current = c.getCatalog();
-        DatabaseMetaData meta = meta();
-        SerializableEnvironment env = impl.environment();
-                       
-        final DefaultMutableCatalog cat = new DefaultMutableCatalog(env, current);
-        final DefaultCatalogMap cm = new DefaultCatalogMap(env);
-        cm.add(cat);
-                    
-        DefaultMutableSchema schema = factory.createSchema(cat, impl.createIdentifier(SCHEMA_PUBLIC), meta);
-        assertNotNull(schema);
-        
-        factory.prepare(meta);
-        factory.populateSchema(schema, meta);               
-        
-        // factory.populateTables(meta, cm);        
-        factory.populatePrimaryKeys(cm, meta);
-        factory.populateForeignKeys(cm, meta);
-    }
-    
-//    @Override
-//	public MySQLCatalogFactory factory() {        
-//        return new MySQLCatalogFactory(implementation().environment());        
-//    }    
-    
+
     @Override
     protected PersistenceContext<MySQLImplementation> createPersistenceContext() {
        	return new MySQLPersistenceContext();
@@ -173,4 +144,11 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase<MySQLImplementation>
 	protected String getDatabase() {
 		return "sakila";
 	}
+	
+	@Override
+	protected BaseTable getWellKnownBaseTable(Catalog cat, String schema, String table) 	
+		throws QueryException, SQLException {
+		return super.getWellKnownBaseTable(cat, getDatabase(), table);
+	}
+	
 }

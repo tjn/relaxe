@@ -194,7 +194,7 @@ public class PersistenceManager<
             Entity<?, ?, ?, ?, ?, ?, ?, ?> ref = rh.value();
 
             if (ref == null) {
-                for (Column c : fk.columns().keySet()) {                	
+            	for (Column c : fk.getColumnMap().values()) {                	
                 	PrimitiveHolder<?, ?, ?> nh = PrimitiveType.nullHolder(c.getDataType().getDataType());                	                	
                 	ValueParameter<?, ?> vp = createParameter(c, nh.self());
                     newRow.add(vp);
@@ -202,13 +202,13 @@ public class PersistenceManager<
                 }
             }
             else {
-                for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
-                    Column fc = ce.getValue();
+            	for (Column c : fk.getColumnMap().values()) {
+            		Column fc = fk.getReferenced(c);
                     PrimitiveHolder<?, ?, ?> o = ref.get(fc);
-                    ValueParameter<?, ?> p = createParameter(ce.getKey(), o.self());
+                    ValueParameter<?, ?> p = createParameter(c, o.self());
                     newRow.add(p);
-                    names.add(ce.getKey().getColumnName());
-                }
+                    names.add(c.getColumnName());            		
+            	}
             }
         }
     	
@@ -306,7 +306,7 @@ public class PersistenceManager<
 		if (rh.isNull()) {
 			logger().debug("null ref: " + rh);
 			
-		      for (Column c : fk.columns().keySet()) {
+			for (Column c : fk.getColumnMap().values()) {
 		      	if (!am.containsKey(c)) {
 		      		am.put(c, null);
 		      	}
@@ -316,20 +316,32 @@ public class PersistenceManager<
 			  RE re = rh.value();
 			  
 			  logger().debug("ref: " + re);
-			  logger().debug("fk-cols: " + fk.columns().size());
+//			  logger().debug("fk-cols: " + fk.columns().size());
 			  
-		      for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
-		          Column fc = ce.getValue();		          		          
+		      for (Column ce : fk.getColumnMap().values()) {
+		          Column fc = fk.getReferenced(ce);		          		          
 		          PrimitiveHolder<?, ?, ?> ph = re.get(fc);
 		          
 		          logger().debug("rc: " + fc + " => " + ph);
-		          
-		          Column column = ce.getKey();
-		          
+		          		          		          
 		          if (ph != null) {    		    		    		
-			  		ValueParameter<?, ?> vp = createParameter(column, ph.self());    		
-				    am.put(column, new Assignment(column.getColumnName(), vp));
+			  		ValueParameter<?, ?> vp = createParameter(ce, ph.self());    		
+				    am.put(ce, new Assignment(ce.getColumnName(), vp));
 			  	}                    
+			  
+			  
+//		      for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
+//		          Column fc = ce.getValue();		          		          
+//		          PrimitiveHolder<?, ?, ?> ph = re.get(fc);
+//		          
+//		          logger().debug("rc: " + fc + " => " + ph);
+//		          
+//		          Column column = ce.getKey();
+//		          
+//		          if (ph != null) {    		    		    		
+//			  		ValueParameter<?, ?> vp = createParameter(column, ph.self());    		
+//				    am.put(column, new Assignment(column.getColumnName(), vp));
+//			  	}                    
 		     }
 		  }
 	}

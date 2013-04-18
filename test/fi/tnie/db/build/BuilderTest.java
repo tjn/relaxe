@@ -260,9 +260,9 @@ public abstract class BuilderTest<I extends Implementation<I>>
 		}
                 
         assertEquals(tableCount, inpub);                
-        cat.schemas().get(SCHEMA_PUBLIC).baseTables().get(TABLE_COUNTRY);
+        cat.schemas().get(SCHEMA_PUBLIC).baseTables().get(TABLE_FILM);
                 
-        BaseTable tab = cat.schemas().get(SCHEMA_PUBLIC).baseTables().get(TABLE_COUNTRY);
+        BaseTable tab = cat.schemas().get(SCHEMA_PUBLIC).baseTables().get(TABLE_FILM);
         assertNotNull(tab);
                         
         EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> m = ec.getMetaData(tab);

@@ -7,8 +7,8 @@
 package fi.tnie.db.meta.impl.hsqldb;
 
 import fi.tnie.db.expr.ddl.ColumnDefinition;
+import fi.tnie.db.meta.DefaultEnvironment;
 import fi.tnie.db.meta.SerializableEnvironment;
-import fi.tnie.db.meta.impl.DefaultEnvironment;
 
 public class HSQLDBEnvironment 
 	extends DefaultEnvironment

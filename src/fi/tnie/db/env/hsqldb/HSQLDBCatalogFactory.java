@@ -3,11 +3,11 @@
  */
 package fi.tnie.db.env.hsqldb;
 
-import fi.tnie.db.env.DefaultCatalogFactory;
+import fi.tnie.db.env.DefaultCatalogFactory2;
 import fi.tnie.db.meta.impl.hsqldb.HSQLDBEnvironment;
 
 public class HSQLDBCatalogFactory
-	extends DefaultCatalogFactory {
+	extends DefaultCatalogFactory2 {
 
 	public HSQLDBCatalogFactory(HSQLDBEnvironment env) {
 		super(env);

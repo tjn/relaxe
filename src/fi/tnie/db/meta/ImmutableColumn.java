@@ -1,12 +1,10 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.meta.impl;
+package fi.tnie.db.meta;
 
 import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.meta.Column;
-import fi.tnie.db.meta.DataType;
 
 public class ImmutableColumn
 	implements Column
@@ -21,10 +19,10 @@ public class ImmutableColumn
 	private String columnDefault;
 	private String autoIncrement;
 		
-	private DataTypeImpl dataType;	
+	private DataType dataType;	
 	private ColumnName columnName;	
 	private int ordinalPosition;
-	private boolean primaryKeyColumn;
+	
 			
 	/**
 	 * Same as DatabaseMetaData.columnNoNulls
@@ -35,12 +33,11 @@ public class ImmutableColumn
 		super();
 	}
 	
-	public ImmutableColumn(int ordinalPosition, Identifier name, DataTypeImpl type, boolean primaryKeyColumn, Boolean autoIncrement, String remarks, boolean definitelyNotNullable, String columnDefault) {		
+	public ImmutableColumn(Identifier name, int ordinalPosition, DataType type, Boolean autoIncrement, String remarks, boolean definitelyNotNullable, String columnDefault) {		
 		this.columnName = new ColumnName(name);
 		this.ordinalPosition = ordinalPosition;
 		this.dataType = type;
-		this.remarks = remarks;
-		this.primaryKeyColumn = primaryKeyColumn;		
+		this.remarks = remarks;				
 		this.definitelyNotNullable = definitelyNotNullable;
 		this.columnDefault = columnDefault;
 		
@@ -68,19 +65,19 @@ public class ImmutableColumn
 		this.autoIncrement = autoIncrement;
 	}
 	
-	public DataTypeImpl getDataTypeImpl() {
-		return dataType;
-	}
+//	public DataType getDataTypeImpl() {
+//		return dataType;
+//	}
 
 	@Override
 	public DataType getDataType() {		
-		return getDataTypeImpl();
+		return this.dataType;
 	}
 
-	@Override
-	public boolean isPrimaryKeyColumn() {				
-		return this.primaryKeyColumn;
-	}
+//	@Override
+//	public boolean isPrimaryKeyColumn() {				
+//		return this.primaryKeyColumn;
+//	}
 
 	@Override
 	public Boolean isAutoIncrement() {

@@ -176,7 +176,7 @@ public class TemplateGenerator {
 		
 		BaseTable rt = fk.getReferencing();
 		
-		List<? extends Column> cl = rt.columns();
+		Collection<Column> cl = rt.columnMap().values();
 		Column tc = null;
 		
 		for (Column c : cl) {		

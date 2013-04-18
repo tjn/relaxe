@@ -4,19 +4,21 @@
 package fi.tnie.db.meta;
 
 import fi.tnie.db.expr.Identifier;
+import fi.tnie.db.expr.SchemaName;
 
 public interface Schema
 	extends MetaObject {
 
-	public Catalog getCatalog();
-	public Identifier getUnqualifiedName();	
-		
+	Environment getEnvironment();
+	Identifier getCatalogName();
+	Identifier getUnqualifiedName();
+	SchemaName getName();
+			
+	SchemaElementMap<Table> tables();	
+	SchemaElementMap<ForeignKey> foreignKeys();
+	SchemaElementMap<PrimaryKey> primaryKeys();
+	SchemaElementMap<BaseTable> baseTables();
 	
-	SchemaElementMap<? extends Table> tables();	
-	SchemaElementMap<? extends ForeignKey> foreignKeys();
-	SchemaElementMap<? extends PrimaryKey> primaryKeys();
-	SchemaElementMap<? extends BaseTable> baseTables();
-	
-	SchemaElementMap<? extends Constraint> constraints();
+	SchemaElementMap<Constraint> constraints();
 	
 }

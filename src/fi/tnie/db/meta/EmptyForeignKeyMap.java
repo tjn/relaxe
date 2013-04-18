@@ -1,19 +1,23 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.meta.impl;
+package fi.tnie.db.meta;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.meta.ForeignKey;
-import fi.tnie.db.meta.SchemaElementMap;
 
 public class EmptyForeignKeyMap
-	implements SchemaElementMap<ForeignKey>, Serializable {
+	implements SchemaElementMap<ForeignKey> {
+
+	private Environment environment;
+	
+	public EmptyForeignKeyMap(Environment environment) {
+		super();
+		this.environment = environment;
+	}
 
 	/**
 	 * 
@@ -36,8 +40,28 @@ public class EmptyForeignKeyMap
 	}
 
 	@Override
-	public Collection<? extends ForeignKey> values() {
+	public Collection<ForeignKey> values() {
 		return Collections.emptyList();
+	}
+
+	@Override
+	public Environment getEnvironment() {
+		return this.environment;
+	}
+
+	@Override
+	public int size() {
+		return 0;
+	}
+
+	@Override
+	public boolean contains(Identifier name) {
+		return false;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return true;
 	}
 
 }

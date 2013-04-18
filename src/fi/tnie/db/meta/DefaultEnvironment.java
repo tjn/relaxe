@@ -1,16 +1,13 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package fi.tnie.db.meta.impl;
+package fi.tnie.db.meta;
 
 import java.util.Comparator;
 
 import fi.tnie.db.expr.AbstractIdentifier;
-import fi.tnie.db.expr.DelimitedIdentifier;
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.IllegalIdentifierException;
-import fi.tnie.db.meta.FoldingComparator;
-import fi.tnie.db.meta.SerializableEnvironment;
 
 public abstract class DefaultEnvironment 
 	implements SerializableEnvironment {
@@ -19,6 +16,8 @@ public abstract class DefaultEnvironment
 	 */
 	private static final long serialVersionUID = -6518870057408097303L;
 	private Comparator<Identifier> identifierComp;
+	
+	private final SchemaElementMap<ForeignKey> emptyForeignKeyMap = new EmptyForeignKeyMap(this); 
 	
 			
 	@Override
@@ -39,4 +38,11 @@ public abstract class DefaultEnvironment
 	protected Comparator<Identifier> createIdentifierComparator() {
 		return FoldingComparator.UPPERCASE;
 	}
+	
+		
+	public SchemaElementMap<ForeignKey> emptyForeignKeyMap()  {
+		return this.emptyForeignKeyMap;
+	}
+	
+	
 }

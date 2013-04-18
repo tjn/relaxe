@@ -13,6 +13,8 @@ public final class SchemaName
 	 */
 	private static final long serialVersionUID = 231673251640312834L;
 	private Identifier catalogName;
+
+	// TODO: rename me to unqualifiedName 
 	private Identifier schemaName;
 	
 	/**
@@ -26,7 +28,7 @@ public final class SchemaName
 	}
 	
 	public SchemaName(Schema schema, boolean relative) {
-		this(relative ? null : schema.getCatalog().getUnqualifiedName(), schema.getUnqualifiedName());		
+		this(relative ? null : schema.getCatalogName(), schema.getUnqualifiedName());		
 	}
 	
 	public SchemaName(Identifier catalogName, Identifier schemaName) {

@@ -17,13 +17,13 @@ import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.pg.PGCatalogFactory;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.expr.SelectStatement;
-import fi.tnie.db.gen.pagila.ent.LiteralCatalog;
 import fi.tnie.db.gen.pagila.ent.pub.Actor;
 import fi.tnie.db.gen.pagila.ent.pub.Category;
 import fi.tnie.db.gen.pagila.ent.pub.Film;
 import fi.tnie.db.gen.pagila.ent.pub.FilmActor;
 import fi.tnie.db.gen.pagila.ent.pub.FilmCategory;
 import fi.tnie.db.gen.pagila.ent.pub.PublicFactory;
+import fi.tnie.db.gen.pagila.ent.pub.impl.PublicFactoryImpl;
 import fi.tnie.db.meta.impl.pg.PGTestCase;
 
 public class PagilaDefaultEntityQueryTest 
@@ -40,7 +40,7 @@ public class PagilaDefaultEntityQueryTest
     	logger().debug(c.getMetaData().getURL());
     	
     	PersistenceContext<PGImplementation> pc = getPersistenceContext();    	    	    	
-    	LiteralCatalog cc = LiteralCatalog.getInstance();
+//    	LiteralCatalog cc = LiteralCatalog.getInstance();
     	    	
     	FilmActor.QueryTemplate t = new FilmActor.QueryTemplate();
     	FilmActor.Query faq = t.newQuery();    	
@@ -99,8 +99,8 @@ public class PagilaDefaultEntityQueryTest
     	
     	Implementation<?> imp = implementation();
     	    	
-    	LiteralCatalog cc = LiteralCatalog.getInstance();
-    	PublicFactory pf = cc.newPublicFactory();
+//    	LiteralCatalog cc = LiteralCatalog.getInstance();
+    	PublicFactory pf = new PublicFactoryImpl();
     	    	
     	Film film = pf.newFilm();
     	    	

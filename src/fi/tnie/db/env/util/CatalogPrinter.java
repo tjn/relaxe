@@ -14,10 +14,8 @@ import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.Schema;
-import fi.tnie.db.meta.impl.CatalogUI;
-import fi.tnie.db.meta.impl.DefaultMutableSchema;
 
-public class CatalogPrinter implements CatalogUI {
+public class CatalogPrinter {
 
 	private PrintWriter writer;
 	private static Logger logger = Logger.getLogger(CatalogPrinter.class);
@@ -30,8 +28,7 @@ public class CatalogPrinter implements CatalogUI {
 		}
 	}
 	
-
-	@Override
+	
 	public void setCatalog(Catalog c) {
 		print(c, this.writer, 0);
 	}
@@ -65,11 +62,11 @@ public class CatalogPrinter implements CatalogUI {
 	private void print(Catalog c, PrintWriter w, int indent) {		
 		for (Schema s : c.schemas().values()) {			
 			logger().info(s.getUnqualifiedName().getName());
-			print((DefaultMutableSchema) s, w, indent + 1);			
+			print(s, w, indent + 1);			
 		}
 	}
 
-	private void print(DefaultMutableSchema s, PrintWriter w, int indent) {
+	private void print(Schema s, PrintWriter w, int indent) {
 		Set<String> visited = new HashSet<String>();
 		
 		for (BaseTable t : s.baseTables().values()) {			

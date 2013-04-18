@@ -7,28 +7,28 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import fi.tnie.db.env.DefaultCatalogFactory;
+import fi.tnie.db.env.DefaultCatalogFactory2;
 import fi.tnie.db.meta.impl.pg.PGEnvironment;
 
 public class PGCatalogFactory
-	extends DefaultCatalogFactory {
+	extends DefaultCatalogFactory2 {
 
 	public PGCatalogFactory(PGEnvironment env) {
 		super(env);
 	}
 	
-	private String catalog;
-	
-	@Override
-	public void prepare(DatabaseMetaData m) 
-		throws SQLException {
-		
-		if (catalog != null) {
-			throw new IllegalStateException("catalog creation is in progress");
-		}
-		
-		this.catalog = m.getConnection().getCatalog();
-	}
+//	private String catalog;
+//	
+//	@Override
+//	public void prepare(DatabaseMetaData m) 
+//		throws SQLException {
+//		
+//		if (catalog != null) {
+//			throw new IllegalStateException("catalog creation is in progress");
+//		}
+//		
+//		this.catalog = m.getConnection().getCatalog();
+//	}
 	
 	@Override
 	public String getCatalogNameFromPrimaryKeys(DatabaseMetaData meta, ResultSet pkcols) throws SQLException {
@@ -61,10 +61,10 @@ public class PGCatalogFactory
 		return (cn == null) ? getCatalog(meta) : cn;		
 	}
 	
-	@Override
-	protected void finish() {		
-		this.catalog = null;		
-	}
+//	@Override
+//	protected void finish() {		
+//		this.catalog = null;		
+//	}
 	
 	private String getCatalog(DatabaseMetaData meta) 
 	    throws SQLException {

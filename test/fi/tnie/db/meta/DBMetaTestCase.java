@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -39,8 +38,8 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
     implements DBMetaTest, HasTestContext<I> {
     
     public static final String SCHEMA_PUBLIC = "public";
-    public static final String TABLE_CONTINENT = "continent";
-    public static final String TABLE_COUNTRY = "country";
+    public static final String TABLE_LANGUAGE = "language";
+    public static final String TABLE_FILM = "film";
     
     private Logger logger = Logger.getLogger(getClass());
     private EnvironmentTestContext environmentContext = null;
@@ -70,19 +69,12 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
     
 
     public void testCatalogFactory(CatalogFactory cf, Connection c) throws Exception {    	
-    	assertNotNull(cf);		
-    	
-    	{
-    		Catalog catalog = cf.create(c);						
-    		assertNotNull(catalog);
-    	}
-    	
-    	CatalogMap cm = cf.createAll(c);
-    	assertNotNull(cm);
-    	
-    	final String catalogName = cf.getCatalogName(c);
-    	    	    	
-    	Catalog catalog = cm.get(catalogName);						
+    	assertNotNull(cf);
+    	long s = System.currentTimeMillis();
+    	Catalog catalog = cf.create(c);
+    	long elapsed = System.currentTimeMillis() - s;
+    	logger().debug("testCatalogFactory: elapsed=" + elapsed);
+    					
     	assertNotNull(catalog);
     	
     	testCatalog(catalog, c);    	
@@ -100,11 +92,11 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
         logger().debug("schemas: " + sm.keySet());      
                 
         Schema sp = sm.get(SCHEMA_PUBLIC);
-//      
-//      if (sp == null) {
-//          // MySQL test database does not currently contain the schema public  
-//          sp = sm.get(c.getCatalog());
-//      }
+      
+		  if (sp == null) {
+		      // MySQL test database does not currently contain the schema public  
+		      sp = sm.get(c.getCatalog());
+		  }
         
         assertNotNull(sp);
         
@@ -112,13 +104,13 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
         assertNotNull(tables);
         assertNotNull(tables.values());
         
-        BaseTable cont = getWellKnownBaseTable(catalog, SCHEMA_PUBLIC, TABLE_CONTINENT);
-        assertNotNull(cont);
+        BaseTable language = getWellKnownBaseTable(catalog, SCHEMA_PUBLIC, TABLE_LANGUAGE);
+        assertNotNull(language);
 
-        BaseTable countries = getWellKnownBaseTable(catalog, SCHEMA_PUBLIC, TABLE_COUNTRY);
-        assertNotNull(countries);
+        BaseTable film = getWellKnownBaseTable(catalog, SCHEMA_PUBLIC, TABLE_FILM);
+        assertNotNull(film);
 
-        SchemaElementMap<? extends BaseTable> baseTables = sp.baseTables();
+        SchemaElementMap<BaseTable> baseTables = sp.baseTables();
         assertNotNull(baseTables);
         assertNotNull(baseTables.values());
         
@@ -132,6 +124,34 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
                 assertTrue("Expected baseTables to contain: " + table, bs.contains(table));
             }
         }
+        
+        
+        assertFalse(sm.isEmpty());
+        assertTrue(sm.size() > 0);
+        
+                        
+        for (Schema schema : sm.values()) {
+        	assertNotNull(schema);
+        	        	
+        	SchemaElementMap<PrimaryKey> pkmap = schema.primaryKeys();
+        	assertNotNull(pkmap);
+        	        	        	
+        	for (PrimaryKey pk : pkmap.values()) {
+				assertNotNull(pk);
+				assertNotNull(pk.getTable());
+			}
+        	
+        	SchemaElementMap<ForeignKey> fkmap = schema.foreignKeys();
+        	assertNotNull(fkmap);
+        	
+        	for (ForeignKey fk : fkmap.values()) {
+        		assertNotNull(fk);
+        		assertNotNull(fk.getReferencing());
+        		assertNotNull(fk.getReferenced());				
+			}        	
+        }
+        
+        
         
         assertTrue(!baseTables.keySet().isEmpty());
     }
@@ -255,19 +275,23 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
     		assertNotNull(fk);
     		assertNotNull(fk.getReferenced());
     		assertNotNull(fk.getReferencing());
-    		assertFalse(fk.columns().isEmpty());
+    		assertFalse(fk.getColumnMap().isEmpty());
     		
-    		for (Map.Entry<Column, Column> p : fk.columns().entrySet()) {					
-    			assertNotNull(p.getKey());
-    			assertNotNull(p.getValue());
+    		ColumnMap cm = fk.getColumnMap();
+    		
+    		for (Column col : cm.values()) {
     			
-    			assertNotSame(p.getKey(), p.getValue());
+    			assertNotNull(col);
+    			Column rcol = fk.getReferenced(col);
+    			assertNotNull(rcol);
     			
-    			logger().debug("ref'ing: " + p.getKey().getUnqualifiedName().getName());
-    			logger().debug("ref'ed: " + p.getValue().getUnqualifiedName().getName());
+    			assertNotSame(col, rcol);
     			
-    			assertNotNull(fk.getReferencing().columnMap().get(p.getKey().getUnqualifiedName()));
-    			assertNotNull(fk.getReferenced().columnMap().get(p.getValue().getUnqualifiedName()));
+    			logger().debug("ref'ing: " + col.getUnqualifiedName().getName());
+    			logger().debug("ref'ed: " + rcol.getUnqualifiedName().getName());
+    			
+    			assertNotNull(fk.getReferencing().columnMap().get(col.getUnqualifiedName()));
+    			assertNotNull(fk.getReferenced().columnMap().get(rcol.getUnqualifiedName()));
     								
     			// TODO: 
     			// it should be enough for all referenced columns to be
@@ -280,8 +304,8 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
     protected void testPrimaryKey(PrimaryKey pk) {
     	assertNotNull(pk);
     	assertNotNull(pk.getTable());				
-    	assertNotNull(pk.columns());
-    	assertFalse(pk.columns().isEmpty());
+    	assertNotNull(pk.getColumnMap());
+    	assertFalse(pk.getColumnMap().isEmpty());
     }
 
     public CatalogFactory factory() {
@@ -296,12 +320,12 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
         return cat;
     }
     
-    public BaseTable getContinentTable(Catalog cat) throws QueryException, SQLException {
-    	return getWellKnownBaseTable(cat, SCHEMA_PUBLIC, TABLE_CONTINENT);
+    public BaseTable getLanguageTable(Catalog cat) throws QueryException, SQLException {
+    	return getWellKnownBaseTable(cat, SCHEMA_PUBLIC, TABLE_LANGUAGE);
     }
 
-    protected BaseTable getCountryTable(Catalog cat) throws QueryException, SQLException {
-    	return getWellKnownBaseTable(cat, SCHEMA_PUBLIC, TABLE_COUNTRY);
+    protected BaseTable getFilmTable(Catalog cat) throws QueryException, SQLException {
+    	return getWellKnownBaseTable(cat, SCHEMA_PUBLIC, TABLE_FILM);
     }
 
     protected BaseTable getWellKnownBaseTable(Catalog cat, String schema, String table)

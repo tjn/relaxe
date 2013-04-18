@@ -11,9 +11,13 @@ import fi.tnie.db.expr.Identifier;
 
 public interface ElementMap<E extends MetaObject>
 	extends Serializable {
-	public Set<Identifier> keySet();
-	public Collection<? extends E> values();
-	E get(Identifier name);
-	E get(String name);
 	
+	Environment getEnvironment();	
+	Set<Identifier> keySet();
+	Collection<E> values();
+	E get(Identifier name);
+	E get(String name);	
+	int size();	
+	boolean isEmpty();
+	boolean contains(Identifier name);
 }

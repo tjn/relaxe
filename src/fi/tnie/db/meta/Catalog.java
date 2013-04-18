@@ -9,7 +9,7 @@ import fi.tnie.db.expr.Identifier;
 public interface Catalog
 	extends MetaObject {
 	
-	SerializableEnvironment getEnvironment();
+	Environment getEnvironment();
 	
 //	Comparator<Identifier> identifierComparator();
 //	

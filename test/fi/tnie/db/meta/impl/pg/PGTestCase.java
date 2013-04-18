@@ -21,8 +21,8 @@ public class PGTestCase
 		return "pagila";
 	}
 	
-	@Override
-	protected String getUsername() {
-		return "relaxe";
-	}	
+//	@Override
+//	protected String getUsername() {
+//		return "relaxe";
+//	}	
 }

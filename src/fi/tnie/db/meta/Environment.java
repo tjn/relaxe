@@ -33,6 +33,8 @@ public interface Environment {
 	Identifier createIdentifier(String name)
 		throws IllegalIdentifierException;
 	
+	
+	
 //	DelimitedIdentifier createDelimitedIdentifier(String name)
 //		throws IllegalIdentifierException;
 }

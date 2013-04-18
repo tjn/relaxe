@@ -8,5 +8,7 @@ public interface BaseTable
 
 	// SchemaElementMap<ForeignKey> references();
 	SchemaElementMap<ForeignKey> foreignKeys();
-	PrimaryKey getPrimaryKey();	
+	PrimaryKey getPrimaryKey();
+	
+	boolean isPrimaryKeyColumn(Column column);
 }

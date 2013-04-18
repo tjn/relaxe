@@ -43,7 +43,7 @@ public class DataObjectQuery
 			From f = new From(tr);		
 			Select s = new Select();
 			
-			Collection<? extends Column> cols = table.columns();
+			Collection<Column> cols = table.columnMap().values();
 			
 			for (Column c : cols) {
 				s.add(new ColumnReference(tr, c));

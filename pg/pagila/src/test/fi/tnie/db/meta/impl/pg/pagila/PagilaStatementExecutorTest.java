@@ -5,8 +5,8 @@ package fi.tnie.db.meta.impl.pg.pagila;
 
 import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.pg.PGImplementation;
-import fi.tnie.db.gen.pagila.ent.LiteralCatalog;
-import fi.tnie.db.gen.pagila.ent.LiteralCatalog.LiteralBaseTable;
+import fi.tnie.db.gen.pagila.ent.pub.Actor;
+import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.StatementExecutorTest;
 
 public class PagilaStatementExecutorTest
@@ -18,7 +18,7 @@ public class PagilaStatementExecutorTest
 	}
 		
 	public void testFetch() throws Exception {
-		LiteralBaseTable t = LiteralCatalog.LiteralBaseTable.PUBLIC_ACTOR;
+		BaseTable t = Actor.Type.TYPE.getMetaData().getBaseTable();
 		super.testFetch(t);
 	}
 

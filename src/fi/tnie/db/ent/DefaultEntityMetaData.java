@@ -15,6 +15,7 @@ import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.PrimitiveType;
@@ -82,13 +83,13 @@ public abstract class DefaultEntityMetaData<
 			if (c == null) {
 				throw new NullPointerException(
 						"no column for attribute: " + a + " in " +
-						table.columns());
+						table.columnMap().keySet());
 			}
 
 			attributeMap.put(a, c);
 			columnMap.put(c, a);
-
-			if (c.isPrimaryKeyColumn()) {
+			
+			if (table.isPrimaryKeyColumn(c)) {
 				pkc.add(c);
 			}
 		}
@@ -123,8 +124,11 @@ public abstract class DefaultEntityMetaData<
 				populateColumnReferenceMap(fk, r, rm);
 			}
 			
-			for (Column fkcol : fk.columns().keySet()) {
-				if (fkcol.isPrimaryKeyColumn())  {
+			for (Column fkcol : fk.getColumnMap().values()) {				
+//				if (fkcol.isPrimaryKeyColumn())  {
+//					pkc.add(fkcol);
+//				}
+				if (fk.getReferencing().isPrimaryKeyColumn(fkcol)) {
 					pkc.add(fkcol);
 				}
 			}
@@ -150,7 +154,7 @@ public abstract class DefaultEntityMetaData<
 	protected abstract ForeignKey map(BaseTable table, R r);
 
 	private void populateColumnReferenceMap(ForeignKey fk, R r, Map<Column, Set<R>> dest) {
-		for (Column fkcol : fk.columns().keySet()) {
+		for (Column fkcol : fk.getColumnMap().values()) {
 			Set<R> rs = dest.get(fkcol);
 
 			if (rs == null) {

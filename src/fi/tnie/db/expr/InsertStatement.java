@@ -22,7 +22,7 @@ public class InsertStatement
 	
 	public int getTargetColumnCount() {
 		if (columnNameList == null) {
-			return getTarget().columns().size();
+			return getTarget().columnMap().size();
 		}
 		
 		return columnNameList.getContent().size();

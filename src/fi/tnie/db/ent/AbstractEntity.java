@@ -86,7 +86,7 @@ public abstract class AbstractEntity<
 		}
 		
 		ForeignKey fk = m.getForeignKey(r);
-		Column fkcol = fk.columns().get(column);		
+		Column fkcol = fk.getReferenced(column);
 		return ref.get(fkcol);
 	}	
 

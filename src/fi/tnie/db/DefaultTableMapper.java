@@ -66,7 +66,7 @@ public class DefaultTableMapper
         }        
         
         if (p == Part.LITERAL_TABLE_ENUM) {
-            return "Literal" + name;
+            return "Literal" + name + "Column";
         }
         
         if (p == Part.IMPLEMENTATION) {
