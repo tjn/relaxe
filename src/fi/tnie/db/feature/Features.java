@@ -171,19 +171,18 @@ public class Features
             if (table != null) {
                 result.add(new DropTable(table.getName()));
             }                                            
-        }
-        
+        }        
         
         private Identifier schemaName(Environment env) {            
-            return env.createIdentifier(FEATURES_SCHEMA);        
+            return env.getIdentifierRules().toIdentifier(FEATURES_SCHEMA);        
         }
         
         private Identifier featuresTable(Environment env) {
-            return env.createIdentifier(FEATURE_TABLE);        
+            return env.getIdentifierRules().toIdentifier(FEATURE_TABLE);        
         }
         
         private Identifier dependenciesTable(Environment env) {
-            return env.createIdentifier(DEPENDENCY_TABLE);        
+            return env.getIdentifierRules().toIdentifier(DEPENDENCY_TABLE);        
         }
     }
     

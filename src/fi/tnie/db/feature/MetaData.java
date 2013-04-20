@@ -37,7 +37,7 @@ public class MetaData
         Environment env = cat.getEnvironment();
         SQLGenerationResult result = new SQLGenerationResult();
         
-        final Identifier n = env.createIdentifier("created_at");
+        final Identifier n = env.getIdentifierRules().toIdentifier("created_at");
                 
         for (Schema s : cat.schemas().values()) {
             for (BaseTable t : s.baseTables().values()) {                

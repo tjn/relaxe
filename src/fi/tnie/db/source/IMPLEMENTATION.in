@@ -116,17 +116,10 @@ public class {{table-impl-class}}
 		}
 		
 		private PrimaryKey createPrimaryKey(Environment env) {
-//			ImmutablePrimaryKey.Builder pkb = new ImmutablePrimaryKey.Builder(this);
-//			pkb.add(columnMap.get(env.createIdentifier("A")));
-//			pkb.add(columnMap.get(env.createIdentifier("B")));			
-//			this.primaryKey = pkb.newConstraint();
 			{{create-primary-key-body}}		
 		}
 
 		private SchemaElementMap<ForeignKey> createForeignKeyMap(Environment env, ColumnMap columnMap) {
-			// Map<Identifier, ForeignKey> fkmap = new TreeMap<Identifier, ForeignKey>(env.identifierComparator());			
-			// fkmap.put(env.createIdentifier(""), new EntityTableForeignKey(Film.Type.TYPE));			
-			// return new ForeignKeyMap(env, fkmap);
 			{{create-foreign-key-map-body}}
 		}
 				

@@ -78,8 +78,7 @@ public class MySQLImplementation
 		host = (host == null) ? "" : host;
 		return "jdbc:mysql://" + host + ":" + port + "/" + database;
 	}
-
-	@Override
+	
 	public MySQLEnvironment environment() {
 		if (environment == null) {
 			environment = new MySQLEnvironment();			

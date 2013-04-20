@@ -65,7 +65,8 @@ public class DefaultCatalogFactory2
 		logger().info("user: " + meta.getUserName());
 		logger().info("url: " + meta.getURL());
 		logger().info("environment: " + env.getClass());
-		logger().info("identifier-comparator: " + env.identifierComparator());
+		logger().info("identifier-rules: " + env.getIdentifierRules().getClass());
+		logger().info("identifier-comparator: " + env.getIdentifierRules().comparator());
 		
 						
 		try  {
@@ -117,7 +118,7 @@ public class DefaultCatalogFactory2
     		close(schemas);
     	}
     	
-    	Comparator<Identifier> icmp = getEnvironment().identifierComparator();
+    	Comparator<Identifier> icmp = getEnvironment().getIdentifierRules().comparator();
     	SchemaElementNameMap<ImmutableBaseTable.Builder> tbmap = new SchemaElementNameMap<ImmutableBaseTable.Builder>(icmp);
     	    	
     	SchemaNameComparator scmp = new SchemaNameComparator(icmp);
@@ -626,7 +627,7 @@ public class DefaultCatalogFactory2
 //	}
 
 	protected Identifier id(String name) {
-		return getEnvironment().createIdentifier(name);		
+		return getEnvironment().getIdentifierRules().toIdentifier(name);		
 	}
 
 //	@Override

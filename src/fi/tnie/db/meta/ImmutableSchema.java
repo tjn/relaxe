@@ -3,8 +3,6 @@
  */
 package fi.tnie.db.meta;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
 import fi.tnie.db.expr.Identifier;
@@ -278,7 +276,7 @@ public class ImmutableSchema
 		}
 		
 		private boolean equal(SchemaName a, SchemaName b) {
-			Comparator<Identifier> icmp = getEnvironment().identifierComparator();
+			Comparator<Identifier> icmp = getEnvironment().getIdentifierRules().comparator();
 			
 			return 
 				(icmp.compare(a.getCatalogName(), b.getCatalogName()) == 0) &&

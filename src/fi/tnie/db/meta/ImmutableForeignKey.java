@@ -47,7 +47,7 @@ public class ImmutableForeignKey
 			
 			this.constraintName = constraintName;			
 			this.columnList = new ArrayList<Identifier>();
-			this.columnPairMap = new TreeMap<Identifier, Identifier>(getEnvironment().identifierComparator());
+			this.columnPairMap = createMap();
 			this.referenced = referenced;
 		}
 		

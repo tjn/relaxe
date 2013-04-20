@@ -50,6 +50,7 @@ import fi.tnie.db.meta.DataTypeImpl;
 import fi.tnie.db.meta.EmptyForeignKeyMap;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.meta.IdentifierRules;
 import fi.tnie.db.meta.ImmutablePrimaryKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Schema;
@@ -181,6 +182,11 @@ public class SourceGenerator {
 		 * Full name of the literal catalog -class.
 		 */
 		LITERAL_CATALOG_NAME,
+		
+		/**
+		 * Full name of the literal catalog -class.
+		 */
+		ENVIRONMENT_EXPRESSION,		
 	    /**
 	     * Pattern which is replaced with the package name of the type being generated in template files.
 	     */
@@ -269,7 +275,8 @@ public class SourceGenerator {
 	private SchemaFilter schemaFilter; 
 	private File defaultSourceDir;	
 	private EnumMap<Part, File> sourceDirMap;
-	private Map<Class<?>, Class<?>> wrapperMap;	
+	private Map<Class<?>, Class<?>> wrapperMap;
+	private Class<? extends Environment> environmentType;
 
 	@SuppressWarnings("serial")
     private static class TypeInfo
@@ -452,15 +459,18 @@ public class SourceGenerator {
 	 *   
 	 * @param cat
 	 * @param tm
+	 * @param class1 
 	 * @return
 	 * @throws QueryException
 	 * @throws IOException
 	 */	
-    public Properties run(Catalog cat, TableMapper tm, TypeMapper typeMapper)
+    public Properties run(Catalog cat, TableMapper tm, TypeMapper typeMapper, Class<? extends Environment> environmentType)
         throws QueryException, IOException {
     	
         Map<File, String> gm = new HashMap<File, String>();
         Properties generated = new Properties();
+        
+        this.environmentType = environmentType;
         
         List<JavaType> ccil = new ArrayList<JavaType>();
         Map<JavaType, CharSequence> fm = new HashMap<JavaType, CharSequence>();
@@ -502,12 +512,11 @@ public class SourceGenerator {
 //            }
 //        }    
 
-        {
-        	
-	        JavaType cc = tm.catalogContextType();
-	        CharSequence src = generateContext(cc, tm, il, fm);            
-	        write(getSourceDir(), cc, src, generated, gm);
-        }
+//        {
+//	        JavaType cc = tm.catalogContextType();
+//	        CharSequence src = generateContext(cc, tm, il, fm);            
+//	        write(getSourceDir(), cc, src, generated, gm);
+//        }
 
 //        {
 //	        JavaType lc = tm.literalContextType();
@@ -840,8 +849,8 @@ public class SourceGenerator {
 			buf.append(cn);
 			buf.append("(");		
 			buf.append(et);
-			buf.append(".environment().");
-			buf.append("createIdentifier(\"");
+			buf.append(".environment().getIdentifierRules().");
+			buf.append("toIdentifier(\"");
 			buf.append(un.getName());
 			buf.append("\")");
 			buf.append(", ");										
@@ -1159,7 +1168,7 @@ public class SourceGenerator {
     }
 
 
-    private String getTemplateForCatalogContext() throws IOException {
+	private String getTemplateForCatalogContext() throws IOException {
         return read("CATALOG_CONTEXT.in");
     }
     
@@ -2214,6 +2223,10 @@ public class SourceGenerator {
         
         src = replaceAll(src, Tag.LITERAL_CATALOG_NAME, tam.literalContextType().getQualifiedName());
         
+        src = replaceAll(src, Tag.ENVIRONMENT_EXPRESSION, generateEnvironmentExpression());
+        
+        
+        
        	src = replaceAll(src, Tag.LITERAL_TABLE_ENUM, lt);
        	
        	tag = Tag.BASE_TABLE_COLUMN_VARIABLE_LIST;
@@ -2306,6 +2319,14 @@ public class SourceGenerator {
         return src;
 	}
 	
+	private String generateEnvironmentExpression() {
+				
+		StringBuilder buf = new StringBuilder();
+		buf.append(this.environmentType.getCanonicalName());
+		buf.append(".environment()");		
+		return buf.toString();
+	}
+
 	private String generatePopulateColumnMapBlock(BaseTable t, TableMapper tam) {
 		StringBuilder buf = new StringBuilder();
 
@@ -2381,7 +2402,12 @@ public class SourceGenerator {
 
 	this.table = new ActorTable(env, sen);		
  */
-		line(buf, "Environment env = ", t.getEnvironment().getClass().getCanonicalName(), ".environment();");
+//		line(buf, "Environment env = ", t.getEnvironment().getClass().getCanonicalName(), ".environment();");
+		
+		Class<?> envtype = (this.environmentType == null) ? t.getEnvironment().getClass() : this.environmentType;
+				
+		line(buf, Environment.class.getCanonicalName(), " env = ", envtype.getCanonicalName(), ".environment();");
+		
 		
 		SchemaElementName sen = t.getName();
 		
@@ -2418,11 +2444,11 @@ public class SourceGenerator {
 			line(buf, "return new ", EmptyForeignKeyMap.class.getCanonicalName(), "(env);");
 		}
 		else {
-			// Map<Identifier, ForeignKey> fkmap = new TreeMap<Identifier, ForeignKey>(env.identifierComparator());			
+			// Map<Identifier, ForeignKey> fkmap = new TreeMap<Identifier, ForeignKey>(env.getIdentifierRules().comparator());			
 			// fkmap.put(env.createIdentifier(""), new EntityTableForeignKey(Film.Type.TYPE));			
 			// return new <X>ForeignKeyMap(env, fkmap);
 			
-			line(buf, "java.util.Map<Identifier, ForeignKey> fkmap = new java.util.TreeMap<Identifier, ForeignKey>(env.identifierComparator());");
+			line(buf, "java.util.Map<Identifier, ForeignKey> fkmap = new java.util.TreeMap<Identifier, ForeignKey>(env.getIdentifierRules().comparator());");
 						
 			for (ForeignKey fk : fm.values()) {
 				generateCreateForeignKeyBlock(buf, fk, t, tam);				
@@ -2449,7 +2475,7 @@ public class SourceGenerator {
 //			cmi.add(columnMap.get(c1));
 //			cmi.add(columnMap.get(c2));
 //			
-//			Map<Identifier, Identifier> cm = new TreeMap<Identifier, Identifier>(env.identifierComparator());
+//			Map<Identifier, Identifier> cm = new TreeMap<Identifier, Identifier>(env.getIdentifierRules().comparator());
 //			cm.put(c1, r1);
 //			cm.put(c2, r2);
 //
@@ -2471,7 +2497,7 @@ public class SourceGenerator {
 		
 		line(buf, "ImmutableColumnMap.Builder cmi = new ImmutableColumnMap.Builder(env);");
 		
-		line(buf, "Map<Identifier, Identifier> cm = new TreeMap<Identifier, Identifier>(env.identifierComparator());");
+		line(buf, "Map<Identifier, Identifier> cm = new TreeMap<Identifier, Identifier>(env.getIdentifierRules().comparator());");
 
 		Collection<Column> cl = fk.getColumnMap().values();
 		
@@ -4130,7 +4156,7 @@ public class SourceGenerator {
 
 
 	private Set<Identifier> foreignKeyColumns(Catalog cat, BaseTable t) {
-		Comparator<Identifier> icmp = cat.getEnvironment().identifierComparator();
+		Comparator<Identifier> icmp = cat.getEnvironment().getIdentifierRules().comparator();
 		Set<Identifier> cs = new TreeSet<Identifier>(icmp);
 
 		logger().debug("table: " + t.getQualifiedName());

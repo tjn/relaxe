@@ -5,13 +5,12 @@ package fi.tnie.db.build;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -28,12 +27,10 @@ import fi.tnie.db.feature.SQLGenerationException;
 import fi.tnie.db.map.TableMapper;
 import fi.tnie.db.map.TypeMapper;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.Column;
-import fi.tnie.db.meta.DataTypeImpl;
-import fi.tnie.db.meta.ForeignKey;
-import fi.tnie.db.meta.PrimaryKey;
+import fi.tnie.db.meta.Environment;
+import fi.tnie.db.meta.IdentifierRules;
 import fi.tnie.db.meta.Schema;
-import fi.tnie.db.meta.Table;
+import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.source.SourceGenerator;
 import fi.tnie.db.tools.CatalogTool;
@@ -55,9 +52,11 @@ public class Builder
     private String catalogContextPackage;
     private File sourceDir;    
     private File templateDir;    
-               
+    private Class<? extends Environment> environmentType = null;
+    
     private transient TableMapper tableMapper;
     private transient TypeMapper typeMapper;
+
     
     private SchemaFilter schemaFilter;
     
@@ -85,7 +84,10 @@ public class Builder
     
     public static final Option OPTION_TYPE_MAPPER_IMPLEMENTATION = 
         new SimpleOption("type-mapper-implementation", "m", new Argument(false), "Class name of the implementation to be used as a type mapper");  
-    
+
+    public static final Option OPTION_ENVIRONMENT_IMPLEMENTATION = 
+        new SimpleOption("environment-implementation", "e", new Argument(false), "Class name of the implementation of the environment");  
+
 
     private static Logger logger = Logger.getLogger(Builder.class);
     
@@ -105,6 +107,7 @@ public class Builder
 //        addOption(p, OPTION_SCHEMA);        
         addOption(p, OPTION_INCLUDE_ONLY_SCHEMAS);
         addOption(p, OPTION_TYPE_MAPPER_IMPLEMENTATION);
+        addOption(p, OPTION_ENVIRONMENT_IMPLEMENTATION);
     }
         
     @Override
@@ -118,6 +121,7 @@ public class Builder
         String pkg = cl.value(require(cl, OPTION_ROOT_PACKAGE));
         String ccp = cl.value(OPTION_CATALOG_CONTEXT_PACKAGE);        
         String tmi = cl.value(OPTION_TYPE_MAPPER_IMPLEMENTATION);
+        String eim = cl.value(OPTION_ENVIRONMENT_IMPLEMENTATION);
                 
         TypeMapper tym = null;
         
@@ -137,10 +141,11 @@ public class Builder
         		logger().error(e.getMessage(), e);
         		throw new ToolConfigurationException("Unable to instantiate type mapper: " + tmi + " (" + e.getMessage() + ")", e);
 			}
-        }
+        }     
         
-        
-        
+        Class<? extends Environment> env = getEnvironmentType(eim);        
+        validateEnvironmentType(env);        
+                
         List<String> schemas = cl.values(OPTION_INCLUDE_ONLY_SCHEMAS);
         
         final SchemaFilter sf = createSchemaFilter(schemas);
@@ -150,111 +155,60 @@ public class Builder
         	    
 	    Catalog cat = getCatalog();
 	    	    
-//	    DefaultMutableCatalog mc = new DefaultMutableCatalog(cat.getEnvironment());
-//	    
-//	    Map<Schema, DefaultMutableSchema> sm = new HashMap<Schema, DefaultMutableSchema>();
-//	    Map<Table, DefaultMutableBaseTable> tm = new HashMap<Table, DefaultMutableBaseTable>();
-//	    
-//	    for (Schema schema : cat.schemas().values()) {	    	
-//	    	String n = schema.getUnqualifiedName().getName();
-//	    	logger().debug("processing schema: '" + n + "'");
-//	    	
-//	    	if (!sf.accept(schema)) {
-//	    		logger().debug("skipped schema: '" + n + "'");
-//	    		continue;
-//	    	}
-//	    		    	
-//	    	DefaultMutableSchema ms = new DefaultMutableSchema(schema.getUnqualifiedName());
-//	    	ms.setCatalog(mc);
-//	    	
-//	    	sm.put(schema, ms);
-//	    		    	
-//	    	for (Table t : schema.tables().values()) {
-//	    		DefaultMutableTable mt = null;
-//	    		
-//	    		if (t.isBaseTable()) {	    				    			
-//	    			DefaultMutableBaseTable copy = new DefaultMutableBaseTable(ms, t.getUnqualifiedName());
-//	    			tm.put(t, copy);
-//	    			mt = copy;
-//	    		}
-//	    		else {	    				
-//    				mt = new DefaultMutableView(ms, t.getUnqualifiedName());
-//	    		}
-//	    		
-//	    		ms.add(mt);	    		
-//	    			    		
-//	    		for (Column c : t.columns()) {
-//	    			DataTypeImpl d = new DataTypeImpl(c.getDataType());	    			
-//	    			mt.add(new DefaultMutableColumn(mt, c.getUnqualifiedName(), d, c.isAutoIncrement()));	    			
-//				}	    		
-//			}
-//		}
-//	    
-//	    for (Schema schema : cat.schemas().values()) {	    	
-//	    	String n = schema.getUnqualifiedName().getName();
-//	    	
-//	    	if (!sf.accept(schema)) {
-//	    		logger().debug("skipped schema: '" + n + "'");
-//	    		continue;
-//	    	}
-//	    	
-//	    	DefaultMutableSchema ms = sm.get(schema);
-//	    	
-//	    	for (PrimaryKey pk : schema.primaryKeys().values()) {
-//	    		DefaultMutableBaseTable mt = tm.get(pk.getTable());	    		
-//	    		List<DefaultMutableColumn> cols = new ArrayList<DefaultMutableColumn>();
-//	    		
-//	    		for (Column c : pk.columns()) {
-//	    			DefaultMutableColumn cc = mt.columnMap().get(c.getUnqualifiedName().getName());
-//	    			cols.add(cc);
-//				}	    		
-//	    		
-//	    		new DefaultPrimaryKey(mt, pk.getUnqualifiedName(), cols);
-//			}
-//	    	
-//	    	for (ForeignKey fk : schema.foreignKeys().values()) {
-//	    		Map<Column, Column> cm = fk.columns();
-//	    		DefaultMutableBaseTable referencing = tm.get(fk.getReferencing());
-//	    		DefaultMutableBaseTable referenced = tm.get(fk.getReferenced());
-//	    		
-//	    		List<DefaultForeignKey.Pair> cplist = new ArrayList<DefaultForeignKey.Pair>();
-//	    		
-//	    		for (Map.Entry<Column, Column> e : cm.entrySet()) {
-//	    			DefaultMutableColumn src = (DefaultMutableColumn) referencing.getColumn(e.getKey().getUnqualifiedName());
-//	    			DefaultMutableColumn dest = (DefaultMutableColumn) referenced.getColumn(e.getValue().getUnqualifiedName());	    				    		
-//	    			cplist.add(new DefaultForeignKey.Pair(src, dest));	
-//				}	    		
-//	    		
-//	    		DefaultForeignKey copy = new DefaultForeignKey(ms, fk.getUnqualifiedName(), cplist);	    			    		
-//	    		ms.add(copy);	    		
-//	    	}
-//	    }
-	    
-	    
-//	    CatalogPrinter cp = new CatalogPrinter(null);
-//	    cp.setCatalog(mc);	    	    
-	    
-//	    setCatalog(mc);
 	    
 	    setCatalog(cat);
 	        
-//	    final Set<String> ss = new TreeSet<String>(schemas);
-//	   
-//		setSchemaFilter(new SQLObjectFilter() {				
-//			@Override
-//			public boolean include(String schema) {
-//				return ss.contains(schema);
-//			}
-//		});       
-        
-        
         setSourceDir(new File(gen));
         setTemplateDir(new File(tem));
         setRootPackage(pkg);
         setCatalogContextPackage(ccp);
         setTypeMapper(tym);
-        
+        setEnvironmentType(env);
     }
+
+	private void validateEnvironmentType(Class<?> env) throws ToolException {
+		try {
+			Method method = env.getMethod("environment");
+			
+			if ((method.getModifiers() & Modifier.STATIC) == Modifier.STATIC) {
+				
+			}
+		} 
+        catch (SecurityException e) {
+        	logger().error(e.getMessage(), e);
+        	throw new ToolException(e.getMessage(), e);
+		} 
+        catch (NoSuchMethodException e) {
+        	logger().error(e.getMessage(), e);
+        	throw new ToolException(e.getMessage(), e);
+		}
+	}
+
+	private Class<? extends Environment> getEnvironmentType(String eim)
+			throws ToolConfigurationException {
+		Class<? extends Environment> env = null;
+        
+        if (eim == null) {
+        	env = getImplementation().environment().getClass();
+        }
+        else {
+        	try {
+        		logger().debug("loading environment -class: " + eim);        		        		        		
+        		Class<?> t = Class.forName(eim);
+        		        		
+        		Method method = t.getMethod("environment");
+        		Object eo = method.invoke(null);
+        		Environment e = (Environment) eo;
+        		env = e.getClass(); 
+        	}
+        	catch (Exception e) {
+        		logger().error(e.getMessage(), e);
+        		throw new ToolConfigurationException("Unable to load environment implementation: " + eim + " (" + e.getMessage() + ")", e);
+			}        	
+        }
+        
+		return env;
+	}
 
 	private SchemaFilter createSchemaFilter(List<String> schemas) {
 		SchemaFilter sf = null;
@@ -265,12 +219,13 @@ public class Builder
         }
         else {
         	final Implementation<?> imp = getImplementation();
-        	final Comparator<Identifier> icmp = imp.identifierComparator();			
+        	final IdentifierRules rules = imp.environment().getIdentifierRules();
+        	final Comparator<Identifier> icmp = rules.comparator();			
 
         	final Set<Identifier> ss = new TreeSet<Identifier>(icmp);
         	
         	for (String schema : schemas) {
-        		ss.add(imp.createIdentifier(schema));
+        		ss.add(rules.toIdentifier(schema));
 			}        	
         	
         	sf = new SchemaFilter() {				
@@ -429,10 +384,10 @@ public class Builder
     	
         final File sourceList = getSourceList(sourceRoot);            
         remove(sourceList);
+                
         
         
-        
-        Properties current = gen.run(cat, tm, getTypeMapper());
+        Properties current = gen.run(cat, tm, getTypeMapper(), getEnvironmentType());
         
         IOHelper.doStore(current, sourceList.getPath(), "List of the generated source files");            
     }
@@ -557,7 +512,12 @@ public class Builder
 	public void setTypeMapper(TypeMapper typeMapper) {
 		this.typeMapper = typeMapper;
 	}
-	
-	
-	
+
+	public Class<? extends Environment> getEnvironmentType() {
+		return environmentType;
+	}
+
+	public void setEnvironmentType(Class<? extends Environment> environmentType) {
+		this.environmentType = environmentType;
+	}	
 }

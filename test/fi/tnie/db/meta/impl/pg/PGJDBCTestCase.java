@@ -125,7 +125,7 @@ public abstract class PGJDBCTestCase
 
 	protected Identifier id(String name) 
 		throws IllegalIdentifierException, NullPointerException, QueryException, SQLException {
-		return getCatalog().getEnvironment().createIdentifier(name);
+		return getCatalog().getEnvironment().getIdentifierRules().toIdentifier(name);
 	}
 	
 	    

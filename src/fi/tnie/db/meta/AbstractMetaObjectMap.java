@@ -45,7 +45,12 @@ public abstract class AbstractMetaObjectMap<E extends MetaObject>
 
 	@Override
 	public E get(String name) {
-		return this.content.get(getEnvironment().createIdentifier(name));
+		if (name == null) {
+			return null;
+		}
+		
+		Identifier identifier = getEnvironment().getIdentifierRules().toIdentifier(name);				
+		return this.content.get(identifier);
 	}
 
 	@Override

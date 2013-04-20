@@ -28,17 +28,12 @@ public class PGImplementation
     private PGEnvironment environment;
     
 	public PGImplementation() {
-		environment = new PGEnvironment();
+		environment = PGEnvironment.environment();
 	}
 
 	@Override
 	public CatalogFactory catalogFactory() {
 		return new PGCatalogFactory(this.environment);
-	}
-
-	@Override
-	protected Comparator<Identifier> createIdentifierComparator() {
-		return this.environment.createIdentifierComparator();
 	}
     
 //    public ColumnDefinition serialColumnDefinition(String columnName, boolean big) {

@@ -46,7 +46,7 @@ public class TableDesign {
         }
 
         private Identifier name(String name) {        
-            return this.environment.createIdentifier(name);
+            return this.environment.getIdentifierRules().toIdentifier(name);
         }
 
         public void add(BaseTableElement element) {

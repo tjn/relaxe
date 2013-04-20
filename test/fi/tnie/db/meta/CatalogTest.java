@@ -145,10 +145,11 @@ public abstract class CatalogTest<I extends Implementation<I>>
     	throws SQLException {
     	
     	Implementation<?> env = getEnvironmentContext().getImplementation();
-    	Comparator<Identifier> icmp = env.identifierComparator();
+    	IdentifierRules ir = env.environment().getIdentifierRules();
+    	Comparator<Identifier> icmp = ir.comparator();
     		
     	{
-    		final Identifier a = env.createIdentifier("abc");
+    		final Identifier a = ir.toIdentifier("abc");
     		assertTrue(a.isOrdinary());
     		
     		// test PostgreSQL-specific identifier folding:
@@ -184,6 +185,6 @@ public abstract class CatalogTest<I extends Implementation<I>>
 
     protected Identifier id(String name) 
     	throws IllegalIdentifierException, NullPointerException, QueryException, SQLException {
-    	return getCatalog().getEnvironment().createIdentifier(name);
+    	return getCatalog().getEnvironment().getIdentifierRules().toIdentifier(name);
     }
 }

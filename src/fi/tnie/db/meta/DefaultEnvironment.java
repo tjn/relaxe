@@ -5,9 +5,7 @@ package fi.tnie.db.meta;
 
 import java.util.Comparator;
 
-import fi.tnie.db.expr.AbstractIdentifier;
 import fi.tnie.db.expr.Identifier;
-import fi.tnie.db.expr.IllegalIdentifierException;
 
 public abstract class DefaultEnvironment 
 	implements SerializableEnvironment {
@@ -15,27 +13,11 @@ public abstract class DefaultEnvironment
 	 * 
 	 */
 	private static final long serialVersionUID = -6518870057408097303L;
-	private Comparator<Identifier> identifierComp;
+	private IdentifierRules identifierRules = new SQLIdentifierRules();
 	
 	private final SchemaElementMap<ForeignKey> emptyForeignKeyMap = new EmptyForeignKeyMap(this); 
-	
-			
-	@Override
-	public Identifier createIdentifier(String name)
-			throws IllegalIdentifierException {
-		return (name == null) ? null : AbstractIdentifier.create(name);
-	}
-
-	@Override
-	public final Comparator<Identifier> identifierComparator() {
-		if (identifierComp == null) {
-			identifierComp = createIdentifierComparator();			
-		}
-
-		return identifierComp;		
-	}	
-	
-	protected Comparator<Identifier> createIdentifierComparator() {
+				
+		protected Comparator<Identifier> createIdentifierComparator() {
 		return FoldingComparator.UPPERCASE;
 	}
 	
@@ -44,5 +26,8 @@ public abstract class DefaultEnvironment
 		return this.emptyForeignKeyMap;
 	}
 	
-	
+	@Override
+	public IdentifierRules getIdentifierRules() {
+		return identifierRules;
+	}
 }

@@ -3,6 +3,7 @@
  */
 package fi.tnie.db.meta;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -11,6 +12,8 @@ import fi.tnie.db.expr.Identifier;
 public abstract class MetaObjectBuilder {
 
 	private Environment environment;
+	private Comparator<Identifier> comparator;
+	
 
 	public MetaObjectBuilder(Environment environment) {
 		super();
@@ -20,19 +23,18 @@ public abstract class MetaObjectBuilder {
 		}
 		
 		this.environment = environment;
+		this.comparator = environment.getIdentifierRules().comparator();
 	}
-	
-		
 	
 	public Environment getEnvironment() {
 		return environment;
 	}
 		
 	protected boolean equal(Identifier a, Identifier b) {		
-		return (getEnvironment().identifierComparator().compare(a, b) == 0);		
+		return (comparator.compare(a, b) == 0);		
 	}
 	
 	public <E> Map<Identifier, E> createMap() {	
-		return new TreeMap<Identifier, E>(getEnvironment().identifierComparator());
+		return new TreeMap<Identifier, E>(this.comparator);
 	}
 }

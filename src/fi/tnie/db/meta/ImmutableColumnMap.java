@@ -10,8 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-
 import fi.tnie.db.expr.Identifier;
 
 public class ImmutableColumnMap
@@ -98,7 +96,7 @@ public class ImmutableColumnMap
 
 		private Map<Identifier, Column> getContent() {
 			if (content == null) {
-				content = new TreeMap<Identifier, Column>(getEnvironment().identifierComparator());				
+				content = createMap();				
 			}
 
 			return content;
@@ -134,8 +132,9 @@ public class ImmutableColumnMap
 		if (name == null) {
 			return null;
 		}		
-				
-		return get(getEnvironment().createIdentifier(name));
+		
+		Identifier ci = getEnvironment().getIdentifierRules().toIdentifier(name);				
+		return get(ci);
 	}
 
 	@Override
@@ -165,7 +164,7 @@ public class ImmutableColumnMap
 
 		return values;		
 	}
-
+	
 	@Override
 	public boolean contains(Identifier name) {
 		return (name == null) ? false : this.columnMap.containsKey(name);
