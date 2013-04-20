@@ -50,7 +50,6 @@ import fi.tnie.db.meta.DataTypeImpl;
 import fi.tnie.db.meta.EmptyForeignKeyMap;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.ForeignKey;
-import fi.tnie.db.meta.IdentifierRules;
 import fi.tnie.db.meta.ImmutablePrimaryKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Schema;
@@ -276,8 +275,9 @@ public class SourceGenerator {
 	private File defaultSourceDir;	
 	private EnumMap<Part, File> sourceDirMap;
 	private Map<Class<?>, Class<?>> wrapperMap;
-	private Class<? extends Environment> environmentType;
-
+//	private Class<? extends Environment> environmentType;
+	private Environment targetEnvironment;
+	
 	@SuppressWarnings("serial")
     private static class TypeInfo
 	    extends EnumMap<Part, JavaType> {
@@ -464,13 +464,13 @@ public class SourceGenerator {
 	 * @throws QueryException
 	 * @throws IOException
 	 */	
-    public Properties run(Catalog cat, TableMapper tm, TypeMapper typeMapper, Class<? extends Environment> environmentType)
+    public Properties run(Catalog cat, TableMapper tm, TypeMapper typeMapper, Environment targetEnvironment)
         throws QueryException, IOException {
     	
         Map<File, String> gm = new HashMap<File, String>();
         Properties generated = new Properties();
         
-        this.environmentType = environmentType;
+        this.targetEnvironment = targetEnvironment; 
         
         List<JavaType> ccil = new ArrayList<JavaType>();
         Map<JavaType, CharSequence> fm = new HashMap<JavaType, CharSequence>();
@@ -714,9 +714,8 @@ public class SourceGenerator {
 					buf.append(n);
 					buf.append("(LiteralSchema.");
 					buf.append(sn);
-					buf.append(", \"");
-					buf.append(un.getName());
-					buf.append("\"");
+					buf.append(", ");
+					buf.append(literal(un));					
 					
 					BaseTable kt = fk.getReferencing();					
 					JavaType jkt = tm.entityType(kt, Part.LITERAL_TABLE_ENUM);
@@ -782,9 +781,9 @@ public class SourceGenerator {
 				buf.append(n);
 				buf.append("(LiteralBaseTable.");
 				buf.append(tn);
-				buf.append(", \"");
-				buf.append(un.getName());
-				buf.append("\"");
+				buf.append(", ");				
+				buf.append(literal(un));
+				buf.append("");
 				
 				for (Column c : pk.getColumnMap().values()) {
 					buf.append(", ");
@@ -850,9 +849,9 @@ public class SourceGenerator {
 			buf.append("(");		
 			buf.append(et);
 			buf.append(".environment().getIdentifierRules().");
-			buf.append("toIdentifier(\"");
-			buf.append(un.getName());
-			buf.append("\")");
+			buf.append("toIdentifier(");
+			buf.append(literal(un));			
+			buf.append(")");
 			buf.append(", ");										
 			generateNewDataType(buf, c.getDataType());
 			buf.append(", ");			
@@ -905,18 +904,8 @@ public class SourceGenerator {
 	}
 
 	private String autoIncrementConstant(Column c) {
-		Boolean ai = c.isAutoIncrement();
-		
-		if (ai == null) {
-			return "null";
-		}
-		else {
-			StringBuilder buf = new StringBuilder();
-			buf.append("\"");						
-			buf.append(ai.booleanValue() ? "YES" : "NO");
-			buf.append("\"");
-			return buf.toString();
-		}
+		Boolean ai = c.isAutoIncrement();		
+		return (ai == null) ? "null" : literal(ai.booleanValue() ? "YES" : "NO");
 	}	
 
 	private String generateColumnList(Catalog cat) {
@@ -936,16 +925,14 @@ public class SourceGenerator {
 					String tn = tableEnumeratedName(t);					
 					Identifier un = c.getUnqualifiedName();
 					
-					// TODO: add 'autoinc' -info etc
-					
 					buf.append(cn);
 					buf.append("(");
 					buf.append(te);
 					buf.append(".");
 					buf.append(tn);
-					buf.append(", \"");
-					buf.append(un.getName());
-					buf.append("\", ");										
+					buf.append(", ");
+					buf.append(literal(un));
+					buf.append(", ");										
 					generateNewDataType(buf, c.getDataType());
 					buf.append(", ");					
 					buf.append(autoIncrementConstant(c));					
@@ -977,9 +964,9 @@ public class SourceGenerator {
 		
 //		call: new DataTypeImpl(int dataType, String typeName, int charOctetLength, int decimalDigits, int numPrecRadix, int size)
 		buf.append(t.getDataType());
-		buf.append(", \"");
-		buf.append(t.getTypeName());
-		buf.append("\", ");
+		buf.append(", ");
+		literal(buf, t.getTypeName());
+		buf.append(", ");
 		buf.append(t.getCharOctetLength());
 		buf.append(", ");
 		buf.append(t.getDecimalDigits());
@@ -1006,9 +993,9 @@ public class SourceGenerator {
 				buf.append(tn);
 				buf.append("(LiteralSchema.");
 				buf.append(sn);
-				buf.append(", \"");
-				buf.append(un.getName());
-				buf.append("\"),\n");
+				buf.append(", ");				
+				buf.append(literal(un));				
+				buf.append("),\n");
 			}
 		}		
 		
@@ -2223,10 +2210,9 @@ public class SourceGenerator {
         
         src = replaceAll(src, Tag.LITERAL_CATALOG_NAME, tam.literalContextType().getQualifiedName());
         
-        src = replaceAll(src, Tag.ENVIRONMENT_EXPRESSION, generateEnvironmentExpression());
-        
-        
-        
+        Environment te = getTargetEnvironment(cat.getEnvironment());
+        src = replaceAll(src, Tag.ENVIRONMENT_EXPRESSION, generateEnvironmentExpression(te));
+                
        	src = replaceAll(src, Tag.LITERAL_TABLE_ENUM, lt);
        	
        	tag = Tag.BASE_TABLE_COLUMN_VARIABLE_LIST;
@@ -2319,12 +2305,16 @@ public class SourceGenerator {
         return src;
 	}
 	
-	private String generateEnvironmentExpression() {
+	private String generateEnvironmentExpression(final Environment env) {
 				
 		StringBuilder buf = new StringBuilder();
-		buf.append(this.environmentType.getCanonicalName());
+		buf.append(env.getClass().getCanonicalName());
 		buf.append(".environment()");		
 		return buf.toString();
+	}
+
+	private Environment getTargetEnvironment(final Environment catenv) {
+		return (this.targetEnvironment == null) ? catenv : this.targetEnvironment;
 	}
 
 	private String generatePopulateColumnMapBlock(BaseTable t, TableMapper tam) {
@@ -2371,7 +2361,7 @@ public class SourceGenerator {
 		for (Column c : columnMap.values()) {			
 			ColumnName cn = c.getColumnName();
 			String cc = columnConstantName(c);						
-			line(buf, "private final ", identifierDeclaration(cc, cn), ";");
+			line(buf, "private final ", identifierDeclaration(cc, cn));
 		}
 		
 		
@@ -2404,9 +2394,9 @@ public class SourceGenerator {
  */
 //		line(buf, "Environment env = ", t.getEnvironment().getClass().getCanonicalName(), ".environment();");
 		
-		Class<?> envtype = (this.environmentType == null) ? t.getEnvironment().getClass() : this.environmentType;
-				
-		line(buf, Environment.class.getCanonicalName(), " env = ", envtype.getCanonicalName(), ".environment();");
+		
+		Environment te = getTargetEnvironment(t.getEnvironment());								
+		line(buf, Environment.class.getCanonicalName(), " env = ", generateEnvironmentExpression(te), ";");
 		
 		
 		SchemaElementName sen = t.getName();
@@ -2493,7 +2483,7 @@ public class SourceGenerator {
 		
 		line(buf, "{");
 				
-		line(buf, identifierDeclaration("constraintName", fk.getUnqualifiedName()), ";");		
+		line(buf, identifierDeclaration("constraintName", fk.getUnqualifiedName()));		
 		
 		line(buf, "ImmutableColumnMap.Builder cmi = new ImmutableColumnMap.Builder(env);");
 		
@@ -2585,13 +2575,15 @@ public class SourceGenerator {
 				
 		buf.append(Identifier.class.getCanonicalName());
 		buf.append(" ");
-		buf.append(variableName);		
+		buf.append(variableName);
 		buf.append(" = ");
 		
 		if (n == null) {
 			buf.append("null");
 		}
-		else {		
+		else {
+			n = normalize(n);
+			
 			Class<?> ii = n.isOrdinary() ? OrdinaryIdentifier.class : DelimitedIdentifier.class;
 			
 			buf.append("new ");
@@ -4358,5 +4350,23 @@ public class SourceGenerator {
 		dest.append(Character.toLowerCase(t.charAt(0)));
 		dest.append(t.substring(1));		
 	}
+	
+
+	private Identifier normalize(Identifier id) {
+		if (id == null) {
+			return null;
+		}
+		
+		Environment te = this.targetEnvironment;
+		
+		if (te != null) {
+			id = te.getIdentifierRules().toIdentifier(id.getName());
+		}
+		
+		return id;
+	}
+	
+	
+	
 }
 

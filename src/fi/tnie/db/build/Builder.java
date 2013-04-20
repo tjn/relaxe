@@ -5,6 +5,7 @@ package fi.tnie.db.build;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.sql.Connection;
@@ -52,7 +53,8 @@ public class Builder
     private String catalogContextPackage;
     private File sourceDir;    
     private File templateDir;    
-    private Class<? extends Environment> environmentType = null;
+    // private Class<? extends Environment> environmentType = null;
+    private Environment targetEnvironment = null;
     
     private transient TableMapper tableMapper;
     private transient TypeMapper typeMapper;
@@ -86,8 +88,7 @@ public class Builder
         new SimpleOption("type-mapper-implementation", "m", new Argument(false), "Class name of the implementation to be used as a type mapper");  
 
     public static final Option OPTION_ENVIRONMENT_IMPLEMENTATION = 
-        new SimpleOption("environment-implementation", "e", new Argument(false), "Class name of the implementation of the environment");  
-
+        new SimpleOption("environment-implementation", null, new Argument(false), "Class name of the implementation of the environment");  
 
     private static Logger logger = Logger.getLogger(Builder.class);
     
@@ -143,8 +144,14 @@ public class Builder
 			}
         }     
         
-        Class<? extends Environment> env = getEnvironmentType(eim);        
-        validateEnvironmentType(env);        
+        Environment env = null;
+        
+        if (eim != null) {
+        	Class<? extends Environment> envtype = getEnvironmentType(eim);        
+            env = loadEnvironment(envtype);	
+        }
+        
+                
                 
         List<String> schemas = cl.values(OPTION_INCLUDE_ONLY_SCHEMAS);
         
@@ -163,25 +170,26 @@ public class Builder
         setRootPackage(pkg);
         setCatalogContextPackage(ccp);
         setTypeMapper(tym);
-        setEnvironmentType(env);
+        setTargetEnvironment(env);
     }
 
-	private void validateEnvironmentType(Class<?> env) throws ToolException {
+	private Environment loadEnvironment(Class<? extends Environment> envtype) throws ToolException {
+		Environment env = null;
 		try {
-			Method method = env.getMethod("environment");
+			Method method = envtype.getMethod("environment");
 			
-			if ((method.getModifiers() & Modifier.STATIC) == Modifier.STATIC) {
-				
+			if ((method.getModifiers() & Modifier.STATIC) != Modifier.STATIC) {
+				throw new ToolException("Environment implementation must have a static method: environment()");
 			}
+			
+			env = (Environment) method.invoke(null);
 		} 
-        catch (SecurityException e) {
+        catch (Exception e) {
         	logger().error(e.getMessage(), e);
         	throw new ToolException(e.getMessage(), e);
 		} 
-        catch (NoSuchMethodException e) {
-        	logger().error(e.getMessage(), e);
-        	throw new ToolException(e.getMessage(), e);
-		}
+        
+		return env;
 	}
 
 	private Class<? extends Environment> getEnvironmentType(String eim)
@@ -383,11 +391,9 @@ public class Builder
     	
     	
         final File sourceList = getSourceList(sourceRoot);            
-        remove(sourceList);
+        remove(sourceList);               
                 
-        
-        
-        Properties current = gen.run(cat, tm, getTypeMapper(), getEnvironmentType());
+        Properties current = gen.run(cat, tm, getTypeMapper(), getTargetEnvironment());
         
         IOHelper.doStore(current, sourceList.getPath(), "List of the generated source files");            
     }
@@ -513,11 +519,11 @@ public class Builder
 		this.typeMapper = typeMapper;
 	}
 
-	public Class<? extends Environment> getEnvironmentType() {
-		return environmentType;
+	public Environment getTargetEnvironment() {
+		return targetEnvironment;
 	}
 
-	public void setEnvironmentType(Class<? extends Environment> environmentType) {
-		this.environmentType = environmentType;
+	public void setTargetEnvironment(Environment targetEnvironment) {
+		this.targetEnvironment = targetEnvironment;
 	}	
 }
