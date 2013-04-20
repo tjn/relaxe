@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Content;
 import fi.tnie.db.ent.DataObject;
@@ -47,7 +45,7 @@ public class EntityQueryExecutor<
 > 	
 {	
 //	private Implementation implementation;	
-	private static Logger logger = Logger.getLogger(EntityQueryExecutor.class);
+//	private static Logger logger = Logger.getLogger(EntityQueryExecutor.class);
 	
 	private QueryExecutor executor;	
 	private UnificationContext unificationContext;

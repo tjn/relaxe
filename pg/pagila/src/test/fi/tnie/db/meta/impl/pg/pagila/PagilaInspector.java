@@ -16,13 +16,12 @@ import java.util.Map;
 
 import fi.tnie.db.Counter;
 import fi.tnie.db.gen.pagila.ent.pub.Film;
-import fi.tnie.db.gen.pagila.ent.pub.FilmImpl;
 import fi.tnie.db.rpc.IntegerHolder;
 
 public class PagilaInspector {
 	
 	
-	private Object root = null;
+//	private Object root = null;
 	
 	
 	// private Map<>
@@ -30,10 +29,8 @@ public class PagilaInspector {
 	private Map<Class<?>, Counter> typeCountMap = new HashMap<Class<?>, Counter>();
 			
 	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException {
-		
-//		LiteralCatalog cat = LiteralCatalog.getInstance();
 	
-		Film film = new FilmImpl();
+		Film film = Film.Type.TYPE.getMetaData().getFactory().newInstance();
 		film.setInteger(Film.FILM_ID, IntegerHolder.valueOf(1));
 		
 		PagilaInspector i = new PagilaInspector();
