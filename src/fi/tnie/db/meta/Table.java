@@ -10,8 +10,8 @@ public interface Table
 	String VIEW = "VIEW";
 	String SYSTEM_TABLE = "SYSTEM TABLE";
 	
-	String getTableType();	
-	ColumnMap columnMap();		
+	String getTableType();
+	ColumnMap columnMap();
 	boolean isBaseTable();
 	
 	BaseTable asBaseTable();

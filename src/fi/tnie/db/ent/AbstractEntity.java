@@ -6,13 +6,10 @@ package fi.tnie.db.ent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-
 import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.ent.value.StringKey;
 import fi.tnie.db.meta.Column;
-import fi.tnie.db.meta.ColumnMap;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
@@ -39,9 +36,6 @@ public abstract class AbstractEntity<
 	 */
 	private static final long serialVersionUID = -1538787348338709153L;	
 
-//	public abstract Map<A, PrimitiveHolder<?, ?>> values();		
-//	protected abstract Map<R, ReferenceHolder<?, ?, ?, ?, ?, ?>> references();
-	
 	public PrimitiveHolder<?, ?, ?> get(Column column) throws NullPointerException, EntityRuntimeException {
 		
 		if (column == null) {

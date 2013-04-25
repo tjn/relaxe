@@ -5,9 +5,6 @@ package fi.tnie.db.ent;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
-
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
@@ -32,8 +29,7 @@ public abstract class EnumMetaData<
 	private static final long serialVersionUID = -8574938084185912154L;
 	
 	private transient Class<A> attributeType;
-	private transient Class<R> referenceType;
-	
+	private transient Class<R> referenceType;	
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -48,11 +44,9 @@ public abstract class EnumMetaData<
 	}
 	
 	@Override
-	protected Set<Column> populate(BaseTable table) {
-
+	protected void populate(BaseTable table) {
 		populateAttributes(table);
-		populateReferences(table);
-		return null;
+		populateReferences(table);	
 	}
 	
 	protected void populateAttributes(BaseTable table) {		

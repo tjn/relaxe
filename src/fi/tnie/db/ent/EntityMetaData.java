@@ -40,10 +40,7 @@ public interface EntityMetaData<
 	EntityBuilder<E, H> newBuilder(TableReference referencing, ForeignKey referencedBy, TableReference tableRef, EntityBuildContext ctx, UnificationContext unificationContext)
 		throws EntityException;
 	
-//	EntityIdentityMap<A, R, T, E, H, M> createIdentityMap();	
 	EntityIdentityMap<A, R, T, E, H, M> getIdentityMap(UnificationContext ctx);
-//	H unify(UnificationContext ctx, E e) throws EntityRuntimeException;
-//	void dispose(UnificationContext ctx);
 
 	/**
 	 * Unmodifiable set containing the names of the attributes which are applicable to entities this object represents.
@@ -58,10 +55,6 @@ public interface EntityMetaData<
 	
 	PrimitiveKey<A, E, ?, ?, ?, ?> getKey(A a);
 		
-	/* EntityKey<R, T, E, M, ?, ? ,?, ?, ?, ?, ?, ?> getEntityKey(R ref); *)
-	 * 
-	 */
-	
 	EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> getEntityKey(R ref);
 
 	ForeignKey getForeignKey(R r);

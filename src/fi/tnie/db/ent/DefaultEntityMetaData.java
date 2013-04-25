@@ -37,12 +37,10 @@ public abstract class DefaultEntityMetaData<
 	 */
 	private static final long serialVersionUID = -8331822446687395204L;
 
-//	private BaseTable baseTable;
 
 	private Set<A> attributes;
 	private Map<A, Column> attributeMap;
 	private Map<Column, A> columnMap;
-	// private Set<Column> pkcols;
 
 	private Set<R> relationships;
 	private Map<R, ForeignKey> referenceMap;
@@ -53,14 +51,8 @@ public abstract class DefaultEntityMetaData<
 
 	protected DefaultEntityMetaData() {
 	}
-	
-//	private void bind(BaseTable table) {
-//		this.baseTable = table;
-//		populateAttributes(table);
-//		populateReferences(table);
-//	}
 
-	protected abstract Set<Column> populate(BaseTable table);
+	protected abstract void populate(BaseTable table);
 
 	protected void populateAttributes(Set<A> attributes, Map<A, Column> attributeMap, BaseTable table) {
 
