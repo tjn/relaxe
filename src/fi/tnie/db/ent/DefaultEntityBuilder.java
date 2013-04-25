@@ -82,7 +82,7 @@ public abstract class DefaultEntityBuilder<
 
 	@Override
 	public H read(DataObject src) {
-		E ne = getMetaData().getFactory().newInstance();
+		E ne = getMetaData().getFactory().newEntity();
 		
 		logger().debug("read: " + ne);
 		

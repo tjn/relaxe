@@ -30,7 +30,7 @@ public class PagilaInspector {
 			
 	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException {
 	
-		Film film = Film.Type.TYPE.getMetaData().getFactory().newInstance();
+		Film film = Film.Type.TYPE.getMetaData().getFactory().newEntity();
 		film.setInteger(Film.FILM_ID, IntegerHolder.valueOf(1));
 		
 		PagilaInspector i = new PagilaInspector();

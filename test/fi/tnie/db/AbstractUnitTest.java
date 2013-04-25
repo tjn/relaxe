@@ -292,7 +292,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		T extends ReferenceType<?, ?, T, E, ?, ?, ?, ?>,
 		E extends Entity<?, ?, T, E, ?, ?, ?, ?>
 	> 
-	E newInstance(T type) {
-		return type.getMetaData().getFactory().newInstance();
+	E newEntity(T type) {
+		return type.getMetaData().getFactory().newEntity();
 	}
 }

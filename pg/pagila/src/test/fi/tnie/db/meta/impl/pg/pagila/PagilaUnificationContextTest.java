@@ -28,10 +28,10 @@ public class PagilaUnificationContextTest extends AbstractPagilaTestCase {
 		
 		assertSame(im, im2);
 		
-		Film f1 = newInstance(Film.Type.TYPE);
+		Film f1 = newEntity(Film.Type.TYPE);
 		f1.getContent().setFilmId(FID);
 		
-		Film f2 = newInstance(Film.Type.TYPE);
+		Film f2 = newEntity(Film.Type.TYPE);
 		f2.getContent().setFilmId(FID);
 		
 		Film.Holder h1 = im.get(f1);

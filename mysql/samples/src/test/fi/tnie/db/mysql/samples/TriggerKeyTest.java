@@ -23,7 +23,7 @@ public class TriggerKeyTest
 	
 	public void testInsertTrigger() throws Exception {
 		Connection c = newConnection();
-		TriggerTest abc = TriggerTest.Type.TYPE.getMetaData().getFactory().newInstance();
+		TriggerTest abc = TriggerTest.Type.TYPE.getMetaData().getFactory().newEntity();
 		abc.getContent().setName("asdf");
 		
 		PersistenceManager<Attribute, Reference, Type, TriggerTest, Holder, Factory, MetaData, Content> pm = create(abc);

@@ -143,7 +143,7 @@ public abstract class DefaultEntity<
 		M meta = getMetaData();
 		F ef = meta.getFactory();				
 		E src = self(); 
-		E dest = ef.newInstance();
+		E dest = ef.newEntity();
 		
 		for (A a : meta.attributes()) {
 			PrimitiveKey<A, E, ?, ?, ?, ?> pk = meta.getKey(a);

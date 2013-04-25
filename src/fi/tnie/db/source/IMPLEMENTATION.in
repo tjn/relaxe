@@ -307,7 +307,7 @@ class {{table-impl-class}}
     public static class FactoryImpl
     	implements {{table-interface}}.Factory {
         @Override
-        public Default{{table-interface}} newInstance() {
+        public Default{{table-interface}} newEntity() {
            return new {{table-interface}}Impl();
         }
         

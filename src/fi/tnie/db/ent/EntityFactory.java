@@ -12,7 +12,7 @@ public interface EntityFactory<
 	F extends EntityFactory<E, H, M, F, C>,
 	C extends Content
 > {
-	E newInstance();
+	E newEntity();
 	H newHolder(E value);
 	M getMetaData();
 	F self();

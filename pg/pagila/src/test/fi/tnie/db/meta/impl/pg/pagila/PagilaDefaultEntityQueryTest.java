@@ -102,19 +102,19 @@ public class PagilaDefaultEntityQueryTest
     	
     	Film.Factory ff = Film.Type.TYPE.getMetaData().getFactory();
     	    	
-    	Film film = newInstance(Film.Type.TYPE);
+    	Film film = newEntity(Film.Type.TYPE);
     	
     	Category.Factory cf = Category.Type.TYPE.getMetaData().getFactory();
     	    	
-    	Category category = newInstance(Category.Type.TYPE);
+    	Category category = newEntity(Category.Type.TYPE);
     	category.getContent().setName("project name");
     	
-    	Actor actor = newInstance(Actor.Type.TYPE);
+    	Actor actor = newEntity(Actor.Type.TYPE);
     	Actor.Content ac = actor.getContent();
     	ac.firstName().set("Emilio");
     	ac.lastName().set("Bullock");
     	    	
-    	FilmCategory fc = newInstance(FilmCategory.Type.TYPE);
+    	FilmCategory fc = newEntity(FilmCategory.Type.TYPE);
     	fc.setFilm(FilmCategory.FILM_ID_FKEY, film.ref());
     	fc.setCategory(FilmCategory.CATEGORY_ID_FKEY, category.ref());
     	

@@ -35,7 +35,7 @@ public class SakilaPersistenceManagerTest
 	    
 	    // SakilaFactory sf = new SakilaFactoryImpl(); 
 	    
-	    Actor a = newInstance(Actor.Type.TYPE);
+	    Actor a = newEntity(Actor.Type.TYPE);
 	    Actor.Content ac = a.getContent();        
 	    ac.setFirstName("Dana");
 	    ac.setLastName("Brooks");
@@ -60,20 +60,20 @@ public class SakilaPersistenceManagerTest
 	    Connection c = getConnection();
 	    assertFalse(c.getAutoCommit());
 	            
-	    Actor a = newInstance(Actor.Type.TYPE);
+	    Actor a = newEntity(Actor.Type.TYPE);
 	    Actor.Content ac = a.getContent();        
 	    ac.setFirstName("Dana");
 	    ac.setLastName("Brooks");
 	
-	    Film f = newInstance(Film.Type.TYPE);
+	    Film f = newEntity(Film.Type.TYPE);
 	    Film.Content fc = f.getContent();
 	    fc.setTitle("New Film");
 	    	    
-	    Language lang = newInstance(Language.Type.TYPE);
+	    Language lang = newEntity(Language.Type.TYPE);
 	    lang.getContent().setName("English");	    	    
 	    f.setLanguage(Film.LANGUAGE, lang.ref());
 	    
-	    FilmActor filmActor = newInstance(FilmActor.Type.TYPE);
+	    FilmActor filmActor = newEntity(FilmActor.Type.TYPE);
 	    
 	    filmActor.setActor(FilmActor.ACTOR, a.ref());
 	    filmActor.setFilm(FilmActor.FILM, f.ref());
