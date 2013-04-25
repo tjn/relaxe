@@ -6,7 +6,6 @@ package fi.tnie.db.env;
 import fi.tnie.db.ValueAssignerFactory;
 import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.expr.SQLSyntax;
-import fi.tnie.db.meta.IdentifierRules;
 import fi.tnie.db.meta.SerializableEnvironment;
 
 public interface Implementation<I extends Implementation<I>> {
