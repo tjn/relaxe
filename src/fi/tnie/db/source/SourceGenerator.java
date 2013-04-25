@@ -3,7 +3,6 @@
  */
 package fi.tnie.db.source;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,6 +48,7 @@ import fi.tnie.db.meta.DataTypeImpl;
 import fi.tnie.db.meta.EmptyForeignKeyMap;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.meta.ImmutableColumnMap;
 import fi.tnie.db.meta.ImmutablePrimaryKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Schema;
@@ -2481,11 +2481,15 @@ public class SourceGenerator {
 		
 		line(buf, "{");
 				
-		line(buf, identifierDeclaration("constraintName", fk.getUnqualifiedName()));		
+		line(buf, identifierDeclaration("constraintName", fk.getUnqualifiedName()));
 		
-		line(buf, "ImmutableColumnMap.Builder cmi = new ImmutableColumnMap.Builder(env);");
+		String bi = ImmutableColumnMap.Builder.class.getCanonicalName();
 		
-		line(buf, "Map<Identifier, Identifier> cm = new TreeMap<Identifier, Identifier>(env.getIdentifierRules().comparator());");
+		line(buf, bi, " cmi = new ", bi, "(env);");
+		
+		final String ii = Identifier.class.getCanonicalName();
+		
+		line(buf, "java.util.Map<", ii, ", ", ii, "> cm = new java.util.TreeMap<", ii, ", ", ii, ">(env.getIdentifierRules().comparator());");
 
 		Collection<Column> cl = fk.getColumnMap().values();
 		
@@ -2494,7 +2498,7 @@ public class SourceGenerator {
 		for (Column column : cl) {			
 			String o = Integer.toString(ordinal);
 						
-			line(buf, "Identifier c", o, " = ", columnConstantName(column), ";");
+			line(buf, ii, " c", o, " = ", columnConstantName(column), ";");
 			
 			String rn = "r" + o;
 			Identifier rc = fk.getReferencedColumnName(column.getUnqualifiedName());
@@ -2507,7 +2511,10 @@ public class SourceGenerator {
 			ordinal++;
 		}		
 		
-		line(buf, "ColumnMap fkcm = cmi.newColumnMap();", 2);
+		String cmi = ColumnMap.class.getCanonicalName();
+		
+		line(buf, cmi, " fkcm = cmi.newColumnMap();");
+		line(buf, "", 1);
 
 //		ForeignKey fk = new ActorForeignKey(
 //		this,
@@ -2519,7 +2526,9 @@ public class SourceGenerator {
 		JavaType ti = tam.entityType(t, Part.INTERFACE);
 		JavaType rt = tam.entityType(fk.getReferenced(), Part.INTERFACE);
 		
-		line(buf, "ForeignKey fk = new ", ti.getUnqualifiedName(), "ForeignKey(", 
+		String fki = ForeignKey.class.getCanonicalName();
+		
+		line(buf, fki, " fk = new ", ti.getUnqualifiedName(), "ForeignKey(", 
 				"this, constraintName, fkcm, cm, ", rt.getQualifiedName(), ".Type.TYPE);");
 				
 		line(buf, "fkmap.put(constraintName, fk);");
@@ -2531,8 +2540,7 @@ public class SourceGenerator {
 		StringBuilder buf = new StringBuilder();
 		
 		line(buf, "// generateCreatePrimaryKeyBody: ");
-		
-		
+				
 		PrimaryKey pk = t.getPrimaryKey();
 		
 		if (pk == null) {

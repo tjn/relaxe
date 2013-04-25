@@ -28,44 +28,33 @@ public abstract class EnumMetaData<
 	 */
 	private static final long serialVersionUID = -8574938084185912154L;
 	
-	private transient Class<A> attributeType;
-	private transient Class<R> referenceType;	
-	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
 	protected EnumMetaData() {
 	}
 		
-	public EnumMetaData(Class<A> attributeType, Class<R> referenceType) {
-		super();
-		this.attributeType = attributeType;
-		this.referenceType = referenceType;
-	}
-	
 	@Override
 	protected void populate(BaseTable table) {
 		populateAttributes(table);
 		populateReferences(table);	
 	}
 	
-	protected void populateAttributes(BaseTable table) {		
-		EnumSet<A> as = EnumSet.allOf(attributeType);
-		EnumMap<A, Column> am = new EnumMap<A, Column>(attributeType);		
+	protected void populateAttributes(BaseTable table) {
+		Class<A> t = getAttributeNameType();
+		EnumSet<A> as = EnumSet.allOf(t);
+		EnumMap<A, Column> am = new EnumMap<A, Column>(t);		
 		populateAttributes(as, am, table);		
 	}
 	
 	protected void populateReferences(BaseTable table) {
-		EnumSet<R> rs = EnumSet.allOf(referenceType);
-		EnumMap<R, ForeignKey> rm = new EnumMap<R, ForeignKey>(referenceType);		
+		Class<R> t = getReferenceNameType();
+		EnumSet<R> rs = EnumSet.allOf(t);
+		EnumMap<R, ForeignKey> rm = new EnumMap<R, ForeignKey>(t);		
 		populateReferences(rs, rm, table);		
 	}
 		
-	public Class<A> getAttributeNameType() {
-		return attributeType;
-	}	
+	public abstract Class<A> getAttributeNameType();
 	
-	public Class<R> getReferenceNameType() {	
-		return this.referenceType;
-	}
+	public abstract Class<R> getReferenceNameType();
 }

@@ -4,7 +4,6 @@ package {{package-name}};
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import fi.tnie.db.ent.EntityBuildContext;
 import fi.tnie.db.ent.EnumMetaData;
 import fi.tnie.db.meta.Column;
@@ -13,9 +12,7 @@ import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.ColumnMap;
 import fi.tnie.db.meta.SchemaElementMap;
-import fi.tnie.db.meta.ImmutableColumnMap;
 import fi.tnie.db.expr.SchemaElementName;
-import fi.tnie.db.expr.SchemaName;
 import fi.tnie.db.ent.value.*;
 import fi.tnie.db.expr.TableReference;
 import fi.tnie.db.expr.Identifier;
@@ -181,14 +178,23 @@ class {{table-impl-class}}
 		{{attribute-key-container-implementation}}
     
         public {{table-interface}}MetaData() {
-            super({{table-interface}}.Attribute.class, {{table-interface}}.Reference.class);
-            
             // updated
             
             {{meta-data-initialization}}
             
     		populate(getBaseTable());			    
         }
+        
+        @Override
+        public Class<{{table-interface}}.Attribute> getAttributeNameType() {
+              return {{table-interface}}.Attribute.class;
+        }
+        
+        @Override
+        public Class<{{table-interface}}.Reference> getReferenceNameType() {
+        	return {{table-interface}}.Reference.class;
+        }
+        
         
         @Override
         public {{table-interface}}.Factory getFactory() {
