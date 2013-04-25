@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ import fi.tnie.db.expr.ColumnName;
 import fi.tnie.db.expr.Default;
 import fi.tnie.db.expr.DeleteStatement;
 import fi.tnie.db.expr.ElementList;
+import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.InsertStatement;
 import fi.tnie.db.expr.Predicate;
 import fi.tnie.db.expr.SQLSyntax;
@@ -145,7 +147,9 @@ public class PersistenceManager<
     	final M meta = pe.getMetaData();
     	BaseTable t = meta.getBaseTable();
     	
-    	Set<Column> pks = meta.getPKDefinition();
+//    	Set<Column> pks = meta.getPKDefinition();
+    	// Collection<Column> pks = meta.getBaseTable().getPrimaryKey().getColumnMap().values();
+    	Set<Identifier> pks = meta.getBaseTable().getPrimaryKey().getColumnMap().keySet();
     	    	
     	ElementList<ColumnName> names = new ElementList<ColumnName>();
     	
@@ -169,7 +173,7 @@ public class PersistenceManager<
 //    		We should probably use condition (holder.isNull() && nn), but isDefinitelyNotNullable() 
 //    		does not currently work so well for LiteralColumns:
     		    		
-    		if (holder.isNull() && pks.contains(col)) {
+    		if (holder.isNull() && pks.contains(col.getColumnName())) {
     			newRow.add(new Default(col));
     			names.add(col.getColumnName());
     			continue;    			
@@ -628,7 +632,8 @@ public class PersistenceManager<
         }
 
         EntityMetaData<A, R, T, E, ?, ?, ?, ?> meta = pe.getMetaData();
-        Set<Column> pkcols = meta.getPKDefinition();
+        // Set<Column> pkcols = meta.getPKDefinition();
+        Collection<Column> pkcols = meta.getBaseTable().getPrimaryKey().getColumnMap().values();
 
         if (pkcols.isEmpty()) {
             throw new EntityException("no pk-columns available for entity type " + pe.type());

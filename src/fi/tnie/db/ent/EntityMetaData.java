@@ -63,10 +63,8 @@ public interface EntityMetaData<
 	 */
 	
 	EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> getEntityKey(R ref);
-	
-	
+
 	ForeignKey getForeignKey(R r);
-	Set<Column> getPKDefinition();
 
 	/**
 	 * Returns a set of the references the column <code>c</code> is part of.

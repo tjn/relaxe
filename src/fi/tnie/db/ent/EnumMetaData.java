@@ -49,22 +49,22 @@ public abstract class EnumMetaData<
 	
 	@Override
 	protected Set<Column> populate(BaseTable table) {
-		Set<Column> pkc = new HashSet<Column>();
-		populateAttributes(table, pkc);
-		populateReferences(table, pkc);
-		return pkc;
+
+		populateAttributes(table);
+		populateReferences(table);
+		return null;
 	}
 	
-	protected void populateAttributes(BaseTable table, Set<Column> pkc) {		
+	protected void populateAttributes(BaseTable table) {		
 		EnumSet<A> as = EnumSet.allOf(attributeType);
 		EnumMap<A, Column> am = new EnumMap<A, Column>(attributeType);		
-		populateAttributes(as, am, table, pkc);		
+		populateAttributes(as, am, table);		
 	}
 	
-	protected void populateReferences(BaseTable table, Set<Column> pkc) {
+	protected void populateReferences(BaseTable table) {
 		EnumSet<R> rs = EnumSet.allOf(referenceType);
 		EnumMap<R, ForeignKey> rm = new EnumMap<R, ForeignKey>(referenceType);		
-		populateReferences(rs, rm, table, pkc);		
+		populateReferences(rs, rm, table);		
 	}
 		
 	public Class<A> getAttributeNameType() {

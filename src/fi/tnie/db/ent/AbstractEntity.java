@@ -6,12 +6,15 @@ package fi.tnie.db.ent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import fi.tnie.db.ent.value.EntityKey;
 import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.ent.value.StringKey;
 import fi.tnie.db.meta.Column;
+import fi.tnie.db.meta.ColumnMap;
 import fi.tnie.db.meta.ForeignKey;
+import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.rpc.StringHolder;
@@ -109,19 +112,25 @@ public abstract class AbstractEntity<
 	}
 	
 	public Map<Column, PrimitiveHolder<?,?,?>> getPrimaryKey() {
-		Map<Column, PrimitiveHolder<?,?,?>> pk = new HashMap<Column, PrimitiveHolder<?,?,?>>(); 
+		PrimaryKey pk = getMetaData().getBaseTable().getPrimaryKey();
 		
-		for (Column pkcol : getMetaData().getPKDefinition()) {
+		if (pk == null) {
+			return null;
+		}
+		
+		Map<Column, PrimitiveHolder<?,?,?>> vm = new HashMap<Column, PrimitiveHolder<?,?,?>>(2);
+				
+		for (Column pkcol : pk.getColumnMap().values()) {
 			PrimitiveHolder<?,?,?> v = get(pkcol);
 			
 			if ((v == null) || v.isNull()) {
 				return null;
 			}
 			
-			pk.put(pkcol, v);
+			vm.put(pkcol, v);
 		}
 		
-		return pk;
+		return vm;
 	}
 	
 	@Override

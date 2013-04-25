@@ -5,6 +5,7 @@ package fi.tnie.db.ent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -367,12 +368,7 @@ public class DefaultEntityTemplateQuery<
 			}
 		}
 					
-		Set<Column> pkcols = meta.getPKDefinition();
-				
-//		if (pkcols.isEmpty()) {
-//			throw new IllegalArgumentException("no primary key columns for table " + meta.getBaseTable().getQualifiedName());
-//		}
-		
+		Collection<Column> pkcols = meta.getBaseTable().getPrimaryKey().getColumnMap().values();
 		
 		for (Column c : pkcols) {
 			ColumnReference cref = new ColumnReference(tref, c);
@@ -548,9 +544,8 @@ public class DefaultEntityTemplateQuery<
 	void addAttributes(DQ template, Select s, TableReference tref) throws EntityRuntimeException {
 		DM meta = template.getMetaData();
 		Set<MA> as = meta.attributes();
-		
-		Set<Column> pks = meta.getPKDefinition();
-						
+		BaseTable t = meta.getBaseTable();
+								
 		for (MA a : as) {
 			EntityQueryTemplateAttribute ta = template.get(a);
 			
@@ -560,7 +555,7 @@ public class DefaultEntityTemplateQuery<
 			
 			Column c = meta.getColumn(a);
 			
-			if (pks.contains(c)) {
+			if (t.isPrimaryKeyColumn(c)) {
 				continue;
 			}			
 			
@@ -574,17 +569,6 @@ public class DefaultEntityTemplateQuery<
 			
 			Predicate p = ta.createPredicate(cref);			
 			addPredicate(p);
-									
-//			PrimitiveHolder<?, ?> h = template.value(a);
-//						
-//			if (h != null) {
-//				Column c = meta.getColumn(a);
-//				
-//				// primary column are added separately:				
-//				if (c != null && c.isPrimaryKeyColumn() == false) {
-//					s.add(new ColumnReference(tref, c));
-//				}
-//			}
 		}
 	}
 

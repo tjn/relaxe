@@ -15,7 +15,6 @@ import fi.tnie.db.ent.value.PrimitiveKey;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
-import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.rpc.PrimitiveHolder;
 import fi.tnie.db.rpc.ReferenceHolder;
 import fi.tnie.db.types.PrimitiveType;
@@ -43,7 +42,7 @@ public abstract class DefaultEntityMetaData<
 	private Set<A> attributes;
 	private Map<A, Column> attributeMap;
 	private Map<Column, A> columnMap;
-	private Set<Column> pkcols;
+	// private Set<Column> pkcols;
 
 	private Set<R> relationships;
 	private Map<R, ForeignKey> referenceMap;
@@ -62,22 +61,12 @@ public abstract class DefaultEntityMetaData<
 //	}
 
 	protected abstract Set<Column> populate(BaseTable table);
-	
-	
 
-	protected void populateAttributes(Set<A> attributes, Map<A, Column> attributeMap, BaseTable table, Set<Column> pkc) {
+	protected void populateAttributes(Set<A> attributes, Map<A, Column> attributeMap, BaseTable table) {
 
-		// EnumSet<K> attributes = EnumSet.allOf(keyType);
-		// EnumMap<K, Column> attributeMap = new EnumMap<K, Column>(keyType);
-
-		//	this.attributes = EnumSet.allOf(keyType);
-		//	this.attributeMap = new EnumMap<A, Column>(atype);
 		Map<Column, A> columnMap = new HashMap<Column, A>();
 
-		//	EnumSet<A> pka = EnumSet.noneOf(atype);	
-
 		for (A a : attributes) {
-//			Column c = table.columnMap().get(a);
 			Column c = map(table, a);
 
 			if (c == null) {
@@ -88,32 +77,22 @@ public abstract class DefaultEntityMetaData<
 
 			attributeMap.put(a, c);
 			columnMap.put(c, a);
-			
-			if (table.isPrimaryKeyColumn(c)) {
-				pkc.add(c);
-			}
 		}
 
 		this.attributes = attributes;
 		this.attributeMap = attributeMap;		
 		this.columnMap = columnMap;
-		this.pkcols = Collections.unmodifiableSet(pkc);
 	}
 
 	protected Column map(BaseTable table, A a) {
 		return table.columnMap().get(a.identifier());
 	}
 
-	// protected abstract void populateReferences(BaseTable table);
 
-	protected void populateReferences(Set<R> relationships, Map<R, ForeignKey> referenceMap, BaseTable table, Set<Column> pkc) {
-//		this.references = EnumSet.allOf(rtype);
-//		this.referenceMap = new EnumMap<R, ForeignKey>(rtype);
-//
+	protected void populateReferences(Set<R> relationships, Map<R, ForeignKey> referenceMap, BaseTable table) {
 		Map<Column, Set<R>> rm = new HashMap<Column, Set<R>>();
 
 		for (R r : relationships) {
-			// ForeignKey fk = table.foreignKeys().get(r.identifier());
 			ForeignKey fk = map(table, r);
 
 			if (fk == null) {
@@ -122,16 +101,7 @@ public abstract class DefaultEntityMetaData<
 			else {
 				referenceMap.put(r, fk);
 				populateColumnReferenceMap(fk, r, rm);
-			}
-			
-			for (Column fkcol : fk.getColumnMap().values()) {				
-//				if (fkcol.isPrimaryKeyColumn())  {
-//					pkc.add(fkcol);
-//				}
-				if (fk.getReferencing().isPrimaryKeyColumn(fkcol)) {
-					pkc.add(fkcol);
-				}
-			}
+			}			
 		}
 
 		// Ensure all the column-sets are unmodifiable after the call.
@@ -148,7 +118,6 @@ public abstract class DefaultEntityMetaData<
 		this.columnReferenceMap = rm;
 		this.relationships = Collections.unmodifiableSet(relationships);
 		this.referenceMap = referenceMap;
-		this.pkcols = Collections.unmodifiableSet(pkc);
 	}
 
 	protected abstract ForeignKey map(BaseTable table, R r);
@@ -180,11 +149,6 @@ public abstract class DefaultEntityMetaData<
 		return this.relationships;
 	}
 
-//	@Override
-//	public BaseTable getBaseTable() {
-//		return this.baseTable;
-//	}
-
 	@Override
 	public Column getColumn(A a) {
 		return this.attributeMap.get(a);
@@ -197,11 +161,6 @@ public abstract class DefaultEntityMetaData<
 		}
 
 		return this.columnMap.get(column);
-	}
-
-	@Override
-	public Set<Column> getPKDefinition() {
-		return this.pkcols;
 	}
 
 	@Override
