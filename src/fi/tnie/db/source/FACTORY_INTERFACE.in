@@ -1,8 +1,0 @@
-package {{package-name}};
-
-{{imports}}
-
-public interface {{schema-factory}} {
-    {{factory-method-list}}
-} 
-

@@ -22,8 +22,6 @@ import fi.tnie.db.gen.pagila.ent.pub.Category;
 import fi.tnie.db.gen.pagila.ent.pub.Film;
 import fi.tnie.db.gen.pagila.ent.pub.FilmActor;
 import fi.tnie.db.gen.pagila.ent.pub.FilmCategory;
-import fi.tnie.db.gen.pagila.ent.pub.PublicFactory;
-import fi.tnie.db.gen.pagila.ent.pub.impl.PublicFactoryImpl;
 import fi.tnie.db.meta.impl.pg.PGTestCase;
 
 public class PagilaDefaultEntityQueryTest 
@@ -100,19 +98,23 @@ public class PagilaDefaultEntityQueryTest
     	Implementation<?> imp = implementation();
     	    	
 //    	LiteralCatalog cc = LiteralCatalog.getInstance();
-    	PublicFactory pf = new PublicFactoryImpl();
+    	// PublicFactory pf = new PublicFactoryImpl();
+    	
+    	Film.Factory ff = Film.Type.TYPE.getMetaData().getFactory();
     	    	
-    	Film film = pf.newFilm();
+    	Film film = newInstance(Film.Type.TYPE);
+    	
+    	Category.Factory cf = Category.Type.TYPE.getMetaData().getFactory();
     	    	
-    	Category category = pf.newCategory();
+    	Category category = newInstance(Category.Type.TYPE);
     	category.getContent().setName("project name");
     	
-    	Actor actor = pf.newActor();
+    	Actor actor = newInstance(Actor.Type.TYPE);
     	Actor.Content ac = actor.getContent();
     	ac.firstName().set("Emilio");
     	ac.lastName().set("Bullock");
     	    	
-    	FilmCategory fc = pf.newFilmCategory();
+    	FilmCategory fc = newInstance(FilmCategory.Type.TYPE);
     	fc.setFilm(FilmCategory.FILM_ID_FKEY, film.ref());
     	fc.setCategory(FilmCategory.CATEGORY_ID_FKEY, category.ref());
     	

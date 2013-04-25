@@ -1275,39 +1275,36 @@ public class SourceGenerator {
 			}
 		}		
 
-		{
-            final JavaType intf = tm.factoryType(s, Part.INTERFACE);
-            final JavaType fimp = tm.factoryType(s, Part.IMPLEMENTATION);
-//            final JavaType impl = tm.factoryType(s, Part.IMPLEMENTATION);
-
-            if (intf != null) {
-                if (types.isEmpty()) {
-
-                }
-                else {
-                    File root = getSourceDir(s, Part.INTERFACE);
-                    write(root, intf, generateFactoryInterface(s, intf, tm, tym, types), generated, gm);
-
-                    root = getSourceDir(s, Part.IMPLEMENTATION);                                                                                                    
-                    write(root, fimp, generateFactoryImplementation(s, fimp, tm, types), generated, gm);
-                                       
-                    CharSequence src = generateSchemaFactoryMethodImplementation(s, tm, types);
-//                    CharSequence src = generateAnonymousFactoryImplementation(s, tm, types);
-                    factories.put(intf, src);
-
-                    ccil.add(intf);
-                    // ccil.add(impl);
-
-                    for (TypeInfo info : types) {
-                        ccil.add(getFactoryMethodReturnType(info));
-                        ccil.add(info.get(Part.IMPLEMENTATION));
-                    }
-                }
-            }
-        }
-		
-		
-		
+//		{
+//            final JavaType intf = tm.factoryType(s, Part.INTERFACE);
+//            final JavaType fimp = tm.factoryType(s, Part.IMPLEMENTATION);
+////            final JavaType impl = tm.factoryType(s, Part.IMPLEMENTATION);
+//
+//            if (intf != null) {
+//                if (types.isEmpty()) {
+//
+//                }
+//                else {
+//                    File root = getSourceDir(s, Part.INTERFACE);
+//                    write(root, intf, generateFactoryInterface(s, intf, tm, tym, types), generated, gm);
+//
+//                    root = getSourceDir(s, Part.IMPLEMENTATION);                                                                                                    
+//                    write(root, fimp, generateFactoryImplementation(s, fimp, tm, types), generated, gm);
+//                                       
+//                    CharSequence src = generateSchemaFactoryMethodImplementation(s, tm, types);
+////                    CharSequence src = generateAnonymousFactoryImplementation(s, tm, types);
+//                    factories.put(intf, src);
+//
+//                    ccil.add(intf);
+//                    // ccil.add(impl);
+//
+//                    for (TypeInfo info : types) {
+//                        ccil.add(getFactoryMethodReturnType(info));
+//                        ccil.add(info.get(Part.IMPLEMENTATION));
+//                    }
+//                }
+//            }
+//        }
 	}
 
     private CharSequence generateHasRef(BaseTable t, JavaType ref, JavaType intf, TableMapper tm) 

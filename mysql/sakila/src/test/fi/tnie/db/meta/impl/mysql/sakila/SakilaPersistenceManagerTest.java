@@ -14,8 +14,6 @@ import fi.tnie.db.env.mysql.MySQLImplementation;
 import fi.tnie.db.gen.sakila.ent.sakila.Film;
 import fi.tnie.db.gen.sakila.ent.sakila.FilmActor;
 import fi.tnie.db.gen.sakila.ent.sakila.Language;
-import fi.tnie.db.gen.sakila.ent.sakila.SakilaFactory;
-import fi.tnie.db.gen.sakila.ent.sakila.impl.SakilaFactoryImpl;
 import fi.tnie.db.gen.sakila.ent.sakila.Actor;
 import fi.tnie.db.gen.sakila.ent.sakila.Actor.Factory;
 import fi.tnie.db.gen.sakila.ent.sakila.Actor.Holder;
@@ -35,9 +33,9 @@ public class SakilaPersistenceManagerTest
 	    Connection c = getConnection();
 	    assertFalse(c.getAutoCommit());
 	    
-	    SakilaFactory sf = new SakilaFactoryImpl(); 
+	    // SakilaFactory sf = new SakilaFactoryImpl(); 
 	    
-	    Actor a = sf.newActor();
+	    Actor a = newInstance(Actor.Type.TYPE);
 	    Actor.Content ac = a.getContent();        
 	    ac.setFirstName("Dana");
 	    ac.setLastName("Brooks");
@@ -62,22 +60,20 @@ public class SakilaPersistenceManagerTest
 	    Connection c = getConnection();
 	    assertFalse(c.getAutoCommit());
 	            
-	    SakilaFactory pf = new SakilaFactoryImpl(); 
-	    
-	    Actor a = pf.newActor();
+	    Actor a = newInstance(Actor.Type.TYPE);
 	    Actor.Content ac = a.getContent();        
 	    ac.setFirstName("Dana");
 	    ac.setLastName("Brooks");
 	
-	    Film f = pf.newFilm();
+	    Film f = newInstance(Film.Type.TYPE);
 	    Film.Content fc = f.getContent();
 	    fc.setTitle("New Film");
 	    	    
-	    Language lang = pf.newLanguage();
+	    Language lang = newInstance(Language.Type.TYPE);
 	    lang.getContent().setName("English");	    	    
 	    f.setLanguage(Film.LANGUAGE, lang.ref());
 	    
-	    FilmActor filmActor = pf.newFilmActor();
+	    FilmActor filmActor = newInstance(FilmActor.Type.TYPE);
 	    
 	    filmActor.setActor(FilmActor.ACTOR, a.ref());
 	    filmActor.setFilm(FilmActor.FILM, f.ref());

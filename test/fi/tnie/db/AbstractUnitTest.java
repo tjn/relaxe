@@ -286,5 +286,13 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	PersistenceManager<A, R, T, E, H, F, M, C> create(E e) {
 		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, getPersistenceContext(), null);
 		return pm;
-	}	
+	}
+	
+	public <
+		T extends ReferenceType<?, ?, T, E, ?, ?, ?, ?>,
+		E extends Entity<?, ?, T, E, ?, ?, ?, ?>
+	> 
+	E newInstance(T type) {
+		return type.getMetaData().getFactory().newInstance();
+	}
 }

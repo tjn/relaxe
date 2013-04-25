@@ -27,10 +27,12 @@ import fi.tnie.db.HasTestContext;
 import fi.tnie.db.QueryHelper;
 import fi.tnie.db.SimpleTestContext;
 import fi.tnie.db.TestContext;
+import fi.tnie.db.ent.Entity;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.query.QueryException;
+import fi.tnie.db.types.ReferenceType;
 import junit.framework.TestCase;
 
 public abstract class DBMetaTestCase<I extends Implementation<I>> 
@@ -405,7 +407,11 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
 		this.testContext = testContext;
 	}
 
-	
-	
-			
+	public <
+		T extends ReferenceType<?, ?, T, E, ?, ?, ?, ?>,
+		E extends Entity<?, ?, T, E, ?, ?, ?, ?>
+	> 
+	E newInstance(T type) {
+		return type.getMetaData().getFactory().newInstance();
+	}			
 }
