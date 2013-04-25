@@ -6,8 +6,6 @@ package fi.tnie.db.expr;
 import java.util.ArrayList;
 import java.util.List;
 
-import fi.tnie.db.meta.Folding;
-
 
 public class Select
 	extends AbstractClause {

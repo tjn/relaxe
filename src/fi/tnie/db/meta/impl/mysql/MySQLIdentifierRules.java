@@ -15,8 +15,6 @@ import fi.tnie.db.expr.IllegalIdentifierException;
 import fi.tnie.db.meta.AbstractIdentifierComparator;
 import fi.tnie.db.meta.IdentifierRules;
 import fi.tnie.db.meta.NullComparator;
-import fi.tnie.db.meta.SerializableEnvironment;
-import fi.tnie.db.meta.impl.pg.PGIdentifierRules;
 
 public class MySQLIdentifierRules
 	implements IdentifierRules {

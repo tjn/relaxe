@@ -8,7 +8,6 @@ package fi.tnie.db.meta.impl.mysql;
 
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.meta.AbstractIdentifierComparator;
-import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.NullComparator;
 import fi.tnie.db.meta.SerializableEnvironment;
 

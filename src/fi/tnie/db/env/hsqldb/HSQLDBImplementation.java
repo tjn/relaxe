@@ -7,7 +7,6 @@ import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.DefaultImplementation;
 import fi.tnie.db.expr.DefaultSQLSyntax;
 import fi.tnie.db.expr.SQLSyntax;
-import fi.tnie.db.expr.ddl.ColumnDefinition;
 import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.impl.hsqldb.HSQLDBEnvironment;
 

@@ -18,7 +18,6 @@ import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.ent.Attribute;
 import fi.tnie.db.ent.Reference;
 import fi.tnie.db.ent.value.PrimitiveKey;
-import fi.tnie.db.expr.AbstractIdentifier;
 import fi.tnie.db.expr.SchemaElementName;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Column;

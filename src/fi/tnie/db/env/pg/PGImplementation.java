@@ -3,17 +3,13 @@
  */
 package fi.tnie.db.env.pg;
 
-import java.util.Comparator;
-
 import fi.tnie.db.DefaultValueExtractorFactory;
 import fi.tnie.db.ValueExtractorFactory;
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.AbstractGeneratedKeyHandler;
 import fi.tnie.db.env.DefaultImplementation;
 import fi.tnie.db.expr.DefaultSQLSyntax;
-import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.SQLSyntax;
-import fi.tnie.db.expr.ddl.ColumnDefinition;
 import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.meta.impl.pg.PGEnvironment;
 

@@ -5,7 +5,6 @@ package fi.tnie.db.meta;
 
 import fi.tnie.db.expr.Identifier;
 import fi.tnie.db.expr.SchemaElementName;
-import fi.tnie.db.expr.SchemaName;
 
 public abstract class ImmutableTable
 	extends ImmutableSchemaElement

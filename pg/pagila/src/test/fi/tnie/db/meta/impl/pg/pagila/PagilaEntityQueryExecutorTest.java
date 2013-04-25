@@ -19,7 +19,6 @@ import fi.tnie.db.ent.EntityMetaData;
 import fi.tnie.db.ent.EntityQueryExpressionSortKey;
 import fi.tnie.db.ent.EntityQueryResult;
 import fi.tnie.db.ent.EntityQueryTemplate;
-import fi.tnie.db.ent.EntityQueryTemplateAttribute;
 import fi.tnie.db.ent.FetchOptions;
 import fi.tnie.db.ent.PredicateAttributeTemplate;
 import fi.tnie.db.ent.Reference;

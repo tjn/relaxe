@@ -3,11 +3,7 @@
  */
 package fi.tnie.db.expr;
 
-import com.sun.org.apache.regexp.internal.recompile;
-
 import fi.tnie.db.meta.Folding;
-
-
 
 /**
  * Represents the unqualified name of the column.

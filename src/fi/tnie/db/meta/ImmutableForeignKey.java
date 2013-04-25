@@ -6,8 +6,6 @@ package fi.tnie.db.meta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-
 import fi.tnie.db.expr.Identifier;
 
 public class ImmutableForeignKey

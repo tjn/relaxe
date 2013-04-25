@@ -12,7 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -23,7 +22,6 @@ import fi.tnie.db.expr.ddl.DropConstraint;
 import fi.tnie.db.expr.ddl.DropTable;
 import fi.tnie.db.expr.ddl.DropView;
 import fi.tnie.db.meta.Catalog;
-import fi.tnie.db.meta.Column;
 import fi.tnie.db.meta.ForeignKey;
 import fi.tnie.db.meta.PrimaryKey;
 import fi.tnie.db.meta.Schema;

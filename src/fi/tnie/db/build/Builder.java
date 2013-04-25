@@ -5,7 +5,6 @@ package fi.tnie.db.build;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.sql.Connection;
@@ -31,7 +30,6 @@ import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.Environment;
 import fi.tnie.db.meta.IdentifierRules;
 import fi.tnie.db.meta.Schema;
-import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.source.SourceGenerator;
 import fi.tnie.db.tools.CatalogTool;

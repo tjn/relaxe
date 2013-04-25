@@ -57,6 +57,7 @@ public abstract class FoldingComparator
 		return getFolding().apply(ordinaryIdentifier);
 	}
 	
+	@Override
 	protected String name(Identifier ident) {
 		if (ident == null) {
 			return null;

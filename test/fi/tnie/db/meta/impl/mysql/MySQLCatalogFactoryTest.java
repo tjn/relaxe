@@ -12,7 +12,6 @@ import java.util.Set;
 
 import fi.tnie.db.env.CatalogFactory;
 import fi.tnie.db.env.DefaultCatalogFactory2;
-import fi.tnie.db.env.Implementation;
 import fi.tnie.db.env.PersistenceContext;
 import fi.tnie.db.env.mysql.MySQLCatalogFactory;
 import fi.tnie.db.env.mysql.MySQLImplementation;
@@ -20,7 +19,6 @@ import fi.tnie.db.env.mysql.MySQLPersistenceContext;
 import fi.tnie.db.meta.BaseTable;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.meta.DBMetaTestCase;
-import fi.tnie.db.meta.SerializableEnvironment;
 import fi.tnie.db.query.QueryException;
 
 public class MySQLCatalogFactoryTest extends DBMetaTestCase<MySQLImplementation> {
