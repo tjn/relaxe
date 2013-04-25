@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
 
 
 import org.apache.log4j.Logger;
-
 import fi.tnie.db.build.SchemaFilter;
 import fi.tnie.db.ent.im.EntityIdentityMap;
 import fi.tnie.db.expr.ColumnName;
@@ -59,6 +58,7 @@ import fi.tnie.db.meta.Table;
 import fi.tnie.db.query.QueryException;
 import fi.tnie.db.types.PrimitiveType;
 import fi.tnie.util.io.IOHelper;
+
 
 public class SourceGenerator {
 		
@@ -1946,7 +1946,7 @@ public class SourceGenerator {
        StringBuilder code = new StringBuilder();
 
        for (TypeInfo info : types) {
-           String m = formatFactoryMethod(info, false);
+           String m = generateFactoryMethod(info, false);
            line(code, m, 1);
        }
 
@@ -2012,7 +2012,7 @@ public class SourceGenerator {
         StringBuilder code = new StringBuilder();
 
         for (TypeInfo t : types) {
-            String m = formatFactoryMethod(t, true);
+            String m = generateFactoryMethod(t, true);
             line(code, m, 1);
         }
 
@@ -2042,9 +2042,8 @@ public class SourceGenerator {
      * @return
      */
 
-    private String formatFactoryMethod(TypeInfo info, boolean impl) {
+    private String generateFactoryMethod(TypeInfo info, boolean impl) {
         JavaType itf = info.get(Part.INTERFACE);
-        JavaType impp = info.get(Part.IMPLEMENTATION);
         
         JavaType returnType = getFactoryMethodReturnType(info);
 
@@ -2056,10 +2055,9 @@ public class SourceGenerator {
         }
         else {
             src = "public " + signature + " { " +
-            		"return " + 
-            		impp.getQualifiedName() + "." +            		
-            		itf.getUnqualifiedName() + "MetaData.getInstance().getFactory().newInstance" +
-            		"(); } ";
+    		"return " +
+    		itf.getQualifiedName() + ".Type.TYPE.getMetaData().getFactory().newInstance(); " +
+    		"} ";        	
         }
 
         return src;
