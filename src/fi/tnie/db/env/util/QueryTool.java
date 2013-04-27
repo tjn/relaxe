@@ -23,9 +23,9 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 import fi.tnie.db.exec.QueryProcessor;
-import fi.tnie.util.cli.Argument;
 import fi.tnie.util.cli.CommandLine;
 import fi.tnie.util.cli.Option;
+import fi.tnie.util.cli.Parameter;
 import fi.tnie.util.cli.Parser;
 import fi.tnie.util.io.IOHelper;
 
@@ -39,11 +39,11 @@ public class QueryTool {
 		
 		try {
 		    Parser p = new Parser();
-		    Option drvOpt = p.option("jdbc-driver", "d");
-		    Option urlOpt = p.option("jdbc-url", "u");
-		    Option cfgOpt = p.option("jdbc-config", "c", true);
-		    Option help = p.option("help", "h", true);
-		    Argument inputArg = p.addArgument("query-input", false);
+		    Option drvOpt = p.addOption("jdbc-driver", "d");
+		    Option urlOpt = p.addOption("jdbc-url", "u");
+		    Option cfgOpt = p.addOption("jdbc-config", "c", true);
+		    Option help = p.addOption("help", "h", true);
+		    Parameter inputFile = p.addParameter("query-input", false);
 		    
 		    CommandLine cl = p.parse(args);
 		    
@@ -61,7 +61,7 @@ public class QueryTool {
             String driverName = cl.value(drvOpt);
             String url = cl.value(urlOpt);
             String cfg = cl.value(cfgOpt);
-            List<String> input = cl.values(inputArg);
+            List<String> input = cl.values(inputFile);
             
             logger().debug("input value: " + input);
 		    			

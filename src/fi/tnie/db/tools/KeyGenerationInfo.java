@@ -11,15 +11,15 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 import fi.tnie.db.env.util.ResultSetWriter;
-import fi.tnie.util.cli.Argument;
 import fi.tnie.util.cli.CommandLine;
+import fi.tnie.util.cli.Parameter;
 import fi.tnie.util.cli.Parser;
 import fi.tnie.util.io.IOHelper;
 
 public class KeyGenerationInfo
     extends CatalogTool {
     	
-    public static final Argument QUERY_FILE = new Argument("query-file", 1, 1);
+    public static final Parameter QUERY_FILE = new Parameter("query-file");
     private String query;    
     
     /**
@@ -88,10 +88,10 @@ public class KeyGenerationInfo
     protected void prepare(Parser p) {        
         super.prepare(p);   
         
-        Argument a = QUERY_FILE;
+        Parameter fp = QUERY_FILE;
         
-        if (!p.containsArgument(a.getName())) {        
-            p.addArgument(a);            
+        if (!p.containsParameter(fp.getName())) {        
+            p.addParameter(fp);            
         }        
     }
 

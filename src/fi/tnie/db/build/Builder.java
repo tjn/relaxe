@@ -35,7 +35,7 @@ import fi.tnie.db.source.SourceGenerator;
 import fi.tnie.db.tools.CatalogTool;
 import fi.tnie.db.tools.ToolConfigurationException;
 import fi.tnie.db.tools.ToolException;
-import fi.tnie.util.cli.Argument;
+import fi.tnie.util.cli.Parameter;
 import fi.tnie.util.cli.CommandLine;
 import fi.tnie.util.cli.Option;
 import fi.tnie.util.cli.Parser;
@@ -68,25 +68,25 @@ public class Builder
 	};
     
     public static final Option OPTION_GENERATED_DIR = 
-        new SimpleOption("generated-sources", "g", new Argument(false), "Dir for generated source files.");
+        new SimpleOption("generated-sources", "g", new Parameter(false), "Dir for generated source files.");
     
     public static final Option OPTION_TEMPLATE_DIR = 
-        new SimpleOption("generated-templates", "t", new Argument(false), "Dir for generated template files.");      
+        new SimpleOption("generated-templates", "t", new Parameter(false), "Dir for generated template files.");      
 
     public static final Option OPTION_ROOT_PACKAGE = 
-        new SimpleOption("root-package", "r", new Argument(false), "Root java package name for generated classes.");  
+        new SimpleOption("root-package", "r", new Parameter(false), "Root java package name for generated classes.");  
 
     public static final Option OPTION_CATALOG_CONTEXT_PACKAGE = 
-        new SimpleOption("catalog-context-package", "c", new Argument(false), "Java package name for generated catalog context classes.");  
+        new SimpleOption("catalog-context-package", "c", new Parameter(false), "Java package name for generated catalog context classes.");  
 
     public static final Option OPTION_INCLUDE_ONLY_SCHEMAS = 
-        new SimpleOption("only-schemas", "o", new Argument("only-schemas", 1, null), "Schema names to include.");
+        new SimpleOption("only-schemas", "o", new Parameter("schema-name", 1, null), "Schema names to include.");
     
     public static final Option OPTION_TYPE_MAPPER_IMPLEMENTATION = 
-        new SimpleOption("type-mapper-implementation", "m", new Argument(false), "Class name of the implementation to be used as a type mapper");  
+        new SimpleOption("type-mapper-implementation", "m", new Parameter(false), "Class name of the implementation to be used as a type mapper");  
 
     public static final Option OPTION_ENVIRONMENT_IMPLEMENTATION = 
-        new SimpleOption("environment-implementation", null, new Argument(false), "Class name of the implementation of the environment");  
+        new SimpleOption("environment-implementation", null, new Parameter(false), "Class name of the implementation of the environment");  
 
     private static Logger logger = Logger.getLogger(Builder.class);
     

@@ -19,9 +19,9 @@ import fi.tnie.db.meta.Table;
 import fi.tnie.db.tools.CatalogTool;
 import fi.tnie.db.tools.ToolConfigurationException;
 import fi.tnie.db.tools.ToolException;
-import fi.tnie.util.cli.Argument;
 import fi.tnie.util.cli.CommandLine;
 import fi.tnie.util.cli.Option;
+import fi.tnie.util.cli.Parameter;
 import fi.tnie.util.cli.Parser;
 import fi.tnie.util.cli.SimpleOption;
 import fi.tnie.util.io.IOHelper;
@@ -30,12 +30,12 @@ public class CSVInsert
     extends CatalogTool {
     
     public static final Option OPTION_SCHEMA = 
-        new SimpleOption("schema", "s", new Argument(false),
+        new SimpleOption("schema", "s", new Parameter("schema-name"),
         "Use this schema as default if the schema name can not be " +
-        "determined from the name of the input file."        
+        "inferred from the name of the input file."        
         );
     
-    public static final Argument FILES = new Argument("files", 1, null);
+    public static final Parameter FILES = new Parameter("files", 1, null);
         
     private String defaultSchema = null;    
     private List<String> files;
@@ -189,10 +189,10 @@ public class CSVInsert
         addOption(p, OPTION_SCHEMA);
         addOption(p, OPTION_VERBOSE);
                 
-        Argument a = FILES;
+        Parameter fp = FILES;
         
-        if (!p.containsArgument(a.getName())) {        
-            p.addArgument(a);            
+        if (!p.containsParameter(fp.getName())) {        
+            p.addParameter(fp);            
         }        
     }
 

@@ -18,7 +18,7 @@ import fi.tnie.db.env.mysql.MySQLImplementation;
 import fi.tnie.db.env.pg.PGImplementation;
 import fi.tnie.db.meta.Catalog;
 import fi.tnie.db.query.QueryException;
-import fi.tnie.util.cli.Argument;
+import fi.tnie.util.cli.Parameter;
 import fi.tnie.util.cli.CommandLine;
 import fi.tnie.util.cli.Option;
 import fi.tnie.util.cli.Parser;
@@ -37,23 +37,24 @@ public abstract class CatalogTool {
         new SimpleOption("verbose", "v", "Output more information");
     
     public static final Option OPTION_ENV = 
-        new SimpleOption("environment-type", "e", new Argument(false),
+        new SimpleOption("environment-type", "e", new Parameter(false),
             "Fully qualified name of the class which implements '" + 
             Implementation.class.getName() + "'. " +
            "Implementation must have a no-arg public constructor.");
     
     public static final Option OPTION_JDBC_URL = 
-        new SimpleOption("jdbc-url", "u", new Argument(false));
+        new SimpleOption("jdbc-url", "u", new Parameter(false));
     
     public static final Option OPTION_JDBC_CONFIG = 
         new SimpleOption("jdbc-driver-config", "j", 
-            new Argument(false), "JDBC Driver configuration as file path to Java properties file");
+            new Parameter(false), "JDBC Driver configuration as file path to Java properties file");
     
     public static final Option OPTION_SCHEMA = 
-        new SimpleOption("schema", "s", new Argument(false), "Process this schema only.");  
+        new SimpleOption("schema", "s", new Parameter(false), "Process this schema only.");  
+    	
 
     public static final Option OPTION_TABLE = 
-        new SimpleOption("table", "t", new Argument(false), "Process this table only.");  
+        new SimpleOption("table", "t", new Parameter(false), "Process this table only.");  
 
     
     private Connection connection;
@@ -155,9 +156,9 @@ public abstract class CatalogTool {
     }
     
     protected void addOption(Parser p, Option opt) {
-        if (!p.contains(opt)) {
-            p.option(opt);
-        }   
+//        if (!p.contains(opt)) {
+    	p.addOption(opt);
+//        }   
     }
     
     /**
@@ -180,8 +181,6 @@ public abstract class CatalogTool {
             setVerbose(cl.has(OPTION_VERBOSE));                        
             
             String jdbcURL = cl.value(require(cl, OPTION_JDBC_URL));
-            // setJdbcURL(jdbcURL);
-             
             String environmentTypeName = cl.value(OPTION_ENV);
             
             Implementation<?> env = null;
@@ -253,7 +252,7 @@ public abstract class CatalogTool {
              setJdbcConfig(jdbcConfig);
              setImplementation(impl);             
                                                   
-             Class.forName(impl.defaultDriverClassName());                        
+             Class.forName(impl.defaultDriverClassName());  
              Connection c = createConnection();
              
              CatalogFactory cf = impl.catalogFactory();
