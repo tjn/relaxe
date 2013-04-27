@@ -1,0 +1,80 @@
+/*
+ * Copyright (c) 2009-2013 Topi Nieminen
+ */
+package com.appspot.relaxe.expr;
+
+import com.appspot.relaxe.types.PrimitiveType;
+
+public class NiladicFunction    
+    implements ValueExpression {
+    
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4927882086659272826L;
+	private SQLKeyword name;
+    private int dataType;    
+    
+    /** Niladic function CURRENT_USER.
+     * 
+     * Type of this value expression is VARCHAR.
+     * That may not be generally "right", but good enough. 
+     */
+    public static final NiladicFunction CURRENT_USER = 
+        new NiladicFunction(SQLKeyword.CURRENT_USER, PrimitiveType.VARCHAR);
+
+    /** Niladic function CURRENT_DATE. 
+     *  Type of this value expression is Types.DATE  
+     */
+    public static final NiladicFunction CURRENT_DATE = 
+        new NiladicFunction(SQLKeyword.CURRENT_USER, PrimitiveType.DATE);
+    
+    /** Niladic function CURRENT_TIME. 
+     *  Type of this value expression is Types.TIME  
+     */    
+    public static final NiladicFunction CURRENT_TIME = 
+        new NiladicFunction(SQLKeyword.CURRENT_TIME, PrimitiveType.TIME);
+    
+    /** Niladic function CURRENT_TIMESTAMP. 
+     *  Type of this value expression is Types.TIMESTAMP  
+     */        
+    public static final NiladicFunction CURRENT_TIMESTAMP = 
+        new NiladicFunction(SQLKeyword.CURRENT_TIMESTAMP, PrimitiveType.TIMESTAMP);    
+    
+    /**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected NiladicFunction() {
+	}
+    
+    private NiladicFunction(SQLKeyword name, int dataType) {
+        this.name = name;
+        this.dataType = dataType;
+    }
+
+    public SQLKeyword getName() {        
+        return this.name;
+    }
+
+    @Override
+    public int getType() {
+        return this.dataType;
+    }
+
+    @Override
+    public ColumnName getColumnName() {
+        return null;
+    }
+
+    @Override
+    public String getTerminalSymbol() {
+        return null;
+    }
+
+    @Override
+    public void traverse(VisitContext vc, ElementVisitor v) {
+        this.name.traverse(vc, v);
+    }
+    
+    
+}

@@ -1,0 +1,685 @@
+package {{package-name}};
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
+import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.EntityContext;
+import com.appspot.relaxe.map.TableMapper;
+// import com.appspot.relaxe.expr.ColumnName;
+import com.appspot.relaxe.expr.Identifier;
+import com.appspot.relaxe.expr.SchemaElementName;
+import com.appspot.relaxe.meta.BaseTable;
+import com.appspot.relaxe.meta.Catalog;
+import com.appspot.relaxe.meta.Constraint;
+// import com.appspot.relaxe.meta.DataType;
+import com.appspot.relaxe.meta.Environment;
+import com.appspot.relaxe.meta.SerializableEnvironment;
+import com.appspot.relaxe.meta.ForeignKey;
+import com.appspot.relaxe.meta.PrimaryKey;
+import com.appspot.relaxe.meta.Column;
+import com.appspot.relaxe.meta.ColumnMap;
+import com.appspot.relaxe.meta.Schema;
+import com.appspot.relaxe.meta.SchemaElementMap;
+import com.appspot.relaxe.meta.SchemaMap;
+import com.appspot.relaxe.meta.Table;
+import com.appspot.relaxe.meta.impl.DataTypeImpl;
+import com.appspot.relaxe.meta.impl.DefaultMutableBaseTable;
+import com.appspot.relaxe.meta.impl.DefaultMutableView;
+import com.appspot.relaxe.meta.impl.DefaultMutableCatalog;
+import com.appspot.relaxe.meta.impl.DefaultMutableColumn;
+import com.appspot.relaxe.meta.impl.DefaultMutableSchema;
+import com.appspot.relaxe.meta.impl.DefaultForeignKey;
+import com.appspot.relaxe.meta.impl.DefaultPrimaryKey;
+import com.appspot.relaxe.meta.impl.DefaultMutableTable;
+
+public class LiteralCatalog	
+	implements EntityContext, Catalog {
+
+	private Identifier name;
+	private SerializableEnvironment environment;	
+	private DefaultMutableCatalog content;
+	private Map<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> metaMap;
+	
+	private Map<LiteralTable, DefaultMutableTable> mutableTableMap;
+	private Map<LiteralColumn, DefaultMutableColumn> mutableColumnMap;		
+			
+	public interface Initializable {
+		public void init();
+	}
+		
+	public static class ColumnInitializer {	
+		private String name; 
+		private LiteralTable table;
+		private DataTypeImpl type;
+		private String autoIncrement;
+					
+		public ColumnInitializer(LiteralTable table, String name, DataTypeImpl type, String autoIncrement) {
+			this.table = table;
+			this.name = name;
+			this.type = type;
+			this.autoIncrement = autoIncrement;
+		}
+		
+		public Column init(LiteralColumn c) {
+			LiteralCatalog cat = LiteralCatalog.getInstance();			
+			Identifier n = cat.env().createIdentifier(this.name);
+			DefaultMutableTable mt = cat.getMutableTableMap().get(this.table);						
+			DefaultMutableColumn mc = (mt == null) ? null : new DefaultMutableColumn(mt, n, this.type, this.autoIncrement);
+			
+			if (mc != null) {				
+				cat.getMutableColumnMap().put(c, mc);
+				
+			}			
+			
+			return mc;
+		}
+	}
+		
+	
+	private void setName(Identifier name) {
+		this.name = name;
+	}
+
+	private void setEnvironment(SerializableEnvironment environment) {
+		if (environment == null) {
+			throw new NullPointerException("environment must not be null here");
+		}
+		
+		this.environment = environment;
+	}
+
+	public SerializableEnvironment getEnvironment() {
+		return environment;
+	}
+	
+	public SerializableEnvironment env() {
+		return this.environment;
+	}
+	
+	private static LiteralCatalog instance = null;
+	
+	public static LiteralCatalog getInstance() {
+		if (LiteralCatalog.instance == null) {
+			LiteralCatalog.instance = new LiteralCatalog(
+				"{{catalog-name}}",
+				{{new-environment-expr}}
+			);
+			
+			LiteralCatalog.instance.populate();
+		}
+		
+		return LiteralCatalog.instance;
+		
+	}
+			
+	protected LiteralCatalog(String name, SerializableEnvironment env) {
+		super();
+		setEnvironment(env);
+		setName(env.createIdentifier(name));		
+		// populate();
+	}
+
+	private void populate() {			
+		for (LiteralSchema s : LiteralSchema.values()) {			
+			s.bind();
+		}
+		
+		for (LiteralBaseTable s : LiteralBaseTable.values()) {			
+			s.bind();
+		}
+		
+		for (LiteralView s : LiteralView.values()) {			
+			s.bind();
+		}
+		
+//		for (LiteralColumn s : LiteralColumn.values()) {			
+//			s.bind();
+//		}
+		
+ 		{{init-column-enum-list}}
+ 		
+		for (LiteralPrimaryKey s : LiteralPrimaryKey.values()) {			
+			s.bind();
+		}
+		
+		for (LiteralForeignKey s : LiteralForeignKey.values()) {			
+			s.bind();
+		}
+
+		// populates meta-map
+		getMetaMap();
+		
+ 
+//		According JLS, 
+//		"The direct superclass of an enum type named E is Enum<E>. 
+//		In addition to the members it inherits from Enum<E>, for each declared enum constant with the name n the enum type has an implicitly declared public static final field named n of type E."
+//		...
+//		"The enum constant is said to be created when the corresponding field 
+//		is initialized."
+//		
+//		Based on that, we expect all the LiteralBaseTable -elements 
+//		already instantiated at this point.
+//		
+//		Not sure if GWT compiler honors this behavior, though.
+	}
+	
+	private void populateMetaMap(Map<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> mm) {
+{{meta-map-population}}
+	}
+	
+	private void add(Map<String, EntityMetaData<?,?,?,?,?,?,?,?>> mm, LiteralBaseTable t, EntityMetaData<?,?,?,?,?,?,?,?> meta) {
+		mm.put(t.getQualifiedName(), meta);		
+	}
+	
+
+	public enum LiteralSchema implements Schema {
+//schema-enum-list//
+{{schema-enum-list}}
+		;
+				
+		private DefaultMutableSchema schema;
+		private String name;
+		
+		private LiteralSchema(String name) {
+			this.name = name;
+		}
+		
+		private void bind() {
+			LiteralCatalog cat = getInstance();
+			Identifier s = cat.getEnvironment().createIdentifier(this.name);
+			this.schema = new DefaultMutableSchema(cat.getContent(), s);
+		}
+
+		
+		private DefaultMutableSchema getMutableSchema() {
+			return schema;
+		}
+
+		@Override
+		public SchemaElementMap<? extends BaseTable> baseTables() {
+			return schema.baseTables();
+		}
+
+		@Override
+		public SchemaElementMap<? extends Constraint> constraints() {
+			return schema.constraints();
+		}
+
+		@Override
+		public SchemaElementMap<? extends ForeignKey> foreignKeys() {
+			return schema.foreignKeys();
+		}
+
+		@Override
+		public Catalog getCatalog() {
+			return schema.getCatalog();
+		}
+
+		@Override
+		public Identifier getUnqualifiedName() {
+			return schema.getUnqualifiedName();
+		}
+
+		@Override
+		public SchemaElementMap<? extends PrimaryKey> primaryKeys() {
+			return schema.primaryKeys();
+		}
+
+		@Override
+		public SchemaElementMap<? extends Table> tables() {
+			return schema.tables();
+		}
+	}
+	
+	public enum LiteralBaseTable		
+		implements BaseTable, LiteralTable {		
+{{base-table-enum-list}}
+		;		
+		
+		private LiteralSchema schema;
+		private DefaultMutableBaseTable table;
+		private String name;
+		
+		LiteralBaseTable(LiteralSchema s, String name) {
+			this.name = name;
+			this.schema = s;			
+		}
+		
+		private void bind() {
+			LiteralCatalog cat = getInstance();
+			DefaultMutableSchema ms = this.schema.getMutableSchema();
+			Identifier t = cat.getEnvironment().createIdentifier(this.name);			
+			this.table = new DefaultMutableBaseTable(ms, t);			
+			getInstance().getMutableTableMap().put(this, this.table);			
+		}
+		
+		@Override
+		public Environment getEnvironment() {
+			return {{package-name}}.LiteralCatalog.getInstance().getEnvironment();
+		}
+
+		@Override
+		public SchemaElementMap<ForeignKey> foreignKeys() {
+			return this.table.foreignKeys();
+		}
+
+		@Override
+		public PrimaryKey getPrimaryKey() {
+			return this.table.getPrimaryKey();
+		}
+		
+		public SchemaElementMap<ForeignKey> references() {
+			return this.table.references();
+		}
+
+		@Override
+		public ColumnMap columnMap() {
+			return this.table.columnMap();
+		}
+
+		@Override
+		public List<? extends com.appspot.relaxe.meta.Column> columns() {
+			return this.table.columns();
+		}
+
+		@Override
+		public com.appspot.relaxe.meta.Column getColumn(Identifier cn) {
+			return this.table.getColumn(cn);
+		}
+
+		@Override
+		public String getTableType() {
+			return this.table.getTableType();
+		}
+
+		@Override
+		public boolean isBaseTable() {
+			return this.table.isBaseTable();
+		}
+
+		@Override
+		public SchemaElementName getName() {
+			return this.table.getName();
+		}
+
+		@Override
+		public String getQualifiedName() {
+			return this.table.getQualifiedName();
+		}
+		
+		public Schema getSchema() {
+			return this.schema;
+		}
+
+		@Override
+		public Identifier getUnqualifiedName() {
+			return this.table.getUnqualifiedName();
+		}
+
+		private DefaultMutableBaseTable getTable() {
+			return this.table;
+		};
+	}
+	
+	
+		public enum LiteralView		
+		implements Table, LiteralTable {		
+{{view-enum-list}}
+		;		
+		
+		private LiteralSchema schema;
+		private DefaultMutableView table;
+		private String name;
+		
+		LiteralView(LiteralSchema s, String name) {
+			this.name = name;
+			this.schema = s;			
+		}
+		
+		private void bind() {
+			LiteralCatalog cat = getInstance();
+			DefaultMutableSchema ms = this.schema.getMutableSchema();
+			Identifier t = cat.getEnvironment().createIdentifier(this.name);			
+			this.table = new DefaultMutableView(ms, t);			
+			getInstance().getMutableTableMap().put(this, this.table);			
+		}
+
+		@Override
+		public ColumnMap columnMap() {
+			return this.table.columnMap();
+		}
+
+		@Override
+		public List<? extends com.appspot.relaxe.meta.Column> columns() {
+			return this.table.columns();
+		}
+
+		@Override
+		public com.appspot.relaxe.meta.Column getColumn(Identifier cn) {
+			return this.table.getColumn(cn);
+		}
+
+		@Override
+		public String getTableType() {
+			return this.table.getTableType();
+		}
+
+		@Override
+		public boolean isBaseTable() {
+			return this.table.isBaseTable();
+		}
+
+		@Override
+		public SchemaElementName getName() {
+			return this.table.getName();
+		}
+
+		@Override
+		public String getQualifiedName() {
+			return this.table.getQualifiedName();
+		}
+		
+		public Schema getSchema() {
+			return this.schema;
+		}
+
+		@Override
+		public Identifier getUnqualifiedName() {
+			return this.table.getUnqualifiedName();
+		}
+
+		private DefaultMutableView getTable() {
+			return this.table;
+		};
+		
+		@Override
+		public Environment getEnvironment() {
+			return {{package-name}}.LiteralCatalog.getInstance().getEnvironment();
+		}
+	}
+	
+	
+	public enum LiteralForeignKey
+		implements ForeignKey {
+{{foreign-key-enum-list}}			
+		;
+		
+		private String name;
+		private LiteralSchema schema;
+		private DefaultForeignKey foreignKey; 
+		private LiteralColumn[] columnList;
+		
+		/**
+		 * @param name
+		 * @param lac An array containing column pairs.
+		 * [0] => [1] 
+		 * [2] => [3]
+		 */
+		// TODO: add update/delete action
+		LiteralForeignKey(LiteralSchema ls, String name, LiteralColumn ... lac) {
+			if (lac == null) {
+				throw new NullPointerException();
+			}
+			
+			if (lac.length == 0 || (lac.length % 2) != 0) {
+				throw new IllegalArgumentException("size of lac should be min 2 and even here but was: " + lac.length);
+			}
+			
+			this.name = name;
+			this.schema = ls;
+			this.columnList = lac;
+		}
+
+		private void bind() {
+			DefaultMutableSchema ms = schema.getMutableSchema();
+			Identifier fk = ms.getCatalog().getEnvironment().createIdentifier(name);			
+			DefaultForeignKey k = new DefaultForeignKey(ms, fk);
+						
+			List<DefaultForeignKey.Pair> pl = new ArrayList<DefaultForeignKey.Pair>();
+			
+			LiteralColumn[] lac = this.columnList;
+
+			Map<LiteralColumn, DefaultMutableColumn> mcm = 
+				LiteralCatalog.getInstance().getMutableColumnMap();
+			
+			for (int i = 0; i < (lac.length - 1); i += 2) {
+				pl.add(new DefaultForeignKey.Pair(
+						mcm.get(lac[i]),
+						mcm.get(lac[i + 1])
+				));
+			}
+			
+			k.setColumnMap(pl);
+			this.foreignKey = k;
+		}
+
+		@Override
+		public Map<Column, Column> columns() {		
+			return this.foreignKey.columns();
+		}
+
+		@Override
+		public BaseTable getReferenced() {
+			return this.foreignKey.getReferenced();
+		}
+
+		@Override
+		public BaseTable getReferencing() {
+			return this.foreignKey.getReferencing();
+		}
+
+		@Override
+		public Type getType() {
+			return this.foreignKey.getType();
+		}
+
+		@Override
+		public SchemaElementName getName() {
+			return this.foreignKey.getName();
+		}
+
+		@Override
+		public String getQualifiedName() {
+			return this.foreignKey.getQualifiedName();
+		}
+		
+		public Schema getSchema() {
+			return this.foreignKey.getSchema();
+		}
+
+		@Override
+		public Identifier getUnqualifiedName() {
+			return this.foreignKey.getUnqualifiedName();
+		}
+		
+		@Override
+		public Environment getEnvironment() {
+			return {{package-name}}.LiteralCatalog.getInstance().getEnvironment();
+		}
+	}
+	
+	
+	public enum LiteralPrimaryKey
+		implements PrimaryKey {
+//primary-key-enum-list//
+{{primary-key-enum-list}}			
+		;
+		
+		private String name;
+		private LiteralBaseTable table;
+		private DefaultPrimaryKey primaryKey; 
+		private LiteralColumn[] columnList;
+		
+		/**
+		 * @param name
+		 * @param cols An array containing column pairs.
+		 */
+		LiteralPrimaryKey(LiteralBaseTable table, String name, LiteralColumn ... cols) {
+			if (cols == null) {
+				throw new NullPointerException();
+			}
+			
+			if (cols.length < 1) {
+				throw new IllegalArgumentException("size of 'lac' should at least '1' here but was: " + cols.length);
+			}
+			
+			this.name = name;
+			this.table = table;
+			this.columnList = cols;						
+		}
+
+		private void bind() {			
+			DefaultMutableBaseTable table = this.table.getTable();			
+			DefaultMutableSchema ms = table.getMutableSchema();
+			Identifier pkname = ms.getCatalog().getEnvironment().createIdentifier(name);
+			
+			List<DefaultMutableColumn> cl = new ArrayList<DefaultMutableColumn>(this.columnList.length);
+			Map<LiteralColumn, DefaultMutableColumn> mcm = 
+				LiteralCatalog.getInstance().getMutableColumnMap(); 
+			
+			for (LiteralColumn c : this.columnList) {
+				cl.add(mcm.get(c));
+			}			
+										
+			this.primaryKey = new DefaultPrimaryKey(table, pkname, cl);
+		}
+
+
+		@Override
+		public Column getColumn(Identifier name) {
+			return this.primaryKey.getColumn(name);
+		}
+
+		@Override
+		public List<? extends Column> columns() {		
+			return this.primaryKey.columns();
+		}
+
+		@Override
+		public BaseTable getTable() {
+			return this.primaryKey.getTable();
+		}
+
+
+		@Override
+		public SchemaElementName getName() {
+			return this.primaryKey.getName();
+		}
+
+		@Override
+		public String getQualifiedName() {
+			return this.primaryKey.getQualifiedName();
+		}
+		
+		public Schema getSchema() {
+			return this.primaryKey.getSchema();
+		}
+
+		@Override
+		public Identifier getUnqualifiedName() {
+			return this.primaryKey.getUnqualifiedName();
+		}
+		
+		@Override
+		public Type getType() {
+			return this.primaryKey.getType();
+		}
+		
+		@Override
+		public Environment getEnvironment() {
+			return {{package-name}}.LiteralCatalog.getInstance().getEnvironment();
+		}
+	}	
+	
+	@Override
+	public Identifier getName() {
+		return this.name;
+	}
+
+	@Override
+	public SchemaMap schemas() {
+		return getContent().getSchemaMap();
+	}
+
+	@Override
+	public Identifier getUnqualifiedName() {
+		return this.name;
+	}
+
+	@Override
+	public void bindAll(Catalog catalog, TableMapper tm) {
+		
+	}
+
+	@Override
+	public Catalog boundTo() {
+		return this;
+	}
+
+
+	private DefaultMutableCatalog getContent() {
+		if (content == null) {
+			content = new DefaultMutableCatalog(getEnvironment(), getName());			
+		}
+
+		return content;
+	}
+	
+	@Override
+	public EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> getMetaData(BaseTable table)  {
+		if (table == null) {
+			throw new NullPointerException("table");
+		}
+		
+		return this.metaMap.get(table.getQualifiedName());
+	}
+
+	private Map<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> getMetaMap() {
+		if (metaMap == null) {
+			metaMap = new HashMap<String, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>>();
+			populateMetaMap(metaMap);			
+		}
+
+		return metaMap;
+	}
+
+	/**
+		tagging interface
+	*/	
+	private interface LiteralTable {		
+	}
+
+	/**
+		tagging interface
+	*/
+	public interface LiteralColumn
+		extends Column {		
+	}	
+	
+	
+	
+	private Map<LiteralTable, DefaultMutableTable> getMutableTableMap() {
+		if (mutableTableMap == null) {
+			mutableTableMap = new HashMap<LiteralTable, DefaultMutableTable>();		
+		}
+	
+		return mutableTableMap;
+	} 	
+	
+	private Map<LiteralColumn, DefaultMutableColumn> getMutableColumnMap() {
+		if (mutableColumnMap == null) {
+			mutableColumnMap = new HashMap<LiteralColumn, DefaultMutableColumn>();			
+		}
+
+		return mutableColumnMap;
+	}
+	
+	
+	{{factory-method-list}}
+		
+	/* {{table-column-enum-list}} */
+			
+}

@@ -12,5 +12,5 @@ SET META_GEN_CP=%META_GEN_CP%;%JARDIR%\util.jar
 SET META_GEN_CP=%META_GEN_CP%;%JARDIR%\log4j.jar
 
 REM read to go:
-java -classpath %META_GEN_CP% fi.tnie.dbmeta.tools.KeyGenerationInfo -j %JDBC_CONFIG% -u %JDBC_URL%
+java -classpath %META_GEN_CP% com.appspot.relaxe.tools.KeyGenerationInfo -j %JDBC_CONFIG% -u %JDBC_URL%
 @echo on

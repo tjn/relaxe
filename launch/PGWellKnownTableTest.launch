@@ -16,6 +16,6 @@
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#13;&#10;&lt;runtimeClasspathEntry id=&quot;org.eclipse.jdt.launching.classpathentry.defaultClasspath&quot;&gt;&#13;&#10;&lt;memento exportedEntriesOnly=&quot;false&quot; project=&quot;DBMeta&quot;/&gt;&#13;&#10;&lt;/runtimeClasspathEntry&gt;&#13;&#10;"/>
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="fi.tnie.db.env.pg.PGWellKnownTableTest"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.appspot.relaxe.env.pg.PGWellKnownTableTest"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Relaxe"/>
 </launchConfiguration>

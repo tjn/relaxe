@@ -10,9 +10,9 @@ mkdir -p $GENSRC
 
 # JDBC_CONFIG=$ROOT/pg.properties
 # JDBC_URL=jdbc:postgresql:test
-# ENV=fi.tnie.db.env.pg.PGImplementation
-# ROOT_PACKAGE=fi.tnie.db.gen.ent
-# CC_PACKAGE=fi.tnie.db.genctx
+# ENV=com.appspot.relaxe.env.pg.PGImplementation
+# ROOT_PACKAGE=com.appspot.relaxe.gen.ent
+# CC_PACKAGE=com.appspot.relaxe.genctx
 
 # echo $JARDIR
 
@@ -24,4 +24,4 @@ META_GEN_CP=$META_GEN_CP:$JARDIR/log4j.jar
 META_GEN_CP=$META_GEN_CP:$JARDIR/junit.jar
 
 # REM ready to go:
-java -classpath $META_GEN_CP fi.tnie.db.MyTestSuite
+java -classpath $META_GEN_CP com.appspot.relaxe.MyTestSuite

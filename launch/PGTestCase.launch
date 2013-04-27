@@ -10,6 +10,6 @@
 <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
 <stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
 <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit3"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="fi.tnie.db.env.pg.PGTestCase"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.appspot.relaxe.env.pg.PGTestCase"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Relaxe"/>
 </launchConfiguration>

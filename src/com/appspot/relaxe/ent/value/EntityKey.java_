@@ -1,0 +1,92 @@
+package com.appspot.relaxe.ent.value;
+
+import java.io.Serializable;
+
+import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.Entity;
+import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ReferenceType;
+
+public abstract class EntityKey<
+	R, T extends ReferenceType<T>,
+	E extends Entity<A, ?, ?, E>,
+	K extends Key<A, V, P, H, E, K>>
+	implements Key<A, V, P, H, E, K> {
+	
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -3422141375386521175L;
+	private A name;
+	
+	protected EntityKey() {		
+	}	
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */	
+	protected EntityKey(EntityMetaData<A, ?, ?, E> meta, A name) {
+		setName(name);
+		
+		if (meta == null) {
+			throw new NullPointerException("meta");
+		}		
+	}
+
+	private void setName(A name) {
+		if (name == null) {
+			throw new NullPointerException("name");
+		}
+		
+		this.name = name;
+	}
+
+//	protected PrimitiveKey(EntityMetaData<A, ?, ?, E> meta, A name)
+////		throws AttributeTypeException 
+//		{
+//		
+//		setName(name);
+//		
+//		if (meta == null) {
+//			throw new NullPointerException("meta");
+//		}
+//		
+//		PrimitiveType<?> t = meta.getAttributeType(name);
+//		
+//		if (t != type()) {
+//			throw new AttributeTypeException(name(), t, type()); 
+//		}
+//	}
+
+	@Override
+	public A name() {
+		return this.name;
+	}	
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			throw new NullPointerException("o");
+		}
+		
+		if (o == this) {
+			return true;
+		}
+		
+		if(!getClass().equals(o.getClass())) {
+			return false;
+		}
+		
+		// Since getClass().equals(o.getClass()) implies t.type().getSqlType() == type().getSqlType()
+		// we only need to check the name:		
+		EntityKey<?, ?, ?, ?, ?, ?> t = (EntityKey<?, ?, ?, ?, ?, ?>) o;								
+		return nameEquals(t);
+	}
+	
+	private boolean nameEquals(EntityKey<?, ?, ?, ?, ?, ?> pk) {		
+		return name().equals(pk.name());
+	}
+	
+}
