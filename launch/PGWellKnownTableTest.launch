@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.junit.launchconfig">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/DBMeta"/>
+<listEntry value="/Relaxe"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="4"/>
@@ -17,5 +17,5 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="fi.tnie.db.env.pg.PGWellKnownTableTest"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="DBMeta"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Relaxe"/>
 </launchConfiguration>
