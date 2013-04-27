@@ -4,7 +4,6 @@ import com.appspot.relaxe.expr.ColumnName;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
-import com.appspot.relaxe.meta.DataTypeImpl;
 
 
 public enum {{literal-table-enum}}

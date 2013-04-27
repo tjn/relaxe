@@ -1,14 +1,5 @@
 package {{package-name}};
 
-import com.appspot.relaxe.ent.Attribute;
-import com.appspot.relaxe.ent.Entity;
-import com.appspot.relaxe.ent.EntityFactory;
-import com.appspot.relaxe.ent.EntityMetaData;
-import com.appspot.relaxe.ent.Reference;
-import com.appspot.relaxe.rpc.ReferenceHolder;
-import com.appspot.relaxe.types.ReferenceType;
-import com.appspot.relaxe.ent.Content;
-
 {{imports}}
 
 /**
@@ -18,11 +9,11 @@ import com.appspot.relaxe.ent.Content;
 public interface Has{{table-interface}}<
 	A extends com.appspot.relaxe.ent.Attribute,
 	R extends com.appspot.relaxe.ent.Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M, C>,
-	E extends Entity<A, R, T, E, H, F, M, C> & Has{{table-interface}}<A, R, T, E, H, F, M, C>,
-	H extends ReferenceHolder<A, R, T, E, H, M, C>,
-	F extends EntityFactory<E, H, M, F, C>,
-	M extends EntityMetaData<A, R, T, E, H, F, M, C> & Has{{table-interface}}Key<A, R, T, E, H, F, M, C>,
+	T extends com.appspot.relaxe.types.ReferenceType<A, R, T, E, H, F, M, C>,
+	E extends com.appspot.relaxe.ent.Entity<A, R, T, E, H, F, M, C> & Has{{table-interface}}<A, R, T, E, H, F, M, C>,
+	H extends com.appspot.relaxe.rpc.ReferenceHolder<A, R, T, E, H, M, C>,
+	F extends com.appspot.relaxe.ent.EntityFactory<E, H, M, F, C>,
+	M extends com.appspot.relaxe.ent.EntityMetaData<A, R, T, E, H, F, M, C> & Has{{table-interface}}Key<A, R, T, E, H, F, M, C>,
 	C extends com.appspot.relaxe.ent.Content	
 	>
 {
