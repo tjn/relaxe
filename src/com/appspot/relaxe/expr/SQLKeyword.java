@@ -85,6 +85,7 @@ public enum SQLKeyword implements Keyword {
 	
 	private static EnumSet<SQLKeyword> keywords = EnumSet.allOf(SQLKeyword.class);
 	
+	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {
 		v.start(vc, this);
 		v.end(this);		

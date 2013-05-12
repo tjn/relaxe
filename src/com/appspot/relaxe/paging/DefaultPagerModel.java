@@ -198,6 +198,7 @@ public abstract class DefaultPagerModel<
 		fireEvent(new PagerModelEvent<R, P, Command>(self(), command));
 	}
 
+	@Override
 	public R getCurrentPage() {
 		return result;
 	}
@@ -241,6 +242,7 @@ public abstract class DefaultPagerModel<
 	}
 	
 	
+	@Override
 	public int getPageSize() {
 		return getPageSizeModel().get().intValue();
 	}

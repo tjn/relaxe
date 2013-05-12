@@ -10,4 +10,9 @@ import com.appspot.relaxe.meta.DefaultEnvironment;
 
 public class HSQLDBEnvironment 
 	extends DefaultEnvironment {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1541050975229495155L;
 }

@@ -34,6 +34,7 @@ public abstract class AbstractResponse<R extends Request>
 		this.request = request;
 	}
 
+	@Override
 	public R getRequest() {
 		return request;
 	}

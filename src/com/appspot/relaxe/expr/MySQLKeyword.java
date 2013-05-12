@@ -21,7 +21,8 @@ public enum MySQLKeyword
 
     private static EnumSet<MySQLKeyword> keywords = EnumSet.allOf(MySQLKeyword.class);
     
-    public void traverse(VisitContext vc, ElementVisitor v) {
+    @Override
+	public void traverse(VisitContext vc, ElementVisitor v) {
         v.start(vc, this);
         v.end(this);        
     }

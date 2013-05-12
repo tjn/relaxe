@@ -10,12 +10,12 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public abstract class ValueExtractor
-	<V extends Serializable, T extends PrimitiveType<T>, H extends PrimitiveHolder<V, T, H>> {
+	<V extends Serializable, T extends AbstractPrimitiveType<T>, H extends AbstractPrimitiveHolder<V, T, H>> {
 	
 	private int column;
 

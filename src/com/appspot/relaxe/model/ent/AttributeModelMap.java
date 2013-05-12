@@ -10,16 +10,16 @@ import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.value.PrimitiveKey;
 import com.appspot.relaxe.model.ValueModel;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.ReferenceType;
 
 
 public interface AttributeModelMap<
 	A extends Attribute,
 	V extends Serializable,
-	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<V, P, H>,
+	P extends AbstractPrimitiveType<P>,
+	H extends AbstractPrimitiveHolder<V, P, H>,
 	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
 	E extends Entity<A, ?, T, E, ?, ?, ?, ?>,
 	D extends AttributeModelMap<A, V, P, H, T, E, D>

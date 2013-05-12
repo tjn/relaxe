@@ -27,6 +27,7 @@ public interface EntityQuery<
 	DefaultTableExpression getTableExpression()
 		throws EntityException;
 	
+	@Override
 	QueryExpression getQueryExpression()
 		throws QueryException;
 
@@ -51,6 +52,7 @@ public interface EntityQuery<
 	public EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> getMetaData(TableReference tr)
 		throws EntityException;
 	
+	@Override
 	public TableReference getReferenced(TableReference referencing, ForeignKey fk)
 		throws EntityException;
 	

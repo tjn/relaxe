@@ -15,7 +15,7 @@ import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.Select;
 import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.query.QueryException;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 
 
 public class MutableDataObject
@@ -26,7 +26,7 @@ public class MutableDataObject
 	 */
 	private static final long serialVersionUID = 5199827695443766073L;
 	
-	private List<PrimitiveHolder<?, ?, ?>> content;
+	private List<AbstractPrimitiveHolder<?, ?, ?>> content;
 	private MutableDataObject.MetaData metaData;
 				
 	public static class MetaData
@@ -69,6 +69,7 @@ public class MutableDataObject
 			}			
 		}
 
+		@Override
 		public int getColumnCount() {
 			return columnCount;
 		}
@@ -106,18 +107,18 @@ public class MutableDataObject
 		
 		int cc = m.getColumnCount();
 		
-		this.content = new ArrayList<PrimitiveHolder<?,?,?>>(cc);
+		this.content = new ArrayList<AbstractPrimitiveHolder<?,?,?>>(cc);
 		
 		for (int i = 0; i < cc; i++) {
 			this.content.add(null);
 		}
 	}
 	
-	public void set(int index, PrimitiveHolder<?, ?, ?> value) {
+	public void set(int index, AbstractPrimitiveHolder<?, ?, ?> value) {
 		this.content.set(index, value);
 	}	
 
-	public List<PrimitiveHolder<?, ?, ?>> getContent() {		
+	public List<AbstractPrimitiveHolder<?, ?, ?>> getContent() {		
 		return content;
 	}
 
@@ -127,11 +128,11 @@ public class MutableDataObject
 	}
 
 	@Override
-	public PrimitiveHolder<?, ?, ?> get(int index) {		
+	public AbstractPrimitiveHolder<?, ?, ?> get(int index) {		
 		return this.content.get(index);
 	}
 		
-	public PrimitiveHolder<?, ?, ?> get(ColumnName a) {
+	public AbstractPrimitiveHolder<?, ?, ?> get(ColumnName a) {
 		int index = this.metaData.index(a);
 		return this.content.get(index);
 	}

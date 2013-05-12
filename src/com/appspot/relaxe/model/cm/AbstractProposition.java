@@ -29,14 +29,17 @@ public abstract class AbstractProposition
 		}		
 	}
 	
+	@Override
 	public boolean isRejected() {
 		return this.rejectCount > 0;
 	}
 		
+	@Override
 	public boolean isCommitted() {
 		return committed;
 	}
 	
+	@Override
 	public void commit()
 		throws IllegalStateException {
 		

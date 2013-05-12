@@ -9,7 +9,7 @@ package com.appspot.relaxe.model;
  * 
  * @author tnie
  *
- * @param <V> Type of the value.
+ * @param <V> AbstractType of the value.
  */
 public interface ValueModel<V> {	
 	/** 

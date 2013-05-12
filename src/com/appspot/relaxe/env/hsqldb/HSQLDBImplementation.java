@@ -91,12 +91,12 @@ public class HSQLDBImplementation
 //			A extends Attribute,
 //			E extends Entity<A, ?, ?, E, ?, ?, ?, ?>,
 //			V extends Serializable,
-//			P extends PrimitiveType<P>,
-//			VH extends PrimitiveHolder<V, P, VH>,	
+//			P extends AbstractPrimitiveType<P>,
+//			VH extends AbstractPrimitiveHolder<V, P, VH>,	
 //			VK extends PrimitiveKey<A, E, V, P, VH, VK>
 //		>
 //		void write(final VK key, final ValueExtractor<?, ?, ?> ve, ResultSet src, E dest) throws SQLException {
-//			PrimitiveHolder<?, ?, ?> v = ve.extractValue(src);
+//			AbstractPrimitiveHolder<?, ?, ?> v = ve.extractValue(src);
 //			VH vh = key.as(v);			
 //			key.set(dest, vh);
 //		}
@@ -106,18 +106,18 @@ public class HSQLDBImplementation
 //			A extends Attribute,
 //			E extends Entity<A, ?, ?, E, ?, ?, ?, ?>,
 //			V extends Serializable,
-//			P extends PrimitiveType<P>,
-//			VH extends PrimitiveHolder<V, P, VH>,	
+//			P extends AbstractPrimitiveType<P>,
+//			VH extends AbstractPrimitiveHolder<V, P, VH>,	
 //			VK extends PrimitiveKey<A, E, V, P, VH, VK>
 //		>
 //		AttributeWriter<A, E> createWriter(final VK key, final ValueExtractor<?, ?, ?> ve) {
 //			return new AttributeWriter<A, E>() {
 //				@Override
-//				public PrimitiveHolder<?, ?, ?> write(DataObject src, E dest)
+//				public AbstractPrimitiveHolder<?, ?, ?> write(DataObject src, E dest)
 //						throws EntityRuntimeException {
 //					
 //					ve.extractValue(rs);
-//					PrimitiveHolder<?, ?, ?> h = src.get(index);
+//					AbstractPrimitiveHolder<?, ?, ?> h = src.get(index);
 //					VH vc = key.as(h);				
 //					key.set(dest, vc);
 //					return vc;
@@ -161,14 +161,17 @@ public class HSQLDBImplementation
 //		return new HSQLDBValueExtractorFactory();
 //	}
 	
+	@Override
 	public String createJdbcUrl(String database) {
 		return createJdbcUrl(null, database);		
 	}
 	
+	@Override
 	public String createJdbcUrl(String host, String database) {
 		return createJdbcUrl(host, 5432, database);		
 	}
 	
+	@Override
 	public String createJdbcUrl(String host, int port, String database) {
 		if (database == null) {
 			throw new NullPointerException("database");

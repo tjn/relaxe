@@ -13,6 +13,7 @@ public interface Folding {
 	};
 	
 	public static final Folding LOWERCASE = new Folding() {
+		@Override
 		public String apply(String ordinaryIdentifier) {
 			return ordinaryIdentifier.toLowerCase();
 		}

@@ -4,7 +4,7 @@
 package com.appspot.relaxe.types;
 
 public class IntegerType
-	extends PrimitiveType<IntegerType> {
+	extends AbstractPrimitiveType<IntegerType> {
 	
 	/**
 	 * 
@@ -18,7 +18,7 @@ public class IntegerType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.INTEGER;
+		return AbstractPrimitiveType.INTEGER;
 	}
 	
 	@Override

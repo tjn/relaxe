@@ -57,6 +57,7 @@ public class TableColumns
 		return tableRef.getColumnNameList().getContent().size();
 	}
 	
+	@Override
 	public ValueExpression getColumnExpr(int column) {
 		return getTableColumnExpr(column);
 	}

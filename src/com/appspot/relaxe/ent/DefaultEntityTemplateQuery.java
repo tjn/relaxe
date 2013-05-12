@@ -241,7 +241,7 @@ public class DefaultEntityTemplateQuery<
 		QQ extends EntityQueryTemplate<QA, QR, QT, QE, QH, QF, QM, QC, QQ>
 	>
 	
-	void addTemplatePredicates(QQ qt, List<EntityQueryPredicate<?>> apl, Set<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>> visited) {
+	void addTemplatePredicates(EntityQueryTemplate<QA, QR, QT, QE, QH, QF, QM, QC, QQ> qt, List<EntityQueryPredicate<?>> apl, Set<EntityQueryTemplate<?,?,?,?,?,?,?,?,?>> visited) {
 		apl.addAll(qt.allPredicates());
 		
 		QM meta = qt.getMetaData();		
@@ -272,7 +272,7 @@ public class DefaultEntityTemplateQuery<
 		QQ extends EntityQueryTemplate<QA, QR, QT, QE, QH, QF, QM, QC, QQ>
 	>	
 	TableReference populateTableReferenceMap(
-			QQ template, 
+			EntityQueryTemplate<QA, QR, QT, QE, QH, QF, QM, QC, QQ> template, 
 			Map<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>, TableReference> rm,
 			Map<EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?>, Entry> rem) {
 		TableReference tref = rm.get(template);
@@ -329,7 +329,7 @@ public class DefaultEntityTemplateQuery<
 	>
 	AbstractTableReference fromTemplate(
 			EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?> parent,
-			MQ template, 
+			EntityQueryTemplate<MA, MR, MT, ME, MH, MF, MM, MC, MQ> template, 
 			AbstractTableReference qref, 
 			ForeignKey fk, 
 			TableReference referencing, 
@@ -431,7 +431,7 @@ public class DefaultEntityTemplateQuery<
 	protected <
 		QT extends EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, QT>
 	>	
-	AbstractTableReference join(AbstractTableReference rhs, TableReference lhs, QT template, TableReference referencing, Map<ForeignKey, TableReference> krm) {		
+	AbstractTableReference join(AbstractTableReference rhs, TableReference lhs, EntityQueryTemplate<?, ?, ?, ?, ?, ?, ?, ?, QT> template, TableReference referencing, Map<ForeignKey, TableReference> krm) {		
 		MultiForeignKeyJoinCondition mc = new MultiForeignKeyJoinCondition(referencing, krm);
 		
 		boolean inner = (krm.size() > 1 || template.getTemplateCount() > 0);
@@ -455,7 +455,7 @@ public class DefaultEntityTemplateQuery<
 		KQ extends EntityQueryTemplate<KA, KR, KT, KE, KH, KF, KM, KC, KQ>		
 	>
 	AbstractTableReference processReferences(
-			KQ template, 
+			EntityQueryTemplate<KA, KR, KT, KE, KH, KF, KM, KC, KQ> template, 
 			AbstractTableReference qref, 
 			TableReference tref, 
 			DefaultTableExpression q, 
@@ -542,7 +542,7 @@ public class DefaultEntityTemplateQuery<
 		DM extends EntityMetaData<MA, ?, ?, D, ?, ?, DM, ?>,
 		DQ extends EntityQueryTemplate<MA, ?, ?, D, ?, ?, DM, ?, DQ>
 	> 
-	void addAttributes(DQ template, Select s, TableReference tref) throws EntityRuntimeException {
+	void addAttributes(EntityQueryTemplate<MA, ?, ?, D, ?, ?, DM, ?, DQ> template, Select s, TableReference tref) throws EntityRuntimeException {
 		DM meta = template.getMetaData();
 		Set<MA> as = meta.attributes();
 		BaseTable t = meta.getBaseTable();
@@ -760,6 +760,7 @@ public class DefaultEntityTemplateQuery<
 		return rootPrimaryKey;
 	}
 	
+	@Override
 	public Q getTemplate() {
 		return template;
 	}

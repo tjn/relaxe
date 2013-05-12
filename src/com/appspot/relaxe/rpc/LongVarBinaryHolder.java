@@ -5,12 +5,12 @@ package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.ent.value.LongVarBinary;
 import com.appspot.relaxe.types.LongVarBinaryType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 
 public class LongVarBinaryHolder
-	extends PrimitiveHolder<LongVarBinary, LongVarBinaryType, LongVarBinaryHolder> {
+	extends AbstractPrimitiveHolder<LongVarBinary, LongVarBinaryType, LongVarBinaryHolder> {
 
 	/**
 	 * 
@@ -53,7 +53,7 @@ public class LongVarBinaryHolder
 
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.BLOB;
+		return AbstractPrimitiveType.BLOB;
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public class LongVarBinaryHolder
 		return this;
 	}
 
-	public static LongVarBinaryHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public static LongVarBinaryHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return holder.asLongVarBinaryHolder();
 	}
 }

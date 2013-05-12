@@ -78,7 +78,7 @@ public abstract class Tool {
 
     public abstract 
     <I extends Implementation<I>>    
-    void run(I env, Connection c)
+    void run(Implementation<I> env, Connection c)
 		throws QueryException, IOException, SQLGenerationException, SQLException;
 
 	public static Logger logger() {

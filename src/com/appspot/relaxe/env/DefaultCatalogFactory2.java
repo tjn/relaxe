@@ -56,6 +56,7 @@ public class DefaultCatalogFactory2
 		super(environment);		
 	}	
 	
+	@Override
 	public Catalog create(Connection c) 
 		throws QueryException, SQLException {
 		

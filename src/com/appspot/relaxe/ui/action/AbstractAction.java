@@ -51,6 +51,7 @@ public abstract class AbstractAction
 	}
 
 
+	@Override
 	public BooleanModel enablement() {
 		return this.enablement;
 	}

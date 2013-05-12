@@ -33,4 +33,6 @@ public class MPAARatingType
 	public Class<MPAARating> represents() {		
 		return MPAARating.class;
 	}	
+	
+	
 }

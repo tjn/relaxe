@@ -29,7 +29,7 @@ import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.log.DefaultLogger;
 import com.appspot.relaxe.rpc.ReferenceHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.ReferenceType;
 
 
@@ -194,7 +194,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 			logger().debug("ordinal   : " + i);
 			logger().debug("label     : " + label);
 			logger().debug("name      : " + name);
-			logger().debug("type      : " + type + " (" + PrimitiveType.getSQLTypeName(type) + ")");
+			logger().debug("type      : " + type + " (" + AbstractPrimitiveType.getSQLTypeName(type) + ")");
 			logger().debug("typeName  : " + typeName);
 			logger().debug("className : " + className);
 			logger().debug("content   : " + content);
@@ -204,7 +204,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 			
 			if (o != null && o instanceof java.sql.Array) {
 				Array a = (Array) o;
-				logger().debug("arrayBaseType   : " + a.getBaseType() + " (" + PrimitiveType.getSQLTypeName(a.getBaseType()) + ")");
+				logger().debug("arrayBaseType   : " + a.getBaseType() + " (" + AbstractPrimitiveType.getSQLTypeName(a.getBaseType()) + ")");
 				logger().debug("arrayBaseTypeName  : " + a.getBaseTypeName());
 			}
 			
@@ -247,7 +247,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 			logger().debug("ordinal   : " + i);
 			logger().debug("label     : " + label);
 			logger().debug("name      : " + name);
-			logger().debug("type      : " + type + " (" + PrimitiveType.getSQLTypeName(type) + ")");
+			logger().debug("type      : " + type + " (" + AbstractPrimitiveType.getSQLTypeName(type) + ")");
 			logger().debug("typeName  : " + typeName);
 			logger().debug("className : " + className);
 			

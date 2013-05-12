@@ -40,10 +40,6 @@ public class SetOperator
 	public SetOperator(Op operator, boolean all, TableExpression left, TableExpression right) {
 		super(operator.name, left, right);
 		
-		if (operator == null) {
-			throw new NullPointerException("'operator' must not be null");
-		}
-		
 		if (left == null) {
 			throw new NullPointerException("'left' must not be null");
 		}

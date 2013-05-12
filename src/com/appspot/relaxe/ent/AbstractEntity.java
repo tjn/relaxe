@@ -13,10 +13,10 @@ import com.appspot.relaxe.ent.value.StringKey;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.PrimaryKey;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.rpc.StringHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.ReferenceType;
 
 
@@ -37,7 +37,8 @@ public abstract class AbstractEntity<
 	 */
 	private static final long serialVersionUID = -1538787348338709153L;	
 
-	public PrimitiveHolder<?, ?, ?> get(Column column) throws NullPointerException, EntityRuntimeException {
+	@Override
+	public AbstractPrimitiveHolder<?, ?, ?> get(Column column) throws NullPointerException, EntityRuntimeException {
 		
 		if (column == null) {
 			throw new NullPointerException("column");
@@ -93,9 +94,11 @@ public abstract class AbstractEntity<
 	 *  
 	 * @return
 	 */
+	@Override
 	public abstract E self();
 	
 	
+	@Override
 	public EntityDiff<A, R, T, E> diff(E another) {
 		final E self = self();
 								
@@ -106,17 +109,18 @@ public abstract class AbstractEntity<
 		return new EntitySnapshotDiff<A, R, T, E, M>(self, another);
 	}
 	
-	public Map<Column, PrimitiveHolder<?,?,?>> getPrimaryKey() {
+	@Override
+	public Map<Column, AbstractPrimitiveHolder<?,?,?>> getPrimaryKey() {
 		PrimaryKey pk = getMetaData().getBaseTable().getPrimaryKey();
 		
 		if (pk == null) {
 			return null;
 		}
 		
-		Map<Column, PrimitiveHolder<?,?,?>> vm = new HashMap<Column, PrimitiveHolder<?,?,?>>(2);
+		Map<Column, AbstractPrimitiveHolder<?,?,?>> vm = new HashMap<Column, AbstractPrimitiveHolder<?,?,?>>(2);
 				
 		for (Column pkcol : pk.getColumnMap().values()) {
-			PrimitiveHolder<?,?,?> v = get(pkcol);
+			AbstractPrimitiveHolder<?,?,?> v = get(pkcol);
 			
 			if ((v == null) || v.isNull()) {
 				return null;
@@ -164,7 +168,7 @@ public abstract class AbstractEntity<
 				continue;
 			}					
 			
-			PrimitiveHolder<?, ?, ?> v = null;
+			AbstractPrimitiveHolder<?, ?, ?> v = null;
 			buf.append(key.name());
 			buf.append("=");
 			
@@ -238,10 +242,11 @@ public abstract class AbstractEntity<
 		}		
 	}
 
+	@Override
 	public <
 		VV extends java.io.Serializable, 
-		VT extends com.appspot.relaxe.types.PrimitiveType<VT>, 
-		VH extends com.appspot.relaxe.rpc.PrimitiveHolder<VV, VT, VH>, 
+		VT extends com.appspot.relaxe.types.AbstractPrimitiveType<VT>, 
+		VH extends com.appspot.relaxe.rpc.AbstractPrimitiveHolder<VV, VT, VH>, 
 		K extends com.appspot.relaxe.ent.value.PrimitiveKey<A, E, VV, VT, VH, K>
 	> 
 	boolean match(K key, E another) {
@@ -262,7 +267,7 @@ public abstract class AbstractEntity<
 	
 	@Override
 	public <
-		P extends PrimitiveType<P>,
+		P extends AbstractPrimitiveType<P>,
 		SH extends StringHolder<P, SH>,
 		K extends StringKey<A, E, P, SH, K>
 	>
@@ -273,7 +278,7 @@ public abstract class AbstractEntity<
 	
 	@Override
 	public <
-		P extends PrimitiveType<P>,
+		P extends AbstractPrimitiveType<P>,
 		SH extends StringHolder<P, SH>,
 		K extends StringKey<A, E, P, SH, K>
 	>
@@ -283,7 +288,7 @@ public abstract class AbstractEntity<
 	
 	@Override
 	public <
-		P extends PrimitiveType<P>,
+		P extends AbstractPrimitiveType<P>,
 		SH extends StringHolder<P, SH>,
 		K extends StringKey<A, E, P, SH, K>
 	>

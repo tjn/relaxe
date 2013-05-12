@@ -4,7 +4,7 @@
 package com.appspot.relaxe.types;
 
 public class VarcharType
-	extends PrimitiveType<VarcharType> {
+	extends AbstractPrimitiveType<VarcharType> {
 
 	/**
 	 * 
@@ -18,7 +18,7 @@ public class VarcharType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.VARCHAR;
+		return AbstractPrimitiveType.VARCHAR;
 	}
 	
 	@Override

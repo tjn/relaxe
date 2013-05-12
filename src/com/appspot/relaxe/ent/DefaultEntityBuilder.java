@@ -19,9 +19,9 @@ import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.Table;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.rpc.ReferenceHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.ReferenceType;
 
 
@@ -119,8 +119,8 @@ public abstract class DefaultEntityBuilder<
 	 * @param src
 	 * @param dest
 	 * @param wl List of writers to apply.
-	 * @return Number of values which were nulls according to copied {@link PrimitiveHolder}
-	 * @see {@link PrimitiveHolder#isNull()} 
+	 * @return Number of values which were nulls according to copied {@link AbstractPrimitiveHolder}
+	 * @see {@link AbstractPrimitiveHolder#isNull()} 
 	 */
 	private int copy(DataObject src, E dest, List<AttributeWriter<A, E>> wl) {
 		int n = 0;
@@ -130,7 +130,7 @@ public abstract class DefaultEntityBuilder<
 				throw new NullPointerException("attribute writer was null");
 			}
 									
-			PrimitiveHolder<?, ?, ?> h = w.write(src, dest);
+			AbstractPrimitiveHolder<?, ?, ?> h = w.write(src, dest);
 			
 			if (h == null || h.isNull()) {
 				n++;
@@ -216,17 +216,17 @@ public abstract class DefaultEntityBuilder<
 	
 	private <		
 		V extends Serializable,
-		P extends PrimitiveType<P>,
-		VH extends PrimitiveHolder<V, P, VH>,	
+		P extends AbstractPrimitiveType<P>,
+		VH extends AbstractPrimitiveHolder<V, P, VH>,	
 		VK extends PrimitiveKey<A, E, V, P, VH, VK>
 	>
-	AttributeWriter<A, E> createWriter(final VK key, final int index) {
+	AttributeWriter<A, E> createWriter(final PrimitiveKey<A, E, V, P, VH, VK> key, final int index) {
 		return new AttributeWriter<A, E>() {
 			@Override
-			public PrimitiveHolder<?, ?, ?> write(DataObject src, E dest)
+			public AbstractPrimitiveHolder<?, ?, ?> write(DataObject src, E dest)
 					throws EntityRuntimeException {
 				
-				PrimitiveHolder<?, ?, ?> h = src.get(index);
+				AbstractPrimitiveHolder<?, ?, ?> h = src.get(index);
 				VH vc = key.as(h);				
 				key.set(dest, vc);
 				return vc;

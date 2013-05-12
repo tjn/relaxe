@@ -7,7 +7,7 @@ import com.appspot.relaxe.expr.Element;
 import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.VisitContext;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 public abstract class SQLType
     extends DataTypeDefinition {
@@ -28,37 +28,37 @@ public abstract class SQLType
     
     public static boolean isTextType(int sqltype) {
         return 
-            (sqltype == PrimitiveType.CHAR) || 
-            (sqltype == PrimitiveType.VARCHAR) ||            
-            (sqltype == PrimitiveType.LONGVARCHAR) ||
-            (sqltype == PrimitiveType.NCHAR) ||
-            (sqltype == PrimitiveType.NVARCHAR) ||
-            (sqltype == PrimitiveType.LONGNVARCHAR) ||            
-            (sqltype == PrimitiveType.CLOB)
+            (sqltype == AbstractPrimitiveType.CHAR) || 
+            (sqltype == AbstractPrimitiveType.VARCHAR) ||            
+            (sqltype == AbstractPrimitiveType.LONGVARCHAR) ||
+            (sqltype == AbstractPrimitiveType.NCHAR) ||
+            (sqltype == AbstractPrimitiveType.NVARCHAR) ||
+            (sqltype == AbstractPrimitiveType.LONGNVARCHAR) ||            
+            (sqltype == AbstractPrimitiveType.CLOB)
            ;        
     }
     
     public static boolean isIntegralType(int sqltype) {
         return 
-        (sqltype == PrimitiveType.TINYINT) || 
-        (sqltype == PrimitiveType.INTEGER) ||            
-        (sqltype == PrimitiveType.SMALLINT) ||
-        (sqltype == PrimitiveType.BIGINT)    
+        (sqltype == AbstractPrimitiveType.TINYINT) || 
+        (sqltype == AbstractPrimitiveType.INTEGER) ||            
+        (sqltype == AbstractPrimitiveType.SMALLINT) ||
+        (sqltype == AbstractPrimitiveType.BIGINT)    
        ;        
     }
     
     public static boolean isFixedNumeric(int sqltype) {
         return 
-        (sqltype == PrimitiveType.NUMERIC) || 
-        (sqltype == PrimitiveType.DECIMAL)    
+        (sqltype == AbstractPrimitiveType.NUMERIC) || 
+        (sqltype == AbstractPrimitiveType.DECIMAL)    
        ;        
     }    
     
     public static boolean isFloatingPoint(int sqltype) {
         return 
-        (sqltype == PrimitiveType.REAL) || 
-        (sqltype == PrimitiveType.FLOAT) ||
-        (sqltype == PrimitiveType.DOUBLE)    
+        (sqltype == AbstractPrimitiveType.REAL) || 
+        (sqltype == AbstractPrimitiveType.FLOAT) ||
+        (sqltype == AbstractPrimitiveType.DOUBLE)    
        ;        
     }        
     
@@ -66,23 +66,23 @@ public abstract class SQLType
     enum Name
     	implements Element {
         
-    CHAR(PrimitiveType.CHAR, SQLKeyword.CHARACTER),
-    VARCHAR(PrimitiveType.VARCHAR, SQLKeyword.VARCHAR),
-    CLOB(PrimitiveType.CLOB, SQLKeyword.CLOB),
-    BIGINT(PrimitiveType.BIGINT, SQLKeyword.BIGINT),
-    BIT(PrimitiveType.BIT, SQLKeyword.BIT),    
-    // BIT_VARYING(Type.BITV, Keyword.BIT, Keyword.VARYING),
-    BLOB(PrimitiveType.BLOB, SQLKeyword.BLOB),
-    NUMERIC(PrimitiveType.NUMERIC, SQLKeyword.NUMERIC), 
-    DECIMAL(PrimitiveType.DECIMAL, SQLKeyword.DECIMAL),
-    INTEGER(PrimitiveType.INTEGER, SQLKeyword.INTEGER),
-    // INT(Type.INTEGER, Keyword.INT),
-    SMALLINT(PrimitiveType.SMALLINT, SQLKeyword.SMALLINT),
-    TINYINT(PrimitiveType.TINYINT, SQLKeyword.TINYINT),
-    FLOAT(PrimitiveType.FLOAT, SQLKeyword.FLOAT),
-    DATE(PrimitiveType.DATE, SQLKeyword.DATE),
-    TIME(PrimitiveType.TIME, SQLKeyword.TIME),
-    TIMESTAMP(PrimitiveType.TIMESTAMP, SQLKeyword.TIMESTAMP),
+    CHAR(AbstractPrimitiveType.CHAR, SQLKeyword.CHARACTER),
+    VARCHAR(AbstractPrimitiveType.VARCHAR, SQLKeyword.VARCHAR),
+    CLOB(AbstractPrimitiveType.CLOB, SQLKeyword.CLOB),
+    BIGINT(AbstractPrimitiveType.BIGINT, SQLKeyword.BIGINT),
+    BIT(AbstractPrimitiveType.BIT, SQLKeyword.BIT),    
+    // BIT_VARYING(AbstractType.BITV, Keyword.BIT, Keyword.VARYING),
+    BLOB(AbstractPrimitiveType.BLOB, SQLKeyword.BLOB),
+    NUMERIC(AbstractPrimitiveType.NUMERIC, SQLKeyword.NUMERIC), 
+    DECIMAL(AbstractPrimitiveType.DECIMAL, SQLKeyword.DECIMAL),
+    INTEGER(AbstractPrimitiveType.INTEGER, SQLKeyword.INTEGER),
+    // INT(AbstractType.INTEGER, Keyword.INT),
+    SMALLINT(AbstractPrimitiveType.SMALLINT, SQLKeyword.SMALLINT),
+    TINYINT(AbstractPrimitiveType.TINYINT, SQLKeyword.TINYINT),
+    FLOAT(AbstractPrimitiveType.FLOAT, SQLKeyword.FLOAT),
+    DATE(AbstractPrimitiveType.DATE, SQLKeyword.DATE),
+    TIME(AbstractPrimitiveType.TIME, SQLKeyword.TIME),
+    TIMESTAMP(AbstractPrimitiveType.TIMESTAMP, SQLKeyword.TIMESTAMP),
     ;
                 
     private Name(int type, SQLKeyword... kws) {

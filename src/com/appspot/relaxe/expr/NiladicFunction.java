@@ -3,7 +3,7 @@
  */
 package com.appspot.relaxe.expr;
 
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 public class NiladicFunction    
     implements ValueExpression {
@@ -17,29 +17,29 @@ public class NiladicFunction
     
     /** Niladic function CURRENT_USER.
      * 
-     * Type of this value expression is VARCHAR.
+     * AbstractType of this value expression is VARCHAR.
      * That may not be generally "right", but good enough. 
      */
     public static final NiladicFunction CURRENT_USER = 
-        new NiladicFunction(SQLKeyword.CURRENT_USER, PrimitiveType.VARCHAR);
+        new NiladicFunction(SQLKeyword.CURRENT_USER, AbstractPrimitiveType.VARCHAR);
 
     /** Niladic function CURRENT_DATE. 
-     *  Type of this value expression is Types.DATE  
+     *  AbstractType of this value expression is Types.DATE  
      */
     public static final NiladicFunction CURRENT_DATE = 
-        new NiladicFunction(SQLKeyword.CURRENT_USER, PrimitiveType.DATE);
+        new NiladicFunction(SQLKeyword.CURRENT_USER, AbstractPrimitiveType.DATE);
     
     /** Niladic function CURRENT_TIME. 
-     *  Type of this value expression is Types.TIME  
+     *  AbstractType of this value expression is Types.TIME  
      */    
     public static final NiladicFunction CURRENT_TIME = 
-        new NiladicFunction(SQLKeyword.CURRENT_TIME, PrimitiveType.TIME);
+        new NiladicFunction(SQLKeyword.CURRENT_TIME, AbstractPrimitiveType.TIME);
     
     /** Niladic function CURRENT_TIMESTAMP. 
-     *  Type of this value expression is Types.TIMESTAMP  
+     *  AbstractType of this value expression is Types.TIMESTAMP  
      */        
     public static final NiladicFunction CURRENT_TIMESTAMP = 
-        new NiladicFunction(SQLKeyword.CURRENT_TIMESTAMP, PrimitiveType.TIMESTAMP);    
+        new NiladicFunction(SQLKeyword.CURRENT_TIMESTAMP, AbstractPrimitiveType.TIMESTAMP);    
     
     /**
 	 * No-argument constructor for GWT Serialization

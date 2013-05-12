@@ -26,18 +26,22 @@ public abstract class AbstractQueryExpression
 	/* (non-Javadoc)
 	 * @see com.appspot.relaxe.expr.QueryExpression#getTableExpr()
 	 */
+	@Override
 	public abstract TableExpression getTableExpr();
 	/* (non-Javadoc)
 	 * @see com.appspot.relaxe.expr.QueryExpression#getOrderBy()
 	 */
+	@Override
 	public abstract OrderBy getOrderBy();
 	/* (non-Javadoc)
 	 * @see com.appspot.relaxe.expr.QueryExpression#getLimit()
 	 */
+	@Override
 	public abstract Limit getLimit();
 	/* (non-Javadoc)
 	 * @see com.appspot.relaxe.expr.QueryExpression#getOffset()
 	 */
+	@Override
 	public abstract Offset getOffset();
 //	public abstract Select getSelect();
 	

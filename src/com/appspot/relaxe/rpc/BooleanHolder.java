@@ -4,11 +4,11 @@
 package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.types.BooleanType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public class BooleanHolder
-	extends PrimitiveHolder<Boolean, BooleanType, BooleanHolder> {
+	extends AbstractPrimitiveHolder<Boolean, BooleanType, BooleanHolder> {
 			
 	/**
 	 * 
@@ -46,7 +46,7 @@ public class BooleanHolder
 
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.BIT;
+		return AbstractPrimitiveType.BIT;
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class BooleanHolder
 		return this;
 	}
 
-	public static BooleanHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public static BooleanHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return holder.asBooleanHolder();
 	}
 

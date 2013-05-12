@@ -121,7 +121,7 @@ public class PagilaDefaultEntityQueryTest
     	
     	
 //    	Project.Key<?, HourReport.Reference, HourReport.Type, HourReport, ?, ?, HourReport.MetaData, ?> k = HourReport.FK_HHR_PROJECT;
-//    	Holder<?, ?> h = k.get(hr);
+//    	AbstractHolder<?, ?> h = k.get(hr);
 //    	assertNotNull(h);
 //    	assertSame(filmCategory.ref(), h);
     	

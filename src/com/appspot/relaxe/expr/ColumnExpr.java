@@ -30,6 +30,7 @@ public abstract class ColumnExpr
 		return this.table;
 	}
 	
+	@Override
 	public ColumnName getColumnName() {
 		return columnName;
 	}

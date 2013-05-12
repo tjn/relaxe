@@ -51,6 +51,7 @@ import com.appspot.relaxe.expr.UpdateStatement;
 import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.expr.ValueParameter;
 import com.appspot.relaxe.expr.ValueRow;
+import com.appspot.relaxe.expr.ValuesListElement;
 import com.appspot.relaxe.expr.op.AndPredicate;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.log.Logger;
@@ -59,8 +60,10 @@ import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.query.QueryResult;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.ReferenceHolder;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.PrimitiveType;
 import com.appspot.relaxe.types.ReferenceType;
 
@@ -179,9 +182,9 @@ public class PersistenceManager<
     			names.add(col.getColumnName());
     			continue;    			
     		}
-    		
-    		ValueParameter<?, ?> p = createParameter(col, holder.self());
-            newRow.add(p);
+    		    		
+    		ValuesListElement elem = createValuesListElement(col, holder);
+            newRow.add(elem);
     		names.add(col.getColumnName());
     	}
 
@@ -200,9 +203,10 @@ public class PersistenceManager<
 
             if (ref == null) {
             	for (Column c : fk.getColumnMap().values()) {                	
-                	PrimitiveHolder<?, ?, ?> nh = PrimitiveType.nullHolder(c.getDataType().getDataType());                	                	
-                	ValueParameter<?, ?> vp = createParameter(c, nh.self());
-                    newRow.add(vp);
+                	AbstractPrimitiveHolder<?, ?, ?> nh = AbstractPrimitiveType.nullHolder(c.getDataType().getDataType());
+                	
+                	ValuesListElement p = newValuesListElement(c, nh.self());                	
+                    newRow.add(p);
                     names.add(c.getColumnName());
                 }
             }
@@ -210,7 +214,7 @@ public class PersistenceManager<
             	for (Column c : fk.getColumnMap().values()) {
             		Column fc = fk.getReferenced(c);
                     PrimitiveHolder<?, ?, ?> o = ref.get(fc);
-                    ValueParameter<?, ?> p = createParameter(c, o.self());
+                    ValuesListElement p = newValuesListElement(c, o.self());
                     newRow.add(p);
                     names.add(c.getColumnName());            		
             	}
@@ -221,16 +225,32 @@ public class PersistenceManager<
 
     	return new InsertStatement(t, names, newRow);
     }
-
-
+	
+	private	ValuesListElement createValuesListElement(Column col, PrimitiveHolder<?, ?, ?> holder) {
+		return newValuesListElement(col, holder.self());
+	}
+	
+	private <		
+		PV extends Serializable,
+		PT extends PrimitiveType<PT>,
+		PH extends PrimitiveHolder<PV, PT, PH>
+	>
+	ValueParameter<PV, PT, PH> newValuesListElement(Column col, PrimitiveHolder<PV, PT, PH> holder) {		
+		return new ValueParameter<PV, PT, PH>(col, holder.self());
+	}
+	
+	private	ValueExpression createValueExpression(Column col, PrimitiveHolder<?, ?, ?> holder) {				
+		return newValueExpression(col, holder.self());
+	}
+	
 	private <
 		V extends Serializable,
 		P extends PrimitiveType<P>, 
 		PH extends PrimitiveHolder<V, P, PH>
 	>
-	ValueParameter<P, PH> createParameter(Column col, PH holder) {
-		return new ValueParameter<P, PH>(col, holder);
-	}
+	ValueExpression newValueExpression(Column col, PrimitiveHolder<V, P, PH> holder) {				
+		return new ValueParameter<V, P, PH>(col, holder.self());
+	}	
 
     public UpdateStatement createUpdateStatement() throws EntityException {
         E pe = getTarget();
@@ -252,7 +272,7 @@ public class PersistenceManager<
     		PrimitiveHolder<?, ?, ?> ph = pe.value(a);
     		
     		if (ph != null) {    		    		    		
-	    		ValueParameter<?, ?> vp = createParameter(col, ph.self());    		
+	    		ValueExpression vp = createValueExpression(col, ph.self());    		
 	    		assignments.add(new Assignment(col.getColumnName(), vp));
     		}
     	}
@@ -325,19 +345,19 @@ public class PersistenceManager<
 			  
 		      for (Column ce : fk.getColumnMap().values()) {
 		          Column fc = fk.getReferenced(ce);		          		          
-		          PrimitiveHolder<?, ?, ?> ph = re.get(fc);
+		          AbstractPrimitiveHolder<?, ?, ?> ph = re.get(fc);
 		          
 		          logger().debug("rc: " + fc + " => " + ph);
 		          		          		          
 		          if (ph != null) {    		    		    		
-			  		ValueParameter<?, ?> vp = createParameter(ce, ph.self());    		
+			  		ValueExpression vp = createValueExpression(ce, ph.self());    		
 				    am.put(ce, new Assignment(ce.getColumnName(), vp));
 			  	}                    
 			  
 			  
 //		      for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
 //		          Column fc = ce.getValue();		          		          
-//		          PrimitiveHolder<?, ?, ?> ph = re.get(fc);
+//		          AbstractPrimitiveHolder<?, ?, ?> ph = re.get(fc);
 //		          
 //		          logger().debug("rc: " + fc + " => " + ph);
 //		          
@@ -534,7 +554,7 @@ public class PersistenceManager<
 								
 			if (ms == MergeMode.ALL || (!rv.isIdentified())) {
 				logger().debug("merging dependency: " + id);
-				PersistenceManager<?, ?, ?, ?, ?, ?, ?, ?> pm = create(rv.self(), getPersistenceContext());
+				PersistenceManager<?, ?, ?, ?, ?, ?, ?, ?> pm = create(rv, getPersistenceContext());
 				pm.merge(c);
 			}
 			else {
@@ -643,7 +663,7 @@ public class PersistenceManager<
         Predicate p = null;
 
         for (Column col : pkcols) {
-            PrimitiveHolder<?, ?, ?> o = pe.get(col);
+            AbstractPrimitiveHolder<?, ?, ?> o = pe.get(col);
 
             // to successfully create a pk predicate
             // every component must be set:
@@ -652,7 +672,7 @@ public class PersistenceManager<
             }
 
             ColumnReference cr = new ColumnReference(tref, col);
-            ValueParameter<?, ?> param = createParameter(col, o.self());
+            ValueExpression param = createValueExpression(col, o.self());
             p = AndPredicate.newAnd(p, eq(cr, param));
         }
 
@@ -691,8 +711,8 @@ public class PersistenceManager<
 		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM, DC>,
 		DC extends Content
 	>
-	PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> create(DE e, PersistenceContext<?> pc) {
-		PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC>(e, pc, getMergeMode(), getUnificationContext());
+	PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> create(Entity<DA, DR, DT, DE, DH, DF, DM, DC> e, PersistenceContext<?> pc) {
+		PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC>(e.self(), pc, getMergeMode(), getUnificationContext());
 		return pm;
 	}
 

@@ -7,101 +7,49 @@ import java.io.Serializable;
 
 import com.appspot.relaxe.types.PrimitiveType;
 
-public abstract class PrimitiveHolder<V extends Serializable, T extends PrimitiveType<T>, H extends PrimitiveHolder<V, T, H>>
-	extends Holder<V, T> {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2373967913129102220L;
-	
-	
-	public int getSqlType() {
-		return getType().getSqlType();
-	}
+public interface PrimitiveHolder<
+	V extends Serializable, 
+	T extends PrimitiveType<T>, 
+	H extends PrimitiveHolder<V, T, H>
+> 
+	extends Holder<V, T, H>
+	{
+		
+	public int getSqlType();
 	
 	@Override
-	public String toString() {
-		return super.toString() + "[" + getType().getSqlType() + "]: " + this.value();
-	}
-	
-	public abstract H self();
-	
-	
-	public H as(PrimitiveType<?> type) {
-		return getType().equals(type) ? self() : null;
-	}	
+	H self();
 	
 	/**
-	 * If this holder is an {@link IntegerHolder}, returns itself as such. Otherwise, returns <code>null</code> 
+	 * If this holder is an;@link IntegerHolder}, returns itself as such. Otherwise, returns <code>null</code> 
 	 */		
-	public IntegerHolder asIntegerHolder() {
-		return null;
-	}
+	IntegerHolder asIntegerHolder();
 	
-	public DoubleHolder asDoubleHolder() {
-		return null;
-	}
+	DoubleHolder asDoubleHolder();
 	
 	/**
-	 * If this holder is an {@link VarcharHolder}, returns itself as such. Otherwise, returns <code>null</code> 
+	 * If this holder is an;@link VarcharHolder}, returns itself as such. Otherwise, returns <code>null</code> 
 	 */
-	public VarcharHolder asVarcharHolder() {
-		return null;
-	}
+	VarcharHolder asVarcharHolder();
 
-	public CharHolder asCharHolder() {
-		return null;
-	}
+	CharHolder asCharHolder();
 
-	public DateHolder asDateHolder() {
-		return null;
-	}
+	DateHolder asDateHolder();
 	
-	public DecimalHolder asDecimalHolder() {
-		return null;
-	}
+	DecimalHolder asDecimalHolder();
 
-	public TimestampHolder asTimestampHolder() {
-		return null;
-	}
+	TimestampHolder asTimestampHolder();
 
-	public TimeHolder asTimeHolder() {
-		return null;
-	}
+	TimeHolder asTimeHolder();
 	
-	public LongHolder asLongHolder() {
-		return null;
-	}
+	LongHolder asLongHolder();
 	
-	public BooleanHolder asBooleanHolder() {
-		return null;
-	}	
+	BooleanHolder asBooleanHolder();
 
+	OtherHolder<?, ?, ?> asOtherHolder(String typeName);
+	
+	ArrayHolder<?, ?, ?, ?, ?> asArrayHolder(String typeName);
+	
+	LongVarBinaryHolder asLongVarBinaryHolder();	
 
-	public OtherHolder<?, ?, ?> asOtherHolder(String typeName) {
-		return null;
-	}
-	
-	public ArrayHolder<?, ?, ?, ?, ?> asArrayHolder(String typeName) {
-		return null;
-	}
-	
-	public LongVarBinaryHolder asLongVarBinaryHolder() {
-		return null;
-	}	
-
-	/**
-	 * If this holder is an {@link IntervalHolder.DayTime}, returns itself as such. Otherwise, returns <code>null</code> 
-	 */		
-	public IntervalHolder.DayTime asDayTimeIntervalHolder() {
-		return null;
-	}
-	
-	/**
-	 * If this holder is an {@link IntervalHolder.YearMonth}, returns itself as such. Otherwise, returns <code>null</code> 
-	 */		
-	public IntervalHolder.YearMonth asYearMonthIntervalHolder() {
-		return null;
-	}
 }

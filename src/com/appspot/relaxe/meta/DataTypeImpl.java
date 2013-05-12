@@ -60,6 +60,7 @@ public class DataTypeImpl
 	/* (non-Javadoc)
 	 * @see com.appspot.relaxe.meta.impl.DataType#getDataType()
 	 */
+	@Override
 	public int getDataType() {
 		return dataType;
 	}
@@ -68,6 +69,7 @@ public class DataTypeImpl
 	/* (non-Javadoc)
 	 * @see com.appspot.relaxe.meta.impl.DataType#getTypeName()
 	 */
+	@Override
 	public String getTypeName() {
 		return typeName;
 	}
@@ -89,10 +91,12 @@ public class DataTypeImpl
 	/* (non-Javadoc)
 	 * @see com.appspot.relaxe.meta.impl.DataType#getCharOctetLength()
 	 */
+	@Override
 	public int getCharOctetLength() {
 		return charOctetLength;
 	}
 
+	@Override
 	public int getDecimalDigits() {
 		return decimalDigits;
 	}
@@ -100,6 +104,7 @@ public class DataTypeImpl
 	/* (non-Javadoc)
 	 * @see com.appspot.relaxe.meta.impl.DataType#getNumPrecRadix()
 	 */
+	@Override
 	public int getNumPrecRadix() {
 		return numPrecRadix;
 	}
@@ -107,6 +112,7 @@ public class DataTypeImpl
 	/* (non-Javadoc)
 	 * @see com.appspot.relaxe.meta.impl.DataType#getSize()
 	 */
+	@Override
 	public int getSize() {
 		return size;
 	}

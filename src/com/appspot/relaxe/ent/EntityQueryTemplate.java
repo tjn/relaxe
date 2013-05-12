@@ -54,8 +54,8 @@ public interface EntityQueryTemplate<
 	
 	public void add(A attribute);
 	
-	public void add(A ... attributes);	
-	public void remove(A ... attributes);
+	public void add(Iterable<A> attributes);	
+	public void remove(Iterable<A> attributes);
 	
 	EntityQuery<A, R, T, E, H, F, M, C, Q> newQuery()
 		throws CyclicTemplateException;

@@ -12,7 +12,11 @@ import com.appspot.relaxe.types.PrimitiveType;
 
 
 
-public abstract class AbstractParameterAssignment<V extends Serializable, T extends PrimitiveType<T>, H extends PrimitiveHolder<V, T, H>>
+public abstract class AbstractParameterAssignment<
+	V extends Serializable, 
+	T extends PrimitiveType<T>, 
+	H extends PrimitiveHolder<V, T, H>
+>
 	implements ParameterAssignment {	
 	private H holder;
 	
@@ -25,6 +29,7 @@ public abstract class AbstractParameterAssignment<V extends Serializable, T exte
 		return holder;
 	}
 
+	@Override
 	public void assign(PreparedStatement ps, int ordinal) 
 		throws SQLException {
 		

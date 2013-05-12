@@ -66,6 +66,7 @@ public class SimpleQueryContext implements QueryContext {
 	/* (non-Javadoc)
 	 * @see com.appspot.relaxe.QueryContext#correlationName(com.appspot.relaxe.expr.AbstractTableReference)
 	 */
+	@Override
 	public OrdinaryIdentifier correlationName(NonJoinedTable tref) {
 		if (tref == null) {
 			throw new NullPointerException("'tref' must not be null");

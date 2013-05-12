@@ -8,9 +8,9 @@ import java.util.Date;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.DateHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.types.DateType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public final class DateKey<	
@@ -43,7 +43,7 @@ public final class DateKey<
 		DateKey<X, T> k = meta.getDateKey(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = a.type();
+			AbstractPrimitiveType<?> t = a.type();
 			
 			if (t != null && DateType.TYPE.equals(t)) {
 				k = new DateKey<X, T>(meta, a);
@@ -59,11 +59,13 @@ public final class DateKey<
 		return DateType.TYPE;
 	}
 
+	@Override
 	public void set(E e, DateHolder newValue) 
 		throws EntityRuntimeException {
 		e.setDate(this, newValue);
 	}
 	
+	@Override
 	public DateHolder get(E e) 
 		throws EntityRuntimeException {
 		return e.getDate(this);
@@ -86,7 +88,7 @@ public final class DateKey<
 	}
 	
 	@Override
-	public DateHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public DateHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return DateHolder.as(holder);
 	}
 }

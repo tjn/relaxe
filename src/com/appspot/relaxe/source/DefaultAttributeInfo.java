@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appspot.relaxe.map.AttributeInfo;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public class DefaultAttributeInfo
@@ -23,7 +23,7 @@ public class DefaultAttributeInfo
 	private Class<?> containerType;
 	private Class<?> containerMetaType;
 	
-	private PrimitiveType<?> primitiveType;
+	private AbstractPrimitiveType<?> primitiveType;
 	
 	private static Map<Class<?>, Class<?>> primitiveTypeMap = new HashMap<Class<?>, Class<?>>();
 	
@@ -106,14 +106,16 @@ public class DefaultAttributeInfo
 		this.accessorType = valueType;
 	}
 
-	public PrimitiveType<?> getPrimitiveType() {
+	@Override
+	public AbstractPrimitiveType<?> getPrimitiveType() {
 		return primitiveType;
 	}
 
-	public void setPrimitiveType(PrimitiveType<?> primitiveType) {
+	public void setPrimitiveType(AbstractPrimitiveType<?> primitiveType) {
 		this.primitiveType = primitiveType;
 	}
 
+	@Override
 	public Class<?> getIdentityMapType() {
 		return identityMapType;
 	}
@@ -122,6 +124,7 @@ public class DefaultAttributeInfo
 		this.identityMapType = identityMapType;
 	}
 
+	@Override
 	public Class<?> getContainerType() {
 		return containerType;
 	}
@@ -130,6 +133,7 @@ public class DefaultAttributeInfo
 		this.containerType = containerType;
 	}
 
+	@Override
 	public Class<?> getContainerMetaType() {
 		return containerMetaType;
 	}

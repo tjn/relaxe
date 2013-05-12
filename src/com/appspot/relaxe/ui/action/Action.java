@@ -11,7 +11,9 @@ import com.appspot.relaxe.ui.HasEnablement;
 public interface Action
 	extends HasDisplayName, HasEnablement {
 	
+	@Override
 	ValueModel<String> displayName();
+	@Override
 	BooleanModel enablement();
 	
 	/**

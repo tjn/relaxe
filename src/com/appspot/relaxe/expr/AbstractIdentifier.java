@@ -37,10 +37,12 @@ public abstract class AbstractIdentifier
 		return isValid(name, null);
 	}	
 	
+	@Override
 	public String getName() {
 		return this.name;
 	}
 	
+	@Override
 	public abstract String getTerminalSymbol();	
 	
 	public static boolean isValid(String name, StringBuilder details) {

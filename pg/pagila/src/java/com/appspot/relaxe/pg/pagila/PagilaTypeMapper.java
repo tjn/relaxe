@@ -19,6 +19,8 @@ import com.appspot.relaxe.ent.value.IntervalAccessor;
 import com.appspot.relaxe.ent.value.IntervalKey;
 import com.appspot.relaxe.ent.value.VarcharAccessor;
 import com.appspot.relaxe.ent.value.VarcharKey;
+import com.appspot.relaxe.env.pg.HasPGTextArray;
+import com.appspot.relaxe.env.pg.HasPGTextArrayKey;
 import com.appspot.relaxe.env.pg.PGTSVectorType;
 import com.appspot.relaxe.env.pg.PGTextArrayAccessor;
 import com.appspot.relaxe.env.pg.PGTextArrayHolder;

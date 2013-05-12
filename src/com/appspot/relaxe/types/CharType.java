@@ -4,7 +4,7 @@
 package com.appspot.relaxe.types;
 
 public class CharType
-	extends PrimitiveType<CharType> {
+	extends AbstractPrimitiveType<CharType> {
 
 	/**
 	 * 
@@ -17,7 +17,7 @@ public class CharType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.CHAR;
+		return AbstractPrimitiveType.CHAR;
 	}
 
 	@Override

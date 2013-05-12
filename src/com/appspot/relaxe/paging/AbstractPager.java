@@ -56,6 +56,7 @@ public abstract class AbstractPager<
 		return this.index;
 	}
 		
+	@Override
 	public E get() {
 		Integer x = index(); 		
 		return (x == null) ? null : getContent().get(x.intValue());
@@ -378,10 +379,12 @@ public abstract class AbstractPager<
 		this.fetcher = fetcher;
 	}
 
+	@Override
 	public Q getQuery() {
 		return query;
 	}
 
+	@Override
 	public void setQuery(Q query) {
 		if (query == null) {
 			throw new NullPointerException("query");

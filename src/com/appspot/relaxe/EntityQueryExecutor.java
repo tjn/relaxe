@@ -138,7 +138,7 @@ public class EntityQueryExecutor<
 //			SelectStatement cs = createCountQuery(qs);
 //			DataObject result = sx.fetchFirst(cs, c);
 //			
-//			PrimitiveHolder<?, ?> h = result.get(0);
+//			AbstractPrimitiveHolder<?, ?> h = result.get(0);
 //			logger().debug("execute: h=" + h);
 //			available = h.asLongHolder().value();
 //		}

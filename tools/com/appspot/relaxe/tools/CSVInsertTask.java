@@ -40,7 +40,7 @@ class CSVInsertTask
 	
 	
 	private static class VarcharParameter 
-		extends ValueParameter<VarcharType, VarcharHolder> {
+		extends ValueParameter<String, VarcharType, VarcharHolder> {
 
 		private static final long serialVersionUID = 785444282283211L;
 

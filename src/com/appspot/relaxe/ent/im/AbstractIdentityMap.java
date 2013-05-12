@@ -28,6 +28,7 @@ public abstract class AbstractIdentityMap<
 		
 	private Map<K, E> entityMap;
 	
+	@Override
 	public H get(E e) 
 		throws EntityRuntimeException {
 		if (e == null) {

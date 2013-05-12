@@ -32,15 +32,18 @@ public abstract class AbstractFeature
         this.versionMinor = versionMinor;
     }
 
-    public int getVersionMajor() {
+    @Override
+	public int getVersionMajor() {
         return versionMajor;
     }
 
-    public int getVersionMinor() {
+    @Override
+	public int getVersionMinor() {
         return versionMinor;
     }
 
-    public String getName() {
+    @Override
+	public String getName() {
         return name;
     }
     

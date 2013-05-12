@@ -6,7 +6,6 @@ package com.appspot.relaxe.env.pg;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.value.AbstractPrimitiveAccessor;
-import com.appspot.relaxe.pg.pagila.HasPGTextArray;
 import com.appspot.relaxe.rpc.StringArray;
 
 

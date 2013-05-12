@@ -6,12 +6,12 @@ package com.appspot.relaxe.ent.value;
 import java.io.Serializable;
 
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.types.Type;
+import com.appspot.relaxe.types.AbstractType;
 
 
 public interface Key<
 	E,
-	V extends Type<V>,	
+	V extends AbstractType<V>,	
 	K extends Key<E, V, K>
 >
 	extends Serializable

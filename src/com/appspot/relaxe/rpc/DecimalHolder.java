@@ -4,11 +4,11 @@
 package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.types.DecimalType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public class DecimalHolder
-	extends PrimitiveHolder<Decimal, DecimalType, DecimalHolder> {
+	extends AbstractPrimitiveHolder<Decimal, DecimalType, DecimalHolder> {
 			
 	/**
 	 * 
@@ -49,7 +49,7 @@ public class DecimalHolder
 
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.DECIMAL;
+		return AbstractPrimitiveType.DECIMAL;
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class DecimalHolder
 		return this;
 	}
 	
-	public static DecimalHolder of(PrimitiveHolder<?, ?, ?> holder) {
+	public static DecimalHolder of(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return holder.asDecimalHolder();
 	}
 }

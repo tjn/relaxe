@@ -196,8 +196,7 @@ public class JoinedTable
 		if (all == null) {
 			/**
 			 * TODO: The following does not look like serializable... 
-			 */
-			
+			 */			
 			all = new AllColumns() {
 				@Override
 				protected TableRefList getTableRefs() {				

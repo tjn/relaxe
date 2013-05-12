@@ -4,7 +4,7 @@
 package com.appspot.relaxe.types;
 
 public abstract class OtherType<T extends OtherType<T>>
-	extends PrimitiveType<T> {
+	extends AbstractPrimitiveType<T> {
 	
 	/**
 	 * 
@@ -23,11 +23,14 @@ public abstract class OtherType<T extends OtherType<T>>
 	
 	@Override
 	public final int getSqlType() {
-		return PrimitiveType.OTHER;
+		return AbstractPrimitiveType.OTHER;
 	}
+
 	
 	@Override
 	public T asOtherType() {
 		return self();
-	} 
+	}
+	
+	
 }

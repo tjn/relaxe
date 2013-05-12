@@ -12,12 +12,12 @@ import java.sql.SQLException;
 import com.appspot.relaxe.rpc.ArrayHolder;
 import com.appspot.relaxe.rpc.ArrayValue;
 import com.appspot.relaxe.types.ArrayType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public abstract class ArrayAssignment<
 	V extends Serializable, 
-	E extends PrimitiveType<E>, 
+	E extends AbstractPrimitiveType<E>, 
 	A extends ArrayValue<V>,
 	T extends ArrayType<T, E>, 
 	H extends ArrayHolder<V, A, E, T, H>

@@ -23,7 +23,8 @@ public interface ElementVisitor {
 	VisitContext start(VisitContext vc, ColumnReference e);
 	VisitContext start(VisitContext vc, Symbol e);
 	VisitContext start(VisitContext vc, SchemaElementName e);
-	VisitContext start(VisitContext vc, Parameter<?, ?> e);
+	VisitContext start(VisitContext vc, Parameter<?, ?, ?> e);
+	
 	VisitContext start(VisitContext vc, Token e);
 	VisitContext start(VisitContext vc, Identifier e);
 	VisitContext start(VisitContext vc, Assignment e);

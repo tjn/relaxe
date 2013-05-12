@@ -32,14 +32,17 @@ public class DefaultEntityBuildContext
 //		return attributeWriterFactory;
 //	}
 	
+	@Override
 	public ColumnResolver getColumnResolver() {
 		return columnResolver;
 	}
 	
+	@Override
 	public DataObject.MetaData getInputMetaData() {
 		return inputMetaData;
 	}
 	
+	@Override
 	public EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> getQuery() {
 		return query;
 	}

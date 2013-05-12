@@ -5,7 +5,7 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.types.VarcharType;
 
@@ -52,11 +52,13 @@ public final class VarcharKey<
 		return VarcharType.TYPE;
 	}
 	
+	@Override
 	public void set(E e, VarcharHolder newValue) 
 		throws EntityRuntimeException {
 		e.setVarchar(this, newValue);
 	}
 	
+	@Override
 	public VarcharHolder get(E e) 
 		throws EntityRuntimeException {
 		return e.getVarchar(this);
@@ -79,7 +81,7 @@ public final class VarcharKey<
 	}
 	
 	@Override
-	public VarcharHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public VarcharHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return VarcharHolder.of(holder);
 	}
 }

@@ -1,11 +1,9 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package com.appspot.relaxe.pg.pagila;
+package com.appspot.relaxe.env.pg;
 
 import com.appspot.relaxe.ent.Attribute;
-import com.appspot.relaxe.env.pg.PGTextArrayHolder;
-import com.appspot.relaxe.env.pg.PGTextArrayKey;
 
 public interface HasPGTextArray<
 	A extends Attribute, 

@@ -4,7 +4,7 @@
 package com.appspot.relaxe.types;
 
 public class TimeType
-	extends PrimitiveType<TimeType> {
+	extends AbstractPrimitiveType<TimeType> {
 	
 	/**
 	 * 
@@ -18,7 +18,7 @@ public class TimeType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.TIME;
+		return AbstractPrimitiveType.TIME;
 	}
 	
 	@Override

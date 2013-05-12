@@ -63,7 +63,7 @@ public class PersistenceManagerTest2 extends TestCase  {
 //        PGImplementation impl = new PGImplementation();
 //        
 //        PersistenceManager<
-//        	com.appspot.relaxe.gen.pg.ent.personal.Person.Attribute, Reference, Type, Person, Person.Holder, Person.Factory, Person.MetaData, Person.Content> pm = 
+//        	com.appspot.relaxe.gen.pg.ent.personal.Person.Attribute, Reference, AbstractType, Person, Person.Holder, Person.Factory, Person.MetaData, Person.Content> pm = 
 //       		create(p.self(), impl);
 //                                
 ////        PersistenceManager<Attribute, Reference, Query, 

@@ -29,7 +29,7 @@ public abstract class ReferenceHolder<
 	M extends EntityMetaData<A, R, T, V, H, ?, M, C>,
 	C extends Content
 >
-	extends Holder<V, T> {
+	extends AbstractHolder<V, T, H> {
 
 	/**
 	 *

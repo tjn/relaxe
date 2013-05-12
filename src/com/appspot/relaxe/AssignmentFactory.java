@@ -5,10 +5,10 @@ package com.appspot.relaxe;
 
 import java.io.Serializable;
 
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
-public interface AssignmentFactory<V extends Serializable, T extends PrimitiveType<T>, H extends PrimitiveHolder<V, T, H>> {	
+public interface AssignmentFactory<V extends Serializable, T extends AbstractPrimitiveType<T>, H extends AbstractPrimitiveHolder<V, T, H>> {	
 	ParameterAssignment create(H holder);
 }

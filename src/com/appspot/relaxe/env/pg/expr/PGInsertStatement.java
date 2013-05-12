@@ -11,6 +11,11 @@ import com.appspot.relaxe.meta.Table;
 public class PGInsertStatement
 	extends InsertStatement {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5899030048028001816L;
+
 	public PGInsertStatement(Table target, ElementList<ColumnName> columnNameList) {
 		super(target, columnNameList);	
 	}

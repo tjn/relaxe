@@ -63,6 +63,7 @@ public class DefaultTableExpression
 		return select;
 	}
 
+	@Override
 	public From getFrom() {
 		return from;
 	}
@@ -71,6 +72,7 @@ public class DefaultTableExpression
 		this.from = from;
 	}
 
+	@Override
 	public Where getWhere() {
 		if (where == null) {
 			where = new Where();			
@@ -100,6 +102,7 @@ public class DefaultTableExpression
 		traverse(getHaving(), vc, v);
 	}
 
+	@Override
 	public GroupBy getGroupBy() {
 		return groupBy;
 	}
@@ -148,6 +151,11 @@ public class DefaultTableExpression
 	private SelectListElement getAll() {
 		if (all == null) {
 			all = new AllColumns() {
+				/**
+				 * TODO: The following does not look like serializable... 
+				 */
+				private static final long serialVersionUID = -98472738386271356L;
+
 				@Override
 				protected TableRefList getTableRefs() {
 					return getFrom().getTableReferenceList();				

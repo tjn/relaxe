@@ -4,7 +4,7 @@
 package com.appspot.relaxe.types;
 
 public class LongVarBinaryType
-	extends PrimitiveType<LongVarBinaryType> {
+	extends AbstractPrimitiveType<LongVarBinaryType> {
 	
 	
 	/**
@@ -19,7 +19,7 @@ public class LongVarBinaryType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.LONGVARBINARY;
+		return AbstractPrimitiveType.LONGVARBINARY;
 	}
 	
 	@Override

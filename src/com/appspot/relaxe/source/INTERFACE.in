@@ -67,6 +67,11 @@ public interface {{table-interface}}
 		public static {{table-interface}}.Holder valueOf({{table-interface}} value) {
 			return (value == null) ? {{table-interface}}.Holder.NULL : new {{table-interface}}.Holder(value);
 		}
+		
+		@Override
+		public Holder self() {
+			return this;
+		}
 	}
 	
 	interface Factory

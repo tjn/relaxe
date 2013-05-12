@@ -39,6 +39,7 @@ public class DefaultEntityQueryResult<
 				
 	}
 
+	@Override
 	public DataObjectQueryResult<EntityDataObject<E>> getContent() {
 		return this.content;
 	}

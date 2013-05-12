@@ -7,6 +7,7 @@ public interface MutableValueModel<V>
 	extends ValueModel<V> {
 
 	void set(V newValue);	
+	@Override
 	ImmutableValueModel<V> asImmutable();
 	
 	boolean isNullable();

@@ -6,16 +6,16 @@ package com.appspot.relaxe.ent.value;
 import java.io.Serializable;
 
 import com.appspot.relaxe.ent.Attribute;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public abstract class AbstractPrimitiveKey<
 	A extends Attribute,
 	E,
 	V extends Serializable,
-	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<V, P, H>,
+	P extends AbstractPrimitiveType<P>,
+	H extends AbstractPrimitiveHolder<V, P, H>,
 	K extends PrimitiveKey<A, E, V, P, H, K>
 >
 	implements PrimitiveKey<A, E, V, P, H, K> {
@@ -79,6 +79,7 @@ public abstract class AbstractPrimitiveKey<
 		set(dest, get(src));		
 	}
 	
+	@Override
 	public void reset(E dest) {
 		set(dest, newHolder(null));		
 	}

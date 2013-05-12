@@ -163,6 +163,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		throws DataAccessException {
 	}
 	
+	@Override
 	public final void close()
 		throws DataAccessException {
 		

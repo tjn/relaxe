@@ -28,10 +28,12 @@ public abstract class SimpleProposition<V>
 		this.impliedBy = impliedBy;
 	}
 
+	@Override
 	public V from() {
 		return this.from;
 	}
 
+	@Override
 	public V to() {
 		return this.to;
 	}

@@ -127,7 +127,8 @@ public class DefaultTypeMapper
 		return getArrayAttributeTypeMap().get(columnTypeName);
 	}
 	    
-    public AttributeInfo getAttributeInfo(Table table, Column c) {
+    @Override
+	public AttributeInfo getAttributeInfo(Table table, Column c) {
     	DefaultAttributeInfo da = new DefaultAttributeInfo();
         
     	DataType dataType = c.getDataType();
@@ -142,6 +143,7 @@ public class DefaultTypeMapper
 	        	da.setPrimitiveType(CharType.TYPE);        	
 	        	da.setContainerType(HasChar.class);
 	        	da.setContainerMetaType(HasCharKey.class);
+	        	break;
 	        case Types.VARCHAR:
 	        case Types.LONGVARCHAR:
 	        	da.setAttributeType(String.class);
@@ -170,17 +172,19 @@ public class DefaultTypeMapper
 	        case Types.BIGINT:
 	        	break;
 	        case Types.BIT:
+	        case Types.BOOLEAN:
 	        	if (dataType.getSize() > 1) {
 	        		break;
-	        	}	        	
-	        case Types.BOOLEAN:
+	        	}
+	        	
 	        	da.setAttributeType(Boolean.class);
 	        	da.setHolderType(BooleanHolder.class);
 	        	da.setKeyType(BooleanKey.class);
 	        	da.setAccessorType(BooleanAccessor.class);
 	        	da.setPrimitiveType(BooleanType.TYPE);	        	
 	        	da.setContainerType(HasBoolean.class);
-	        	da.setContainerMetaType(HasBooleanKey.class);	                       
+	        	da.setContainerMetaType(HasBooleanKey.class);	 
+	        	break;
 	        case Types.REAL:
 	            break;
 	        case Types.FLOAT:                

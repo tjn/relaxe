@@ -5,9 +5,9 @@ package com.appspot.relaxe.rpc;
 
 import java.io.Serializable;
 
-import com.appspot.relaxe.types.Type;
+import com.appspot.relaxe.types.AbstractType;
 
 
-public interface HolderSource<V extends Serializable, T extends Type<T>, H extends Holder<V, T>> {
+public interface HolderSource<V extends Serializable, T extends AbstractType<T>, H extends AbstractHolder<V, T, H>> {
 	H newHolder();
 }

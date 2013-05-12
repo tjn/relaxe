@@ -103,6 +103,7 @@ public class SelectStatement
 		this.offset = offset;
 	}
 
+	@Override
 	public QueryExpression getQueryExpression() {
 		return this;
 	}

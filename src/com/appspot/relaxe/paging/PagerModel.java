@@ -10,9 +10,9 @@ import com.appspot.relaxe.ui.action.Action;
 
 
 /**
- * @param <T> Type of the page(s) this pager browses.
- * @param <P> Type of the pager itself 
- * @param <C> Type of the paging command applicable with this pager 
+ * @param <T> AbstractType of the page(s) this pager browses.
+ * @param <P> AbstractType of the pager itself 
+ * @param <C> AbstractType of the paging command applicable with this pager 
  */
 public interface PagerModel<T extends Serializable, P extends PagerModel<T, P, C>, C> {
 		

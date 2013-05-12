@@ -3,23 +3,11 @@
  */
 package com.appspot.relaxe.types;
 
-import java.io.Serializable;
+public interface Type<
+	T extends Type<T>
+> {
+	boolean isReferenceType();
+	boolean equals(T t);
 
-public abstract class Type<T extends Type<? extends T>>
-	implements Serializable {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8522112079681061065L;
-
-	public Type() {
-		super();
-	}
-		
-	public boolean equals(T t) {
-		return (this == t);		
-	}
-	
-	public abstract boolean isReferenceType();
+	T self();
 }

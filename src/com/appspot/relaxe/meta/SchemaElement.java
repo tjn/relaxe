@@ -12,6 +12,7 @@ public interface SchemaElement
 	Environment getEnvironment();
 	SchemaElementName getName();
 	
+	@Override
 	Identifier getUnqualifiedName();
 	String getQualifiedName();
 }

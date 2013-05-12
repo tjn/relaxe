@@ -4,7 +4,7 @@
 package com.appspot.relaxe.types;
 
 public class FloatType
-	extends PrimitiveType<FloatType> {
+	extends AbstractPrimitiveType<FloatType> {
 	
 	/**
 	 * 
@@ -17,7 +17,7 @@ public class FloatType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.FLOAT;
+		return AbstractPrimitiveType.FLOAT;
 	}
 	
 	@Override

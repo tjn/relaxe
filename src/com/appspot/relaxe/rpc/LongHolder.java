@@ -4,11 +4,11 @@
 package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.types.LongType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public class LongHolder
-	extends PrimitiveHolder<Long, LongType, LongHolder> {
+	extends AbstractPrimitiveHolder<Long, LongType, LongHolder> {
 			
 	/**
 	 * 
@@ -51,7 +51,7 @@ public class LongHolder
 
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.BIGINT;
+		return AbstractPrimitiveType.BIGINT;
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public class LongHolder
 		return this;
 	}
 
-	public static LongHolder of(PrimitiveHolder<?, ?, ?> holder) {
+	public static LongHolder of(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return holder.asLongHolder();
 	}
 }

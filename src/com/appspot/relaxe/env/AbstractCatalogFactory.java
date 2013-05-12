@@ -114,6 +114,7 @@ public abstract class AbstractCatalogFactory
 		return environment;
 	}
 
+	@Override
 	public String getCatalogName(Connection c) throws SQLException {
 	    return c.getCatalog();
 	}

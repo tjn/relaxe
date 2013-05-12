@@ -7,16 +7,16 @@ import java.io.Serializable;
 
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public abstract class AbstractPrimitiveAccessor<
 	A extends Attribute,
 	E,
 	S extends Serializable,
-	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<S, P, H>,	
+	P extends AbstractPrimitiveType<P>,
+	H extends AbstractPrimitiveHolder<S, P, H>,	
 	K extends PrimitiveKey<A, E, S, P, H, K>
 	>
 	implements PrimitiveAccessor<A, E, S, P, H, K>
@@ -54,6 +54,7 @@ public abstract class AbstractPrimitiveAccessor<
 		return key().name();
 	}
 
+	@Override
 	public K key() {
 		return this.key;
 	}
@@ -64,6 +65,7 @@ public abstract class AbstractPrimitiveAccessor<
 		key().set(getTarget(), newHolder);
 	}
 
+	@Override
 	public H getHolder() 
 		throws EntityRuntimeException {		
 		return this.key().get(getTarget());				
@@ -74,6 +76,7 @@ public abstract class AbstractPrimitiveAccessor<
 		setHolder(this.key.newHolder(newValue));
 	}
 		
+	@Override
 	public S get() 
 		throws EntityRuntimeException {
 		H h = getHolder();

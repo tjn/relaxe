@@ -6,8 +6,8 @@ package com.appspot.relaxe.model.cm;
 import com.appspot.relaxe.model.ChangeListener;
 
 /** 
- * @param <V> Type of the value (computation result) of this model. 
- * @param <S> Type of the input of the computation this model represents.
+ * @param <V> AbstractType of the value (computation result) of this model. 
+ * @param <S> AbstractType of the input of the computation this model represents.
  */
 public abstract class ConstrainedComputedModel<V, S>
 	extends AbstractConstrainedValueModel<V> {

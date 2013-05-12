@@ -6,9 +6,9 @@ package com.appspot.relaxe.ent.value;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.LongVarBinaryHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.types.LongVarBinaryType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 public final class LongVarBinaryKey<
 	A extends Attribute,
@@ -40,7 +40,7 @@ public final class LongVarBinaryKey<
 		LongVarBinaryKey<X, T> k = meta.getLongVarBinaryKey(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = a.type();
+			AbstractPrimitiveType<?> t = a.type();
 			
 			if (t != null && LongVarBinaryType.TYPE.equals(t)) {
 				k = new LongVarBinaryKey<X, T>(meta, a);
@@ -55,10 +55,12 @@ public final class LongVarBinaryKey<
 		return LongVarBinaryType.TYPE;
 	}
 	
+	@Override
 	public void set(E e, LongVarBinaryHolder newValue) {
 		e.setLongVarBinary(this, newValue);
 	}
 	
+	@Override
 	public LongVarBinaryHolder get(E e) {
 		return e.getLongVarBinary(self());
 	}
@@ -84,7 +86,7 @@ public final class LongVarBinaryKey<
 	}
 		
 	@Override
-	public LongVarBinaryHolder as(PrimitiveHolder<?, ?, ?> unknown) {
+	public LongVarBinaryHolder as(AbstractPrimitiveHolder<?, ?, ?> unknown) {
 		return unknown.asLongVarBinaryHolder();
 	}
 }

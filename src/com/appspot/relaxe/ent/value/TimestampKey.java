@@ -7,7 +7,7 @@ import java.util.Date;
 
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.rpc.TimestampHolder;
 import com.appspot.relaxe.types.TimestampType;
 
@@ -55,11 +55,13 @@ public final class TimestampKey<
 		return TimestampType.TYPE;
 	}
 
+	@Override
 	public void set(E e, TimestampHolder newValue) 
 		throws EntityRuntimeException {
 		e.setTimestamp(this, newValue);
 	}
 	
+	@Override
 	public TimestampHolder get(E e) 
 		throws EntityRuntimeException {
 		return e.getTimestamp(this);
@@ -83,7 +85,7 @@ public final class TimestampKey<
 	}
 
 	@Override
-	public TimestampHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public TimestampHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return TimestampHolder.of(holder);
 	}
 }

@@ -3,6 +3,7 @@
  */
 package com.appspot.relaxe.expr;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,8 +12,13 @@ import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.PrimitiveType;
 
 
-public class ValueParameter<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T, H>>
-	extends Parameter<T, H> {
+public class ValueParameter<
+	V extends Serializable,
+	T extends PrimitiveType<T>, 
+	H extends PrimitiveHolder<V, T, H>
+>
+	extends AbstractParameter<V, T, H> 
+{
 	
 	/**
 	 * 
@@ -43,8 +49,9 @@ public class ValueParameter<T extends PrimitiveType<T>, H extends PrimitiveHolde
 
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {
-		v.start(vc, this);
-		v.end(this);
+		Parameter<?, ?, ?> p = this;
+		v.start(vc, p);
+		v.end(p);
 	}
 
 	@Override

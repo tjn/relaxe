@@ -6,6 +6,7 @@
  */
 package com.appspot.relaxe;
 
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -16,7 +17,6 @@ import com.appspot.relaxe.expr.ElementVisitorAdapter;
 import com.appspot.relaxe.expr.Parameter;
 import com.appspot.relaxe.expr.VisitContext;
 import com.appspot.relaxe.expr.VisitException;
-import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.PrimitiveType;
 
@@ -49,13 +49,9 @@ public class AssignmentVisitor extends ElementVisitorAdapter {
 	}	
 
 	@Override
-	public VisitContext start(VisitContext vc, Parameter<?, ?> p) {								
+	public VisitContext start(VisitContext vc, Parameter<?, ?, ?> p) {								
 		try {			
-			assign(ordinal, p.getValue(), p.getColumnType());			
-//			logger().debug(ordinal + ": pname: " + p.getName());
-//			logger().debug(ordinal + ": ph: " + h);
-			
-			
+			assign(ordinal, p);
 			logger().debug(ordinal + ": " + p.getName() + " =>"+ ((p.getValue() == null) ? "<null>" : p.getValue()));
 			
 //			preparedStatement.setObject(ordinal, h.value(), p.getType());
@@ -68,13 +64,20 @@ public class AssignmentVisitor extends ElementVisitorAdapter {
 		return vc;
 	}
 	
+	
+	
 	private	
-	<T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T, H>>	
+	<		
+		V extends Serializable,
+		T extends PrimitiveType<T>, 
+		H extends PrimitiveHolder<V, T, H>
+	>	
 	void	
-	assign(int ord, H h, DataType columnType) 
+	assign(int ord, Parameter<V, T, H> param) 
 		throws SQLException {
-						
-		ParameterAssignment a = assignerFactory.create(h, columnType);
+		
+		H h = param.getValue();
+		ParameterAssignment a = assignerFactory.create(h, param.getColumnType());
 
 		if (a == null) {
 			throw new NullPointerException("no assignment for parameter[" + ord + "] of type " + h.getType() + ": " + h + " with assigner factory: " + assignerFactory);

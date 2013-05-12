@@ -63,7 +63,8 @@ public class SimpleTestContext<I extends Implementation<I>>
 
     }
     
-    public Catalog getCatalog() throws SQLException, QueryException {
+    @Override
+	public Catalog getCatalog() throws SQLException, QueryException {
     	if (catalog == null) {
     		Connection c = newConnection();
 			catalog = getImplementation().catalogFactory().create(c);
@@ -74,18 +75,21 @@ public class SimpleTestContext<I extends Implementation<I>>
 		return catalog;
     }
     
-    public void setCatalog(Catalog catalog) {
+    @Override
+	public void setCatalog(Catalog catalog) {
         this.catalog = catalog;
     }
     
-    public I getImplementation() {
+    @Override
+	public I getImplementation() {
         return implementation;
     }
     public void setImplementation(I environment) {
         this.implementation = environment;
     }
     
-    public Connection connect() 
+    @Override
+	public Connection connect() 
         throws SQLException {
     	String jdbcURL = getJdbcURL();
     	logger().debug("connect to: jdbcURL=" + jdbcURL);
@@ -96,7 +100,8 @@ public class SimpleTestContext<I extends Implementation<I>>
 //        public void setConnection(Connection connection) {
 //            this.connection = connection;
 //        }
-    public Driver getDriver() {
+    @Override
+	public Driver getDriver() {
         return driver;
     }
     public void setDriver(Driver driver) {

@@ -7,25 +7,27 @@ import java.io.Serializable;
 
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public interface PrimitiveKey<
 	A extends Attribute,	
 	E,
 	V extends Serializable,
-	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<V, P, H>,	
+	P extends AbstractPrimitiveType<P>,
+	H extends AbstractPrimitiveHolder<V, P, H>,	
 	K extends PrimitiveKey<A, E, V, P, H, K>
 >
 	extends Key<E, P, K>, Serializable
 {
+	@Override
 	P type();
 	A name();
 	H newHolder(V newValue);
 	H get(E e) throws EntityRuntimeException;
 	void set(E e, H newValue) throws EntityRuntimeException;	
+	@Override
 	void copy(E src, E dest) throws EntityRuntimeException;
 	
 	
@@ -34,8 +36,10 @@ public interface PrimitiveKey<
 	 *  
 	 * @param dest
 	 */
+	@Override
 	void reset(E dest) throws EntityRuntimeException;
 		
+	@Override
 	K self();
 		
 	/**
@@ -46,6 +50,6 @@ public interface PrimitiveKey<
 	 * 
 	 * @throws NullPointerException if <code>holder</code> is <code>null</code>.
 	 */
-	H as(PrimitiveHolder<?, ?, ?> holder);
+	H as(AbstractPrimitiveHolder<?, ?, ?> holder);
 
 }

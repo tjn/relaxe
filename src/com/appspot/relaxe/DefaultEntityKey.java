@@ -89,6 +89,7 @@ public abstract class DefaultEntityKey<
 		return (h == null) ? null : h.value();
 	}
 	
+	@Override
 	public RH get(E e) {
 		RH ref = e.getRef(self());
 		return ref;

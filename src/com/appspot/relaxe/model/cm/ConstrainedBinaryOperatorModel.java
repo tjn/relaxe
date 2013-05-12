@@ -31,6 +31,7 @@ public abstract class ConstrainedBinaryOperatorModel<V, A, B>
 		
 	public abstract V compute(A a, B b);
 	
+	@Override
 	public V get() {
 		return compute(this.a.get(), this.b.get());
 	}

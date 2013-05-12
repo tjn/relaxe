@@ -7,7 +7,7 @@ import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.Decimal;
 import com.appspot.relaxe.rpc.DecimalHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.types.DecimalType;
 
 public final class DecimalKey<
@@ -54,11 +54,13 @@ public final class DecimalKey<
 		return DecimalType.TYPE;
 	}
 
+	@Override
 	public void set(E e, DecimalHolder newValue)
 		throws EntityRuntimeException {
 		e.setDecimal(this, newValue);
 	}
 	
+	@Override
 	public DecimalHolder get(E e) 
 		throws EntityRuntimeException {
 		return e.getDecimal(this);
@@ -81,7 +83,7 @@ public final class DecimalKey<
 	}
 	
 	@Override
-	public DecimalHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public DecimalHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return DecimalHolder.of(holder);
 	}
 }

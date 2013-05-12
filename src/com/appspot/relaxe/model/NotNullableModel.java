@@ -10,6 +10,7 @@ public interface NotNullableModel<V>
 	/**
 	 * @throws NullPointerException If newValue is <code>null</code>.
 	 */
+	@Override
 	public void set(V newValue)
 		throws NullPointerException;
 	
@@ -17,5 +18,6 @@ public interface NotNullableModel<V>
 	 * Returns <code>false</code>.
 	 * @return
 	 */
+	@Override
 	boolean isNullable();
 }

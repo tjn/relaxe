@@ -15,10 +15,10 @@ import com.appspot.relaxe.ent.value.LongKey;
 import com.appspot.relaxe.ent.value.PrimitiveKey;
 import com.appspot.relaxe.rpc.IntegerHolder;
 import com.appspot.relaxe.rpc.LongHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.LongType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public class TestKeyHolder
@@ -31,8 +31,8 @@ public class TestKeyHolder
 
 	<
 		S extends Serializable,
-		P extends PrimitiveType<P>,
-		PH extends PrimitiveHolder<S, P, PH>,
+		P extends AbstractPrimitiveType<P>,
+		PH extends AbstractPrimitiveHolder<S, P, PH>,
 		K extends PrimitiveKey<TestKeyHolder.Attribute, TestKeyHolder, S, P, PH, K>
 	>
 	PH get(K k) {
@@ -57,13 +57,13 @@ public class TestKeyHolder
 		
 		
 	    private String identifier;
-	    private PrimitiveType<?> type;
+	    private AbstractPrimitiveType<?> type;
 	        
-	    Attribute(PrimitiveType<?> type) {
+	    Attribute(AbstractPrimitiveType<?> type) {
 	    	this.type = type;
 	    }
 	    
-	    Attribute(String identifier, PrimitiveType<?> type) {
+	    Attribute(String identifier, AbstractPrimitiveType<?> type) {
 	    	this(type);
 	        this.identifier = identifier;
 	    }    
@@ -73,7 +73,8 @@ public class TestKeyHolder
 	        return (identifier == null) ? name() : identifier;
 	    }
 
-	    public PrimitiveType<?> type() {
+	    @Override
+		public AbstractPrimitiveType<?> type() {
 	    	return this.type;
 	    }    
 	}
@@ -135,6 +136,8 @@ public class TestKeyHolder
 					return a1k;
 				case A2:
 					return a2k;
+				default:
+					break;
 				}
 				
 				return null;
@@ -149,24 +152,16 @@ public class TestKeyHolder
 				case A2:
 					a1k = key;
 					break;
+				default:
+					break;
 				}
 			}
 		};
 		
 		IntegerKey<TestKeyHolder.Attribute, TestKeyHolder> a1k = IntegerKey.get(meta, TestKeyHolder.Attribute.A1);
-	
-		
+			
 		IntegerHolder h = e.get(a1k);
 		
 		
 	}
-	
-	private Map<TestKeyHolder.Attribute, LongHolder> getLongHolderMap() {
-		if (longHolderMap == null) {
-			longHolderMap = new TreeMap<Attribute, LongHolder>();			
-		}
-
-		return longHolderMap;
-	}
-
 }

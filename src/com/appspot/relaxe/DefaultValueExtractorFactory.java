@@ -87,10 +87,12 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 		}
 	
 
+	@Override
 	public IntegerExtractor createIntegerExtractor(int col) {
 		return IntegerExtractor.forColumn(col);
 	}
 	
+	@Override
 	public DoubleExtractor createDoubleExtractor(int col) {
 		return new DoubleExtractor(col);
 	}
@@ -99,10 +101,12 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 		return new DecimalExtractor(col);
 	}
 	
+	@Override
 	public VarcharExtractor createVarcharExtractor(int col) {
 		return new VarcharExtractor(col);
 	}
 	
+	@Override
 	public CharExtractor createCharExtractor(int col) {
 		return new CharExtractor(col);
 	}
@@ -112,6 +116,7 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 		return new DateExtractor(col);
 	}
 	
+	@Override
 	public TimestampExtractor createTimestampExtractor(int col) {
 		return new TimestampExtractor(col);
 	}
@@ -148,7 +153,7 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 	}
 
 
-//		<V extends Serializable, P extends PrimitiveType<P>, H extends PrimitiveHolder<V, P>>
+//		<V extends Serializable, P extends AbstractPrimitiveType<P>, H extends AbstractPrimitiveHolder<V, P>>
 //		ValueExtractor<V, P, H> createExtractor2(ResultSetMetaData meta, int col, P type) 
 //			throws SQLException {
 //			int sqltype = meta.getColumnType(col);

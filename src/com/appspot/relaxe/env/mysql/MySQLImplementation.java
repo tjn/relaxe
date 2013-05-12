@@ -62,7 +62,8 @@ public class MySQLImplementation
         }
     }
 
-    public String createJdbcUrl(String database) {
+    @Override
+	public String createJdbcUrl(String database) {
     	return createJdbcUrl(null, database);
     }
 
@@ -79,6 +80,7 @@ public class MySQLImplementation
 		return "jdbc:mysql://" + host + ":" + port + "/" + database;
 	}
 	
+	@Override
 	public MySQLEnvironment environment() {
 		if (environment == null) {
 			environment = new MySQLEnvironment();			

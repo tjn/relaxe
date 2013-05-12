@@ -180,6 +180,7 @@ public class ImmutableBaseTable
 		this.foreignKeyMap = foreignKeyMap;
 	}
 	
+	@Override
 	public ColumnMap columnMap() {
 		return this.columnMap;
 	}

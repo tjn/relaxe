@@ -58,6 +58,7 @@ public class DefaultTestContext<I extends Implementation<I>>
 		this.jdbcURL = (port == null) ? imp.createJdbcUrl(host, database) : imp.createJdbcUrl(host, port.intValue(), database);		
 	}
 	
+	@Override
 	public String getJdbcURL() {
 		return jdbcURL;
 	}

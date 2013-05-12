@@ -3,10 +3,10 @@
  */
 package com.appspot.relaxe.rpc;
 
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
-public abstract class StringHolder<T extends PrimitiveType<T>, H extends StringHolder<T, H>>
-	extends PrimitiveHolder<String, T, H> {
+public abstract class StringHolder<T extends AbstractPrimitiveType<T>, H extends StringHolder<T, H>>
+	extends AbstractPrimitiveHolder<String, T, H> {
 	
 	/**
 	 * 

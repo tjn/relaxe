@@ -6,9 +6,9 @@ package com.appspot.relaxe.ent.value;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.DoubleHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.types.DoubleType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 public final class DoubleKey<	
 	A extends Attribute,	
@@ -40,7 +40,7 @@ public final class DoubleKey<
 		DoubleKey<X, T> k = meta.getDoubleKey(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = a.type();
+			AbstractPrimitiveType<?> t = a.type();
 			
 			if (DoubleType.TYPE.equals(t)) {
 				k = new DoubleKey<X, T>(meta, a);
@@ -55,11 +55,13 @@ public final class DoubleKey<
 		return DoubleType.TYPE;
 	}
 
+	@Override
 	public void set(E e, DoubleHolder newValue) 
 		throws EntityRuntimeException {
 		e.setDouble(this, newValue);
 	}
 	
+	@Override
 	public DoubleHolder get(E e) 
 		throws EntityRuntimeException {
 		return e.getDouble(this);
@@ -82,7 +84,7 @@ public final class DoubleKey<
 	}
 	
 	@Override
-	public DoubleHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public DoubleHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return DoubleHolder.of(holder);
 	}
 }

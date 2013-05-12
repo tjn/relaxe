@@ -104,6 +104,7 @@ public abstract class DefaultQueryTemplate<
 		add(ak.name());
 	}
 	
+	@Override
 	public void add(A attribute) {
 		add(attribute, getAttributeMap());
 	}
@@ -113,35 +114,23 @@ public abstract class DefaultQueryTemplate<
 	}
 	
 	
-	@Override
-	public void remove(A ... as) {
-		if (as == null) {
-			throw new NullPointerException("as");
-		}
-		
-		if (as.length == 0) {
-			return;
-		}
-		
-		remove(Arrays.asList(as));
-	}
-	
 	public void add(PrimitiveKey<A, E, ?, ?, ?, ?>[]  ks) {
 		for (PrimitiveKey<A, E, ?, ?, ?, ?> k : ks) {
 			add(k.name());
 		}		
 	}
 	
-	public void add(A ... as) {
+	@Override
+	public void add(Iterable<A>  as) {
 		if (as == null) {
 			throw new NullPointerException("as");
 		}
 		
-		if (as.length == 0) {
+		if (!as.iterator().hasNext()) {
 			return;
 		}
 		
-		addAll(Arrays.asList(as));
+		addAll(as);
 	}
 
 	private void addAll(Iterable<A> as) {
@@ -160,6 +149,10 @@ public abstract class DefaultQueryTemplate<
 	}
 	
 	public void remove(Iterable<A> as) {
+		if (as == null) {
+			throw new NullPointerException("as");
+		}
+		
 		Map<A, EntityQueryTemplateAttribute> am = getAttributeMap();
 		
 		for (A a : as) {
@@ -174,6 +167,7 @@ public abstract class DefaultQueryTemplate<
 		addAll(getMetaData().attributes());		
 	}
 		
+	@Override
 	public abstract EntityQuery<A, R, T, E, H, F, M, C, Q> newQuery()
 		throws EntityRuntimeException;
 			
@@ -187,11 +181,13 @@ public abstract class DefaultQueryTemplate<
 		addSortKey(SortKeyAttributeTemplate.desc(sk));
 	}
 	
+	@Override
 	public void addSortKey(EntityQuerySortKey<A> sk) {
 		getSortKeyList().add(sk);
 		getAllSortKeys().add(sk);
 	}	
 	
+	@Override
 	public void addPredicate(EntityQueryPredicate<A> p) {
 		getPredicateList().add(p);
 		getAllPredicates().add(p);

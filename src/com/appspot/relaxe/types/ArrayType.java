@@ -3,8 +3,8 @@
  */
 package com.appspot.relaxe.types;
 
-public abstract class ArrayType<T extends ArrayType<T, E>, E extends PrimitiveType<E>>
-	extends PrimitiveType<T> {
+public abstract class ArrayType<T extends ArrayType<T, E>, E extends AbstractPrimitiveType<E>>
+	extends AbstractPrimitiveType<T> {
 	
 	/**
 	 * 
@@ -25,6 +25,12 @@ public abstract class ArrayType<T extends ArrayType<T, E>, E extends PrimitiveTy
 	
 	@Override
 	public final int getSqlType() {
-		return PrimitiveType.ARRAY;
+		return AbstractPrimitiveType.ARRAY;
+	}
+
+	
+	@Override
+	public ArrayType<? extends T, ?> asArrayType() {
+		return self();
 	}
 }

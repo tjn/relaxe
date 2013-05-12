@@ -10,7 +10,7 @@ import com.appspot.relaxe.types.DateType;
 
 
 public class DateHolder
-	extends PrimitiveHolder<Date, DateType, DateHolder> {
+	extends AbstractPrimitiveHolder<Date, DateType, DateHolder> {
 		
 	/**
 	 * 
@@ -56,7 +56,7 @@ public class DateHolder
 		return this;
 	}
 	
-	public static DateHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public static DateHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return holder.asDateHolder();
 	}
 }

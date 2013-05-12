@@ -29,10 +29,6 @@ public class ColumnReference
 	public ColumnReference(AbstractTableReference table, Column column) {
 		super(table, column.getColumnName());
 		
-		if (column == null) {
-			throw new NullPointerException("'column' must not be null");
-		}
-		
 		this.column = column;
 //		logger().debug("table-col-expr column-name: " + column.getColumnName().getName());
 	}

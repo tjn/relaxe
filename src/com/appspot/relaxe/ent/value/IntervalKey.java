@@ -8,15 +8,15 @@ import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.Interval;
 import com.appspot.relaxe.rpc.IntervalHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.types.IntervalType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 public abstract class IntervalKey<
 	A extends Attribute,	
 	E,
 	V extends Interval<V>, 
-	P extends PrimitiveType<P>, 
+	P extends AbstractPrimitiveType<P>, 
 	H extends IntervalHolder<V, P, H>, 
 	K extends IntervalKey<A, E, V, P, H, K>
 	>
@@ -114,7 +114,7 @@ public abstract class IntervalKey<
 		
 		@Override
 		public com.appspot.relaxe.rpc.IntervalHolder.YearMonth as(
-				PrimitiveHolder<?, ?, ?> holder) {
+				AbstractPrimitiveHolder<?, ?, ?> holder) {
 			return holder.asYearMonthIntervalHolder();
 		}
 	}
@@ -179,7 +179,7 @@ public abstract class IntervalKey<
 		}
 		
 		@Override
-		public com.appspot.relaxe.rpc.IntervalHolder.DayTime as(PrimitiveHolder<?, ?, ?> holder) {
+		public com.appspot.relaxe.rpc.IntervalHolder.DayTime as(AbstractPrimitiveHolder<?, ?, ?> holder) {
 			return IntervalHolder.DayTime.of(holder);
 		}
 	}
@@ -194,9 +194,9 @@ public abstract class IntervalKey<
 //		IntervalKey<X, T> k = meta.getTimestampKey(a);
 //		
 //		if (k == null) {
-//			PrimitiveType<?> t = meta.getAttributeType(a);
+//			AbstractPrimitiveType<?> t = meta.getAttributeType(a);
 //			
-//			if (t != null && t.getSqlType() == PrimitiveType.TIMESTAMP) {
+//			if (t != null && t.getSqlType() == AbstractPrimitiveType.TIMESTAMP) {
 //				k = new IntervalKey<X, T>(meta, a);
 //			}			
 //		}

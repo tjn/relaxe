@@ -4,11 +4,11 @@
 package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.types.DoubleType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public class DoubleHolder
-	extends PrimitiveHolder<Double, DoubleType, DoubleHolder> {
+	extends AbstractPrimitiveHolder<Double, DoubleType, DoubleHolder> {
 			
 	/**
 	 * 
@@ -52,7 +52,7 @@ public class DoubleHolder
 
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.INTEGER;
+		return AbstractPrimitiveType.INTEGER;
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class DoubleHolder
 		return this;
 	}
 
-	public static DoubleHolder of(PrimitiveHolder<?, ?, ?> holder) {
+	public static DoubleHolder of(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return holder.asDoubleHolder();
 	}
 }

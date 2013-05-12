@@ -59,6 +59,7 @@ public interface EntityKey<
 //	P getTargetType();
 	M getSource();	
 	RM getTarget();
+	@Override
 	K self();
 	
 }

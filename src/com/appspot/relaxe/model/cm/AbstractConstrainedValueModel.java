@@ -41,6 +41,7 @@ public abstract class AbstractConstrainedValueModel<V>
 	 * @param p
 	 * @return
 	 */
+	@Override
 	public Proposition submit(ChangeSet cs, final Proposition p) {
 		// p.submit(cs);		
 		
@@ -56,6 +57,7 @@ public abstract class AbstractConstrainedValueModel<V>
 		return propose(cs, newValue, null);
 	}
 	
+	@Override
 	public Proposition propose(ChangeSet cs, final V newValue, Proposition impliedBy) {
 		if (cs == null) {
 			throw new NullPointerException("cs");

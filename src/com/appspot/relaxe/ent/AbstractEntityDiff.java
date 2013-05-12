@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appspot.relaxe.meta.Column;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.ReferenceType;
 
@@ -31,10 +32,12 @@ public abstract class AbstractEntityDiff<
 		this.modified = modified;
 	}
 
+	@Override
 	public E getOriginal() {
 		return original;
 	}
 
+	@Override
 	public E getModified() {
 		return modified;
 	}
@@ -140,8 +143,8 @@ public abstract class AbstractEntityDiff<
 	private
 	<P extends Entity<?, ?, ?, ?, ?, ?, ?, ?>>
 	boolean primaryKeyDiffers(P o, P m) throws EntityRuntimeException {
-		Map<Column, PrimitiveHolder<?,?,?>> a = o.getPrimaryKey();
-		Map<Column, PrimitiveHolder<?,?,?>> b = m.getPrimaryKey();
+		Map<Column, AbstractPrimitiveHolder<?,?,?>> a = o.getPrimaryKey();
+		Map<Column, AbstractPrimitiveHolder<?,?,?>> b = m.getPrimaryKey();
 
 		if (a == null || b == null) {
 			return a != b;

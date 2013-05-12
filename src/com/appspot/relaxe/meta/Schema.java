@@ -11,6 +11,7 @@ public interface Schema
 
 	Environment getEnvironment();
 	Identifier getCatalogName();
+	@Override
 	Identifier getUnqualifiedName();
 	SchemaName getName();
 			

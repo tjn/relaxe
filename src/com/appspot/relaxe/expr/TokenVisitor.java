@@ -78,7 +78,7 @@ public class TokenVisitor implements ElementVisitor {
 	}
 
 	@Override
-	public VisitContext start(VisitContext vc, Parameter<?,?> e) {
+	public VisitContext start(VisitContext vc, Parameter<?, ?, ?> e) {
 		return visit(e);
 	}
 	

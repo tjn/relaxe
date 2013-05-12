@@ -6,9 +6,9 @@ package com.appspot.relaxe.ent.value;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.BooleanHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.types.BooleanType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 public final class BooleanKey<
 	A extends Attribute,
@@ -40,7 +40,7 @@ public final class BooleanKey<
 		BooleanKey<X, T> k = meta.getBooleanKey(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = a.type();
+			AbstractPrimitiveType<?> t = a.type();
 			
 			if (t != null && BooleanType.TYPE.equals(t)) {
 				k = new BooleanKey<X, T>(meta, a);
@@ -55,10 +55,12 @@ public final class BooleanKey<
 		return BooleanType.TYPE;
 	}
 	
+	@Override
 	public void set(E e, BooleanHolder newValue) {
 		e.setBoolean(this, newValue);
 	}
 	
+	@Override
 	public BooleanHolder get(E e) {
 		return e.getBoolean(self());
 	}
@@ -84,7 +86,7 @@ public final class BooleanKey<
 	}
 		
 	@Override
-	public BooleanHolder as(PrimitiveHolder<?, ?, ?> unknown) {
+	public BooleanHolder as(AbstractPrimitiveHolder<?, ?, ?> unknown) {
 		return unknown.asBooleanHolder();
 	}
 }

@@ -220,7 +220,8 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
     }
     
     
-    public String id() {
+    @Override
+	public String id() {
         return getClass().getName() + "@" + System.identityHashCode(this);
     }
     
@@ -391,6 +392,7 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
         return this.classLoaderForGenerated;
     }
 
+	@Override
 	public TestContext<I> getTestContext(I imp) throws SQLException, QueryException {
 		if (testContext == null) {
 			testContext = createTestContext();			

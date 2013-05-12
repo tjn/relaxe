@@ -4,11 +4,11 @@
 package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.types.IntegerType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public class IntegerHolder
-	extends PrimitiveHolder<Integer, IntegerType, IntegerHolder> {
+	extends AbstractPrimitiveHolder<Integer, IntegerType, IntegerHolder> {
 			
 	/**
 	 * 
@@ -60,7 +60,7 @@ public class IntegerHolder
 
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.INTEGER;
+		return AbstractPrimitiveType.INTEGER;
 	}
 	
 	public static class Factory
@@ -85,7 +85,7 @@ public class IntegerHolder
 		return this;
 	}
 
-	public static IntegerHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public static IntegerHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return holder.asIntegerHolder();
 	}
 

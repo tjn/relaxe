@@ -130,6 +130,7 @@ public abstract class AbstractEntityKey<
 //		e.setRef(self(), newValue);		
 //	}
 	
+	@Override
 	public RE value(E e) {
 		RH h = get(e);
 		return (h == null) ? null : h.value();		
@@ -138,11 +139,13 @@ public abstract class AbstractEntityKey<
 	@Override
 	public abstract RT type();
 	
+	@Override
 	public void copy(E src, E dest) {
 		K k = self();
 		dest.setRef(k, src.getRef(k));
 	};
 	
+	@Override
 	public void reset(E dest) {
 		dest.setRef(self(), newHolder(null));
 	}

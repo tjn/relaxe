@@ -4,7 +4,7 @@
 package com.appspot.relaxe.types;
 
 public class DecimalType
-	extends PrimitiveType<DecimalType> {
+	extends AbstractPrimitiveType<DecimalType> {
 	
 	/**
 	 * 
@@ -17,7 +17,7 @@ public class DecimalType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.DECIMAL;
+		return AbstractPrimitiveType.DECIMAL;
 	}
 	
 	@Override

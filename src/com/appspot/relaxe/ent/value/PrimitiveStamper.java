@@ -8,16 +8,16 @@ import java.io.Serializable;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public class PrimitiveStamper<
 	A extends Attribute,
 	E extends Entity<A, ?, ?, E, ?, ?, ?, ?>,	
 	S extends Serializable,
-	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<S, P, H>,	
+	P extends AbstractPrimitiveType<P>,
+	H extends AbstractPrimitiveHolder<S, P, H>,	
 	K extends PrimitiveKey<A, E, S, P, H, K>
 	>
 	extends AbstractPrimitiveAccessor<A, E, S, P, H, K>

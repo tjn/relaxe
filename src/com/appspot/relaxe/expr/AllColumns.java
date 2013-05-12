@@ -75,6 +75,7 @@ public abstract class AllColumns
 		return cc;
 	}
 	
+	@Override
 	public ValueExpression getColumnExpr(final int column) {
 		return getTableColumnExpr(column);
 	}

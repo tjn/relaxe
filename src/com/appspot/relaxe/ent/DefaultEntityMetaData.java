@@ -15,9 +15,9 @@ import com.appspot.relaxe.ent.value.PrimitiveKey;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ForeignKey;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.rpc.ReferenceHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.ReferenceType;
 
 
@@ -134,10 +134,12 @@ public abstract class DefaultEntityMetaData<
 		}
 	}
 
+	@Override
 	public Set<A> attributes() {
 		return Collections.unmodifiableSet(this.attributes);
 	}
 
+	@Override
 	public Set<R> relationships() {
 		return this.relationships;
 	}
@@ -168,8 +170,8 @@ public abstract class DefaultEntityMetaData<
 
 	protected <
 		V extends Serializable, 
-		P extends PrimitiveType<P>,
-		PH extends PrimitiveHolder<V, P, PH>,
+		P extends AbstractPrimitiveType<P>,
+		PH extends AbstractPrimitiveHolder<V, P, PH>,
 		K extends PrimitiveKey<A, E, V, P, PH, K>
 	>
 	K key(A name, Map<A, K> src) {

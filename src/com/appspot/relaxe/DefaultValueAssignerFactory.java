@@ -13,6 +13,7 @@ import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.TimeHolder;
 import com.appspot.relaxe.rpc.TimestampHolder;
 import com.appspot.relaxe.rpc.VarcharHolder;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public class DefaultValueAssignerFactory
@@ -27,31 +28,31 @@ public class DefaultValueAssignerFactory
 		int t = ph.getSqlType();
 						
 		switch (t) {
-			case PrimitiveType.INTEGER:	 
+			case AbstractPrimitiveType.INTEGER:	 
 				pa = createIntegerAssignment(ph.asIntegerHolder());
 				break;
-			case PrimitiveType.VARCHAR:	
+			case AbstractPrimitiveType.VARCHAR:	
 				pa = createVarcharAssignment(ph.asVarcharHolder());
 				break;
-			case PrimitiveType.DATE:	
+			case AbstractPrimitiveType.DATE:	
 				pa = createDateAssignment(ph.asDateHolder());
 				break;
-			case PrimitiveType.TIME:	
+			case AbstractPrimitiveType.TIME:	
 				pa = createTimeAssignment(ph.asTimeHolder());
 				break;				
-			case PrimitiveType.TIMESTAMP:	
+			case AbstractPrimitiveType.TIMESTAMP:	
 				pa = createTimestampAssignment(ph.asTimestampHolder());
 				break;
-			case PrimitiveType.DECIMAL:	 
-			case PrimitiveType.NUMERIC:
+			case AbstractPrimitiveType.DECIMAL:	 
+			case AbstractPrimitiveType.NUMERIC:
 				pa = createDecimalAssignment(ph.asDecimalHolder());
 				break;				
-			case PrimitiveType.OTHER:
+			case AbstractPrimitiveType.OTHER:
 				if ("interval_dt".equals(columnType.getTypeName())) {				
 					pa = createIntervalAssignment((IntervalHolder.DayTime) ph);
 				}
 				break;
-			case PrimitiveType.DISTINCT:	
+			case AbstractPrimitiveType.DISTINCT:	
 				pa = createIntervalAssignment((IntervalHolder.YearMonth) ph);
 				break;								
 		default:

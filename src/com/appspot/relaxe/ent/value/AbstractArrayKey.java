@@ -9,7 +9,7 @@ import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.rpc.ArrayHolder;
 import com.appspot.relaxe.rpc.ArrayValue;
 import com.appspot.relaxe.types.ArrayType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public abstract class AbstractArrayKey<
@@ -17,7 +17,7 @@ public abstract class AbstractArrayKey<
 	E,
 	O extends Serializable,
 	V extends ArrayValue<O>,
-	C extends PrimitiveType<C>,
+	C extends AbstractPrimitiveType<C>,
 	P extends ArrayType<P, C>,	 
 	H extends ArrayHolder<O, V, C, P, H>,
 	K extends AbstractArrayKey<A, E, O, V, C, P, H, K>
@@ -39,5 +39,6 @@ public abstract class AbstractArrayKey<
 		super(name);	
 	}
 
+	@Override
 	public abstract K self();
 }

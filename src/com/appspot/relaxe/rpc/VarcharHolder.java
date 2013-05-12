@@ -45,7 +45,7 @@ public class VarcharHolder
 	
 //	@Override
 //	public int getSqlType() {
-//		return PrimitiveType.VARCHAR;
+//		return AbstractPrimitiveType.VARCHAR;
 //	}
 	
 	@Override
@@ -58,7 +58,7 @@ public class VarcharHolder
 		return this;
 	}
 	
-	public static VarcharHolder of(PrimitiveHolder<?, ?, ?> holder) {
+	public static VarcharHolder of(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return holder.asVarcharHolder();
 	}
 }

@@ -6,9 +6,9 @@ package com.appspot.relaxe.ent.value;
 import java.util.Date;
 
 import com.appspot.relaxe.ent.Attribute;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.rpc.TimeHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.TimeType;
 
 
@@ -42,7 +42,7 @@ public final class TimeKey<
 		TimeKey<X, T> k = meta.getTimeKey(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = a.type();
+			AbstractPrimitiveType<?> t = a.type();
 			
 			if (TimeType.TYPE.equals(t)) {
 				k = new TimeKey<X, T>(meta, a);
@@ -57,10 +57,12 @@ public final class TimeKey<
 		return TimeType.TYPE;
 	}
 
+	@Override
 	public void set(E e, TimeHolder newValue) {
 		e.setTime(this, newValue);
 	}
 	
+	@Override
 	public TimeHolder get(E e) {
 		return e.getTime(this);
 	}
@@ -81,7 +83,7 @@ public final class TimeKey<
 	}
 
 	@Override
-	public TimeHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public TimeHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return TimeHolder.of(holder);
 	}
 

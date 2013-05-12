@@ -6,7 +6,7 @@ package com.appspot.relaxe.ent.value;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.CharHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.types.CharType;
 
 public final class CharKey<
@@ -53,11 +53,13 @@ public final class CharKey<
 		return CharType.TYPE;
 	}
 	
+	@Override
 	public void set(E e, CharHolder newValue)
 		throws EntityRuntimeException {
 		e.setChar(this, newValue);
 	}
 	
+	@Override
 	public CharHolder get(E e)
 		throws EntityRuntimeException {
 		return e.getChar(this);
@@ -80,7 +82,7 @@ public final class CharKey<
 	}
 	
 	@Override
-	public CharHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public CharHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
 		return CharHolder.of(holder);
 	}
 }

@@ -6,9 +6,9 @@ package com.appspot.relaxe.ent.value;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.IntegerHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.types.IntegerType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 public final class IntegerKey<
 	A extends Attribute,
@@ -40,7 +40,7 @@ public final class IntegerKey<
 		IntegerKey<X, T> k = meta.getIntegerKey(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = a.type();
+			AbstractPrimitiveType<?> t = a.type();
 			
 			if (t != null && IntegerType.TYPE.equals(t)) {
 				k = new IntegerKey<X, T>(meta, a);
@@ -55,10 +55,12 @@ public final class IntegerKey<
 		return IntegerType.TYPE;
 	}
 	
+	@Override
 	public void set(E e, IntegerHolder newValue) {
 		e.setInteger(this, newValue);
 	}
 	
+	@Override
 	public IntegerHolder get(E e) {
 		return e.getInteger(self());
 	}
@@ -84,7 +86,7 @@ public final class IntegerKey<
 	}
 		
 	@Override
-	public IntegerHolder as(PrimitiveHolder<?, ?, ?> unknown) {
+	public IntegerHolder as(AbstractPrimitiveHolder<?, ?, ?> unknown) {
 		return unknown.asIntegerHolder();
 	}
 }

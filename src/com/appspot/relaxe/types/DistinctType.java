@@ -4,7 +4,7 @@
 package com.appspot.relaxe.types;
 
 public abstract class DistinctType<T extends DistinctType<T>>
-	extends PrimitiveType<T> {
+	extends AbstractPrimitiveType<T> {
 	
 	/**
 	 * 
@@ -23,6 +23,6 @@ public abstract class DistinctType<T extends DistinctType<T>>
 	
 	@Override
 	public final int getSqlType() {
-		return PrimitiveType.DISTINCT;
+		return AbstractPrimitiveType.DISTINCT;
 	}
 }

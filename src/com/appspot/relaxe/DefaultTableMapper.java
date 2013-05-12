@@ -113,6 +113,7 @@ public class DefaultTableMapper
 		this.rootPackage = rootPackage;
 	}
 
+	@Override
 	public String getRootPackage() {
 		return rootPackage;
 	}

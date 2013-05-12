@@ -21,7 +21,7 @@ public abstract class ReferenceType<
 	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
 	C extends Content
 >
-	extends Type<T> {
+	extends AbstractType<T> {
 
 	/**
 	 * 
@@ -35,5 +35,6 @@ public abstract class ReferenceType<
 	
 	public abstract M getMetaData();
 	
+	@Override
 	public abstract T self();
 }

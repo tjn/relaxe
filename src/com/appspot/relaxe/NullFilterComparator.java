@@ -11,6 +11,11 @@ import com.appspot.relaxe.meta.NullComparator;
 public class NullFilterComparator<T>
 	extends NullComparator<T> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4967070673372379093L;
+	
 	private Comparator<T> inner;
 	
 	public NullFilterComparator(Comparator<T> inner, boolean nullsAtEnd) {

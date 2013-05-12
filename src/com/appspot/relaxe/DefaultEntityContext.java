@@ -58,6 +58,7 @@ public class DefaultEntityContext
 	    bindAll(this.catalog, tm);
 	}
 	
+	@Override
 	public void bindAll(Catalog catalog, final TableMapper tm) {
 	    if (tm == null) {
 	        throw new NullPointerException();

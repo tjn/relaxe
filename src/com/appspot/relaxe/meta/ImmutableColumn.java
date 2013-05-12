@@ -118,7 +118,8 @@ public class ImmutableColumn
 		return getColumnName().getName();
 	}
 
-    public boolean isDefinitelyNotNullable() {
+    @Override
+	public boolean isDefinitelyNotNullable() {
         return this.definitelyNotNullable;
     }
 	

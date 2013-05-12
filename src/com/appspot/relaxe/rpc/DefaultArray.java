@@ -44,6 +44,7 @@ public class DefaultArray<E extends Serializable>
 	/* (non-Javadoc)
 	 * @see com.appspot.relaxe.rpc.ArrayValue#size()
 	 */
+	@Override
 	public int size() {
 		return this.content.length;
 	}
@@ -51,6 +52,7 @@ public class DefaultArray<E extends Serializable>
 	/* (non-Javadoc)
 	 * @see com.appspot.relaxe.rpc.ArrayValue#get(int)
 	 */
+	@Override
 	public E get(int index) {
 		if (index < 0 || index >= size()) {
 			throw new IndexOutOfBoundsException(Integer.toString(index));

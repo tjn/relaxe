@@ -19,11 +19,13 @@ public abstract class AbstractSimplePager<
 	/* 
 	 * Returns the offset of the first the of the current page.
 	 */
+	@Override
 	public abstract ImmutableValueModel<Long> currentPageOffset();
 	
 	/*
 	 * Returns the offset of the first the of the current page.
 	 */
+	@Override
 	public abstract ImmutableValueModel<Long> available();	
 
 }

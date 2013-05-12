@@ -18,7 +18,7 @@ import com.appspot.relaxe.QueryHelper;
 import com.appspot.relaxe.meta.impl.pg.PGTest;
 import com.appspot.relaxe.pg.pagila.MPAARating;
 import com.appspot.relaxe.query.QueryException;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 
@@ -60,7 +60,7 @@ public class PGTypeTest
 				
 				logger().debug("name: " + cols.getString(4));				
 				int type = cols.getInt(5);				
-				logger().debug("type: " + type + " (" + PrimitiveType.getSQLTypeName(type) + ")");
+				logger().debug("type: " + type + " (" + AbstractPrimitiveType.getSQLTypeName(type) + ")");
 			}
 			
 			
