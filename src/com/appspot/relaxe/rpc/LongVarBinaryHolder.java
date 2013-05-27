@@ -5,7 +5,6 @@ package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.ent.value.LongVarBinary;
 import com.appspot.relaxe.types.LongVarBinaryType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 

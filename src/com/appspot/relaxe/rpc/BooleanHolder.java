@@ -4,7 +4,6 @@
 package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.types.BooleanType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 

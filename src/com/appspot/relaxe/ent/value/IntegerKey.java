@@ -8,7 +8,7 @@ import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.IntegerHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.IntegerType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public final class IntegerKey<
 	A extends Attribute,
@@ -40,7 +40,7 @@ public final class IntegerKey<
 		IntegerKey<X, T> k = meta.getIntegerKey(a);
 		
 		if (k == null) {
-			AbstractPrimitiveType<?> t = a.type();
+			PrimitiveType<?> t = a.type();
 			
 			if (t != null && IntegerType.TYPE.equals(t)) {
 				k = new IntegerKey<X, T>(meta, a);

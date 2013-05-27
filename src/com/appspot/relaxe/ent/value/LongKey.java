@@ -9,7 +9,6 @@ import com.appspot.relaxe.ent.HasKey;
 import com.appspot.relaxe.rpc.LongHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.LongType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public final class LongKey<
@@ -42,7 +41,7 @@ public final class LongKey<
 		LongKey<X, T> k = meta.getLongKey(a);
 		
 		if (k == null) {
-			AbstractPrimitiveType<?> t = a.type();
+			PrimitiveType<?> t = a.type();
 			
 			if (t != null && t.getSqlType() == PrimitiveType.INTEGER) {
 				k = new LongKey<X, T>(meta, a);

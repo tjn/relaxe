@@ -5,7 +5,6 @@ package com.appspot.relaxe.rpc;
 
 import java.util.Date;
 
-import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.PrimitiveType;
 import com.appspot.relaxe.types.TimestampType;
 

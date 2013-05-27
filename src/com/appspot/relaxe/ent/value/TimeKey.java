@@ -8,7 +8,7 @@ import java.util.Date;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.TimeHolder;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 import com.appspot.relaxe.types.TimeType;
 
 
@@ -42,7 +42,7 @@ public final class TimeKey<
 		TimeKey<X, T> k = meta.getTimeKey(a);
 		
 		if (k == null) {
-			AbstractPrimitiveType<?> t = a.type();
+			PrimitiveType<?> t = a.type();
 			
 			if (TimeType.TYPE.equals(t)) {
 				k = new TimeKey<X, T>(meta, a);

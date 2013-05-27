@@ -8,7 +8,7 @@ import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.BooleanHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.BooleanType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public final class BooleanKey<
 	A extends Attribute,
@@ -40,7 +40,7 @@ public final class BooleanKey<
 		BooleanKey<X, T> k = meta.getBooleanKey(a);
 		
 		if (k == null) {
-			AbstractPrimitiveType<?> t = a.type();
+			PrimitiveType<?> t = a.type();
 			
 			if (t != null && BooleanType.TYPE.equals(t)) {
 				k = new BooleanKey<X, T>(meta, a);

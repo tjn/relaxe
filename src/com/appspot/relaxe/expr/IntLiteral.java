@@ -6,7 +6,6 @@
  */
 package com.appspot.relaxe.expr;
 
-import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public class IntLiteral	

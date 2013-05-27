@@ -10,7 +10,7 @@ import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.DateHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.DateType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 
 public final class DateKey<	
@@ -43,7 +43,7 @@ public final class DateKey<
 		DateKey<X, T> k = meta.getDateKey(a);
 		
 		if (k == null) {
-			AbstractPrimitiveType<?> t = a.type();
+			PrimitiveType<?> t = a.type();
 			
 			if (t != null && DateType.TYPE.equals(t)) {
 				k = new DateKey<X, T>(meta, a);

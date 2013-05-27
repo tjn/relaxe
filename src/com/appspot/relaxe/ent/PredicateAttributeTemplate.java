@@ -3,6 +3,7 @@
  */
 package com.appspot.relaxe.ent;
 
+
 import com.appspot.relaxe.ent.value.HasInteger;
 import com.appspot.relaxe.ent.value.HasString;
 import com.appspot.relaxe.ent.value.HasVarchar;
@@ -18,7 +19,7 @@ import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.rpc.IntegerHolder;
 import com.appspot.relaxe.rpc.VarcharHolder;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 /**
  *  
@@ -119,7 +120,7 @@ public abstract class PredicateAttributeTemplate<A extends Attribute>
 		Equals(M meta, A attribute, ValueExpression ve) {
 			this(attribute, ve);
 			
-			AbstractPrimitiveType<?> pt = attribute.type();			
+			PrimitiveType<?> pt = attribute.type();			
 			
 			if (pt.getSqlType() != ve.getType()) {
 				throw new IllegalArgumentException("type mismatch: " + attribute + ": " + pt.getSqlType() + "; " + ve.getType());

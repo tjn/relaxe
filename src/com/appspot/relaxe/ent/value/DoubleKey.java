@@ -8,7 +8,7 @@ import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.DoubleHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.DoubleType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public final class DoubleKey<	
 	A extends Attribute,	
@@ -40,7 +40,7 @@ public final class DoubleKey<
 		DoubleKey<X, T> k = meta.getDoubleKey(a);
 		
 		if (k == null) {
-			AbstractPrimitiveType<?> t = a.type();
+			PrimitiveType<?> t = a.type();
 			
 			if (DoubleType.TYPE.equals(t)) {
 				k = new DoubleKey<X, T>(meta, a);

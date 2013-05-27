@@ -8,7 +8,7 @@ import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.LongVarBinaryHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.LongVarBinaryType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public final class LongVarBinaryKey<
 	A extends Attribute,
@@ -40,7 +40,7 @@ public final class LongVarBinaryKey<
 		LongVarBinaryKey<X, T> k = meta.getLongVarBinaryKey(a);
 		
 		if (k == null) {
-			AbstractPrimitiveType<?> t = a.type();
+			PrimitiveType<?> t = a.type();
 			
 			if (t != null && LongVarBinaryType.TYPE.equals(t)) {
 				k = new LongVarBinaryKey<X, T>(meta, a);

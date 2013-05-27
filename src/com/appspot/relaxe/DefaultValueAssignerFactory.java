@@ -13,7 +13,6 @@ import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.TimeHolder;
 import com.appspot.relaxe.rpc.TimestampHolder;
 import com.appspot.relaxe.rpc.VarcharHolder;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public class DefaultValueAssignerFactory

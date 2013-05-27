@@ -7,7 +7,6 @@ package com.appspot.relaxe.rpc;
 import java.io.Serializable;
 
 import com.appspot.relaxe.types.OtherType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 
