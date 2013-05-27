@@ -9,6 +9,7 @@ import com.appspot.relaxe.rpc.DateHolder;
 import com.appspot.relaxe.rpc.DecimalHolder;
 import com.appspot.relaxe.rpc.IntegerHolder;
 import com.appspot.relaxe.rpc.IntervalHolder;
+import com.appspot.relaxe.rpc.LongVarBinaryHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.TimeHolder;
 import com.appspot.relaxe.rpc.TimestampHolder;
@@ -48,7 +49,11 @@ public class DefaultValueAssignerFactory
 			case PrimitiveType.DECIMAL:	 
 			case PrimitiveType.NUMERIC:
 				pa = createDecimalAssignment(ph.asDecimalHolder());
-				break;				
+				break;
+			case PrimitiveType.LONGVARBINARY:	
+				pa = createLongVarBinaryAssignment(ph.asLongVarBinaryHolder());
+				break;			
+				
 			case PrimitiveType.OTHER:
 				if ("interval_dt".equals(columnType.getTypeName())) {				
 					pa = createIntervalAssignment((IntervalHolder.DayTime) ph);
@@ -107,6 +112,10 @@ public class DefaultValueAssignerFactory
 
 	protected ParameterAssignment createDecimalAssignment(DecimalHolder h) {
 		return new DecimalAssignment(h);
+	}
+	
+	protected ParameterAssignment createLongVarBinaryAssignment(LongVarBinaryHolder h) {
+		return new LongVarBinaryAssignment(h);
 	}
 //
 //	protected ParameterAssignment createDistinctAssignment(DistinctHolder h) {
