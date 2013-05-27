@@ -58,6 +58,7 @@ import com.appspot.relaxe.meta.SchemaElementMap;
 import com.appspot.relaxe.meta.Table;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 import fi.tnie.util.io.IOHelper;
 
@@ -1467,7 +1468,7 @@ public class SourceGenerator {
     	
 //    	JavaType intf = tm.entityType(t, Part.INTERFACE);
     	
-    	// HasProjectKey<Reference, AbstractType, HourReport, MetaData>, HasOrganizationKey<Reference, AbstractType, HourReport, MetaData>
+    	// HasProjectKey<Reference, Type, HourReport, MetaData>, HasOrganizationKey<Reference, Type, HourReport, MetaData>
     	   	    	
     	String args = referenceKeyTypeArgs(tm, t);
     	
@@ -1512,7 +1513,7 @@ public class SourceGenerator {
 	}
 	
 	/**
-     * Returns a comma separated list of the <code>Has&lt;AbstractType&gt;</code> -interfaces 
+     * Returns a comma separated list of the <code>Has&lt;Type&gt;</code> -interfaces 
      * which the table interface for <code>t</code> implements.  
      * @param t
      * @param tm
@@ -1562,7 +1563,7 @@ public class SourceGenerator {
 	
 	
 	/**
-     * Returns a comma separated list of the <code>Has&lt;AbstractType&gt;Key</code> -interfaces 
+     * Returns a comma separated list of the <code>Has&lt;Type&gt;Key</code> -interfaces 
      * which the table meta interface for <code>t</code> implements.  
      * @param t
      * @param tm
@@ -1612,7 +1613,7 @@ public class SourceGenerator {
 	
 	
 	/**
-     * Returns a comma separated list of the <code>Has&lt;AbstractType&gt;</code> -interfaces 
+     * Returns a comma separated list of the <code>Has&lt;Type&gt;</code> -interfaces 
      * which the table interface for <code>t</code> implements.  
      * @param t
      * @param tm
@@ -1826,7 +1827,7 @@ public class SourceGenerator {
 	
 	
 	/**
-     * Returns a comma separated list of the <code>Has&lt;AbstractType&gt;</code> -interfaces 
+     * Returns a comma separated list of the <code>Has&lt;Type&gt;</code> -interfaces 
      * which the table interface for <code>t</code> implements.  
      * @param t
      * @param tm
@@ -2766,7 +2767,7 @@ public class SourceGenerator {
 					buf.append(getAttributeType());
 					buf.append(", ");
 					buf.append(getReferenceType());
-					buf.append(", AbstractType, ");
+					buf.append(", Type, ");
 					buf.append(intf.getUnqualifiedName());					
 					buf.append(", ");
 					buf.append(intf.getUnqualifiedName());
@@ -2960,7 +2961,7 @@ public class SourceGenerator {
 //		private static final long serialVersionUID = 1L;
 //
 //		protected OrganizationKey(
-//				EntityMetaData<com.appspot.relaxe.gen.ent.personal.Person.Attribute, Reference, AbstractType, Person, Content> meta, Reference name) {
+//				EntityMetaData<com.appspot.relaxe.gen.ent.personal.Person.Attribute, Reference, Type, Person, Content> meta, Reference name) {
 //			super(Person.TYPE, name);
 //		}
 		
@@ -3065,7 +3066,7 @@ public class SourceGenerator {
 			appendSchemaPrefix(referenced, nb);
 		}
 		
-		// Project.Key<HourReport.Reference, AbstractType, HourReport, HourReport.MetaData, ?>
+		// Project.Key<HourReport.Reference, Type, HourReport, HourReport.MetaData, ?>
 		
 		JavaType source = tm.entityType(referencing, Part.INTERFACE);
 		JavaType target = tm.entityType(referenced, Part.INTERFACE);
@@ -3244,7 +3245,7 @@ public class SourceGenerator {
         
         buf.append(q);
 		buf.append(".");
-        buf.append("AbstractType");        
+        buf.append("Type");        
         buf.append(", ");       
 
         buf.append(q);		
@@ -3539,7 +3540,7 @@ public class SourceGenerator {
 	
 	private String formatReferenceKey(ForeignKey fk, TableMapper tm) {
 		
-		// Organization.Key<Attribute, Reference, AbstractType, Person, ?> EMPLOYER = com.appspot.relaxe.gen.ent.personal.PersonImpl.PersonMetaData.getInstance().getOrganizationKey(Reference.EMPLOYER);
+		// Organization.Key<Attribute, Reference, Type, Person, ?> EMPLOYER = com.appspot.relaxe.gen.ent.personal.PersonImpl.PersonMetaData.getInstance().getOrganizationKey(Reference.EMPLOYER);
 		String referenceName = referenceName(fk);
 				
 		JavaType tt = tm.entityType(fk.getReferenced(), Part.INTERFACE);
@@ -3566,7 +3567,7 @@ public class SourceGenerator {
 		
 		buf.append(it.getUnqualifiedName());		
 		buf.append(".");
-		buf.append("AbstractType, ");
+		buf.append("Type, ");
 		
 		buf.append(rt.getUnqualifiedName());
 		buf.append(", ");
@@ -3673,7 +3674,7 @@ public class SourceGenerator {
 
 //		private java.util.Map<HourReport.Reference, ProjectKey> projectKeyMap = new java.util.HashMap<HourReport.Reference, ProjectKey>();
 //
-//		public com.appspot.relaxe.gen.ent.personal.Project.Key<Attribute, Reference, AbstractType, HourReport, ?> getProjectKey(Reference ref) {
+//		public com.appspot.relaxe.gen.ent.personal.Project.Key<Attribute, Reference, Type, HourReport, ?> getProjectKey(Reference ref) {
 //			if (ref == null) {
 //				throw new NullPointerException("ref");
 //			}
@@ -3681,10 +3682,10 @@ public class SourceGenerator {
 //			return this.projectKeyMap.get(ref);
 //		}
         
-//        private java.util.Map<HourReport.Reference, Project.Key<Reference, AbstractType, HourReport, HourReport.MetaData, ?>> projectKeyMap = 
-//        	new java.util.HashMap<HourReport.Reference, Project.Key<Reference, AbstractType, HourReport, HourReport.MetaData, ?>>();
+//        private java.util.Map<HourReport.Reference, Project.Key<Reference, Type, HourReport, HourReport.MetaData, ?>> projectKeyMap = 
+//        	new java.util.HashMap<HourReport.Reference, Project.Key<Reference, Type, HourReport, HourReport.MetaData, ?>>();
 //
-//        public com.appspot.relaxe.gen.ent.personal.Project.Key<Reference, AbstractType, HourReport, HourReport.MetaData, ?> getProjectKey( Reference ref) {
+//        public com.appspot.relaxe.gen.ent.personal.Project.Key<Reference, Type, HourReport, HourReport.MetaData, ?> getProjectKey( Reference ref) {
 //        	if (ref == null) {
 //        		throw new NullPointerException("ref");
 //        	}
@@ -3741,7 +3742,7 @@ public class SourceGenerator {
 		
 		// sample output:
 //      {
-//      	final Project.Key<Reference, AbstractType, HourReport, HourReport.MetaData, HourReport.Content> pk = FK_HHR_PROJECT;					
+//      	final Project.Key<Reference, Type, HourReport, HourReport.MetaData, HourReport.Content> pk = FK_HHR_PROJECT;					
 //      	ForeignKey fk = m.getForeignKey(pk.name());				
 //      	TableReference tref = ctx.getQuery().getReferenced(tableRef, fk);
 //
@@ -4049,7 +4050,7 @@ public class SourceGenerator {
 			
 			content.append(attr(c));
 			content.append("(");			
-			AbstractPrimitiveType<?> pt = ai.getPrimitiveType();
+			PrimitiveType<?> pt = ai.getPrimitiveType();
 			
 			if (pt == null) {
 				content.append("null");
@@ -4118,7 +4119,7 @@ public class SourceGenerator {
 			buf.append("return ");
 			buf.append(ref.getQualifiedName());
 			buf.append(".");
-			buf.append("AbstractType");
+			buf.append("Type");
 			buf.append(".TYPE;\n");			
 			buf.append("}\n}");
 			

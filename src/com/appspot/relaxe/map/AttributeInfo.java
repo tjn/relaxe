@@ -3,7 +3,7 @@
  */
 package com.appspot.relaxe.map;
 
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public interface AttributeInfo {
 	
@@ -16,7 +16,7 @@ public interface AttributeInfo {
 	Class<?> getContainerType();
 	Class<?> getContainerMetaType();
 	
-	AbstractPrimitiveType<?> getPrimitiveType();
+	PrimitiveType<?> getPrimitiveType();
 
 	
 }
