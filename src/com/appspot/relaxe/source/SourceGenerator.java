@@ -2733,8 +2733,8 @@ public class SourceGenerator {
 				
 //				Sample output: 
 //				@Override
-//				public IdentityMap<Attribute, Reference, AbstractType, TestGeneratedKey, TestGeneratedKey.Holder, TestGeneratedKey.MetaData> createIdentityMap() {
-//					return new IntIdentityMap<Attribute, Reference, AbstractType, TestGeneratedKey, TestGeneratedKey.Holder, TestGeneratedKey.MetaData>(TestGeneratedKey.ABC);
+//				public IdentityMap<Attribute, Reference, Type, TestGeneratedKey, TestGeneratedKey.Holder, TestGeneratedKey.MetaData> createIdentityMap() {
+//					return new IntIdentityMap<Attribute, Reference, Type, TestGeneratedKey, TestGeneratedKey.Holder, TestGeneratedKey.MetaData>(TestGeneratedKey.ABC);
 //				} 
 				
 				Class<?> aim = ai.getIdentityMapType();
@@ -2743,7 +2743,7 @@ public class SourceGenerator {
 					JavaType intf = tam.entityType(t, Part.INTERFACE);
 					
 					String kv = keyConstantVariable(t, col);
-															
+
 					buf.append("@Override\n");
 					buf.append("public ");
 					buf.append(EntityIdentityMap.class.getCanonicalName());
@@ -2751,7 +2751,7 @@ public class SourceGenerator {
 					buf.append(getAttributeType());
 					buf.append(", ");
 					buf.append(getReferenceType());
-					buf.append(", AbstractType, ");
+					buf.append(", Type, ");
 					buf.append(intf.getUnqualifiedName());
 					buf.append(", ");
 					buf.append(intf.getUnqualifiedName());
