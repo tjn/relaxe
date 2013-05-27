@@ -5,11 +5,11 @@ package com.appspot.relaxe.ent;
 
 import java.io.Serializable;
 
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 
 public interface Attribute
 	extends Identifiable, Serializable {
 
-	AbstractPrimitiveType<?> type();	
+	PrimitiveType<?> type();	
 }
