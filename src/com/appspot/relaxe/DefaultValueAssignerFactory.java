@@ -30,6 +30,9 @@ public class DefaultValueAssignerFactory
 			case PrimitiveType.INTEGER:	 
 				pa = createIntegerAssignment(ph.asIntegerHolder());
 				break;
+			case PrimitiveType.CHAR:	
+				pa = createCharAssignment(ph.asCharHolder());
+				break;
 			case PrimitiveType.VARCHAR:	
 				pa = createVarcharAssignment(ph.asVarcharHolder());
 				break;
