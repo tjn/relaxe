@@ -3092,7 +3092,7 @@ public class SourceGenerator {
 
 		nb.append(source.getUnqualifiedName());
 		nb.append(".");
-		nb.append("AbstractHolder");
+		nb.append("Holder");
 		nb.append(", ");
 
 		nb.append(source.getUnqualifiedName());
@@ -3574,14 +3574,14 @@ public class SourceGenerator {
 		
 		buf.append(rt.getUnqualifiedName());		
 		buf.append(".");		
-		buf.append("AbstractHolder");
+		buf.append("Holder");
 		buf.append(", ");
 
 		buf.append(rt.getUnqualifiedName());		
 		buf.append(".");		
 		buf.append("Factory");
 		buf.append(", ");
-		
+				
 		buf.append(rt.getUnqualifiedName());
 		buf.append(".MetaData");
 		buf.append(", ");
