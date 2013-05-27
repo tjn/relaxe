@@ -30,7 +30,7 @@ public class MPAARatingType
 	}
 
 	@Override
-	public Class<MPAARating> represents() {		
+	public Class<MPAARating> getValueType() {		
 		return MPAARating.class;
 	}	
 	

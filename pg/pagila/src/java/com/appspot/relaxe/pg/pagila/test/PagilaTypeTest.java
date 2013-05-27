@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package com.appspot.relaxe;
+package com.appspot.relaxe.pg.pagila.test;
 
 import java.sql.Array;
 import java.sql.Connection;
@@ -16,13 +16,14 @@ import org.postgresql.util.PGobject;
 
 import com.appspot.relaxe.QueryHelper;
 import com.appspot.relaxe.meta.impl.pg.PGTest;
+// import com.appspot.relaxe.pg.pagila.MPAARating;
 import com.appspot.relaxe.pg.pagila.MPAARating;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 
-public class PGTypeTest
+public class PagilaTypeTest
 	extends PGTest
 {
 	
