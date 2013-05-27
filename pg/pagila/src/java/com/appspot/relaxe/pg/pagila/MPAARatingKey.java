@@ -6,9 +6,10 @@ package com.appspot.relaxe.pg.pagila;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.value.AbstractOtherKey;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.OtherType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public class MPAARatingKey<
 	A extends Attribute,
@@ -43,7 +44,7 @@ public class MPAARatingKey<
 			MPAARatingType kt = MPAARatingType.TYPE;
 			OtherType<?> t = a.type().asOtherType();
 			
-			if (t != null && t.getSqlType() == AbstractPrimitiveType.OTHER && kt.getName().equals(t.getName())) {
+			if (t != null && t.getSqlType() == PrimitiveType.OTHER && kt.getName().equals(t.getName())) {
 				k = new MPAARatingKey<X, T>(meta, a);
 			}			
 		}
@@ -85,7 +86,7 @@ public class MPAARatingKey<
 	}
 
 	@Override
-	public MPAARatingHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public MPAARatingHolder as(PrimitiveHolder<?, ?, ?> holder) {
 		return MPAARatingHolder.of(holder);
 	}
 }
