@@ -3,33 +3,21 @@
  */
 package com.appspot.relaxe.env;
 
-import org.apache.log4j.Logger;
-
 import com.appspot.relaxe.DefaultValueAssignerFactory;
 import com.appspot.relaxe.DefaultValueExtractorFactory;
 import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.ValueExtractorFactory;
 
-
-/**
- * TODO: This needs to be fixed. DefaultImplementation should not extend a DefaultEnvironment.
- * We should not to require implementation object to be serializable.
- */
-
 public abstract class DefaultImplementation<I extends Implementation<I>>	
 	implements Implementation<I> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 399585651114432619L;
 	private ValueExtractorFactory valueExtractorFactory; 
 	private ValueAssignerFactory valueAssignerFactory;	
 //	private Driver driver;
 	
 //	private AttributeWriterFactory attributeWriterFactory;
 	
-	private static Logger logger = Logger.getLogger(DefaultImplementation.class);
+//	private static Logger logger = Logger.getLogger(DefaultImplementation.class);
 	
 	@Override
 	public abstract CatalogFactory catalogFactory();
@@ -88,9 +76,9 @@ public abstract class DefaultImplementation<I extends Implementation<I>>
 //		return this.driver;
 //	}
 	
-	private static Logger logger() {
-		return DefaultImplementation.logger;
-	}
+//	private static Logger logger() {
+//		return DefaultImplementation.logger;
+//	}
 		
 //	protected Driver createDriver() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 //		Class<?> c = Class.forName(driverClassName());
