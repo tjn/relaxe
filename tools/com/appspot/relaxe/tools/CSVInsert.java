@@ -187,8 +187,8 @@ public class CSVInsert
     protected void prepare(Parser p) {        
         super.prepare(p);    
         
-        addOption(p, OPTION_SCHEMA);
-        addOption(p, OPTION_VERBOSE);
+        addOption(p, CatalogTool.OPTION_SCHEMA);
+        addOption(p, CatalogTool.OPTION_VERBOSE);
                 
         Parameter fp = FILES;
         
