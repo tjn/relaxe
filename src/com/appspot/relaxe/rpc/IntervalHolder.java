@@ -5,6 +5,7 @@ package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.types.IntervalType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public abstract class IntervalHolder<V extends Interval<?>, T extends AbstractPrimitiveType<T>, H extends IntervalHolder<V, T, H>>
 	extends AbstractPrimitiveHolder<V, T, H> {
@@ -92,7 +93,7 @@ public abstract class IntervalHolder<V extends Interval<?>, T extends AbstractPr
 			return this;
 		}
 		
-		public static IntervalHolder.DayTime of(AbstractPrimitiveHolder<?, ?, ?> holder) {
+		public static IntervalHolder.DayTime of(PrimitiveHolder<?, ?, ?> holder) {
 			return holder.asDayTimeIntervalHolder();
 		}
 
@@ -123,6 +124,6 @@ public abstract class IntervalHolder<V extends Interval<?>, T extends AbstractPr
 	
 	@Override
 	public int getSqlType() {
-		return AbstractPrimitiveType.OTHER;
+		return PrimitiveType.OTHER;
 	}
 }

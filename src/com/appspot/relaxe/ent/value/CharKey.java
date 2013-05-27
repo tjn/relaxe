@@ -6,7 +6,7 @@ package com.appspot.relaxe.ent.value;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.CharHolder;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.CharType;
 
 public final class CharKey<
@@ -82,7 +82,7 @@ public final class CharKey<
 	}
 	
 	@Override
-	public CharHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public CharHolder as(PrimitiveHolder<?, ?, ?> holder) {
 		return CharHolder.of(holder);
 	}
 }

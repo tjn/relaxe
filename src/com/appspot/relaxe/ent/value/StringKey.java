@@ -4,14 +4,14 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.Attribute;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public abstract class StringKey<
 	A extends Attribute,
 	E extends HasString<A, E>,	
-	P extends AbstractPrimitiveType<P>,
-	H extends AbstractPrimitiveHolder<String, P, H>,
+	P extends PrimitiveType<P>,
+	H extends PrimitiveHolder<String, P, H>,
 	K extends PrimitiveKey<A, E, String, P, H, K>
 	>
 	extends AbstractPrimitiveKey<A, E, String, P, H, K>

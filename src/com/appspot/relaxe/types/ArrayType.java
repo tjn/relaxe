@@ -25,7 +25,7 @@ public abstract class ArrayType<T extends ArrayType<T, E>, E extends AbstractPri
 	
 	@Override
 	public final int getSqlType() {
-		return AbstractPrimitiveType.ARRAY;
+		return PrimitiveType.ARRAY;
 	}
 
 	

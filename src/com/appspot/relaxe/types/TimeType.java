@@ -18,7 +18,7 @@ public class TimeType
 	
 	@Override
 	public int getSqlType() {
-		return AbstractPrimitiveType.TIME;
+		return PrimitiveType.TIME;
 	}
 	
 	@Override

@@ -17,7 +17,7 @@ public class TimestampType
 	
 	@Override
 	public int getSqlType() {
-		return AbstractPrimitiveType.TIMESTAMP;
+		return PrimitiveType.TIMESTAMP;
 	}
 	
 	@Override

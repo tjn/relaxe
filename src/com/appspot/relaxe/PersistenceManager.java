@@ -345,7 +345,7 @@ public class PersistenceManager<
 			  
 		      for (Column ce : fk.getColumnMap().values()) {
 		          Column fc = fk.getReferenced(ce);		          		          
-		          AbstractPrimitiveHolder<?, ?, ?> ph = re.get(fc);
+		          PrimitiveHolder<?, ?, ?> ph = re.get(fc);
 		          
 		          logger().debug("rc: " + fc + " => " + ph);
 		          		          		          
@@ -663,7 +663,7 @@ public class PersistenceManager<
         Predicate p = null;
 
         for (Column col : pkcols) {
-            AbstractPrimitiveHolder<?, ?, ?> o = pe.get(col);
+            PrimitiveHolder<?, ?, ?> o = pe.get(col);
 
             // to successfully create a pk predicate
             // every component must be set:

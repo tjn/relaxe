@@ -28,31 +28,31 @@ public class DefaultValueAssignerFactory
 		int t = ph.getSqlType();
 						
 		switch (t) {
-			case AbstractPrimitiveType.INTEGER:	 
+			case PrimitiveType.INTEGER:	 
 				pa = createIntegerAssignment(ph.asIntegerHolder());
 				break;
-			case AbstractPrimitiveType.VARCHAR:	
+			case PrimitiveType.VARCHAR:	
 				pa = createVarcharAssignment(ph.asVarcharHolder());
 				break;
-			case AbstractPrimitiveType.DATE:	
+			case PrimitiveType.DATE:	
 				pa = createDateAssignment(ph.asDateHolder());
 				break;
-			case AbstractPrimitiveType.TIME:	
+			case PrimitiveType.TIME:	
 				pa = createTimeAssignment(ph.asTimeHolder());
 				break;				
-			case AbstractPrimitiveType.TIMESTAMP:	
+			case PrimitiveType.TIMESTAMP:	
 				pa = createTimestampAssignment(ph.asTimestampHolder());
 				break;
-			case AbstractPrimitiveType.DECIMAL:	 
-			case AbstractPrimitiveType.NUMERIC:
+			case PrimitiveType.DECIMAL:	 
+			case PrimitiveType.NUMERIC:
 				pa = createDecimalAssignment(ph.asDecimalHolder());
 				break;				
-			case AbstractPrimitiveType.OTHER:
+			case PrimitiveType.OTHER:
 				if ("interval_dt".equals(columnType.getTypeName())) {				
 					pa = createIntervalAssignment((IntervalHolder.DayTime) ph);
 				}
 				break;
-			case AbstractPrimitiveType.DISTINCT:	
+			case PrimitiveType.DISTINCT:	
 				pa = createIntervalAssignment((IntervalHolder.YearMonth) ph);
 				break;								
 		default:

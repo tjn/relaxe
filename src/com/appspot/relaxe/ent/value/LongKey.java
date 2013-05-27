@@ -7,9 +7,10 @@ import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.HasKey;
 import com.appspot.relaxe.rpc.LongHolder;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.LongType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public final class LongKey<
 	A extends Attribute,
@@ -43,7 +44,7 @@ public final class LongKey<
 		if (k == null) {
 			AbstractPrimitiveType<?> t = a.type();
 			
-			if (t != null && t.getSqlType() == AbstractPrimitiveType.INTEGER) {
+			if (t != null && t.getSqlType() == PrimitiveType.INTEGER) {
 				k = new LongKey<X, T>(meta, a);
 			}			
 		}
@@ -90,7 +91,7 @@ public final class LongKey<
 	}
 	
 	@Override
-	public LongHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public LongHolder as(PrimitiveHolder<?, ?, ?> holder) {
 		return LongHolder.of(holder);
 	}
 }

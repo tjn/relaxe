@@ -6,6 +6,7 @@ package com.appspot.relaxe.rpc;
 import java.util.Date;
 
 import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 import com.appspot.relaxe.types.TimestampType;
 
 
@@ -48,7 +49,7 @@ public class TimestampHolder
 	
 	@Override
 	public int getSqlType() {
-		return AbstractPrimitiveType.TIMESTAMP;
+		return PrimitiveType.TIMESTAMP;
 	}
 	
 	@Override
@@ -61,7 +62,7 @@ public class TimestampHolder
 		return this;
 	}
 	
-	public static TimestampHolder of(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public static TimestampHolder of(PrimitiveHolder<?, ?, ?> holder) {
 		return holder.asTimestampHolder();
 	}
 }

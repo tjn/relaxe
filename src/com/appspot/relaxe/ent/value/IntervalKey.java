@@ -8,7 +8,7 @@ import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.Interval;
 import com.appspot.relaxe.rpc.IntervalHolder;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.IntervalType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
 
@@ -113,8 +113,7 @@ public abstract class IntervalKey<
 		
 		
 		@Override
-		public com.appspot.relaxe.rpc.IntervalHolder.YearMonth as(
-				AbstractPrimitiveHolder<?, ?, ?> holder) {
+		public com.appspot.relaxe.rpc.IntervalHolder.YearMonth as(PrimitiveHolder<?, ?, ?> holder) {
 			return holder.asYearMonthIntervalHolder();
 		}
 	}
@@ -179,7 +178,7 @@ public abstract class IntervalKey<
 		}
 		
 		@Override
-		public com.appspot.relaxe.rpc.IntervalHolder.DayTime as(AbstractPrimitiveHolder<?, ?, ?> holder) {
+		public com.appspot.relaxe.rpc.IntervalHolder.DayTime as(PrimitiveHolder<?, ?, ?> holder) {
 			return IntervalHolder.DayTime.of(holder);
 		}
 	}

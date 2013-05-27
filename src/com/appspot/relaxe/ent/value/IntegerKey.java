@@ -6,7 +6,7 @@ package com.appspot.relaxe.ent.value;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.IntegerHolder;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
 
@@ -86,7 +86,7 @@ public final class IntegerKey<
 	}
 		
 	@Override
-	public IntegerHolder as(AbstractPrimitiveHolder<?, ?, ?> unknown) {
+	public IntegerHolder as(PrimitiveHolder<?, ?, ?> unknown) {
 		return unknown.asIntegerHolder();
 	}
 }

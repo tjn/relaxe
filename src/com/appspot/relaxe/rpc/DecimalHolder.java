@@ -5,6 +5,7 @@ package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.types.DecimalType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 
 public class DecimalHolder
@@ -49,7 +50,7 @@ public class DecimalHolder
 
 	@Override
 	public int getSqlType() {
-		return AbstractPrimitiveType.DECIMAL;
+		return PrimitiveType.DECIMAL;
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class DecimalHolder
 		return this;
 	}
 	
-	public static DecimalHolder of(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public static DecimalHolder of(PrimitiveHolder<?, ?, ?> holder) {
 		return holder.asDecimalHolder();
 	}
 }

@@ -7,7 +7,7 @@ import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.Decimal;
 import com.appspot.relaxe.rpc.DecimalHolder;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.DecimalType;
 
 public final class DecimalKey<
@@ -83,7 +83,7 @@ public final class DecimalKey<
 	}
 	
 	@Override
-	public DecimalHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public DecimalHolder as(PrimitiveHolder<?, ?, ?> holder) {
 		return DecimalHolder.of(holder);
 	}
 }

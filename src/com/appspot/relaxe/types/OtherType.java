@@ -23,7 +23,7 @@ public abstract class OtherType<T extends OtherType<T>>
 	
 	@Override
 	public final int getSqlType() {
-		return AbstractPrimitiveType.OTHER;
+		return PrimitiveType.OTHER;
 	}
 
 	
@@ -31,6 +31,8 @@ public abstract class OtherType<T extends OtherType<T>>
 	public T asOtherType() {
 		return self();
 	}
+
+	
 	
 	
 }

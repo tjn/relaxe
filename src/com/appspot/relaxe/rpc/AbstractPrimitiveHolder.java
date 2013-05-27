@@ -6,11 +6,12 @@ package com.appspot.relaxe.rpc;
 import java.io.Serializable;
 
 import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public abstract class AbstractPrimitiveHolder<
 	V extends Serializable, 
-	T extends AbstractPrimitiveType<T>, 
-	H extends AbstractPrimitiveHolder<V, T, H>
+	T extends PrimitiveType<T>, 
+	H extends PrimitiveHolder<V, T, H>
 >
 	extends AbstractHolder<V, T, H>
 	implements PrimitiveHolder<V, T, H>
@@ -114,6 +115,7 @@ public abstract class AbstractPrimitiveHolder<
 	/**
 	 * If this holder is an {@link IntervalHolder.DayTime}, returns itself as such. Otherwise, returns <code>null</code> 
 	 */		
+	@Override
 	public IntervalHolder.DayTime asDayTimeIntervalHolder() {
 		return null;
 	}
@@ -121,6 +123,7 @@ public abstract class AbstractPrimitiveHolder<
 	/**
 	 * If this holder is an {@link IntervalHolder.YearMonth}, returns itself as such. Otherwise, returns <code>null</code> 
 	 */		
+	@Override
 	public IntervalHolder.YearMonth asYearMonthIntervalHolder() {
 		return null;
 	}

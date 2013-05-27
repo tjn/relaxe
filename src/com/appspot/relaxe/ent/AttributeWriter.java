@@ -3,12 +3,12 @@
  */
 package com.appspot.relaxe.ent;
 
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
 
 public interface AttributeWriter<
 	A extends Attribute, E 
 > {
 	
-	public AbstractPrimitiveHolder<?, ?, ?> write(DataObject src, E dest) throws EntityRuntimeException;
+	public PrimitiveHolder<?, ?, ?> write(DataObject src, E dest) throws EntityRuntimeException;
 
 }

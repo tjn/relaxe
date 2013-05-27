@@ -6,7 +6,7 @@ package com.appspot.relaxe.ent.value;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.DoubleHolder;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.DoubleType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
 
@@ -84,7 +84,7 @@ public final class DoubleKey<
 	}
 	
 	@Override
-	public DoubleHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public DoubleHolder as(PrimitiveHolder<?, ?, ?> holder) {
 		return DoubleHolder.of(holder);
 	}
 }

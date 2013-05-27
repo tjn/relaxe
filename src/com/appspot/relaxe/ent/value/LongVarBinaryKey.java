@@ -6,7 +6,7 @@ package com.appspot.relaxe.ent.value;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.LongVarBinaryHolder;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.LongVarBinaryType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
 
@@ -86,7 +86,7 @@ public final class LongVarBinaryKey<
 	}
 		
 	@Override
-	public LongVarBinaryHolder as(AbstractPrimitiveHolder<?, ?, ?> unknown) {
+	public LongVarBinaryHolder as(PrimitiveHolder<?, ?, ?> unknown) {
 		return unknown.asLongVarBinaryHolder();
 	}
 }

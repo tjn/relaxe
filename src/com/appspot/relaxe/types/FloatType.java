@@ -17,7 +17,7 @@ public class FloatType
 	
 	@Override
 	public int getSqlType() {
-		return AbstractPrimitiveType.FLOAT;
+		return PrimitiveType.FLOAT;
 	}
 	
 	@Override

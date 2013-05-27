@@ -8,6 +8,7 @@ import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.VisitContext;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public abstract class SQLType
     extends DataTypeDefinition {
@@ -28,37 +29,37 @@ public abstract class SQLType
     
     public static boolean isTextType(int sqltype) {
         return 
-            (sqltype == AbstractPrimitiveType.CHAR) || 
-            (sqltype == AbstractPrimitiveType.VARCHAR) ||            
-            (sqltype == AbstractPrimitiveType.LONGVARCHAR) ||
-            (sqltype == AbstractPrimitiveType.NCHAR) ||
-            (sqltype == AbstractPrimitiveType.NVARCHAR) ||
-            (sqltype == AbstractPrimitiveType.LONGNVARCHAR) ||            
-            (sqltype == AbstractPrimitiveType.CLOB)
+            (sqltype == PrimitiveType.CHAR) || 
+            (sqltype == PrimitiveType.VARCHAR) ||            
+            (sqltype == PrimitiveType.LONGVARCHAR) ||
+            (sqltype == PrimitiveType.NCHAR) ||
+            (sqltype == PrimitiveType.NVARCHAR) ||
+            (sqltype == PrimitiveType.LONGNVARCHAR) ||            
+            (sqltype == PrimitiveType.CLOB)
            ;        
     }
     
     public static boolean isIntegralType(int sqltype) {
         return 
-        (sqltype == AbstractPrimitiveType.TINYINT) || 
-        (sqltype == AbstractPrimitiveType.INTEGER) ||            
-        (sqltype == AbstractPrimitiveType.SMALLINT) ||
-        (sqltype == AbstractPrimitiveType.BIGINT)    
+        (sqltype == PrimitiveType.TINYINT) || 
+        (sqltype == PrimitiveType.INTEGER) ||            
+        (sqltype == PrimitiveType.SMALLINT) ||
+        (sqltype == PrimitiveType.BIGINT)    
        ;        
     }
     
     public static boolean isFixedNumeric(int sqltype) {
         return 
-        (sqltype == AbstractPrimitiveType.NUMERIC) || 
-        (sqltype == AbstractPrimitiveType.DECIMAL)    
+        (sqltype == PrimitiveType.NUMERIC) || 
+        (sqltype == PrimitiveType.DECIMAL)    
        ;        
     }    
     
     public static boolean isFloatingPoint(int sqltype) {
         return 
-        (sqltype == AbstractPrimitiveType.REAL) || 
-        (sqltype == AbstractPrimitiveType.FLOAT) ||
-        (sqltype == AbstractPrimitiveType.DOUBLE)    
+        (sqltype == PrimitiveType.REAL) || 
+        (sqltype == PrimitiveType.FLOAT) ||
+        (sqltype == PrimitiveType.DOUBLE)    
        ;        
     }        
     

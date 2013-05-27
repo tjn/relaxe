@@ -4,6 +4,7 @@
 package com.appspot.relaxe.expr;
 
 import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public class CountFunction
 	extends CompoundElement
@@ -48,7 +49,7 @@ public class CountFunction
 
 	@Override
 	public int getType() {
-		return AbstractPrimitiveType.BIGINT;
+		return PrimitiveType.BIGINT;
 	}
 	
 }

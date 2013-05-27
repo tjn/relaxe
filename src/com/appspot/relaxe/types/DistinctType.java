@@ -23,6 +23,6 @@ public abstract class DistinctType<T extends DistinctType<T>>
 	
 	@Override
 	public final int getSqlType() {
-		return AbstractPrimitiveType.DISTINCT;
+		return PrimitiveType.DISTINCT;
 	}
 }

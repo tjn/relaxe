@@ -58,7 +58,7 @@ public class VarcharHolder
 		return this;
 	}
 	
-	public static VarcharHolder of(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public static VarcharHolder of(PrimitiveHolder<?, ?, ?> holder) {
 		return holder.asVarcharHolder();
 	}
 }

@@ -3,9 +3,9 @@
  */
 package com.appspot.relaxe.rpc;
 
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
-public abstract class StringHolder<T extends AbstractPrimitiveType<T>, H extends StringHolder<T, H>>
+public abstract class StringHolder<T extends PrimitiveType<T>, H extends StringHolder<T, H>>
 	extends AbstractPrimitiveHolder<String, T, H> {
 	
 	/**

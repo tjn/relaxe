@@ -19,7 +19,7 @@ public class LongVarBinaryType
 	
 	@Override
 	public int getSqlType() {
-		return AbstractPrimitiveType.LONGVARBINARY;
+		return PrimitiveType.LONGVARBINARY;
 	}
 	
 	@Override

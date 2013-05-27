@@ -6,7 +6,7 @@ package com.appspot.relaxe.ent.value;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.BooleanHolder;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.BooleanType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
 
@@ -86,7 +86,7 @@ public final class BooleanKey<
 	}
 		
 	@Override
-	public BooleanHolder as(AbstractPrimitiveHolder<?, ?, ?> unknown) {
+	public BooleanHolder as(PrimitiveHolder<?, ?, ?> unknown) {
 		return unknown.asBooleanHolder();
 	}
 }

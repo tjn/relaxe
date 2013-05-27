@@ -50,6 +50,9 @@ public interface PrimitiveHolder<
 	
 	ArrayHolder<?, ?, ?, ?, ?> asArrayHolder(String typeName);
 	
-	LongVarBinaryHolder asLongVarBinaryHolder();	
-
+	LongVarBinaryHolder asLongVarBinaryHolder();
+	
+	IntervalHolder.DayTime asDayTimeIntervalHolder();
+	
+	IntervalHolder.YearMonth asYearMonthIntervalHolder();
 }

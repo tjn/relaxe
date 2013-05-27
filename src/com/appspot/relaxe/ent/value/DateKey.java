@@ -8,7 +8,7 @@ import java.util.Date;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.DateHolder;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.DateType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
 
@@ -88,7 +88,7 @@ public final class DateKey<
 	}
 	
 	@Override
-	public DateHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public DateHolder as(PrimitiveHolder<?, ?, ?> holder) {
 		return DateHolder.as(holder);
 	}
 }

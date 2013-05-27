@@ -5,6 +5,7 @@ package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 
 public class IntegerHolder
@@ -60,7 +61,7 @@ public class IntegerHolder
 
 	@Override
 	public int getSqlType() {
-		return AbstractPrimitiveType.INTEGER;
+		return PrimitiveType.INTEGER;
 	}
 	
 	public static class Factory

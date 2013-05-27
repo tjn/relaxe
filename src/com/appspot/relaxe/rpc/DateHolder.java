@@ -56,7 +56,7 @@ public class DateHolder
 		return this;
 	}
 	
-	public static DateHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public static DateHolder as(PrimitiveHolder<?, ?, ?> holder) {
 		return holder.asDateHolder();
 	}
 }

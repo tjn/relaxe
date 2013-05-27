@@ -5,6 +5,7 @@ package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.types.LongType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 
 public class LongHolder
@@ -51,7 +52,7 @@ public class LongHolder
 
 	@Override
 	public int getSqlType() {
-		return AbstractPrimitiveType.BIGINT;
+		return PrimitiveType.BIGINT;
 	}
 	
 	/**
@@ -67,7 +68,7 @@ public class LongHolder
 		return this;
 	}
 
-	public static LongHolder of(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public static LongHolder of(PrimitiveHolder<?, ?, ?> holder) {
 		return holder.asLongHolder();
 	}
 }

@@ -24,7 +24,8 @@ import com.appspot.relaxe.expr.InsertStatement;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.types.PrimitiveType;
 import com.appspot.relaxe.types.ReferenceType;
 
 
@@ -112,8 +113,8 @@ public abstract class AbstractGeneratedKeyHandler
 		A extends Attribute,
 		E extends Entity<A, ?, ?, E, ?, ?, ?, ?>,
 		V extends Serializable,
-		P extends AbstractPrimitiveType<P>,
-		VH extends AbstractPrimitiveHolder<V, P, VH>,	
+		P extends PrimitiveType<P>,
+		VH extends PrimitiveHolder<V, P, VH>,	
 		VK extends PrimitiveKey<A, E, V, P, VH, VK>
 	>
 	void write(final PrimitiveKey<A, E, V, P, VH, VK> key, final ValueExtractor<?, ?, ?> ve, ResultSet src, E dest) throws SQLException {

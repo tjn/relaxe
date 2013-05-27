@@ -5,7 +5,6 @@ package com.appspot.relaxe.ent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -148,6 +147,7 @@ public abstract class DefaultQueryTemplate<
 		getAttributeMap().put(a, t);
 	}
 	
+	@Override
 	public void remove(Iterable<A> as) {
 		if (as == null) {
 			throw new NullPointerException("as");

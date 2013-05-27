@@ -5,7 +5,7 @@ package com.appspot.relaxe.rpc;
 
 import java.io.Serializable;
 
-import com.appspot.relaxe.types.AbstractType;
+import com.appspot.relaxe.types.Type;
 
 
 /** 
@@ -13,7 +13,7 @@ import com.appspot.relaxe.types.AbstractType;
  */
 public abstract class AbstractHolder<
 	V extends Serializable, 
-	T extends AbstractType<T>, 
+	T extends Type<T>, 
 	H extends Holder<V, T, H>
 >
 	implements Holder<V, T, H>, Serializable {

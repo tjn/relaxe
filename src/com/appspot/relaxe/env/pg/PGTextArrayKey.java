@@ -6,7 +6,7 @@ package com.appspot.relaxe.env.pg;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.value.AbstractArrayKey;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.StringArray;
 import com.appspot.relaxe.types.ArrayType;
 import com.appspot.relaxe.types.VarcharType;
@@ -87,7 +87,7 @@ public class PGTextArrayKey<
 	}
 
 	@Override
-	public PGTextArrayHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public PGTextArrayHolder as(PrimitiveHolder<?, ?, ?> holder) {
 		return PGTextArrayHolder.of(holder);
 	}
 

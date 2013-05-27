@@ -7,6 +7,7 @@
 package com.appspot.relaxe.expr;
 
 import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public class IntLiteral	
 	implements Token, ValueExpression {
@@ -42,7 +43,7 @@ public class IntLiteral
 	
 	@Override
 	public int getType() {
-		return AbstractPrimitiveType.INTEGER;
+		return PrimitiveType.INTEGER;
 	}
 
 	@Override

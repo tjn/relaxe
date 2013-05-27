@@ -17,7 +17,7 @@ public class DoubleType
 	
 	@Override
 	public int getSqlType() {
-		return AbstractPrimitiveType.DOUBLE;
+		return PrimitiveType.DOUBLE;
 	}
 	
 	@Override

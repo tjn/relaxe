@@ -17,7 +17,7 @@ public class LongType
 	
 	@Override
 	public int getSqlType() {
-		return AbstractPrimitiveType.BIGINT;
+		return PrimitiveType.BIGINT;
 	}
 	
 	@Override

@@ -6,6 +6,7 @@ package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.types.CharType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public class CharHolder
 	extends StringHolder<CharType, CharHolder> {
@@ -43,7 +44,7 @@ public class CharHolder
 	
 	@Override
 	public int getSqlType() {
-		return AbstractPrimitiveType.CHAR;
+		return PrimitiveType.CHAR;
 	}
 	
 	@Override
@@ -56,7 +57,7 @@ public class CharHolder
 		return this;
 	}
 
-	public static CharHolder of(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public static CharHolder of(PrimitiveHolder<?, ?, ?> holder) {
 		return holder.asCharHolder();
 	}
 	

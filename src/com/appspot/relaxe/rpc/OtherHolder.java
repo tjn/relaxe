@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 import com.appspot.relaxe.types.OtherType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 
 public abstract class OtherHolder<V extends Serializable, T extends OtherType<T>, H extends OtherHolder<V, T, H>>
@@ -31,7 +32,7 @@ public abstract class OtherHolder<V extends Serializable, T extends OtherType<T>
 	
 	@Override
 	public final int getSqlType() {
-		return AbstractPrimitiveType.OTHER;
+		return PrimitiveType.OTHER;
 	}
 
 	

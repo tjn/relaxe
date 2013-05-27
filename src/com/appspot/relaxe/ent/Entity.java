@@ -12,11 +12,10 @@ import com.appspot.relaxe.ent.value.HasString;
 import com.appspot.relaxe.ent.value.PrimitiveKey;
 import com.appspot.relaxe.ent.value.StringKey;
 import com.appspot.relaxe.meta.Column;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.rpc.StringHolder;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 import com.appspot.relaxe.types.ReferenceType;
 
 
@@ -37,8 +36,8 @@ public interface Entity<
 
 	<
 		S extends Serializable,
-		P extends AbstractPrimitiveType<P>,
-		PH extends AbstractPrimitiveHolder<S, P, PH>,
+		P extends PrimitiveType<P>,
+		PH extends PrimitiveHolder<S, P, PH>,
 		K extends PrimitiveKey<A, E, S, P, PH, K>
 	>
 	PH get(K k)
@@ -59,8 +58,8 @@ public interface Entity<
 
 	<
 		S extends Serializable,
-		P extends AbstractPrimitiveType<P>,
-		RH extends AbstractPrimitiveHolder<S, P, RH>,
+		P extends PrimitiveType<P>,
+		RH extends PrimitiveHolder<S, P, RH>,
 		K extends PrimitiveKey<A, E, S, P, RH, K>
 	>
 	void set(K k, RH newValue)
@@ -105,7 +104,7 @@ public interface Entity<
 	 * @throws NullPointerException If <code>c</code> is <code>null</code>.
 	 */
 
-	AbstractPrimitiveHolder<?, ?, ?> get(Column c) throws NullPointerException, EntityRuntimeException;
+	PrimitiveHolder<?, ?, ?> get(Column c) throws NullPointerException, EntityRuntimeException;
 
 	/***
 	 * Returns the value of the corresponding column.
@@ -127,7 +126,7 @@ public interface Entity<
 
 	EntityDiff<A, R, T, E> diff(E another) throws EntityRuntimeException;
 
-	Map<Column, AbstractPrimitiveHolder<?, ?, ?>> getPrimaryKey() throws EntityRuntimeException;
+	Map<Column, PrimitiveHolder<?, ?, ?>> getPrimaryKey() throws EntityRuntimeException;
 
 	/**
 	 * Returns the meta-data object which describes the structure of this object.
@@ -140,24 +139,26 @@ public interface Entity<
 	H ref();
 
 
+	
 	@Override
 	public <
-		P extends AbstractPrimitiveType<P>,
+		P extends PrimitiveType<P>,
 		SH extends StringHolder<P, SH>,		
 		K extends StringKey<A, E, P, SH, K>
 	>
 	SH getString(K k) throws EntityRuntimeException;
 
+	
 	@Override
 	public <
-		P extends AbstractPrimitiveType<P>,
+		P extends PrimitiveType<P>,
 		SH extends StringHolder<P, SH>,
 		K extends StringKey<A, E, P, SH, K>
 	>
 	void setString(K k, SH s) throws EntityRuntimeException;
 
 	public <
-		P extends AbstractPrimitiveType<P>,
+		P extends PrimitiveType<P>,
 		SH extends StringHolder<P, SH>,
 		K extends StringKey<A, E, P, SH, K>
 	>
@@ -185,8 +186,8 @@ public interface Entity<
 	 */
 	public <
 		VV extends Serializable,
-		VT extends AbstractPrimitiveType<VT>,
-		VH extends AbstractPrimitiveHolder<VV, VT, VH>,
+		VT extends PrimitiveType<VT>,
+		VH extends PrimitiveHolder<VV, VT, VH>,
 		K extends PrimitiveKey<A, E, VV, VT, VH, K>
 	>
 	void remove(K key);
@@ -204,8 +205,8 @@ public interface Entity<
 //	 */
 //	public <
 //		VV extends Serializable,
-//		VT extends AbstractPrimitiveType<VT>,
-//		VH extends AbstractPrimitiveHolder<VV, VT>,
+//		VT extends PrimitiveType<VT>,
+//		VH extends PrimitiveHolder<VV, VT>,
 //		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
 //	>
 //	void reset(K key);
@@ -226,8 +227,8 @@ public interface Entity<
 	 */
 	public <
 		VV extends Serializable,
-		VT extends AbstractPrimitiveType<VT>,
-		VH extends AbstractPrimitiveHolder<VV, VT, VH>,
+		VT extends PrimitiveType<VT>,
+		VH extends PrimitiveHolder<VV, VT, VH>,
 		K extends PrimitiveKey<A, E, VV, VT, VH, K>
 	>
 	boolean has(K key);
@@ -245,8 +246,8 @@ public interface Entity<
 	 */
 	public <
 		VV extends Serializable,
-		VT extends AbstractPrimitiveType<VT>,
-		VH extends AbstractPrimitiveHolder<VV, VT, VH>,
+		VT extends PrimitiveType<VT>,
+		VH extends PrimitiveHolder<VV, VT, VH>,
 		K extends PrimitiveKey<A, E, VV, VT, VH, K>
 	>
 	boolean match(K key, E another);

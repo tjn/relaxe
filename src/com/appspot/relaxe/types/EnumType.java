@@ -22,8 +22,5 @@ public abstract class EnumType<T extends EnumType<T, E>, E extends Enum<E> & Enu
 	@Override
 	public abstract String getName();
 	
-	public abstract Class<E> represents();
-
-	
-	
+	public abstract Class<E> getValueType();	
 }

@@ -17,7 +17,7 @@ public class CharType
 	
 	@Override
 	public int getSqlType() {
-		return AbstractPrimitiveType.CHAR;
+		return PrimitiveType.CHAR;
 	}
 
 	@Override

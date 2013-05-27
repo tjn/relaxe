@@ -18,7 +18,7 @@ public class VarcharType
 	
 	@Override
 	public int getSqlType() {
-		return AbstractPrimitiveType.VARCHAR;
+		return PrimitiveType.VARCHAR;
 	}
 	
 	@Override
