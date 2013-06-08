@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 import com.appspot.relaxe.ent.im.EntityIdentityMap;
 import com.appspot.relaxe.ent.im.ReferenceIdentityMap;
@@ -38,8 +38,7 @@ public abstract class DefaultEntityBuilder<
 >
 	implements EntityBuilder<E, H> {
 	
-	private static Logger logger = Logger.getLogger(DefaultEntityBuilder.class);
-
+//	private static Logger logger = Logger.getLogger(DefaultEntityBuilder.class);
 
 	private TableReference tableRef = null;
 	
@@ -86,7 +85,7 @@ public abstract class DefaultEntityBuilder<
 	public H read(DataObject src) {
 		E ne = getMetaData().getFactory().newEntity();
 		
-		logger().debug("read: " + ne);
+//		logger().debug("read: " + ne);
 		
 		int nc = copy(src, ne, this.primaryKeyWriterList);
 		
@@ -97,7 +96,7 @@ public abstract class DefaultEntityBuilder<
 		
 		if (!ne.isIdentified()) {
 //			// read by linker
-			logger().debug("read: not identified: " + ne);
+//			logger().debug("read: not identified: " + ne);
 //			return null;
 		}
 		
@@ -189,8 +188,8 @@ public abstract class DefaultEntityBuilder<
 		
 //		AttributeMapping am = ctx.getAttributeMapping(attribute);
 		
-		logger().debug("addWriter: attribute=" + attribute);
-		logger().debug("addWriter: pk=" + pk);
+//		logger().debug("addWriter: attribute=" + attribute);
+//		logger().debug("addWriter: pk=" + pk);
 		
 		if (pk == null) {
 			return;
@@ -236,7 +235,7 @@ public abstract class DefaultEntityBuilder<
 	}
 	
 
-	private static Logger logger() {
-		return DefaultEntityBuilder.logger;
-	}
+//	private static Logger logger() {
+//		return DefaultEntityBuilder.logger;
+//	}
 }
