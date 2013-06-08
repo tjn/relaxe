@@ -4,8 +4,10 @@
 package com.appspot.relaxe.rpc;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DefaultArray<E extends Serializable>
+public abstract class AbstractArray<E extends Serializable>
 	implements Serializable, ArrayValue<E> {	
 	/**
 	 * 
@@ -18,14 +20,14 @@ public class DefaultArray<E extends Serializable>
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
-	private DefaultArray() {
+	private AbstractArray() {
 	}
 	
 	protected E[] getContent() {
 		return content;
 	}
 	
-	public DefaultArray(ArrayValue<E> src) {
+	public AbstractArray(ArrayValue<E> src) {
 		if (src == null) {
 			throw new NullPointerException("src");
 		}
@@ -33,7 +35,7 @@ public class DefaultArray<E extends Serializable>
 		this.content = src.toArray();
 	}
 		
-	protected DefaultArray(E[] content) {
+	protected AbstractArray(E[] content) {
 		if (content == null) {
 			throw new NullPointerException("content");
 		}
@@ -62,7 +64,5 @@ public class DefaultArray<E extends Serializable>
 	}
 
 	@Override
-	public E[] toArray() {
-		return content.clone();
-	}
+	public abstract E[] toArray();
 }

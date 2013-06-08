@@ -5,7 +5,7 @@ package com.appspot.relaxe.rpc;
 
 
 public class StringArray
-	extends DefaultArray<String> {
+	extends AbstractArray<String> {
 	
 	/**
 	 * 
@@ -28,4 +28,10 @@ public class StringArray
 	public StringArray(String[] content) {
 		super(content.clone());
 	}
+	
+	@Override
+	public String[] toArray() {		
+		return this.getContent().clone();
+	}
+	
 }
