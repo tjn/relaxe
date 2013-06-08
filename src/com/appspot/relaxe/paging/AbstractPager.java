@@ -67,7 +67,7 @@ public abstract class AbstractPager<
 //		return (offset() > 0);
 //	}
 	
-	public AbstractPager(Fetcher<Q, R, Receiver<R>> fetcher, int pageSize) {
+	public AbstractPager(Fetcher<Q, R, Receiver<R>> fetcher, int pageSize, R currentPage) {
 		super();		
 		setFetcher(fetcher);
 		
@@ -76,11 +76,12 @@ public abstract class AbstractPager<
 		}
 		
 		this.pageSize = pageSize;
+		this.currentPage = currentPage;
 	}
 	
-	public AbstractPager(Fetcher<Q, R, Receiver<R>> fetcher, int pageSize, Q query) {
-		this(fetcher, pageSize);
-		setQuery(query);
+	public AbstractPager(Fetcher<Q, R, Receiver<R>> fetcher, int pageSize, Q query, R currentPage) {
+		this(fetcher, pageSize, currentPage);
+		setQuery(query);		
 	}
 
 	@Override
@@ -142,7 +143,7 @@ public abstract class AbstractPager<
 		Receiver<R> r = new Receiver<R>() {
 			@Override
 			public void receive(R result) {
-				received(result, nextIndex);				
+				received(result, nextIndex);	
 			}
 		};
 		
@@ -201,6 +202,10 @@ public abstract class AbstractPager<
 			@Override
 			public void remove() {
 				getHandlerMap().remove(this);
+			}
+						
+			public void renew() {
+				getHandlerMap().put(this, handler);
 			}
 		};
 		
@@ -296,7 +301,7 @@ public abstract class AbstractPager<
 	}
 	
 	@Override
-	public boolean select(int index) {		
+	public boolean select(int index) {
 		if (index < 0) {
 			return false;
 		}

@@ -30,7 +30,7 @@ public class PagerEvent<
 	}
 		
 	public boolean on(Pager.Flags flag) {
-		return flags != null && flags.contains(flag);
+		return (flags != null) && flags.contains(flag);
 	}
 	
 }

@@ -3,6 +3,7 @@
  */
 package com.appspot.relaxe.paging;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,23 +13,19 @@ import com.appspot.relaxe.paging.Fetcher;
 import com.appspot.relaxe.paging.Receiver;
 
 
-public class StringListFetcher
-	implements Fetcher<Void, ElementListPage<String>, Receiver<ElementListPage<String>>> {
+public class ListFetcher<E extends Serializable>
+	implements Fetcher<Void, ElementListPage<E>, Receiver<ElementListPage<E>>> {
 	
-	private List<String> content;
-	private Long available = null;
-
-	public StringListFetcher(List<String> content) {
+	private List<E> content;
+		
+	public ListFetcher(List<E> content) {
 		super();
-		this.content = content;
-		this.available = Long.valueOf(this.content.size());
+		this.content = content;		
 	}
-
-
 
 	@Override
 	public void fetch(Void queryTemplate, FetchOptions opts,
-			Receiver<ElementListPage<String>> resultReceiver,
+			Receiver<ElementListPage<E>> resultReceiver,
 			Receiver<Throwable> errorReceiver) {
 				
 		int size = this.content.size();
@@ -37,7 +34,7 @@ public class StringListFetcher
 		
 		int c = (count == null) ? size - o : count.intValue();
 		
-		List<String> data = new ArrayList<String>(c);
+		List<E> data = new ArrayList<E>(c);
 		
 		for (int i = 0; i < c; i++) {
 			if (o + i < size) {
@@ -47,8 +44,9 @@ public class StringListFetcher
 				break;
 			}
 		}
-		
-		ElementListPage<String> p = new ElementListPage<String>(data, o, this.available, opts);
+	
+		Long available = Long.valueOf(this.content.size());
+		ElementListPage<E> p = new ElementListPage<E>(data, o, available, opts);
 		resultReceiver.receive(p);
 	}
 }
