@@ -37,6 +37,8 @@ import com.appspot.relaxe.meta.ImmutableSchema;
 import com.appspot.relaxe.meta.ImmutableTable;
 import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.meta.SchemaElementMap;
+import com.appspot.relaxe.meta.SchemaElementNameMap;
+import com.appspot.relaxe.meta.SchemaNameComparator;
 import com.appspot.relaxe.meta.Table;
 import com.appspot.relaxe.query.QueryException;
 

@@ -5,7 +5,6 @@ package com.appspot.relaxe.meta;
 
 import java.util.Map;
 
-import com.appspot.relaxe.env.SchemaElementNameMap;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaElementName;
 

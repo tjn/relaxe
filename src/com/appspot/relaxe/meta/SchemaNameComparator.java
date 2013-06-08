@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package com.appspot.relaxe.env;
+package com.appspot.relaxe.meta;
 
 import java.util.Comparator;
 
