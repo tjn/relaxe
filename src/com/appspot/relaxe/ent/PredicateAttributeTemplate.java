@@ -4,6 +4,8 @@
 package com.appspot.relaxe.ent;
 
 
+import java.util.Collection;
+
 import com.appspot.relaxe.ent.value.HasInteger;
 import com.appspot.relaxe.ent.value.HasString;
 import com.appspot.relaxe.ent.value.HasVarchar;
@@ -11,12 +13,15 @@ import com.appspot.relaxe.ent.value.IntegerKey;
 import com.appspot.relaxe.ent.value.PrimitiveKey;
 import com.appspot.relaxe.ent.value.VarcharKey;
 import com.appspot.relaxe.expr.ColumnReference;
+import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.IntLiteral;
 import com.appspot.relaxe.expr.Predicate;
 import com.appspot.relaxe.expr.StringLiteral;
 import com.appspot.relaxe.expr.TableReference;
 import com.appspot.relaxe.expr.ValueExpression;
+import com.appspot.relaxe.expr.VisitContext;
 import com.appspot.relaxe.expr.op.Comparison;
+import com.appspot.relaxe.expr.op.ValueExpressionIn;
 import com.appspot.relaxe.rpc.IntegerHolder;
 import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.types.PrimitiveType;
@@ -132,6 +137,37 @@ public abstract class PredicateAttributeTemplate<A extends Attribute>
 			return Comparison.eq(cr, this.expression);			
 		}
 	}
+	
+	public static class In<A extends Attribute>
+		extends PredicateAttributeTemplate<A> {
+	
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4545159706806621845L;		
+		private Collection<ValueExpression> values;
+	
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		@SuppressWarnings("unused")
+		private In() {	
+		}
+		
+		public In(A attribute, Collection<ValueExpression> values) {
+			super(attribute);
+			this.values = values;
+		}		
+				
+		@Override
+		public Predicate predicate(TableReference tref, ColumnReference cr) {			
+			ValueExpressionIn in = new ValueExpressionIn(cr, values);
+			return in;			
+		}
+	}
+	
+	
+		
 
 
 		@Override
@@ -167,6 +203,13 @@ public abstract class PredicateAttributeTemplate<A extends Attribute>
 		}		
 	}
 	
+	public static <
+		A extends Attribute
+	>
+	PredicateAttributeTemplate<A> in(A attribute, Collection<ValueExpression> values) {		
+		return new In<A>(attribute, values);
+	}
+	
 	public static 
 	<A extends Attribute>
 	PredicateAttributeTemplate<A> eq(A attribute, String value) {
@@ -188,6 +231,17 @@ public abstract class PredicateAttributeTemplate<A extends Attribute>
 		IntegerHolder h = k.get(e);		
 		return eq(k.name(), h.value());
 	}
+	
+	
+//	public static 
+//	<
+//		A extends Attribute,
+//		E extends HasInteger<A, E>
+//	>
+//	PredicateAttributeTemplate<A> in(IntegerKey<A, E> k, E e) {
+//		IntegerHolder h = k.get(e);		
+//		return eq(k.name(), h.value());
+//	}
 	
 	public static 
 	<
