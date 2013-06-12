@@ -15,9 +15,13 @@ public class IntLiteral
 	 * 
 	 */
 	private static final long serialVersionUID = -2349786152502099361L;
+	
 	private int value;
 	
 	
+	public static final IntLiteral ZERO = new IntLiteral(0);
+	public static final IntLiteral ONE = new IntLiteral(1); 
+		
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
