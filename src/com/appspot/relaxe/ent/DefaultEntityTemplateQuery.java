@@ -602,7 +602,8 @@ public class DefaultEntityTemplateQuery<
 	@Override
     public TableReference getTableRef() {
         if (this.rootRef == null) {
-            this.rootRef = new TableReference(getMetaData().getBaseTable());
+        	// init sets all the tables references at once, including root.
+        	init();
         }
 
         return this.rootRef;
