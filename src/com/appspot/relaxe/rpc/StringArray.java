@@ -26,12 +26,18 @@ public class StringArray
 	}
 
 	public StringArray(String[] content) {
-		super(content.clone());
+		super(copy(content));
 	}
 	
 	@Override
 	public String[] toArray() {		
-		return this.getContent().clone();
+		return copy(this.getContent());
+	}
+	
+	public static String[] copy(String[] src) {
+		String[] dest = new String[src.length];
+		System.arraycopy(src, 0, dest, 0, src.length);
+		return dest;
 	}
 	
 }

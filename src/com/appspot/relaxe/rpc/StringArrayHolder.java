@@ -24,7 +24,7 @@ public abstract class StringArrayHolder<
 	}
 
 	public StringArrayHolder(String[] data) {
-		this.content = data.clone();
+		this.content = StringArray.copy(data);
 	}
 	
 	public StringArrayHolder(ArrayValue<String> value) {
@@ -37,6 +37,6 @@ public abstract class StringArrayHolder<
 	}
 	
 	public String[] getContent() {
-		return content.clone();
+		return StringArray.copy(content);
 	}
 }
