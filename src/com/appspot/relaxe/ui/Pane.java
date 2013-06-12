@@ -6,7 +6,7 @@ package com.appspot.relaxe.ui;
 public interface Pane<
 	U extends UI<U>
 > {	
-	Pane<U> getParent();
+	Pane<U> getParentPane();
 	U getUI();	
 	void setView(View<U> content);
 }
