@@ -18,6 +18,7 @@ import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.expr.CountFunction;
 import com.appspot.relaxe.expr.DefaultTableExpression;
 import com.appspot.relaxe.expr.From;
+import com.appspot.relaxe.expr.IntLiteral;
 import com.appspot.relaxe.expr.Limit;
 import com.appspot.relaxe.expr.NestedTableReference;
 import com.appspot.relaxe.expr.Offset;
@@ -173,12 +174,20 @@ public class QueryExecutor {
 	}
 	
 	private SelectStatement createCountQuery(SelectStatement qs) {
-		TableExpression te = qs.getTableExpr();			
-		QueryExpression tx = new DefaultTableExpression(te);						
+		TableExpression te = qs.getTableExpr();	
+		
+		Select select = new Select();
+
+//		Some RDBMS's may whine if same column name appears more than once in sub-query. 
+//		(http://bugs.mysql.com/bug.php?id=6709):
+		select.add(IntLiteral.ONE);
+		
+		QueryExpression tx = new DefaultTableExpression(select, te.getFrom(), te.getWhere(), te.getGroupBy());
+		
 		final NestedTableReference nt = new NestedTableReference(tx);												
 		DefaultTableExpression ce = new DefaultTableExpression();
 		
-		From from = new From(nt);			
+		From from = new From(nt);
 		ce.setFrom(from);
 		
 		Select s = new Select();
