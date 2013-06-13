@@ -15,7 +15,7 @@ public class PagilaStatementExecutorTest
 
 	@Override
 	protected PersistenceContext<PGImplementation> createPersistenceContext() {
-		return null;
+		return new PagilaPersistenceContext();
 	}
 		
 	public void testFetch() throws Exception {

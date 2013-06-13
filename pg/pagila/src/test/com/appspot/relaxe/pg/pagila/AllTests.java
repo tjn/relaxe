@@ -12,10 +12,13 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for com.appspot.relaxe.meta.impl.pg.pagila");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(PagilaEntityQueryExecutorTest.class);
 		suite.addTestSuite(PagilaDataAccessSessionTest.class);
+		suite.addTestSuite(PagilaDefaultEntityQueryTest.class);
+		suite.addTestSuite(PagilaEntityQueryExecutorTest.class);
+		suite.addTestSuite(PagilaIntegerKeyTest.class);
 		suite.addTestSuite(PagilaPersistenceManagerTest.class);
-		suite.addTestSuite(PagilaUnificationContextTest.class);		
+		suite.addTestSuite(PagilaStatementExecutorTest.class);
+		suite.addTestSuite(PagilaUnificationContextTest.class);
 		//$JUnit-END$
 		return suite;
 	}

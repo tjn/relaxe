@@ -18,6 +18,7 @@ import com.appspot.relaxe.env.pg.PGCatalogFactory;
 import com.appspot.relaxe.env.pg.PGImplementation;
 import com.appspot.relaxe.expr.SelectStatement;
 import com.appspot.relaxe.gen.pagila.ent.pub.Actor;
+import com.appspot.relaxe.gen.pagila.ent.pub.Actor.Content;
 import com.appspot.relaxe.gen.pagila.ent.pub.Category;
 import com.appspot.relaxe.gen.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor;
@@ -101,12 +102,8 @@ public class PagilaDefaultEntityQueryTest
 //    	LiteralCatalog cc = LiteralCatalog.getInstance();
     	// PublicFactory pf = new PublicFactoryImpl();
     	
-    	Film.Factory ff = Film.Type.TYPE.getMetaData().getFactory();
-    	    	
     	Film film = newEntity(Film.Type.TYPE);
     	
-    	Category.Factory cf = Category.Type.TYPE.getMetaData().getFactory();
-    	    	
     	Category category = newEntity(Category.Type.TYPE);
     	category.getContent().setName("project name");
     	
@@ -118,15 +115,6 @@ public class PagilaDefaultEntityQueryTest
     	FilmCategory fc = newEntity(FilmCategory.Type.TYPE);
     	fc.setFilm(FilmCategory.FILM_ID_FKEY, film.ref());
     	fc.setCategory(FilmCategory.CATEGORY_ID_FKEY, category.ref());
-    	
-    	
-//    	Project.Key<?, HourReport.Reference, HourReport.Type, HourReport, ?, ?, HourReport.MetaData, ?> k = HourReport.FK_HHR_PROJECT;
-//    	AbstractHolder<?, ?> h = k.get(hr);
-//    	assertNotNull(h);
-//    	assertSame(filmCategory.ref(), h);
-    	
-//    	DefaultEntityQuery<?, ?, ?, ?, ?> e = 
-//    		new DefaultEntityQuery<HourReport.Attribute, HourReport.Reference, HourReport.Type, HourReport, HourReport.MetaData>(hr);
     	
     	FilmActor.QueryTemplate t = new FilmActor.QueryTemplate();
     	FilmActor.Query faq = t.newQuery();    	
@@ -165,11 +153,17 @@ public class PagilaDefaultEntityQueryTest
 			
 			Actor.Holder ah = root.getActor(FilmActor.ACTOR_ID_FKEY);
 			assertNotNull(ah);
-			assertFalse(ah.isNull());
-			
+			assertFalse(ah.isNull());	
+						
 			Film.Holder fh = root.getFilm(FilmActor.FILM_ID_FKEY);
 			assertNotNull(fh);
 			assertFalse(ah.isNull());
+			
+			
+			Actor.Content acc = ah.value().getContent();
+			assertNotNull(acc);
+			assertNotNull(acc.firstName());
+						
 			
 			// Project.Holder ph = root.getProject(HourReport.FK_HHR_PROJECT);
 //			logger().info("testConstructor: rpt.project=" + ph);    		

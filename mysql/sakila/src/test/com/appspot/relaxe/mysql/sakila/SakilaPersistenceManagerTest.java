@@ -20,7 +20,6 @@ import com.appspot.relaxe.gen.sakila.ent.sakila.Actor.Holder;
 import com.appspot.relaxe.gen.sakila.ent.sakila.Actor.MetaData;
 import com.appspot.relaxe.gen.sakila.ent.sakila.Actor.Reference;
 import com.appspot.relaxe.gen.sakila.ent.sakila.Actor.Type;
-import com.appspot.relaxe.pg.pagila.SakilaPersistenceContext;
 
 
 public class SakilaPersistenceManagerTest

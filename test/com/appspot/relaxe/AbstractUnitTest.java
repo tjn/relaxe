@@ -25,10 +25,18 @@ import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.env.ConnectionManager;
+import com.appspot.relaxe.env.DefaultConnectionManager;
+import com.appspot.relaxe.env.DefaultDataAccessContext;
+import com.appspot.relaxe.env.DriverManagerConnectionFactory;
 import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.env.PersistenceContext;
+import com.appspot.relaxe.env.pg.PGImplementation;
 import com.appspot.relaxe.log.DefaultLogger;
 import com.appspot.relaxe.rpc.ReferenceHolder;
+import com.appspot.relaxe.service.DataAccessContext;
+import com.appspot.relaxe.service.DataAccessException;
+import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.ReferenceType;
 
@@ -298,5 +306,33 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	> 
 	E newEntity(T type) {
 		return type.getMetaData().getFactory().newEntity();
+	}
+	
+
+	protected DefaultConnectionManager newConnectionManager() throws IOException {
+		TestContext<I> tc = getContext();
+				
+		String jdbcURL = tc.getJdbcURL();
+		Properties config = tc.getJdbcConfig();		
+		
+		logger().debug("testLoad: jdbcURL=" + jdbcURL);
+		logger().debug("testLoad: jdbcConfig=" + config);
+		
+		DriverManagerConnectionFactory cf = new DriverManagerConnectionFactory();
+		DefaultConnectionManager cm = new DefaultConnectionManager(cf, jdbcURL, config);
+		return cm;
+	}
+	
+	protected DataAccessContext newDataAccessContext(ConnectionManager cm) {
+		PersistenceContext<I> pc = getPersistenceContext();
+		DefaultDataAccessContext<I> dctx = new DefaultDataAccessContext<I>(pc, cm);
+		return dctx;
+	}
+	
+	protected DataAccessSession newSession() throws IOException, DataAccessException {	
+		ConnectionManager cm = newConnectionManager();
+		DataAccessContext ctx = newDataAccessContext(cm);		
+		DataAccessSession das = ctx.newSession();
+		return das;
 	}
 }

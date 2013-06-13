@@ -4,6 +4,7 @@
 package com.appspot.relaxe.pg.pagila;
 
 import java.sql.Connection;
+import java.util.Set;
 
 import com.appspot.relaxe.AbstractPersistenceManagerTest;
 import com.appspot.relaxe.PersistenceManager;
@@ -12,6 +13,7 @@ import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.env.pg.PGImplementation;
 import com.appspot.relaxe.gen.pagila.ent.pub.Actor;
+import com.appspot.relaxe.gen.pagila.ent.pub.Actor.Attribute;
 import com.appspot.relaxe.gen.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor;
 import com.appspot.relaxe.gen.pagila.ent.pub.Language;
@@ -61,7 +63,7 @@ public class PagilaPersistenceManagerTest
 	    Connection c = getConnection();
 	    assertFalse(c.getAutoCommit());
 	    
-	    Actor a = newEntity(Actor.Type.TYPE);
+	    final Actor a = newEntity(Actor.Type.TYPE);
 	    Actor.Content ac = a.getContent();        
 	    ac.setFirstName("Dana");
 	    ac.setLastName("Brooks");
@@ -82,13 +84,23 @@ public class PagilaPersistenceManagerTest
 	    merge(filmActor, getPersistenceContext(), c);
 	    c.commit();    
 	    
-	    assertTrue(filmActor.isIdentified());	    
+	    assertTrue(filmActor.isIdentified());
 	    delete(filmActor);
 	    c.commit();
 	    
-	    assertTrue(a.isIdentified());	    
+	    assertTrue(a.isIdentified());
+	    
+	    Actor sa = sync(a, getPersistenceContext(), c);
+	    assertNotNull(sa);
+	    Set<Attribute> ma = sa.getMetaData().attributes();
+	    assertEquals(ma, sa.attributes());
+	    
+	    
 	    delete(a);
 	    c.commit();
+	    
+	    
+	    
 	    
 	    assertTrue(f.isIdentified());
 	    delete(f);
@@ -100,6 +112,11 @@ public class PagilaPersistenceManagerTest
 	    delete(lang);
 	    c.commit();
 	}
+    
+    
+    
+    
+    
 	
 	public void testMergeDependent1() throws Exception {
 		setUnificationContext(unificationContext);
@@ -125,4 +142,62 @@ public class PagilaPersistenceManagerTest
 	protected String getUsername() {
 		return "relaxe_tester";
 	}
+	
+    public void testSync1() 
+		throws Exception {
+	
+	    Connection c = getConnection();
+	    PersistenceContext<PGImplementation> pc = getPersistenceContext();
+	    	    
+	    setUnificationContext(new SimpleUnificationContext());
+	    logger().debug("testSync1: getUnificationContext()=" + getUnificationContext());
+	    
+	    assertFalse(c.getAutoCommit());
+	    
+	    final Actor a = newEntity(Actor.Type.TYPE);
+	    Integer id = Integer.valueOf(1);
+	    a.getContent().setActorId(id);	    
+	    assertEquals(a.attributes().size(), 1);
+	    
+	    Actor sr = sync(a, pc, c);
+	    assertNotSame(a, sr);
+	    
+	    assertEquals(Actor.Attribute.values().length, sr.attributes().size());	    	    
+	}		
+	
+	
+    public void testSync() 
+		throws Exception {
+	
+	    Connection c = getConnection();
+	    PersistenceContext<PGImplementation> pc = getPersistenceContext();
+	    assertFalse(c.getAutoCommit());
+	    
+	    final Actor a = newEntity(Actor.Type.TYPE);
+	    Actor.Content ac = a.getContent();        
+	    ac.setFirstName("Dana");
+	    ac.setLastName("Brooks");
+	    
+	    final Actor ma = merge(a, pc, c);
+	    
+	    Integer aid = ma.getContent().getActorId();
+	    assertNotNull(aid);
+	        	
+	    Set<Attribute> expected = ma.getMetaData().attributes();
+	    assertEquals(ma.attributes(), expected);
+	    
+	    for (Actor.Attribute aa : Actor.Attribute.values()) {
+			assertNotNull(aa);
+			assertTrue(expected.contains(aa));
+		}
+	    
+	    	    
+	    Actor pa = newEntity(Actor.Type.TYPE);
+	    pa.getContent().setActorId(aid);	    
+	    assertEquals(pa.attributes().size(), 1);
+	    
+	    Actor sr = sync(pa, pc, c);	        	        	    
+	    assertEquals(sr.attributes(), expected);
+	    	    
+	}	
 }

@@ -52,10 +52,28 @@ public abstract class AbstractPersistenceManagerTest<I extends Implementation<I>
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
 		C extends Content
 	>
-	void merge(E e, PersistenceContext<?> pctx, Connection c) throws CyclicTemplateException, EntityException, SQLException, QueryException {
+	E merge(E e, PersistenceContext<?> pctx, Connection c) throws CyclicTemplateException, EntityException, SQLException, QueryException {
 		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, pctx, getUnificationContext());
-		pm.merge(c);		
+		pm.merge(c);
+		return e;
 	}
+	
+	
+	protected <
+		A extends Attribute, 
+		R extends com.appspot.relaxe.ent.Reference, 
+		T extends ReferenceType<A, R, T, E, H, F, M, C>, 
+		E extends Entity<A, R, T, E, H, F, M, C>,
+		H extends ReferenceHolder<A, R, T, E, H, M, C>,
+		F extends EntityFactory<E, H, M, F, C>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
+		C extends Content
+	>
+	E sync(E e, PersistenceContext<?> pctx, Connection c) throws CyclicTemplateException, EntityException, SQLException, QueryException {
+		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, pctx, getUnificationContext());
+		return pm.sync(c);		
+	}
+
 	
 	protected <
 		A extends Attribute, 
@@ -82,8 +100,8 @@ public abstract class AbstractPersistenceManagerTest<I extends Implementation<I>
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
 		C extends Content
 	>
-	void merge(E e) throws CyclicTemplateException, EntityException, SQLException, QueryException {		
-		merge(e, getPersistenceContext(), getConnection());		
+	E merge(E e) throws CyclicTemplateException, EntityException, SQLException, QueryException {		
+		return merge(e, getPersistenceContext(), getConnection());		
 	}
 	
 	protected <
