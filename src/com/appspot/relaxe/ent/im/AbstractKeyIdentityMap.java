@@ -44,7 +44,7 @@ public class AbstractKeyIdentityMap<
 	}
 	
 	@Override
-	protected V identify(E src) 
+	protected V getIdentityKey(E src) 
 		throws EntityRuntimeException {
 		H h = src.get(this.key);
 		return (h == null) ? null : h.value();

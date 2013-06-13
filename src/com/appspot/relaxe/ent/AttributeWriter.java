@@ -9,6 +9,7 @@ public interface AttributeWriter<
 	A extends Attribute, E 
 > {
 	
+	public int getIndex();
 	public PrimitiveHolder<?, ?, ?> write(DataObject src, E dest) throws EntityRuntimeException;
 
 }

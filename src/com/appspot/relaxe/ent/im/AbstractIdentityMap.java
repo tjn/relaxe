@@ -31,11 +31,12 @@ public abstract class AbstractIdentityMap<
 	@Override
 	public H get(E e) 
 		throws EntityRuntimeException {
+		
 		if (e == null) {
 			throw new NullPointerException("e");
 		}
 		
-		K k = identify(e);
+		K k = getIdentityKey(e);
 		
 		if (k == null) {
 			return null;
@@ -62,6 +63,6 @@ public abstract class AbstractIdentityMap<
 	}
 	
 	
-	protected abstract K identify(E src) 
+	protected abstract K getIdentityKey(E src) 
 		throws EntityRuntimeException;
 }

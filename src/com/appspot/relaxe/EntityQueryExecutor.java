@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.DataObject;
@@ -45,8 +47,7 @@ public class EntityQueryExecutor<
 	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
 > 	
 {	
-//	private Implementation implementation;	
-//	private static Logger logger = Logger.getLogger(EntityQueryExecutor.class);
+	private static Logger logger = Logger.getLogger(EntityQueryExecutor.class);
 	
 	private QueryExecutor executor;	
 	private UnificationContext unificationContext;
@@ -60,27 +61,35 @@ public class EntityQueryExecutor<
 	public EntityQueryResult<A, R, T, E, H, F, M, C, QT> execute(EntityQuery<A, R, T, E, H, F, M, C, QT> query, FetchOptions opts, Connection c) 
 		throws SQLException, QueryException, EntityException {
 		
+		logger().debug("execute: query: " + query);
+		
 		QueryExecutor se = getExecutor();		
 		PersistenceContext<?> pc = se.getPersistenceContext();
 		
 		List<EntityDataObject<E>> content = new ArrayList<EntityDataObject<E>>();
 		
+		
+		logger().debug("execute: create reader...");
 		EntityReader<?, ?, ?, ?, ?, ?, ?, ?> eb = new EntityReader<A, R, T, E, H, F, M, C>(pc.getValueExtractorFactory(), query, content, this.unificationContext);
 		
 		QueryExecutor.SliceStatement sb = se.createStatement(query, opts, c);
-				
+						
 		StatementExecutor sx = new StatementExecutor(pc);
 		
 		SelectStatement ss = sb.getStatement();
 		Query q = new Query(ss);		
+		logger().debug("execute: executing statement...");
 		QueryTime qt = sx.execute(ss, c, eb);
+		logger().debug("execute: qt: " + qt.getQueryExecutionTime());
 		
 		DataObject.MetaData meta = eb.getMetaData();		
 
 		DataObjectQueryResult<EntityDataObject<E>> result = new DataObjectQueryResult<EntityDataObject<E>>(q, meta, content, qt, opts, sb.getPosition());
 		result.setAvailable(sb.getAvailable());
 		
-		return new DefaultEntityQueryResult<A, R, T, E, H, F, M, C, QT>(query, result);		
+		DefaultEntityQueryResult<A, R, T, E, H, F, M, C, QT> eqres = new DefaultEntityQueryResult<A, R, T, E, H, F, M, C, QT>(query, result);
+		
+		return eqres;
 	}
 
 //	private SelectStatement createCountQuery(SelectStatement qs) {
@@ -130,7 +139,7 @@ public class EntityQueryExecutor<
 //		if (opts != null) {
 //			oo = opts.getOffset();
 //			pageSize = opts.getPageSize();			
-//		}
+//	s	}
 //				
 //		logger().info("execute: oo=" + oo);
 //				
@@ -208,5 +217,9 @@ public class EntityQueryExecutor<
 	
 	private QueryExecutor getExecutor() {
 		return executor;
+	}
+	
+	private static Logger logger() {
+		return EntityQueryExecutor.logger;
 	}
 }

@@ -82,30 +82,29 @@ public abstract class DefaultEntityBuilder<
 	public abstract M getMetaData();
 
 	@Override
-	public H read(DataObject src) {
+	public H read(DataObject src) {		
+		
+		for (AttributeWriter<A, E> w : this.primaryKeyWriterList) {					
+			PrimitiveHolder<?, ?, ?> h = src.get(w.getIndex());
+			
+			if (h == null || h.isNull()) {
+				// referenced primary key contained nulls => not identified
+				return null;				
+			}
+		}
+		
 		E ne = getMetaData().getFactory().newEntity();
 		
 //		logger().debug("read: " + ne);
 		
-		int nc = copy(src, ne, this.primaryKeyWriterList);
-		
-		if (nc > 0) {
-			// referenced primary key contained nulls => not identified
-			return null;
-		}
-		
-		if (!ne.isIdentified()) {
-//			// read by linker
-//			logger().debug("read: not identified: " + ne);
-//			return null;
-		}
+		copy(src, ne, this.primaryKeyWriterList);
 		
 		H eh = identityMap.get(ne);
 		
-		
-		if (eh != null) {		
-			if (eh.value() != ne) {
-				copy(src, ne, this.attributeWriterList);			
+		if (eh != null) {
+			if (eh.value() == ne) {
+				// If this was just inserted, augment. 
+				copy(src, ne, this.attributeWriterList);
 			}
 		}
 		
@@ -119,7 +118,7 @@ public abstract class DefaultEntityBuilder<
 	 * @param src
 	 * @param dest
 	 * @param wl List of writers to apply.
-	 * @return Number of values which were nulls according to copied {@link AbstractPrimitiveHolder}
+	 * @return Number of values which were nulls according to copied {@link PrimitiveHolder}
 	 * @see {@link AbstractPrimitiveHolder#isNull()} 
 	 */
 	private int copy(DataObject src, E dest, List<AttributeWriter<A, E>> wl) {
@@ -130,11 +129,7 @@ public abstract class DefaultEntityBuilder<
 				throw new NullPointerException("attribute writer was null");
 			}
 									
-			PrimitiveHolder<?, ?, ?> h = w.write(src, dest);
-			
-			if (h == null || h.isNull()) {
-				n++;
-			}
+			w.write(src, dest);
 		}
 		
 		return n;
@@ -149,8 +144,6 @@ public abstract class DefaultEntityBuilder<
 		Table table = this.tableRef.getTable();
 						
 		ColumnExpr ce = ctx.getInputMetaData().column(index);
-//		AttributeWriterFactory wf = ctx.getAttributeWriterFactory();
-		
 		ColumnName cn = ce.getColumnName();
 						
 		final Column col = table.columnMap().get(cn);
@@ -159,7 +152,6 @@ public abstract class DefaultEntityBuilder<
 			throw new NullPointerException("unresolved column for cn: " + cn.getName() + " in table " + table.getQualifiedName());
 		}		
 		
-//		final Column resolved = (fk == null) ? col : fk.columns().get(col);
 		final Column resolved = (fk == null) ? col : fk.getReferenced(col);
 		
 		if (resolved == null) {
@@ -174,9 +166,6 @@ public abstract class DefaultEntityBuilder<
 		
 		M m = getMetaData();
 		
-		// Column col = cr.getColumn(index);				
-		
-		
 		Column rc = cr.getColumn(index);
 		A attribute = m.getAttribute(rc);
 		
@@ -186,25 +175,11 @@ public abstract class DefaultEntityBuilder<
 		
 		PrimitiveKey<A, E, ?, ?, ?, ?> pk = m.getKey(attribute);
 		
-//		AttributeMapping am = ctx.getAttributeMapping(attribute);
-		
-//		logger().debug("addWriter: attribute=" + attribute);
-//		logger().debug("addWriter: pk=" + pk);
-		
 		if (pk == null) {
 			return;
 		}
 		
 		AttributeWriter<A, E> w = createWriter(pk.self(), index);
-								
-//		AttributeWriter<A, E> w = wf.createWriter(m, cr, index);
-		
-//		if (am == null) {
-//			return;
-//		}
-		
-//		List<AttributeWriter<A, E>> wl = 
-//			resolved.isPrimaryKeyColumn() ? this.primaryKeyWriterList : this.attributeWriterList;
 		
 		List<AttributeWriter<A, E>> wl = 
 			pktbl.isPrimaryKeyColumn(resolved) ? this.primaryKeyWriterList : this.attributeWriterList;
@@ -230,6 +205,11 @@ public abstract class DefaultEntityBuilder<
 				VH vc = key.as(h);				
 				key.set(dest, vc);
 				return vc;
+			}
+			
+			@Override
+			public int getIndex() {
+				return index;
 			}
 		};
 	}

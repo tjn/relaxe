@@ -9,13 +9,13 @@ import com.appspot.relaxe.expr.ColumnExpr;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.query.QueryException;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
 
 
 public interface DataObject	
 	extends Serializable
 {	
-	AbstractPrimitiveHolder<?, ?, ?> get(int index);	
+	PrimitiveHolder<?, ?, ?> get(int index);	
 	MetaData meta();
 	
 	public interface MetaData

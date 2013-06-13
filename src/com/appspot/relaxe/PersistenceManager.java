@@ -472,9 +472,7 @@ public class PersistenceManager<
 
     	M meta = getTarget().getMetaData();    	
         PMTemplate qt = new PMTemplate(meta);
-        
-        EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> eq = qt.newQuery();
-        qt.addAllAttributes();
+        EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> eq = qt.newQuery();        
         TableReference tref = eq.getTableRef();        
     	Predicate pkp = getPKPredicate(tref, getTarget());
 
