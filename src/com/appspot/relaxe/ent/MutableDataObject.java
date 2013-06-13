@@ -139,6 +139,9 @@ public class MutableDataObject
 
 	@Override
 	public String toString() {
-		return "{" + super.toString() + ":" + this.content + "}";
+		StringBuffer buf = new StringBuffer();
+		buf.append("{").append(super.toString()).append(":");
+		buf.append(this.content).append("}");		
+		return buf.toString();
 	}
 }
