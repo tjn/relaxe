@@ -31,7 +31,6 @@ import com.appspot.relaxe.env.DefaultDataAccessContext;
 import com.appspot.relaxe.env.DriverManagerConnectionFactory;
 import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.pg.PGImplementation;
 import com.appspot.relaxe.log.DefaultLogger;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.service.DataAccessContext;
@@ -63,7 +62,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		
 	
 	@Override
-	protected final void setUp() throws Exception {		
+	protected void setUp() throws Exception {		
 		this.current = null;		
 		this.current = getContext();
 		DefaultLogger.getInstance().setTarget(new Log4JLogger(logger()));

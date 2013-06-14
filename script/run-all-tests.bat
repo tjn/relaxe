@@ -11,6 +11,11 @@
 @CALL run-test.bat com.appspot.relaxe.rpc.AllTests
 @IF ERRORLEVEL 1 exit /B %ERRORLEVEL%
 
+@CALL run-test.bat com.appspot.relaxe.mysql.samples.MySQLSamplesDataAccessTest
+@IF ERRORLEVEL 1 exit /B %ERRORLEVEL%
+
+
+
 
 
 
