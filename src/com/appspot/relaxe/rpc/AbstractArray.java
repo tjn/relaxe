@@ -4,8 +4,6 @@
 package com.appspot.relaxe.rpc;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class AbstractArray<E extends Serializable>
 	implements Serializable, ArrayValue<E> {	

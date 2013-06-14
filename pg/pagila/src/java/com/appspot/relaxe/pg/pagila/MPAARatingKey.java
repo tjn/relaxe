@@ -8,7 +8,6 @@ import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.value.AbstractOtherKey;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.OtherType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public class MPAARatingKey<

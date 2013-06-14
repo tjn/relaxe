@@ -18,7 +18,6 @@ import com.appspot.relaxe.env.pg.PGCatalogFactory;
 import com.appspot.relaxe.env.pg.PGImplementation;
 import com.appspot.relaxe.expr.SelectStatement;
 import com.appspot.relaxe.gen.pagila.ent.pub.Actor;
-import com.appspot.relaxe.gen.pagila.ent.pub.Actor.Content;
 import com.appspot.relaxe.gen.pagila.ent.pub.Category;
 import com.appspot.relaxe.gen.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor;

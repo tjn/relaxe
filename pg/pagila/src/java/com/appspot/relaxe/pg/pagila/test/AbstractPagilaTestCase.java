@@ -3,12 +3,6 @@
  */
 package com.appspot.relaxe.pg.pagila.test;
 
-import java.io.IOException;
-import java.util.Properties;
-
-import com.appspot.relaxe.TestContext;
-import com.appspot.relaxe.env.DefaultConnectionManager;
-import com.appspot.relaxe.env.DriverManagerConnectionFactory;
 import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.env.pg.PGImplementation;
 import com.appspot.relaxe.pg.AbstractPGTestCase;

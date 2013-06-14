@@ -17,8 +17,7 @@ public class ListPager<E extends Serializable>
 	}
 	
 	public ListPager(ListFetcher<E> fetcher, int pageSize, ElementListPage<E> currentPage) {
-		super(fetcher, pageSize, currentPage);
-		
+		super(fetcher, pageSize, currentPage);		
 	}
 
 	@Override

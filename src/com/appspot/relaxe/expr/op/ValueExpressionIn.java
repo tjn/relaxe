@@ -8,7 +8,6 @@ import java.util.Collection;
 import com.appspot.relaxe.expr.CompoundElement;
 import com.appspot.relaxe.expr.ElementList;
 import com.appspot.relaxe.expr.ElementVisitor;
-import com.appspot.relaxe.expr.Keyword;
 import com.appspot.relaxe.expr.Predicate;
 import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.Symbol;
