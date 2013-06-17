@@ -22,7 +22,6 @@ public abstract class AbstractPager<
 	
 	private Integer index = null;
 	private R currentPage;
-	private Pager.State state = State.IDLE; 
 		
 	private Map<Registration, PagerEventHandler<G>> handlerMap;
 		
@@ -31,17 +30,22 @@ public abstract class AbstractPager<
 	private final PagerEvent<G> LOAD_FAILURE = new PagerEvent<G>(self(), Flags.LOAD_STATE, Flags.LOAD_FAILURE);
 	private final PagerEvent<G> ALL = new PagerEvent<G>(self(), Flags.INDEX, Flags.PAGE, Flags.LOAD_STATE);
 		
-	private int pageSize;
-	
+	private int pageSize;	
 	private Q query;
 		
-	private Fetcher<Q, R, Receiver<R>> fetcher; 
+	private Fetcher<Q, R, Receiver<R>> fetcher;
+	
+	private FetchResultReceiver receiver = null;
 		
 	private final Receiver<Throwable> errorReceiver = new Receiver<Throwable>() {		
 		@Override
-		public void receive(Throwable result) {			
+		public void receive(Throwable result) {
+			if (receiver != null && receiver.isCanceled()) {
+				return;
+			}
+			
 			lastError = result;			
-			fireEvent(State.IDLE, LOAD_FAILURE);
+			fireEvent(null, LOAD_FAILURE);
 		}
 	};
 		
@@ -137,22 +141,24 @@ public abstract class AbstractPager<
 		load(no, ps, nextIndex);		
 	}
 
-	private void load(long no, int ps, final int nextIndex) {		
-		fireEvent(State.LOADING, LOAD_STATE);
-		
-		Receiver<R> r = new Receiver<R>() {
+	private void load(long no, int ps, final int nextIndex) {
+		FetchResultReceiver r = new FetchResultReceiver() {
 			@Override
 			public void receive(R result) {
-				received(result, nextIndex);	
+				if(!isCanceled()) {				
+					received(result, nextIndex);
+				}
 			}
 		};
+		
+		fireEvent(r, LOAD_STATE);
 		
 		FetchOptions opts = new FetchOptions(ps, no);
 		getFetcher().fetch(getQuery(), opts, r, errorReceiver);
 	}
 	
-	private void fireEvent(Pager.State newState, PagerEvent<G> event) {
-		this.state = newState;
+	private void fireEvent(FetchResultReceiver newReceiver, PagerEvent<G> event) {
+		this.receiver = newReceiver;
 		fireEvent(event);		
 	}
 	
@@ -236,7 +242,7 @@ public abstract class AbstractPager<
 
 	@Override
 	public Pager.State getState() {
-		return this.state;
+		return (this.receiver == null) ? State.IDLE : State.LOADING;
 	}
 	
 	@Override
@@ -336,10 +342,11 @@ public abstract class AbstractPager<
 	}
 
 	private boolean isLoading() {
-		return (this.state == State.LOADING);
+		// return (this.receiver == State.LOADING);
+		return (this.receiver != null);
 	}
 	
-	public void setCurrentPage(R currentPage) {
+	private void setCurrentPage(R currentPage) {
 		this.currentPage = currentPage;
 	}
 	
@@ -359,7 +366,28 @@ public abstract class AbstractPager<
 		setCurrentPage(result);
 				
 		this.lastError = null;
-		fireEvent(State.IDLE, ALL);
+		fireEvent(null, ALL);
+	}
+	
+	
+	public boolean cancel() {
+		if (this.receiver == null) {
+			return false;
+		}
+		
+		this.receiver.cancel();
+		fireEvent(null, LOAD_STATE);
+		
+		return true;		
+	}
+	
+	
+	public void set(R result) {
+		if (this.receiver != null) {
+			this.receiver.cancel();
+		}		
+		
+		received(result, 0);		
 	}
 	
 	
@@ -396,5 +424,25 @@ public abstract class AbstractPager<
 		}
 		
 		this.query = query;
+	}
+	
+	private void setReceiver(FetchResultReceiver receiver) {
+		this.receiver = receiver;
+	}
+	
+	
+	private abstract class FetchResultReceiver 
+		implements Receiver<R> {
+		
+		private boolean canceled;
+		
+		
+		public boolean isCanceled() {
+			return canceled;
+		}
+		
+		public void cancel() {
+			this.canceled = true;			
+		}		
 	}
 }

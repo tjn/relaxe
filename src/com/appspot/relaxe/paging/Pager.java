@@ -25,7 +25,9 @@ public interface Pager<
 	boolean refresh();
 	boolean lastPage();
 	boolean previous();
-	boolean next();	
+	boolean next();
+	boolean isFirstElement();
+	boolean isLastElement();	
 		
 	boolean fetch(int page, int index);
 	
@@ -70,8 +72,5 @@ public interface Pager<
 	
 	int getPageSize();
 		
-	boolean isFirstElement();
-	boolean isLastElement();	
-	
 	public G self();
 }
