@@ -10,11 +10,11 @@ import java.util.List;
 import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.paging.ElementListPage;
 import com.appspot.relaxe.paging.Fetcher;
-import com.appspot.relaxe.paging.Receiver;
+import com.appspot.relaxe.paging.PageReceiver;
 
 
 public class ListFetcher<E extends Serializable>
-	implements Fetcher<Void, ElementListPage<E>, Receiver<ElementListPage<E>>> {
+	implements Fetcher<Void, ElementListPage<E>, PageReceiver<ElementListPage<E>>> {
 	
 	private List<E> content;
 		
@@ -25,8 +25,8 @@ public class ListFetcher<E extends Serializable>
 
 	@Override
 	public void fetch(Void queryTemplate, FetchOptions opts,
-			Receiver<ElementListPage<E>> resultReceiver,
-			Receiver<Throwable> errorReceiver) {
+			PageReceiver<ElementListPage<E>> resultReceiver,
+			PageReceiver<Throwable> errorReceiver) {
 				
 		int size = this.content.size();
 		int o = (int) opts.getOffset();

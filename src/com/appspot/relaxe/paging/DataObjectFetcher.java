@@ -8,5 +8,5 @@ import com.appspot.relaxe.ent.DataObjectQueryResult;
 import com.appspot.relaxe.ent.QueryExpressionSource;
 
 public interface DataObjectFetcher
-	extends Fetcher<QueryExpressionSource, DataObjectQueryResult<DataObject>, Receiver<DataObjectQueryResult<DataObject>>> {
+	extends Fetcher<QueryExpressionSource, DataObjectQueryResult<DataObject>, PageReceiver<DataObjectQueryResult<DataObject>>> {
 }

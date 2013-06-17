@@ -28,7 +28,7 @@ public abstract class DefaultPagerModel<
 	Q,
 	R extends ResultPage,
 	P extends SimplePagerModel<R, P>,
-	F extends Fetcher<Q, R, Receiver<R>>
+	F extends Fetcher<Q, R, PageReceiver<R>>
 >
 	extends AbstractSimplePager<R, P> {
 	
@@ -178,7 +178,7 @@ public abstract class DefaultPagerModel<
 	
 	
 	protected void fetch(final SimplePagerModel.Command command, FetchOptions opts) {
-		Receiver<R> rr = new Receiver<R>() {
+		PageReceiver<R> rr = new PageReceiver<R>() {
 			@Override
 			public void receive(R result) {
 				received(result, command);

@@ -198,6 +198,11 @@ public class JoinedTable
 			 * TODO: The following does not look like serializable... 
 			 */			
 			all = new AllColumns() {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = -7040630161905921350L;
+
 				@Override
 				protected TableRefList getTableRefs() {				
 					return JoinedTable.this;

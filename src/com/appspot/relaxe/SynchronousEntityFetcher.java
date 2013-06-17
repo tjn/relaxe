@@ -19,7 +19,7 @@ import com.appspot.relaxe.ent.EntityQueryTemplate;
 import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.paging.EntityFetcher;
-import com.appspot.relaxe.paging.Receiver;
+import com.appspot.relaxe.paging.PageReceiver;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.ReferenceType;
@@ -47,7 +47,7 @@ public class SynchronousEntityFetcher<
 	}
 
 	@Override
-	public void fetch(QT queryTemplate, FetchOptions opts, Receiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>> receiver, Receiver<Throwable> errorReceiver) {		
+	public void fetch(QT queryTemplate, FetchOptions opts, PageReceiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>> receiver, PageReceiver<Throwable> errorReceiver) {		
 		try {
 			EntityQuery<A, R, T, E, H, F, M, C, QT> q = queryTemplate.newQuery();
 			EntityQueryResult<A, R, T, E, H, F, M, C, QT> qr = executor.execute(q, opts, this.connection);

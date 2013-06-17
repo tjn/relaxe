@@ -20,8 +20,7 @@ public class PagerTest extends TestCase {
 			
 		}
 			
-			
-		StringListPager p = new StringListPager(new StringListFetcher(testList), 7);
+		StringListPager p = new StringListPager(new StringListFetcher(testList), 7);		
 		assertEquals(7, p.getPageSize());
 		
 		assertNotNull(p.getState());

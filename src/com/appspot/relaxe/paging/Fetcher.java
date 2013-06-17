@@ -11,7 +11,7 @@ import com.appspot.relaxe.ent.FetchOptions;
 public interface Fetcher<
 	Q,
 	T extends Serializable, 
-	R extends Receiver<T>
+	R extends PageReceiver<T>
 > {	
-	void fetch(Q queryTemplate, FetchOptions opts, R resultReceiver, Receiver<Throwable> errorReceiver);
+	void fetch(Q queryTemplate, FetchOptions opts, R resultReceiver, PageReceiver<Throwable> errorReceiver);
 }

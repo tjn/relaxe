@@ -31,23 +31,23 @@ public class DefaultEntityQueryPager<
 > 
 	extends AbstractEntityQueryPager<A, R, T, E, H, F, M, C, QT, 
 		EntityQueryResult<A, R, T, E, H, F, M, C, QT>, 
-		Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, C, QT>, Receiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>>>, 
+		Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, C, QT>, PageReceiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>>>, 
 		DefaultEntityQueryPager<A,R,T,E,H,F,M,C,QT>> {
 	
 	
 	public DefaultEntityQueryPager(
 			QT template, 
-			Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, C, QT>, Receiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>>> fetcher, 
+			Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, C, QT>, PageReceiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>>> fetcher, 
 			Map<SimplePagerModel.Command, ValueModel<String>> nmm) {
 		this(template, fetcher, 20, nmm);
 	}
 	
-	public DefaultEntityQueryPager(QT template, Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, C, QT>, Receiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>>> fetcher, 
+	public DefaultEntityQueryPager(QT template, Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, C, QT>, PageReceiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>>> fetcher, 
 			Map<SimplePagerModel.Command, String> nm, int initialPageSize) {
 		super(template, fetcher, initialPageSize, createNameModelMap(nm));
 	}
 	
-	public DefaultEntityQueryPager(QT template, Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, C, QT>, Receiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>>> fetcher, 
+	public DefaultEntityQueryPager(QT template, Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, C, QT>, PageReceiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>>> fetcher, 
 			int initialPageSize, Map<SimplePagerModel.Command, ValueModel<String>> nmm) {
 		super(template, fetcher, initialPageSize, nmm);
 	}

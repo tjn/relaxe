@@ -25,7 +25,7 @@ public interface EntityFetcher<
 	C extends Content,
 	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
 > 
-	extends Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, C, QT>, Receiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>>>
+	extends Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, C, QT>, PageReceiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>>>
 {	
 	
 }

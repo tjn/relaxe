@@ -12,7 +12,7 @@ import com.appspot.relaxe.ent.DataObjectQueryResult;
 import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.ent.QueryExpressionSource;
 import com.appspot.relaxe.paging.DataObjectFetcher;
-import com.appspot.relaxe.paging.Receiver;
+import com.appspot.relaxe.paging.PageReceiver;
 import com.appspot.relaxe.query.QueryException;
 
 
@@ -28,7 +28,7 @@ public class SynchronousDataObjectFetcher implements DataObjectFetcher {
 	}
 	
 	@Override
-	public void fetch(QueryExpressionSource queryTemplate, FetchOptions opts, Receiver<DataObjectQueryResult<DataObject>> receiver, Receiver<Throwable> errorReceiver) {
+	public void fetch(QueryExpressionSource queryTemplate, FetchOptions opts, PageReceiver<DataObjectQueryResult<DataObject>> receiver, PageReceiver<Throwable> errorReceiver) {
 		try {
 			DataObjectQueryResult<DataObject> qr = executor.execute(queryTemplate, opts, this.connection);
 			receiver.receive(qr);			

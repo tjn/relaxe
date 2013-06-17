@@ -3,7 +3,7 @@
  */
 package com.appspot.relaxe.paging;
 
-public interface Receiver<R> {
+public interface PageReceiver<R> {
 	void receive(R result);
 		
 }

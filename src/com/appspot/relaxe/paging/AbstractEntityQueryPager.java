@@ -29,7 +29,7 @@ public abstract class AbstractEntityQueryPager<
 	C extends Content,
 	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>,
 	RP extends EntityQueryResult<A, R, T, E, H, F, M, C, QT>,
-	RF extends Fetcher<QT, RP, Receiver<RP>>,
+	RF extends Fetcher<QT, RP, PageReceiver<RP>>,
 	EP extends AbstractEntityQueryPager<A, R, T, E, H, F, M, C, QT, RP, RF, EP>
 >
 	extends DefaultPagerModel<QT, RP, EP, RF>

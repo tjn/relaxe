@@ -12,7 +12,7 @@ import com.appspot.relaxe.model.ValueModel;
 import com.appspot.relaxe.paging.DataObjectPager;
 import com.appspot.relaxe.paging.DefaultPagerModel;
 import com.appspot.relaxe.paging.Fetcher;
-import com.appspot.relaxe.paging.Receiver;
+import com.appspot.relaxe.paging.PageReceiver;
 
 
 public class DefaultDataObjectPager
@@ -21,13 +21,13 @@ public class DefaultDataObjectPager
 		DataObjectQueryResult<DataObject>, 
 		DefaultDataObjectPager, 
 		Fetcher<QueryExpressionSource, DataObjectQueryResult<DataObject>, 
-		Receiver<DataObjectQueryResult<DataObject>>>
+		PageReceiver<DataObjectQueryResult<DataObject>>>
 	>
 	implements DataObjectPager<DataObject, DataObjectQueryResult<DataObject>, DefaultDataObjectPager>
 {	
 	public DefaultDataObjectPager(
 			QueryExpressionSource template,
-			Fetcher<QueryExpressionSource, DataObjectQueryResult<DataObject>, Receiver<DataObjectQueryResult<DataObject>>> fetcher,
+			Fetcher<QueryExpressionSource, DataObjectQueryResult<DataObject>, PageReceiver<DataObjectQueryResult<DataObject>>> fetcher,
 			int initialPageSize, Map<Command, ValueModel<String>> nmm) {
 		super(template, fetcher, initialPageSize, nmm);
 	}

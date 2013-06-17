@@ -33,11 +33,11 @@ public abstract class AbstractPager<
 	private int pageSize;	
 	private Q query;
 		
-	private Fetcher<Q, R, Receiver<R>> fetcher;
+	private Fetcher<Q, R, PageReceiver<R>> fetcher;
 	
 	private FetchResultReceiver receiver = null;
 		
-	private final Receiver<Throwable> errorReceiver = new Receiver<Throwable>() {		
+	private final PageReceiver<Throwable> errorReceiver = new PageReceiver<Throwable>() {		
 		@Override
 		public void receive(Throwable result) {
 			if (receiver != null && receiver.isCanceled()) {
@@ -71,7 +71,7 @@ public abstract class AbstractPager<
 //		return (offset() > 0);
 //	}
 	
-	public AbstractPager(Fetcher<Q, R, Receiver<R>> fetcher, int pageSize, R currentPage) {
+	public AbstractPager(Fetcher<Q, R, PageReceiver<R>> fetcher, int pageSize, R currentPage) {
 		super();		
 		setFetcher(fetcher);
 		
@@ -83,7 +83,7 @@ public abstract class AbstractPager<
 		this.currentPage = currentPage;
 	}
 	
-	public AbstractPager(Fetcher<Q, R, Receiver<R>> fetcher, int pageSize, Q query, R currentPage) {
+	public AbstractPager(Fetcher<Q, R, PageReceiver<R>> fetcher, int pageSize, Q query, R currentPage) {
 		this(fetcher, pageSize, currentPage);
 		setQuery(query);		
 	}
@@ -400,11 +400,11 @@ public abstract class AbstractPager<
 		return lastError;
 	}
 
-	public Fetcher<Q, R, Receiver<R>> getFetcher() {
+	public Fetcher<Q, R, PageReceiver<R>> getFetcher() {
 		return fetcher;
 	}
 
-	public void setFetcher(Fetcher<Q, R, Receiver<R>> fetcher) {		
+	public void setFetcher(Fetcher<Q, R, PageReceiver<R>> fetcher) {		
 		if (fetcher == null) {
 			throw new NullPointerException("fetcher");
 		}
@@ -432,7 +432,7 @@ public abstract class AbstractPager<
 	
 	
 	private abstract class FetchResultReceiver 
-		implements Receiver<R> {
+		implements PageReceiver<R> {
 		
 		private boolean canceled;
 		
