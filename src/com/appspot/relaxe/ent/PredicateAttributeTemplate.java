@@ -136,6 +136,47 @@ public abstract class PredicateAttributeTemplate<A extends Attribute>
 		}
 	}
 	
+	public static class Like<A extends Attribute>
+		extends PredicateAttributeTemplate<A> {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4545159706806621845L;		
+		private ValueExpression expression;
+	
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		@SuppressWarnings("unused")
+		private Like() {	
+		}
+		
+		public Like(A attribute, ValueExpression ve) {
+			super(attribute);
+			this.expression = ve;
+		}
+	
+		public 
+		<
+			M extends EntityMetaData<A, ?, ?, ?, ?, ?, M, ?>
+		>
+		Like(M meta, A attribute, ValueExpression ve) {
+			this(attribute, ve);
+			
+			PrimitiveType<?> pt = attribute.type();			
+			
+			if (pt.getSqlType() != ve.getType()) {
+				throw new IllegalArgumentException("type mismatch: " + attribute + ": " + pt.getSqlType() + "; " + ve.getType());
+			}			
+		}
+				
+		@Override
+		public Predicate predicate(TableReference tref, ColumnReference cr) {
+			return com.appspot.relaxe.expr.op.Like.like(cr, this.expression);
+		}
+	}
+	
 	public static class In<A extends Attribute>
 		extends PredicateAttributeTemplate<A> {
 	
