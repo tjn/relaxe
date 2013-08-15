@@ -15,6 +15,10 @@ public class JavaLogger
 		return new JavaLogger(java.util.logging.Logger.getLogger(clazz.getName()));
 	}
 	
+	public static Logger getLogger(String name) {
+		return new JavaLogger(java.util.logging.Logger.getLogger(name));
+	}	
+	
 	public JavaLogger(java.util.logging.Logger implementation) {
 		super();
 		
