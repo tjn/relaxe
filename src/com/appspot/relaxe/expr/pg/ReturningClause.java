@@ -5,7 +5,9 @@ package com.appspot.relaxe.expr.pg;
 
 import com.appspot.relaxe.expr.AbstractClause;
 import com.appspot.relaxe.expr.Element;
+import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.ValueElement;
+import com.appspot.relaxe.expr.VisitContext;
 
 public class ReturningClause
 	extends AbstractClause {
@@ -17,7 +19,7 @@ public class ReturningClause
 	private ValueElement e;
 
 	public ReturningClause() {
-		super(PostgreSQLKeyword.RETURNING);
+		super();
 	}
 
 	@Override
@@ -25,4 +27,9 @@ public class ReturningClause
 		return null;
 	}
 
+	@Override
+	protected void traverseClause(VisitContext vc, ElementVisitor v) {
+		PostgreSQLKeyword.RETURNING.traverse(vc, v);
+	}
+	
 }

@@ -19,7 +19,6 @@ public class Select
 	private boolean distinct;	
 	
 	public Select() {
-		super(SQLKeyword.SELECT);
 	}
 
 	public ElementList<SelectListElement> getSelectList() {
@@ -130,8 +129,8 @@ public class Select
 	}	
 	
 	@Override
-	public void traverseContent(VisitContext vc, ElementVisitor v) {
-		getClause().traverse(vc, v);
+	public void traverseContent(VisitContext vc, ElementVisitor v) {		
+		traverseClause(vc, v);
 		
 		if (this.distinct) {
 			SQLKeyword.DISTINCT.traverse(vc, v);
@@ -158,5 +157,10 @@ public class Select
 		}
 		
 		return cl;
-	}	
+	}
+	
+	@Override
+	protected void traverseClause(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.SELECT.traverse(vc, v);
+	}
 }

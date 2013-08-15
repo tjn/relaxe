@@ -13,8 +13,7 @@ public class Where extends AbstractClause {
 	private static final long serialVersionUID = 3968959510502629791L;
 	private Predicate searchCondition;
 	
-	public Where() {
-		super(SQLKeyword.WHERE);
+	public Where() {		
 	}
 	
 	public Where(Predicate searchCondition) {
@@ -55,6 +54,11 @@ public class Where extends AbstractClause {
 	@Override
 	protected Element getContent() {		
 		return getSearchCondition();
+	}
+	
+	@Override
+	protected void traverseClause(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.WHERE.traverse(vc, v);		
 	}
 	
 //	@Override

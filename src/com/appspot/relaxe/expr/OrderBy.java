@@ -172,8 +172,7 @@ public class OrderBy
 
 	}
 
-	public OrderBy() {
-		super(SQLKeyword.ORDER_BY);
+	public OrderBy() {		
 	}
 	
 	public void add(SortKey k) {
@@ -230,5 +229,11 @@ public class OrderBy
 	@Override
 	protected Element getContent() {
 		return getSortKeyList();
-	}		
+	}
+	
+	@Override
+	protected void traverseClause(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.ORDER.traverse(vc, v);
+		SQLKeyword.BY.traverse(vc, v);		
+	}
 }

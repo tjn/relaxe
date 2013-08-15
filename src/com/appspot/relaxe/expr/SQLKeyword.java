@@ -10,9 +10,9 @@ public enum SQLKeyword implements Keyword {
 	SELECT,
 	FROM,
 	WHERE,
-	GROUP_BY,
+	GROUP,
 	HAVING,
-	ORDER_BY,
+	ORDER,
 	LIMIT,
 	OFFSET,
 	IN,
@@ -55,6 +55,8 @@ public enum SQLKeyword implements Keyword {
 	AUTHORIZATION, 
 	CASCADE, 
 	RESTRICT, 
+	CURRENT,
+	USER,	
 	CURRENT_USER,
 	CURRENT_DATE,
 	CURRENT_TIME,
@@ -99,7 +101,7 @@ public enum SQLKeyword implements Keyword {
 	
 	@Override
 	public String getTerminalSymbol() {
-		return super.toString().replace('_', ' ');
+		return super.toString(); // super.toString().replace('_', ' ');
 	}
 
 	@Override

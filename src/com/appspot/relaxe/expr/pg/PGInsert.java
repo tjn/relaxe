@@ -92,8 +92,7 @@ public class PGInsert
 		private static final long serialVersionUID = -7588547880513689368L;
 		private ValueElement e;
 	
-		public ReturningClause() {
-			super(PostgreSQLKeyword.RETURNING);
+		public ReturningClause() {			
 		}
 	
 		@Override
@@ -101,6 +100,13 @@ public class PGInsert
 	
 			return null;
 		}
+
+		@Override
+		protected void traverseClause(VisitContext vc, ElementVisitor v) {
+			PostgreSQLKeyword.RETURNING.traverse(vc, v);
+		}
 	}
+	
+
 
 }

@@ -17,9 +17,15 @@ public abstract class SimpleClause
 	 */
 	protected SimpleClause() {
 	}
+	
+	private SQLKeyword clause;
 
 	public SimpleClause(SQLKeyword clause, Element clauseContent) {
-		super(clause);
+		if (clause == null) {
+			throw new NullPointerException("clause");
+		}
+		
+		this.clause = clause;
 		
 		if (clauseContent == null) {
 			throw new NullPointerException("content");
@@ -31,9 +37,14 @@ public abstract class SimpleClause
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {
 		v.start(vc, this);
-		getClause().traverse(vc, v);
+		traverseClause(vc, v);
 		getContent().traverse(vc, v);						
 		v.end(this);		
+	}
+	
+	@Override
+	protected void traverseClause(VisitContext vc, ElementVisitor v) {
+		this.clause.traverse(vc, v);
 	}
 
 	@Override

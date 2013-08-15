@@ -11,7 +11,7 @@ public class GroupBy extends AbstractClause {
 	private static final long serialVersionUID = -3190593291892514712L;
 
 	public GroupBy() {
-		super(SQLKeyword.GROUP_BY);
+		super();
 	}
 
 	private ElementList<ValueExpression> groupingExprList;	
@@ -38,5 +38,11 @@ public class GroupBy extends AbstractClause {
 	protected Element getContent() {		
 		ElementList<ValueExpression> gl = getGroupingExprList();
 		return gl.isEmpty() ? null : gl;
+	}
+	
+	@Override
+	protected void traverseClause(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.GROUP.traverse(vc, v);
+		SQLKeyword.BY.traverse(vc, v);	
 	}
 }

@@ -17,8 +17,6 @@ public class From extends AbstractClause {
 	}
 	
 	public From(TableRefList from) {
-		super(SQLKeyword.FROM);
-		
 		if (from == null) {
 			throw new NullPointerException("'from' must not be null");
 		}
@@ -45,5 +43,9 @@ public class From extends AbstractClause {
 		return getTableReferenceList();
 	}
 	
+	@Override
+	protected void traverseClause(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.FROM.traverse(vc, v);		
+	}
 	
 }
