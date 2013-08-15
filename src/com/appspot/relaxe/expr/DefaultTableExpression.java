@@ -112,13 +112,7 @@ public class DefaultTableExpression
 	}
 
 	
-	@Override
-	public String generate() {
-		StringBuffer dest = new StringBuffer();
-		ElementVisitor v = new QueryGenerator(dest);
-		traverse(null, v);		
-		return dest.toString();
-	}
+	
 	
 	public SetOperator unionAll(TableExpression rp) {
 		return new SetOperator(Op.UNION, true, this, rp);

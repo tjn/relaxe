@@ -9,13 +9,14 @@ package com.appspot.relaxe.expr;
 public class QueryGenerator
 	extends TokenVisitor {
 	
-	private StringBuffer buffer = null;	
+	private StringBuilder buffer = null;	
 	private Token previous;
-			
-	public QueryGenerator(StringBuffer buffer) {
+				
+	public QueryGenerator(StringBuilder buffer) {
 		super();		
-		this.buffer = buffer;
+		this.buffer = buffer;		
 	}
+	
 	
 //	private VisitContext append(Element e) {
 //		return append(e, " ");
@@ -35,6 +36,7 @@ public class QueryGenerator
 //		
 //		return null;
 //	}
+	
 
 	@Override
 	public VisitContext visit(Token next) {

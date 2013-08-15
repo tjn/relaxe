@@ -38,7 +38,7 @@ public abstract class CompoundElement implements Element {
 	}
 		
 	public String generate() {
-		StringBuffer dest = new StringBuffer();
+		StringBuilder dest = new StringBuilder();
 		ElementVisitor v = new QueryGenerator(dest);
 		traverse(null, v);		
 		return dest.toString();			

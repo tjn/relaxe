@@ -86,13 +86,6 @@ public abstract class Statement
 	protected Statement() {
 	}
 	
-	@Override
-	public String generate() {
-		StringBuffer dest = new StringBuffer();
-		ElementVisitor v = new QueryGenerator(dest);
-		traverse(null, v);		
-		return dest.toString();		
-	}	
 	
 	private Name name;
 	
