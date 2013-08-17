@@ -3,6 +3,8 @@
  */
 package com.appspot.relaxe.expr;
 
+import com.appspot.relaxe.meta.impl.mysql.MySQLKeyword;
+
 public class MySQLDeleteStatement
 	extends DeleteStatement {
 
