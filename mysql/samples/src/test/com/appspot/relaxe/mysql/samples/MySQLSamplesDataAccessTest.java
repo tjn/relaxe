@@ -19,7 +19,7 @@ import com.appspot.relaxe.env.mysql.MySQLImplementation;
 import com.appspot.relaxe.env.mysql.MySQLPersistenceContext;
 import com.appspot.relaxe.expr.IntLiteral;
 import com.appspot.relaxe.expr.ValueExpression;
-import com.appspot.relaxe.gen.samples.ent.samples.Game;
+import com.appspot.relaxe.gen.samples.ent.samples.Match;
 import com.appspot.relaxe.gen.samples.ent.samples.Player;
 import com.appspot.relaxe.gen.samples.ent.samples.UserAccount;
 import com.appspot.relaxe.rpc.IntegerHolder;
@@ -54,14 +54,14 @@ public class MySQLSamplesDataAccessTest
 		
 		EntitySession es = das.asEntitySession();
 		
-		Game.QueryTemplate gq = new Game.QueryTemplate();
+		Match.QueryTemplate gq = new Match.QueryTemplate();
 		gq.addAllAttributes();					
-		gq.addPredicate(PredicateAttributeTemplate.eq(Game.Attribute.PHASE, "NEW"));
+		gq.addPredicate(PredicateAttributeTemplate.eq(Match.Attribute.PHASE, "NEW"));
 		
 		UserAccount.QueryTemplate uq = new UserAccount.QueryTemplate();
 		uq.add(UserAccount.ID);
 		uq.add(UserAccount.USERNAME);		
-		gq.setTemplate(Game.INITIATOR, uq);
+		gq.setTemplate(Match.FK_GAME_INITIATOR, uq);
 		
 		FetchOptions options = new FetchOptions(10, 0);
 		
@@ -69,13 +69,13 @@ public class MySQLSamplesDataAccessTest
 		logger().debug("execute: game=" + gq);
 		logger().debug("execute: user=" + uq);
 				
-		List<Game> games = es.load(gq, options);
+		List<Match> games = es.load(gq, options);
 				
 		if (games.isEmpty()) {
 			throw new RuntimeException("no sufficient test data available");			
 		}
 					
-		PredicateAttributeTemplate<Game.Attribute> gp = getGamePredicate(games);
+		PredicateAttributeTemplate<Match.Attribute> gp = getGamePredicate(games);
 		
 		{
 			List<Player> pl = loadInitiatorPlayerList(es, gq, gp);		
@@ -87,7 +87,7 @@ public class MySQLSamplesDataAccessTest
 			
 			for (Player ip : pl) {
 				assertNotNull(ip);
-				Game game = ip.getGame(Player.GAME).value();
+				Match game = ip.getMatch(Player.GAME).value();
 				Integer gid = game.getContent().getId();
 								
 				assertFalse("duplicate game id: " + gid, km.containsKey(gid));
@@ -98,7 +98,7 @@ public class MySQLSamplesDataAccessTest
 				UserAccount ua = ip.getUserAccount(Player.USER).value();
 				assertNotNull(ua);
 				
-				UserAccount.Holder ih = game.getUserAccount(Game.INITIATOR);
+				UserAccount.Holder ih = game.getUserAccount(Match.FK_GAME_INITIATOR);
 				assertNotNull(ih);
 				UserAccount gi = ih.value();
 				assertNotNull(gi);
@@ -121,21 +121,21 @@ public class MySQLSamplesDataAccessTest
 	}
 
 
-	private PredicateAttributeTemplate<Game.Attribute> getGamePredicate(
-			List<Game> games) {
+	private PredicateAttributeTemplate<Match.Attribute> getGamePredicate(
+			List<Match> games) {
 		List<ValueExpression> gids = new ArrayList<ValueExpression>();
 		
-		for (Game game : games) {
-			IntegerHolder id = game.getInteger(Game.ID);			
+		for (Match game : games) {
+			IntegerHolder id = game.getInteger(Match.ID);			
 			gids.add(new IntLiteral(id.value().intValue()));
 		}
 		
-		PredicateAttributeTemplate<Game.Attribute> gp = PredicateAttributeTemplate.in(Game.Attribute.ID, gids);
+		PredicateAttributeTemplate<Match.Attribute> gp = PredicateAttributeTemplate.in(Match.Attribute.ID, gids);
 		return gp;
 	}
 
 
-	private List<Player> loadInitiatorPlayerList(EntitySession es, Game.QueryTemplate gq, PredicateAttributeTemplate<Game.Attribute> gp)
+	private List<Player> loadInitiatorPlayerList(EntitySession es, Match.QueryTemplate gq, PredicateAttributeTemplate<Match.Attribute> gp)
 			throws EntityException {
 		
 		Player.QueryTemplate pq = new Player.QueryTemplate();
@@ -144,14 +144,14 @@ public class MySQLSamplesDataAccessTest
 		UserAccount.QueryTemplate iq = new UserAccount.QueryTemplate();
 		iq.add(UserAccount.USERNAME);
 		
-		Game.QueryTemplate gt = new Game.QueryTemplate();
+		Match.QueryTemplate gt = new Match.QueryTemplate();
 		gt.addPredicate(gp);
 			
-		gt.setTemplate(Game.INITIATOR, iq);		
+		gt.setTemplate(Match.FK_GAME_INITIATOR, iq);		
 		pq.setTemplate(Player.GAME, gt);		
 		pq.setTemplate(Player.USER, iq);		
 		
-		gq.asc(Game.Attribute.ID);		
+		gq.asc(Match.Attribute.ID);		
 		pq.asc(Player.Attribute.ORDINAL);
 		
 						
