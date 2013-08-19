@@ -77,6 +77,8 @@ public class DefaultCatalogFactory2
 			prepare(meta);
 			
 			String current = getCatalogName(c);
+			logger().info("current: " + current);
+			// Identifier catalog = (current == null) ? null : id(current);
 			Identifier catalog = id(current);
 						
 			ImmutableCatalog.Builder cb = new ImmutableCatalog.Builder(env, catalog);
@@ -631,7 +633,7 @@ public class DefaultCatalogFactory2
 //	}
 
 	protected Identifier id(String name) {
-		return getEnvironment().getIdentifierRules().toIdentifier(name);		
+		return (name == null) ? null : getEnvironment().getIdentifierRules().toIdentifier(name);		
 	}
 
 //	@Override

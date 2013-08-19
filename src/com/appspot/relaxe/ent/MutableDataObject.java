@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.appspot.relaxe.expr.ColumnExpr;
-import com.appspot.relaxe.expr.ColumnName;
+import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.Select;
 import com.appspot.relaxe.expr.ValueExpression;
@@ -39,7 +39,7 @@ public class MutableDataObject
 		private int columnCount;
 		private List<ValueExpression> valueList;
 		private List<ColumnExpr> columnList;
-		private Map<ColumnName, Integer> columnIndexMap;
+		private Map<Identifier, Integer> columnIndexMap;
 		private QueryExpressionSource queryExpressionSource;
 		
 		/**
@@ -59,12 +59,12 @@ public class MutableDataObject
 			this.valueList = new ArrayList<ValueExpression>(s.expandValueExprList());
 			this.columnList = new ArrayList<ColumnExpr>(s.expandColumnExprList());
 			
-			Map<ColumnName, Integer> xm = this.columnIndexMap = new HashMap<ColumnName, Integer>();
+			Map<Identifier, Integer> xm = this.columnIndexMap = new HashMap<Identifier, Integer>();
 			
 			int i = 0;
 			
 			for (ValueExpression e : this.valueList) {
-				ColumnName cn = e.getColumnName();
+				Identifier cn = e.getColumnName();
 				xm.put(cn, Integer.valueOf(i++));								
 			}			
 		}
@@ -74,7 +74,7 @@ public class MutableDataObject
 			return columnCount;
 		}
 		
-		private int index(ColumnName n) {
+		private int index(Identifier n) {
 			return this.columnIndexMap.get(n).intValue();
 		}
 
@@ -132,7 +132,7 @@ public class MutableDataObject
 		return this.content.get(index);
 	}
 		
-	public AbstractPrimitiveHolder<?, ?, ?> get(ColumnName a) {
+	public AbstractPrimitiveHolder<?, ?, ?> get(Identifier a) {
 		int index = this.metaData.index(a);
 		return this.content.get(index);
 	}

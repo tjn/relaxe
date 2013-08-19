@@ -16,7 +16,7 @@ public interface SelectListElement
 	 * be better? 
 	 * @return
 	 */	
-	List<? extends ColumnName> getColumnNames();
+	List<? extends Identifier> getColumnNames();
 	
 	/** 
 	 * @param column 1-based index

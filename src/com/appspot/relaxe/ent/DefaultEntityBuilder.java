@@ -13,7 +13,7 @@ import com.appspot.relaxe.ent.im.EntityIdentityMap;
 import com.appspot.relaxe.ent.im.ReferenceIdentityMap;
 import com.appspot.relaxe.ent.value.PrimitiveKey;
 import com.appspot.relaxe.expr.ColumnExpr;
-import com.appspot.relaxe.expr.ColumnName;
+import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.TableReference;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
@@ -144,7 +144,7 @@ public abstract class DefaultEntityBuilder<
 		Table table = this.tableRef.getTable();
 						
 		ColumnExpr ce = ctx.getInputMetaData().column(index);
-		ColumnName cn = ce.getColumnName();
+		Identifier cn = ce.getColumnName();
 						
 		final Column col = table.columnMap().get(cn);
 		

@@ -5,7 +5,6 @@ package com.appspot.relaxe.expr.op;
 
 import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.Expression;
-import com.appspot.relaxe.expr.Predicate;
 import com.appspot.relaxe.expr.Token;
 import com.appspot.relaxe.expr.VisitContext;
 

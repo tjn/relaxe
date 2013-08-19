@@ -4,7 +4,7 @@
 package com.appspot.relaxe.expr.pg;
 
 import com.appspot.relaxe.expr.AbstractClause;
-import com.appspot.relaxe.expr.ColumnName;
+import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.Element;
 import com.appspot.relaxe.expr.ElementList;
 import com.appspot.relaxe.expr.ElementVisitor;
@@ -33,11 +33,11 @@ public class PGInsert
 		super(target);
 	}
 
-	public PGInsert(Table target, ElementList<ColumnName> columnNameList, ValueRow valueRow) {
+	public PGInsert(Table target, ElementList<Identifier> columnNameList, ValueRow valueRow) {
 		super(target, columnNameList, valueRow);
 	}
 
-	public PGInsert(Table target, ElementList<ColumnName> columnNameList) {
+	public PGInsert(Table target, ElementList<Identifier> columnNameList) {
 		super(target, columnNameList);	
 	}
 	
@@ -49,7 +49,7 @@ public class PGInsert
 			
 		getTableName().traverse(vc, v);		
 		
-		ElementList<ColumnName> cl = getColumnNameList();
+		ElementList<Identifier> cl = getColumnNameList();
 		
 		if (cl != null) {
 			Symbol.PAREN_LEFT.traverse(vc, v);	

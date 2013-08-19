@@ -14,7 +14,7 @@ public class CountFunction
 	 */
 	private static final long serialVersionUID = -3120742542013048386L;
 	
-	private static final Identifier NAME = AbstractIdentifier.create("COUNT");
+	private static final Identifier NAME = new OrdinaryIdentifier("COUNT");
 	
 	private boolean distinct;
 		
@@ -42,7 +42,7 @@ public class CountFunction
 	}
 
 	@Override
-	public ColumnName getColumnName() {
+	public Identifier getColumnName() {
 		return null;
 	}
 

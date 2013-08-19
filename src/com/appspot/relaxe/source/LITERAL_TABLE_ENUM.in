@@ -1,6 +1,5 @@
 package {{package-name}};
 
-import com.appspot.relaxe.expr.ColumnName;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
@@ -11,20 +10,20 @@ public enum {{literal-table-enum}}
 	
 {{column-enum-list}}
 			
-	private ColumnName name;	
+	private Identifier name;	
 	private DataType type;
 	private boolean definitelyNotNullable;
 	private Boolean autoIncrementColumn;
 				
 	{{literal-table-enum}}(Identifier name, DataType type, boolean definitelyNotNullable, Boolean autoIncrementColumn) {
-		this.name = new ColumnName(name);
+		this.name = name;
 		this.type = type;
 		this.definitelyNotNullable = definitelyNotNullable;
 		this.autoIncrementColumn = autoIncrementColumn;		
 	}
 	
 	@Override
-	public ColumnName getColumnName() {
+	public Identifier getColumnName() {
 		return this.name;
 	}
 

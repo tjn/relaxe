@@ -36,7 +36,7 @@ public class TableColumns
 	}
 
 	@Override
-	public List<? extends ColumnName> getColumnNames() {	
+	public List<? extends Identifier> getColumnNames() {	
 		return tableRef.getColumnNameList().getContent();
 	}
 	

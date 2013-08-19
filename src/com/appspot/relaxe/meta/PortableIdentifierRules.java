@@ -5,13 +5,14 @@ package com.appspot.relaxe.meta;
 
 import java.util.Comparator;
 
-import com.appspot.relaxe.expr.AbstractIdentifier;
+import com.appspot.relaxe.expr.AbstractIdentifierRules;
 import com.appspot.relaxe.expr.DelimitedIdentifier;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.IllegalIdentifierException;
 
 
 public class PortableIdentifierRules
+	extends AbstractIdentifierRules
 	implements IdentifierRules {
 	
 	private static final FoldingComparator comparator = FoldingComparator.LOWERCASE;
@@ -28,12 +29,13 @@ public class PortableIdentifierRules
 			return null;
 		}
 								
-		return new DelimitedIdentifier(comparator.fold(name));
+		return new DelimitedIdentifier(name);
 	}
 
 	@Override
 	public Identifier toIdentifier(String name)
-			throws IllegalIdentifierException {
-		return (name == null) ? null : AbstractIdentifier.create(name, comparator.getFolding());		
-	}
+			throws IllegalIdentifierException {				
+		return toDelimitedIdentifier(name);		
+	}	
+	
 }

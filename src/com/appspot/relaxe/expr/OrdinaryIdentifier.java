@@ -15,13 +15,12 @@ public class OrdinaryIdentifier
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected OrdinaryIdentifier() {
+	@SuppressWarnings("unused")
+	private OrdinaryIdentifier() {
 	}
 	
-	public OrdinaryIdentifier(String name) 
-		throws IllegalIdentifierException {
-		super(name);
-		validateOrdinary(name);
+	OrdinaryIdentifier(String name) {
+		super(name);		
 	}
 
 	@Override
@@ -35,42 +34,12 @@ public class OrdinaryIdentifier
 	}
 
 	@Override
-	public void traverse(VisitContext vc, ElementVisitor v) {
-		v.start(vc, this);
-		v.end(this);		
-	}
-	
-	public static void validateOrdinary(String token) 
-		throws IllegalIdentifierException {
-		StringBuilder details = new StringBuilder();
-		
-		if (!isValidOrdinary(token, details)) {
-			throw new IllegalIdentifierException(details.toString());
-		}
-	}	
-	
-	public static boolean isValidOrdinary(String token) {
-		return isValidOrdinary(token, null);
-	}
-	
-	private static boolean isValidOrdinary(String token, StringBuilder details) {		
-		String p = "[A-Za-z][A-Za-z0-9_]*";
-		
-		if (!token.matches(p)) {
-			return fail("token '" + token + "' doesn't match the pattern: " + p, details); 
-		}
-	
-		if (SQLKeyword.isKeyword(token.toUpperCase())) {
-			return fail(
-					"token '" + token + "' is identical to a keyword and " +
-					"can not be used as a ordinary identifier", details);
-		}	
-		
-		return true;
-	}
-
-	@Override
 	public String getTerminalSymbol() {
 		return getName();
-	}	
+	}
+	
+	@Override
+	public boolean isDelimited() {
+		return false;
+	}
 }

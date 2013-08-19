@@ -33,7 +33,7 @@ public abstract class AbstractParameter<
 	private String name;
 //	private int dataType;
 	private DataType columnType;
-	private ColumnName columnName;
+	private Identifier columnName;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -73,7 +73,7 @@ public abstract class AbstractParameter<
 	}
 
 	@Override
-	public ColumnName getColumnName() {
+	public Identifier getColumnName() {
 		return this.columnName;
 	}
 
@@ -83,7 +83,7 @@ public abstract class AbstractParameter<
 	}
 
 	@Override
-	public List<? extends ColumnName> getColumnNames() {
+	public List<? extends Identifier> getColumnNames() {
 		return Collections.singletonList(this.columnName);
 	}
 	

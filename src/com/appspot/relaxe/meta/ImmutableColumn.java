@@ -3,7 +3,7 @@
  */
 package com.appspot.relaxe.meta;
 
-import com.appspot.relaxe.expr.ColumnName;
+
 import com.appspot.relaxe.expr.Identifier;
 
 public class ImmutableColumn
@@ -20,7 +20,7 @@ public class ImmutableColumn
 	private String autoIncrement;
 		
 	private DataType dataType;	
-	private ColumnName columnName;	
+	private Identifier columnName;	
 	private int ordinalPosition;
 	
 			
@@ -34,7 +34,7 @@ public class ImmutableColumn
 	}
 	
 	public ImmutableColumn(Identifier name, int ordinalPosition, DataType type, Boolean autoIncrement, String remarks, boolean definitelyNotNullable, String columnDefault) {		
-		this.columnName = new ColumnName(name);
+		this.columnName = name;
 		this.ordinalPosition = ordinalPosition;
 		this.dataType = type;
 		this.remarks = remarks;				
@@ -101,11 +101,11 @@ public class ImmutableColumn
 
 	@Override
 	public Identifier getUnqualifiedName() {
-		return getColumnName();
+		return this.columnName;
 	}
 
 	@Override
-	public ColumnName getColumnName() {
+	public Identifier getColumnName() {
 		return this.columnName;
 	}
 

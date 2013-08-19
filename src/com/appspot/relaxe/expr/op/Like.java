@@ -31,6 +31,7 @@ public class Like
 		return new Like(a, b);
 	}
 
+	@Override
 	public Predicate parenthesize() {
 		return new ParenthesizedPredicate(this);
 	}

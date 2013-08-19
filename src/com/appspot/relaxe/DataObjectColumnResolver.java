@@ -7,7 +7,7 @@ import com.appspot.relaxe.ent.ColumnResolver;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObject.MetaData;
 import com.appspot.relaxe.expr.ColumnExpr;
-import com.appspot.relaxe.expr.ColumnName;
+import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.Table;
 
@@ -31,7 +31,7 @@ public class DataObjectColumnResolver
 	@Override
 	public Column getColumn(int index) {
 		ColumnExpr ce = metaData.column(index);
-		ColumnName cn = ce.getColumnName();				
+		Identifier cn = ce.getColumnName();				
 		Column col = table.columnMap().get(cn);
 		return col;
 	}

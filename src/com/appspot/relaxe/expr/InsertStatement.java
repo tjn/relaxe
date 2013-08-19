@@ -16,7 +16,7 @@ public class InsertStatement
 	private Table target;
 	
 	private ElementList<ValueRow> values;	
-	private ElementList<ColumnName> columnNameList;
+	private ElementList<Identifier> columnNameList;
 	
 	private SchemaElementName tableName;
 	
@@ -34,7 +34,7 @@ public class InsertStatement
 	protected InsertStatement() {
 	}
 	
-	public InsertStatement(Table target, ElementList<ColumnName> columnNameList) {
+	public InsertStatement(Table target, ElementList<Identifier> columnNameList) {
 	    this(target, columnNameList, null);	    
 	}
 
@@ -56,7 +56,7 @@ public class InsertStatement
 	 * @param columnNameList Must not be null.
 	 * @param valueRow May me null.
 	 */
-	public InsertStatement(Table target, ElementList<ColumnName> columnNameList, ValueRow valueRow) {
+	public InsertStatement(Table target, ElementList<Identifier> columnNameList, ValueRow valueRow) {
 		this(target);
 		
 		if (columnNameList == null) {
@@ -64,7 +64,7 @@ public class InsertStatement
 		}
 		
 		this.target = target;
-		this.columnNameList = new ElementList<ColumnName>();
+		this.columnNameList = new ElementList<Identifier>();
 		columnNameList.copyTo(this.columnNameList);
 		
 		if (valueRow != null) {
@@ -79,7 +79,7 @@ public class InsertStatement
 			
 		getTableName().traverse(vc, v);
 		
-		ElementList<ColumnName> cl = getColumnNameList();
+		ElementList<Identifier> cl = getColumnNameList();
 		
 		if (cl != null) {
 			Symbol.PAREN_LEFT.traverse(vc, v);	
@@ -117,7 +117,7 @@ public class InsertStatement
 		return tableName;
 	}
 	
-	protected ElementList<ColumnName> getColumnNameList() {
+	protected ElementList<Identifier> getColumnNameList() {
 		return columnNameList;
 	}
 	

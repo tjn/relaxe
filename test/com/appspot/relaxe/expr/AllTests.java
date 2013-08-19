@@ -11,7 +11,7 @@ public class AllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite(AllTests.class.getName());
 		//$JUnit-BEGIN$
-		suite.addTestSuite(QueryGeneratorTest.class);
+		suite.addTestSuite(SQLIdentifierRulesTest.class);
 		//$JUnit-END$
 		return suite;
 	}

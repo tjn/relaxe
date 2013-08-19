@@ -123,8 +123,8 @@ public class JoinedTable
 	}
 
 	@Override
-	public ElementList<? extends ColumnName> getUncorrelatedColumnNameList() {
-		ElementList<ColumnName> names = new ElementList<ColumnName>();
+	public ElementList<? extends Identifier> getUncorrelatedColumnNameList() {
+		ElementList<Identifier> names = new ElementList<Identifier>();
 		
 		copyColumnNameList(getLeft(), names);
 		copyColumnNameList(getRight(), names);
@@ -132,9 +132,9 @@ public class JoinedTable
 		return names;
 	}
 	
-	private void copyColumnNameList(AbstractTableReference src, ElementList<ColumnName> dest) {
+	private void copyColumnNameList(AbstractTableReference src, ElementList<Identifier> dest) {
 		if (src != null) {
-			ElementList<? extends ColumnName> nl = src.getUncorrelatedColumnNameList();
+			ElementList<? extends Identifier> nl = src.getUncorrelatedColumnNameList();
 			
 			if (!nl.isEmpty()) {
 				dest.getContent().addAll(nl.getContent());
@@ -174,7 +174,7 @@ public class JoinedTable
 	}
 
 	@Override
-	public ElementList<? extends ColumnName> getColumnNameList() {
+	public ElementList<? extends Identifier> getColumnNameList() {
 		return getUncorrelatedColumnNameList();
 	}
 

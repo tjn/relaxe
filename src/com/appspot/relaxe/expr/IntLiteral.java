@@ -55,7 +55,7 @@ public class IntLiteral
 	}
 	
 	@Override
-	public ColumnName getColumnName() {
+	public Identifier getColumnName() {
 		return null;
 	}
 }

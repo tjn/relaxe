@@ -3,7 +3,7 @@
  */
 package com.appspot.relaxe.meta;
 
-import com.appspot.relaxe.expr.ColumnName;
+import com.appspot.relaxe.expr.Identifier;
 
 public interface Column 
 	extends MetaObject {
@@ -21,5 +21,5 @@ public interface Column
 	 * @return
 	 */	
 	Boolean isAutoIncrement();	
-	ColumnName getColumnName(); 
+	Identifier getColumnName(); 
 }

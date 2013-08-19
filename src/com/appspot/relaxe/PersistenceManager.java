@@ -37,7 +37,6 @@ import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.exec.QueryProcessor;
 import com.appspot.relaxe.exec.QueryProcessorAdapter;
 import com.appspot.relaxe.expr.Assignment;
-import com.appspot.relaxe.expr.ColumnName;
 import com.appspot.relaxe.expr.ColumnReference;
 import com.appspot.relaxe.expr.Default;
 import com.appspot.relaxe.expr.DeleteStatement;
@@ -155,7 +154,7 @@ public class PersistenceManager<
     	// Collection<Column> pks = meta.getBaseTable().getPrimaryKey().getColumnMap().values();
     	Set<Identifier> pks = meta.getBaseTable().getPrimaryKey().getColumnMap().keySet();
     	    	
-    	ElementList<ColumnName> names = new ElementList<ColumnName>();
+    	ElementList<Identifier> names = new ElementList<Identifier>();
     	
 
     	for (A a : meta.attributes()) {

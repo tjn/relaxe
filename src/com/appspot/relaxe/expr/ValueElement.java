@@ -6,6 +6,8 @@ package com.appspot.relaxe.expr;
 import java.util.Collections;
 import java.util.List;
 
+import com.appspot.relaxe.meta.IdentifierRules;
+
 /**
  * Represents scalar-valued select-list-element.
  *  
@@ -21,8 +23,8 @@ public class ValueElement
 	 */
 	private static final long serialVersionUID = 3171506330402365606L;
 	private ValueExpression expr;
-	private ColumnName newName;
-	private ColumnName name;
+	private Identifier newName;
+	private Identifier name;
 	
 //	private static Logger logger = Logger.getLogger(ValueElement.class);
 	
@@ -37,19 +39,19 @@ public class ValueElement
 	}
 			
 	public ValueElement(ValueExpression expr) {
-		this(expr, (ColumnName) null);
+		this(expr, (Identifier) null);
 	}
 
-	public ValueElement(ValueExpression expr, final String newName)
+	public ValueElement(ValueExpression expr, final String newName, IdentifierRules ir)
 		throws IllegalIdentifierException {		
-		this(expr, new ColumnName(newName));		
+		this(expr, ir.toIdentifier(newName));		
 	}
 	
 	public ValueElement(ColumnReference cr) {
 		this(cr, cr.getColumnName());
 	}
 	
-	public ValueElement(ValueExpression expr, final ColumnName newName) {		
+	public ValueElement(ValueExpression expr, final Identifier newName) {		
 		super();
 		
 		if (expr == null) {
@@ -63,10 +65,10 @@ public class ValueElement
 		}		
 	}
 	
-	public ColumnName getColumnName() {
+	public Identifier getColumnName() {
 		// TODO: fix: we should return a "made-up" name if there 
 		//		is not column name available		
-		ColumnName cn = 
+		Identifier cn = 
 			(this.newName != null) ? this.newName : 
 			(this.name != null) ? this.name :
 			null;		
@@ -90,7 +92,7 @@ public class ValueElement
 	}
 
 	@Override
-	public List<? extends ColumnName> getColumnNames() {				
+	public List<? extends Identifier> getColumnNames() {				
 		return Collections.singletonList(getColumnName());
 	}
 

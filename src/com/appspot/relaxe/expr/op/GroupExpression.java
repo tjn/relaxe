@@ -3,7 +3,7 @@
  */
 package com.appspot.relaxe.expr.op;
 
-import com.appspot.relaxe.expr.ColumnName;
+import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.ValueExpression;
 
 /**
@@ -37,7 +37,7 @@ public class GroupExpression
 	}
 
 	@Override
-	public ColumnName getColumnName() {		
+	public Identifier getColumnName() {		
 		return getContent().getColumnName();
 	}
 	

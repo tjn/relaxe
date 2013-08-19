@@ -16,7 +16,7 @@ public class TableReference
 	 */
 	private static final long serialVersionUID = -3388366557843780574L;
 	private Table table;	
-	private ElementList<ColumnName> columnNameList;
+	private ElementList<Identifier> columnNameList;
 	
 	private SchemaElementName tableName;
 	
@@ -47,11 +47,11 @@ public class TableReference
 	}
 
 	@Override
-	public ElementList<? extends ColumnName> getUncorrelatedColumnNameList() {
+	public ElementList<? extends Identifier> getUncorrelatedColumnNameList() {
 		if (columnNameList == null) {
-			this.columnNameList = new ElementList<ColumnName>();
+			this.columnNameList = new ElementList<Identifier>();
 			
-			List<ColumnName> nl = this.columnNameList.getContent();
+			List<Identifier> nl = this.columnNameList.getContent();
 			
 			for (final Column c : getTable().columnMap().values()) {
 				nl.add(c.getColumnName());

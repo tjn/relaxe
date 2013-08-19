@@ -6,6 +6,8 @@ package com.appspot.relaxe.expr;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.appspot.relaxe.meta.IdentifierRules;
+
 
 public class Select
 	extends AbstractClause {
@@ -92,7 +94,7 @@ public class Select
 	
 	public ColumnReference add(ColumnReference expr) {		
 		// avoid renaming by passing null:
-//		add(expr, (ColumnName) null);
+//		add(expr, (Identifier) null);
 		
 		if (expr == null) {
 			throw new NullPointerException("'expr' must not be null");
@@ -104,10 +106,10 @@ public class Select
 	}
 	
 	public ValueElement add(ValueExpression expr) {
-		return add(expr, (ColumnName) null);
+		return add(expr, (Identifier) null);
 	}
 	
-	public ValueElement add(ValueExpression expr, ColumnName newName) {
+	public ValueElement add(ValueExpression expr, Identifier newName) {
 		if (expr == null) {
 			throw new NullPointerException("'expr' must not be null");
 		}
@@ -117,12 +119,12 @@ public class Select
 		return e;
 	}	
 	
-	public ValueElement add(ValueExpression expr, String newName) 
+	public ValueElement add(ValueExpression expr, String newName, IdentifierRules ir) 
 		throws IllegalIdentifierException {
-		ColumnName n = null;
+		Identifier n = null;
 		
 		if (newName != null) {
-			n = ColumnName.create(newName);
+			n = ir.toIdentifier(newName);
 		}
 		
 		return add(expr, n);		
@@ -144,12 +146,12 @@ public class Select
 		return getSelectList();
 	}
 		
-	public ElementList<? extends ColumnName> getColumnNameList() {		
-		ElementList<ColumnName> cl = null;
+	public ElementList<? extends Identifier> getColumnNameList() {		
+		ElementList<Identifier> cl = null;
 		ElementList<SelectListElement> p = getSelectList();
 		
 		if (!p.isEmpty()) {
-			cl = new ElementList<ColumnName>();
+			cl = new ElementList<Identifier>();
 			
 			for (SelectListElement e : p.getContent()) {
 				cl.getContent().addAll(e.getColumnNames());				

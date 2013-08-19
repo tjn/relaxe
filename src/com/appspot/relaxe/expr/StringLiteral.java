@@ -59,7 +59,7 @@ public class StringLiteral
 	}
 	
 	@Override
-	public ColumnName getColumnName() {
+	public Identifier getColumnName() {
 		return null;
 	}
 }

@@ -9,7 +9,7 @@ public class Assignment extends CompoundElement {
 	 * 
 	 */
 	private static final long serialVersionUID = -7845480008197565746L;
-	private ColumnName name;
+	private Identifier name;
 	private Element value;
 	
 	/**
@@ -39,7 +39,7 @@ public class Assignment extends CompoundElement {
 	 * @param name
 	 */	
 
-	public Assignment(ColumnName name, ValueExpression value) {
+	public Assignment(Identifier name, ValueExpression value) {
 		this(name, (Element) value);		
 	}
 	
@@ -52,11 +52,11 @@ public class Assignment extends CompoundElement {
 	 *  
 	 * @param name
 	 */	
-	public Assignment(ColumnName name) {
+	public Assignment(Identifier name) {
 		this(name, SQLKeyword.DEFAULT);
 	}
 	
-	private Assignment(ColumnName name, Element value) {
+	private Assignment(Identifier name, Element value) {
 		super();
 		
 		if (name == null) {

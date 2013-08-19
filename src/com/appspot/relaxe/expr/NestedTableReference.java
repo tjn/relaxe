@@ -37,7 +37,7 @@ public class NestedTableReference
 	}
 
 	@Override
-	public ElementList<? extends ColumnName> getUncorrelatedColumnNameList() {	
+	public ElementList<? extends Identifier> getUncorrelatedColumnNameList() {	
 		return getQuery().getTableExpr().getSelect().getColumnNameList();
 	}
 		

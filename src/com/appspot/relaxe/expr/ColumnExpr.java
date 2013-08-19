@@ -12,7 +12,7 @@ public abstract class ColumnExpr
 	 */
 	private static final long serialVersionUID = -6471819124970538933L;
 	private AbstractTableReference table;	
-	private ColumnName columnName;
+	private Identifier columnName;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -20,7 +20,7 @@ public abstract class ColumnExpr
 	protected ColumnExpr() {
 	}
 
-	public ColumnExpr(AbstractTableReference table, ColumnName columnName) {
+	public ColumnExpr(AbstractTableReference table, Identifier columnName) {
 		super();
 		this.table = table;		
 		this.columnName = columnName;
@@ -31,7 +31,7 @@ public abstract class ColumnExpr
 	}
 	
 	@Override
-	public ColumnName getColumnName() {
+	public Identifier getColumnName() {
 		return columnName;
 	}
 

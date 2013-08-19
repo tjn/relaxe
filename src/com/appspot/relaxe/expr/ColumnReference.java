@@ -61,7 +61,7 @@ public class ColumnReference
 	}
 	
 	@Override
-	public List<? extends ColumnName> getColumnNames() {		
+	public List<? extends Identifier> getColumnNames() {		
 		return Collections.singletonList(getColumnName());
 	}
 

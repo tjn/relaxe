@@ -33,14 +33,14 @@ public abstract class AbstractTableReference
 	 * 
 	 * @return
 	 */
-	protected abstract ElementList<? extends ColumnName> getUncorrelatedColumnNameList();
+	protected abstract ElementList<? extends Identifier> getUncorrelatedColumnNameList();
 		
 	/**
 	 * List of (possibly) correlated column names.
 	 * 
 	 * @return
 	 */	
-	public abstract ElementList<? extends ColumnName> getColumnNameList();
+	public abstract ElementList<? extends Identifier> getColumnNameList();
 		
 //	/**
 //	 * 

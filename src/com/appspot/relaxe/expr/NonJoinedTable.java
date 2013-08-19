@@ -23,7 +23,7 @@ public abstract class NonJoinedTable
 	}
 	
 	@Override
-	public ElementList<? extends ColumnName> getColumnNameList() {		 		
+	public ElementList<? extends Identifier> getColumnNameList() {		 		
 		if ((correlationClause == null) || 
 				(!correlationClause.altersColumnNames())) {
 			return getUncorrelatedColumnNameList();
@@ -40,13 +40,13 @@ public abstract class NonJoinedTable
 		 * 
 		 */
 		private static final long serialVersionUID = 3876482034646951163L;
-		private ElementList<ColumnName> names;
+		private ElementList<Identifier> names;
 		private NonJoinedTable nonJoinedTable;
 		
 		/**
 		 * 
 		 */		
-		private Map<ColumnName, ColumnName> columnNameMap;
+		private Map<Identifier, Identifier> columnNameMap;
 		
 		/**
 		 * No-argument constructor for GWT Serialization
@@ -87,13 +87,13 @@ public abstract class NonJoinedTable
 		}
 		
 		
-		private ElementList<ColumnName> getNames() {
+		private ElementList<Identifier> getNames() {
 			if (!altersColumnNames()) {
 				return null;				
 			}
 			
 			if (names == null) {
-				names = new ElementList<ColumnName>();
+				names = new ElementList<Identifier>();
 			}
 			else {
 				names.getContent().clear();
@@ -102,10 +102,10 @@ public abstract class NonJoinedTable
 			ElementList<SelectListElement> elems = new ElementList<SelectListElement>();				
 			nonJoinedTable.addAll(elems);
 			
-			List<ColumnName> nl = this.names.getContent();			
+			List<Identifier> nl = this.names.getContent();			
 			
 			for (SelectListElement e : elems.getContent()) {
-				for (ColumnName n : e.getColumnNames()) {
+				for (Identifier n : e.getColumnNames()) {
 					nl.add(getColumnName(n));
 				}
 			}
@@ -113,16 +113,16 @@ public abstract class NonJoinedTable
 			return names;
 		}		
 	
-		public Map<ColumnName, ColumnName> getColumnNameMap() {
+		public Map<Identifier, Identifier> getColumnNameMap() {
 			if (columnNameMap == null) {
-				columnNameMap = new HashMap<ColumnName, ColumnName>();				
+				columnNameMap = new HashMap<Identifier, Identifier>();				
 			}
 	
 			return columnNameMap;
 		}
 		
-		private ColumnName getColumnName(ColumnName n) {
-			ColumnName cn = getColumnNameMap().get(n);			
+		private Identifier getColumnName(Identifier n) {
+			Identifier cn = getColumnNameMap().get(n);			
 			return (cn == null) ? n : cn;
 		}
 	}

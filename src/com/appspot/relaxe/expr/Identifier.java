@@ -5,5 +5,7 @@ package com.appspot.relaxe.expr;
 
 public interface Identifier
 	extends Token {
-	String getName();
+	
+	String getName();	
+	boolean isDelimited();
 }

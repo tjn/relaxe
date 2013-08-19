@@ -29,7 +29,6 @@ import org.apache.log4j.Logger;
 
 import com.appspot.relaxe.build.SchemaFilter;
 import com.appspot.relaxe.ent.im.EntityIdentityMap;
-import com.appspot.relaxe.expr.ColumnName;
 import com.appspot.relaxe.expr.DelimitedIdentifier;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.OrdinaryIdentifier;
@@ -49,6 +48,7 @@ import com.appspot.relaxe.meta.DataTypeImpl;
 import com.appspot.relaxe.meta.EmptyForeignKeyMap;
 import com.appspot.relaxe.meta.Environment;
 import com.appspot.relaxe.meta.ForeignKey;
+import com.appspot.relaxe.meta.IdentifierRules;
 import com.appspot.relaxe.meta.ImmutableColumnMap;
 import com.appspot.relaxe.meta.ImmutablePrimaryKey;
 import com.appspot.relaxe.meta.PrimaryKey;
@@ -281,6 +281,8 @@ public class SourceGenerator {
 //	private Class<? extends Environment> environmentType;
 	private Environment targetEnvironment;
 	
+	private boolean delimitAll = false;
+	
 	@SuppressWarnings("serial")
     private static class TypeInfo
 	    extends EnumMap<Part, JavaType> {
@@ -295,9 +297,14 @@ public class SourceGenerator {
 	}
 	
 	public SourceGenerator(File defaultSourceDir, SchemaFilter sf) {
+		this(defaultSourceDir, sf, false);
+	}
+	
+	public SourceGenerator(File defaultSourceDir, SchemaFilter sf, boolean delimitAll) {
         super();
         this.defaultSourceDir = defaultSourceDir;
         this.schemaFilter = (sf == null) ? SchemaFilter.ALL_SCHEMAS : sf;
+        this.delimitAll = delimitAll;
     }
 
 //	private static boolean knownAbbr(String t) {
@@ -473,8 +480,8 @@ public class SourceGenerator {
         Map<File, String> gm = new HashMap<File, String>();
         Properties generated = new Properties();
         
-        this.targetEnvironment = targetEnvironment; 
-        
+        this.targetEnvironment = targetEnvironment;
+                
         List<JavaType> ccil = new ArrayList<JavaType>();
         Map<JavaType, CharSequence> fm = new HashMap<JavaType, CharSequence>();
         
@@ -575,17 +582,17 @@ public class SourceGenerator {
     	}
     	
     	{
-	    	String list = generateBaseTableList(cat);
+	    	String list = generateBaseTableList(cat, tm);
 	    	src = replaceAllWithComment(src, Tag.BASE_TABLE_ENUM_LIST, list);
     	}
     	
     	{
-	    	String list = generateViewList(cat);
+	    	String list = generateViewList(cat, tm);
 	    	src = replaceAllWithComment(src, Tag.VIEW_ENUM_LIST, list);
     	}
     	
     	{
-	    	String list = generateColumnList(cat);
+	    	String list = generateColumnList(cat, tm);
 	    	src = replaceAllWithComment(src, Tag.COLUMN_ENUM_LIST, list);
     	}
     	
@@ -627,7 +634,7 @@ public class SourceGenerator {
     			String tn = getSimpleName(t);
     			
     			StringBuilder ebuf = new StringBuilder();    			    			
-    			generateColumnListElements(t, ebuf, nq);
+    			generateColumnListElements(t, ebuf, nq, tm);
     			String cl = ebuf.toString();
     			String tc = replaceAll(tsrc, Tag.COLUMN_ENUM_LIST, cl);    			
     			tc = replaceAll(tc, Tag.SCHEMA_TYPE_NAME, sn);
@@ -675,7 +682,7 @@ public class SourceGenerator {
     		}
 			
 			for (BaseTable t : s.baseTables().values()) {				
-				String tn = tableEnumeratedName(t);
+				String tn = tableEnumeratedName(tm, t);
 				
 				JavaType impl = tm.entityType(t, Part.IMPLEMENTATION);
 				JavaType intf = tm.entityType(t, Part.INTERFACE);
@@ -710,12 +717,12 @@ public class SourceGenerator {
 				SchemaElementMap<ForeignKey> fm = t.foreignKeys();
 								
 				for (ForeignKey fk : fm.values()) {					
-					String n = foreignKeyEnumeratedName(fk);
+					String n = foreignKeyEnumeratedName(tm, fk);
 					String sn = schemaEnumeratedName(s);
 					Identifier un = fk.getUnqualifiedName();
 									
 					buf.append(n);
-					buf.append("(LiteralSchema.");
+					buf.append("(LiteralSchema.");					
 					buf.append(sn);
 					buf.append(", ");
 					buf.append(literal(un));					
@@ -742,11 +749,11 @@ public class SourceGenerator {
 						buf.append(", ");
 						buf.append(jkt.getQualifiedName());
 						buf.append(".");
-						buf.append(columnEnumeratedName(kt, a, nq));
+						buf.append(columnEnumeratedName(kt, a, nq, tm));
 						buf.append(", ");
 						buf.append(jrt.getQualifiedName());
 						buf.append(".");
-						buf.append(columnEnumeratedName(rt, b, nq));
+						buf.append(columnEnumeratedName(rt, b, nq, tm));
 					}
 
 					buf.append("),\n");									
@@ -777,8 +784,8 @@ public class SourceGenerator {
 				
 				JavaType jt = tm.entityType(t, Part.LITERAL_TABLE_ENUM);
 								
-				String n = primaryKeyEnumeratedName(pk);
-				String tn = tableEnumeratedName(t);
+				String n = primaryKeyEnumeratedName(tm, pk);
+				String tn = tableEnumeratedName(tm, t);
 				Identifier un = pk.getUnqualifiedName();
 								
 				buf.append(n);
@@ -793,7 +800,7 @@ public class SourceGenerator {
 					// buf.append("LiteralCatalogColumn.");
 					buf.append(jt.getQualifiedName());
 					buf.append(".");
-					buf.append(columnEnumeratedName(t, c, nq));
+					buf.append(columnEnumeratedName(t, c, nq, tm));
 				}
 				
 				buf.append("),\n");									
@@ -830,11 +837,11 @@ public class SourceGenerator {
 		COLUMN
 	}
 	
-	private String columnConstantName(Column c) {
-		return columnEnumeratedName(null, c, EnumSet.of(NameQualification.COLUMN));
+	private String columnConstantName(Column c, TableMapper tm) {
+		return columnEnumeratedName(null, c, EnumSet.of(NameQualification.COLUMN), tm);
 	}
 
-	private void generateColumnListElements(Table t, StringBuilder buf, EnumSet<NameQualification> nq) {
+	private void generateColumnListElements(Table t, StringBuilder buf, EnumSet<NameQualification> nq, TableMapper tm) {
 		boolean b = t.isBaseTable();
 		String te = b ? "LiteralBaseTable" : "LiteralView";
 		
@@ -844,14 +851,17 @@ public class SourceGenerator {
 				
 		
 		for (Column c : t.columnMap().values()) {
-			String cn = columnEnumeratedName(t, c, nq);			
-			String ten = tableEnumeratedName(t);					
+			String cn = columnEnumeratedName(t, c, nq, tm);			
+			String ten = tableEnumeratedName(tm, t);					
 			Identifier un = c.getUnqualifiedName();
 			
 			buf.append(cn);
 			buf.append("(");		
 			buf.append(et);
 			buf.append(".environment().getIdentifierRules().");
+			
+			// delimitAll
+			
 			buf.append("toIdentifier(");
 			buf.append(literal(un));			
 			buf.append(")");
@@ -911,7 +921,7 @@ public class SourceGenerator {
 		return (ai == null) ? "null" : literal(ai.booleanValue() ? "YES" : "NO");
 	}	
 
-	private String generateColumnList(Catalog cat) {
+	private String generateColumnList(Catalog cat, TableMapper tm) {
 		StringBuilder buf = new StringBuilder();
 
 		for (Schema s : cat.schemas().values()) {
@@ -924,8 +934,8 @@ public class SourceGenerator {
 				String te = b ? "LiteralBaseTable" : "LiteralView"; 				
 				
 				for (Column c : t.columnMap().values()) {
-					String cn = columnEnumeratedName(t, c);
-					String tn = tableEnumeratedName(t);					
+					String cn = columnEnumeratedName(t, c, tm);
+					String tn = tableEnumeratedName(tm, t);					
 					Identifier un = c.getUnqualifiedName();
 					
 					buf.append(cn);
@@ -980,7 +990,7 @@ public class SourceGenerator {
 		buf.append(")");
 	}
 
-	private String generateBaseTableList(Catalog cat) {
+	private String generateBaseTableList(Catalog cat, TableMapper tm) {
 		StringBuilder buf = new StringBuilder();
 
 		for (Schema s : cat.schemas().values()) {
@@ -989,7 +999,7 @@ public class SourceGenerator {
     		}
 			
 			for (BaseTable t : s.baseTables().values()) {				
-				String tn = tableEnumeratedName(t);
+				String tn = tableEnumeratedName(tm, t);
 				String sn = schemaEnumeratedName(s);
 				Identifier un = t.getUnqualifiedName();
 								
@@ -1005,7 +1015,7 @@ public class SourceGenerator {
 		return buf.toString();
 	}
 	
-	private String generateViewList(Catalog cat) {
+	private String generateViewList(Catalog cat, TableMapper tm) {
 		logger().debug("generateViewList - enter");
 		
 		StringBuilder buf = new StringBuilder();
@@ -1021,7 +1031,7 @@ public class SourceGenerator {
 				logger().debug("generateViewList: tt=" + tt + " in table " + t.getQualifiedName());
 				
 				if (tt.equals(Table.VIEW) || tt.equals(Table.SYSTEM_TABLE)) {				
-					String tn = tableEnumeratedName(t);
+					String tn = tableEnumeratedName(tm, t);
 					String sn = schemaEnumeratedName(s);
 					Identifier un = t.getUnqualifiedName();
 									
@@ -1064,34 +1074,39 @@ public class SourceGenerator {
 		return un.getName().toUpperCase();				
 	}
 	
-	private String tableEnumeratedName(Table t) {		
-		return enumeratedName(t);
+	private String tableEnumeratedName(TableMapper tm, Table t) {		
+		return enumeratedName(tm, t);
 	}
 	
-	private String foreignKeyEnumeratedName(ForeignKey k) {		
-		return enumeratedName(k);
+	private String foreignKeyEnumeratedName(TableMapper tm, ForeignKey k) {		
+		return enumeratedName(tm, k);
 	}
 	
-	private String primaryKeyEnumeratedName(PrimaryKey k) {		
-		return enumeratedName(k);
+	private String primaryKeyEnumeratedName(TableMapper tm, PrimaryKey k) {		
+		return enumeratedName(tm, k);
 	}
 	
-	private String enumeratedName(SchemaElement e) {
+	private String enumeratedName(TableMapper tm, SchemaElement e) {
 		StringBuilder buf = new StringBuilder();
 //		buf.append(e.getSchema().getUnqualifiedName().getName());
-		buf.append(e.getName().getQualifier().getSchemaName().getName());
 		
+		
+		
+		buf.append(e.getName().getQualifier().getSchemaName().getName());		
 		buf.append("_");
-		buf.append(e.getUnqualifiedName().getName());		
+		buf.append(e.getUnqualifiedName().getName());
 		
-		return buf.toString().toUpperCase();
+		String uc = buf.toString().toUpperCase();		
+		return tm.toJavaIdentifier(uc);
+	}
+
+
+	
+	private String columnEnumeratedName(Table t, Column c, TableMapper tm) {
+		return columnEnumeratedName(t, c, EnumSet.allOf(NameQualification.class), tm);
 	}
 	
-	private String columnEnumeratedName(Table t, Column c) {
-		return columnEnumeratedName(t, c, EnumSet.allOf(NameQualification.class));
-	}
-	
-	private String columnEnumeratedName(Table t, Column c, EnumSet<NameQualification> nq) {
+	private String columnEnumeratedName(Table t, Column c, EnumSet<NameQualification> nq, TableMapper tm) {
 		StringBuilder buf = new StringBuilder();
 		
 		if (nq.contains(NameQualification.SCHEMA)) {
@@ -1111,7 +1126,10 @@ public class SourceGenerator {
 		
 		String n = buf.toString().toUpperCase();
 		
-		return normalize(n);		
+		n = normalize(n);
+		n = tm.toJavaIdentifier(n);
+		
+		return n;		
 	}
 
 	private String normalize(String n) {
@@ -1921,7 +1939,7 @@ public class SourceGenerator {
 	    EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
 	    
 	    StringBuilder ebuf = new StringBuilder();
-		generateColumnListElements(t, ebuf, nq);
+		generateColumnListElements(t, ebuf, nq, tm);
 		String cl = ebuf.toString();
 		src = replaceAll(src, Tag.COLUMN_ENUM_LIST, cl);
 		
@@ -2192,7 +2210,7 @@ public class SourceGenerator {
             base = tam.entityType(t, Part.ABSTRACT);
         }
         
-        String lt = tableEnumeratedName(t);
+        String lt = tableEnumeratedName(tam, t);
                 
         List<String> il = new ArrayList<String>();
         addImport(impl, intf, il);
@@ -2214,11 +2232,11 @@ public class SourceGenerator {
        	src = replaceAll(src, Tag.LITERAL_TABLE_ENUM, lt);
        	
        	tag = Tag.BASE_TABLE_COLUMN_VARIABLE_LIST;
-       	src = replaceAll(src, tag, generateBaseTableColumnVariableList(t, tag));
+       	src = replaceAll(src, tag, generateBaseTableColumnVariableList(t, tag, tam));
        	
        	src = replaceAll(src, Tag.POPULATE_COLUMN_MAP_BLOCK, generatePopulateColumnMapBlock(t, tam));
        	src = replaceAll(src, Tag.CREATE_GET_BASE_TABLE_BODY, generateGetBaseTableBody(t, tam));
-       	src = replaceAll(src, Tag.CREATE_PRIMARY_KEY_BODY, generateCreatePrimaryKeyBody(t));
+       	src = replaceAll(src, Tag.CREATE_PRIMARY_KEY_BODY, generateCreatePrimaryKeyBody(t, tam));
        	src = replaceAll(src, Tag.CREATE_FOREIGN_KEY_MAP_BODY, generateCreateForeignKeyMapBody(t, tam));
                                 
         boolean qualify = hasAmbiguousSimpleNamesForReferenceKeys(t, tam);
@@ -2310,12 +2328,22 @@ public class SourceGenerator {
 		buf.append(".environment()");		
 		return buf.toString();
 	}
+	
+	private String generateIdentifierRulesExpression(final Environment env) {
+		StringBuilder buf = new StringBuilder();
+		buf.append(generateEnvironmentExpression(env));
+		buf.append(".getIdentifierRules()");		
+		return buf.toString();	
+	}
+	
+	
+	
 
 	private Environment getTargetEnvironment(final Environment catenv) {
 		return (this.targetEnvironment == null) ? catenv : this.targetEnvironment;
 	}
 
-	private String generatePopulateColumnMapBlock(BaseTable t, TableMapper tam) {
+	private String generatePopulateColumnMapBlock(BaseTable t, TableMapper tm) {
 		StringBuilder buf = new StringBuilder();
 
 		line(buf, "// generatePopulateColumnMapBlock //");
@@ -2326,7 +2354,7 @@ public class SourceGenerator {
 		
 		for (Column	c : t.columnMap().values()) {
 			line(buf, "cmb.add(",
-					columnConstantName(c),
+					columnConstantName(c, tm),
 					", ",
 					Integer.toString(ordinal),
 					", ",
@@ -2349,17 +2377,19 @@ public class SourceGenerator {
 		return buf.toString();
 	}
 
-	private String generateBaseTableColumnVariableList(BaseTable t, Tag tag) {
+	private String generateBaseTableColumnVariableList(BaseTable t, Tag tag, TableMapper tm) {
 		StringBuilder buf = new StringBuilder();
 		
 		tag(buf, tag);		
 		
 		ColumnMap columnMap = t.columnMap();
 		
+		Environment te = getTargetEnvironment(t.getEnvironment());
+		
 		for (Column c : columnMap.values()) {			
-			ColumnName cn = c.getColumnName();
-			String cc = columnConstantName(c);						
-			line(buf, "private final ", identifierDeclaration(cc, cn));
+			Identifier cn = c.getColumnName();
+			String cc = columnConstantName(c, tm);						
+			line(buf, "private final ", identifierDeclaration(cc, cn, te));
 		}
 		
 		
@@ -2380,10 +2410,11 @@ public class SourceGenerator {
 
 /**
 	Environment env = PGEnvironment.environment();
+	IdentifierRules irls = env.getIdentifierRules();
 	
-	com.appspot.relaxe.expr.Identifier c = env.createIdentifier("asdf");
-	com.appspot.relaxe.expr.Identifier s = env.createIdentifier("public");
-	com.appspot.relaxe.expr.Identifier t = env.createIdentifier("test");   
+	com.appspot.relaxe.expr.Identifier c = irls.toIdentifier("asdf");
+	com.appspot.relaxe.expr.Identifier s = irls.toIdentifier("public");
+	com.appspot.relaxe.expr.Identifier t = irls.toIdentifier("test");   
 	
 	com.appspot.relaxe.expr.SchemaName schemaName = new com.appspot.relaxe.expr.SchemaName(c, s);
 	SchemaElementName sen = new SchemaElementName(schemaName, t);
@@ -2392,16 +2423,19 @@ public class SourceGenerator {
  */
 //		line(buf, "Environment env = ", t.getEnvironment().getClass().getCanonicalName(), ".environment();");
 		
+		String irvar = "irls";
 		
 		Environment te = getTargetEnvironment(t.getEnvironment());								
 		line(buf, Environment.class.getCanonicalName(), " env = ", generateEnvironmentExpression(te), ";");
-		
-		
+		line(buf, IdentifierRules.class.getCanonicalName(), " ", irvar, " = env.getIdentifierRules();");
+				
 		SchemaElementName sen = t.getName();
 		
-		line(buf, identifierDeclaration("c", sen.getQualifier().getCatalogName()));
-		line(buf, identifierDeclaration("s", sen.getQualifier().getSchemaName()));
-		line(buf, identifierDeclaration("t", sen.getUnqualifiedName()));
+		
+		
+		line(buf, identifierDeclaration("c", sen.getQualifier().getCatalogName(), irvar));
+		line(buf, identifierDeclaration("s", sen.getQualifier().getSchemaName(), irvar));
+		line(buf, identifierDeclaration("t", sen.getUnqualifiedName(), irvar));
 		
 		JavaType intf = tam.entityType(t, Part.INTERFACE);
 		
@@ -2480,8 +2514,9 @@ public class SourceGenerator {
 //		}		
 		
 		line(buf, "{");
-				
-		line(buf, identifierDeclaration("constraintName", fk.getUnqualifiedName()));
+		
+		Environment te = getTargetEnvironment(t.getEnvironment());				
+		line(buf, identifierDeclaration("constraintName", fk.getUnqualifiedName(), te));
 		
 		String bi = ImmutableColumnMap.Builder.class.getCanonicalName();
 		
@@ -2498,12 +2533,12 @@ public class SourceGenerator {
 		for (Column column : cl) {			
 			String o = Integer.toString(ordinal);
 						
-			line(buf, ii, " c", o, " = ", columnConstantName(column), ";");
+			line(buf, ii, " c", o, " = ", columnConstantName(column, tam), ";");
 			
 			String rn = "r" + o;
 			Identifier rc = fk.getReferencedColumnName(column.getUnqualifiedName());
 			
-			line(buf, identifierDeclaration(rn, rc), ";");
+			line(buf, identifierDeclaration(rn, rc, te), ";");
 			
 			line(buf, "cmi.add(columnMap.get(c", o, "));");
 			line(buf, "cm.put(c", o, ", r", o, ");");
@@ -2536,7 +2571,7 @@ public class SourceGenerator {
 		line(buf, "}");
 	}
 
-	private String generateCreatePrimaryKeyBody(BaseTable t) {
+	private String generateCreatePrimaryKeyBody(BaseTable t, TableMapper tm) {
 		StringBuilder buf = new StringBuilder();
 		
 		line(buf, "// generateCreatePrimaryKeyBody: ");
@@ -2567,7 +2602,7 @@ public class SourceGenerator {
 //			columnConstantName(c);
 						
 //			line(buf, "{");		
-			line(buf, "pkb.add(columnMap.get(", columnConstantName(c) ,"));");
+			line(buf, "pkb.add(columnMap.get(", columnConstantName(c, tm) ,"));");
 //			line(buf, "}");
 		}		
 		
@@ -2575,8 +2610,12 @@ public class SourceGenerator {
 		
 		return buf.toString();
 	}
+	
+	private String identifierDeclaration(String variableName, Identifier n, Environment te) {
+		return identifierDeclaration(variableName, n, generateIdentifierRulesExpression(te));
+	}
 
-	private String identifierDeclaration(String variableName, Identifier n) {
+	private String identifierDeclaration(String variableName, Identifier n, String identifierRulesExpression) {
 		StringBuilder buf = new StringBuilder();
 				
 		buf.append(Identifier.class.getCanonicalName());
@@ -2590,10 +2629,11 @@ public class SourceGenerator {
 		else {
 			n = normalize(n);
 			
-			Class<?> ii = n.isOrdinary() ? OrdinaryIdentifier.class : DelimitedIdentifier.class;
+			// Class<?> ii = n.isDelimited() ? DelimitedIdentifier.class : OrdinaryIdentifier.class;
 			
-			buf.append("new ");
-			buf.append(ii.getCanonicalName());
+			buf.append(identifierRulesExpression);			
+			buf.append(".");			
+			buf.append(n.isDelimited() ? "toDelimitedIdentifier" : "toIdentifier");			
 			buf.append("(");
 			literal(buf, n.getName());
 			buf.append(")");
@@ -2743,7 +2783,7 @@ public class SourceGenerator {
 				if (aim != null) {
 					JavaType intf = tam.entityType(t, Part.INTERFACE);
 					
-					String kv = keyConstantVariable(t, col);
+					String kv = keyConstantVariable(t, col, tam);
 
 					buf.append("@Override\n");
 					buf.append("public ");
@@ -3301,7 +3341,7 @@ public class SourceGenerator {
         
         JavaType intf = tm.entityType(t, Part.INTERFACE);
         String vv = valueVariableName(t, c);
-        String ke = keyConstantExpression(t, c, intf);
+        String ke = keyConstantExpression(t, c, intf, tm);
                     
         if (impl) {
         	buf.append("public ");
@@ -3814,7 +3854,7 @@ public class SourceGenerator {
         buf.append("<");
         buf.append(keyTypeArgs(tm, t, false));
         buf.append("> ");
-        buf.append(keyConstantVariable(t, c));
+        buf.append(keyConstantVariable(t, c, tm));
         buf.append(" = ");
         buf.append(impl.getQualifiedName());
         buf.append(".");
@@ -3824,14 +3864,14 @@ public class SourceGenerator {
         buf.append("(");
         buf.append("Attribute");
         buf.append(".");
-        buf.append(columnEnumeratedName(t, c, NameQualification.COLUMN));
+        buf.append(columnEnumeratedName(t, c, NameQualification.COLUMN, tm));
         buf.append(");\n");
 
 		return buf.toString();
 	}
 	
-	private String keyConstantExpression(BaseTable t, Column c, JavaType intf) {		
-		return intf.getQualifiedName() + "." + keyConstantVariable(t, c);
+	private String keyConstantExpression(BaseTable t, Column c, JavaType intf, TableMapper tm) {		
+		return intf.getQualifiedName() + "." + keyConstantVariable(t, c, tm);
 	}
 	
 //	private String keyConstantExpression(BaseTable t, Column c, TableMapper tm) {
@@ -3839,14 +3879,14 @@ public class SourceGenerator {
 //		return keyConstantExpression(t, c, intf);
 //	}
 
-	private String keyConstantVariable(BaseTable t, Column c) {
-		return columnEnumeratedName(t, c, NameQualification.COLUMN);
+	private String keyConstantVariable(BaseTable t, Column c, TableMapper tm) {
+		return columnEnumeratedName(t, c, NameQualification.COLUMN, tm);
 	}
 	
 	
 
-	private String columnEnumeratedName(BaseTable t, Column c, NameQualification nq) {
-		return columnEnumeratedName(t, c, EnumSet.of(nq));
+	private String columnEnumeratedName(BaseTable t, Column c, NameQualification nq, TableMapper tm) {
+		return columnEnumeratedName(t, c, EnumSet.of(nq), tm);
 	}
 
 	private String accessors(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, boolean impl) {
@@ -4170,7 +4210,7 @@ public class SourceGenerator {
 
 
 	private String attr(Column c) {
-		ColumnName n = c.getColumnName();
+		Identifier n = c.getColumnName();
 
 		String attr = n.getName().toUpperCase();
 		
@@ -4333,9 +4373,32 @@ public class SourceGenerator {
 	}
 
 	private String translate(String n) {
-		String[] tokens = n.split("_");
+		
+		char[] ca = n.toCharArray();
 		
 		StringBuilder buf = new StringBuilder();
+		
+		char f = ca[0];
+		
+		if (!Character.isJavaIdentifierStart(f)) {
+			buf.append("_");
+		}
+		
+		buf.append(f);
+				
+		for (int i = 1; i < ca.length; i++) {
+			char c = ca[i];
+			
+			if (Character.isJavaIdentifierPart(c)) {
+				buf.append(c);
+			}
+		}
+		
+		n = buf.toString();
+		
+		String[] tokens = n.split("_");
+		
+		buf.setLength(0);		
 		
 		for (int i = 0; i < tokens.length; i++) {
 			capitalize(tokens[i], buf);			

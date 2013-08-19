@@ -20,8 +20,8 @@ import org.apache.commons.csv.CSVStrategy;
 import com.appspot.relaxe.AssignmentVisitor;
 import com.appspot.relaxe.QueryHelper;
 import com.appspot.relaxe.ValueAssignerFactory;
-import com.appspot.relaxe.expr.ColumnName;
 import com.appspot.relaxe.expr.ElementList;
+import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.InsertStatement;
 import com.appspot.relaxe.expr.ValueParameter;
 import com.appspot.relaxe.expr.ValueRow;
@@ -77,7 +77,7 @@ class CSVInsertTask
             
             // configure by using the column headers:        
             ColumnMap cm = table.columnMap();
-            ElementList<ColumnName> names = new ElementList<ColumnName>();  
+            ElementList<Identifier> names = new ElementList<Identifier>();  
             List<Column> columnList = new ArrayList<Column>();
                                                                     
             for (String n : line) {

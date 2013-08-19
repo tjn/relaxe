@@ -60,7 +60,7 @@ public class ValueParameter<
 	}
 
 	@Override
-	public List<? extends ColumnName> getColumnNames() {
+	public List<? extends Identifier> getColumnNames() {
 		return Collections.singletonList(null);
 	}
 	

@@ -20,7 +20,7 @@ public abstract class AllColumns
 	}
 
 	@Override
-	public List<? extends ColumnName> getColumnNames() {
+	public List<? extends Identifier> getColumnNames() {
 		TableRefList refs = getTableRefs(); 
 		
 		if (refs == null) {
@@ -33,7 +33,7 @@ public abstract class AllColumns
 			return refs.getItem(0).getColumnNameList().getContent();
 		}
 		
-		List<ColumnName> nl = new ArrayList<ColumnName>();
+		List<Identifier> nl = new ArrayList<Identifier>();
 		
 		for (int i = 0; i < rc; i++) {
 			nl.addAll(refs.getItem(i).getColumnNameList().getContent());

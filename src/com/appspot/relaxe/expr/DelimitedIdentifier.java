@@ -19,16 +19,18 @@ public class DelimitedIdentifier
 	protected DelimitedIdentifier() {
 	}
 	
-	public DelimitedIdentifier(String name) 
-		throws IllegalIdentifierException {
+	public DelimitedIdentifier(String name) {
 		super(name);
-	}
-	
+	}	
 	
 	public String getToken() {
 		if (token == null) {			
-			String qm = "\""; 					
-			this.token = qm + getName().replace(qm, qm + qm) + qm;
+			String qm = "\"";
+			StringBuilder buf = new StringBuilder(getName().length() + 2);
+			buf.append(qm);
+			buf.append(getName().replace(qm, qm + qm));
+			buf.append(qm);
+			this.token = buf.toString();
 		}
 
 		return token;
@@ -38,16 +40,15 @@ public class DelimitedIdentifier
 	public boolean isOrdinary() {
 		return false;
 	}
+	
+	@Override
+	public boolean isDelimited() {
+		return true;
+	}
 
 	@Override
 	public String getTerminalSymbol() {		
 		return getToken();
-	}
-
-	@Override
-	public void traverse(VisitContext vc, ElementVisitor v) {
-		v.start(vc, this);
-		v.end(this);
 	}
 	
 //	else {

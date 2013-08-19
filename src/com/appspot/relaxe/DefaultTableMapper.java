@@ -6,6 +6,8 @@ package com.appspot.relaxe;
 import java.util.EnumMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaName;
 import com.appspot.relaxe.map.JavaType;
@@ -19,6 +21,8 @@ public class DefaultTableMapper
 	    
 	private String rootPackage;		
 	private String contextPackage;
+	
+	private static Logger logger = Logger.getLogger(DefaultTableMapper.class);
 			
 	private Map<Part, JavaType> createEntityTypeMap(Table table) {	    		
 //		String pkg = getPackageName(table.getSchema());		
@@ -438,6 +442,44 @@ public class DefaultTableMapper
 //		// TODO
 //		return IntegerValue.class;
 //	}
+	
+	public String toJavaIdentifier(CharSequence identifier) {
+		
+		logger().debug("identifier: '" + identifier + "'");
+		
+		int len = identifier.length();
+						
+		if (len == 0) {
+			return "_";
+		}
+		
+		StringBuilder buf = new StringBuilder(len);
+		
+		char fc = identifier.charAt(0);
+		
+		if (!Character.isJavaIdentifierStart(fc)) {
+			buf.append("_");			
+		}
+		
+		if (Character.isJavaIdentifierPart(fc)) {
+			buf.append(fc);
+		}		
+		
+		for (int i = 1; i < len; i++) {
+			char c = identifier.charAt(i);
+			
+			if (Character.isJavaIdentifierPart(c)) {
+				buf.append(c);				
+			}
+		}
+		
+		return buf.toString();
+	}
+
+
+	private static Logger logger() {
+		return DefaultTableMapper.logger;
+	}
 }
 
     

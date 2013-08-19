@@ -16,5 +16,5 @@ public interface ValueExpression
 	 *  
 	 * @return
 	 */
-	ColumnName getColumnName();
+	Identifier getColumnName();
 }

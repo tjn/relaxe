@@ -3,10 +3,11 @@
  */
 package com.appspot.relaxe.expr;
 
-import java.util.EnumSet;
+import java.util.Map;
+import java.util.TreeMap;
 
-public enum SQLKeyword implements Keyword {
-	
+public enum SQLKeyword 
+	implements Keyword {	
 	SELECT,
 	FROM,
 	WHERE,
@@ -91,7 +92,13 @@ public enum SQLKeyword implements Keyword {
 	INCREMENT
 	;
 	
-	private static EnumSet<SQLKeyword> keywords = EnumSet.allOf(SQLKeyword.class);
+	private static Map<String, SQLKeyword> keywordMap = new TreeMap<String, SQLKeyword>(String.CASE_INSENSITIVE_ORDER); 
+	
+	static {
+		for (SQLKeyword kw : SQLKeyword.values()) {
+			keywordMap.put(kw.name(), kw);
+		}		
+	}
 	
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {
@@ -109,8 +116,7 @@ public enum SQLKeyword implements Keyword {
 		return true;
 	}
 	
-	public static boolean isKeyword(String s) {
-		s = s.trim().toUpperCase();		
-		return keywords.contains(s);
+	public static boolean isKeyword(String s) {				
+		return keywordMap.containsKey(s);
 	}
 }
