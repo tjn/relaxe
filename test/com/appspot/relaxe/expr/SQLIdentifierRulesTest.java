@@ -5,7 +5,6 @@ package com.appspot.relaxe.expr;
 
 import org.apache.log4j.Logger;
 
-import com.appspot.relaxe.meta.Folding;
 import com.appspot.relaxe.meta.SQLIdentifierRules;
 
 import junit.framework.TestCase;

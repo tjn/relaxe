@@ -5,13 +5,7 @@ package com.appspot.relaxe.env.util;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
-
 import org.apache.log4j.Logger;
 
 import com.appspot.relaxe.env.Implementation;
@@ -23,47 +17,47 @@ public abstract class Tool {
 
 	private static Logger logger = Logger.getLogger(Tool.class);
 		
-	private void run(Implementation<?> env, String jdbcUrl, Properties jdbcConfig) 
-		throws Exception {
-	        		
-	    String driverName = env.defaultDriverClassName();
-	    logger().debug("loading " + driverName);
-		Class<?> driverClass = Class.forName(driverName);
-		logger().debug("driver loaded.");
-		
-		Driver selected = null;
-		
-		List<Driver> loaded = Collections.list(DriverManager.getDrivers());
-		
-		for(Driver d : loaded) {
-			if (d.getClass().equals(driverClass)) {
-				selected = d;
-				break;
-			}				
-		}
-		
-		if (!selected.acceptsURL(jdbcUrl)) {
-			throw new IllegalArgumentException(
-					"Driver " + selected.getClass() + " does not accept URL: " + jdbcUrl);
-		}
-		
-		logger().debug("connecting to: " + jdbcUrl);
-		
-		Connection c = selected.connect(jdbcUrl, jdbcConfig);
-				
-		logger().debug("connected.");
-		
-		if (c == null) {
-			throw new IllegalArgumentException("can not create connection to " + jdbcUrl);
-		}
-		
-		try {
-			run(env.self(), c);
-		}
-		finally {
-		    close(c);		    
-		}		
-	}
+//	private void run(Implementation<?> env, String jdbcUrl, Properties jdbcConfig) 
+//		throws Exception {
+//	        		
+//	    String driverName = env.defaultDriverClassName();
+//	    logger().debug("loading " + driverName);
+//		Class<?> driverClass = Class.forName(driverName);
+//		logger().debug("driver loaded.");
+//		
+//		Driver selected = null;
+//		
+//		List<Driver> loaded = Collections.list(DriverManager.getDrivers());
+//		
+//		for(Driver d : loaded) {
+//			if (d.getClass().equals(driverClass)) {
+//				selected = d;
+//				break;
+//			}				
+//		}
+//		
+//		if (!selected.acceptsURL(jdbcUrl)) {
+//			throw new IllegalArgumentException(
+//					"Driver " + selected.getClass() + " does not accept URL: " + jdbcUrl);
+//		}
+//		
+//		logger().debug("connecting to: " + jdbcUrl);
+//		
+//		Connection c = selected.connect(jdbcUrl, jdbcConfig);
+//				
+//		logger().debug("connected.");
+//		
+//		if (c == null) {
+//			throw new IllegalArgumentException("can not create connection to " + jdbcUrl);
+//		}
+//		
+//		try {
+//			run(env.self(), c);
+//		}
+//		finally {
+//		    close(c);		    
+//		}		
+//	}
 
 	protected void close(Connection c) {
 	    if (c != null) {

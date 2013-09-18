@@ -9,6 +9,7 @@ import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.env.mysql.MySQLImplementation;
 import com.appspot.relaxe.mysql.AbstractMySQLTestCase;
@@ -38,10 +39,11 @@ public class MySQLSamplesTriggerTest
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		C extends Content,
+	    RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>
 	>
-	PersistenceManager<A, R, T, E, H, F, M, C> create(E e) {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, getPersistenceContext(), null);
+	PersistenceManager<A, R, T, E, H, F, M, C, RE> create(E e) {
+		PersistenceManager<A, R, T, E, H, F, M, C, RE> pm = new PersistenceManager<A, R, T, E, H, F, M, C, RE>(e, getPersistenceContext(), null);
 		return pm;
 	}
 }

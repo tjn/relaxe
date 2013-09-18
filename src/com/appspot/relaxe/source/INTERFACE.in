@@ -1,9 +1,6 @@
 package {{package-name}};
 
-import com.appspot.relaxe.ent.CyclicTemplateException;
-import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.DataObject;
-import com.appspot.relaxe.ent.DefaultQueryTemplate;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityBuildContext;
 import com.appspot.relaxe.ent.EntityBuilder;
@@ -91,37 +88,8 @@ public interface {{table-interface}}
 	interface Builder extends EntityBuilder<{{table-interface}}, {{table-interface}}.Holder> {
 		{{table-interface}}.Holder read(DataObject src);	
 	}
+
 	
-	public class QueryTemplate
-		extends DefaultQueryTemplate<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content, QueryTemplate>
-	{
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public MetaData getMetaData() {
-			return {{table-interface}}Impl.{{table-interface}}MetaData.getInstance();
-		}
-
-		@Override
-		public QueryTemplate self() {
-			return this;
-		}
-
-		@Override
-		public {{table-interface}}.Query newQuery() {			
-			try {
-				return new {{table-interface}}.Query(self());
-			}
-			catch (CyclicTemplateException e) {
-				throw new EntityRuntimeException(e.getMessage(), e); 
-			}
-		}				
-	}
-		
-		
 	public static abstract class Key<
 		A extends com.appspot.relaxe.ent.Attribute,
 		R extends com.appspot.relaxe.ent.Reference,	
@@ -185,25 +153,212 @@ public interface {{table-interface}}
 {{reference-name-type}}
 
 
-		public static class Query
-			extends com.appspot.relaxe.ent.DefaultEntityTemplateQuery<
-				Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content, QueryTemplate> {
+		public static class QueryElement
+			extends com.appspot.relaxe.ent.DefaultEntityQueryElement<
+				Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content, QueryElement> {
+		
+			private java.util.Set<Attribute> attributes;
+			
+			{{query-element-variable-list}}
 		
 			/**
 			 * 
 			 */
 			private static final long serialVersionUID = 1L;
 		
+			public QueryElement() {
+				// {{query-element-default-constructor-body}}								
+			}
+			
+			public QueryElement(java.util.Collection<Attribute> attributes) {
+				if (attributes != null && (!attributes.isEmpty())) {
+					this.attributes = new java.util.TreeSet<Attribute>(attributes);
+				}
+			}
+			
+			public QueryElement(Attribute ... attributes) {
+				this((attributes == null || attributes.length == 0) ? null : java.util.Arrays.asList(attributes));
+			}
+			
+			public QueryElement self() {
+				return this;
+			}
+			
+			@Override
+			public MetaData getMetaData() {
+				return {{table-interface}}.Type.TYPE.getMetaData();
+			}
+
+			@Override
+			public int getElementCount() {
+				return 0;
+			}
+
+			@Override
+			public java.util.Set<Attribute> attributes() {
+				if (attributes == null) {
+					return java.util.Collections.emptySet();
+				}
+				
+				return java.util.Collections.unmodifiableSet(attributes);				
+			}
+			
+			@Override
+			public com.appspot.relaxe.ent.EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(
+					com.appspot.relaxe.ent.value.EntityKey<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content, ?, ?, ?, ?, ?, ?, ?, ?, ?> key) {
+				// {{query-element-getter-body}}
+			}
+			
+			public static class Builder 
+				implements com.appspot.relaxe.ent.EntityQueryElement.Builder<
+					Attribute, 
+					Reference, 
+					Type, 
+					{{table-interface}}, 
+					Holder, 
+					Factory, 
+					MetaData, 
+					Content, 
+					QueryElement
+				> {
+				
+				private java.util.Set<{{table-interface}}.Attribute> attributes;
+								
+				// {{query-element-variable-list}}
+			
+				public Builder() {
+					// {{query-element-builder-default-constructor-body}}
+				}
+								
+				
+				@Override
+				public com.appspot.relaxe.ent.EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(
+						com.appspot.relaxe.ent.value.EntityKey<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content, ?, ?, ?, ?, ?, ?, ?, ?, ?> key) {											
+					// {{query-element-getter-body}}
+				}
+
+				@Override
+				public <
+					RA extends com.appspot.relaxe.ent.Attribute, 
+					RR extends com.appspot.relaxe.ent.Reference, 
+					RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM, RC>, 
+					RE extends Entity<RA, RR, RT, RE, RH, RF, RM, RC>, 
+					RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM, RC>, 
+					RF extends EntityFactory<RE, RH, RM, RF, RC>, 
+					RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM, RC>, 
+					RC extends com.appspot.relaxe.ent.Content, 
+					RQ extends com.appspot.relaxe.ent.EntityQueryElement<RA, RR, RT, RE, RH, RF, RM, RC, RQ>, 
+					K extends com.appspot.relaxe.ent.value.EntityKey<
+						{{table-interface}}.Attribute, 
+						{{table-interface}}.Reference, 
+						{{table-interface}}.Type, 
+						{{table-interface}}, 
+						{{table-interface}}.Holder, 
+						{{table-interface}}.Factory, 
+						{{table-interface}}.MetaData, 
+						{{table-interface}}.Content, 
+						RA, RR, RT, RE, RH, RF, RM, RC, K
+					>
+				> 
+				void setQueryElement(K key, RQ qe) {
+					// {{query-element-setter-body}}
+				}
+				
+				@Override
+				public void addAllAttributes() {					
+					attributeSet().addAll({{table-interface}}.Type.TYPE.getMetaData().attributes());										
+				}
+				
+				public void add(com.appspot.relaxe.ent.value.PrimitiveKey<{{table-interface}}.Attribute, {{table-interface}}, ?, ?, ?, ?> key) {
+					add(key.name());
+				}
+				
+				public void add(Attribute attribute) {
+					if (attribute == null) {
+						throw new NullPointerException("attribute");
+					}
+					
+					attributeSet().add(attribute);
+				}
+				
+				@Override
+				public void remove(Attribute attribute) {
+					attributeSet().remove(attribute);									
+				}
+				
+				@Override
+				public void remove(com.appspot.relaxe.ent.value.PrimitiveKey<{{table-interface}}.Attribute, {{table-interface}}, ?, ?, ?, ?> key) {
+					remove(key.name());
+				}
+				
+				@Override
+				public void removeAll(java.util.Collection<Attribute> attributes) {					
+					attributeSet().removeAll(attributes);									
+				}
+				
+				private java.util.Set<{{table-interface}}.Attribute> attributeSet() {
+					if (this.attributes == null) {
+						this.attributes = new java.util.TreeSet<{{table-interface}}.Attribute>();
+					}
+					
+					return this.attributes;
+				}
+				
+
+				@Override
+				public QueryElement newQueryElement() {
+					QueryElement qe = new QueryElement(this.attributes);
+					
+					// {{query-element-assignment-list}}					
+					
+					return qe;
+				}
+			}			
+		}
+				
+		public static class Query
+			extends com.appspot.relaxe.ent.DefaultEntityQuery<
+				Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content, QueryElement
+			> 
+		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			/**
 			 * No-argument constructor for GWT Serialization
-			 */			
+			 */
 			@SuppressWarnings("unused")
-			private Query() {				
+			private Query() {	
 			}
-					
-			public Query(QueryTemplate root) 
-				throws com.appspot.relaxe.ent.CyclicTemplateException {
-				super(root);
+			
+			public Query(java.util.Collection<Attribute> attributes) {
+				this(new QueryElement(attributes));
+			}
+			
+
+			public Query(QueryElement root) {
+				super(root, null);
+			}
+			
+			private Query(QueryElement root,
+					java.util.Collection<com.appspot.relaxe.ent.query.EntityQueryPredicate> predicates,
+					java.util.List<com.appspot.relaxe.ent.query.EntityQuerySortKey> sortKeys) {
+				super(root, predicates, sortKeys);			
+			}
+			
+			public static class Builder
+				extends com.appspot.relaxe.ent.DefaultEntityQuery.Builder<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content, QueryElement> {
+
+				public Builder(QueryElement root) {
+					super(root);
+				}
+				
+				@Override
+				public {{table-interface}}.Query newQuery() {
+					return new {{table-interface}}.Query(getRootElement(), getPredicates(), getSortKeys());
+				}
 			}
 		}
 

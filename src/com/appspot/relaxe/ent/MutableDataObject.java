@@ -40,7 +40,7 @@ public class MutableDataObject
 		private List<ValueExpression> valueList;
 		private List<ColumnExpr> columnList;
 		private Map<Identifier, Integer> columnIndexMap;
-		private QueryExpressionSource queryExpressionSource;
+		private QueryExpression queryExpression;
 		
 		/**
 		 * No-argument constructor for GWT Serialization
@@ -48,10 +48,10 @@ public class MutableDataObject
 		protected MetaData() {	
 		}
 		
-		public MetaData(QueryExpressionSource qes) 
+		public MetaData(QueryExpression qe) 
 			throws QueryException {
-			this.queryExpressionSource = qes;
-			QueryExpression qe = qes.getQueryExpression();			
+			this.queryExpression = qe;
+						
 			Select s = qe.getTableExpr().getSelect();
 			
 			final int cc = s.getColumnCount();			
@@ -89,9 +89,8 @@ public class MutableDataObject
 		}
 
 		@Override
-		public QueryExpression getQuery() 
-			throws QueryException {
-			return queryExpressionSource.getQueryExpression();
+		public QueryExpression getQueryExpression() {
+			return queryExpression;
 		}
 	}
 	

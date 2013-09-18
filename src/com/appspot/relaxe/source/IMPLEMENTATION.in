@@ -1,9 +1,5 @@
 package {{package-name}};
 
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import com.appspot.relaxe.ent.EntityBuildContext;
 import com.appspot.relaxe.ent.EnumMetaData;
 import com.appspot.relaxe.meta.Column;
@@ -15,9 +11,6 @@ import com.appspot.relaxe.meta.SchemaElementMap;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.ent.value.*;
 import com.appspot.relaxe.expr.TableReference;
-import com.appspot.relaxe.expr.Identifier;
-import com.appspot.relaxe.meta.Environment;
-import com.appspot.relaxe.types.ReferenceType;
 
 {{imports}}
 
@@ -38,44 +31,7 @@ class {{table-impl-class}}
 
 	{{attribute-container-implementation}}
 	
-	
-	
-	private static class {{table-interface}}ForeignKeyMap
-		extends com.appspot.relaxe.meta.AbstractSchemaElementMap<ForeignKey> {
-		
-		// private static final long serialVersionUID = -4344734322943134268L;
-		
-		/**
-		 * No-argument constructor for GWT Serialization
-		 */
-		private {{table-interface}}ForeignKeyMap() {		
-		}
-		
-		private {{table-interface}}ForeignKeyMap(Environment environment, Map<Identifier, ForeignKey> content) {
-			super(environment, content);
-		}
-	}
-	
-	private static class {{table-interface}}ForeignKey
-		extends com.appspot.relaxe.ent.EntityTableForeignKey {
-		
-		private static final long serialVersionUID = -621396725083384123L;
-
-		/**
-		 * No-argument constructor for GWT Serialization
-		 */
-		private {{table-interface}}ForeignKey() {			
-		}
-		
-		private {{table-interface}}ForeignKey(BaseTable table, Identifier name,
-				ColumnMap columnMap, Map<Identifier, Identifier> columnPairMap,
-				ReferenceType<?, ?, ?, ?, ?, ?, ?, ?> type) {
-			super(table, name, columnMap, columnPairMap, type);		
-		}
-	}	
-		    
-		    
-	
+	{{foreign-key-implementation}}
 	
 	private static class {{table-interface}}Table
 		extends com.appspot.relaxe.meta.AbstractImmutableBaseTable {
@@ -97,7 +53,7 @@ class {{table-impl-class}}
 		private {{table-interface}}Table() {	
 		}
 
-		public {{table-interface}}Table(Environment env, SchemaElementName tableName) {
+		public {{table-interface}}Table(com.appspot.relaxe.meta.Environment env, SchemaElementName tableName) {
 			super(env, tableName);
 			
 			com.appspot.relaxe.meta.ImmutableColumnMap.Builder cmb = new com.appspot.relaxe.meta.ImmutableColumnMap.Builder(env);
@@ -109,11 +65,11 @@ class {{table-impl-class}}
 			this.foreignKeys = createForeignKeyMap(env, columnMap);
 		}
 		
-		private PrimaryKey createPrimaryKey(Environment env) {
+		private PrimaryKey createPrimaryKey(com.appspot.relaxe.meta.Environment env) {
 			{{create-primary-key-body}}		
 		}
 
-		private SchemaElementMap<ForeignKey> createForeignKeyMap(Environment env, ColumnMap columnMap) {
+		private SchemaElementMap<ForeignKey> createForeignKeyMap(com.appspot.relaxe.meta.Environment env, ColumnMap columnMap) {
 			{{create-foreign-key-map-body}}
 		}
 				
@@ -147,7 +103,7 @@ class {{table-impl-class}}
     >
     	implements {{table-interface}}.MetaData
     {
-		private static final long serialVersionUID = 1L;
+		// private static final long serialVersionUID = 1L;
         private static {{table-interface}}MetaData instance = null;
         private final {{table-interface}}.Factory factory = new FactoryImpl();
         private com.appspot.relaxe.meta.BaseTable table;
@@ -262,15 +218,9 @@ class {{table-impl-class}}
 		
 		public BuilderImpl(TableReference referencing, ForeignKey referencedBy, com.appspot.relaxe.expr.TableReference tableRef, com.appspot.relaxe.ent.EntityBuildContext ctx, com.appspot.relaxe.ent.UnificationContext unificationContext) 
 			throws com.appspot.relaxe.ent.EntityException {
-			super(referencing, referencedBy, tableRef, ctx, unificationContext);
-			
-			MetaData m = getMetaData();
-			
-			List<Linker> ll = new ArrayList<Linker>();				
+			super(referencing, referencedBy, tableRef, ctx, unificationContext);			
 			
 			// {{builder-linker-init}}
-			
-			this.linkerList = ll.toArray(this.linkerList);
 		}
 
 		@Override

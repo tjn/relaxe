@@ -16,10 +16,10 @@ public class DefaultEntityQueryResult<
 	F extends EntityFactory<E, H, M, F, C>,
 	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
 	C extends Content,
-	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
+	RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>
 >
-	extends AbstractResponse<EntityQuery<A, R, T, E, H, F, M, C, QT>>
-	implements EntityQueryResult<A, R, T, E, H, F, M, C, QT> {
+	extends AbstractResponse<EntityQuery<A, R, T, E, H, F, M, C, RE>>
+	implements EntityQueryResult<A, R, T, E, H, F, M, C, RE> {
 	
 	/**
 	 * 
@@ -32,7 +32,7 @@ public class DefaultEntityQueryResult<
 		super();
 	}
 
-	public DefaultEntityQueryResult(EntityQuery<A, R, T, E, H, F, M, C, QT> request, DataObjectQueryResult<EntityDataObject<E>> content) {
+	public DefaultEntityQueryResult(EntityQuery<A, R, T, E, H, F, M, C, RE> request, DataObjectQueryResult<EntityDataObject<E>> content) {
 		super(request);
 		this.content = content;
 		this.content.getContent().size();

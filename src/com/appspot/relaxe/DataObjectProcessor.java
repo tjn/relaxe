@@ -12,8 +12,8 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import com.appspot.relaxe.ent.MutableDataObject;
-import com.appspot.relaxe.ent.QueryExpressionSource;
 import com.appspot.relaxe.exec.QueryProcessorAdapter;
+import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.query.QueryException;
 
 
@@ -26,17 +26,17 @@ public abstract class DataObjectProcessor<O extends MutableDataObject>
 	private ValueExtractor<?, ?, ?>[] extractors;
 	private ValueExtractorFactory valueExtractorFactory;
 		
-	public DataObjectProcessor(ValueExtractorFactory vef, QueryExpressionSource qes) 
+	public DataObjectProcessor(ValueExtractorFactory vef, QueryExpression qe) 
 		throws QueryException {
 		if (vef == null) {
 			throw new NullPointerException("vef");
 		}
 		
-		if (qes == null) {
-			throw new NullPointerException("qo");
+		if (qe == null) {
+			throw new NullPointerException("qe");
 		}
 										
-		this.meta = new MutableDataObject.MetaData(qes);
+		this.meta = new MutableDataObject.MetaData(qe);
 		this.valueExtractorFactory = vef;
 	}
 
@@ -81,7 +81,7 @@ public abstract class DataObjectProcessor<O extends MutableDataObject>
 				o.set(i, ve.extractValue(rs));
 			}			
 			
-			put(o);																
+			put(o);
 		}
 		catch (Throwable e) {
 			logger().error(e.getMessage(), e);

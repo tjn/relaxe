@@ -15,6 +15,7 @@ import com.appspot.relaxe.ent.EntityException;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQuery;
+import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.MutableEntityDataObject;
 import com.appspot.relaxe.ent.Reference;
@@ -33,12 +34,14 @@ public class EntityBuilderManager<
 	H extends ReferenceHolder<A, R, T, E, H, M, C>,
 	F extends EntityFactory<E, H, M, F, C>,
 	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-	C extends Content
+	C extends Content,
+	QE extends EntityQueryElement<A, R, T, E, H, F, M, C, QE>
 >
 	extends DataObjectProcessor<MutableEntityDataObject<E>> {
 			
-	private EntityQuery<A, R, T, E, H, F, M, C, ?> query;	
-	private M meta;
+//	private EntityQuery<A, R, T, E, H, F, M, C, QE> query;
+	private EntityQueryExpressionBuilder<A, R, T, E, H, F, M, C, QE> builder;
+//	private M meta;
 	
 	private static Logger logger = Logger.getLogger(EntityBuilderManager.class);
 	
@@ -46,14 +49,11 @@ public class EntityBuilderManager<
 	private EntityBuildContext context;
 		
 	private EntityBuilder<E, H> rootBuilder;
-		
 						
-	public EntityBuilderManager(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext unificationContext) 
+	public EntityBuilderManager(ValueExtractorFactory vef, EntityQueryExpressionBuilder<A, R, T, E, H, F, M, C, QE> builder, UnificationContext unificationContext) 
 		throws QueryException {
-		super(vef, query);		
-		this.query = query;
-		this.meta = query.getMetaData();
-		
+		super(vef, builder.getQueryExpression());		
+		this.builder = builder;
 		this.identityContext = unificationContext;
 	}
 	
@@ -61,10 +61,11 @@ public class EntityBuilderManager<
 	public void prepare() 
 		throws EntityRuntimeException {
 		
-		try {		
-			context = new DefaultEntityBuildContext(getMetaData(), this.query, null);				
-			TableReference rootRef = query.getTableRef();
-			this.rootBuilder = this.meta.newBuilder(null, null, rootRef, context, identityContext);
+		try {			
+			context = new DefaultEntityBuildContext(getMetaData(), builder, null);				
+			TableReference rootRef = builder.getRootRef();
+			M meta = builder.getQuery().getRootElement().getMetaData();
+			this.rootBuilder = meta.newBuilder(null, null, rootRef, context, identityContext);
 		}
 		catch (EntityException e) {
 			throw new EntityRuntimeException(e.getMessage(), e);
@@ -101,7 +102,7 @@ public class EntityBuilderManager<
 
 		//		result = read(result);					
 		
-		o.setRoot(result.value());		
+		o.setRoot(result.value());
 		process(o);
 	}
 
@@ -125,8 +126,8 @@ public class EntityBuilderManager<
 		return identityContext;
 	}
 
-	public EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> getQuery() {
-		return query;
+	public EntityQuery<A, R, T, E, H, F, M, C, QE> getQuery() {
+		return builder.getQuery();
 	}
 
 	

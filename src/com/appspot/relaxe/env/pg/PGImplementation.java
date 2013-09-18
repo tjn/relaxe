@@ -16,10 +16,6 @@ import com.appspot.relaxe.meta.impl.pg.PGEnvironment;
 public class PGImplementation
 	extends DefaultImplementation<PGImplementation> {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 7298329938853171504L;
 	private SQLSyntax syntax;    
     private PGEnvironment environment;
     

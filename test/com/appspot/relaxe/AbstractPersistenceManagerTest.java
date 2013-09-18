@@ -9,11 +9,12 @@ import java.sql.SQLException;
 import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.Content;
-import com.appspot.relaxe.ent.CyclicTemplateException;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityException;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.EntityQuery;
+import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.env.PersistenceContext;
@@ -35,10 +36,13 @@ public abstract class AbstractPersistenceManagerTest<I extends Implementation<I>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		C extends Content,
+		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
+		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
 	>
-	PersistenceManager<A, R, T, E, H, F, M, C> create(E e) {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, getPersistenceContext(), getUnificationContext());
+	PersistenceManager<A, R, T, E, H, F, M, C, RE> create(E e) {
+		PersistenceManager<A, R, T, E, H, F, M, C, RE> pm = 
+				new PersistenceManager<A, R, T, E, H, F, M, C, RE>(e, getPersistenceContext(), getUnificationContext());
 		return pm;
 	}
 		
@@ -50,10 +54,14 @@ public abstract class AbstractPersistenceManagerTest<I extends Implementation<I>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		C extends Content,
+		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
+		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
 	>
-	E merge(E e, PersistenceContext<?> pctx, Connection c) throws CyclicTemplateException, EntityException, SQLException, QueryException {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, pctx, getUnificationContext());
+	E merge(E e, PersistenceContext<?> pctx, Connection c) 
+			throws EntityException, SQLException, QueryException {
+		PersistenceManager<A, R, T, E, H, F, M, C, RE> pm = 
+				new PersistenceManager<A, R, T, E, H, F, M, C, RE>(e, pctx, getUnificationContext());
 		pm.merge(c);
 		return e;
 	}
@@ -67,10 +75,13 @@ public abstract class AbstractPersistenceManagerTest<I extends Implementation<I>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		C extends Content,
+		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
+		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
 	>
-	E sync(E e, PersistenceContext<?> pctx, Connection c) throws CyclicTemplateException, EntityException, SQLException, QueryException {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, pctx, getUnificationContext());
+	E sync(E e, PersistenceContext<?> pctx, Connection c) throws EntityException, SQLException, QueryException {
+		PersistenceManager<A, R, T, E, H, F, M, C, RE> pm = 
+				new PersistenceManager<A, R, T, E, H, F, M, C, RE>(e, pctx, getUnificationContext());
 		return pm.sync(c);		
 	}
 
@@ -83,10 +94,12 @@ public abstract class AbstractPersistenceManagerTest<I extends Implementation<I>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		C extends Content,
+		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>
 	>
 	void delete(E e, PersistenceContext<?> pctx, Connection c) throws EntityException, SQLException, QueryException {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, pctx, getUnificationContext());
+		PersistenceManager<A, R, T, E, H, F, M, C, RE> pm = 
+				new PersistenceManager<A, R, T, E, H, F, M, C, RE>(e, pctx, getUnificationContext());
 		pm.delete(c);		
 	}
 	
@@ -98,9 +111,11 @@ public abstract class AbstractPersistenceManagerTest<I extends Implementation<I>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		C extends Content,
+		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
+		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
 	>
-	E merge(E e) throws CyclicTemplateException, EntityException, SQLException, QueryException {		
+	E merge(E e) throws EntityException, SQLException, QueryException {		
 		return merge(e, getPersistenceContext(), getConnection());		
 	}
 	
@@ -112,7 +127,9 @@ public abstract class AbstractPersistenceManagerTest<I extends Implementation<I>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		C extends Content,
+		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
+		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
 	>
 	void delete(E e) throws EntityException, SQLException, QueryException {
 		delete(e, getPersistenceContext(), getConnection());		

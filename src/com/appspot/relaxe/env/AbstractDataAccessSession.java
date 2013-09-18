@@ -14,7 +14,6 @@ import com.appspot.relaxe.QueryExecutor;
 import com.appspot.relaxe.SimpleUnificationContext;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.Content;
-import com.appspot.relaxe.ent.CyclicTemplateException;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObjectQueryResult;
 import com.appspot.relaxe.ent.Entity;
@@ -23,12 +22,13 @@ import com.appspot.relaxe.ent.EntityException;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQuery;
+import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityQueryResult;
-import com.appspot.relaxe.ent.EntityQueryTemplate;
 import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.ent.QueryExpressionSource;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
+import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.service.DataAccessException;
@@ -43,7 +43,6 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	implements DataAccessSession, EntitySession, QuerySession, StatementSession {
 		
 	private Connection connection;
-	// private I implementation;
 	private PersistenceContext<I> persistenceContext;
 	private UnificationContext unificationContext;
 	
@@ -56,10 +55,19 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 
 	@Override
 	public <
-		A extends Attribute, R extends Reference, T extends ReferenceType<A, R, T, E, H, F, M, C>, E extends Entity<A, R, T, E, H, F, M, C>, H extends ReferenceHolder<A, R, T, E, H, M, C>, F extends EntityFactory<E, H, M, F, C>, M extends EntityMetaData<A, R, T, E, H, F, M, C>, C extends Content
+		A extends Attribute, 
+		R extends Reference, 
+		T extends ReferenceType<A, R, T, E, H, F, M, C>, 
+		E extends Entity<A, R, T, E, H, F, M, C>, 
+		H extends ReferenceHolder<A, R, T, E, H, M, C>, 
+		F extends EntityFactory<E, H, M, F, C>, 
+		M extends EntityMetaData<A, R, T, E, H, F, M, C>, 
+		C extends Content,
+	    RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
+		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
 	> 
 	void delete(E e) throws EntityException {						
-		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
+		PersistenceManager<A,R,T,E,H,F,M,C,RE> pm = new PersistenceManager<A,R,T,E,H,F,M,C,RE>(e, getPersistenceContext(), this.unificationContext);
 		pm.delete(this.connection);
 	}
 
@@ -76,10 +84,12 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>, 
 		F extends EntityFactory<E, H, M, F, C>, 
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>, 
-		C extends Content
+		C extends Content,
+	    RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
+		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
 	> 
 	E insert(E e) throws EntityException {
-		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
+		PersistenceManager<A,R,T,E,H,F,M,C,RE> pm = new PersistenceManager<A,R,T,E,H,F,M,C,RE>(e, getPersistenceContext(), this.unificationContext);
 		pm.insert(this.connection);
 		return e;
 	}
@@ -94,11 +104,14 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>, 
 		F extends EntityFactory<E, H, M, F, C>, 
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>, 
-		C extends Content
+		C extends Content,
+		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
+		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
 	> 
 	E sync(E e) throws EntityException {
 		try {
-			PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
+			PersistenceManager<A,R,T,E,H,F,M,C,RE> pm = 
+					new PersistenceManager<A,R,T,E,H,F,M,C,RE>(e, getPersistenceContext(), this.unificationContext);
 			E result = pm.sync(getConnection());
 			return result;
 		} 
@@ -119,19 +132,18 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>, 
 		F extends EntityFactory<E, H, M, F, C>, 
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>, 
-		C extends Content
+		C extends Content,
+		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
+		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
 	> 
 	E merge(E e) throws EntityException {
 		try {		
-			PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
+			PersistenceManager<A,R,T,E,H,F,M,C,RE> pm = new PersistenceManager<A,R,T,E,H,F,M,C,RE>(e, getPersistenceContext(), this.unificationContext);
 			pm.merge(this.connection);		
 			return e;
 		}
 		catch (SQLException se) {
 			throw new EntityException(se.getMessage());
-		} 
-		catch (CyclicTemplateException ce) {
-			throw new EntityException(ce.getMessage());
 		} 
 		catch (QueryException qe) {
 			throw new EntityException(qe.getMessage(), qe);
@@ -147,10 +159,12 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>, 
 		F extends EntityFactory<E, H, M, F, C>, 
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>, 
-		C extends Content
+		C extends Content,
+		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
+		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
 	> 
 	E update(E e) throws EntityException {
-		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
+		PersistenceManager<A,R,T,E,H,F,M,C,RE> pm = new PersistenceManager<A,R,T,E,H,F,M,C,RE>(e, getPersistenceContext(), this.unificationContext);
 		pm.update(this.connection);		
 		return e;
 	}
@@ -226,16 +240,17 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>, 
 		F extends EntityFactory<E, H, M, F, C>, 
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>, 
-		C extends Content, 
-		QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
+		C extends Content,
+		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>
 	> 
-	EntityQueryResult<A, R, T, E, H, F, M, C, QT> query(
-			EntityQuery<A, R, T, E, H, F, M, C, QT> query, FetchOptions opts)
+	EntityQueryResult<A, R, T, E, H, F, M, C, RE> query(EntityQuery<A, R, T, E, H, F, M, C, RE> query, FetchOptions opts)
 			throws EntityException {
 		
 		try {
-			EntityQueryExecutor<A, R, T, E, H, F, M, C, QT> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, C, QT>(getPersistenceContext(), this.unificationContext);
-			EntityQueryResult<A, R, T, E, H, F, M, C, QT> result = ee.execute(query, opts, this.connection);
+			EntityQueryExecutor<A, R, T, E, H, F, M, C, RE> ee = 
+					new EntityQueryExecutor<A, R, T, E, H, F, M, C, RE>(getPersistenceContext(), this.unificationContext);
+			
+			EntityQueryResult<A, R, T, E, H, F, M, C, RE> result = ee.execute(query, opts, this.connection);
 			return result;
 		} 
 		catch (SQLException e) {
@@ -247,12 +262,12 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	}
 
 	@Override
-	public DataObjectQueryResult<DataObject> executeQuery(
-			QueryExpressionSource qes, FetchOptions opts) throws QueryException {
+	public DataObjectQueryResult<DataObject> executeQuery(QueryExpressionSource qes, FetchOptions opts) throws QueryException {
 		
 		try {
 			QueryExecutor qe = new QueryExecutor(getPersistenceContext());
-			DataObjectQueryResult<DataObject> result = qe.execute(qes, opts, this.connection);
+			QueryExpression qx = qes.getQueryExpression();
+			DataObjectQueryResult<DataObject> result = qe.execute(qx, opts, this.connection);
 			return result;
 		}
 		catch (SQLException e) {
@@ -290,13 +305,14 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>, 
 		F extends EntityFactory<E, H, M, F, C>, 
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>, 
-		C extends Content, 
-		QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
+		C extends Content,	
+	    
+		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>
 	> 
-	List<E> load(QT qt, FetchOptions opts)
+	List<E> load(EntityQuery<A, R, T, E, H, F, M, C, RE> query, FetchOptions opts)
 			throws EntityException {
 	
-		EntityQueryResult<A, R, T, E, H, F, M, C, QT> qr = query(qt.newQuery(), opts);
+		EntityQueryResult<A, R, T, E, H, F, M, C, RE> qr = query(query, opts);
 		DataObjectQueryResult<EntityDataObject<E>> ol = qr.getResult();				
 		List<E> el = new ArrayList<E>(ol.size());
 		

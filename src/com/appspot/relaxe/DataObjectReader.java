@@ -10,7 +10,7 @@ import java.util.List;
 
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.MutableDataObject;
-import com.appspot.relaxe.ent.QueryExpressionSource;
+import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.query.QueryException;
 
 
@@ -19,7 +19,7 @@ public class DataObjectReader
 	
 	private List<DataObject> content;		
 
-	public DataObjectReader(ValueExtractorFactory vef, QueryExpressionSource qo, List<DataObject> content) 
+	public DataObjectReader(ValueExtractorFactory vef, QueryExpression qo, List<DataObject> content) 
 		throws QueryException {
 		super(vef, qo);
 		

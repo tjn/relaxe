@@ -6,7 +6,6 @@ package com.appspot.relaxe;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.ent.CyclicTemplateException;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObjectQueryResult;
 import com.appspot.relaxe.ent.FetchOptions;
@@ -28,17 +27,14 @@ public class SynchronousDataObjectFetcher implements DataObjectFetcher {
 	}
 	
 	@Override
-	public void fetch(QueryExpressionSource queryTemplate, FetchOptions opts, PageReceiver<DataObjectQueryResult<DataObject>> receiver, PageReceiver<Throwable> errorReceiver) {
+	public void fetch(QueryExpressionSource qes, FetchOptions opts, PageReceiver<DataObjectQueryResult<DataObject>> receiver, PageReceiver<Throwable> errorReceiver) {
 		try {
-			DataObjectQueryResult<DataObject> qr = executor.execute(queryTemplate, opts, this.connection);
+			DataObjectQueryResult<DataObject> qr = executor.execute(qes.getQueryExpression(), opts, this.connection);
 			receiver.receive(qr);			
 		}
 		catch (SQLException e) {
 			errorReceiver.receive(e);			 
-		} 
-		catch (CyclicTemplateException e) {
-			errorReceiver.receive(e);
-		} 
+		}
 		catch (QueryException e) {
 			errorReceiver.receive(e);
 		}

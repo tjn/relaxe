@@ -12,11 +12,6 @@ import com.appspot.relaxe.env.mysql.MySQLImplementation;
 public class AppEngineImplementation
 	extends MySQLImplementation {
     
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -2714061809484656075L;
-
 	@Override
     public String defaultDriverClassName() {
         return "com.google.appengine.api.rdbms.AppEngineDriver";

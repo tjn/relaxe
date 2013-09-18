@@ -8,8 +8,9 @@ import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.EntityQuery;
+import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityQueryResult;
-import com.appspot.relaxe.ent.EntityQueryTemplate;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.ReferenceType;
@@ -23,9 +24,14 @@ public interface EntityFetcher<
 	F extends EntityFactory<E, H, M, F, C>,
 	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
 	C extends Content,
-	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
+	RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>
 > 
-	extends Fetcher<QT, EntityQueryResult<A, R, T, E, H, F, M, C, QT>, PageReceiver<EntityQueryResult<A, R, T, E, H, F, M, C, QT>>>
+	extends Fetcher<
+		EntityQuery<A, R, T, E, H, F, M, C, RE>, 
+		EntityQueryResult<A, R, T, E, H, F, M, C, RE>, 
+		PageReceiver<EntityQueryResult<A, R, T, E, H, F, M, C, RE>
+	>
+>
 {	
 	
 }

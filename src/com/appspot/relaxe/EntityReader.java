@@ -15,7 +15,7 @@ import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityDataObject;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
-import com.appspot.relaxe.ent.EntityQuery;
+import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.query.QueryException;
@@ -31,20 +31,21 @@ public class EntityReader<
 	H extends ReferenceHolder<A, R, T, E, H, M, C>,
 	F extends EntityFactory<E, H, M, F, C>,
 	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-	C extends Content
+	C extends Content,
+	QE extends EntityQueryElement<A, R, T, E, H, F, M, C, QE>
 >
-	extends EntityBuilderManager<A, R, T, E, H, F, M, C> {
+	extends EntityBuilderManager<A, R, T, E, H, F, M, C, QE> {
 
 	private List<EntityDataObject<E>> content;
 
-	public EntityReader(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, C, ?> query, UnificationContext unificationContext)
+	public EntityReader(ValueExtractorFactory vef, EntityQueryExpressionBuilder<A, R, T, E, H, F, M, C, QE> builder, UnificationContext unificationContext)
 		throws QueryException {
-		this(vef, query, new ArrayList<EntityDataObject<E>>(), unificationContext);
+		this(vef, builder, new ArrayList<EntityDataObject<E>>(), unificationContext);
 	}
 
-	public EntityReader(ValueExtractorFactory vef, EntityQuery<A, R, T, E, H, F, M, C, ?> query, List<EntityDataObject<E>> result, UnificationContext identityContext)
+	public EntityReader(ValueExtractorFactory vef, EntityQueryExpressionBuilder<A, R, T, E, H, F, M, C, QE> builder, List<EntityDataObject<E>> result, UnificationContext identityContext)
 		throws QueryException {
-		super(vef, query, identityContext);
+		super(vef, builder, identityContext);
 
 		if (result == null) {
 			throw new NullPointerException("result");

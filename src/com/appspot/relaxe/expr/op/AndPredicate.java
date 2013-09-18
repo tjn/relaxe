@@ -37,6 +37,17 @@ public class AndPredicate
 		return new AndPredicate(a, b);
 	}
 	
+	
+	public static Predicate newAnd(Predicate a, Predicate b, Predicate ... tail) {
+		Predicate p = newAnd(a, b);
+		
+		for (int i = 0; i < tail.length; i++) {
+			p = newAnd(p, tail[i]);
+		}
+		
+		return p;
+	}
+	
 	@Override
 	public Predicate parenthesize() {
 		return new ParenthesizedPredicate(this);

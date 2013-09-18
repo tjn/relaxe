@@ -3,7 +3,6 @@
  */
 package com.appspot.relaxe.meta.impl.mysql;
 
-import java.util.EnumSet;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -382,9 +381,7 @@ public enum MySQLKeyword
 //    ZEROFILL
 //    ,
     ;
-    
-    private static EnumSet<MySQLKeyword> keywords = EnumSet.allOf(MySQLKeyword.class);
-    
+        
 	private static Map<String, SQLKeyword> keywordMap = new TreeMap<String, SQLKeyword>(String.CASE_INSENSITIVE_ORDER); 
 	
 	static {

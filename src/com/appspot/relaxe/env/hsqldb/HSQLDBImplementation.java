@@ -13,10 +13,6 @@ import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBEnvironment;
 public class HSQLDBImplementation
 	extends DefaultImplementation<HSQLDBImplementation> {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -3193274599509436285L;
 	private SQLSyntax syntax;
     private HSQLDBEnvironment environment;
     

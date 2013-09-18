@@ -55,11 +55,11 @@ public interface EntityKey<
 	RE value(E e);
 	void set(E e, RH newValue);
 	void set(E e, RE newValue);
-	
-//	P getTargetType();
+
 	M getSource();	
 	RM getTarget();
 	@Override
 	K self();
+	
 	
 }

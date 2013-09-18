@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
+
 package com.appspot.relaxe.source;
 
 import java.io.File;
@@ -20,18 +21,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 import org.apache.log4j.Logger;
 
 import com.appspot.relaxe.build.SchemaFilter;
+import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.im.EntityIdentityMap;
-import com.appspot.relaxe.expr.DelimitedIdentifier;
 import com.appspot.relaxe.expr.Identifier;
-import com.appspot.relaxe.expr.OrdinaryIdentifier;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.SchemaName;
 import com.appspot.relaxe.map.AttributeInfo;
@@ -61,7 +63,6 @@ import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 import fi.tnie.util.io.IOHelper;
-
 
 public class SourceGenerator {
 		
@@ -120,10 +121,19 @@ public class SourceGenerator {
 		
 		REFERENCE_KEY_LIST,
 		
+		QUERY_ELEMENT_VARIABLE_LIST,
+		QUERY_ELEMENT_GETTER_BODY,
+		QUERY_ELEMENT_SETTER_BODY,
+		QUERY_ELEMENT_ASSIGNMENT_LIST,
+		QUERY_ELEMENT_NEW_BUILDER_BODY,
+		QUERY_ELEMENT_DEFAULT_CONSTRUCTOR_BODY,
+		QUERY_ELEMENT_BUILDER_DEFAULT_CONSTRUCTOR_BODY,
+		
 		IMPLEMENTED_HAS_KEY_LIST,
 		
 		
 		BUILDER_LINKER_INIT,
+		FOREIGN_KEY_IMPLEMENTATION,
 
 		/**
 		 * Class declarations for reference keys
@@ -565,113 +575,113 @@ public class SourceGenerator {
     	return src;
 	}
 
-	private CharSequence generateLiteralContext(JavaType lc, Catalog cat, TableMapper tm, List<String> il, Map<JavaType, CharSequence> fm) throws IOException {
-    	   	
-    	logger().debug("generateLiteralContext - enter");
-    	String src = getTemplateForLiteralCatalog();    	
-    	    	    	
-    	src = replaceAllWithComment(src, Tag.PACKAGE_NAME, lc.getPackageName());
-    	    	    	
-    	Environment env = cat.getEnvironment();
-    	String e = env.getClass().getName();
-    	src = replaceAllWithComment(src, Tag.NEW_ENVIRONMENT_EXPR, "new " + e + "()");
-    	
-    	{
-	    	String list = generateSchemaList(cat);
-	    	src = replaceAllWithComment(src, Tag.SCHEMA_ENUM_LIST, list);
-    	}
-    	
-    	{
-	    	String list = generateBaseTableList(cat, tm);
-	    	src = replaceAllWithComment(src, Tag.BASE_TABLE_ENUM_LIST, list);
-    	}
-    	
-    	{
-	    	String list = generateViewList(cat, tm);
-	    	src = replaceAllWithComment(src, Tag.VIEW_ENUM_LIST, list);
-    	}
-    	
-    	{
-	    	String list = generateColumnList(cat, tm);
-	    	src = replaceAllWithComment(src, Tag.COLUMN_ENUM_LIST, list);
-    	}
-    	
-    	{
-	    	String list = generatePrimaryKeyList(cat, tm);
-	    	src = replaceAllWithComment(src, Tag.PRIMARY_KEY_ENUM_LIST, list);
-    	}
-    	
-    	{
-	    	String list = generateForeignKeyList(cat, tm);
-	    	src = replaceAllWithComment(src, Tag.FOREIGN_KEY_ENUM_LIST, list);
-    	}    	
-    	
-    	{
-	    	String list = generateMetaMapPopulation(cat, tm);
-	    	src = replaceAllWithComment(src, Tag.META_MAP_POPULATION, list);
-    	}
-
-    	{
-	        String list = generateFactoryMethodList(fm);
-	        src = replaceAllWithComment(src, Tag.FACTORY_METHOD_LIST, list);
-    	}
-    	
-    	final String tsrc = getTemplateForLiteralInnerTable();  
-    	
-    	StringBuilder buf = new StringBuilder();
-    	
-    	EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
-    	List<String> initList = new ArrayList<String>(); 
-    	
-    	for (Schema s : cat.schemas().values()) {
-    		if (!schemaFilter.accept(s)) {
-    			continue;
-    		}
-    		
-    		String sn = name(s.getUnqualifiedName().getName());
-    		
-    		for (Table t : s.tables().values()) {
-    			String tn = getSimpleName(t);
-    			
-    			StringBuilder ebuf = new StringBuilder();    			    			
-    			generateColumnListElements(t, ebuf, nq, tm);
-    			String cl = ebuf.toString();
-    			String tc = replaceAll(tsrc, Tag.COLUMN_ENUM_LIST, cl);    			
-    			tc = replaceAll(tc, Tag.SCHEMA_TYPE_NAME, sn);
-    			tc = replaceAll(tc, Tag.TABLE_INTERFACE, tn);			
-    			
-    			// if inner class:
-    			tc = replaceAll(tc, Tag.PACKAGE_DECL, "");
-    			tc = replaceAll(tc, Tag.IMPORTS, "");
-    			    			
-    			buf.append(tc);
-    			buf.append("\n\n");
-    			    			
-    			JavaType tet = tm.entityType(t, Part.LITERAL_TABLE_ENUM);
-    			
-    			logger().info("generateLiteralContext: tet = " + tet + " for " + t.getQualifiedName());
-    			
-    			if (tet != null) {
-    				initList.add(tet.getQualifiedName());
-    			}
-			}			
-		}
-    	
-    	final String tin = getTemplateForTableEnumInit();
-    	StringBuilder initCode = new StringBuilder();
-    	
-    	for (String it : initList) {
-    		initCode.append(replaceAll(tin, Tag.TABLE_ENUM_INIT_TYPE, it));
-		}
-    	
-    	src = replaceAll(src, Tag.INIT_COLUMN_ENUM_LIST, initCode.toString());
-    	
-    	src = replaceAllWithComment(src, Tag.TABLE_COLUMN_ENUM_LIST, buf.toString());
-    	    	
-    	logger().debug("generateLiteralContext - exit");
-    	
-		return src;
-	}
+//	private CharSequence generateLiteralContext(JavaType lc, Catalog cat, TableMapper tm, List<String> il, Map<JavaType, CharSequence> fm) throws IOException {
+//    	   	
+//    	logger().debug("generateLiteralContext - enter");
+//    	String src = getTemplateForLiteralCatalog();    	
+//    	    	    	
+//    	src = replaceAllWithComment(src, Tag.PACKAGE_NAME, lc.getPackageName());
+//    	    	    	
+//    	Environment env = cat.getEnvironment();
+//    	String e = env.getClass().getName();
+//    	src = replaceAllWithComment(src, Tag.NEW_ENVIRONMENT_EXPR, "new " + e + "()");
+//    	
+//    	{
+//	    	String list = generateSchemaList(cat);
+//	    	src = replaceAllWithComment(src, Tag.SCHEMA_ENUM_LIST, list);
+//    	}
+//    	
+//    	{
+//	    	String list = generateBaseTableList(cat, tm);
+//	    	src = replaceAllWithComment(src, Tag.BASE_TABLE_ENUM_LIST, list);
+//    	}
+//    	
+//    	{
+//	    	String list = generateViewList(cat, tm);
+//	    	src = replaceAllWithComment(src, Tag.VIEW_ENUM_LIST, list);
+//    	}
+//    	
+//    	{
+//	    	String list = generateColumnList(cat, tm);
+//	    	src = replaceAllWithComment(src, Tag.COLUMN_ENUM_LIST, list);
+//    	}
+//    	
+//    	{
+//	    	String list = generatePrimaryKeyList(cat, tm);
+//	    	src = replaceAllWithComment(src, Tag.PRIMARY_KEY_ENUM_LIST, list);
+//    	}
+//    	
+//    	{
+//	    	String list = generateForeignKeyList(cat, tm);
+//	    	src = replaceAllWithComment(src, Tag.FOREIGN_KEY_ENUM_LIST, list);
+//    	}    	
+//    	
+//    	{
+//	    	String list = generateMetaMapPopulation(cat, tm);
+//	    	src = replaceAllWithComment(src, Tag.META_MAP_POPULATION, list);
+//    	}
+//
+//    	{
+//	        String list = generateFactoryMethodList(fm);
+//	        src = replaceAllWithComment(src, Tag.FACTORY_METHOD_LIST, list);
+//    	}
+//    	
+//    	final String tsrc = getTemplateForLiteralInnerTable();  
+//    	
+//    	StringBuilder buf = new StringBuilder();
+//    	
+//    	EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
+//    	List<String> initList = new ArrayList<String>(); 
+//    	
+//    	for (Schema s : cat.schemas().values()) {
+//    		if (!schemaFilter.accept(s)) {
+//    			continue;
+//    		}
+//    		
+//    		String sn = name(s.getUnqualifiedName().getName());
+//    		
+//    		for (Table t : s.tables().values()) {
+//    			String tn = getSimpleName(t);
+//    			
+//    			StringBuilder ebuf = new StringBuilder();    			    			
+//    			generateColumnListElements(t, ebuf, nq, tm);
+//    			String cl = ebuf.toString();
+//    			String tc = replaceAll(tsrc, Tag.COLUMN_ENUM_LIST, cl);    			
+//    			tc = replaceAll(tc, Tag.SCHEMA_TYPE_NAME, sn);
+//    			tc = replaceAll(tc, Tag.TABLE_INTERFACE, tn);			
+//    			
+//    			// if inner class:
+//    			tc = replaceAll(tc, Tag.PACKAGE_DECL, "");
+//    			tc = replaceAll(tc, Tag.IMPORTS, "");
+//    			    			
+//    			buf.append(tc);
+//    			buf.append("\n\n");
+//    			    			
+//    			JavaType tet = tm.entityType(t, Part.LITERAL_TABLE_ENUM);
+//    			
+//    			logger().info("generateLiteralContext: tet = " + tet + " for " + t.getQualifiedName());
+//    			
+//    			if (tet != null) {
+//    				initList.add(tet.getQualifiedName());
+//    			}
+//			}			
+//		}
+//    	
+//    	final String tin = getTemplateForTableEnumInit();
+//    	StringBuilder initCode = new StringBuilder();
+//    	
+//    	for (String it : initList) {
+//    		initCode.append(replaceAll(tin, Tag.TABLE_ENUM_INIT_TYPE, it));
+//		}
+//    	
+//    	src = replaceAll(src, Tag.INIT_COLUMN_ENUM_LIST, initCode.toString());
+//    	
+//    	src = replaceAllWithComment(src, Tag.TABLE_COLUMN_ENUM_LIST, buf.toString());
+//    	    	
+//    	logger().debug("generateLiteralContext - exit");
+//    	
+//		return src;
+//	}
 	
 	private String generateMetaMapPopulation(Catalog cat, TableMapper tm) {
 		StringBuilder buf = new StringBuilder();
@@ -852,7 +862,7 @@ public class SourceGenerator {
 		
 		for (Column c : t.columnMap().values()) {
 			String cn = columnEnumeratedName(t, c, nq, tm);			
-			String ten = tableEnumeratedName(tm, t);					
+//			String ten = tableEnumeratedName(tm, t);					
 			Identifier un = c.getUnqualifiedName();
 			
 			buf.append(cn);
@@ -1180,9 +1190,9 @@ public class SourceGenerator {
         return read("CATALOG_CONTEXT.in");
     }
     
-    private String getTemplateForLiteralCatalog() throws IOException {
-        return read("LITERAL_CATALOG.in");
-    }
+//    private String getTemplateForLiteralCatalog() throws IOException {
+//        return read("LITERAL_CATALOG.in");
+//    }
     
     private String getTemplateForHasKeyInterface() throws IOException {
         return read("HAS_KEY.in");
@@ -1200,13 +1210,17 @@ public class SourceGenerator {
 //        return read("ATTRIBUTES_METHOD_STATEMENT.in");
 //    }
     
-    private String getTemplateForLiteralInnerTable() throws IOException {
-        return read("LITERAL_INNER_TABLE.in");
+    private String read(Tag tag) throws IOException {
+        return read(tag.toString() + ".in");
     }
     
-    private String getTemplateForTableEnumInit() throws IOException {
-        return read("TABLE_ENUM_INIT.in");
-    }
+//    private String getTemplateForLiteralInnerTable() throws IOException {
+//        return read("LITERAL_INNER_TABLE.in");
+//    }
+//    
+//    private String getTemplateForTableEnumInit() throws IOException {
+//        return read("TABLE_ENUM_INIT.in");
+//    }
 
     private void process(Catalog cat, Schema s, final TableMapper tm, TypeMapper tym, Collection<JavaType> ccil, Map<JavaType, CharSequence> factories, Properties generated, Map<File, String> gm) 
 		throws IOException {
@@ -1446,6 +1460,39 @@ public class SourceGenerator {
         }
         
         {
+            String code = queryElementVariableList(cat, t, tm, tym, false);
+            src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_VARIABLE_LIST, code);
+        }
+        
+        {
+            String code = queryElementGetterBody(cat, t, tm, tym, false);
+            src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_GETTER_BODY, code);
+        }
+        
+        {
+            String code = queryElementSetterBody(cat, t, tm, tym, false);
+            src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_SETTER_BODY, code);
+        }
+        
+        {
+            String code = queryElementAssignmentList(cat, t, tm, tym, false);
+            src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_ASSIGNMENT_LIST, code);
+        }
+
+        {
+            String code = queryElementNewBuilderBody(cat, t, tm, tym, false);
+            src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_NEW_BUILDER_BODY, code);
+        }
+        
+        {
+            String code = queryElementDefaultConstructorBody(cat, t, tm, tym, false);
+            src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_DEFAULT_CONSTRUCTOR_BODY, code);
+            // same content can applied for Builder, too
+            src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_BUILDER_DEFAULT_CONSTRUCTOR_BODY, code);
+        }
+
+        
+        {
             String code = valueAccessorList(cat, t, tm, tym, false);     
             src = replaceAll(src, Tag.VALUE_ACCESSOR_LIST, code);
         }
@@ -1474,7 +1521,202 @@ public class SourceGenerator {
 	    return src;
 	}
 
-    private String implementedHasKeyList(BaseTable t, TableMapper tm) {    	    	
+    private String queryElementVariableList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, boolean b) {
+    	Collection<ForeignKey> fks = t.foreignKeys().values();
+    	
+    	if (fks.isEmpty()) {
+    		return "";
+    	}
+    	
+    	StringBuilder buf = new StringBuilder();
+    	    	
+    	for (ForeignKey fk : fks) {
+    		// SAMPLE: private EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> languageQueryElement;    		
+    		    		    		
+    		line(buf, 
+    				"private ", 
+    				EntityQueryElement.class.getCanonicalName(), 
+    				"<?, ?, ?, ?, ?, ?, ?, ?, ?> ",
+    				queryElementVariableName(fk), ";");
+		}
+    	
+    	
+		return buf.toString();
+	}
+
+	protected String queryElementVariableName(ForeignKey fk) {		
+		return variableName(referenceName(fk)) + "QueryElement";
+	}
+    
+    private String queryElementGetterBody(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, boolean b) {
+    	Collection<ForeignKey> fks = t.foreignKeys().values();
+    	
+    	StringBuilder buf = new StringBuilder();
+    	
+    	line(buf, "if (key == null) {");
+    	line(buf, "  throw new NullPointerException(\"key\");");
+    	line(buf, "}", 2);
+    	
+    	if (fks.isEmpty()) {
+    		line(buf, "return null;");
+    	}
+    	else {    	    	
+    		line(buf, "switch(key.name()) {");
+    		
+	    	for (ForeignKey fk : fks) {
+	    		// SAMPLE: private EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> languageQueryElement;    		
+	    		    	
+	    		line(buf, "case ", referenceName(fk), ":");
+	    		line(buf, "return this.", queryElementVariableName(fk), ";");
+			}
+			
+			line(buf, "default: ");
+			line(buf, "  break;");
+	    	
+	    	line(buf, "}", 2);
+	    	
+	    	line(buf, "return null; ");
+    	}
+    	
+    	
+		return buf.toString();
+	}
+    
+    private String queryElementSetterBody(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, boolean b) {
+    	Collection<ForeignKey> fks = t.foreignKeys().values();
+    	
+    	StringBuilder buf = new StringBuilder();
+    	
+    	line(buf, "if (key == null) {");
+    	line(buf, "  throw new NullPointerException(\"key\");");
+    	line(buf, "}", 2);
+    	
+    	if (!fks.isEmpty()) {
+    		line(buf, "switch(key.name()) {");
+    		
+	    	for (ForeignKey fk : fks) {
+	    		// SAMPLE: private EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> languageQueryElement;    		
+	    		    	
+	    		line(buf, "case ", referenceName(fk), ":");
+	    		line(buf, "this.", queryElementVariableName(fk), " = qe;");
+	    		line(buf, "break;");
+			}
+			
+			line(buf, "default: ");
+			line(buf, "  break;");
+	    	
+	    	line(buf, "}", 2);	    	
+    	}
+    	
+    	
+		return buf.toString();
+	}
+    
+    private String queryElementAssignmentList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, boolean b) {
+    	Collection<ForeignKey> fks = t.foreignKeys().values();
+    	
+    	if (fks.isEmpty()) {
+    		return "";
+    	}
+    	
+    	StringBuilder buf = new StringBuilder();    	
+    	
+    	for (ForeignKey fk : fks) {
+    		String var = queryElementVariableName(fk);    		
+    		line(buf, "qe.", var, " = this.", var, ";");
+		}
+		
+		return buf.toString();
+	}
+    
+    private String queryElementNewBuilderBody(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, boolean b) {
+    	Collection<ForeignKey> fks = t.foreignKeys().values();
+    	
+    	StringBuilder buf = new StringBuilder();
+    	
+    	line(buf, "QueryElement.Builder qeb = new QueryElement.Builder();");				
+    	line(buf, "qeb.attributes = (this.attributes == null) ? null : new java.util.TreeSet<Attribute>(this.attributes);");
+		    	
+    	for (ForeignKey fk : fks) {
+    		String var = queryElementVariableName(fk);    		
+    		line(buf, "qeb.", var, " = this.", var, ";");
+		}
+		
+    	line(buf, "return qeb;");
+    	
+		return buf.toString();
+	}
+    
+    private String queryElementDefaultConstructorBody(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, boolean b) {
+    	
+    	PrimaryKey pk = t.getPrimaryKey();
+    	
+    	if (pk == null) {
+    		return "";
+    	}
+    	
+    	StringBuilder buf = new StringBuilder();
+    	
+    	ColumnMap pkcm = pk.getColumnMap();
+    	
+    	int pkcols = pkcm.size();
+    	
+    	List<String> pkattrs = new ArrayList<String>(pkcols);
+    	Map<String, ForeignKey> pkkeys = null;
+    	
+    	List<Column> acols = getAttributeColumnList(cat, t, tym);    	
+    	    	
+    	for(Column ac : acols) {
+    		if (pkcm.contains(ac.getUnqualifiedName())) {
+    			AttributeInfo ai = tym.getAttributeInfo(t, ac);
+    			
+    			if (ai == null) {
+    				throw new NullPointerException("attribute info for primary key column: " + ac.getUnqualifiedName());
+    			}
+    			
+    			pkattrs.add(attr(ac));
+    		}
+    	}
+    	    	
+    	if (pkattrs.size() < pkcols) {
+    		pkkeys = new TreeMap<String, ForeignKey>();
+    		
+        	// Map<Identifier, ForeignKey> fkmap = foreignKeyColumnMap(cat, t);
+    		
+    		
+        	for (ForeignKey fk : t.foreignKeys().values()) {
+        		for (Column fkcol : fk.getColumnMap().values()) {
+        			if (pkcm.contains(fkcol.getUnqualifiedName())) {
+        				pkkeys.put(fk.getQualifiedName(), fk);
+        				continue;
+        			}
+        		}
+        	}   		
+    	}
+    	
+
+    	    	
+    	    	    	    	
+    	if (!pkattrs.isEmpty()) {
+    		line(buf, "this.attributes = new java.util.TreeSet<Attribute>();");
+    		
+    		for (String attr : pkattrs) {
+    			line(buf, "this.attributes.add(Attribute.", attr, ");");
+			}    		
+    	}
+    	
+    	if (pkkeys != null) {
+    		for (ForeignKey fk : pkkeys.values()) {
+    			String var = queryElementVariableName(fk);
+    			JavaType te = tm.entityType(fk.getReferenced(), Part.INTERFACE);
+    			line(buf, "this.", var, " = new ", te.getQualifiedName(), ".QueryElement();");
+			}
+    	}
+    	
+		return buf.toString();
+	}    
+
+	private String implementedHasKeyList(BaseTable t, TableMapper tm) {    	    	
     	SchemaElementMap<ForeignKey> fkm = t.foreignKeys();
     	Set<BaseTable> ts = new HashSet<BaseTable>();
     	
@@ -2002,46 +2244,6 @@ public class SourceGenerator {
 	    return src;
 	}
 
-    private String generateFactoryImplementation(Schema s, JavaType impl, TableMapper tm, Collection<TypeInfo> types)
-        throws IOException {
-
-        JavaType intf = tm.factoryType(s, Part.INTERFACE);
-        String src = getFactoryTemplateFor(Part.IMPLEMENTATION);
-
-        List<String> il = new ArrayList<String>();
-
-        addImport(impl, intf, il);
-
-        for (TypeInfo t : types) {
-            JavaType returnType = getFactoryMethodReturnType(t);
-            addImport(impl, returnType, il);
-        }
-            
-        // addImport(impl, tm.literalContextType(), il);        
-        
-        src = replaceAll(src, Tag.LITERAL_CATALOG_NAME, tm.literalContextType().getQualifiedName());        
-        src = replaceAll(src, Tag.LITERAL_CONTEXT_PACKAGE_NAME, tm.literalContextType().getPackageName());                
-
-        src = replacePackageAndImports(src, impl, il);
-
-        src = replaceAll(src, "{{schema-factory-impl}}", impl.getUnqualifiedName());
-        src = replaceAll(src, "{{schema-factory}}", intf.getQualifiedName());
-
-        StringBuilder code = new StringBuilder();
-
-        for (TypeInfo t : types) {
-            String m = generateFactoryMethod(t, true);
-            line(code, m, 1);
-        }
-
-        src = replaceAll(src, "{{factory-method-list}}", code.toString());
-
-        logger().debug("factory impl: " + src);
-
-        return src;
-    }
-
-
     private JavaType getFactoryMethodReturnType(TypeInfo info) {
 //        JavaType hp = info.get(Part.HOOK);
 //        JavaType itfp = info.get(Part.INTERFACE);
@@ -2088,6 +2290,8 @@ public class SourceGenerator {
 
 	private String read(String resource)
 	    throws IOException {
+		
+		logger.debug("reading toString(): " + resource);
         InputStream template = getClass().getResourceAsStream(resource);
         String src = new IOHelper().read(template, "UTF-8", 1024);
         return src;
@@ -2220,16 +2424,6 @@ public class SourceGenerator {
 
         src = replacePackageAndImports(src, impl, il);
 
-        src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
-        src = replaceAll(src, Tag.TABLE_IMPL_CLASS, impl.getUnqualifiedName());
-        src = replaceAll(src, Tag.TABLE_IMPL_BASE, base.getUnqualifiedName());
-        
-        src = replaceAll(src, Tag.LITERAL_CATALOG_NAME, tam.literalContextType().getQualifiedName());
-        
-        Environment te = getTargetEnvironment(cat.getEnvironment());
-        src = replaceAll(src, Tag.ENVIRONMENT_EXPRESSION, generateEnvironmentExpression(te));
-                
-       	src = replaceAll(src, Tag.LITERAL_TABLE_ENUM, lt);
        	
        	tag = Tag.BASE_TABLE_COLUMN_VARIABLE_LIST;
        	src = replaceAll(src, tag, generateBaseTableColumnVariableList(t, tag, tam));
@@ -2263,11 +2457,17 @@ public class SourceGenerator {
             logger().debug("generateImplementation: code=" + code);            
             src = replaceAll(src, Tag.REFERENCE_KEY_MAP_LIST, code);        	
         }
+                
+        {	
+        	src = t.foreignKeys().isEmpty() ?
+        			replaceAllWithComment(src, Tag.FOREIGN_KEY_IMPLEMENTATION, "") :
+        			readAndReplace(src, Tag.FOREIGN_KEY_IMPLEMENTATION, false);        	
+        }
         
-        {
-            String code = builderLinkerInitList(t, tam, qualify);
-            logger().debug("builderLinkerInitList: code=" + code);            
-            src = replaceAll(src, Tag.BUILDER_LINKER_INIT, code);        	
+        {        	
+            String code = builderLinkerInit(t, tam, qualify);
+            logger().debug("builderLinkerInit: code=" + code);            
+            src = replaceAllWithComment(src, Tag.BUILDER_LINKER_INIT, code);        	
         }
         
         {
@@ -2316,9 +2516,35 @@ public class SourceGenerator {
             String code = valueAccessorList(cat, t, tam, tym, true);
             logger().debug("generateImplementation: code=" + code);
             src = replaceAll(src, Tag.VALUE_ACCESSOR_LIST, code);
-        }
+        }        
+        
+        src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());        
+        src = replaceAll(src, Tag.TABLE_IMPL_CLASS, impl.getUnqualifiedName());
+        src = replaceAll(src, Tag.TABLE_IMPL_BASE, base.getUnqualifiedName());
+        
+        src = replaceAll(src, Tag.LITERAL_CATALOG_NAME, tam.literalContextType().getQualifiedName());
+        
+        Environment te = getTargetEnvironment(cat.getEnvironment());
+        src = replaceAll(src, Tag.ENVIRONMENT_EXPRESSION, generateEnvironmentExpression(te));
+                
+       	src = replaceAll(src, Tag.LITERAL_TABLE_ENUM, lt);
+
 
         return src;
+	}
+
+	protected String readAndReplace(String src, Tag tag, boolean withComment)
+			throws IOException {
+		
+		String content = read(tag);            
+		
+		logger().debug(tag + ": code=" + content);            
+		
+		src = withComment ? 
+				replaceAllWithComment(src, tag, content) :
+				replaceAll(src, tag, content);
+				
+		return src;
 	}
 	
 	private String generateEnvironmentExpression(final Environment env) {
@@ -2412,7 +2638,7 @@ public class SourceGenerator {
 	Environment env = PGEnvironment.environment();
 	IdentifierRules irls = env.getIdentifierRules();
 	
-	com.appspot.relaxe.expr.Identifier c = irls.toIdentifier("asdf");
+	com.appspot.relaxe.expr.Identifier c = null;
 	com.appspot.relaxe.expr.Identifier s = irls.toIdentifier("public");
 	com.appspot.relaxe.expr.Identifier t = irls.toIdentifier("test");   
 	
@@ -2433,7 +2659,7 @@ public class SourceGenerator {
 		
 		
 		
-		line(buf, identifierDeclaration("c", sen.getQualifier().getCatalogName(), irvar));
+		line(buf, identifierDeclaration("c", null, irvar));
 		line(buf, identifierDeclaration("s", sen.getQualifier().getSchemaName(), irvar));
 		line(buf, identifierDeclaration("t", sen.getUnqualifiedName(), irvar));
 		
@@ -2470,7 +2696,10 @@ public class SourceGenerator {
 			// fkmap.put(env.createIdentifier(""), new EntityTableForeignKey(Film.Type.TYPE));			
 			// return new <X>ForeignKeyMap(env, fkmap);
 			
-			line(buf, "java.util.Map<Identifier, ForeignKey> fkmap = new java.util.TreeMap<Identifier, ForeignKey>(env.getIdentifierRules().comparator());");
+			String idt = Identifier.class.getCanonicalName();
+			String fkt = ForeignKey.class.getCanonicalName();
+			
+			line(buf, "java.util.Map<", idt, ", ", fkt, "> fkmap = new java.util.TreeMap<", idt, ", ", fkt, ">(env.getIdentifierRules().comparator());");
 						
 			for (ForeignKey fk : fm.values()) {
 				generateCreateForeignKeyBlock(buf, fk, t, tam);				
@@ -2591,7 +2820,7 @@ public class SourceGenerator {
 		String kbi = ImmutablePrimaryKey.Builder.class.getCanonicalName();
 				
 		line(buf, kbi, " pkb = new ", kbi, "(this);");
-		
+				
 		ColumnMap cm = pk.getColumnMap();
 		
 		int size = cm.size();
@@ -2744,16 +2973,24 @@ public class SourceGenerator {
 		return code;
 	}
 
-	private String builderLinkerInitList(BaseTable referencing, TableMapper tm,
+	private String builderLinkerInit(BaseTable table, TableMapper tm,
 			boolean qualify) throws IOException {
 		StringBuilder buf = new StringBuilder();
-				
-		for (ForeignKey fk : referencing.foreignKeys().values()) {			
-			String c = formatBuilderLinkerInit(fk, tm);
-			buf.append(c);			
-			buf.append("\n\n");
-		}
 		
+		Collection<ForeignKey> fks = table.foreignKeys().values();
+		
+		if (!fks.isEmpty()) {						
+			line(buf, "MetaData m = getMetaData();");
+			line(buf, "java.util.List<Linker> ll = new java.util.ArrayList<Linker>();", 2);
+			
+			for (ForeignKey fk : fks) {			
+				String c = formatBuilderLinkerInit(fk, tm);
+				buf.append(c);			
+				buf.append("\n\n");
+			}
+			
+			line(buf, "this.linkerList = ll.toArray(this.linkerList);", 2);
+		}
 		
 		return buf.toString();			
 	}
@@ -3383,7 +3620,11 @@ public class SourceGenerator {
 	}	
 
 	private String valueVariableName(Table t, Column c) {
-		return decapitalize(name(c.getColumnName().getName()));
+		return variableName(c.getColumnName().getName());
+	}
+	
+	private String variableName(String n) {
+		return decapitalize(name(n));
 	}
 
 	private String metaDataInitialization(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, boolean qualify) {
@@ -3497,7 +3738,7 @@ public class SourceGenerator {
     // but atomically with ref -methods
 
 	private List<Column> getAttributeColumnList(Catalog cat, BaseTable t, TypeMapper tym) {
-		Set<Identifier> fkcols = foreignKeyColumns(cat, t);
+		Set<Identifier> fkcols = foreignKeyColumnMap(cat, t).keySet();
 		List<Column> attrs = new ArrayList<Column>();
 		
 		for (Column c : t.columnMap().values()) {
@@ -4060,7 +4301,7 @@ public class SourceGenerator {
         return buf.toString();
     }
     
-    private String decapitalize(String identifier) {
+    protected String decapitalize(String identifier) {
     	if ((identifier == null) || identifier.equals("")) {			
     		return identifier;
     	}
@@ -4174,13 +4415,25 @@ public class SourceGenerator {
 		return expr;
 	}
 
-	private String referenceName(ForeignKey fk) {
-		final String kn = fk.getUnqualifiedName().getName();
-		String t = fk.getReferencing().getUnqualifiedName().getName().toUpperCase();
-		String p = "^(FK_)?(" + Pattern.quote(t) + "_)";
-		logger().debug("input {" + kn.toUpperCase() + "}");
+	protected String referenceName(ForeignKey fk) {
+		String n = fk.getUnqualifiedName().getName();
+		return referenceName(fk.getReferencing().getUnqualifiedName().getName(), n);
+	}
+	
+	protected String referenceName(final String table, final String constraintName) {		
+		String t = table.toUpperCase();
+		String n = constraintName.toUpperCase();
+		String p = "^(FK(EY)?_)?(" + Pattern.quote(t) + "_)?(.+?)(_ID)?(_FK(EY)?)?$";
+		
+		Pattern pattern = Pattern.compile(p);
+		Matcher matcher = pattern.matcher(n);
+				
+		n = matcher.matches() ? matcher.group(4) : n;
+				
+		logger().debug("input {" + constraintName + "}");
 		logger().debug("p {" + p + "}");
-		String n = kn.toUpperCase().replaceFirst(p, "");
+		
+		
 		return n;
 	}
 
@@ -4193,19 +4446,19 @@ public class SourceGenerator {
 
 
 
-	private Set<Identifier> foreignKeyColumns(Catalog cat, BaseTable t) {
+	private Map<Identifier, ForeignKey> foreignKeyColumnMap(Catalog cat, BaseTable t) {
 		Comparator<Identifier> icmp = cat.getEnvironment().getIdentifierRules().comparator();
-		Set<Identifier> cs = new TreeSet<Identifier>(icmp);
+		Map<Identifier, ForeignKey> cm = new TreeMap<Identifier, ForeignKey>(icmp);
 
 		logger().debug("table: " + t.getQualifiedName());
 
 		for (ForeignKey fk : t.foreignKeys().values()) {
 			for (Column c : fk.getColumnMap().values()) {
-				cs.add(c.getUnqualifiedName());
+				cm.put(c.getUnqualifiedName(), fk);
 			}
 		}
 
-		return cs;
+		return cm;
 	}
 
 

@@ -11,7 +11,6 @@ import com.appspot.relaxe.expr.MySQLDeleteStatement;
 import com.appspot.relaxe.expr.Predicate;
 import com.appspot.relaxe.expr.SQLSyntax;
 import com.appspot.relaxe.expr.TableReference;
-import com.appspot.relaxe.expr.ddl.ColumnDefinition;
 import com.appspot.relaxe.meta.impl.mysql.MySQLEnvironment;
 
 /**
@@ -21,10 +20,6 @@ import com.appspot.relaxe.meta.impl.mysql.MySQLEnvironment;
 public class MySQLImplementation
 	extends DefaultImplementation<MySQLImplementation> {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 6946031278704702178L;
 	private MySQLSyntax syntax;
     private MySQLEnvironment environment;
     
@@ -32,12 +27,6 @@ public class MySQLImplementation
 	public CatalogFactory catalogFactory() {
 		return new MySQLCatalogFactory(this.environment());
 	}
-
-    
-    public ColumnDefinition serialColumnDefinition(String columnName, boolean big) {
-        // TODO add support (subclass ColumnDefinition to put AUTO_INCREMENT in the right spot)
-        return null;
-    }
 
     @Override
     public String defaultDriverClassName() {

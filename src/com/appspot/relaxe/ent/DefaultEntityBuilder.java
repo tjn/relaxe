@@ -57,6 +57,8 @@ public abstract class DefaultEntityBuilder<
 		
 		this.tableRef = (tableRef == null) ? referencing : tableRef;
 		ForeignKey map = (tableRef == null) ? referencedBy : null;
+		
+		EntityQueryContext qctx = ctx.getQueryContext();
 			
 		M meta = getMetaData();	
 				
@@ -70,7 +72,7 @@ public abstract class DefaultEntityBuilder<
 		int cc = ctx.getInputMetaData().getColumnCount();
 						
 		for (int i = 1; i <= cc; i++) {
-			TableReference tref = ctx.getQuery().getOrigin(i);
+			TableReference tref = qctx.getOrigin(i);
 			
 			if (tref == this.tableRef) {
 				addWriter(map, i - 1, ctx);
@@ -82,31 +84,46 @@ public abstract class DefaultEntityBuilder<
 	public abstract M getMetaData();
 
 	@Override
-	public H read(DataObject src) {		
+	public H read(DataObject src) {
 		
-		for (AttributeWriter<A, E> w : this.primaryKeyWriterList) {					
-			PrimitiveHolder<?, ?, ?> h = src.get(w.getIndex());
-			
-			if (h == null || h.isNull()) {
-				// referenced primary key contained nulls => not identified
-				return null;				
+		int pkws = this.primaryKeyWriterList.size();
+		
+//		if (pkws > 0) {		
+			for (AttributeWriter<A, E> w : this.primaryKeyWriterList) {					
+				PrimitiveHolder<?, ?, ?> h = src.get(w.getIndex());
+				
+				if (h == null || h.isNull()) {
+					// referenced primary key contained nulls => not identified
+					return null;				
+				}
 			}
-		}
+//		}
 		
 		E ne = getMetaData().getFactory().newEntity();
 		
 //		logger().debug("read: " + ne);
 		
-		copy(src, ne, this.primaryKeyWriterList);
+		H eh = null;
 		
-		H eh = identityMap.get(ne);
-		
-		if (eh != null) {
-			if (eh.value() == ne) {
-				// If this was just inserted, augment. 
-				copy(src, ne, this.attributeWriterList);
+//		if (pkws > 0) 
+		{		
+			copy(src, ne, this.primaryKeyWriterList);		
+			eh = identityMap.get(ne);
+			
+			if (eh != null) {
+				if (eh.value() == ne) {
+					// If this was just inserted,
+					// augment with the rest of attributes. 
+					copy(src, ne, this.attributeWriterList);
+				}
 			}
 		}
+//		else {
+//			// loaded without primary key attributes:
+//			copy(src, ne, this.attributeWriterList);
+//			// eh = ne.ref();
+//			return null;
+//		}		
 		
 		return eh;
 	}

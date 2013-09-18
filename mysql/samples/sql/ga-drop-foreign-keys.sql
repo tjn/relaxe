@@ -1,11 +1,16 @@
 
 
 
-ALTER TABLE samples.player DROP FOREIGN KEY fk_player_game
+set sql_mode = ansi
+;
+
+ALTER TABLE samples.player DROP FOREIGN KEY fk_player_match
 ;
 ALTER TABLE samples.player DROP FOREIGN KEY fk_player_user
 ;
-ALTER TABLE samples.game DROP FOREIGN KEY fk_game_initiator
+ALTER TABLE samples."match" DROP FOREIGN KEY fk_match_initiator
+;
+ALTER TABLE samples."match" DROP FOREIGN KEY fk_match_game
 ;
 ALTER TABLE samples.user_session DROP FOREIGN KEY fk_user_session_user_account
 ;

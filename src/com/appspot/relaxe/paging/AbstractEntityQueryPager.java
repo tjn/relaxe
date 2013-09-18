@@ -10,8 +10,8 @@ import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityQueryResult;
-import com.appspot.relaxe.ent.EntityQueryTemplate;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.model.ValueModel;
 import com.appspot.relaxe.rpc.ReferenceHolder;
@@ -27,16 +27,16 @@ public abstract class AbstractEntityQueryPager<
 	F extends EntityFactory<E, H, M, F, C>,
 	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
 	C extends Content,
-	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>,
-	RP extends EntityQueryResult<A, R, T, E, H, F, M, C, QT>,
-	RF extends Fetcher<QT, RP, PageReceiver<RP>>,
-	EP extends AbstractEntityQueryPager<A, R, T, E, H, F, M, C, QT, RP, RF, EP>
+	QE extends EntityQueryElement<A, R, T, E, H, F, M, C, QE>,	
+	RP extends EntityQueryResult<A, R, T, E, H, F, M, C, QE>,
+	RF extends Fetcher<QE, RP, PageReceiver<RP>>,
+	EP extends AbstractEntityQueryPager<A, R, T, E, H, F, M, C, QE, RP, RF, EP>
 >
-	extends DefaultPagerModel<QT, RP, EP, RF>
-	implements EntityDataObjectPager<A, R, T, E, H, F, M, C, RP, QT, EP>
+	extends DefaultPagerModel<QE, RP, EP, RF>
+	implements EntityDataObjectPager<A, R, T, E, H, F, M, C, RP, QE, EP>
 {	
-	public AbstractEntityQueryPager(QT template, RF fetcher, int initialPageSize, Map<SimplePagerModel.Command, ValueModel<String>> nmm) {
-		super(template, fetcher, initialPageSize, nmm);
+	public AbstractEntityQueryPager(QE query, RF fetcher, int initialPageSize, Map<SimplePagerModel.Command, ValueModel<String>> nmm) {
+		super(query, fetcher, initialPageSize, nmm);
 	}
 	
 	

@@ -27,7 +27,7 @@ public class TriggerKeyTest
 		TriggerTest abc = TriggerTest.Type.TYPE.getMetaData().getFactory().newEntity();
 		abc.getContent().setName("asdf");
 		
-		PersistenceManager<Attribute, Reference, Type, TriggerTest, Holder, Factory, MetaData, Content> pm = create(abc);
+		PersistenceManager<Attribute, Reference, Type, TriggerTest, Holder, Factory, MetaData, Content, TriggerTest.QueryElement> pm = create(abc);
 		pm.insert(c);
 		
 		IntegerHolder id = abc.getInteger(TriggerTest.ID);

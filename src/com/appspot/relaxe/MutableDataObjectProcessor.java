@@ -4,7 +4,7 @@
 package com.appspot.relaxe;
 
 import com.appspot.relaxe.ent.MutableDataObject;
-import com.appspot.relaxe.ent.QueryExpressionSource;
+import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.query.QueryException;
 
 public class MutableDataObjectProcessor
@@ -13,7 +13,7 @@ public class MutableDataObjectProcessor
 	private MutableDataObject content;
 	private MutableDataObject result;
 		
-	public MutableDataObjectProcessor(ValueExtractorFactory vef, QueryExpressionSource qes) throws QueryException {
+	public MutableDataObjectProcessor(ValueExtractorFactory vef, QueryExpression qes) throws QueryException {
 		super(vef, qes);
 	}
 	

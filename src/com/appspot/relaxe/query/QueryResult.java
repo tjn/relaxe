@@ -51,14 +51,6 @@ public class QueryResult<T>
 		return content;
 	}
 
-	
-
-	public Boolean isComplete() {
-		// TODO
-		return null;
-//		return (available == null) ? null : available.intValue();  
-	}
-
 	public Long getAvailable() {
 		return available;
 	}

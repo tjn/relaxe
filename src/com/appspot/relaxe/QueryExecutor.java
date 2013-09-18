@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObjectQueryResult;
 import com.appspot.relaxe.ent.FetchOptions;
-import com.appspot.relaxe.ent.QueryExpressionSource;
 import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.expr.CountFunction;
 import com.appspot.relaxe.expr.DefaultTableExpression;
@@ -44,11 +43,11 @@ public class QueryExecutor {
 		this.persistenceContext = persistenceContext;
 	}
 	
-	public DataObjectQueryResult<DataObject> execute(QueryExpressionSource qes, FetchOptions opts, Connection c) throws QueryException, SQLException {
+	public DataObjectQueryResult<DataObject> execute(QueryExpression qe, FetchOptions opts, Connection c) throws QueryException, SQLException {
 		
 		PersistenceContext<?> pc = getPersistenceContext();
 		
-		SliceStatement ss = createStatement(qes, opts, c);
+		SliceStatement ss = createStatement(qe, opts, c);
 		SelectStatement statement = ss.getStatement();
 		
 		ValueExtractorFactory vef = pc.getValueExtractorFactory();
@@ -69,7 +68,7 @@ public class QueryExecutor {
 	}
 	
 
-	public SliceStatement createStatement(QueryExpressionSource qes, FetchOptions opts, Connection c) 
+	public SliceStatement createStatement(QueryExpression qe, FetchOptions opts, Connection c) 
 		throws QueryException, SQLException {
 		
 		PersistenceContext<?> pc = getPersistenceContext();	
@@ -77,9 +76,8 @@ public class QueryExecutor {
 		
 	//	if (logger().isDebugEnabled()) {
 	//		logger().debug("execute: query=" + qe.generate());
-	//	}
-		
-		QueryExpression qe = qes.getQueryExpression();		
+	//	}		
+				
 		SelectStatement qs = new SelectStatement(qe.getTableExpr());
 	
 		Long available = null;			

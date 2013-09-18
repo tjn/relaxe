@@ -62,6 +62,7 @@ public class AbstractIdentifierRules
 		return null;
 	}
 	
+	@Override
 	public boolean isValidIdentifier(String s) {
 		return (s != null) &&
 			   (s.length() > 0) &&

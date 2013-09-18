@@ -8,6 +8,22 @@ CREATE SCHEMA IF NOT EXISTS samples
 USE samples
 ;
 
+SET sql_mode = ANSI
+;
+-- 
+-- -- drop table player
+-- -- ;;
+-- drop table "match"
+-- ;;
+
+-- drop table user_account
+-- ;;
+-- drop table  user_session
+-- ;;
+
+-- show tables
+-- ;;
+
 -- DROP TABLE IF EXISTS user_account
 -- ;
 
@@ -30,7 +46,7 @@ ENGINE = InnoDB
 -- DROP TABLE IF EXISTS user_session
 -- ;
 
-CREATE TABLE user_session (
+CREATE TABLE IF NOT EXISTS user_session (
   id int(11) NOT NULL AUTO_INCREMENT,
   started_at varchar(23) DEFAULT NULL,
   user_account int(11) NOT NULL,
@@ -39,13 +55,22 @@ CREATE TABLE user_session (
 ENGINE = InnoDB
 ;
 
--- DROP TABLE IF EXISTS game
+CREATE TABLE IF NOT EXISTS game (
+  id int(11) NOT NULL AUTO_INCREMENT,    
+  name varchar(64) DEFAULT NULL,  
+  modified_at char(23) default null,
+  PRIMARY KEY (id)
+) 
+ENGINE=InnoDB 
+;
+
+-- DROP TABLE IF EXISTS play
 -- ;
 
-CREATE TABLE IF NOT EXISTS game (
+CREATE TABLE IF NOT EXISTS "match" (
   id int(11) NOT NULL AUTO_INCREMENT,
-  initiator integer NOT NULL,
-  definition varchar(64) DEFAULT NULL,
+  initiator int(11) NOT NULL,
+  game int NOT NULL,
   name varchar(64) DEFAULT NULL,  
   phase varchar(10) NOT NULL,
   modified_at char(23) default null,
@@ -58,23 +83,11 @@ ENGINE=InnoDB
 -- ;
 
 CREATE TABLE IF NOT EXISTS player (  
-  game int(11) NOT NULL,
+  "match" int(11) NOT NULL,
   ordinal int(11) NOT NULL,
   user_account int(11) NOT NULL,  
   modified_at varchar(23) DEFAULT NULL,
-  PRIMARY KEY (game, ordinal)
+  PRIMARY KEY ("match", ordinal)
 ) 
 ENGINE=InnoDB
 ;
-
--- CREATE TABLE IF NOT EXISTS game_definition (  
---   id int(11) NOT NULL AUTO_INCREMENT,
---   name varchar(50) NOT NULL,  
---   modified_at varchar(23) DEFAULT NULL,
---   PRIMARY KEY (id)
--- ) 
--- ENGINE=InnoDB
--- ;
--- 
-
-

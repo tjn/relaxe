@@ -25,7 +25,7 @@ public interface EntityMetaData<
 	F extends EntityFactory<E, H, M, F, C>,	 
 	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
 	C extends com.appspot.relaxe.ent.Content
-> 	
+> 		 
 {
 
 	/**

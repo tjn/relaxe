@@ -27,7 +27,7 @@ public abstract class EnumMetaData<
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8574938084185912154L;
+	// private static final long serialVersionUID = -8574938084185912154L;
 	
 	/**
 	 * No-argument constructor for GWT Serialization

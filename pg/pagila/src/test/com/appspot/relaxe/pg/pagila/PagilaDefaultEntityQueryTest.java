@@ -6,6 +6,7 @@ package com.appspot.relaxe.pg.pagila;
 import java.sql.Connection;
 import java.sql.Statement;
 
+import com.appspot.relaxe.EntityQueryExpressionBuilder;
 import com.appspot.relaxe.EntityReader;
 import com.appspot.relaxe.SimpleUnificationContext;
 import com.appspot.relaxe.StatementExecutor;
@@ -16,11 +17,20 @@ import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.env.pg.PGCatalogFactory;
 import com.appspot.relaxe.env.pg.PGImplementation;
+import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.SelectStatement;
 import com.appspot.relaxe.gen.pagila.ent.pub.Actor;
 import com.appspot.relaxe.gen.pagila.ent.pub.Category;
 import com.appspot.relaxe.gen.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor;
+import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor.Attribute;
+import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor.Content;
+import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor.Factory;
+import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor.Holder;
+import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor.MetaData;
+import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor.QueryElement;
+import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor.Reference;
+import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor.Type;
 import com.appspot.relaxe.gen.pagila.ent.pub.FilmCategory;
 import com.appspot.relaxe.meta.impl.pg.PGTestCase;
 
@@ -39,12 +49,21 @@ public class PagilaDefaultEntityQueryTest
     	logger().debug(c.getMetaData().getURL());
     	
     	PersistenceContext<PGImplementation> pc = getPersistenceContext();    	    	    	
-//    	LiteralCatalog cc = LiteralCatalog.getInstance();
     	    	
-    	FilmActor.QueryTemplate t = new FilmActor.QueryTemplate();
-    	FilmActor.Query faq = t.newQuery();    	
+    	FilmActor.QueryElement.Builder qeb = new FilmActor.QueryElement.Builder();
     	
-    	String qs = faq.getQueryExpression().generate();
+    	FilmActor.QueryElement fae = qeb.newQueryElement();
+    	
+    	FilmActor.Query faq = new FilmActor.Query(fae);
+    	    	
+    	EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, Content, QueryElement> qxb = newQueryExpressionBuilder(faq);    	
+    	    	
+    	logger().debug("testQuery1: qxb=" + qxb);
+    	
+    	QueryExpression qe = qxb.getQueryExpression();
+    	// new EntityQ
+    	
+    	String qs = qe.generate();    	  	
     	    	   	
     	logger().info("testThis: qs=" + qs);
     	    	
@@ -53,27 +72,32 @@ public class PagilaDefaultEntityQueryTest
     	
     	ValueExtractorFactory vef = pc.getValueExtractorFactory();
     	    	    	    	
-    	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content> eb
-    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content>(vef, faq, ic);
+    	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content, FilmActor.QueryElement> er
+    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content, FilmActor.QueryElement>(vef, qxb, ic);
     	    	
     	StatementExecutor se = new StatementExecutor(pc);
     	
-    	SelectStatement ss = new SelectStatement(eb.getQuery().getQueryExpression());
-    	    	
-    	se.execute(ss, c, eb);
+    	// EntityQueryContext
     	
-    	logger().info("testConstructor: eb.getContent().size()=" + eb.getContent().size());    	
+    	SelectStatement ss = new SelectStatement(qe);
+    	    	
+    	se.execute(ss, c, er);
+    	
+    	logger().info("testConstructor: eb.getContent().size()=" + er.getContent().size());    	
     	st.close();   	
     	    	
-    	for (EntityDataObject<FilmActor> o : eb.getContent()) {
+    	for (EntityDataObject<FilmActor> o : er.getContent()) {
 //			logger().info("testConstructor: rpt=" + o);
 			FilmActor root = o.getRoot();			
 //			logger()debug("testConstructor: root=" + root);
 			
+			assertNotNull(root);
+			assertTrue(root.isIdentified());
+			
 			assertNull(root.getContent().lastUpdate().getHolder());
 			
 			{
-				Actor.Holder ah = root.getActor(FilmActor.ACTOR_ID_FKEY);
+				Actor.Holder ah = root.getActor(FilmActor.ACTOR);
 				assertNotNull(ah);
 				assertFalse(ah.isNull());
 				assertNotNull(ah.value().getContent().getActorId());
@@ -81,7 +105,7 @@ public class PagilaDefaultEntityQueryTest
 			}
 			
 			{
-				Film.Holder fh = root.getFilm(FilmActor.FILM_ID_FKEY);
+				Film.Holder fh = root.getFilm(FilmActor.FILM);
 				assertNotNull(fh);
 				assertFalse(fh.isNull());
 				assertNotNull(fh.value().getContent().getFilmId());
@@ -89,6 +113,12 @@ public class PagilaDefaultEntityQueryTest
 			}
 		}
     }
+
+	protected EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, Content, QueryElement> newQueryExpressionBuilder(
+			FilmActor.Query faq) {
+		EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, Content, QueryElement> qeb = new EntityQueryExpressionBuilder<>(faq);
+		return qeb;
+	}
     
     
     public void testQuery2() throws Exception {
@@ -112,37 +142,38 @@ public class PagilaDefaultEntityQueryTest
     	ac.lastName().set("Bullock");
     	    	
     	FilmCategory fc = newEntity(FilmCategory.Type.TYPE);
-    	fc.setFilm(FilmCategory.FILM_ID_FKEY, film.ref());
-    	fc.setCategory(FilmCategory.CATEGORY_ID_FKEY, category.ref());
+    	fc.setFilm(FilmCategory.FILM, film.ref());
+    	fc.setCategory(FilmCategory.CATEGORY, category.ref());
     	
-    	FilmActor.QueryTemplate t = new FilmActor.QueryTemplate();
-    	FilmActor.Query faq = t.newQuery();    	
+    	FilmActor.QueryElement.Builder qeb = new FilmActor.QueryElement.Builder();
     	
-    	String qs = faq.getQueryExpression().generate();
+    	FilmActor.QueryElement faq = qeb.newQueryElement();
+    	    	    	
+    	FilmActor.Query qo = new FilmActor.Query(faq);
+    	
+    	
+    	
+    	EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, Content, QueryElement> qxb = 
+    			newQueryExpressionBuilder(qo);
+    	
+    	String qs = qxb.getQueryExpression().generate();
     	    	   	
     	logger().info("testThis: qs=" + qs);
     	    	
     	Statement st = c.createStatement();
-    	
-//    	ValueExtractorFactory vef = imp.getValueExtractorFactory();
-    	
     	UnificationContext ic = new SimpleUnificationContext();
-    	
     	ValueExtractorFactory vef = imp.getValueExtractorFactory();
     	    	    	    	
-    	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content> eb
-    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content>(vef, faq, ic);
+    	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content, FilmActor.QueryElement> eb
+    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content, FilmActor.QueryElement>(vef, qxb, ic);
     	   	
     	StatementExecutor se = new StatementExecutor(getPersistenceContext());
     	
-    	SelectStatement ss = new SelectStatement(eb.getQuery().getQueryExpression());
+    	SelectStatement ss = new SelectStatement(qxb.getQueryExpression());
     	se.execute(ss, c, eb);
     	
     	logger().info("testConstructor: eb.getContent().size()=" + eb.getContent().size());
     	
-//    	ResultSet rs = st.executeQuery(qs);
-//    	rs.next();
-//    	rs.close();
     	st.close();   	
     	    	
     	for (EntityDataObject<FilmActor> o : eb.getContent()) {
@@ -150,11 +181,11 @@ public class PagilaDefaultEntityQueryTest
 			FilmActor root = o.getRoot();			
 			logger().debug("testConstructor: root=" + root);
 			
-			Actor.Holder ah = root.getActor(FilmActor.ACTOR_ID_FKEY);
+			Actor.Holder ah = root.getActor(FilmActor.ACTOR);
 			assertNotNull(ah);
 			assertFalse(ah.isNull());	
 						
-			Film.Holder fh = root.getFilm(FilmActor.FILM_ID_FKEY);
+			Film.Holder fh = root.getFilm(FilmActor.FILM);
 			assertNotNull(fh);
 			assertFalse(ah.isNull());
 			

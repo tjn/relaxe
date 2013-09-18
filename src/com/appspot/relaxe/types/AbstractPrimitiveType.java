@@ -10,6 +10,7 @@ import com.appspot.relaxe.rpc.DateHolder;
 import com.appspot.relaxe.rpc.IntegerHolder;
 import com.appspot.relaxe.rpc.LongHolder;
 import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.TimeHolder;
 import com.appspot.relaxe.rpc.TimestampHolder;
 import com.appspot.relaxe.rpc.VarcharHolder;
@@ -180,8 +181,8 @@ public abstract class AbstractPrimitiveType<
 		}
 	}
 		
-	public static AbstractPrimitiveHolder<?, ?, ?> nullHolder(int t) {
-		AbstractPrimitiveHolder<?, ?, ?> nh = null;
+	public static PrimitiveHolder<?, ?, ?> nullHolder(int t) {
+		PrimitiveHolder<?, ?, ?> nh = null;
 		
 		switch (t) {
 		case ARRAY:
@@ -293,7 +294,6 @@ public abstract class AbstractPrimitiveType<
 			nh = NullHolder.VARCHAR;
 			break;
 		default:
-			nh = new NullHolder<Serializable>(t);
 			break;
 		}		
 		

@@ -13,5 +13,5 @@ public interface Fetcher<
 	T extends Serializable, 
 	R extends PageReceiver<T>
 > {	
-	void fetch(Q queryTemplate, FetchOptions opts, R resultReceiver, PageReceiver<Throwable> errorReceiver);
+	void fetch(Q query, FetchOptions opts, R resultReceiver, PageReceiver<Throwable> errorReceiver);
 }

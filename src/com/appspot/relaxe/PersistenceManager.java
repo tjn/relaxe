@@ -17,18 +17,16 @@ import java.util.Set;
 
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.Content;
-import com.appspot.relaxe.ent.CyclicTemplateException;
-import com.appspot.relaxe.ent.DefaultEntityTemplateQuery;
-import com.appspot.relaxe.ent.DefaultQueryTemplate;
+import com.appspot.relaxe.ent.DefaultEntityQuery;
+import com.appspot.relaxe.ent.DefaultEntityQueryElement;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityDataObject;
 import com.appspot.relaxe.ent.EntityException;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQuery;
+import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityQueryResult;
-import com.appspot.relaxe.ent.EntityQueryTemplate;
-import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.ent.value.EntityKey;
@@ -59,7 +57,6 @@ import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.query.QueryResult;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
@@ -78,25 +75,70 @@ public class PersistenceManager<
     H extends ReferenceHolder<A, R, T, E, H, M, C>,
     F extends EntityFactory<E, H, M, F, C>,
     M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-    C extends Content
+    C extends Content,
+	Q extends EntityQueryElement<A, R, T, E, H, F, M, C, Q>
 >
 {
 	private static final QueryProcessor NO_OPERATION = new QueryProcessorAdapter();
 	    
-    private class PMTemplate
-	    extends DefaultQueryTemplate<A, R, T, E, H, F, M, C, PMTemplate>
-    	implements EntityQueryTemplate<A, R, T, E, H, F, M, C, PMTemplate>
-	{
-	    /**
-		 * 
+//    private class PMElementTemplate
+//	    extends DefaultEntityQueryElementTemplate<A, R, T, E, H, F, M, C, PMElement>    	
+//	{
+//	    /**
+//		 * 
+//		 */
+//		private static final long serialVersionUID = -1285004174865437785L;		
+//		private M meta;
+//		
+//		public PMElementTemplate(M meta) {
+//			super();
+//			this.meta = meta;
+//			addAllAttributes();
+//		}
+//
+//		@Override
+//		public M getMetaData() {
+//			return this.meta;
+//		}
+//
+//		@Override
+//		public PMElementTemplate self() {
+//			return this;
+//		}
+//		
+//		@Override
+//		public PMElement newQueryElement() 
+//			throws EntityRuntimeException
+//		{						
+//			return new PMElement(this);
+//		}	
+//	}
+    
+    private class PMElement
+    	extends DefaultEntityQueryElement<A, R, T, E, H, F, M, C, PMElement> {
+    	
+    	private M meta;
+    	
+		/**
+		 * No-argument constructor for GWT Serialization
 		 */
-		private static final long serialVersionUID = -1285004174865437785L;		
-		private M meta;
+		@SuppressWarnings("unused")
+		protected PMElement() {	
+		}
 		
-		public PMTemplate(M meta) {
+		public PMElement(M meta) {
 			super();
 			this.meta = meta;
-			addAllAttributes();
+		}
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public PMElement self() {
+			return this;
 		}
 
 		@Override
@@ -105,17 +147,21 @@ public class PersistenceManager<
 		}
 
 		@Override
-		public PMTemplate self() {
-			return this;
+		public EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> k) {
+			return null;
 		}
-		
+
 		@Override
-		public EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> newQuery() 
-			throws EntityRuntimeException
-		{						
-			return new DefaultEntityTemplateQuery<A, R, T, E, H, F, M, C, PMTemplate>(this);
-		}	
-	}
+		public int getElementCount() {
+			return 0;
+		}
+
+		@Override
+		public Set<A> attributes() {
+			return meta.attributes();
+		}		
+    }
+
 
     private E target;    
     private PersistenceContext<?> persistenceContext = null;
@@ -128,15 +174,14 @@ public class PersistenceManager<
     
     public DeleteStatement createDeleteStatement() throws EntityException {
         E pe = getTarget();
+        
+        if (!pe.isIdentified()) {
+        	return null;
+        }        
+        
         final EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> meta = pe.getMetaData();
-
     	TableReference tref = new TableReference(meta.getBaseTable());
     	Predicate pkp = getPKPredicate(tref, pe);
-
-    	if (pkp == null) {
-    		return null;
-    	}
-
     	return getSyntax().newDeleteStatement(tref, pkp);
     }
 
@@ -202,7 +247,7 @@ public class PersistenceManager<
 
             if (ref == null) {
             	for (Column c : fk.getColumnMap().values()) {                	
-                	AbstractPrimitiveHolder<?, ?, ?> nh = AbstractPrimitiveType.nullHolder(c.getDataType().getDataType());
+                	PrimitiveHolder<?, ?, ?> nh = AbstractPrimitiveType.nullHolder(c.getDataType().getDataType());
                 	
                 	ValuesListElement p = newValuesListElement(c, nh.self());                	
                     newRow.add(p);
@@ -253,16 +298,16 @@ public class PersistenceManager<
 
     public UpdateStatement createUpdateStatement() throws EntityException {
         E pe = getTarget();
+        
+        if (!pe.isIdentified()) {
+        	return null;
+        }
+        
 
     	final M meta = pe.getMetaData();
     	TableReference tref = new TableReference(meta.getBaseTable());
    	
-
-    	Predicate p = getPKPredicate(tref, pe);
-
-    	if (p == null) {
-    		return null;
-    	}
+    	Predicate pkp = getPKPredicate(tref, pe);
 
     	ElementList<Assignment> assignments = new ElementList<Assignment>();
 
@@ -292,10 +337,9 @@ public class PersistenceManager<
 			}
 			
 			assignments.add(a);    	
-    	}
-    	
+    	}    	
 
-    	return new UpdateStatement(tref, assignments, p);
+    	return new UpdateStatement(tref, assignments, pkp);
     }
 
     private 
@@ -447,20 +491,38 @@ public class PersistenceManager<
 		}
 	}
     
-    private E sync(EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> query, Predicate pkp, Connection c) 
+    private E sync(EntityQueryElement<A, R, T, E, H, F, M, C, PMElement> qe, Connection c) 
 		throws EntityException, SQLException, QueryException  {
     	E stored = null;
 
-    	if (pkp != null) {
-    		query.getTableExpression().getWhere().setSearchCondition(pkp);
-    		EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate> ee = new EntityQueryExecutor<A, R, T, E, H, F, M, C, PMTemplate>(getPersistenceContext(), getUnificationContext());
-    		EntityQueryResult<A, R, T, E, H, F, M, C, PMTemplate> er = ee.execute(query, null, c);
-    		QueryResult<EntityDataObject<E>> qr = er.getContent();    		
-    		List<? extends EntityDataObject<E>> cl = qr.getContent();
-    		logger().debug("merge: cl.size()=" + cl.size());
-    		
-    		stored = cl.isEmpty() ? null : cl.get(0).getRoot(); 
-    	}
+		EntityQueryExecutor<A, R, T, E, H, F, M, C, PMElement> ee = 
+				new EntityQueryExecutor<A, R, T, E, H, F, M, C, PMElement>(getPersistenceContext(), getUnificationContext());
+		
+		
+		PMElement pe = qe.self();    		
+		
+		EntityQuery.Builder<A, R, T, E, H, F, M, C, PMElement> builder = new DefaultEntityQuery.Builder<A, R, T, E, H, F, M, C, PMElement>(pe);
+				
+		E e = getTarget();
+				
+		Map<Column, PrimitiveHolder<?, ?, ?>> vm = e.getPrimaryKey();
+		
+		for (Map.Entry<Column, PrimitiveHolder<?, ?, ?>> me : vm.entrySet()) {
+			Column col = me.getKey();
+			PrimitiveHolder<?, ?, ?> val = me.getValue();			
+			ValueExpression ve = createValueExpression(col, val);
+			builder.addPredicate(col.getColumnName(), Comparison.Op.EQ, ve);			
+		}		
+		
+		
+		EntityQuery<A, R, T, E, H, F, M, C, PMElement> query = builder.newQuery();
+		
+		EntityQueryResult<A, R, T, E, H, F, M, C, PMElement> er = ee.execute(query, null, c);
+		QueryResult<EntityDataObject<E>> qr = er.getContent();    		
+		List<? extends EntityDataObject<E>> cl = qr.getContent();
+		logger().debug("merge: cl.size()=" + cl.size());
+		
+		stored = cl.isEmpty() ? null : cl.get(0).getRoot(); 
     	
     	return stored;
     }
@@ -469,16 +531,11 @@ public class PersistenceManager<
     public E sync(Connection c)
     	throws EntityException, SQLException, QueryException  {
 
-    	M meta = getTarget().getMetaData();    	
-        PMTemplate qt = new PMTemplate(meta);
-        EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> eq = qt.newQuery();        
-        TableReference tref = eq.getTableRef();        
-    	Predicate pkp = getPKPredicate(tref, getTarget());
-
     	E stored = null;
 
-    	if (pkp != null) {
-    		stored = sync(eq, pkp, c);    		
+    	if (getTarget().isIdentified()) {
+    		PMElement eq = new PMElement(getTarget().getMetaData());
+    		stored = sync(eq, c);    		
     	}
     	
     	return stored;
@@ -487,23 +544,21 @@ public class PersistenceManager<
     	
 
     public void merge(Connection c) 
-    	throws CyclicTemplateException, EntityException, SQLException, QueryException  {
+    	throws EntityException, SQLException, QueryException  {
     	
-    	M meta = getTarget().getMetaData();    	
-        PMTemplate qt = new PMTemplate(meta);        
-        EntityQuery<A, R, T, E, H, F, M, C, PMTemplate> eq = qt.newQuery();        
-        TableReference tref = eq.getTableRef();        
-    	Predicate pkp = getPKPredicate(tref, getTarget());
+    	M meta = getTarget().getMetaData();
+    	    	
+    	PMElement qe = new PMElement(meta);   	    	
 
     	E stored = null;
 
-    	if (pkp != null) {
-    		stored = sync(eq, pkp, c);    		
+    	if (getTarget().isIdentified()) {
+    		stored = sync(qe, c);    		
     	}
     	
     	logger().debug("merge: stored=" + stored);    	
     	    	
-    	mergeDependencies(getTarget(), qt, c);    	
+    	mergeDependencies(getTarget(), qe, c);    	
 
     	if (stored == null) {
     		insert(c);
@@ -523,9 +578,9 @@ public class PersistenceManager<
 		DF extends EntityFactory<DE, DH, DM, DF, DC>,
 		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM, DC>,
 		DC extends Content, 
-		DQ extends EntityQueryTemplate<DA, DR, DT, DE, DH, DF, DM, DC, DQ>
+		DX extends EntityQueryElement<DA, DR, DT, DE, DH, DF, DM, DC, DX>
     >    
-    void mergeDependencies(DE target, DQ qt, Connection c) throws EntityException, SQLException, QueryException {
+    void mergeDependencies(DE target, DX qe, Connection c) throws EntityException, SQLException, QueryException {
     	
     	logger().debug("mergeDependencies: target=" + target);
     	
@@ -551,7 +606,7 @@ public class PersistenceManager<
 								
 			if (ms == MergeMode.ALL || (!rv.isIdentified())) {
 				logger().debug("merging dependency: " + id);
-				PersistenceManager<?, ?, ?, ?, ?, ?, ?, ?> pm = create(rv, getPersistenceContext());
+				PersistenceManager<?, ?, ?, ?, ?, ?, ?, ?, ?> pm = create(rv, getPersistenceContext());
 				pm.merge(c);
 			}
 			else {
@@ -562,9 +617,7 @@ public class PersistenceManager<
     
 
 	public void update(Connection c) throws EntityException {
-    	Predicate pkp = getPKPredicate();
-
-    	if (pkp == null) {
+    	if (!getTarget().isIdentified()) {
     		throw new EntityException("no primary key available");
     	}
 
@@ -592,13 +645,13 @@ public class PersistenceManager<
 	}
 
 
-    private Predicate getPKPredicate() throws EntityException {
-        E pe = getTarget();
-    	EntityMetaData<A, R, T, E, ?, ?, ?, ?> meta = pe.getMetaData();
-    	TableReference tref = new TableReference(meta.getBaseTable());
-    	Predicate pkp = getPKPredicate(tref, pe);
-        return pkp;
-    }
+//    private Predicate getPKPredicate() throws EntityException {
+//        E pe = getTarget();
+//    	EntityMetaData<A, R, T, E, ?, ?, ?, ?> meta = pe.getMetaData();
+//    	TableReference tref = new TableReference(meta.getBaseTable());
+//    	Predicate pkp = getPKPredicate(tref, pe);
+//        return pkp;
+//    }
 
     public static Logger logger() {
         return PersistenceManager.logger;
@@ -642,15 +695,44 @@ public class PersistenceManager<
         this.target = target;
     }
 
-    public Predicate getPKPredicate(TableReference tref, E pe)
-        throws EntityException {
-
-        if (tref == null) {
-            throw new NullPointerException();
-        }
+//    private EntityQueryPredicate getPKPredicate(E pe)
+//        throws EntityException {
+//    	
+//    	
+//    	pe.isIdentified();
+//
+//        EntityMetaData<A, R, T, E, ?, ?, ?, ?> meta = pe.getMetaData();
+//        // Set<Column> pkcols = meta.getPKDefinition();
+//        Collection<Column> pkcols = meta.getBaseTable().getPrimaryKey().getColumnMap().values();
+//
+//        if (pkcols.isEmpty()) {
+//            throw new EntityException("no pk-columns available for entity type " + pe.type());
+//        }
+//
+//        Predicate p = null;
+//
+//        for (Column col : pkcols) {
+//            PrimitiveHolder<?, ?, ?> o = pe.get(col);
+//
+//            // to successfully create a pk predicate
+//            // every component must be set:
+//            if (o == null) {
+//                return null;
+//            }
+//
+//            ColumnReference cr = new ColumnReference(tref, col);
+//            ValueExpression param = createValueExpression(col, o.self());
+//            p = AndPredicate.newAnd(p, eq(cr, param));
+//        }
+//
+//        return p;
+//    }
+    
+    private Predicate getPKPredicate(TableReference tref, E pe)
+            throws EntityException {
+        	
 
         EntityMetaData<A, R, T, E, ?, ?, ?, ?> meta = pe.getMetaData();
-        // Set<Column> pkcols = meta.getPKDefinition();
         Collection<Column> pkcols = meta.getBaseTable().getPrimaryKey().getColumnMap().values();
 
         if (pkcols.isEmpty()) {
@@ -706,10 +788,11 @@ public class PersistenceManager<
 		DH extends ReferenceHolder<DA, DR, DT, DE, DH, DM, DC>,
 		DF extends EntityFactory<DE, DH, DM, DF, DC>,
 		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM, DC>,
-		DC extends Content
+		DC extends Content,
+	    QE extends EntityQueryElement<DA, DR, DT, DE, DH, DF, DM, DC, QE>
 	>
-	PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> create(Entity<DA, DR, DT, DE, DH, DF, DM, DC> e, PersistenceContext<?> pc) {
-		PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC>(e.self(), pc, getMergeMode(), getUnificationContext());
+	PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC, QE> create(Entity<DA, DR, DT, DE, DH, DF, DM, DC> e, PersistenceContext<?> pc) {
+		PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC, QE> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC, QE>(e.self(), pc, getMergeMode(), getUnificationContext());
 		return pm;
 	}
 

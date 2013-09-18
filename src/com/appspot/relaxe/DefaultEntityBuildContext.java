@@ -6,31 +6,25 @@ package com.appspot.relaxe;
 import com.appspot.relaxe.ent.ColumnResolver;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.EntityBuildContext;
-import com.appspot.relaxe.ent.EntityQuery;
 import com.appspot.relaxe.ent.DataObject.MetaData;
+import com.appspot.relaxe.ent.EntityQueryContext;
 
 public class DefaultEntityBuildContext 
 	implements EntityBuildContext {
 
-//	private AttributeWriterFactory attributeWriterFactory;
 	private ColumnResolver columnResolver;
 	private DataObject.MetaData inputMetaData;
-	private EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> query;
+	private EntityQueryContext queryContext;
 		
 	public DefaultEntityBuildContext(
-			MetaData inputMetaData,
-			EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> query,
-			
+			MetaData inputMetaData,			
+			EntityQueryContext queryContext, 			
 			ColumnResolver columnResolver) {
 		super();
 		this.inputMetaData = inputMetaData;
-		this.query = query;		
+		this.queryContext = queryContext;			
 		this.columnResolver = columnResolver;		
 	}
-	
-//	public AttributeWriterFactory getAttributeWriterFactory() {
-//		return attributeWriterFactory;
-//	}
 	
 	@Override
 	public ColumnResolver getColumnResolver() {
@@ -43,7 +37,7 @@ public class DefaultEntityBuildContext
 	}
 	
 	@Override
-	public EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> getQuery() {
-		return query;
+	public EntityQueryContext getQueryContext() {
+		return this.queryContext;
 	}
 }

@@ -31,7 +31,6 @@ public abstract class AbstractParameter<
 	 */
 	private static final long serialVersionUID = 3615036325774581065L;
 	private String name;
-//	private int dataType;
 	private DataType columnType;
 	private Identifier columnName;
 	

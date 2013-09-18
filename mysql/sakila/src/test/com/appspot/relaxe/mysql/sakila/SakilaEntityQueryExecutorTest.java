@@ -16,23 +16,22 @@ import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityDataObject;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
-import com.appspot.relaxe.ent.EntityQueryExpressionSortKey;
+import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityQueryResult;
-import com.appspot.relaxe.ent.EntityQueryTemplate;
-import com.appspot.relaxe.ent.EntityQueryTemplateAttribute;
 import com.appspot.relaxe.ent.FetchOptions;
-import com.appspot.relaxe.ent.PredicateAttributeTemplate;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.env.mysql.MySQLImplementation;
-import com.appspot.relaxe.expr.OrderBy;
+import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.gen.sakila.ent.sakila.Film;
 import com.appspot.relaxe.gen.sakila.ent.sakila.Language;
 import com.appspot.relaxe.mysql.sakila.SakilaTestCase;
 import com.appspot.relaxe.query.QueryResult;
+import com.appspot.relaxe.rpc.IntegerHolder;
 import com.appspot.relaxe.rpc.ReferenceHolder;
+import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.types.ReferenceType;
 
 
@@ -40,15 +39,11 @@ import com.appspot.relaxe.types.ReferenceType;
 public class SakilaEntityQueryExecutorTest 
 	extends SakilaTestCase {
 	
-	private QueryResult<EntityDataObject<Film>> execute(Film.QueryTemplate template) throws Exception {
-		return execute(template, null);		
+	private QueryResult<EntityDataObject<Film>> execute(Film.Query query) throws Exception {
+		return execute(query, null);		
 	}
 	
-	private QueryResult<EntityDataObject<Film>> execute(Film.QueryTemplate template, FetchOptions opts) throws Exception {
-		return execute(template.newQuery(), opts);
-	}
-	
-	private QueryResult<EntityDataObject<Film>> execute(Film.Query q, FetchOptions opts) throws Exception {
+	private QueryResult<EntityDataObject<Film>> execute(Film.Query query, FetchOptions opts) throws Exception {
 		PersistenceContext<MySQLImplementation> pc = getPersistenceContext();
 		
 		Connection c = newConnection();
@@ -62,14 +57,14 @@ public class SakilaEntityQueryExecutorTest
 				Film.Holder, 
 				Film.Factory, 
 				Film.MetaData,
-				Film.Content,
-				Film.QueryTemplate				
+				Film.Content,				
+				Film.QueryElement				
 			> qe = createExecutor(Film.Type.TYPE.getMetaData(), pc);
 			
 			
 			// Query q = template.newQuery(limit, offset);
-			
-			EntityQueryResult<Film.Attribute, Film.Reference, Film.Type, Film, Film.Holder, Film.Factory, Film.MetaData, Film.Content, Film.QueryTemplate> er = qe.execute(q, opts, c);
+						
+			EntityQueryResult<Film.Attribute, Film.Reference, Film.Type, Film, Film.Holder, Film.Factory, Film.MetaData, Film.Content, Film.QueryElement> er = qe.execute(query, opts, c);
 			assertNotNull(er);
 			
 			DataObjectQueryResult<EntityDataObject<Film>> qr = er.getContent(); 
@@ -118,23 +113,26 @@ public class SakilaEntityQueryExecutorTest
 		F extends EntityFactory<E, H, M, F, C>,
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
 		C extends Content,
-		QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
+		QE extends EntityQueryElement<A, R, T, E, H, F, M, C, QE>
 	>
-	EntityQueryExecutor<A, R, T, E, H, F, M, C, QT> createExecutor(M meta, PersistenceContext<?> persistenceContext) {
-		return new EntityQueryExecutor<A, R, T, E, H, F, M, C, QT>(persistenceContext, getIdentityContext());
+	EntityQueryExecutor<A, R, T, E, H, F, M, C, QE> createExecutor(M meta, PersistenceContext<?> persistenceContext) {
+		return new EntityQueryExecutor<A, R, T, E, H, F, M, C, QE>(persistenceContext, getIdentityContext());
 	}
 	
 	
 	public void testExecute3() throws Exception {		
-		Film.QueryTemplate hrq = new Film.QueryTemplate(); 
+		Film.QueryElement.Builder hrq = new Film.QueryElement.Builder(); 
 		hrq.addAllAttributes();
 		
-		Language.QueryTemplate lq = new Language.QueryTemplate();
+		Language.QueryElement.Builder lq = new Language.QueryElement.Builder();
 		lq.addAllAttributes();
+		
+		Language.QueryElement le = lq.newQueryElement();
+		hrq.setQueryElement(Film.LANGUAGE, le);
+		
+		Film.Query qo = new Film.Query(hrq.newQueryElement());
 				
-		hrq.setTemplate(Film.LANGUAGE, lq);
-				
-		QueryResult<EntityDataObject<Film>> qr = execute(hrq, null);
+		QueryResult<EntityDataObject<Film>> qr = execute(qo, null);
 		
 		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
 		
@@ -156,14 +154,21 @@ public class SakilaEntityQueryExecutorTest
 	}
 
 	public void testExecute4() throws Exception {
-		Film.QueryTemplate hrq = new Film.QueryTemplate(); 
+		Film.QueryElement.Builder hrq = new Film.QueryElement.Builder(); 
 		hrq.addAllAttributes();
 				
-		Language.QueryTemplate oq = new Language.QueryTemplate();		
-		oq.remove(oq.getMetaData().attributes());					
-		hrq.setTemplate(Film.LANGUAGE, oq);
+		Language.QueryElement.Builder oq = new Language.QueryElement.Builder();
 				
-		QueryResult<EntityDataObject<Film>> qr = execute(hrq);
+//		for (Language.Attribute a : Language.Type.TYPE.getMetaData().attributes()) {
+//			oq.remove(a);	
+//		}
+		
+		Language.QueryElement le = oq.newQueryElement();
+		hrq.setQueryElement(Film.LANGUAGE, le);
+		
+		Film.Query qo = new Film.Query(hrq.newQueryElement());
+						
+		QueryResult<EntityDataObject<Film>> qr = execute(qo);
 		
 		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
 		
@@ -184,12 +189,14 @@ public class SakilaEntityQueryExecutorTest
 	}
 	
 	public void testExecute5() throws Exception {
-		Film.QueryTemplate hrq = new Film.QueryTemplate(); 
+		Film.QueryElement.Builder hrq = new Film.QueryElement.Builder(); 
 		hrq.addAllAttributes();
 							
-		hrq.setTemplate(Film.LANGUAGE, (Language.QueryTemplate) null);
+		hrq.setQueryElement(Film.LANGUAGE, (Language.QueryElement) null);
 		
-		QueryResult<EntityDataObject<Film>> qr = execute(hrq);
+		Film.Query query = new Film.Query(hrq.newQueryElement());
+		
+		QueryResult<EntityDataObject<Film>> qr = execute(query);
 		
 		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
 		
@@ -207,22 +214,22 @@ public class SakilaEntityQueryExecutorTest
 	}
 	
 	public void testExecute6() throws Exception {
-		Film.QueryTemplate hrq = new Film.QueryTemplate(); 
+		Film.QueryElement.Builder hrq = new Film.QueryElement.Builder(); 
 		hrq.addAllAttributes();
 		
-		Language.QueryTemplate jt = new Language.QueryTemplate();
+		Language.QueryElement.Builder jt = new Language.QueryElement.Builder();
 		jt.addAllAttributes();		
-		hrq.setTemplate(Film.LANGUAGE_ORIGINAL, jt);
+		hrq.setQueryElement(Film.LANGUAGE_ORIGINAL, jt.newQueryElement());
 							
 		
-		Language.QueryTemplate ot = new Language.QueryTemplate();
-		ot.remove(ot.getMetaData().attributes());
+		Language.QueryElement.Builder ot = new Language.QueryElement.Builder();
+		ot.removeAll(Language.Type.TYPE.getMetaData().attributes());
 		
-		hrq.setTemplate(Film.LANGUAGE, ot);
+		hrq.setQueryElement(Film.LANGUAGE, ot.newQueryElement());
 		
-//		Person.QueryTemplate pt = new Person.QueryTemplate();
+//		Person.QueryElement.Builder pt = new Person.QueryElement.Builder();
 //		pt.add(Person.Attribute.DATE_OF_BIRTH, Person.Attribute.LAST_NAME);
-//		ot.setTemplate(Language.FK_COMPANY_CEO, pt);
+//		ot.setQueryElement(Language.FK_COMPANY_CEO, pt);
 //		
 //		QueryResult<EntityDataObject<Film>> qr = execute(hrq);
 //		
@@ -265,15 +272,14 @@ public class SakilaEntityQueryExecutorTest
 	}
 	
 	public void testExecuteLimits() throws Exception {
-		Film.QueryTemplate hrq = new Film.QueryTemplate();
+		Film.QueryElement.Builder hrq = new Film.QueryElement.Builder();
 				
 		hrq.addAllAttributes();
 		
-		EntityQueryTemplateAttribute rd = hrq.get(Film.Attribute.LAST_UPDATE);		
-				
-		Film.Query q3 = hrq.newQuery();								
 		
-		QueryResult<EntityDataObject<Film>> qr = execute(q3, new FetchOptions(3, 3));		
+		Film.Query qo = new Film.Query(hrq.newQueryElement());
+		
+		QueryResult<EntityDataObject<Film>> qr = execute(qo, new FetchOptions(3, 3));		
 		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
 		
 		List<? extends EntityDataObject<Film>> el = qr.getContent();
@@ -282,10 +288,10 @@ public class SakilaEntityQueryExecutorTest
 		logger().debug("testExecuteQuery: size=" + el.size());		
 		assertTrue(el.size() <= 3);
 		
-		Film.Query q36 = q3.getTemplate().newQuery();
+		Film.Query q36 = new Film.Query(hrq.newQueryElement());
+				
 		qr = execute(q36, new FetchOptions(3, 6));
-		
-		
+			
 		
 		Long a = qr.getAvailable();
 		assertNotNull(a);
@@ -300,116 +306,146 @@ public class SakilaEntityQueryExecutorTest
 		logger().debug("testExecuteLimits: el=" + el);
 	}
 		
+	
 	public void testExecuteSort() throws Exception {
 		
-		Film.QueryTemplate hrq = new Film.QueryTemplate();
+		Film.QueryElement.Builder hrq = new Film.QueryElement.Builder();
 		hrq.addAllAttributes();
 		
-		Language.QueryTemplate ot = new Language.QueryTemplate();
+		Language.QueryElement.Builder ot = new Language.QueryElement.Builder();		
+		final Language.QueryElement le = ot.newQueryElement();
 
-		hrq.setTemplate(Film.LANGUAGE, ot);
-		hrq.desc(ot, Language.Attribute.NAME);
-				
-		hrq.asc(ot, Language.Attribute.LAST_UPDATE);
-		hrq.desc(Film.Attribute.LAST_UPDATE);
+		hrq.setQueryElement(Film.LANGUAGE, le);
 		
-		hrq.addSortKey(EntityQueryExpressionSortKey.<Film.Attribute>newSortKey(new OrderBy.OrdinalSortKey(1)));
-		
-		Film.Query q = hrq.newQuery();
-		
-		logger().info("testExecuteSort: q.getColumnMap()=" + q.getColumnMap());		
+		Film.Query.Builder qb = new Film.Query.Builder(hrq.newQueryElement());
+	
+		qb.desc(le, Language.NAME);
+		qb.asc(le, Language.LAST_UPDATE);
+		qb.desc(Film.LAST_UPDATE);
 						
-		String qs = q.getQueryExpression().generate();
+//		logger().info("testExecuteSort: q.getColumnMap()=" + q.getColumnMap());
+		
+		Film.Query qo = qb.newQuery();
+		
+		QueryExpression qe = toQueryExpression(qo);
+						
+		String qs = qe.generate();
 		logger().info("testExecuteSort: qs=" + qs);
 		
-		qs = qs.toLowerCase();
+		// qs = qs.toLowerCase();
 		
-		assertTrue(qs.matches(".+order +by.+1.*"));
+		assertTrue(qs.matches(".+ORDER +BY.+"));
 		
 	}
 
 	public void testNotNullPredicate() throws Exception {
-		Film.QueryTemplate ht = new Film.QueryTemplate();
+		Film.QueryElement.Builder ht = new Film.QueryElement.Builder();
 		ht.addAllAttributes();
-		
-		PredicateAttributeTemplate<Film.Attribute> p = 
-			PredicateAttributeTemplate.eq(Film.Attribute.FILM_ID, (Integer) null);
-		
-		ht.addPredicate(p);
-		
-		Language.QueryTemplate ot = new Language.QueryTemplate();
 
-		ht.setTemplate(Film.LANGUAGE, ot);
-		ht.desc(ot, Language.Attribute.NAME);				
+		Language.QueryElement.Builder ot = new Language.QueryElement.Builder();		
+		Language.QueryElement le = ot.newQueryElement();
+
+		ht.setQueryElement(Film.LANGUAGE, le);
+				
+//		PredicateAttributeTemplate<Film.Attribute> p = 
+//		PredicateAttributeTemplate.eq(Film.Attribute.FILM_ID, (Integer) null);
+	
+//	ht.addPredicate(p);
+		Film.QueryElement root = ht.newQueryElement();
 		
-		Film.Query q = ht.newQuery();
+		Film.Query.Builder b = new Film.Query.Builder(root);
 		
-		QueryResult<EntityDataObject<Film>> qr = execute(q, null);
+		b.desc(le, Language.NAME);		
+		b.addPredicate(root.newNull(Film.FILM_ID));
+				
+		Film.Query qo = b.newQuery();
+				
+		QueryResult<EntityDataObject<Film>> qr = execute(qo, null);
 		assertNotNull(qr);
 		assertEquals(0, qr.size());
 		
 	}
 	
 	
-	public void testNullPredicate() throws Exception {
-		PredicateAttributeTemplate<Film.Attribute> p = PredicateAttributeTemplate.eq(Film.Attribute.FILM_ID, (Integer) null);
-		QueryResult<EntityDataObject<Film>> qr = executeWithPredicate(p);
-		assertNotNull(qr);
-		assertEquals(0, qr.size());
-	}
+//	public void testNullPredicate() throws Exception {
+//				
+//		Film.Query.Builder qb = newQueryBuilder();
+//		
+//		qb.addPredicate(Film.FILM_ID, IntegerHolder.NULL_HOLDER);
+//		
+//		Film.Query qo = qb.newQuery();
+//
+//		
+//		QueryResult<EntityDataObject<Film>> qr = executeWithPredicate(p);
+//		assertNotNull(qr);
+//		assertEquals(0, qr.size());
+//	}
 	
 	public void testIntPredicate() throws Exception {
-		PredicateAttributeTemplate<Film.Attribute> p = 
-			PredicateAttributeTemplate.eq(Film.Attribute.FILM_ID, Integer.valueOf(30));
 		
-		QueryResult<EntityDataObject<Film>> qr = executeWithPredicate(p);
-		assertNotNull(qr);
-		assertEquals(1, qr.size());
+		Film.Query.Builder qb = newQueryBuilder();
+		
+		Film.QueryElement re = qb.getRootElement();
+		
+		qb.addPredicate(re.newEquals(Film.FILM_ID, IntegerHolder.valueOf(30)));
+//		PredicateAttributeTemplate<Film.Attribute> p = 
+//			PredicateAttributeTemplate.eq(Film.Attribute.FILM_ID, Integer.valueOf(30));
+//		
+//		QueryResult<EntityDataObject<Film>> qr = executeWithPredicate(p);
+//		assertNotNull(qr);
+//		assertEquals(1, qr.size());
 	}
 	
 	
 	public void testStringPredicate() throws Exception {
-		PredicateAttributeTemplate<Film.Attribute> p = 
-			PredicateAttributeTemplate.eq(Film.Attribute.TITLE, "BASIC EASY");
+//		PredicateAttributeTemplate<Film.Attribute> p = 
+//			PredicateAttributeTemplate.eq(Film.Attribute.TITLE, "BASIC EASY");
 		
-		QueryResult<EntityDataObject<Film>> qr = executeWithPredicate(p);
+		Film.Query.Builder qb = newQueryBuilder();
+		Film.QueryElement re = qb.getRootElement();
+		qb.addPredicate(re.newEquals(Film.TITLE, VarcharHolder.valueOf("BASIC EASY")));
+		
+		Film.Query qo = qb.newQuery();
+		
+		QueryResult<EntityDataObject<Film>> qr = execute(qo, null);
 		assertNotNull(qr);
 		assertEquals(1, qr.size());
 	}
 	
-	public QueryResult<EntityDataObject<Film>> executeWithPredicate(PredicateAttributeTemplate<Film.Attribute> p) throws Exception {
-		Film.QueryTemplate ht = new Film.QueryTemplate();
+	public Film.Query.Builder newQueryBuilder() throws Exception {
+		Film.QueryElement.Builder ht = new Film.QueryElement.Builder();
 		ht.addAllAttributes();
-		
-		ht.addPredicate(p);
-		
-		Language.QueryTemplate ot = new Language.QueryTemplate();
+					
+		Language.QueryElement.Builder ot = new Language.QueryElement.Builder();		
+		Language.QueryElement le = ot.newQueryElement();
 
-		ht.setTemplate(Film.LANGUAGE, ot);
-		ht.desc(ot, Language.Attribute.NAME);				
+		ht.setQueryElement(Film.LANGUAGE, le);
 		
-		Film.Query q = ht.newQuery();
+		Film.QueryElement q = ht.newQueryElement();
 		
-		QueryResult<EntityDataObject<Film>> qr = execute(q, null);
-		assertNotNull(qr);
-		return qr;
-		
+		Film.Query.Builder qb = new Film.Query.Builder(q);
+		return qb;
 	}
 
 	
 	public void testSharedReferenceQuery1() throws Exception {		
-		Film.QueryTemplate hrq = new Film.QueryTemplate(); 
+		Film.QueryElement.Builder hrq = new Film.QueryElement.Builder(); 
 		hrq.addAllAttributes();
 		
-		Language.QueryTemplate lq = new Language.QueryTemplate();
+		Language.QueryElement.Builder lq = new Language.QueryElement.Builder();
 		lq.addAllAttributes();
+		
+		Language.QueryElement le = lq.newQueryElement();
 				
-		hrq.setTemplate(Film.LANGUAGE, lq);		
-		hrq.setTemplate(Film.LANGUAGE_ORIGINAL, lq);
-						
-		lq.addPredicate(PredicateAttributeTemplate.isNotNull(Language.LANGUAGE_ID));
-						
-		QueryResult<EntityDataObject<Film>> qr = execute(hrq, null);
+		hrq.setQueryElement(Film.LANGUAGE, le);		
+		hrq.setQueryElement(Film.LANGUAGE_ORIGINAL, le);
+		
+		Film.Query.Builder qb = new Film.Query.Builder(hrq.newQueryElement());
+								
+		qb.addPredicate(le.newNotNull(Language.LANGUAGE_ID));
+		
+		Film.Query qo = qb.newQuery();								
+		QueryResult<EntityDataObject<Film>> qr = execute(qo, null);
 		
 		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
 		
@@ -443,16 +479,20 @@ public class SakilaEntityQueryExecutorTest
 	
 	
 	public void testSharedReferenceQuery2() throws Exception {		
-		Film.QueryTemplate hrq = new Film.QueryTemplate(); 
+		Film.QueryElement.Builder hrq = new Film.QueryElement.Builder(); 
 		hrq.addAllAttributes();
 		
-		Language.QueryTemplate lq = new Language.QueryTemplate();
+		Language.QueryElement.Builder lq = new Language.QueryElement.Builder();
 		lq.addAllAttributes();
+		
+		Language.QueryElement le = lq.newQueryElement();
 				
-		hrq.setTemplate(Film.LANGUAGE, lq);		
-		hrq.setTemplate(Film.LANGUAGE_ORIGINAL, lq);
+		hrq.setQueryElement(Film.LANGUAGE, le);		
+		hrq.setQueryElement(Film.LANGUAGE_ORIGINAL, le);
+		
+		Film.Query qo = new Film.Query(hrq.newQueryElement());
 								
-		QueryResult<EntityDataObject<Film>> qr = execute(hrq, null);
+		QueryResult<EntityDataObject<Film>> qr = execute(qo, null);
 		
 		logger().debug("testExecuteQuery: qr.getElapsed()=" + qr.getElapsed());
 		
@@ -483,6 +523,9 @@ public class SakilaEntityQueryExecutorTest
 			assertNotNull(e);			
 		}
 	}
+	
+	
+	
 		
 	private UnificationContext getIdentityContext(){
 		return new SimpleUnificationContext();

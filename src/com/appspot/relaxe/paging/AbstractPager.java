@@ -426,11 +426,6 @@ public abstract class AbstractPager<
 		this.query = query;
 	}
 	
-	private void setReceiver(FetchResultReceiver receiver) {
-		this.receiver = receiver;
-	}
-	
-	
 	private abstract class FetchResultReceiver 
 		implements PageReceiver<R> {
 		

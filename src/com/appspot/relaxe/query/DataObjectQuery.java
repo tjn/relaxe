@@ -25,7 +25,7 @@ public class DataObjectQuery
 	 */
 	private static final long serialVersionUID = -8519860791435742037L;
 	
-	private transient DefaultTableExpression tableExpression;
+	private transient DefaultTableExpression queryExpression;
 	private Table table;
 		
 	/**
@@ -38,8 +38,10 @@ public class DataObjectQuery
 		this.table = table;
 	}
 
-	public QueryExpression getTableExpression() {
-		if (tableExpression == null) {
+
+	@Override
+	public QueryExpression getQueryExpression() throws QueryException {
+		if (queryExpression == null) {
 			TableReference tr = new TableReference(table);
 			From f = new From(tr);		
 			Select s = new Select();
@@ -52,14 +54,9 @@ public class DataObjectQuery
 					
 			DefaultTableExpression e = new DefaultTableExpression(s, f);
 			
-			this.tableExpression = e;
+			this.queryExpression = e;
 		}
 		
-		return this.tableExpression;
-	}
-
-	@Override
-	public QueryExpression getQueryExpression() throws QueryException {
-		return getTableExpression();
+		return this.queryExpression;
 	}	
 }

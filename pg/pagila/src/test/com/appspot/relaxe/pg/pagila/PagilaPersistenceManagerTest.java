@@ -43,7 +43,7 @@ public class PagilaPersistenceManagerTest
 	    ac.setFirstName("Dana");
 	    ac.setLastName("Brooks");
 	
-	    PersistenceManager<Actor.Attribute, Reference, Type, Actor, Holder, Factory, MetaData, Actor.Content> pm = create(a);
+	    PersistenceManager<Actor.Attribute, Reference, Type, Actor, Holder, Factory, MetaData, Actor.Content, Actor.QueryElement> pm = create(a);
 	    
 	    pm.merge(c);
 	    c.commit();        
@@ -74,12 +74,12 @@ public class PagilaPersistenceManagerTest
 	    	    
 	    Language lang = newEntity(Language.Type.TYPE);
 	    lang.getContent().setName("English");	    	    
-	    f.setLanguage(Film.LANGUAGE_ID_FKEY, lang.ref());
+	    f.setLanguage(Film.LANGUAGE, lang.ref());
 	    
 	    FilmActor filmActor = newEntity(FilmActor.Type.TYPE);
 	    
-	    filmActor.setActor(FilmActor.ACTOR_ID_FKEY, a.ref());
-	    filmActor.setFilm(FilmActor.FILM_ID_FKEY, f.ref());
+	    filmActor.setActor(FilmActor.ACTOR, a.ref());
+	    filmActor.setFilm(FilmActor.FILM, f.ref());
 	    	    	    
 	    merge(filmActor, getPersistenceContext(), c);
 	    c.commit();    

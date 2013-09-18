@@ -32,6 +32,10 @@ public class Comparison
 		private Op(Symbol symbol) {
 			this.symbol = symbol;			
 		}
+		
+		public Comparison newComparison(ValueExpression a, ValueExpression b) {
+			return new Comparison(this, a, b);
+		}
 	}
 	
 	/**

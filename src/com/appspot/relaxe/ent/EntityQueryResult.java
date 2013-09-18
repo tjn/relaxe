@@ -17,9 +17,9 @@ public interface EntityQueryResult<
 	F extends EntityFactory<E, H, M, F, C>,
 	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
 	C extends Content,
-	QT extends EntityQueryTemplate<A, R, T, E, H, F, M, C, QT>
+	RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>
 >
-	extends Response<EntityQuery<A, R, T, E, H, F, M, C, QT>>, ResultPage, HasDataObjectQueryResult<EntityDataObject<E>>
+	extends Response<EntityQuery<A, R, T, E, H, F, M, C, RE>>, ResultPage, HasDataObjectQueryResult<EntityDataObject<E>>
 {
 	DataObjectQueryResult<EntityDataObject<E>> getContent();
 }

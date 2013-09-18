@@ -10,7 +10,7 @@ public class AllTests {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite(
-				"Test for com.appspot.relaxe.meta.impl.pg.pagila");
+				"Test for com.appspot.relaxe.pg.pagila");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(PagilaDataAccessSessionTest.class);
 		suite.addTestSuite(PagilaDefaultEntityQueryTest.class);

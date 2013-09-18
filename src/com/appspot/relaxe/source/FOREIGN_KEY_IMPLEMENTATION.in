@@ -1,0 +1,34 @@
+
+	private static class {{table-interface}}ForeignKeyMap
+		extends com.appspot.relaxe.meta.AbstractSchemaElementMap<ForeignKey> {
+		
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		private {{table-interface}}ForeignKeyMap() {		
+		}
+		
+		private {{table-interface}}ForeignKeyMap(com.appspot.relaxe.meta.Environment environment, java.util.Map<com.appspot.relaxe.expr.Identifier, ForeignKey> content) {
+			super(environment, content);
+		}
+	}
+	
+	private static class {{table-interface}}ForeignKey
+		extends com.appspot.relaxe.ent.EntityTableForeignKey {
+		
+		private static final long serialVersionUID = -621396725083384123L;
+
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		private {{table-interface}}ForeignKey() {			
+		}
+		
+		private {{table-interface}}ForeignKey(BaseTable table, com.appspot.relaxe.expr.Identifier name,
+				ColumnMap columnMap, java.util.Map<com.appspot.relaxe.expr.Identifier, com.appspot.relaxe.expr.Identifier> columnPairMap,
+				com.appspot.relaxe.types.ReferenceType<?, ?, ?, ?, ?, ?, ?, ?> type) {
+			super(table, name, columnMap, columnPairMap, type);		
+		}
+	}

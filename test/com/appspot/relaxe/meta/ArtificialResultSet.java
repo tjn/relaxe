@@ -212,13 +212,12 @@ public class ArtificialResultSet
 
     @Override
     public boolean getBoolean(int arg0) throws SQLException {        
-        return false;
+    	throw notImplemented();
     }
 
     @Override
     public boolean getBoolean(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return false;
+    	throw notImplemented();
     }
 
     @Override
@@ -239,68 +238,57 @@ public class ArtificialResultSet
 
     @Override
     public byte[] getBytes(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public Reader getCharacterStream(int arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public Reader getCharacterStream(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();    
     }
 
     @Override
     public Clob getClob(int arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();    
     }
 
     @Override
     public Clob getClob(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public int getConcurrency() throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
+    	throw notImplemented();
     }
 
     @Override
     public String getCursorName() throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public Date getDate(int arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public Date getDate(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public Date getDate(int arg0, Calendar arg1) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public Date getDate(String arg0, Calendar arg1) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
@@ -311,19 +299,16 @@ public class ArtificialResultSet
 
     @Override
     public double getDouble(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
+    	throw notImplemented();
     }
 
     @Override
     public int getFetchDirection() throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
+    	return ResultSet.FETCH_FORWARD;
     }
 
     @Override
     public int getFetchSize() throws SQLException {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -335,14 +320,12 @@ public class ArtificialResultSet
 
     @Override
     public float getFloat(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
+    	throw notImplemented();
     }
 
     @Override
     public int getHoldability() throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
+        return ResultSet.CLOSE_CURSORS_AT_COMMIT;
     }
 
     @Override
@@ -352,9 +335,8 @@ public class ArtificialResultSet
     }
 
     @Override
-    public int getInt(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
+    public int getInt(String col) throws SQLException {
+    	throw notImplemented();
     }
 
     @Override
@@ -365,8 +347,7 @@ public class ArtificialResultSet
 
     @Override
     public long getLong(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
+    	throw notImplemented();
     }
 
     @Override
@@ -433,8 +414,7 @@ public class ArtificialResultSet
 
     @Override
     public Ref getRef(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
@@ -449,8 +429,7 @@ public class ArtificialResultSet
 
     @Override
     public RowId getRowId(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
@@ -477,8 +456,7 @@ public class ArtificialResultSet
 
     @Override
     public Statement getStatement() throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw notImplemented();
     }
 
     @Override
@@ -495,99 +473,83 @@ public class ArtificialResultSet
 
     @Override
     public Time getTime(int arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public Time getTime(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public Time getTime(int arg0, Calendar arg1) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public Time getTime(String arg0, Calendar arg1) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public Timestamp getTimestamp(int arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public Timestamp getTimestamp(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public Timestamp getTimestamp(int arg0, Calendar arg1) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public Timestamp getTimestamp(String arg0, Calendar arg1)
             throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public int getType() throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
+        return ResultSet.TYPE_FORWARD_ONLY;
     }
 
     @Override
     public URL getURL(int arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public URL getURL(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public InputStream getUnicodeStream(int arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public InputStream getUnicodeStream(String arg0) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public SQLWarning getWarnings() throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw notImplemented();
     }
 
     @Override
     public void insertRow() throws SQLException {
-        // TODO Auto-generated method stub
-
+    	throw notImplemented();
     }
 
     @Override
     public boolean isAfterLast() throws SQLException {
-        // TODO Auto-generated method stub
-        return false;
+    	return position >= this.rowCount; 
     }
 
     @Override
@@ -607,14 +569,13 @@ public class ArtificialResultSet
 
     @Override
     public boolean isLast() throws SQLException {
-        // TODO Auto-generated method stub
-        return false;
+    	return this.position == (this.rowCount - 1);
     }
 
     @Override
     public boolean last() throws SQLException {
-        // TODO Auto-generated method stub
-        return false;
+    	this.position = (this.rowCount - 1);
+    	return true;
     }
 
     @Override

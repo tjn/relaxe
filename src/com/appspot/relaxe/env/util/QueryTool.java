@@ -355,8 +355,4 @@ public class QueryTool {
 	public static Logger logger() {
 		return QueryTool.logger;
 	}
-	
-	private static String arg(String[] args, int index) {
-		return index < args.length ? args[index] : null;
-	}
 }

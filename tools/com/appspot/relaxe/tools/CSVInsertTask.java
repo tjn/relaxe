@@ -96,7 +96,7 @@ class CSVInsertTask
             }        
     
             final int expectedColumnCount = line.length;
-            int recno = 0;        
+//            int recno = 0;        
             
             ValueRow vr = new ValueRow();
             InsertStatement ins = new InsertStatement(table, names, vr);
@@ -108,7 +108,7 @@ class CSVInsertTask
             AssignmentVisitor pa = null;
                                     
             while ((line = p.getLine()) != null) {
-                recno++;
+//                recno++;
                 final int cols = line.length;
                 int lineno = p.getLineNumber();
                 
