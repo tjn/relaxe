@@ -47,8 +47,6 @@ public interface EntityQueryElement<
 		
 	Collection<EntityQueryPredicate> predicates();
 		
-	// EntityQueryElementTemplate<?, ?, ?, ?, ?, ?, ?, ?, ?, ?> getTemplate(EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> k);
-	
 	public EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> k);
 	
 	

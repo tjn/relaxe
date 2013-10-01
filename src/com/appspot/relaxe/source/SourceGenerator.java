@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -128,6 +129,7 @@ public class SourceGenerator {
 		QUERY_ELEMENT_NEW_BUILDER_BODY,
 		QUERY_ELEMENT_DEFAULT_CONSTRUCTOR_BODY,
 		QUERY_ELEMENT_BUILDER_DEFAULT_CONSTRUCTOR_BODY,
+		PER_TYPE_QUERY_ELEMENT_GETTER_LIST,
 		
 		IMPLEMENTED_HAS_KEY_LIST,
 		
@@ -1490,6 +1492,12 @@ public class SourceGenerator {
             // same content can applied for Builder, too
             src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_BUILDER_DEFAULT_CONSTRUCTOR_BODY, code);
         }
+        
+        
+        {
+            String code = perTypeQueryElementGetterList(cat, t, tm, tym, false);
+            src = replaceAllWithComment(src, Tag.PER_TYPE_QUERY_ELEMENT_GETTER_LIST, code);
+        }
 
         
         {
@@ -1714,6 +1722,80 @@ public class SourceGenerator {
     	}
     	
 		return buf.toString();
+	}
+    
+    private String perTypeQueryElementGetterList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, boolean b) {
+    	
+    	Collection<ForeignKey> fks = t.foreignKeys().values();
+    	
+    	if (fks.isEmpty()) {
+    		return "";
+    	}
+    	
+    	StringBuilder buf = new StringBuilder();
+    	
+    	Map<BaseTable, List<ForeignKey>> groups = group(fks);
+    	
+    	for (Map.Entry<BaseTable, List<ForeignKey>> e : groups.entrySet()) {
+    		BaseTable ref = e.getKey();
+    		List<ForeignKey> keys = e.getValue();
+    		String src = perTypeQueryElementGetter(t, ref, keys, tm);
+    		line(buf, src);
+		}    	
+    	
+		return buf.toString();
+	}
+
+	private String perTypeQueryElementGetter(BaseTable t, BaseTable ref, List<ForeignKey> keys, TableMapper tm) {
+
+		StringBuilder buf = new StringBuilder();
+		
+		JavaType itf = tm.entityType(t, Part.INTERFACE);
+				
+		JavaType type = tm.entityType(ref, Part.INTERFACE);
+		
+		String qn = type.getQualifiedName();
+		
+		line(buf, "public ", qn, ".QueryElement getQueryElement(", qn, ".Key<Attribute, Reference, Type, ", itf.getUnqualifiedName(), ", Holder, Factory, MetaData, Content> key) {");
+				
+		line(buf, "if (key == null) {");
+		line(buf, "throw new java.lang.NullPointerException(\"key\");");
+		line(buf, "}");
+		
+		line(buf, "switch (key.name()) {");
+		
+		for (ForeignKey fk : keys) {			
+			line(buf, "case ", referenceName(fk), ":");
+			line(buf, "return (", qn, ".QueryElement) this.", queryElementVariableName(fk), ";");			
+		}
+		
+		line(buf, "default: ");
+		line(buf, "break;");
+		line(buf, "}");
+		
+		line(buf, "return null;");		
+		
+		line(buf, "}", 2);		
+		
+		return buf.toString();
+	}
+
+	protected Map<BaseTable, List<ForeignKey>> group(Collection<ForeignKey> fks) {
+		Map<BaseTable, List<ForeignKey>> grouped = new HashMap<BaseTable, List<ForeignKey>>();
+    	
+    	for (ForeignKey fk : fks) {
+    		BaseTable ref = fk.getReferenced();
+    		List<ForeignKey> elems = grouped.get(ref);
+    		
+    		if (elems == null) {
+    			elems = new LinkedList<ForeignKey>();
+    			grouped.put(ref, elems);
+    		}
+    		
+    		elems.add(fk);
+		}
+    	
+    	return grouped;
 	}    
 
 	private String implementedHasKeyList(BaseTable t, TableMapper tm) {    	    	
@@ -2060,12 +2142,9 @@ public class SourceGenerator {
 			throw new NullPointerException("argument");
 		}		
 		
-		buf.append("if (");
-		buf.append(argument);
-		buf.append(" == null) {");
+		line(buf, "if (", argument, " == null) {");
 		buf.append("throw new java.lang.NullPointerException(\"");
-		
-		
+				
 		if (className != null) {
 			buf.append(className);
 			buf.append(".");
@@ -2076,9 +2155,9 @@ public class SourceGenerator {
 			buf.append(": ");	
 		}		
 				
-		buf.append(argument);
-		buf.append("\");\n");				
-		buf.append("}\n");
+		buf.append(argument);				
+		buf.append("\");\n");			
+		line(buf, "}");		
 	}
 
 	private String columnName(BaseTable t, Column c) {
