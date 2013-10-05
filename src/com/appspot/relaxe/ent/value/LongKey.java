@@ -5,7 +5,6 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.ent.HasKey;
 import com.appspot.relaxe.rpc.LongHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.LongType;
@@ -35,7 +34,7 @@ public final class LongKey<
 	
 	public static <
 		X extends Attribute,
-		T extends HasLong<X, T> & HasKey<LongType, LongKey<X, T>, T>
+		T extends HasLong<X, T>
 	>
 	LongKey<X, T> get(HasLongKey<X, T> meta, X a) {
 		LongKey<X, T> k = meta.getLongKey(a);
@@ -43,7 +42,7 @@ public final class LongKey<
 		if (k == null) {
 			PrimitiveType<?> t = a.type();
 			
-			if (t != null && t.getSqlType() == PrimitiveType.INTEGER) {
+			if (t != null && t.getSqlType() == PrimitiveType.BIGINT) {
 				k = new LongKey<X, T>(meta, a);
 			}			
 		}
