@@ -73,7 +73,7 @@ public class TableReference
 	}
 
 	@Override
-	public void addAll(ElementList<SelectListElement> dest) {
+	public void addAll(List<SelectListElement> dest) {
 		for (Column	c : getTable().columnMap().values()) {
 			dest.add(new ColumnReference(this, c));
 		}

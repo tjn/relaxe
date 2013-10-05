@@ -111,8 +111,11 @@ public class Features
 
         private CreateTable createFeaturesTable(Catalog cat, Identifier sn, Identifier tn) {
             // using catalog name as a qualifier would be too stiff, right?                
-            SchemaElementName sen = new SchemaElementName(null, sn, tn);                            
-            TableDesign td = new TableDesign(cat.getEnvironment(), new CreateTable(sen));  
+            SchemaElementName sen = new SchemaElementName(null, sn, tn);   
+                        
+         // TODO : replace TableDesign by CreateTable.Builder
+            TableDesign td = new TableDesign(cat.getEnvironment(), sen);  
+            // new TableDesign(cat.getEnvironment(), new CreateTable(sen));  
             
 //              Maybe we should add a flag to column definition to mark 
 //              autoincrement column and inspect that later?
@@ -121,13 +124,14 @@ public class Features
             td.integer("VERSION_MAJOR");
             td.integer("VERSION_MINOR");
                         
-            return td.getTable();
+            return td.newCreateTable();
         }
         
         private CreateTable createDependenciesTable(Catalog cat, Identifier sn, Identifier tn, Identifier features) {
             // using catalog name as a qualifier would be too stiff, right?                
-            SchemaElementName sen = new SchemaElementName(null, sn, tn);                            
-            TableDesign td = new TableDesign(cat.getEnvironment(), new CreateTable(sen));  
+            SchemaElementName sen = new SchemaElementName(null, sn, tn);
+         // TODO : replace TableDesign by CreateTable.Builder
+            TableDesign td = new TableDesign(cat.getEnvironment(), sen);  
                                     
             String dependent = "DEPENDENT";
             String dependency = "DEPENDENCY";
@@ -141,7 +145,7 @@ public class Features
             
             td.primaryKey();
                         
-            return td.getTable();
+            return td.newCreateTable();
         }        
 
         @Override

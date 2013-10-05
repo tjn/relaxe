@@ -20,5 +20,6 @@ public interface Parameter<
 	H getValue();
 	DataType getColumnType();
 	
+	boolean isMutable();
 
 }

@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,7 +47,7 @@ import com.appspot.relaxe.expr.SQLSyntax;
 import com.appspot.relaxe.expr.TableReference;
 import com.appspot.relaxe.expr.UpdateStatement;
 import com.appspot.relaxe.expr.ValueExpression;
-import com.appspot.relaxe.expr.ValueParameter;
+import com.appspot.relaxe.expr.ImmutableValueParameter;
 import com.appspot.relaxe.expr.ValueRow;
 import com.appspot.relaxe.expr.ValuesListElement;
 import com.appspot.relaxe.expr.op.AndPredicate;
@@ -190,7 +191,8 @@ public class PersistenceManager<
         E pe = getTarget();
         
         logger().debug("createInsertStatement: pe=" + pe);        
-    	ValueRow newRow = new ValueRow();
+    	// ValueRow newRow = new ValueRow();
+    	List<ValuesListElement> values = new ArrayList<ValuesListElement>();
 
     	final M meta = pe.getMetaData();
     	BaseTable t = meta.getBaseTable();
@@ -199,7 +201,8 @@ public class PersistenceManager<
     	// Collection<Column> pks = meta.getBaseTable().getPrimaryKey().getColumnMap().values();
     	Set<Identifier> pks = meta.getBaseTable().getPrimaryKey().getColumnMap().keySet();
     	    	
-    	ElementList<Identifier> names = new ElementList<Identifier>();
+    	// ElementList<Identifier> names = new ElementList<Identifier>();
+    	List<Identifier> names = new ArrayList<Identifier>();
     	
 
     	for (A a : meta.attributes()) {
@@ -209,7 +212,7 @@ public class PersistenceManager<
     		PrimitiveHolder<?, ?, ?> holder = pe.value(a);
     		
     		if (holder == null) {
-    			newRow.add(new Default(col));
+    			values.add(new Default(col));
     			names.add(col.getColumnName());
     			continue;
     		}
@@ -222,13 +225,13 @@ public class PersistenceManager<
 //    		does not currently work so well for LiteralColumns:
     		    		
     		if (holder.isNull() && pks.contains(col.getColumnName())) {
-    			newRow.add(new Default(col));
+    			values.add(new Default(col));
     			names.add(col.getColumnName());
     			continue;    			
     		}
     		    		
     		ValuesListElement elem = createValuesListElement(col, holder);
-            newRow.add(elem);
+    		values.add(elem);
     		names.add(col.getColumnName());
     	}
 
@@ -250,7 +253,7 @@ public class PersistenceManager<
                 	PrimitiveHolder<?, ?, ?> nh = AbstractPrimitiveType.nullHolder(c.getDataType().getDataType());
                 	
                 	ValuesListElement p = newValuesListElement(c, nh.self());                	
-                    newRow.add(p);
+                	values.add(p);
                     names.add(c.getColumnName());
                 }
             }
@@ -259,15 +262,18 @@ public class PersistenceManager<
             		Column fc = fk.getReferenced(c);
                     PrimitiveHolder<?, ?, ?> o = ref.get(fc);
                     ValuesListElement p = newValuesListElement(c, o.self());
-                    newRow.add(p);
+                    values.add(p);
                     names.add(c.getColumnName());            		
             	}
             }
         }
     	
+    	
+    	ValueRow newRow = new ValueRow(values);
+    	
     	logger().debug("createInsertStatement: has-names=" + (!names.isEmpty()));
 
-    	return new InsertStatement(t, names, newRow);
+    	return new InsertStatement(t, new ElementList<Identifier>(names), newRow);
     }
 	
 	private	ValuesListElement createValuesListElement(Column col, PrimitiveHolder<?, ?, ?> holder) {
@@ -279,8 +285,8 @@ public class PersistenceManager<
 		PT extends PrimitiveType<PT>,
 		PH extends PrimitiveHolder<PV, PT, PH>
 	>
-	ValueParameter<PV, PT, PH> newValuesListElement(Column col, PrimitiveHolder<PV, PT, PH> holder) {		
-		return new ValueParameter<PV, PT, PH>(col, holder.self());
+	ImmutableValueParameter<PV, PT, PH> newValuesListElement(Column col, PrimitiveHolder<PV, PT, PH> holder) {		
+		return new ImmutableValueParameter<PV, PT, PH>(col, holder.self());
 	}
 	
 	private	ValueExpression createValueExpression(Column col, PrimitiveHolder<?, ?, ?> holder) {				
@@ -293,7 +299,7 @@ public class PersistenceManager<
 		PH extends PrimitiveHolder<V, P, PH>
 	>
 	ValueExpression newValueExpression(Column col, PrimitiveHolder<V, P, PH> holder) {				
-		return new ValueParameter<V, P, PH>(col, holder.self());
+		return new ImmutableValueParameter<V, P, PH>(col, holder.self());
 	}	
 
     public UpdateStatement createUpdateStatement() throws EntityException {
@@ -309,7 +315,8 @@ public class PersistenceManager<
    	
     	Predicate pkp = getPKPredicate(tref, pe);
 
-    	ElementList<Assignment> assignments = new ElementList<Assignment>();
+    	// ElementList<Assignment> assignments = new ElementList<Assignment>();
+    	List<Assignment> al = new ArrayList<Assignment>();
 
     	for (A a : meta.attributes()) {
     		Column col = meta.getColumn(a);
@@ -317,7 +324,7 @@ public class PersistenceManager<
     		
     		if (ph != null) {    		    		    		
 	    		ValueExpression vp = createValueExpression(col, ph.self());    		
-	    		assignments.add(new Assignment(col.getColumnName(), vp));
+	    		al.add(new Assignment(col.getColumnName(), vp));
     		}
     	}
     	
@@ -336,10 +343,10 @@ public class PersistenceManager<
 				a = new Assignment(column.getColumnName(), null);
 			}
 			
-			assignments.add(a);    	
+			al.add(a);    	
     	}    	
-
-    	return new UpdateStatement(tref, assignments, pkp);
+    	    	
+    	return new UpdateStatement(tref, new ElementList<Assignment>(al), pkp);
     }
 
     private 

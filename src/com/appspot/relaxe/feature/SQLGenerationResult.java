@@ -3,28 +3,28 @@
  */
 package com.appspot.relaxe.feature;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.appspot.relaxe.expr.ElementList;
 import com.appspot.relaxe.expr.Statement;
 
 
 public class SQLGenerationResult {
 
-    private ElementList<Statement> statementList;    
+    private List<Statement> statementList;    
     
     public void add(Statement s) {
         getStatementList().add(s);        
     }
         
     public List<Statement> changes() {
-        return Collections.unmodifiableList(getStatementList().getContent());
+        return Collections.unmodifiableList(getStatementList());
     }
 
-    private ElementList<Statement> getStatementList() {
+    private List<Statement> getStatementList() {
         if (statementList == null) {
-            statementList = new ElementList<Statement>();            
+            statementList = new ArrayList<Statement>();            
         }
 
         return statementList;
@@ -35,7 +35,7 @@ public class SQLGenerationResult {
             return Collections.emptyList();
         }
         
-        return Collections.unmodifiableList(statementList.getContent());        
+        return Collections.unmodifiableList(statementList);        
     }
     
 }

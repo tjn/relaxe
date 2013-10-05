@@ -32,11 +32,8 @@ public class UpdateStatement
 		}		
 		
 		this.target = tref;
-		this.assignmentClause = assignmentClause;
-		
-		if (p != null) {
-			getWhere().setSearchCondition(p);
-		}
+		this.assignmentClause = assignmentClause;		
+		this.where = (p == null) ? null : new Where(p);
 	}	
 	
 	@Override
@@ -46,11 +43,9 @@ public class UpdateStatement
 		SQLKeyword.SET.traverse(vc, v);
 		this.assignmentClause.traverse(vc, v);
 		
-		final Where w = this.where;
-				
-		if (w != null && w.getContent() != null) {
-			w.traverse(vc, v);
-		}
+		if (getWhere() != null) {
+			getWhere().traverse(vc, v);
+		}		
 	}
 
 	public TableReference getTarget() {
@@ -67,10 +62,6 @@ public class UpdateStatement
 
 	
 	public Where getWhere() {
-		if (this.where == null) {
-			this.where = new Where();			
-		}
-
 		return this.where;
 	}
 }

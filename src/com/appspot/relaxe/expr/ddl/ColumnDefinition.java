@@ -19,8 +19,7 @@ public class ColumnDefinition
 	private static final long serialVersionUID = -1225762403113588730L;
 	private Identifier name;
     private ColumnDataType dataType;
-    private ElementList<ColumnConstraint> constraintList;
-    
+    private ElementList<ColumnConstraint> constraintList;    
     private DefaultDefinition defaultDefinition;
     
     /**
@@ -30,10 +29,10 @@ public class ColumnDefinition
 	}
     
     public ColumnDefinition(Identifier name, ColumnDataType dataType) {
-        this(name, dataType, null);
+        this(name, dataType, null, null);
     }
     
-    public ColumnDefinition(Identifier name, ColumnDataType dataType, DefaultDefinition defaultDefinition) {
+    public ColumnDefinition(Identifier name, ColumnDataType dataType, DefaultDefinition defaultDefinition, ElementList<ColumnConstraint> constraintList) {
         super();
         
         if (name == null) {
@@ -47,6 +46,7 @@ public class ColumnDefinition
         this.name = name;
         this.dataType = dataType;
         this.defaultDefinition = defaultDefinition;
+        this.constraintList = constraintList;
     }
     
     
@@ -60,10 +60,6 @@ public class ColumnDefinition
     }
 
     public ElementList<ColumnConstraint> getConstraintList() {
-        if (constraintList == null) {
-            constraintList = new ElementList<ColumnConstraint>();
-        }
-
         return constraintList;
     }    
 

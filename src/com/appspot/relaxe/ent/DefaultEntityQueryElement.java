@@ -16,7 +16,7 @@ import com.appspot.relaxe.ent.query.EntityQueryValueExpression;
 import com.appspot.relaxe.ent.query.EntityQueryValueReference;
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.ent.value.PrimitiveKey;
-import com.appspot.relaxe.expr.ValueParameter;
+import com.appspot.relaxe.expr.ImmutableValueParameter;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.expr.op.Comparison.Op;
 import com.appspot.relaxe.log.DefaultLogger;
@@ -180,7 +180,7 @@ public abstract class DefaultEntityQueryElement<
 	EntityQueryPredicate newPredicate(K key, Op op, XH value) {				
 		M meta = getMetaData();
 		Column column = meta.getColumn(key.name());
-		ValueParameter<XV, XT, XH> vp = new ValueParameter<XV, XT, XH>(column, value);
+		ImmutableValueParameter<XV, XT, XH> vp = new ImmutableValueParameter<XV, XT, XH>(column, value);
 		EntityQueryValueExpression rhs = new EntityQueryValueExpression(vp);		
 		return newPredicate(key, op, rhs);
 	}

@@ -6,5 +6,5 @@ package com.appspot.relaxe.expr;
 public interface Predicate
 	extends Expression {
 		
-	Predicate parenthesize();
+	// Predicate parenthesize();
 }

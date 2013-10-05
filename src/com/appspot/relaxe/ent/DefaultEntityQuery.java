@@ -21,7 +21,7 @@ import com.appspot.relaxe.ent.value.PrimitiveKey;
 import com.appspot.relaxe.ent.value.StringKey;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.ValueExpression;
-import com.appspot.relaxe.expr.ValueParameter;
+import com.appspot.relaxe.expr.ImmutableValueParameter;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
@@ -165,7 +165,7 @@ public class DefaultEntityQuery<
 			
 			M meta = this.root.getMetaData();
 			Column column = meta.getColumn(key.name());
-			ValueParameter<V, P, W> vp = new ValueParameter<V, P, W>(column, value);
+			ImmutableValueParameter<V, P, W> vp = new ImmutableValueParameter<V, P, W>(column, value);
 			EntityQueryValueExpression b = new EntityQueryValueExpression(vp);
 			addPredicate(new DefaultEntityQueryPredicate(op, a, b));			
 		}
@@ -185,7 +185,7 @@ public class DefaultEntityQuery<
 			XM meta = element.getMetaData();			
 			Column column = meta.getColumn(key.name());									
 			EntityQueryValueReference a = new EntityQueryAttributeValueReference<XA, XQ>(element, key.name());			
-			ValueParameter<V, P, W> vp = new ValueParameter<V, P, W>(column, value);
+			ImmutableValueParameter<V, P, W> vp = new ImmutableValueParameter<V, P, W>(column, value);
 			EntityQueryValueExpression b = new EntityQueryValueExpression(vp);
 			return new DefaultEntityQueryPredicate(op, a, b);			
 		}

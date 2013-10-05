@@ -43,26 +43,13 @@ public class BinaryOperator implements Expression {
 		this.left = left;
 		this.right = right;				
 	}
-
-//	@Override
-//	public void generate(SimpleQueryContext qc, StringBuffer dest) {
-//		dest.append("(");
-//		left.generate(qc, dest);
-//		dest.append(this.symbol);
-//		right.generate(qc, dest);
-//		dest.append(") ");
-//	}
 	
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {
 		vc = v.start(vc, this);
-		
-//		Symbol.PAREN_LEFT.traverse(vc, v);
 		left.traverse(vc, v);
 		symbol.traverse(vc, v);		
 		right.traverse(vc, v);
-//		Symbol.PAREN_RIGHT.traverse(vc, v);
-
 		v.end(this);
 	}
 

@@ -33,13 +33,6 @@ public class NotPredicate
 		this.inner = inner;
 	}
 
-//	@Override
-//	public void generate(SimpleQueryContext qc, StringBuffer dest) {
-//		dest.append("( NOT ");
-//		inner.generate(qc, dest);
-//		dest.append(")");
-//	}
-
 	@Override
 	public String getTerminalSymbol() {
 		return null;
@@ -50,10 +43,5 @@ public class NotPredicate
 		vc = v.start(vc, this);
 		SQLKeyword.NOT.traverse(vc, v);
 		inner.traverse(vc, v);		
-	}
-	
-	@Override
-	public Predicate parenthesize() {
-		return new ParenthesizedPredicate(this);
-	}
+	}	
 }

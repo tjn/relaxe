@@ -52,7 +52,6 @@ public class SelectStatement
 		this.limit = limit;		
 		this.offset = offset;
 	}
-
 	
 	public TableExpression nest() {
 		return new NestedSelect(this);
@@ -90,19 +89,10 @@ public class SelectStatement
 		return limit;
 	}
 
-	public void setLimit(Limit limit) {
-		this.limit = limit;
-	}
-
 	@Override
 	public Offset getOffset() {
 		return offset;
 	}
-
-	public void setOffset(Offset offset) {
-		this.offset = offset;
-	}
-
 	@Override
 	public QueryExpression getQueryExpression() {
 		return this;

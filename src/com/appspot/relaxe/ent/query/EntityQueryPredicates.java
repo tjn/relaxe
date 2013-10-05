@@ -11,6 +11,7 @@ import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.expr.op.AndPredicate;
 import com.appspot.relaxe.expr.op.NotPredicate;
 import com.appspot.relaxe.expr.op.OrPredicate;
+import com.appspot.relaxe.expr.op.ParenthesizedPredicate;
 
 public class EntityQueryPredicates {
 	
@@ -184,7 +185,7 @@ public class EntityQueryPredicates {
 				p = newPredicate(p, np);
 			}
 			
-			return p;
+			return new ParenthesizedPredicate(p);
 		}
 
 		protected abstract Predicate newPredicate(Predicate p, Predicate np);

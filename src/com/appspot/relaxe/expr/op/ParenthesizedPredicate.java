@@ -24,11 +24,4 @@ public class ParenthesizedPredicate
 	public ParenthesizedPredicate(Predicate content) {
 		super(content);		
 	}
-
-
-	@Override
-	public Predicate parenthesize() {
-		return new ParenthesizedPredicate(this);
-	}
-
 }

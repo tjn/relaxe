@@ -36,9 +36,4 @@ public class OrPredicate
 		
 		return new OrPredicate(a, b);
 	}
-	
-	@Override
-	public Predicate parenthesize() {
-		return new ParenthesizedPredicate(this);
-	}
 }

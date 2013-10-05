@@ -30,9 +30,4 @@ public class Like
 	public static Like like(ValueExpression a, ValueExpression b) {
 		return new Like(a, b);
 	}
-
-	@Override
-	public Predicate parenthesize() {
-		return new ParenthesizedPredicate(this);
-	}
 }

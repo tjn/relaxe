@@ -3,6 +3,8 @@
  */
 package com.appspot.relaxe.expr;
 
+import java.util.List;
+
 
 public class NestedJoin
 	extends AbstractTableReference {
@@ -31,7 +33,7 @@ public class NestedJoin
 	}
 	
 	@Override
-	public void addAll(ElementList<SelectListElement> dest) {
+	public void addAll(List<SelectListElement> dest) {
 		this.content.addAll(dest);		
 	}
 		

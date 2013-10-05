@@ -32,8 +32,7 @@ public abstract class StatementExecutorTest<I extends Implementation<I>>
 				
 		StatementExecutor se  = new StatementExecutor(tc.getPersistenceContext());
 				
-		Select select = new Select();
-		select.add(new CountFunction());
+		Select select = new Select(new CountFunction());		
 		From from = new From(new TableReference(table));
 		
 		DefaultTableExpression qe = new DefaultTableExpression(select, from, null, null);

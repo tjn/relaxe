@@ -23,8 +23,10 @@ import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.expr.ElementList;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.InsertStatement;
-import com.appspot.relaxe.expr.ValueParameter;
+import com.appspot.relaxe.expr.ImmutableValueParameter;
+import com.appspot.relaxe.expr.MutableValueParameter;
 import com.appspot.relaxe.expr.ValueRow;
+import com.appspot.relaxe.expr.ValuesListElement;
 import com.appspot.relaxe.expr.ddl.SQLType;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ColumnMap;
@@ -40,7 +42,7 @@ class CSVInsertTask
 	
 	
 	private static class VarcharParameter 
-		extends ValueParameter<String, VarcharType, VarcharHolder> {
+		extends MutableValueParameter<String, VarcharType, VarcharHolder> {
 
 		private static final long serialVersionUID = 785444282283211L;
 
@@ -77,7 +79,7 @@ class CSVInsertTask
             
             // configure by using the column headers:        
             ColumnMap cm = table.columnMap();
-            ElementList<Identifier> names = new ElementList<Identifier>();  
+            List<Identifier> names = new ArrayList<Identifier>();  
             List<Column> columnList = new ArrayList<Column>();
                                                                     
             for (String n : line) {
@@ -98,9 +100,8 @@ class CSVInsertTask
             final int expectedColumnCount = line.length;
 //            int recno = 0;        
             
-            ValueRow vr = new ValueRow();
-            InsertStatement ins = new InsertStatement(table, names, vr);
             PreparedStatement ps = null;
+            InsertStatement ins = null;
             
             VarcharParameter[] params = new VarcharParameter[expectedColumnCount];            
             ValueAssignerFactory vaf = getImplementation().getValueAssignerFactory();
@@ -116,15 +117,21 @@ class CSVInsertTask
                     throw new IllegalStateException("unexpected column count: " + cols + " at line " + lineno);
                 }
                            
-                if (ps == null) {                
+                if (ps == null) {
+                	
+                	List<ValuesListElement> vl = new ArrayList<ValuesListElement>(params.length);
+                	
                     for (int i = 0; i < params.length; i++) {                      
                         Column column = columnList.get(i);
                         VarcharHolder h = parse(column, line[i]);     
                         
                         VarcharParameter param = new VarcharParameter(column, h);                    
                         params[i] = param;
-                        vr.add(param);
+                        vl.add(param);
                     }
+                                        
+                    ValueRow vr = new ValueRow(vl);                    
+                    ins = new InsertStatement(table, new ElementList<Identifier>(names), vr);
                     
                     String q = ins.generate();
                     ps = connection.prepareStatement(q);

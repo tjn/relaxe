@@ -3,6 +3,8 @@
  */
 package com.appspot.relaxe.expr;
 
+import java.util.List;
+
 
 public class NestedTableReference
 	extends NonJoinedTable {
@@ -21,19 +23,16 @@ public class NestedTableReference
 			
 	public NestedTableReference(QueryExpression query) {
 		super();
-		setQuery(query);
+		
+		if (query == null) {
+			throw new NullPointerException("query");
+		}
+		
+		this.query = query;
 	}
 
 	public QueryExpression getQuery() {
 		return query;
-	}
-
-	public void setQuery(QueryExpression query) {
-		if (query == null) {
-			throw new NullPointerException("'query' must not be null");
-		}
-
-		this.query = query;
 	}
 
 	@Override
@@ -50,8 +49,9 @@ public class NestedTableReference
 	}
 
 	@Override
-	public void addAll(ElementList<SelectListElement> dest) {
-		getQuery().getTableExpr().getSelect().getSelectList().copyTo(dest);
+	public void addAll(List<SelectListElement> dest) {
+		ElementList<SelectListElement> el = getQuery().getTableExpr().getSelect().getSelectList();		
+		dest.addAll(el.getContent());
 	}
 
 	@Override

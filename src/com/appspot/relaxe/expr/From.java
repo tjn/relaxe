@@ -21,7 +21,7 @@ public class From extends AbstractClause {
 			throw new NullPointerException("'from' must not be null");
 		}
 		
-		setTableReferenceList(from);
+		tableReferenceList = from;
 	}
 
 //	@Override
@@ -34,9 +34,9 @@ public class From extends AbstractClause {
 		return tableReferenceList;
 	}
 
-	public void setTableReferenceList(TableRefList tableReferenceList) {
-		this.tableReferenceList = tableReferenceList;
-	}
+//	public void setTableReferenceList(TableRefList tableReferenceList) {
+//		this.tableReferenceList = tableReferenceList;
+//	}
 
 	@Override
 	protected Element getContent() {		

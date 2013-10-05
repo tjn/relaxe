@@ -127,8 +127,7 @@ public class QueryExecutor {
 		OrderBy ob = qe.getOrderBy();
 		
 		if (ob == null) {
-			ob = new OrderBy();
-			ob.add(new OrderBy.OrdinalSortKey(1));
+			ob = new OrderBy(new OrderBy.OrdinalSortKey(1));			
 		}		
 		 
 		Offset offset = new Offset(op);
@@ -173,24 +172,18 @@ public class QueryExecutor {
 	
 	private SelectStatement createCountQuery(SelectStatement qs) {
 		TableExpression te = qs.getTableExpr();	
-		
-		Select select = new Select();
+				
 
 //		Some RDBMS's may whine if same column name appears more than once in sub-query. 
 //		(http://bugs.mysql.com/bug.php?id=6709):
-		select.add(IntLiteral.ONE);
-		
+		Select select = new Select(IntLiteral.ONE);
+				
 		QueryExpression tx = new DefaultTableExpression(select, te.getFrom(), te.getWhere(), te.getGroupBy());
 		
 		final NestedTableReference nt = new NestedTableReference(tx);												
-		DefaultTableExpression ce = new DefaultTableExpression();
-		
+				
 		From from = new From(nt);
-		ce.setFrom(from);
-		
-		Select s = new Select();
-		s.add(new CountFunction());			
-		ce.setSelect(s);
+		DefaultTableExpression ce = new DefaultTableExpression(new Select(new CountFunction()), from);
 		
 		SelectStatement cs = new SelectStatement(ce.getQueryExpression());
 		return cs;

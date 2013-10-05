@@ -3,6 +3,8 @@
  */
 package com.appspot.relaxe.expr;
 
+import java.util.List;
+
 import com.appspot.relaxe.meta.ForeignKey;
 
 public class JoinedTable
@@ -34,8 +36,6 @@ public class JoinedTable
 	}
 	
 	public JoinedTable(ForeignKey fk, JoinType joinType, boolean invert) {
-		this(joinType);
-		
 		if (invert) {
 			this.left = new TableReference(fk.getReferenced());
 			this.right = new TableReference(fk.getReferencing());
@@ -58,10 +58,10 @@ public class JoinedTable
 		this.joinCondition = joinCondition;
 	}
 	
-	protected JoinedTable(JoinType joinType) {
-		super();
-		setJoinType(joinType);
-	}
+//	protected JoinedTable(JoinType joinType) {
+//		super();
+//		this.joinType = joinType;
+//	}
 
 //	@Override
 //	public void generate(SimpleQueryContext qc, StringBuffer dest) {
@@ -106,22 +106,6 @@ public class JoinedTable
 		return joinCondition;
 	}
 
-	protected void setLeft(AbstractTableReference left) {
-		this.left = left;
-	}
-
-	protected void setRight(AbstractTableReference right) {
-		this.right = right;
-	}
-
-	protected void setJoinType(JoinType joinType) {
-		this.joinType = joinType;
-	}
-
-	protected void setJoinCondition(JoinCondition joinCondition) {
-		this.joinCondition = joinCondition;
-	}
-
 	@Override
 	public ElementList<? extends Identifier> getUncorrelatedColumnNameList() {
 		ElementList<Identifier> names = new ElementList<Identifier>();
@@ -141,16 +125,6 @@ public class JoinedTable
 			}
 		}
 	}
-
-//	@Override
-//	public ElementList<ValueElement> getSelectList() {
-//		ElementList<ValueElement> el = new ElementList<ValueElement>();
-//		
-//		copyElementList(getLeft(), el);
-//		copyElementList(getRight(), el);
-//				
-//		return el;
-//	}
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
@@ -162,7 +136,7 @@ public class JoinedTable
 	}
 
 	@Override
-	public void addAll(ElementList<SelectListElement> dest) {		
+	public void addAll(List<SelectListElement> dest) {		
 		getLeft().addAll(dest);
 		getRight().addAll(dest);
 	}

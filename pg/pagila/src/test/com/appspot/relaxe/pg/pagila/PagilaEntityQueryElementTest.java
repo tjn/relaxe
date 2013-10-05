@@ -6,7 +6,6 @@ package com.appspot.relaxe.pg.pagila;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.gen.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pagila.ent.pub.Language;
-import com.appspot.relaxe.gen.pagila.ent.pub.Language.QueryElement;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 
 public class PagilaEntityQueryElementTest 

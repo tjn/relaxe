@@ -7,6 +7,7 @@
 package com.appspot.relaxe.feature;
 
 import com.appspot.relaxe.expr.Identifier;
+import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.BaseTableElement;
 import com.appspot.relaxe.expr.ddl.ColumnDefinition;
 import com.appspot.relaxe.expr.ddl.CreateTable;
@@ -22,9 +23,9 @@ import com.appspot.relaxe.meta.Environment;
 
 public class TableDesign {
         private Environment environment;
-        private CreateTable table;
+        private CreateTable.Builder builder;
         
-        TableDesign(Environment env, CreateTable table) {
+        TableDesign(Environment env, SchemaElementName table) {
             super();
             
             if (env == null) {
@@ -36,7 +37,11 @@ public class TableDesign {
             }
             
             this.environment = env;
-            this.table = table;
+            this.builder = new CreateTable.Builder(env.getIdentifierRules(), table);
+        }
+        
+        public CreateTable newCreateTable() {
+        	return builder.newCreateTable();
         }
         
         public void primaryKey(String... columns) {
@@ -50,7 +55,7 @@ public class TableDesign {
         }
 
         public void add(BaseTableElement element) {
-            this.table.add(element);
+            this.builder.add(element);
         }
         
         public void varchar(String name, int len, boolean nullable) {
@@ -77,9 +82,5 @@ public class TableDesign {
         
         public void integer(String name) {
             integer(name, false);
-        }
-
-        public CreateTable getTable() {
-            return table;
-        }
+        }        
     }

@@ -11,8 +11,7 @@ public class DeleteStatement
 	 */
 	private static final long serialVersionUID = -7983755125216586175L;
 
-	private TableReference target;		
-	
+	private TableReference target;	
 	private Where where;
 	
 	
@@ -22,31 +21,26 @@ public class DeleteStatement
 	protected DeleteStatement() {
 	}
 	
-	public DeleteStatement(TableReference tref, Predicate p) {
-		super(Name.DELETE);		
-		this.target = tref;
-		getWhere().setSearchCondition(p);
+	public DeleteStatement(TableReference tableReference, Predicate p) {
+		super(Name.DELETE);
+		
+		if (tableReference == null) {
+			throw new NullPointerException("tableReference");
+		}
+		
+		this.target = tableReference;
+		this.where = (p == null) ? null : new Where(p);
 	}
-	
-//	/**
-//	 * This is an addtion for MySQL which does not seem to support 
-//	 * table references in DELETE's
-//	 * 
-//	 * @param table
-//	 * @param p
-//	 */
-//    public DeleteStatement(Table table, Predicate p) {
-//        super(Name.DELETE);     
-//        this.target = table.getName();        
-//        getWhere().setSearchCondition(p);
-//    }	
-	
+		
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
 		SQLKeyword.DELETE.traverse(vc, v);		
 		SQLKeyword.FROM.traverse(vc, v);
-		getTarget().traverse(vc, v);	
-		getWhere().traverse(vc, v);
+		getTarget().traverse(vc, v);		
+		
+		if (getWhere() != null) {
+			getWhere().traverse(vc, v);
+		}
 	}
 
 	public TableReference getTarget() {
@@ -54,10 +48,6 @@ public class DeleteStatement
 	}	
 
 	public Where getWhere() {
-		if (where == null) {
-			where = new Where();			
-		}
-
 		return where;
 	}
 }

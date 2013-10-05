@@ -9,7 +9,6 @@ package com.appspot.relaxe.expr;
 import java.util.List;
 import com.appspot.relaxe.expr.op.AndPredicate;
 import com.appspot.relaxe.expr.op.Comparison;
-import com.appspot.relaxe.expr.op.ParenthesizedPredicate;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ForeignKey;
 
@@ -108,11 +107,5 @@ public class CompoundJoinCondition
 		}
 
 		return this.condition;		
-	}
-		
-	
-	@Override
-	public Predicate parenthesize() {
-		return new ParenthesizedPredicate(this);
 	}
 }

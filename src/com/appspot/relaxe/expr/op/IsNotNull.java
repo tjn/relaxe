@@ -39,10 +39,5 @@ public class IsNotNull
 		SQLKeyword.NOT.traverse(vc, v);
 		SQLKeyword.NULL.traverse(vc, v);
 		v.end(this);
-	}
-	
-	@Override
-	public Predicate parenthesize() {
-		return new ParenthesizedPredicate(this);
-	}
+	}	
 }

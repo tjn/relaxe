@@ -119,13 +119,15 @@ public class EntityQueryExpressionBuilder<
 		Map<EntityQueryElementTag, TableReference> visited = new HashMap<>();
 		AbstractTableReference tref = createTableReference(null, root, null, null, null, visited);
 				
-		Select s = new Select();
+		Select.Builder sb = new Select.Builder();
 		
-		addAttributes(s);
+		addAttributes(sb);
 		From f = new From(tref);		
 		
 		Predicate p = createPredicate();
 		Where w = (p == null) ? null : new Where(p);
+		
+		Select s = sb.newSelect();
 				
 		DefaultTableExpression te = new DefaultTableExpression(s, f, w, null);
 		
@@ -135,11 +137,11 @@ public class EntityQueryExpressionBuilder<
 		this.result = ss;
 	}
 
-	private void addAttributes(Select s) {
+	private void addAttributes(Select.Builder selectBuilder) {
 		int cc = 0;
 		
 		for (Map.Entry<EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?>, TableReference> e : this.tableReferenceMap.entrySet()) {
-			int nc = addAttributes(e.getKey(), e.getValue(), s, cc);
+			int nc = addAttributes(e.getKey(), e.getValue(), selectBuilder, cc);
 			cc += nc;
 		}
 	}
@@ -153,13 +155,14 @@ public class EntityQueryExpressionBuilder<
 		
 		EntityQueryContext ctx = this;
 		
-		OrderBy ob = new OrderBy();
+		OrderBy.Builder obb = new OrderBy.Builder();
 		
 		for (EntityQuerySortKey esk : skl) {
 			OrderBy.SortKey sk = esk.sortKey(ctx);
-			ob.add(sk);
+			obb.add(sk);
 		}		
 		
+		OrderBy ob = obb.newOrderBy();
 		return ob;
 	}
 
@@ -296,7 +299,7 @@ public class EntityQueryExpressionBuilder<
 		XC extends Content,
 		XRE extends EntityQueryElement<XA, XR, XT, XE, XH, XF, XM, XC, XRE>
 	>	
-	int addAttributes(EntityQueryElement<XA, XR, XT, XE, XH, XF, XM, XC, XRE> element, TableReference tref, Select select, int column) {
+	int addAttributes(EntityQueryElement<XA, XR, XT, XE, XH, XF, XM, XC, XRE> element, TableReference tref, Select.Builder selectBuilder, int column) {
 		
 		Set<XA> as = element.attributes();
 		
@@ -315,7 +318,7 @@ public class EntityQueryExpressionBuilder<
 				column++;
 								
 				om.put(Integer.valueOf(column), tref);
-				select.add(cref);
+				selectBuilder.add(cref);
 			}
 		}
 		

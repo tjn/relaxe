@@ -7,12 +7,13 @@ public interface ValueExpression
 	extends Expression, ValuesListElement {
 	/**
 	 * SQL JavaType of the expression
+	 * 
 	 * @return
 	 */
 	int getType();
 	
 	/**
-	 * Explicit, unambiguous column name of the expression, if available.
+	 * The name of the column the expression originates from, if available.
 	 *  
 	 * @return
 	 */

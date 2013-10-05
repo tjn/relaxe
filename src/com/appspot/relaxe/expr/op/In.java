@@ -16,10 +16,9 @@ import com.appspot.relaxe.expr.VisitContext;
 
 
 /**
- * TODO
  * 
  */
-public class ValueExpressionIn
+public class In
 	extends CompoundElement
 	implements Predicate {
 	
@@ -29,23 +28,17 @@ public class ValueExpressionIn
 	private static final long serialVersionUID = 4384506983416435234L;
 	private ValueExpression left;
 	private ElementList<ValueExpression> elements;
-	
-	
+		
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected ValueExpressionIn() {
+	protected In() {
 	}
 	
-	public ValueExpressionIn(ValueExpression left, Collection<ValueExpression> values) {
+	public In(ValueExpression left, Collection<ValueExpression> values) {
 		super();
-		this.left = left;
-				
-		this.elements = new ElementList<ValueExpression>(Symbol.COMMA);
-		
-		for (ValueExpression e : values) {
-			this.elements.add(e);
-		}
+		this.left = left;				
+		this.elements = new ElementList<ValueExpression>(Symbol.COMMA, values);				
 	}
 	
 	
@@ -57,12 +50,5 @@ public class ValueExpressionIn
 		this.elements.traverse(vc, v);
 		Symbol.PAREN_RIGHT.traverse(vc, v);		
 	}
-	
-	@Override
-	public Predicate parenthesize() {
-		return null;
-	}
-	
-	
 	
 }

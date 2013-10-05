@@ -3,6 +3,9 @@
  */
 package com.appspot.relaxe.expr;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class OrderBy	
 	extends AbstractClause {
 
@@ -11,6 +14,7 @@ public class OrderBy
 	 */
 	private static final long serialVersionUID = -8892530221014201090L;
 	private ElementList<SortKey> sortKeyList;
+	
 			
 	public enum Order implements Element {
 		ASC(SQLKeyword.ASC),
@@ -105,7 +109,7 @@ public class OrderBy
 		 */
 		private static final long serialVersionUID = -8039564149907068654L;
 		private Ordinal ordinal;
-		
+				
 		/**
 		 * No-argument constructor for GWT Serialization
 		 */
@@ -172,30 +176,74 @@ public class OrderBy
 
 	}
 
-	public OrderBy() {		
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	@SuppressWarnings("unused")
+	private OrderBy() {
 	}
 	
-	public void add(SortKey k) {
-		getSortKeyList().add(k);
+	public OrderBy(SortKey sortKey) {
+		if (sortKey == null) {
+			throw new NullPointerException("sortKey");
+		}
+		
+		this.sortKeyList = new ElementList<SortKey>(sortKey);
 	}
-	
+
 	public static OrderBy.SortKey newSortKey(ColumnReference c, Order o) {
 		return new ExprSortKey(c, o);
 	}
-	
-	public void add(ColumnReference c, Order o) {
-		getSortKeyList().add(new ExprSortKey(c, o));
-	}
-	
-	public void add(int ord, Order o) {
-		getSortKeyList().add(new OrdinalSortKey(ord, o));
-	}
 
-	public ElementList<SortKey> getSortKeyList() {
-		if (sortKeyList == null) {
-			sortKeyList = new ElementList<SortKey>();
+	
+	public OrderBy(ElementList<SortKey> elementList) {
+		if (elementList == null) {
+			throw new NullPointerException("elementList");
+		}
+		
+		this.sortKeyList = elementList;
+	}
+	
+	
+	public static class Builder {
+		private List<SortKey> content;
+		
+		private List<SortKey> getContent() {
+			if (content == null) {
+				content = new LinkedList<SortKey>();				
+			}
+
+			return content;
+		}
+		
+		public void add(SortKey k) {
+			getContent().add(k);
+		}
+		
+		public void add(ColumnReference c, Order o) {
+			getContent().add(new ExprSortKey(c, o));
+		}
+		
+		public void add(int ord, Order o) {
+			getContent().add(new OrdinalSortKey(ord, o));
 		}
 
+//		public ElementList<SortKey> getSortKeyList() {
+//			if (sortKeyList == null) {
+//				sortKeyList = new ElementList<SortKey>();
+//			}
+//
+//			return sortKeyList;
+//		}
+		
+		public OrderBy newOrderBy() {
+			ElementList<SortKey> el = new ElementList<OrderBy.SortKey>(getContent());			
+			return new OrderBy(el);
+		}		
+	}
+	
+
+	public ElementList<SortKey> getSortKeyList() {		
 		return sortKeyList;
 	}
 	

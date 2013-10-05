@@ -3,6 +3,8 @@
  */
 package com.appspot.relaxe.expr;
 
+import java.util.Collection;
+
 public class GroupBy extends AbstractClause {
 	
 	/**
@@ -10,11 +12,29 @@ public class GroupBy extends AbstractClause {
 	 */
 	private static final long serialVersionUID = -3190593291892514712L;
 
-	public GroupBy() {
-		super();
+	private ElementList<ValueExpression> groupingExprList;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	@SuppressWarnings("unused")
+	private GroupBy() {
 	}
-
-	private ElementList<ValueExpression> groupingExprList;	
+	
+	public GroupBy(ElementList<ValueExpression> expressionList) {
+		super();
+		
+		if (expressionList == null) {
+			throw new NullPointerException("expressionList");
+		}
+		
+		this.groupingExprList = expressionList;
+	}
+	
+	public GroupBy(Collection<ValueExpression> expressionList) {
+		this(new ElementList<ValueExpression>(expressionList));
+	}
+		
 	
 //	@Override
 //	public void generate(SimpleQueryContext qc, StringBuffer dest) {

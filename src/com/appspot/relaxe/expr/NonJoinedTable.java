@@ -3,6 +3,7 @@
  */
 package com.appspot.relaxe.expr;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,12 +100,13 @@ public abstract class NonJoinedTable
 				names.getContent().clear();
 			}
 			
-			ElementList<SelectListElement> elems = new ElementList<SelectListElement>();				
+			// ElementList<SelectListElement> elems = new ElementList<SelectListElement>();				
+			List<SelectListElement> elems = new ArrayList<SelectListElement>();
 			nonJoinedTable.addAll(elems);
 			
 			List<Identifier> nl = this.names.getContent();			
 			
-			for (SelectListElement e : elems.getContent()) {
+			for (SelectListElement e : elems) {
 				for (Identifier n : e.getColumnNames()) {
 					nl.add(getColumnName(n));
 				}

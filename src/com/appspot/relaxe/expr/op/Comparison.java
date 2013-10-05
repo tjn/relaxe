@@ -59,9 +59,4 @@ public class Comparison
 	public static Comparison gt(ValueExpression a, ValueExpression b) {
 		return new Comparison(Op.GT, a, b);
 	}
-
-	@Override
-	public Predicate parenthesize() {
-		return new ParenthesizedPredicate(this);
-	}	
 }

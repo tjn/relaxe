@@ -3,6 +3,8 @@
  */
 package com.appspot.relaxe.expr;
 
+import java.util.List;
+
 
 
 public abstract class AbstractTableReference
@@ -56,7 +58,8 @@ public abstract class AbstractTableReference
 	
 	public abstract int getColumnCount();
 	
-	public abstract void addAll(ElementList<SelectListElement> dest);
+	// public abstract void addAll(ElementList<SelectListElement> dest);
+	public abstract void addAll(List<SelectListElement> dest);
 
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {

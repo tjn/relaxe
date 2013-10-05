@@ -57,10 +57,6 @@ public class SetOperator
 	public boolean isAll() {
 		return this.all != null;
 	}
-
-	public void setAll(boolean all) {
-		this.all = all ? SQLKeyword.ALL : null;
-	}	
 	
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {
@@ -97,10 +93,5 @@ public class SetOperator
 	@Override
 	public GroupBy getGroupBy() {
 		return null;
-	}
-	
-//	@Override
-//	public QueryExpression asQueryExpression() {
-////		return new  
-//	}
+	}	
 }

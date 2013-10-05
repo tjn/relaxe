@@ -9,26 +9,26 @@ public class Having extends AbstractClause {
 	 * 
 	 */
 	private static final long serialVersionUID = 6829774771176381103L;
-
-	public Having() {
-	}
-
-	private Predicate searchCondition;
 	
-//	@Override
-//	public void generate(SimpleQueryContext qc, StringBuffer dest) {
-//		Predicate p = getSearchCondition();
-//		
-//		if (p != null) {
-//			dest.append("HAVING ");
-//			p.generate(qc, dest);			
-//		}
-//	}
+	private Predicate searchCondition;
 
-	public void setSearchCondition(Predicate predicate) {
-		this.searchCondition = predicate;
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	@SuppressWarnings("unused")
+	private Having() {
 	}
-
+	
+	public Having(Predicate searchCondition) {
+		super();
+		
+		if (searchCondition == null) {
+			throw new NullPointerException("searchCondition");
+		}
+		
+		this.searchCondition = searchCondition;
+	}
+	
 	public Predicate getSearchCondition() {
 		return searchCondition;
 	}

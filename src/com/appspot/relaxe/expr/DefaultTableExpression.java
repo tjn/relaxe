@@ -24,7 +24,7 @@ public class DefaultTableExpression
 	private Where where;
 	private GroupBy groupBy;
 	private Having having;	
-	private SelectListElement all = null;
+	// private SelectListElement all = null;
 	
 	public DefaultTableExpression() {
 	}
@@ -40,6 +40,11 @@ public class DefaultTableExpression
 	
 	public DefaultTableExpression(Select select, From from, Where where, GroupBy groupBy) {
 		super();
+		
+		if (select == null) {
+			throw new NullPointerException("select");
+		}
+		
 		this.select = select;
 		this.from = from;
 		this.where = where;
@@ -53,11 +58,7 @@ public class DefaultTableExpression
 			e.traverse(vc, v);
 		}
 	}
-
-	public void setSelect(Select select) {
-		this.select = select;
-	}
-
+	
 	@Override
 	public Select getSelect() {
 		return select;
@@ -68,31 +69,15 @@ public class DefaultTableExpression
 		return from;
 	}
 
-	public void setFrom(From from) {
-		this.from = from;
-	}
-
 	@Override
 	public Where getWhere() {
-		if (where == null) {
-			where = new Where();			
-		}
-
 		return where;
-	}
-
-	public void setWhere(Where where) {
-		this.where = where;
 	}
 
 	public Having getHaving() {
 		return having;
 	}
 
-	public void setHaving(Having having) {
-		this.having = having;
-	}
-	
 	@Override
 	protected void traverseContent(VisitContext vc, ElementVisitor v) {
 		traverse(getSelect(), vc, v);
@@ -106,13 +91,6 @@ public class DefaultTableExpression
 	public GroupBy getGroupBy() {
 		return groupBy;
 	}
-
-	public void setGroupBy(GroupBy groupBy) {
-		this.groupBy = groupBy;
-	}
-
-	
-	
 	
 	public SetOperator unionAll(TableExpression rp) {
 		return new SetOperator(Op.UNION, true, this, rp);
@@ -138,27 +116,27 @@ public class DefaultTableExpression
 		return new SetOperator(Op.EXCEPT, true, this, rp);
 	}
 	
-	public void selectAll() {		 	
-		getSelect().getSelectList().set(getAll());
-	}
+//	public void selectAll() {		 	
+//		getSelect().getSelectList().set(getAll());
+//	}
 	
-	private SelectListElement getAll() {
-		if (all == null) {
-			all = new AllColumns() {
-				/**
-				 * TODO: The following does not look like serializable... 
-				 */
-				private static final long serialVersionUID = -98472738386271356L;
-
-				@Override
-				protected TableRefList getTableRefs() {
-					return getFrom().getTableReferenceList();				
-				}			
-			};			
-		}
-
-		return all;
-	}
+//	private SelectListElement getAll() {
+//		if (all == null) {
+//			all = new AllColumns() {
+//				/**
+//				 * TODO: The following does not look like serializable... 
+//				 */
+//				private static final long serialVersionUID = -98472738386271356L;
+//
+//				@Override
+//				protected TableRefList getTableRefs() {
+//					return getFrom().getTableReferenceList();				
+//				}			
+//			};			
+//		}
+//
+//		return all;
+//	}
 	
 	@Override
 	public final OrderBy getOrderBy() {	

@@ -3,6 +3,9 @@
  */
 package com.appspot.relaxe.expr;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import com.appspot.relaxe.meta.Table;
 
 public class InsertStatement
@@ -34,9 +37,9 @@ public class InsertStatement
 	protected InsertStatement() {
 	}
 	
-	public InsertStatement(Table target, ElementList<Identifier> columnNameList) {
-	    this(target, columnNameList, null);	    
-	}
+//	public InsertStatement(Table target, ElementList<Identifier> columnNameList) {
+//	    this(target, columnNameList, null);	    
+//	}
 
 	protected InsertStatement(Table target) {
 		super(Name.INSERT);
@@ -64,12 +67,27 @@ public class InsertStatement
 		}
 		
 		this.target = target;
-		this.columnNameList = new ElementList<Identifier>();
-		columnNameList.copyTo(this.columnNameList);
+		this.columnNameList = columnNameList;		
+		this.values = new ElementList<ValueRow>(Collections.singletonList(valueRow));	
 		
-		if (valueRow != null) {
-			getValues().add(valueRow);			
+	}
+	
+	
+	public InsertStatement(Table target, ElementList<Identifier> columnNameList, Collection<ValueRow> rows) {
+		this(target);
+		
+		if (columnNameList == null) {
+			throw new NullPointerException("'columnNameList' must not be null");
 		}
+		
+		if (rows == null) {
+			throw new NullPointerException("rows");
+		}		
+		
+		this.target = target;
+		this.columnNameList = columnNameList;		
+		this.values = new ElementList<ValueRow>(rows);	
+		
 	}
 	
 	@Override
@@ -103,9 +121,9 @@ public class InsertStatement
 		return values;
 	}
 	
-	void add(ValueRow r) {
-		getValues().add(r);
-	}
+//	void add(ValueRow r) {
+//		getValues().add(r);
+//	}
 		
 	protected SchemaElementName getTableName() {
 		if (tableName == null) {

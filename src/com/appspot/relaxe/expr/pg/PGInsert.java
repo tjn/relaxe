@@ -37,9 +37,6 @@ public class PGInsert
 		super(target, columnNameList, valueRow);
 	}
 
-	public PGInsert(Table target, ElementList<Identifier> columnNameList) {
-		super(target, columnNameList);	
-	}
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {

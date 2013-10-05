@@ -37,13 +37,6 @@ public class Exists
 		this.query = query;
 	}
 
-	//	@Override
-//	public void generate(SimpleQueryContext qc, StringBuffer dest) {
-//		dest.append("EXISTS (");
-//		fullSelect.generate(qc, dest);
-//		dest.append(") ");
-//	}
-
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {
 		vc = v.start(vc, this);
@@ -54,10 +47,5 @@ public class Exists
 		Symbol.PAREN_RIGHT.traverse(vc, v);
 		
 		v.end(this);
-	}
-	
-	@Override
-	public Predicate parenthesize() {
-		return new ParenthesizedPredicate(this);
-	}
+	}	
 }

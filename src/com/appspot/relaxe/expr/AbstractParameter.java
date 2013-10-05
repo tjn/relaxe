@@ -32,7 +32,7 @@ public abstract class AbstractParameter<
 	private static final long serialVersionUID = 3615036325774581065L;
 	private String name;
 	private DataType columnType;
-	private Identifier columnName;
+	private Identifier columnName;	
 	
 	/**
 	 * No-argument constructor for GWT Serialization
