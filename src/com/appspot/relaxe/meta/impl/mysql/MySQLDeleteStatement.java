@@ -1,9 +1,15 @@
 /*
  * Copyright (c) 2009-2013 Topi Nieminen
  */
-package com.appspot.relaxe.expr;
+package com.appspot.relaxe.meta.impl.mysql;
 
-import com.appspot.relaxe.meta.impl.mysql.MySQLKeyword;
+import com.appspot.relaxe.expr.DeleteStatement;
+import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.OrdinaryIdentifier;
+import com.appspot.relaxe.expr.Predicate;
+import com.appspot.relaxe.expr.SQLKeyword;
+import com.appspot.relaxe.expr.TableReference;
+import com.appspot.relaxe.expr.VisitContext;
 
 public class MySQLDeleteStatement
 	extends DeleteStatement {

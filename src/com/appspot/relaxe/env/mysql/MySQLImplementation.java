@@ -7,10 +7,10 @@ import com.appspot.relaxe.env.CatalogFactory;
 import com.appspot.relaxe.env.DefaultImplementation;
 import com.appspot.relaxe.expr.DefaultSQLSyntax;
 import com.appspot.relaxe.expr.DeleteStatement;
-import com.appspot.relaxe.expr.MySQLDeleteStatement;
 import com.appspot.relaxe.expr.Predicate;
 import com.appspot.relaxe.expr.SQLSyntax;
 import com.appspot.relaxe.expr.TableReference;
+import com.appspot.relaxe.meta.impl.mysql.MySQLDeleteStatement;
 import com.appspot.relaxe.meta.impl.mysql.MySQLEnvironment;
 
 /**
