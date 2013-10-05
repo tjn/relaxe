@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.appspot.relaxe.ent.im.IntegerIdentityMap;
+import com.appspot.relaxe.ent.im.LongIdentityMap;
 import com.appspot.relaxe.ent.im.VarcharIdentityMap;
 import com.appspot.relaxe.ent.value.BooleanAccessor;
 import com.appspot.relaxe.ent.value.BooleanKey;
@@ -32,6 +33,8 @@ import com.appspot.relaxe.ent.value.HasDouble;
 import com.appspot.relaxe.ent.value.HasDoubleKey;
 import com.appspot.relaxe.ent.value.HasInteger;
 import com.appspot.relaxe.ent.value.HasIntegerKey;
+import com.appspot.relaxe.ent.value.HasLong;
+import com.appspot.relaxe.ent.value.HasLongKey;
 import com.appspot.relaxe.ent.value.HasLongVarBinary;
 import com.appspot.relaxe.ent.value.HasLongVarBinaryKey;
 import com.appspot.relaxe.ent.value.HasTime;
@@ -42,6 +45,8 @@ import com.appspot.relaxe.ent.value.HasVarchar;
 import com.appspot.relaxe.ent.value.HasVarcharKey;
 import com.appspot.relaxe.ent.value.IntegerAccessor;
 import com.appspot.relaxe.ent.value.IntegerKey;
+import com.appspot.relaxe.ent.value.LongAccessor;
+import com.appspot.relaxe.ent.value.LongKey;
 import com.appspot.relaxe.ent.value.LongVarBinary;
 import com.appspot.relaxe.ent.value.LongVarBinaryAccessor;
 import com.appspot.relaxe.ent.value.LongVarBinaryKey;
@@ -63,6 +68,7 @@ import com.appspot.relaxe.rpc.Decimal;
 import com.appspot.relaxe.rpc.DecimalHolder;
 import com.appspot.relaxe.rpc.DoubleHolder;
 import com.appspot.relaxe.rpc.IntegerHolder;
+import com.appspot.relaxe.rpc.LongHolder;
 import com.appspot.relaxe.rpc.LongVarBinaryHolder;
 import com.appspot.relaxe.rpc.TimeHolder;
 import com.appspot.relaxe.rpc.TimestampHolder;
@@ -76,6 +82,7 @@ import com.appspot.relaxe.types.DecimalType;
 import com.appspot.relaxe.types.DistinctType;
 import com.appspot.relaxe.types.DoubleType;
 import com.appspot.relaxe.types.IntegerType;
+import com.appspot.relaxe.types.LongType;
 import com.appspot.relaxe.types.LongVarBinaryType;
 import com.appspot.relaxe.types.OtherType;
 import com.appspot.relaxe.types.TimeType;
@@ -170,6 +177,14 @@ public class DefaultTypeMapper
 	        	da.setContainerMetaType(HasIntegerKey.class);
 	            break;
 	        case Types.BIGINT:
+	        	da.setAttributeType(Long.class);
+	        	da.setHolderType(LongHolder.class);
+	        	da.setKeyType(LongKey.class);
+	        	da.setAccessorType(LongAccessor.class);
+	        	da.setPrimitiveType(LongType.TYPE);
+	        	da.setIdentityMapType(LongIdentityMap.class);
+	        	da.setContainerType(HasLong.class);
+	        	da.setContainerMetaType(HasLongKey.class);	        	
 	        	break;
 	        case Types.BIT:
 	        case Types.BOOLEAN:
