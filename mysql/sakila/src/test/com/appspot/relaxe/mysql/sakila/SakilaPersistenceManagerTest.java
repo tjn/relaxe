@@ -4,6 +4,7 @@
 package com.appspot.relaxe.mysql.sakila;
 
 import java.sql.Connection;
+import java.sql.Statement;
 
 import com.appspot.relaxe.AbstractPersistenceManagerTest;
 import com.appspot.relaxe.PersistenceManager;
@@ -31,6 +32,11 @@ public class SakilaPersistenceManagerTest
     	throws Exception {
     
 	    Connection c = getConnection();
+	    
+	    Statement st = c.createStatement();
+	    st.executeUpdate("SET sql_mode = ANSI");
+	    st.close();	    
+	    	    	    
 	    assertFalse(c.getAutoCommit());
 	    
 	    // SakilaFactory sf = new SakilaFactoryImpl(); 

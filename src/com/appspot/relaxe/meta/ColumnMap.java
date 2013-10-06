@@ -8,6 +8,7 @@ public interface ColumnMap
 	extends ElementMap<Column> {
 	
 	/**
+	 * Returns a column by 0-based index.
 	 * 
 	 * @param index
 	 * @return

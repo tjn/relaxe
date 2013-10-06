@@ -3,6 +3,8 @@
  */
 package com.appspot.relaxe.env;
 
+import java.util.Properties;
+
 import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.ValueExtractorFactory;
 import com.appspot.relaxe.expr.SQLSyntax;
@@ -36,6 +38,8 @@ public interface Implementation<I extends Implementation<I>> {
 	SerializableEnvironment environment();
 	
 	I self();
+	
+	Properties getDefaultProperties();
 	
 //	Driver getDriver();			
 }

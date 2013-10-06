@@ -3,7 +3,7 @@
  */
 package com.appspot.relaxe.expr.ddl;
 
-public class Char 
+public class LongVarchar 
     extends AbstractCharacterType {
     
 	/**
@@ -14,15 +14,15 @@ public class Char
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected Char() {
+	protected LongVarchar() {
 	}
 	
-    public Char(int length) {
+    public LongVarchar(int length) {
         super(Integer.valueOf(length));
     }
     
-    public static Char get(int length) {
-        return new Char(length);
+    public static LongVarchar get(int length) {
+        return new LongVarchar(length);
     }
     
     @Override

@@ -22,19 +22,22 @@ public abstract class AbstractCharacterType
 	protected AbstractCharacterType() {
 	}
     
-    protected AbstractCharacterType(int length) {                        
-        if (length < 1) {
+    protected AbstractCharacterType(Integer length) {                        
+        if (length != null && length.intValue() < 1) {
             throw new IllegalArgumentException("illegal varchar length: " + length);
         }
         
-        this.length = new Specification(length);
+        this.length = (length == null) ? null : new Specification(length);
     }    
     
     @Override
     public void traverse(VisitContext vc, ElementVisitor v) {
         getName().traverse(vc, v);
-        Symbol.PAREN_LEFT.traverse(vc, v);
-        this.length.traverse(vc, v);        
-        Symbol.PAREN_RIGHT.traverse(vc, v);
+        
+        if (this.length != null) {
+	        Symbol.PAREN_LEFT.traverse(vc, v);
+	        this.length.traverse(vc, v);        
+	        Symbol.PAREN_RIGHT.traverse(vc, v);
+        }
     }
 }

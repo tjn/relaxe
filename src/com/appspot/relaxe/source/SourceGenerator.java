@@ -883,8 +883,10 @@ public class SourceGenerator {
 			buf.append(definitelyNotNullableConstant(c));
 			buf.append(", ");
 			buf.append(autoIncrementBooleanConstant(c));			
-			buf.append("),\n");												
-			
+			buf.append(", ");
+			buf.append(columnDefault(c));
+			buf.append("),\n");
+						
 			// TODO: add 'autoinc' -info etc
 			
 //			buf.append(cn);
@@ -907,6 +909,11 @@ public class SourceGenerator {
 	}
 	
 	
+	private String columnDefault(Column c) {
+		String def = c.getColumnDefault();		
+		return (def == null) ? null : literal(def);		
+	}
+
 	private String autoIncrementBooleanConstant(Column c) {
 		Boolean ai = c.isAutoIncrement();
 		

@@ -140,4 +140,9 @@ public class MySQLCatalogFactory extends DefaultCatalogFactory2 {
 	public String getCatalogName(Connection c) throws SQLException {
         return null;
     }
+    
+    @Override
+    protected Identifier id(String name) {
+   		return (name == null) ? null : getEnvironment().getIdentifierRules().toDelimitedIdentifier(name);		
+    }
 }

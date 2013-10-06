@@ -14,6 +14,9 @@ import com.appspot.relaxe.expr.VisitContext;
 public class DefaultDefinition
     extends CompoundElement {
 
+	
+	public static final DefaultDefinition NULL = new DefaultDefinition();
+	
     /**
 	 * 
 	 */
@@ -40,4 +43,6 @@ public class DefaultDefinition
         SQLKeyword.DEFAULT.traverse(vc, v);
         this.value.traverse(vc, v);
     }
+    
+    
 }

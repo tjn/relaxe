@@ -14,19 +14,21 @@ public enum {{literal-table-enum}}
 	private DataType type;
 	private boolean definitelyNotNullable;
 	private Boolean autoIncrementColumn;
-				
-	{{literal-table-enum}}(Identifier name, DataType type, boolean definitelyNotNullable, Boolean autoIncrementColumn) {
+	private String columnDefault;
+						
+	{{literal-table-enum}}(Identifier name, DataType type, boolean definitelyNotNullable, Boolean autoIncrementColumn, String columnDefault) {
 		this.name = name;
 		this.type = type;
 		this.definitelyNotNullable = definitelyNotNullable;
 		this.autoIncrementColumn = autoIncrementColumn;		
+		this.columnDefault = columnDefault;
 	}
 	
 	@Override
 	public Identifier getColumnName() {
 		return this.name;
 	}
-
+	
 	@Override
 	public DataType getDataType() {
 		return this.type;
@@ -45,5 +47,10 @@ public enum {{literal-table-enum}}
 	@Override
 	public Identifier getUnqualifiedName() {
 		return this.name;
+	}
+		
+	@Override
+	public String getColumnDefault() {
+		return this.columnDefault;
 	}	
 }

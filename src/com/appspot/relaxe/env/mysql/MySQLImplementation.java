@@ -3,6 +3,8 @@
  */
 package com.appspot.relaxe.env.mysql;
 
+import java.util.Properties;
+
 import com.appspot.relaxe.env.CatalogFactory;
 import com.appspot.relaxe.env.DefaultImplementation;
 import com.appspot.relaxe.expr.DefaultSQLSyntax;
@@ -81,5 +83,16 @@ public class MySQLImplementation
 	@Override
 	public MySQLImplementation self() {
 		return this;
+	}
+	
+	@Override
+	public Properties getDefaultProperties() {
+		Properties cfg = super.getDefaultProperties();
+		
+		cfg.setProperty("nullCatalogMeansCurrent", "false");
+		cfg.setProperty("nullNamePatternMatchesAll", "false");
+		cfg.setProperty("sessionVariables", "sql_mode='ANSI'");
+		
+		return cfg;
 	}
 }

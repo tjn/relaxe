@@ -37,6 +37,10 @@ public class QueryGenerator
 //		return null;
 //	}
 	
+	
+	
+	
+	
 
 	@Override
 	public VisitContext visit(Token next) {
@@ -50,36 +54,39 @@ public class QueryGenerator
 			if (ts != null && ts.equals("?")) {
 				buffer.append(" ");
 			}
-			
-		    
-//		    buffer.append(" ");
-			
-//			if (previous.isOrdinary()) {
-//			    buffer.append(" ");
-//			}
 		}
-		
-//		logger().debug("token: " + next);
 		
 		String ts = next.getTerminalSymbol();
 		
 		if (ts != null) {
 			buffer.append(ts);
-		}				
-		
-//	String ts = e.getTerminalSymbol();
-//	
-//	if (ts != null) {
-//		buffer.append(ts);
-//		
-//		if (suffix != null) {
-//			buffer.append(suffix);
-//		}
-//	}		
+		}			
+	
 				
 		this.previous = next;
 		
 		return null;
+	}
+
+	
+	@Override
+	public VisitContext start(VisitContext vc, SQLKeyword e) {
+		if (previous != null && (!previous.isOrdinary())) {		
+			buffer.append(' ');
+		}
+		
+		return super.start(vc, e);
+	}
+	
+	@Override
+	public VisitContext start(VisitContext vc, Identifier e) {		
+		// For MySQL: which
+		
+		if (previous != null && previous.isOrdinary()) {		
+			buffer.append(' ');
+		}
+		
+		return super.start(vc, e);
 	}
 	
 }

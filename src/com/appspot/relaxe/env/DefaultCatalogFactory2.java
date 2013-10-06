@@ -331,6 +331,9 @@ public class DefaultCatalogFactory2
 				int dr = rs.getInt(11);
 				String n = rs.getString(12);
 				int def = rs.getInt(14);
+				
+				
+				logger().debug("fk constraint name: '" + n + "'");
 								
 				Identifier constraintName = id(n);
 												

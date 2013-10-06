@@ -62,7 +62,8 @@ public enum SQLKeyword
 	CURRENT_DATE,
 	CURRENT_TIME,
 	CURRENT_TIMESTAMP, 
-	CHARACTER, 
+	CHARACTER,
+	LONG,
 	VARCHAR, 
 	CLOB, 
 	BIGINT, 
@@ -89,7 +90,11 @@ public enum SQLKeyword
 	IDENTITY, 
 	START, 
 	WITH, 
-	INCREMENT
+	INCREMENT,
+	PRIMARY,
+	FOREIGN,
+	KEY,
+	REFERENCES,
 	;
 	
 	private static Map<String, SQLKeyword> keywordMap = new TreeMap<String, SQLKeyword>(String.CASE_INSENSITIVE_ORDER); 

@@ -3,6 +3,8 @@
  */
 package com.appspot.relaxe.env;
 
+import java.util.Properties;
+
 import com.appspot.relaxe.DefaultValueAssignerFactory;
 import com.appspot.relaxe.DefaultValueExtractorFactory;
 import com.appspot.relaxe.ValueAssignerFactory;
@@ -85,5 +87,11 @@ public abstract class DefaultImplementation<I extends Implementation<I>>
 //		Driver d = (Driver) c.newInstance();
 //		return d;
 //	}
+	
+	
+	@Override
+	public Properties getDefaultProperties() {
+		return new Properties();
+	}
 	
 }

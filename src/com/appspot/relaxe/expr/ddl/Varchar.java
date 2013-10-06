@@ -24,7 +24,7 @@ public class Varchar
 	}
     
     public static Varchar get(int length) {
-        return new Varchar(length);
+        return new Varchar(Integer.valueOf(length));
     }
     
     public Varchar(int length) {

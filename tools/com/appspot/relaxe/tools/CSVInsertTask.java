@@ -23,7 +23,6 @@ import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.expr.ElementList;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.InsertStatement;
-import com.appspot.relaxe.expr.ImmutableValueParameter;
 import com.appspot.relaxe.expr.MutableValueParameter;
 import com.appspot.relaxe.expr.ValueRow;
 import com.appspot.relaxe.expr.ValuesListElement;

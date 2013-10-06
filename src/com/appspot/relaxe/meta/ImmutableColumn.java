@@ -49,12 +49,9 @@ public class ImmutableColumn
 		return remarks;
 	}
 
+	@Override
 	public String getColumnDefault() {
 		return columnDefault;
-	}
-
-	public void setColumnDefault(String columnDefault) {
-		this.columnDefault = columnDefault;
 	}
 
 	public String getAutoIncrement() {
@@ -122,5 +119,5 @@ public class ImmutableColumn
 	public boolean isDefinitelyNotNullable() {
         return this.definitelyNotNullable;
     }
-	
+
 }

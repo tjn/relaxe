@@ -21,5 +21,7 @@ public interface Column
 	 * @return
 	 */	
 	Boolean isAutoIncrement();	
-	Identifier getColumnName(); 
+	Identifier getColumnName();
+		
+	String getColumnDefault();
 }

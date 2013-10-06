@@ -6,8 +6,8 @@ package com.appspot.relaxe.expr.ddl;
 import com.appspot.relaxe.expr.Element;
 import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.SQLKeyword;
+import com.appspot.relaxe.expr.Type;
 import com.appspot.relaxe.expr.VisitContext;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public abstract class SQLType
@@ -24,7 +24,7 @@ public abstract class SQLType
         return getSQLTypeName();
     }
     
-    public abstract SQLType.Name getSQLTypeName();
+    public abstract Type getSQLTypeName();
     
     
     public static boolean isTextType(int sqltype) {
@@ -64,26 +64,27 @@ public abstract class SQLType
     }        
     
     
-    enum Name
-    	implements Element {
+    public enum Name
+    	implements Type {
         
-    CHAR(AbstractPrimitiveType.CHAR, SQLKeyword.CHARACTER),
-    VARCHAR(AbstractPrimitiveType.VARCHAR, SQLKeyword.VARCHAR),
-    CLOB(AbstractPrimitiveType.CLOB, SQLKeyword.CLOB),
-    BIGINT(AbstractPrimitiveType.BIGINT, SQLKeyword.BIGINT),
-    BIT(AbstractPrimitiveType.BIT, SQLKeyword.BIT),    
+    CHAR(PrimitiveType.CHAR, SQLKeyword.CHARACTER),
+    VARCHAR(PrimitiveType.VARCHAR, SQLKeyword.VARCHAR),
+    LONGVARCHAR(PrimitiveType.LONGVARCHAR, SQLKeyword.VARCHAR),
+    CLOB(PrimitiveType.CLOB, SQLKeyword.CLOB),
+    BIGINT(PrimitiveType.BIGINT, SQLKeyword.BIGINT),
+    BIT(PrimitiveType.BIT, SQLKeyword.BIT),    
     // BIT_VARYING(AbstractType.BITV, Keyword.BIT, Keyword.VARYING),
-    BLOB(AbstractPrimitiveType.BLOB, SQLKeyword.BLOB),
-    NUMERIC(AbstractPrimitiveType.NUMERIC, SQLKeyword.NUMERIC), 
-    DECIMAL(AbstractPrimitiveType.DECIMAL, SQLKeyword.DECIMAL),
-    INTEGER(AbstractPrimitiveType.INTEGER, SQLKeyword.INTEGER),
+    BLOB(PrimitiveType.BLOB, SQLKeyword.BLOB),
+    NUMERIC(PrimitiveType.NUMERIC, SQLKeyword.NUMERIC), 
+    DECIMAL(PrimitiveType.DECIMAL, SQLKeyword.DECIMAL),
+    INTEGER(PrimitiveType.INTEGER, SQLKeyword.INTEGER),
     // INT(AbstractType.INTEGER, Keyword.INT),
-    SMALLINT(AbstractPrimitiveType.SMALLINT, SQLKeyword.SMALLINT),
-    TINYINT(AbstractPrimitiveType.TINYINT, SQLKeyword.TINYINT),
-    FLOAT(AbstractPrimitiveType.FLOAT, SQLKeyword.FLOAT),
-    DATE(AbstractPrimitiveType.DATE, SQLKeyword.DATE),
-    TIME(AbstractPrimitiveType.TIME, SQLKeyword.TIME),
-    TIMESTAMP(AbstractPrimitiveType.TIMESTAMP, SQLKeyword.TIMESTAMP),
+    SMALLINT(PrimitiveType.SMALLINT, SQLKeyword.SMALLINT),
+    TINYINT(PrimitiveType.TINYINT, SQLKeyword.TINYINT),
+    FLOAT(PrimitiveType.FLOAT, SQLKeyword.FLOAT),
+    DATE(PrimitiveType.DATE, SQLKeyword.DATE),
+    TIME(PrimitiveType.TIME, SQLKeyword.TIME),
+    TIMESTAMP(PrimitiveType.TIMESTAMP, SQLKeyword.TIMESTAMP),
     ;
                 
     private Name(int type, SQLKeyword... kws) {

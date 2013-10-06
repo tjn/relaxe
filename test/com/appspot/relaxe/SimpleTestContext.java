@@ -53,9 +53,12 @@ public class SimpleTestContext<I extends Implementation<I>>
         super();                
 		Driver d = load(impl.defaultDriverClassName());
 		String url = impl.createJdbcUrl(host, database);		
-		Properties drvcfg = new Properties();
+				
+		Properties drvcfg = impl.getDefaultProperties();
+				
 		drvcfg.setProperty("user", user);		
 		drvcfg.setProperty("password", passwd);
+		
         this.implementation = impl;            
         this.driver = d;
         this.jdbcURL = url;
