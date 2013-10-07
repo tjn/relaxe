@@ -3,11 +3,14 @@
  */
 package com.appspot.relaxe.expr;
 
+import com.appspot.relaxe.expr.ddl.DefaultDefinition;
+
 
 public interface ElementVisitor {
 	
 	QueryContext getContext();
 	
+	VisitContext start(VisitContext vc, DefaultDefinition e);
 	VisitContext start(VisitContext vc, Element e);	
 	VisitContext start(VisitContext vc, Select e);
 	VisitContext start(VisitContext vc, From e);	

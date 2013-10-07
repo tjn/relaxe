@@ -25,6 +25,6 @@ public class DropView
     }
     
     public DropView(SchemaElementName name, Boolean cascade) {
-        super(Name.DROP_CONSTRAINT, SQLKeyword.CONSTRAINT, name, cascade);        
+        super(Name.DROP_VIEW, SQLKeyword.VIEW, name, cascade);        
     }    
 }

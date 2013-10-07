@@ -8,6 +8,7 @@ import com.appspot.relaxe.expr.Element;
 import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.NiladicFunction;
 import com.appspot.relaxe.expr.SQLKeyword;
+import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.expr.VisitContext;
 
 
@@ -21,13 +22,10 @@ public class DefaultDefinition
 	 * 
 	 */
 	private static final long serialVersionUID = 8408650449581983111L;
-	private Element value; 
-    
-//    TODO: DefaultDefinition(Literal) {
-//    }
+	private ValueExpression value; 
     
     public DefaultDefinition() {
-        this.value = SQLKeyword.NULL;
+        this.value = null;
     }
 
     public DefaultDefinition(NiladicFunction nf) {
@@ -38,11 +36,25 @@ public class DefaultDefinition
         this.value = nf;
     }
     
-    @Override
-    public void traverse(VisitContext vc, ElementVisitor v) {
-        SQLKeyword.DEFAULT.traverse(vc, v);
-        this.value.traverse(vc, v);
+    public DefaultDefinition(ValueExpression element) {
+        if (element == null) {
+            throw new NullPointerException("element must not be null");
+        }
+        
+        this.value = element;
     }
     
+    @Override
+    public void traverse(VisitContext vc, ElementVisitor v) {
+    	v.start(vc, this);
+        SQLKeyword.DEFAULT.traverse(vc, v);        
+        Element e = (value == null) ? SQLKeyword.NULL : value;
+        e.traverse(vc, v);
+        v.end(this);
+    }
+    
+    public ValueExpression getValue() {
+		return value;
+	}
     
 }

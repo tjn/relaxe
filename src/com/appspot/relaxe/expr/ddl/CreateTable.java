@@ -4,6 +4,7 @@
 package com.appspot.relaxe.expr.ddl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.appspot.relaxe.expr.ElementList;
@@ -18,7 +19,9 @@ import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ColumnMap;
 import com.appspot.relaxe.meta.DataType;
+import com.appspot.relaxe.meta.Environment;
 import com.appspot.relaxe.meta.IdentifierRules;
+import com.appspot.relaxe.meta.SchemaElement;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public class CreateTable
@@ -30,9 +33,6 @@ public class CreateTable
 	private static final long serialVersionUID = -5904813022152304570L;
 	private SchemaElementName tableName;	
 	private ElementList<BaseTableElement> elementList;
-	
-	
-	
 	
 	
 	/**
@@ -60,10 +60,16 @@ public class CreateTable
 			if (type == null) {
 				throw new RuntimeException("unsupported column type: " + data.getDataType() + " (" + data.getTypeName() + ")"); 
 			}
-			
-			boolean nn = col.isDefinitelyNotNullable();
 						
-			ColumnDefinition cd = new ColumnDefinition(col.getColumnName(), type);
+			ElementList<ColumnConstraint> cl = col.isDefinitelyNotNullable() ? 
+					new ElementList<ColumnConstraint>(Collections.singleton(NotNull.NOT_NULL)) :
+					null;
+			
+			
+			Environment env = table.getEnvironment();
+			DefaultDefinition dd = env.newDefaultDefinition(col);								
+									
+			ColumnDefinition cd = new ColumnDefinition(col.getColumnName(), type, dd, cl);
 			elements.add(cd);
 		}
 		

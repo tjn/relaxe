@@ -51,7 +51,7 @@ public class CreateSchema
 		    this.authID.traverse(vc, v);
 		}
 		
-		// TODO: schema-elemment-list
+		// TODO: schema-element-list
 	}
 
     public Identifier getSchemaName() {

@@ -44,8 +44,7 @@ public abstract class Statement
 		ALTER_TABLE(DDL), 
 		DROP_SCHEMA(DDL),
 		DROP_TABLE(DDL),
-		DROP_VIEW(DDL),
-		DROP_CONSTRAINT(DDL),		
+		DROP_VIEW(DDL),				
 		COMMENT(DDL),
 		RENAME(DDL),		
 

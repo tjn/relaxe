@@ -7,7 +7,9 @@
 package com.appspot.relaxe.meta.impl.mysql;
 
 import com.appspot.relaxe.expr.Identifier;
+import com.appspot.relaxe.expr.ddl.DefaultDefinition;
 import com.appspot.relaxe.meta.AbstractIdentifierComparator;
+import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.NullComparator;
 import com.appspot.relaxe.meta.SerializableEnvironment;
 
@@ -60,5 +62,10 @@ public class MySQLEnvironment
 	@Override
 	public MySQLIdentifierRules getIdentifierRules() {
 		return identifierRules;
+	}
+	
+	@Override
+	public DefaultDefinition newDefaultDefinition(Column col) {
+		return null;
 	}
 }

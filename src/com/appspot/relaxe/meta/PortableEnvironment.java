@@ -3,6 +3,8 @@
  */
 package com.appspot.relaxe.meta;
 
+import com.appspot.relaxe.expr.ddl.DefaultDefinition;
+
 public class PortableEnvironment
 	implements SerializableEnvironment {
 		
@@ -22,5 +24,10 @@ public class PortableEnvironment
 	@Override
 	public PortableIdentifierRules getIdentifierRules() {
 		return identifierRules;
+	}
+
+	@Override
+	public DefaultDefinition newDefaultDefinition(Column col) {
+		return null;
 	}	
 }

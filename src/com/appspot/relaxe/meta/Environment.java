@@ -3,7 +3,11 @@
  */
 package com.appspot.relaxe.meta;
 
+import com.appspot.relaxe.expr.ddl.DefaultDefinition;
+
 public interface Environment {
 
 	IdentifierRules getIdentifierRules();
+
+	DefaultDefinition newDefaultDefinition(Column col);
 }

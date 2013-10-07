@@ -25,16 +25,24 @@ public class StringLiteral
 	}
 	
 	public StringLiteral(String value) {
+		this(value, false);
+	}
+	
+	public StringLiteral(String value, boolean quoted) {
 		if (value == null) {
 			throw new NullPointerException("value");
 		}
 		
-		StringBuilder buf = new StringBuilder(value.length() + 2 + 1);		
-		buf.append('\'');
-		buf.append(value.replaceAll("'", "''"));
-		buf.append('\'');
-		
-		this.quoted = buf.toString();
+		if (quoted) {
+			this.quoted = value;
+		}
+		else {
+			StringBuilder buf = new StringBuilder(value.length() + 2 + 1);		
+			buf.append('\'');
+			buf.append(value.replaceAll("'", "''"));
+			buf.append('\'');			
+			this.quoted = buf.toString();
+		}
 	}
 
 	@Override

@@ -6,6 +6,7 @@ package com.appspot.relaxe.meta;
 import java.util.Comparator;
 
 import com.appspot.relaxe.expr.Identifier;
+import com.appspot.relaxe.expr.ddl.DefaultDefinition;
 
 
 public abstract class DefaultEnvironment 
@@ -18,7 +19,7 @@ public abstract class DefaultEnvironment
 	
 	private final SchemaElementMap<ForeignKey> emptyForeignKeyMap = new EmptyForeignKeyMap(this); 
 				
-		protected Comparator<Identifier> createIdentifierComparator() {
+	protected Comparator<Identifier> createIdentifierComparator() {
 		return FoldingComparator.UPPERCASE;
 	}
 	
@@ -31,4 +32,9 @@ public abstract class DefaultEnvironment
 	public IdentifierRules getIdentifierRules() {
 		return identifierRules;
 	}
+	
+	
+	public DefaultDefinition newDefaultDefinition(Column col) {
+		return null;
+	};
 }

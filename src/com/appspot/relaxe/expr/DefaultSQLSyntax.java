@@ -3,6 +3,10 @@
  */
 package com.appspot.relaxe.expr;
 
+import com.appspot.relaxe.expr.ddl.AlterTableDropConstraint;
+import com.appspot.relaxe.meta.ForeignKey;
+import com.appspot.relaxe.meta.PrimaryKey;
+
 public class DefaultSQLSyntax
     implements SQLSyntax {
 
@@ -11,5 +15,16 @@ public class DefaultSQLSyntax
         return new DeleteStatement(tref, p);
     }
 
+    
+    @Override
+    public AlterTableDropConstraint newAlterTableDropForeignKey(ForeignKey fk) {
+       	return new AlterTableDropConstraint(fk);
+    }
+
+
+	@Override
+	public AlterTableDropConstraint newAlterTableDropPrimaryKey(PrimaryKey pk) {
+       	return new AlterTableDropConstraint(pk);
+	}
     
 }

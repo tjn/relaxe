@@ -22,7 +22,7 @@ import com.appspot.relaxe.env.util.SimpleQueryProcessor;
 import com.appspot.relaxe.env.util.StringListReader;
 import com.appspot.relaxe.exec.QueryProcessor;
 import com.appspot.relaxe.expr.Statement;
-import com.appspot.relaxe.expr.ddl.DropConstraint;
+import com.appspot.relaxe.expr.ddl.AlterTableDropConstraint;
 import com.appspot.relaxe.expr.ddl.DropTable;
 import com.appspot.relaxe.expr.ddl.DropView;
 import com.appspot.relaxe.meta.Catalog;
@@ -493,7 +493,7 @@ public abstract class JDBCTestCase
 	        logger().debug("constraints: " + s.constraints().values().size());
 	        
             for (ForeignKey fk : s.foreignKeys().values()) {
-                Statement stmt = new DropConstraint(fk);
+                Statement stmt = new AlterTableDropConstraint(fk);
                 statements.add(stmt);                
             }
         }

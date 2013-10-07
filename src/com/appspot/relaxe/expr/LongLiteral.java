@@ -6,9 +6,11 @@
  */
 package com.appspot.relaxe.expr;
 
+import com.appspot.relaxe.types.PrimitiveType;
+
 public class LongLiteral
 	extends SimpleElement
-	implements Token {
+	implements ValueExpression, Token {
 
 	/**
 	 * 
@@ -34,12 +36,22 @@ public class LongLiteral
 
 	@Override
 	public void traverse(VisitContext vc, ElementVisitor v) {
-		v.start(vc, this);		
-		v.end(this);			
+		v.start(vc, (Token) this);
+		v.end(this);	
 	}
 
 	@Override
 	public boolean isOrdinary() {
 		return true;
+	}
+
+	@Override
+	public int getType() {
+		return PrimitiveType.BIGINT;
+	}
+
+	@Override
+	public Identifier getColumnName() {
+		return null;
 	}		
 }

@@ -3,6 +3,8 @@
  */
 package com.appspot.relaxe.expr;
 
+import com.appspot.relaxe.expr.ddl.DefaultDefinition;
+
 
 public class TokenVisitor implements ElementVisitor {
 
@@ -122,6 +124,11 @@ public class TokenVisitor implements ElementVisitor {
 
 	@Override
 	public VisitContext start(VisitContext vc, Name e) {
+		return null;
+	}
+	
+	@Override
+	public VisitContext start(VisitContext vc, DefaultDefinition e) {
 		return null;
 	}
 }

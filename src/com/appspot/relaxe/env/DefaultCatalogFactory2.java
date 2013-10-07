@@ -360,14 +360,18 @@ public class DefaultCatalogFactory2
 		ResultSet rs = null;
 		
 		try {
+			logger.debug("addColumns: " + tb.getName().getUnqualifiedName());
+			
 			rs = getColumnsForTable(meta, tb.getName());
 			
 			ResultSetMetaData rsmd = rs.getMetaData();
-			int cc = rsmd.getColumnCount();
+			int cc = rsmd.getColumnCount();			
 			
 			while (rs.next()) {
 				Column column = createColumn(rs, cc);
 				tb.add(column);
+				
+				logger.debug(column.getColumnName().getName() + ": (" + column.getColumnDefault() + ")");				
 			}
 		}
 		finally {
@@ -441,7 +445,7 @@ public class DefaultCatalogFactory2
 						
 		String remarks = rs.getString(12);
 		String columnDefault = rs.getString(13);
-
+				
 //		col.getDataTypeImpl().setCharOctetLength(rs.getInt(16));
 		int op = rs.getInt(17);
 		
@@ -452,6 +456,8 @@ public class DefaultCatalogFactory2
 			"YES".equals(ais) ? Boolean.TRUE :
 			"NO".equals(ais) ? Boolean.FALSE :
 			null;
+		
+		
 		
 		
 		Identifier columnName = id(name);

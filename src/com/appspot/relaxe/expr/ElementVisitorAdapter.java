@@ -3,6 +3,8 @@
  */
 package com.appspot.relaxe.expr;
 
+import com.appspot.relaxe.expr.ddl.DefaultDefinition;
+
 
 public class ElementVisitorAdapter implements ElementVisitor {
 
@@ -118,6 +120,11 @@ public class ElementVisitorAdapter implements ElementVisitor {
 
 	@Override
 	public VisitContext start(VisitContext vc, Name e) {
+		return null;
+	}
+
+	@Override
+	public VisitContext start(VisitContext vc, DefaultDefinition e) {
 		return null;
 	}
 }

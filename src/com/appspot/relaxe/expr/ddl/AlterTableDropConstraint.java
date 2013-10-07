@@ -13,7 +13,7 @@ import com.appspot.relaxe.meta.Constraint;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.PrimaryKey;
 
-public class DropConstraint
+public class AlterTableDropConstraint
     extends Statement {
 
     /**
@@ -26,21 +26,21 @@ public class DropConstraint
     /**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected DropConstraint() {
+	protected AlterTableDropConstraint() {
 	}
 
-    public DropConstraint(PrimaryKey pk) {
+    public AlterTableDropConstraint(PrimaryKey pk) {
         this(pk, pk.getTable());
     }
 
-    public DropConstraint(ForeignKey fk) {
+    public AlterTableDropConstraint(ForeignKey fk) {
         this(fk, fk.getReferencing());
     }
     
-    private DropConstraint(Constraint constraint, BaseTable t) {
-        super(Name.DROP_CONSTRAINT);
+    private AlterTableDropConstraint(Constraint constraint, BaseTable t) {
+        super(Name.ALTER_TABLE);
         this.constraint = constraint.getName();        
-        this.table = relativize(t.getName());
+        this.table = relativize(t.getName());                
     }
     
     @Override
@@ -52,4 +52,13 @@ public class DropConstraint
         SQLKeyword.CONSTRAINT.traverse(vc, v);
         this.constraint.getUnqualifiedName().traverse(vc, v);                
     }
+    
+    
+    public SchemaElementName getTable() {
+		return table;
+	}
+    
+    public SchemaElementName getConstraint() {
+		return constraint;
+	}
 }

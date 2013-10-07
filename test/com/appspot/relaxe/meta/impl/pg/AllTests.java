@@ -12,9 +12,9 @@ public class AllTests {
         TestSuite suite = new TestSuite("Test for com.appspot.relaxe.meta.impl.pg");
         //$JUnit-BEGIN$
         suite.addTestSuite(PGEnvironmentTest.class);
-        suite.addTestSuite(PGDumpMetaTest.class);
-        suite.addTestSuite(PGRestoreTest.class);
-        suite.addTestSuite(PGWellKnownTableTest.class);
+//        suite.addTestSuite(PGDumpMetaTest.class);
+//        suite.addTestSuite(PGRestoreTest.class);
+//        suite.addTestSuite(PGWellKnownTableTest.class);
         //$JUnit-END$
         return suite;
     }
