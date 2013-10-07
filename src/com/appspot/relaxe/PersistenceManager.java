@@ -701,40 +701,7 @@ public class PersistenceManager<
     	
         this.target = target;
     }
-
-//    private EntityQueryPredicate getPKPredicate(E pe)
-//        throws EntityException {
-//    	
-//    	
-//    	pe.isIdentified();
-//
-//        EntityMetaData<A, R, T, E, ?, ?, ?, ?> meta = pe.getMetaData();
-//        // Set<Column> pkcols = meta.getPKDefinition();
-//        Collection<Column> pkcols = meta.getBaseTable().getPrimaryKey().getColumnMap().values();
-//
-//        if (pkcols.isEmpty()) {
-//            throw new EntityException("no pk-columns available for entity type " + pe.type());
-//        }
-//
-//        Predicate p = null;
-//
-//        for (Column col : pkcols) {
-//            PrimitiveHolder<?, ?, ?> o = pe.get(col);
-//
-//            // to successfully create a pk predicate
-//            // every component must be set:
-//            if (o == null) {
-//                return null;
-//            }
-//
-//            ColumnReference cr = new ColumnReference(tref, col);
-//            ValueExpression param = createValueExpression(col, o.self());
-//            p = AndPredicate.newAnd(p, eq(cr, param));
-//        }
-//
-//        return p;
-//    }
-    
+   
     private Predicate getPKPredicate(TableReference tref, E pe)
             throws EntityException {
         	
