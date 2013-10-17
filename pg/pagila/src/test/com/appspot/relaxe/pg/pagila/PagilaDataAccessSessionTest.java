@@ -140,6 +140,7 @@ public class PagilaDataAccessSessionTest
 								
 		Film.MetaData meta = Film.Type.TYPE.getMetaData();
 		
+		
 		Film.Query q = new Film.Query(qeb.newQueryElement());
 						
 		List<Film> list = es.load(q, null);
@@ -147,9 +148,13 @@ public class PagilaDataAccessSessionTest
 		assertNotNull(list);
 		assertTrue(list.size() > 10);			
 		
-		for (Film film : list) {
-			assertNotNull(film);			
-			assertEquals(meta.attributes(), film.attributes());			
+		for (Film film : list) {			
+			assertNotNull(film);
+			logger().debug("film: " + film.getContent().getFilmId());
+			logger().debug("film.attributes(): " + film.attributes());
+			logger().debug("meta.attributes(): " + meta.attributes());
+			
+			assertEquals(meta.attributes(), film.attributes());
 		}
 	}
 		

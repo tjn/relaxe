@@ -7,9 +7,12 @@
 package com.appspot.relaxe.meta.impl.mysql;
 
 import com.appspot.relaxe.expr.Identifier;
+import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.DefaultDefinition;
 import com.appspot.relaxe.meta.AbstractIdentifierComparator;
 import com.appspot.relaxe.meta.Column;
+import com.appspot.relaxe.meta.DataTypeMap;
+import com.appspot.relaxe.meta.DefaultDataTypeMap;
 import com.appspot.relaxe.meta.NullComparator;
 import com.appspot.relaxe.meta.SerializableEnvironment;
 
@@ -23,6 +26,7 @@ public class MySQLEnvironment
 		
 	private static MySQLEnvironment instance;
 	private final transient MySQLIdentifierRules identifierRules = new MySQLIdentifierRules();
+	private MySQLDataTypeMap dataTypeMap = new MySQLDataTypeMap();
 	
 	public static class MySQLIdentifierComparator
 		extends AbstractIdentifierComparator {
@@ -51,6 +55,12 @@ public class MySQLEnvironment
 	}
 	
 	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */	
+	private MySQLEnvironment() {
+	}	
+	
 	public static MySQLEnvironment environment() {
 		if (instance == null) {
 			instance = new MySQLEnvironment();			
@@ -67,5 +77,19 @@ public class MySQLEnvironment
 	@Override
 	public DefaultDefinition newDefaultDefinition(Column col) {
 		return null;
+	}
+	
+	@Override
+	public DataTypeMap getDataTypeMap() {
+		return this.dataTypeMap;
+	}
+	
+	private static class MySQLDataTypeMap
+		extends DefaultDataTypeMap {
+
+		@Override
+		protected SchemaElementName newName(String typeName) {
+			return environment().getIdentifierRules().newName(typeName);
+		}		
 	}
 }

@@ -1,26 +1,12 @@
 #!/bin/sh
 
+echo $TARGET
+
 ROOT=$(dirname $0)/..
-TARGET=pg
-JARDIR=$ROOT/lib
-GENSRC=$ROOT/out/src
-
-mkdir -p $ROOT/gen
-mkdir -p $GENSRC
-
-JDBC_CONFIG=$ROOT/pg.properties
-JDBC_URL=jdbc:postgresql:test
+IMPDIR=pg
+JDBC_CONFIG=$ROOT/config/$IMPDIR/$TARGET.properties
 ENV=com.appspot.relaxe.env.pg.PGImplementation
-ROOT_PACKAGE=com.appspot.relaxe.gen.ent
-CC_PACKAGE=com.appspot.relaxe.genctx
-
-# echo $JARDIR
-
-# Build java classpath:
-META_GEN_CLASSPATH=$ROOT/classes
-META_GEN_CLASSPATH=$META_GEN_CLASSPATH:$JARDIR/postgresql-8.4-701.jdbc3.jar
-META_GEN_CLASSPATH=$META_GEN_CLASSPATH:$JARDIR/util.jar
-META_GEN_CLASSPATH=$META_GEN_CLASSPATH:$JARDIR/log4j.jar
+META_GEN_CLASSPATH=$ROOT/lib/postgresql-9.2-1002.jdbc4.jar
 
 . generate.sh
 

@@ -45,6 +45,8 @@ public interface PrimitiveHolder<
 	LongHolder asLongHolder();
 	
 	BooleanHolder asBooleanHolder();
+		
+	StringHolder<?, ?> asStringHolder();
 
 	OtherHolder<?, ?, ?> asOtherHolder(String typeName);
 	

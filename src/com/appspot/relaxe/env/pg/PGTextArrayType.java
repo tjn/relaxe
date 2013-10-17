@@ -21,7 +21,7 @@ public class PGTextArrayType
 	public VarcharType getElementType() {
 		return VarcharType.TYPE;
 	}
-
+	
 	@Override
 	public String getName() {
 		return "_text";

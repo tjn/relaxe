@@ -24,4 +24,9 @@ public class DecimalType
 	public DecimalType self() {
 		return this;
 	}
+	
+	@Override
+	public String getName() {
+		return "DECIMAL";
+	}
 }

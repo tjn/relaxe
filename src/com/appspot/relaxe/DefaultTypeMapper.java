@@ -58,9 +58,7 @@ import com.appspot.relaxe.ent.value.VarcharAccessor;
 import com.appspot.relaxe.ent.value.VarcharKey;
 import com.appspot.relaxe.map.AttributeInfo;
 import com.appspot.relaxe.map.TypeMapper;
-import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
-import com.appspot.relaxe.meta.Table;
 import com.appspot.relaxe.rpc.BooleanHolder;
 import com.appspot.relaxe.rpc.CharHolder;
 import com.appspot.relaxe.rpc.DateHolder;
@@ -85,6 +83,7 @@ import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.LongType;
 import com.appspot.relaxe.types.LongVarBinaryType;
 import com.appspot.relaxe.types.OtherType;
+import com.appspot.relaxe.types.PrimitiveType;
 import com.appspot.relaxe.types.TimeType;
 import com.appspot.relaxe.types.TimestampType;
 import com.appspot.relaxe.types.VarcharType;
@@ -94,10 +93,77 @@ import com.appspot.relaxe.types.VarcharType;
 public class DefaultTypeMapper
 	implements TypeMapper {
 	
+	
+	public static class Key
+		implements Comparable<Key> {
+		private int type;
+		private String name;
+		private int hash;
+		
+		public Key(int type, String name) {
+			super();
+			this.type = type;
+			this.name = name;
+			this.hash = (type ^ ((name == null) ? 0 : name.hashCode()));
+		}
+		
+		
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == null || obj == this) {
+				return (obj == this);
+			}
+			
+			if (!(obj instanceof Key)) {
+				return false;				
+			}
+			
+			Key key = (Key) obj;
+		
+			return (key.type == this.type) && 
+				   (this.name == null) ? (key.name == null) : this.name.equals(key.name);			
+		}
+		
+		@Override
+		public int hashCode() {
+			return hash;
+		}
+
+		@Override
+		public int compareTo(Key o) {
+			int result = this.type - o.type;
+			
+			if (result != 0) {
+				return result > 0 ? 1 : -1;
+			}
+			
+			if (this.name == null) {
+				return (o.name == null) ? 0 : 1;
+			}
+						
+			return this.name.compareTo(o.name);
+		}
+	}
+	
+	
+	
+	
+	
 	private Map<String, AttributeInfo> otherAttributeTypeMap;
 	private Map<String, AttributeInfo> distinctAttributeTypeMap;
 	private Map<String, AttributeInfo> arrayAttributeTypeMap;
 	
+	private Map<Key, AttributeInfo> attributeTypeMap;
+	
+	protected void register(PrimitiveType<?> type, AttributeInfo info) {
+		register(type.getSqlType(), type.getName(), info);		
+	}
+	
+	protected void register(int type, String name, AttributeInfo info) {
+		getAttributeTypeMap().put(new Key(type, name), info);
+	}
+		
 	protected void register(OtherType<?> otherType, AttributeInfo info) {		
 		String name = otherType.getName();
 						
@@ -122,24 +188,34 @@ public class DefaultTypeMapper
 	}
 	
 
-	protected AttributeInfo getOtherAttributeInfo(Table table, Column c, String columnTypeName) {
-		return getOtherAttributeTypeMap().get(columnTypeName);
+	protected AttributeInfo getOtherAttributeInfo(DataType dataType) {
+		return getOtherAttributeTypeMap().get(dataType.getTypeName());
 	}
 	
-	protected AttributeInfo getDistinctAttributeInfo(Table table, Column c, String columnTypeName) {
-		return getDistinctAttributeTypeMap().get(columnTypeName);
+	protected AttributeInfo getDistinctAttributeInfo(DataType dataType) {
+		return getDistinctAttributeTypeMap().get(dataType.getTypeName());
 	}
 	
-	protected AttributeInfo getArrayAttributeInfo(Table table, Column c, String columnTypeName) {
-		return getArrayAttributeTypeMap().get(columnTypeName);
+	protected AttributeInfo getArrayAttributeInfo(DataType dataType) {
+		return getArrayAttributeTypeMap().get(dataType.getTypeName());
 	}
 	    
     @Override
-	public AttributeInfo getAttributeInfo(Table table, Column c) {
-    	DefaultAttributeInfo da = new DefaultAttributeInfo();
-        
-    	DataType dataType = c.getDataType();
+	public AttributeInfo getAttributeInfo(DataType dataType) {
+    	            	
         int type = dataType.getDataType();
+                
+        Map<Key, AttributeInfo> am = getAttributeTypeMap();
+        
+                
+        AttributeInfo ai = am.isEmpty() ? null : am.get(new Key(dataType.getDataType(), dataType.getTypeName()));
+        	
+        if (ai != null) {        	
+        	return ai;
+        }
+        
+        DefaultAttributeInfo da = new DefaultAttributeInfo();
+        
         
         switch (type) {
 	        case Types.CHAR:
@@ -265,19 +341,16 @@ public class DefaultTypeMapper
 	            break;	            
 	            
 	        case Types.DISTINCT:
-		        {
-	        		String typeName = c.getDataType().getTypeName();
-	        		return getDistinctAttributeInfo(table, c, typeName);
+		        {	        		
+	        		return getDistinctAttributeInfo(dataType);
 		        }
 	        case Types.OTHER:
-	        	{
-		        	String typeName = c.getDataType().getTypeName();
-		        	return getOtherAttributeInfo(table, c, typeName);
+	        	{		        
+		        	return getOtherAttributeInfo(dataType);
 	        	}	        
 	        case Types.ARRAY:
-	        	{
-		        	String typeName = c.getDataType().getTypeName();
-		        	return getArrayAttributeInfo(table, c, typeName);	        		
+	        	{		        	
+		        	return getArrayAttributeInfo(dataType);	        		
 	        	}
 	        default:      
 	            break;
@@ -311,6 +384,14 @@ public class DefaultTypeMapper
 		}
 
 		return arrayAttributeTypeMap;		
+	}
+    
+    private Map<Key, AttributeInfo> getAttributeTypeMap() {
+		if (attributeTypeMap == null) {
+			attributeTypeMap = new TreeMap<Key, AttributeInfo>();			
+		}
+
+		return attributeTypeMap;
 	}
 }
 

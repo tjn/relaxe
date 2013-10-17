@@ -19,6 +19,7 @@ public abstract class DistinctType<T extends DistinctType<T>>
 	 * 
 	 * @return
 	 */
+	@Override
 	public abstract String getName();
 	
 	@Override

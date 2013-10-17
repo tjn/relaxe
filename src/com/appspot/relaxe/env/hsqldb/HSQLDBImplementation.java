@@ -14,15 +14,13 @@ public class HSQLDBImplementation
 	extends DefaultImplementation<HSQLDBImplementation> {
 
 	private SQLSyntax syntax;
-    private HSQLDBEnvironment environment;
-    
+        
 	public HSQLDBImplementation() {
-		environment = new HSQLDBEnvironment();
 	}
 
 	@Override
-	public CatalogFactory catalogFactory() {
-		return new HSQLDBCatalogFactory(this.environment);
+	public CatalogFactory catalogFactory() {		
+		return new HSQLDBCatalogFactory(HSQLDBEnvironment.environment());
 	}
 
 //	@Override
@@ -149,7 +147,7 @@ public class HSQLDBImplementation
 
 
 	public HSQLDBEnvironment getEnvironment() {
-		return environment;
+		return HSQLDBEnvironment.environment();
 	}
 	
 //	@Override
@@ -182,7 +180,7 @@ public class HSQLDBImplementation
 	
 	@Override
 	public SerializableEnvironment environment() {
-		return this.environment;		
+		return HSQLDBEnvironment.environment();		
 	}
 		
 //	public java.sql.Driver getDriver() {		

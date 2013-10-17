@@ -11,8 +11,8 @@ import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.BaseTableElement;
 import com.appspot.relaxe.expr.ddl.ColumnDefinition;
 import com.appspot.relaxe.expr.ddl.CreateTable;
-import com.appspot.relaxe.expr.ddl.Int;
-import com.appspot.relaxe.expr.ddl.Varchar;
+import com.appspot.relaxe.expr.ddl.types.IntTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
 import com.appspot.relaxe.meta.Environment;
 
 /***
@@ -37,7 +37,7 @@ public class TableDesign {
             }
             
             this.environment = env;
-            this.builder = new CreateTable.Builder(env.getIdentifierRules(), table);
+            this.builder = new CreateTable.Builder(table);
         }
         
         public CreateTable newCreateTable() {
@@ -59,7 +59,7 @@ public class TableDesign {
         }
         
         public void varchar(String name, int len, boolean nullable) {
-            add(new ColumnDefinition(name(name), Varchar.get(len)));
+            add(new ColumnDefinition(name(name), VarcharTypeDefinition.get(len)));
         }
         
         public void serial(String name) {
@@ -77,7 +77,7 @@ public class TableDesign {
         }
         
         public void integer(String name, boolean nullable) {
-            add(new ColumnDefinition(name(name), new Int()));
+            add(new ColumnDefinition(name(name), IntTypeDefinition.DEFINITION));
         }
         
         public void integer(String name) {

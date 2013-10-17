@@ -3,6 +3,7 @@
  */
 package com.appspot.relaxe.meta;
 
+import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.DefaultDefinition;
 
 public class PortableEnvironment
@@ -15,7 +16,8 @@ public class PortableEnvironment
 
 	private final PortableIdentifierRules identifierRules = new PortableIdentifierRules();
 	
-	public static PortableEnvironment environment = new PortableEnvironment();
+	private static PortableEnvironment environment = new PortableEnvironment();
+	private DataTypeMap dataTypeMap = new PortableDataTypeMap();	
 	
 	public static PortableEnvironment environment() {
 		return PortableEnvironment.environment;
@@ -29,5 +31,20 @@ public class PortableEnvironment
 	@Override
 	public DefaultDefinition newDefaultDefinition(Column col) {
 		return null;
+	}
+	
+	@Override
+	public DataTypeMap getDataTypeMap() {
+		return this.dataTypeMap;
+	}
+	
+	private static class PortableDataTypeMap
+		extends DefaultDataTypeMap {
+	
+		@Override
+		protected SchemaElementName newName(String typeName) {
+			return PortableEnvironment.environment().getIdentifierRules().newName(typeName);
+		}		
 	}	
+	
 }

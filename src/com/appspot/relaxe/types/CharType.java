@@ -24,4 +24,9 @@ public class CharType
 	public CharType self() {
 		return this;
 	}	
+	
+	@Override
+	public String getName() {
+		return "CHAR";
+	}
 }

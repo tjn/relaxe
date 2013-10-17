@@ -25,4 +25,9 @@ public abstract class StringHolder<T extends PrimitiveType<T>, H extends StringH
 	public String value() {
 		return this.value;
 	}
+	
+	@Override
+	public StringHolder<?, ?> asStringHolder() {
+		return this;
+	}
 }

@@ -1,12 +1,9 @@
 @echo off
 
-REM tstamp
-
 SET ROOT=%~dp0..
-REM SET TARGET=pg
 SET IMPDIR=pg
 SET JDBC_CONFIG=%ROOT%\config\%IMPDIR%\%TARGET%.properties
-SET ENV=com.appspot.relaxe.env.pg.PGImplementation
+SET ENV=com.appspot.relaxe.meta.impl.pg.PGImplementation
 
 echo %TARGET%
 

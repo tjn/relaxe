@@ -6,7 +6,7 @@ package com.appspot.relaxe;
 import java.util.List;
 
 import com.appspot.relaxe.env.Implementation;
-import com.appspot.relaxe.env.pg.PGImplementation;
+import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 
 
 public class ImplementationVariable<I extends Implementation<I>> {

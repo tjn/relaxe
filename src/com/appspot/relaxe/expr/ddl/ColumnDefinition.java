@@ -28,23 +28,23 @@ public class ColumnDefinition
 	protected ColumnDefinition() {
 	}
     
-    public ColumnDefinition(Identifier name, ColumnDataType dataType) {
-        this(name, dataType, null, null);
+    public ColumnDefinition(Identifier name, ColumnDataType type) {
+        this(name, type, null, null);
     }
     
-    public ColumnDefinition(Identifier name, ColumnDataType dataType, DefaultDefinition defaultDefinition, ElementList<ColumnConstraint> constraintList) {
+    public ColumnDefinition(Identifier name, ColumnDataType type, DefaultDefinition defaultDefinition, ElementList<ColumnConstraint> constraintList) {
         super();
         
         if (name == null) {
             throw new NullPointerException("'name' must not be null");
         }
         
-        if (dataType == null) {
+        if (type == null) {
             throw new NullPointerException("'dataType' must not be null");
         }
         
         this.name = name;
-        this.dataType = dataType;
+        this.dataType = type;
         this.defaultDefinition = defaultDefinition;
         this.constraintList = constraintList;
     }

@@ -11,7 +11,6 @@ import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.SimpleUnificationContext;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.pg.PGImplementation;
 import com.appspot.relaxe.gen.pagila.ent.pub.Actor;
 import com.appspot.relaxe.gen.pagila.ent.pub.Actor.Attribute;
 import com.appspot.relaxe.gen.pagila.ent.pub.Film;
@@ -22,6 +21,7 @@ import com.appspot.relaxe.gen.pagila.ent.pub.Actor.Holder;
 import com.appspot.relaxe.gen.pagila.ent.pub.Actor.MetaData;
 import com.appspot.relaxe.gen.pagila.ent.pub.Actor.Reference;
 import com.appspot.relaxe.gen.pagila.ent.pub.Actor.Type;
+import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 import com.appspot.relaxe.pg.pagila.PagilaPersistenceContext;
 
 
@@ -43,7 +43,7 @@ public class PagilaPersistenceManagerTest
 	    ac.setFirstName("Dana");
 	    ac.setLastName("Brooks");
 	
-	    PersistenceManager<Actor.Attribute, Reference, Type, Actor, Holder, Factory, MetaData, Actor.Content, Actor.QueryElement> pm = create(a);
+	    PersistenceManager<Actor.Attribute, Reference, Type, Actor, Holder, Factory, MetaData, Actor.Content> pm = create(a);
 	    
 	    pm.merge(c);
 	    c.commit();        

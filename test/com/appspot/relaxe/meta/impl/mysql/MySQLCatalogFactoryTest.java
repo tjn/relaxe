@@ -125,7 +125,7 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase<MySQLImplementation>
     
     @Override
 	public MySQLCatalogFactory factory() {
-        MySQLEnvironment e = new MySQLEnvironment();
+        MySQLEnvironment e = MySQLEnvironment.environment();
         return new MySQLCatalogFactory(e);
     }
     

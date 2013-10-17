@@ -17,6 +17,8 @@ public abstract class DefaultEnvironment
 	private static final long serialVersionUID = -6518870057408097303L;
 	private IdentifierRules identifierRules = new SQLIdentifierRules();
 	
+	// private DefaultDataTypeMap dataTypeMap = new DefaultDataTypeMap(); 
+	
 	private final SchemaElementMap<ForeignKey> emptyForeignKeyMap = new EmptyForeignKeyMap(this); 
 				
 	protected Comparator<Identifier> createIdentifierComparator() {
@@ -34,7 +36,9 @@ public abstract class DefaultEnvironment
 	}
 	
 	
+	@Override
 	public DefaultDefinition newDefaultDefinition(Column col) {
 		return null;
-	};
+	}
+	
 }

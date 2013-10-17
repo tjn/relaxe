@@ -6,8 +6,6 @@ package com.appspot.relaxe.meta.impl.pg;
 
 import com.appspot.relaxe.AbstractUnitTest;
 import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.pg.PGImplementation;
-import com.appspot.relaxe.env.pg.PGPersistenceContext;
 
 
 

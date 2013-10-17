@@ -28,7 +28,6 @@ public class MySQLImplementation
 	extends DefaultImplementation<MySQLImplementation> {
 
 	private MySQLSyntax syntax;
-    private MySQLEnvironment environment;
     
 	@Override
 	public CatalogFactory catalogFactory() {
@@ -88,11 +87,7 @@ public class MySQLImplementation
 	
 	@Override
 	public MySQLEnvironment environment() {
-		if (environment == null) {
-			environment = new MySQLEnvironment();			
-		}
-
-		return environment;
+		return MySQLEnvironment.environment();
 	}
 	
 	@Override

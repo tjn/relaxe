@@ -76,8 +76,7 @@ public class PersistenceManager<
     H extends ReferenceHolder<A, R, T, E, H, M, C>,
     F extends EntityFactory<E, H, M, F, C>,
     M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-    C extends Content,
-	Q extends EntityQueryElement<A, R, T, E, H, F, M, C, Q>
+    C extends Content
 >
 {
 	private static final QueryProcessor NO_OPERATION = new QueryProcessorAdapter();
@@ -613,7 +612,7 @@ public class PersistenceManager<
 								
 			if (ms == MergeMode.ALL || (!rv.isIdentified())) {
 				logger().debug("merging dependency: " + id);
-				PersistenceManager<?, ?, ?, ?, ?, ?, ?, ?, ?> pm = create(rv, getPersistenceContext());
+				PersistenceManager<?, ?, ?, ?, ?, ?, ?, ?> pm = create(rv, getPersistenceContext());
 				pm.merge(c);
 			}
 			else {
@@ -762,11 +761,10 @@ public class PersistenceManager<
 		DH extends ReferenceHolder<DA, DR, DT, DE, DH, DM, DC>,
 		DF extends EntityFactory<DE, DH, DM, DF, DC>,
 		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM, DC>,
-		DC extends Content,
-	    QE extends EntityQueryElement<DA, DR, DT, DE, DH, DF, DM, DC, QE>
+		DC extends Content
 	>
-	PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC, QE> create(Entity<DA, DR, DT, DE, DH, DF, DM, DC> e, PersistenceContext<?> pc) {
-		PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC, QE> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC, QE>(e.self(), pc, getMergeMode(), getUnificationContext());
+	PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> create(Entity<DA, DR, DT, DE, DH, DF, DM, DC> e, PersistenceContext<?> pc) {
+		PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC>(e.self(), pc, getMergeMode(), getUnificationContext());
 		return pm;
 	}
 

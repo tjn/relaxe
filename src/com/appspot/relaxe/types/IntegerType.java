@@ -25,4 +25,9 @@ public class IntegerType
 	public IntegerType self() {
 		return this;
 	}
+	
+	@Override
+	public String getName() {
+		return "INTEGER";
+	}
 }

@@ -25,4 +25,9 @@ public class BooleanType
 	public BooleanType self() {
 		return this;
 	}
+	
+	@Override
+	public String getName() {
+		return "BOOLEAN";
+	}
 }

@@ -13,18 +13,19 @@ public abstract class OtherType<T extends OtherType<T>>
 
 	protected OtherType() {		
 	}
+
+	@Override
+	public final int getSqlType() {
+		return PrimitiveType.OTHER;
+	}
 	
 	/**
 	 * The name of the other type.
 	 * 
 	 * @return
-	 */
-	public abstract String getName();
-	
+	 */	
 	@Override
-	public final int getSqlType() {
-		return PrimitiveType.OTHER;
-	}
+	public abstract String getName();
 
 	
 	@Override

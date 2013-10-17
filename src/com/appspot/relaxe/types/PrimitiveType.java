@@ -49,5 +49,7 @@ public interface PrimitiveType<
 	int getSqlType();
 	OtherType<?> asOtherType();	
 	ArrayType<?, ?> asArrayType();
+	
+	String getName();
 
 }

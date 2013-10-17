@@ -32,6 +32,18 @@ public class IntLiteral
 	public IntLiteral(int value) {
 		this.value = value;
 	}
+	
+	public static IntLiteral valueOf(int value) {
+		switch (value) {
+		case 0:
+			return ZERO;
+		case 1:
+			return ONE;
+		default:			
+		}
+		
+		return new IntLiteral(value);
+	}
 
 	@Override
 	public String getTerminalSymbol() {

@@ -432,12 +432,18 @@ public class DefaultCatalogFactory2
 		String typeName = rs.getString(6);
 		
 		// DefaultMutableColumn col = null;
-
-		DataTypeImpl dataType = new DataTypeImpl(type, typeName);			
-        dataType.setSize(rs.getInt(7));
-        dataType.setDecimalDigits(rs.getInt(9));
-        dataType.setNumPrecRadix(rs.getInt(10));
-			    			
+		
+		int v = 0;
+		
+		v = rs.getInt(7);
+		Integer size = rs.wasNull() ? null : Integer.valueOf(v); 
+		
+        v = rs.getInt(9);
+        Integer dd = rs.wasNull() ? null : Integer.valueOf(v);
+        
+        v = rs.getInt(10);
+        Integer radix = rs.wasNull() ? null : Integer.valueOf(v);
+					    			
 			// col = new DefaultMutableColumn(this.table, ci, dataType, ai);
 				
 		int nullability = rs.getInt(11);
@@ -445,6 +451,12 @@ public class DefaultCatalogFactory2
 						
 		String remarks = rs.getString(12);
 		String columnDefault = rs.getString(13);
+		
+		v = rs.getInt(16);		
+        Integer colen = rs.wasNull() ? null : Integer.valueOf(v);
+        
+        
+        logger.debug(name + " => col-char-octet-len=" + colen);
 				
 //		col.getDataTypeImpl().setCharOctetLength(rs.getInt(16));
 		int op = rs.getInt(17);
@@ -457,9 +469,9 @@ public class DefaultCatalogFactory2
 			"NO".equals(ais) ? Boolean.FALSE :
 			null;
 		
-		
-		
-		
+				
+		DataTypeImpl dataType = new DataTypeImpl(type, typeName, colen, dd, radix, size);
+				
 		Identifier columnName = id(name);
 				
 		ImmutableColumn col = new ImmutableColumn(columnName, op, dataType, ai, remarks, definitelyNotNullable, columnDefault);

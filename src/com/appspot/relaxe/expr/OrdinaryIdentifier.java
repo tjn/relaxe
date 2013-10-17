@@ -19,7 +19,7 @@ public class OrdinaryIdentifier
 	private OrdinaryIdentifier() {
 	}
 	
-	OrdinaryIdentifier(String name) {
+	public OrdinaryIdentifier(String name) {
 		super(name);		
 	}
 

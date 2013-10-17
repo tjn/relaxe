@@ -219,7 +219,7 @@ public abstract class DefaultEntityBuilder<
 					throws EntityRuntimeException {
 				
 				PrimitiveHolder<?, ?, ?> h = src.get(index);
-				VH vc = key.as(h);				
+				VH vc = key.as(h);
 				key.set(dest, vc);
 				return vc;
 			}

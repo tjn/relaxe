@@ -295,11 +295,10 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content,
-	    RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>
+		C extends Content
 	>
-	PersistenceManager<A, R, T, E, H, F, M, C, RE> create(E e) {
-		PersistenceManager<A, R, T, E, H, F, M, C, RE> pm = new PersistenceManager<A, R, T, E, H, F, M, C, RE>(e, getPersistenceContext(), null);
+	PersistenceManager<A, R, T, E, H, F, M, C> create(E e) {
+		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, getPersistenceContext(), null);
 		return pm;
 	}
 	

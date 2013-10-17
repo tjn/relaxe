@@ -6,10 +6,6 @@
  */
 package com.appspot.relaxe.expr;
 
-import java.util.Date;
-
-import com.appspot.relaxe.types.PrimitiveType;
-
 public abstract class DateTimeLiteral	
 	implements Token, ValueExpression {
 	

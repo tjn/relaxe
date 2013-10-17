@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.appspot.relaxe.env.CatalogFactory;
-import com.appspot.relaxe.env.pg.PGImplementation;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.IllegalIdentifierException;
 import com.appspot.relaxe.meta.BaseTable;

@@ -12,8 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.appspot.relaxe.StatementExecutor;
-import com.appspot.relaxe.env.pg.PGCatalogFactory;
-import com.appspot.relaxe.env.pg.PGImplementation;
 import com.appspot.relaxe.env.util.ResultSetWriter;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.query.QueryException;

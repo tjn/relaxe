@@ -279,7 +279,7 @@ public class Builder
 //            generateTemplates(cat, getTemplateDir(), np);
 //            traverseFiles(getTemplateDir());
             
-            
+            logger.info("run - exit");
         } 
         catch (SQLException e) {
             logger().error(e.getMessage(), e);
@@ -385,9 +385,8 @@ public class Builder
         
         if (gen.check(cat, getTypeMapper(), details) > 0) {
         	logger().error(details);        	
-        	return;
+        	throw new RuntimeException("Generation failed: " + details);        
         }    	
-    	
     	
         final File sourceList = getSourceList(sourceRoot);            
         remove(sourceList);               

@@ -10,4 +10,6 @@ public interface Environment {
 	IdentifierRules getIdentifierRules();
 
 	DefaultDefinition newDefaultDefinition(Column col);
+	
+	DataTypeMap getDataTypeMap();
 }

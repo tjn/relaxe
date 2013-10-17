@@ -25,4 +25,9 @@ public class VarcharType
 	public VarcharType self() {
 		return this;
 	}
+	
+	@Override
+	public String getName() {
+		return "VARCHAR";
+	}
 }

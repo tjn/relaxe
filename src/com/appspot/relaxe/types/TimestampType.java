@@ -24,4 +24,9 @@ public class TimestampType
 	public TimestampType self() {
 		return this;
 	}
+	
+	@Override
+	public String getName() {
+		return "TIMESTAMP";
+	}
 }

@@ -13,5 +13,5 @@ public interface ColumnMap
 	 * @param index
 	 * @return
 	 */
-	Column get(int index);	
+	Column get(int index);
 }

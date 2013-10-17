@@ -13,14 +13,6 @@ public abstract class EnumType<T extends EnumType<T, E>, E extends Enum<E> & Enu
 
 	protected EnumType() {		
 	}
-	
-	/**
-	 * The name of the other type.
-	 * 
-	 * @return
-	 */
-	@Override
-	public abstract String getName();
-	
+		
 	public abstract Class<E> getValueType();	
 }

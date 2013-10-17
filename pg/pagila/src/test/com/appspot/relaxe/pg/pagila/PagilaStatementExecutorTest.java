@@ -5,9 +5,9 @@ package com.appspot.relaxe.pg.pagila;
 
 import com.appspot.relaxe.StatementExecutorTest;
 import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.pg.PGImplementation;
 import com.appspot.relaxe.gen.pagila.ent.pub.Actor;
 import com.appspot.relaxe.meta.BaseTable;
+import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 
 
 public class PagilaStatementExecutorTest

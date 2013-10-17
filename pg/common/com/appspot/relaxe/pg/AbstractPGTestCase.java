@@ -8,8 +8,8 @@ import java.util.Properties;
 
 import com.appspot.relaxe.AbstractUnitTest;
 import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.pg.PGImplementation;
-import com.appspot.relaxe.env.pg.PGPersistenceContext;
+import com.appspot.relaxe.meta.impl.pg.PGImplementation;
+import com.appspot.relaxe.meta.impl.pg.PGPersistenceContext;
 
 
 public abstract class AbstractPGTestCase

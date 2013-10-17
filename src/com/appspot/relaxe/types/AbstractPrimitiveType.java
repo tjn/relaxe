@@ -48,6 +48,7 @@ public abstract class AbstractPrimitiveType<
 		private static final long serialVersionUID = 910829028354006706L;
 		
 		private int sqlType;
+		private String name;
 				
 		/**
 		 * No-argument constructor for GWT Serialization
@@ -57,12 +58,18 @@ public abstract class AbstractPrimitiveType<
 		
 		public SerializableType(int sqlType, String name) {
 			this();
-			this.sqlType = sqlType;		
+			this.sqlType = sqlType;
+			this.name = name;
 		}
 
 		@Override
 		public int getSqlType() {
 			return sqlType;
+		}
+		
+		@Override
+		public String getName() {
+			return this.name;
 		}
 
 		@Override

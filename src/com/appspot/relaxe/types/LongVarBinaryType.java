@@ -25,5 +25,10 @@ public class LongVarBinaryType
 	@Override
 	public LongVarBinaryType self() {
 		return this;
-	}	
+	}
+	
+	@Override
+	public String getName() {
+		return "LONGVARBINARY";
+	}
 }

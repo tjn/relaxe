@@ -24,4 +24,9 @@ public class FloatType
 	public FloatType self() {
 		return this;
 	}
+	
+	@Override
+	public String getName() {
+		return "FLOAT";
+	}
 }

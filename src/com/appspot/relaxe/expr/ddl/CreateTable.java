@@ -15,14 +15,16 @@ import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.Symbol;
 import com.appspot.relaxe.expr.VisitContext;
+import com.appspot.relaxe.expr.ddl.types.CharTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.IntTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ColumnMap;
 import com.appspot.relaxe.meta.DataType;
+import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.meta.Environment;
-import com.appspot.relaxe.meta.IdentifierRules;
-import com.appspot.relaxe.meta.SchemaElement;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.meta.PrimaryKey;
 
 public class CreateTable
 	extends Statement {
@@ -31,6 +33,7 @@ public class CreateTable
 	 * 
 	 */
 	private static final long serialVersionUID = -5904813022152304570L;
+	
 	private SchemaElementName tableName;	
 	private ElementList<BaseTableElement> elementList;
 	
@@ -42,65 +45,73 @@ public class CreateTable
 	}
 	
 	public CreateTable(BaseTable table) {
+		this(null, table, true);
+	}
+	
+	public CreateTable(BaseTable table, boolean primaryKey) {
+		this(null, table, primaryKey);
+	}
+	
+	public CreateTable(DataTypeMap tm, BaseTable table, boolean primaryKey) {
 		super(Name.CREATE_TABLE);
 		
 		if (table == null) {
 			throw new NullPointerException("table");
 		}
+				
 		
 		List<BaseTableElement> elements = new ArrayList<BaseTableElement>();
 		
-		
 		ColumnMap cm = table.columnMap();
+		
+		ElementList<ColumnConstraint> nnc = new ElementList<ColumnConstraint>(Collections.singleton(NotNull.NOT_NULL));
+		Environment env = table.getEnvironment();
+		
+		if (tm == null) {			
+			tm = env.getDataTypeMap();	
+		}		
 				
 		for (Column col : cm.values()) {
-			DataType data = col.getDataType();			
-			SQLType type = getSQLType(data);
+			DataType t = col.getDataType();	
+			ColumnDataType type = tm.getSQLTypeDefinition(t);
 			
 			if (type == null) {
-				throw new RuntimeException("unsupported column type: " + data.getDataType() + " (" + data.getTypeName() + ")"); 
+				throw new RuntimeException(
+						concat("Column ", table.getQualifiedName(), ".", col.getColumnName().getName(), 
+								": unsupported column type: ", t.getDataType(), " (", t.getTypeName(), ") ", 
+								col.getColumnName().getName()));  
 			}
 						
-			ElementList<ColumnConstraint> cl = col.isDefinitelyNotNullable() ? 
-					new ElementList<ColumnConstraint>(Collections.singleton(NotNull.NOT_NULL)) :
-					null;
-			
-			
-			Environment env = table.getEnvironment();
+			ElementList<ColumnConstraint> cl = col.isDefinitelyNotNullable() ? nnc : null;			
 			DefaultDefinition dd = env.newDefaultDefinition(col);								
 									
 			ColumnDefinition cd = new ColumnDefinition(col.getColumnName(), type, dd, cl);
 			elements.add(cd);
 		}
 		
+		if (primaryKey) {				
+			PrimaryKey pk = table.getPrimaryKey();
+			
+			if (pk != null) {
+				elements.add(new PrimaryKeyConstraint(pk));
+			}
+		}
+		
 		this.tableName = table.getName();
 		this.elementList = new ElementList<BaseTableElement>(elements);
 	}
-
-	protected SQLType getSQLType(DataType data) {
-		int t = data.getDataType();
+	
 		
-		switch (t) {
-		case PrimitiveType.INTEGER:
-			return Int.INT;
-		case PrimitiveType.BIGINT:
-			return Int.BIG_INT;							
-		case PrimitiveType.SMALLINT:
-			return Int.SMALL_INT;							
-		case PrimitiveType.TINYINT:
-			return Int.TINY_INT;
-		case PrimitiveType.VARCHAR:
-		case PrimitiveType.LONGVARCHAR:
-			return Varchar.get(data.getCharOctetLength());
-		case PrimitiveType.CHAR:			
-			return Char.get(data.getCharOctetLength());		
-		default:
-			break;
+	private String concat(Object ... elems) {
+		StringBuilder buf = new StringBuilder();
+		
+		for (Object e : elems) {
+			buf.append(e);			
 		}
 		
-		return null;
-	}	
-		
+		return buf.toString();
+	}
+
 	public CreateTable(SchemaElementName tableName, ElementList<BaseTableElement> elementList) {
 		super(Name.CREATE_TABLE);
 		
@@ -120,8 +131,7 @@ public class CreateTable
 		
 		private List<BaseTableElement> elementList;
 		private SchemaElementName tableName;
-		private IdentifierRules identifierRules;
-		
+				
 		private List<BaseTableElement> getElementList() {
 			if (elementList == null) {
 				elementList = new ArrayList<BaseTableElement>();				
@@ -130,9 +140,8 @@ public class CreateTable
 			return elementList;
 		}
 		
-		public Builder(IdentifierRules identifierRules, SchemaElementName tableName) {
-			super();
-			this.identifierRules = identifierRules;
+		public Builder(SchemaElementName tableName) {
+			super();			
 			this.tableName = tableName;			
 		}
 
@@ -155,7 +164,19 @@ public class CreateTable
 		}
 		
 		public void addInteger(Identifier name, boolean nullable) {			
-            add(new ColumnDefinition(name, new Int()));
+            add(new ColumnDefinition(name, IntTypeDefinition.DEFINITION));
+        }
+		
+		public void add(Identifier name, ColumnDataType type, boolean nullable) {			
+            add(new ColumnDefinition(name, type));
+        }
+
+		public void addVarchar(Identifier name, int charOctetSize, boolean nullable) {			
+            add(name, VarcharTypeDefinition.get(charOctetSize), nullable);
+        }
+		
+		public void addChar(Identifier name, int charOctetSize, boolean nullable) {			
+            add(name, CharTypeDefinition.get(charOctetSize), nullable);
         }
 	}
 	

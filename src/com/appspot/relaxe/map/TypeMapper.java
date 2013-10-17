@@ -3,10 +3,9 @@
  */
 package com.appspot.relaxe.map;
 
-import com.appspot.relaxe.meta.Column;
-import com.appspot.relaxe.meta.Table;
+import com.appspot.relaxe.meta.DataType;
 
 public interface TypeMapper {
-
-	AttributeInfo getAttributeInfo(Table table, Column c);
+	
+	AttributeInfo getAttributeInfo(DataType dataType);
 }

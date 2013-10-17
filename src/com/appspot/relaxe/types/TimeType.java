@@ -25,4 +25,9 @@ public class TimeType
 	public TimeType self() {
 		return this;
 	}
+	
+	@Override
+	public String getName() {
+		return "TIME";
+	}
 }

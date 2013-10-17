@@ -109,4 +109,22 @@ public class AbstractIdentifierRules
 	public boolean isReservedWord(String word) {
 		return SQLKeyword.isKeyword(word);
 	}
+	
+	
+	@Override
+	public SchemaElementName newName(String name) 
+			throws IllegalArgumentException, IllegalIdentifierException {	
+		String[] tokens = name.split("\\.");
+		
+		switch (tokens.length) {
+		case 1:
+			return new SchemaElementName(null, toIdentifier(tokens[0]));
+		case 2:
+			return new SchemaElementName(null, toIdentifier(tokens[0]), toIdentifier(tokens[1]));
+		case 3:
+			return new SchemaElementName(toIdentifier(tokens[0]), toIdentifier(tokens[1]), toIdentifier(tokens[2]));
+		default:
+			throw new IllegalArgumentException("invalid name: " + name);			
+		}
+	}
 }

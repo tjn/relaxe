@@ -28,4 +28,9 @@ public class CharYearMonthIntervalType
 	public CharYearMonthIntervalType self() {
 		return this;
 	}
+	
+	@Override
+	public String getName() {
+		return "INTERVAL";
+	}
 }

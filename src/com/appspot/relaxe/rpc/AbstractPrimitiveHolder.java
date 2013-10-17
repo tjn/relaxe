@@ -62,6 +62,11 @@ public abstract class AbstractPrimitiveHolder<
 	}
 
 	@Override
+	public StringHolder<?, ?> asStringHolder() {
+		return null;
+	}
+	
+	@Override
 	public CharHolder asCharHolder() {
 		return null;
 	}

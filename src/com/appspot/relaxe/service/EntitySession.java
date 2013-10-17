@@ -29,9 +29,7 @@ public interface EntitySession {
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends com.appspot.relaxe.ent.Content,	    
-		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
-		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
+		C extends com.appspot.relaxe.ent.Content
 	>
 	E merge(E e) throws EntityException;
 	
@@ -43,9 +41,7 @@ public interface EntitySession {
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends com.appspot.relaxe.ent.Content,
-	    RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
-		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
+		C extends com.appspot.relaxe.ent.Content
 	>
 	E insert(E e)
 		throws EntityException;
@@ -59,9 +55,7 @@ public interface EntitySession {
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends com.appspot.relaxe.ent.Content,
-		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
-		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
+		C extends com.appspot.relaxe.ent.Content
 	>
 	E update(E e)
 		throws EntityException;	
@@ -74,9 +68,7 @@ public interface EntitySession {
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends com.appspot.relaxe.ent.Content,
-	    RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
-		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
+		C extends com.appspot.relaxe.ent.Content
 	>
 	void delete(E e)
 		throws EntityException;
@@ -90,9 +82,7 @@ public interface EntitySession {
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends com.appspot.relaxe.ent.Content,
-	    RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
-		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
+		C extends com.appspot.relaxe.ent.Content
 	>
 	E sync(E e) throws EntityException;	
 	
@@ -119,7 +109,7 @@ public interface EntitySession {
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends com.appspot.relaxe.ent.Content,		
+		C extends com.appspot.relaxe.ent.Content,
 	    RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>	
 	>
 	List<E> load(EntityQuery<A, R, T, E, H, F, M, C, RE> q, FetchOptions opts)

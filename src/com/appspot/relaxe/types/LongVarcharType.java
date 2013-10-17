@@ -24,4 +24,9 @@ public class LongVarcharType
 	public LongVarcharType self() {
 		return this;
 	}
+	
+	@Override
+	public String getName() {
+		return "LONGVARCHAR";
+	}
 }

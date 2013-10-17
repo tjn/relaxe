@@ -4,7 +4,7 @@
 package com.appspot.relaxe.pg.pagila.test;
 
 import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.pg.PGImplementation;
+import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 import com.appspot.relaxe.pg.AbstractPGTestCase;
 import com.appspot.relaxe.pg.pagila.PagilaPersistenceContext;
 

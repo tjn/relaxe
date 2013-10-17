@@ -26,7 +26,7 @@ import com.appspot.relaxe.expr.InsertStatement;
 import com.appspot.relaxe.expr.MutableValueParameter;
 import com.appspot.relaxe.expr.ValueRow;
 import com.appspot.relaxe.expr.ValuesListElement;
-import com.appspot.relaxe.expr.ddl.SQLType;
+import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ColumnMap;
 import com.appspot.relaxe.meta.DataType;
@@ -170,7 +170,7 @@ class CSVInsertTask
     private VarcharHolder parse(Column column, String value) {
         if (value.equals("")) {
             DataType dataType = column.getDataType();        
-            boolean textType = SQLType.isTextType(dataType.getDataType());
+            boolean textType = SQLTypeDefinition.isTextType(dataType.getDataType());
             
             if (!textType) {                
                 value = null;

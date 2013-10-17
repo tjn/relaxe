@@ -15,10 +15,10 @@ public class DataTypeImpl
 	private static final long serialVersionUID = -4891848179452614861L;
 	private int dataType;	
 	private String typeName;
-	private int charOctetLength;	
-	private int decimalDigits;
-	private int numPrecRadix;
-	private int size;
+	private Integer charOctetLength;	
+	private Integer decimalDigits;
+	private Integer numPrecRadix;
+	private Integer size;
 	
 //	private short sourceDataType;
 
@@ -32,7 +32,7 @@ public class DataTypeImpl
 		this.typeName = typeName;		
 	}
 	
-	public DataTypeImpl(int dataType, String typeName, int charOctetLength, int decimalDigits, int numPrecRadix, int size) {
+	public DataTypeImpl(int dataType, String typeName, Integer charOctetLength, Integer decimalDigits, Integer numPrecRadix, Integer size) {
 		this.dataType = dataType;
 		this.typeName = typeName;		
 		this.charOctetLength = charOctetLength;
@@ -74,14 +74,14 @@ public class DataTypeImpl
 		return typeName;
 	}
 
-	public void setDataType(int dataType) {
-		this.dataType = dataType;
-	}
-
-
-	public void setTypeName(String typeName) {
-		this.typeName = typeName;
-	}
+//	public void setDataType(int dataType) {
+//		this.dataType = dataType;
+//	}
+//
+//
+//	public void setTypeName(String typeName) {
+//		this.typeName = typeName;
+//	}
 
 	//	@Override
 	//	public AbstractMetaObject getParent() {
@@ -92,12 +92,12 @@ public class DataTypeImpl
 	 * @see com.appspot.relaxe.meta.impl.DataType#getCharOctetLength()
 	 */
 	@Override
-	public int getCharOctetLength() {
+	public Integer getCharOctetLength() {
 		return charOctetLength;
 	}
 
 	@Override
-	public int getDecimalDigits() {
+	public Integer getDecimalDigits() {
 		return decimalDigits;
 	}
 
@@ -105,7 +105,7 @@ public class DataTypeImpl
 	 * @see com.appspot.relaxe.meta.impl.DataType#getNumPrecRadix()
 	 */
 	@Override
-	public int getNumPrecRadix() {
+	public Integer getNumPrecRadix() {
 		return numPrecRadix;
 	}
 
@@ -113,25 +113,25 @@ public class DataTypeImpl
 	 * @see com.appspot.relaxe.meta.impl.DataType#getSize()
 	 */
 	@Override
-	public int getSize() {
+	public Integer getSize() {
 		return size;
 	}
 
-	public void setCharOctetLength(int charOctetLength) {
-		this.charOctetLength = charOctetLength;
-	}
-
-	public void setDecimalDigits(int decimalDigits) {
-		this.decimalDigits = decimalDigits;
-	}
-
-	public void setNumPrecRadix(int numPrecRadix) {
-		this.numPrecRadix = numPrecRadix;
-	}
-
-	public void setSize(int size) {
-		this.size = size;
-	}
+//	public void setCharOctetLength(int charOctetLength) {
+//		this.charOctetLength = Integer.valueOf(charOctetLength;
+//	}
+//
+//	public void setDecimalDigits(int decimalDigits) {
+//		this.decimalDigits = decimalDigits;
+//	}
+//
+//	public void setNumPrecRadix(int numPrecRadix) {
+//		this.numPrecRadix = numPrecRadix;
+//	}
+//
+//	public void setSize(int size) {
+//		this.size = size;
+//	}
 		
 	
 //	@Override

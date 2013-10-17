@@ -24,4 +24,9 @@ public class LongType
 	public LongType self() {
 		return this;
 	}
+	
+	@Override
+	public String getName() {
+		return "BIGINT";
+	}
 }

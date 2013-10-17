@@ -15,8 +15,6 @@ import com.appspot.relaxe.ent.EntityDataObject;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.pg.PGCatalogFactory;
-import com.appspot.relaxe.env.pg.PGImplementation;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.SelectStatement;
 import com.appspot.relaxe.gen.pagila.ent.pub.Actor;
@@ -32,6 +30,8 @@ import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor.QueryElement;
 import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor.Reference;
 import com.appspot.relaxe.gen.pagila.ent.pub.FilmActor.Type;
 import com.appspot.relaxe.gen.pagila.ent.pub.FilmCategory;
+import com.appspot.relaxe.meta.impl.pg.PGCatalogFactory;
+import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 import com.appspot.relaxe.meta.impl.pg.PGTestCase;
 
 

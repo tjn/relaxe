@@ -46,7 +46,7 @@ public class SakilaPersistenceManagerTest
 	    ac.setFirstName("Dana");
 	    ac.setLastName("Brooks");
 	
-	    PersistenceManager<Actor.Attribute, Reference, Type, Actor, Holder, Factory, MetaData, Actor.Content, Actor.QueryElement> pm = create(a);
+	    PersistenceManager<Actor.Attribute, Reference, Type, Actor, Holder, Factory, MetaData, Actor.Content> pm = create(a);
 	    
 	    pm.merge(c);
 	    c.commit();        

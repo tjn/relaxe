@@ -25,4 +25,9 @@ public class DateType
 	public DateType self() {
 		return this;
 	}
+	
+	@Override
+	public String getName() {
+		return "DATE";
+	}
 }

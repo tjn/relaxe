@@ -24,4 +24,9 @@ public class DoubleType
 	public DoubleType self() {
 		return this;
 	}
+	
+	@Override
+	public String getName() {
+		return "DOUBLE";
+	}
 }

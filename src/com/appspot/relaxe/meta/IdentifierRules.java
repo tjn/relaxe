@@ -8,6 +8,7 @@ import java.util.Comparator;
 import com.appspot.relaxe.expr.DelimitedIdentifier;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.IllegalIdentifierException;
+import com.appspot.relaxe.expr.SchemaElementName;
 
 
 public interface IdentifierRules {
@@ -57,5 +58,8 @@ public interface IdentifierRules {
 	boolean isValidIdentifier(String identifier);
 	boolean isValidOrdinaryIdentifier(String identifier);	
 	boolean isReservedWord(String word);
+
+	SchemaElementName newName(String name)
+			throws IllegalArgumentException, IllegalIdentifierException;
 }
 

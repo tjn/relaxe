@@ -6,11 +6,9 @@ package com.appspot.relaxe.meta;
 
 public interface DataType {
 	int getDataType();
-//	short getSourceDataType();
 	String getTypeName();
-	int getCharOctetLength();
-	int getDecimalDigits();
-	int getNumPrecRadix();
-	int getSize();	
-
+	Integer getCharOctetLength();
+	Integer getDecimalDigits();
+	Integer getNumPrecRadix();
+	Integer getSize();
 }

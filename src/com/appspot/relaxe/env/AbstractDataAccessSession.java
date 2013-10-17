@@ -62,12 +62,10 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>, 
 		F extends EntityFactory<E, H, M, F, C>, 
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>, 
-		C extends Content,
-	    RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
-		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
+		C extends Content	    
 	> 
 	void delete(E e) throws EntityException {						
-		PersistenceManager<A,R,T,E,H,F,M,C,RE> pm = new PersistenceManager<A,R,T,E,H,F,M,C,RE>(e, getPersistenceContext(), this.unificationContext);
+		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
 		pm.delete(this.connection);
 	}
 
@@ -84,12 +82,10 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>, 
 		F extends EntityFactory<E, H, M, F, C>, 
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>, 
-		C extends Content,
-	    RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
-		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
+		C extends Content
 	> 
 	E insert(E e) throws EntityException {
-		PersistenceManager<A,R,T,E,H,F,M,C,RE> pm = new PersistenceManager<A,R,T,E,H,F,M,C,RE>(e, getPersistenceContext(), this.unificationContext);
+		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
 		pm.insert(this.connection);
 		return e;
 	}
@@ -104,14 +100,12 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>, 
 		F extends EntityFactory<E, H, M, F, C>, 
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>, 
-		C extends Content,
-		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
-		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
+		C extends Content
 	> 
 	E sync(E e) throws EntityException {
 		try {
-			PersistenceManager<A,R,T,E,H,F,M,C,RE> pm = 
-					new PersistenceManager<A,R,T,E,H,F,M,C,RE>(e, getPersistenceContext(), this.unificationContext);
+			PersistenceManager<A,R,T,E,H,F,M,C> pm = 
+					new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
 			E result = pm.sync(getConnection());
 			return result;
 		} 
@@ -132,13 +126,11 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>, 
 		F extends EntityFactory<E, H, M, F, C>, 
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>, 
-		C extends Content,
-		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
-		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
+		C extends Content
 	> 
 	E merge(E e) throws EntityException {
 		try {		
-			PersistenceManager<A,R,T,E,H,F,M,C,RE> pm = new PersistenceManager<A,R,T,E,H,F,M,C,RE>(e, getPersistenceContext(), this.unificationContext);
+			PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
 			pm.merge(this.connection);		
 			return e;
 		}
@@ -159,12 +151,10 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		H extends ReferenceHolder<A, R, T, E, H, M, C>, 
 		F extends EntityFactory<E, H, M, F, C>, 
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>, 
-		C extends Content,
-		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
-		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
+		C extends Content
 	> 
 	E update(E e) throws EntityException {
-		PersistenceManager<A,R,T,E,H,F,M,C,RE> pm = new PersistenceManager<A,R,T,E,H,F,M,C,RE>(e, getPersistenceContext(), this.unificationContext);
+		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
 		pm.update(this.connection);		
 		return e;
 	}

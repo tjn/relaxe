@@ -17,7 +17,7 @@ import org.postgresql.util.PGobject;
 import com.appspot.relaxe.QueryHelper;
 import com.appspot.relaxe.meta.impl.pg.PGTest;
 // import com.appspot.relaxe.pg.pagila.MPAARating;
-import com.appspot.relaxe.pg.pagila.MPAARating;
+import com.appspot.relaxe.pg.pagila.types.MPAARating;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
 

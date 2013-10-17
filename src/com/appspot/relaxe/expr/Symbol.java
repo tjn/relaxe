@@ -7,14 +7,16 @@ public enum Symbol implements Token {
 		
 	EQUALS("="),	
 	DOT("."),
-	COMMA(","),
-	PAREN_RIGHT(")"),
+	COMMA(","),	
 	PAREN_LEFT("("),
+	PAREN_RIGHT(")"),
 	LESS_THAN("<"),
 	GREATER_THAN(">"),
 	LESS_OR_EQUAL("<="),
 	GREATER_OR_EQUAL(">="),
-	ASTERISK("*"),	
+	ASTERISK("*"),
+	BRACKET_LEFT("["),
+	BRACKET_RIGHT("]"),
 	;
 	
 	private String token; 
