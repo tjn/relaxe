@@ -25,8 +25,8 @@ import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.env.mysql.MySQLImplementation;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.ValueExpression;
-import com.appspot.relaxe.gen.sakila.ent.sakila.Film;
-import com.appspot.relaxe.gen.sakila.ent.sakila.Language;
+import com.appspot.relaxe.gen.mysql.sakila.ent.sakila.Film;
+import com.appspot.relaxe.gen.mysql.sakila.ent.sakila.Language;
 import com.appspot.relaxe.mysql.sakila.SakilaTestCase;
 import com.appspot.relaxe.query.QueryResult;
 import com.appspot.relaxe.rpc.IntegerHolder;
@@ -91,18 +91,6 @@ public class SakilaEntityQueryExecutorTest
 			}
 		}
 	}
-
-//	private Connection newConnection(Implementation imp) throws Exception {
-//		Properties cfg = new Properties();
-//		cfg.setProperty("user", "test");
-//		cfg.setProperty("password", "test");
-//		
-//		String url = imp.createJdbcUrl("relaxe_test");
-//		Class.forName(imp.defaultDriverClassName());
-//		Connection c = DriverManager.getConnection(url, cfg);
-//		return c;
-//	}
-		
 
 	public <
 		A extends Attribute,

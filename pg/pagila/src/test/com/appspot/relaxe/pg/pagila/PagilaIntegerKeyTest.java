@@ -7,7 +7,7 @@ import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.value.HasInteger;
 import com.appspot.relaxe.ent.value.HasIntegerKey;
 import com.appspot.relaxe.ent.value.IntegerKey;
-import com.appspot.relaxe.gen.pagila.ent.pub.Film;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.types.IntegerType;
 
 import junit.framework.TestCase;

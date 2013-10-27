@@ -4,7 +4,7 @@
 package com.appspot.relaxe.mysql.sakila;
 
 import com.appspot.relaxe.expr.ddl.AlterTableAddForeignKey;
-import com.appspot.relaxe.gen.sakila.ent.sakila.Film;
+import com.appspot.relaxe.gen.mysql.sakila.ent.sakila.Film;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;

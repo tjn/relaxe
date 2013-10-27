@@ -10,7 +10,7 @@ import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.VisitContext;
 
 public abstract class DropSchemaElement 
-    extends Statement
+    extends SQLSchemaStatement
 {
     /**
 	 * 

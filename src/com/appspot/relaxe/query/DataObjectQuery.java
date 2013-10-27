@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.appspot.relaxe.ent.QueryExpressionSource;
 import com.appspot.relaxe.expr.ColumnReference;
 import com.appspot.relaxe.expr.DefaultTableExpression;
 import com.appspot.relaxe.expr.ElementList;
@@ -21,8 +20,7 @@ import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.Table;
 
 
-public class DataObjectQuery
-	implements QueryExpressionSource {
+public class DataObjectQuery {
 
 	/**
 	 * 
@@ -41,9 +39,7 @@ public class DataObjectQuery
 	public DataObjectQuery(Table table) {	
 		this.table = table;
 	}
-
-
-	@Override
+	
 	public QueryExpression getQueryExpression() throws QueryException {
 		if (queryExpression == null) {
 			TableReference tr = new TableReference(table);

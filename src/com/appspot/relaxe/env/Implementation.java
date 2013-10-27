@@ -26,8 +26,6 @@ public interface Implementation<I extends Implementation<I>> {
 	String defaultDriverClassName();
 	SQLSyntax getSyntax();
 	
-//	GeneratedKeyHandler generatedKeyHandler();
-//	AttributeWriterFactory getAttributeWriterFactory();
 	ValueExtractorFactory getValueExtractorFactory();			
 	ValueAssignerFactory getValueAssignerFactory();
 	
@@ -41,5 +39,4 @@ public interface Implementation<I extends Implementation<I>> {
 	
 	Properties getDefaultProperties();
 	
-//	Driver getDriver();			
 }

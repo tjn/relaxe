@@ -56,6 +56,14 @@ public abstract class SQLTypeDefinition
        ;        
     }    
     
+    public static boolean isBinaryType(int sqltype) {
+        return 
+        (sqltype == PrimitiveType.BINARY) || 
+        (sqltype == PrimitiveType.VARBINARY) ||
+        (sqltype == PrimitiveType.LONGVARBINARY)
+       ;            	
+    }
+    
     public static boolean isFloatingPoint(int sqltype) {
         return 
         (sqltype == PrimitiveType.REAL) || 
@@ -84,20 +92,22 @@ public abstract class SQLTypeDefinition
 	    SMALLINT(PrimitiveType.SMALLINT, SQLKeyword.SMALLINT),
 	    TINYINT(PrimitiveType.TINYINT, SQLKeyword.TINYINT),
 	    FLOAT(PrimitiveType.FLOAT, SQLKeyword.FLOAT),
+	    DOUBLE(PrimitiveType.DOUBLE, null), // double precision
 	    DATE(PrimitiveType.DATE, SQLKeyword.DATE),
 	    TIME(PrimitiveType.TIME, SQLKeyword.TIME),
 	    TIMESTAMP(PrimitiveType.TIMESTAMP, SQLKeyword.TIMESTAMP),	    
-	    ARRAY(PrimitiveType.ARRAY),
+	    ARRAY(PrimitiveType.ARRAY, null),
+	    VARBINARY(PrimitiveType.VARBINARY, SQLKeyword.VARBINARY),
 	    ;
                 
-	    private Name(int type, SQLKeyword... kws) {
+	    private Name(int type, SQLKeyword kws) {
 	        this.type = type;
-	        this.keywords = kws;
+	        this.keyword = kws;
 	    }
 	    
 	    private int type; 
 	    
-	    private SQLKeyword[] keywords;
+	    private SQLKeyword keyword;
 	    
 	    @Override
 	    public String getTerminalSymbol() {     
@@ -106,9 +116,14 @@ public abstract class SQLTypeDefinition
 	
 	    @Override
 	    public void traverse(VisitContext vc, ElementVisitor v) {
-	        for (SQLKeyword kw : keywords) {
-	            kw.traverse(vc, v);
-	        }
+	    	v.start(vc, this);
+	    	
+	    	if (this.keyword == null) {
+	    		throw new NullPointerException("keyword: " + toString());
+	    	}
+	    	
+	    	this.keyword.traverse(vc, v);	        
+	        v.end(this);
 	    }
 	    
 	    public int getType() {

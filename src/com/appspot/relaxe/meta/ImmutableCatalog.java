@@ -83,7 +83,8 @@ public class ImmutableCatalog
 			Identifier cat = schema.getCatalogName();
 			
 			if (!equal(cat, this.identifier)) {
-				throw new IllegalArgumentException("schema " + schema.getName().generate() + " does not belong to the catalog (" + this.identifier.getName() + ")");				
+				String cn = (this.identifier == null) ? null : this.identifier.getName();
+				throw new IllegalArgumentException("schema " + schema.getName().generate() + " does not belong to the catalog (" + cn + ")");				
 			}			
 			
 			Map<Identifier, Schema> sm = getSchemaMap();			

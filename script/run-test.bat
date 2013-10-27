@@ -9,6 +9,7 @@ SET RLX_CP=%RLX_CP%;%JARDIR%\log4j.jar
 SET RLX_CP=%RLX_CP%;%JARDIR%\postgresql-9.2-1002.jdbc4.jar
 SET RLX_CP=%RLX_CP%;%JARDIR%\mysql-connector-java-5.1.18-bin.jar
 SET RLX_CP=%RLX_CP%;%JARDIR%\hsqldb.jar
+SET RLX_CP=%RLX_CP%;%JARDIR%\mariadb-java-client-bzr-trunk-20131027.jar
 
 @echo %1
 java -cp %RLX_CP% junit.textui.TestRunner %1

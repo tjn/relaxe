@@ -263,8 +263,10 @@ public class DefaultTypeMapper
 	        	da.setContainerMetaType(HasLongKey.class);	        	
 	        	break;
 	        case Types.BIT:
-	        case Types.BOOLEAN:
-	        	if (dataType.getSize() > 1) {
+	        case Types.BOOLEAN:	        	
+	        	Integer size = dataType.getSize();
+	        	
+	        	if (size != null && size.intValue() > 1) {
 	        		break;
 	        	}
 	        	
@@ -279,6 +281,7 @@ public class DefaultTypeMapper
 	        case Types.REAL:
 	            break;
 	        case Types.FLOAT:                
+	        	// The recommended Java mapping for the FLOAT type is as a Java double, fall-through
 	        case Types.DOUBLE:
 	        	da.setAttributeType(Double.class);
 	        	da.setHolderType(DoubleHolder.class);

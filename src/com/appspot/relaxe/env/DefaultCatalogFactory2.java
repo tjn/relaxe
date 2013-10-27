@@ -78,9 +78,9 @@ public class DefaultCatalogFactory2
 			
 			String current = getCatalogName(c);
 			logger().info("current: " + current);
-			// Identifier catalog = (current == null) ? null : id(current);
+			
 			Identifier catalog = id(current);
-						
+									
 			ImmutableCatalog.Builder cb = new ImmutableCatalog.Builder(env, catalog);
 						
 			createSchemas(meta, cb);			
@@ -213,6 +213,8 @@ public class DefaultCatalogFactory2
 		ResultSet rs = null;
 		
 		try {			
+			logger.debug("pk:table: " + tb.getName());
+			
 			rs = getPrimaryKeyForTable(meta, tb.getName());
 						
 //			Retrieves a description of the given table's primary key columns. They are ordered by COLUMN_NAME. 
@@ -237,8 +239,13 @@ public class DefaultCatalogFactory2
 					name = rs.getString(6);
 				}
 				
+				logger().debug("addPrimaryKey: column=" + column);
+				logger().debug("addPrimaryKey: ordinal=" + ordinal);
+				
 				om.put(Short.valueOf(ordinal), column);
 			}
+			
+			logger.debug("keys mapped");
 			
 			if (!om.isEmpty()) {
 				if (name == null) {
@@ -304,15 +311,6 @@ public class DefaultCatalogFactory2
 //			importedKeyInitiallyImmediate - see SQL92 for definition 
 //			importedKeyNotDeferrable - see SQL92 for definition 
 
-			
-			
-			String name = null;
-			
-			Map<Short, String> om = new TreeMap<Short, String>();
-							
-			
-			// tb.getForeignKeyBuilder(constraintName);
-			
 			while (rs.next()) {
 				
 				String pkcat = getCatalogNameFromImportedKeys(meta, rs);
@@ -320,9 +318,6 @@ public class DefaultCatalogFactory2
 				String pktab = rs.getString(3);
 				String pkcol = rs.getString(4);
 
-				String fkcat = getReferencingTableCatalogName(meta, rs);			
-				String fksch = getReferencingTableSchemaName(meta, rs);			
-				String fktab = rs.getString(7);
 				String fkcol = rs.getString(8);			
 				
 				int keyseq = rs.getInt(9);
@@ -331,8 +326,7 @@ public class DefaultCatalogFactory2
 				int dr = rs.getInt(11);
 				String n = rs.getString(12);
 				int def = rs.getInt(14);
-				
-				
+								
 				logger().debug("fk constraint name: '" + n + "'");
 								
 				Identifier constraintName = id(n);
@@ -674,7 +668,7 @@ public class DefaultCatalogFactory2
 	
 	@Override
 	public String getCatalogName(Connection c) throws SQLException {
-	    return c.getCatalog();
+	    return c.getCatalog();		
 	}
 
 	

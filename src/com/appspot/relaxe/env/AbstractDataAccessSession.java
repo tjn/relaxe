@@ -11,7 +11,7 @@ import java.util.List;
 import com.appspot.relaxe.EntityQueryExecutor;
 import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.QueryExecutor;
-import com.appspot.relaxe.SimpleUnificationContext;
+import com.appspot.relaxe.StatementExecutor;
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.DataObject;
@@ -25,10 +25,16 @@ import com.appspot.relaxe.ent.EntityQuery;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityQueryResult;
 import com.appspot.relaxe.ent.FetchOptions;
-import com.appspot.relaxe.ent.QueryExpressionSource;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
+import com.appspot.relaxe.exec.QueryProcessor;
+import com.appspot.relaxe.exec.ResultSetProcessor;
+import com.appspot.relaxe.exec.UpdateProcessor;
 import com.appspot.relaxe.expr.QueryExpression;
+import com.appspot.relaxe.expr.SQLDataChangeStatement;
+import com.appspot.relaxe.expr.SelectStatement;
+import com.appspot.relaxe.expr.Statement;
+import com.appspot.relaxe.expr.ddl.SQLSchemaStatement;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.service.DataAccessException;
@@ -41,16 +47,17 @@ import com.appspot.relaxe.types.ReferenceType;
 
 public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	implements DataAccessSession, EntitySession, QuerySession, StatementSession {
-		
-	private Connection connection;
-	private PersistenceContext<I> persistenceContext;
-	private UnificationContext unificationContext;
 	
-	public AbstractDataAccessSession(PersistenceContext<I> implementation, Connection connection) {
-		super();		
-		this.persistenceContext = implementation;
+	private Connection connection;
+	
+	protected AbstractDataAccessSession(Connection connection) {
+		super();
+		
+		if (connection == null) {
+			throw new NullPointerException("connection");
+		}
+		
 		this.connection = connection;
-		this.unificationContext = new SimpleUnificationContext();
 	}
 
 	@Override
@@ -65,12 +72,16 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		C extends Content	    
 	> 
 	void delete(E e) throws EntityException {						
-		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
-		pm.delete(this.connection);
+		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), getUnificationContext());
+		pm.delete(getConnection());
 	}
+	
+	protected abstract UnificationContext getUnificationContext();	
 
-	private PersistenceContext<I> getPersistenceContext() {
-		return this.persistenceContext;
+	protected abstract PersistenceContext<I> getPersistenceContext();
+	
+	private Connection getConnection() {
+		return this.connection;
 	}
 
 	@Override
@@ -85,8 +96,8 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		C extends Content
 	> 
 	E insert(E e) throws EntityException {
-		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
-		pm.insert(this.connection);
+		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), getUnificationContext());
+		pm.insert(getConnection());
 		return e;
 	}
 	
@@ -105,7 +116,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	E sync(E e) throws EntityException {
 		try {
 			PersistenceManager<A,R,T,E,H,F,M,C> pm = 
-					new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
+					new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), getUnificationContext());
 			E result = pm.sync(getConnection());
 			return result;
 		} 
@@ -130,8 +141,8 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	> 
 	E merge(E e) throws EntityException {
 		try {		
-			PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
-			pm.merge(this.connection);		
+			PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), getUnificationContext());
+			pm.merge(getConnection());		
 			return e;
 		}
 		catch (SQLException se) {
@@ -154,8 +165,8 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		C extends Content
 	> 
 	E update(E e) throws EntityException {
-		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), this.unificationContext);
-		pm.update(this.connection);		
+		PersistenceManager<A,R,T,E,H,F,M,C> pm = new PersistenceManager<A,R,T,E,H,F,M,C>(e, getPersistenceContext(), getUnificationContext());
+		pm.update(getConnection());		
 		return e;
 	}
 	
@@ -164,22 +175,26 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	}
 	
 	protected void closed()
-		throws DataAccessException {
+		throws DataAccessException {		
+	}
+	
+	public boolean isClosed() {
+		return (this.connection == null);
 	}
 	
 	@Override
 	public final void close()
 		throws DataAccessException {
 		
+		if (this.connection == null) {
+			return;
+		}
+		
 		try {
 			closing();
 		}
 		finally {
-			if (unificationContext != null) {
-				this.unificationContext.close();
-				this.unificationContext = null;
-			}			
-			
+			this.connection = null;
 			closed();
 		}
 	}
@@ -189,7 +204,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		checkClosed();
 		
 		try {
-			this.connection.commit();			
+			getConnection().commit();			
 		}
 		catch (SQLException e) {
 			throw new DataAccessException(e.getMessage(), e);
@@ -204,7 +219,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		checkClosed();
 		
 		try {		
-			this.connection.rollback();
+			getConnection().rollback();
 		}
 		catch (SQLException e) {
 			throw new DataAccessException(e.getMessage(), e);
@@ -216,7 +231,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	
 	private void checkClosed() 
 		throws DataAccessException {
-		if (this.connection == null) {
+		if (getConnection() == null) {
 			throw new DataAccessException("data access session is closed");
 		}
 	}
@@ -238,9 +253,9 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		
 		try {
 			EntityQueryExecutor<A, R, T, E, H, F, M, C, RE> ee = 
-					new EntityQueryExecutor<A, R, T, E, H, F, M, C, RE>(getPersistenceContext(), this.unificationContext);
+					new EntityQueryExecutor<A, R, T, E, H, F, M, C, RE>(getPersistenceContext(), getUnificationContext());
 			
-			EntityQueryResult<A, R, T, E, H, F, M, C, RE> result = ee.execute(query, opts, this.connection);
+			EntityQueryResult<A, R, T, E, H, F, M, C, RE> result = ee.execute(query, opts, getConnection());
 			return result;
 		} 
 		catch (SQLException e) {
@@ -252,23 +267,19 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	}
 
 	@Override
-	public DataObjectQueryResult<DataObject> executeQuery(QueryExpressionSource qes, FetchOptions opts) throws QueryException {
+	public DataObjectQueryResult<DataObject> execute(QueryExpression qx, FetchOptions opts) throws QueryException {
 		
 		try {
-			QueryExecutor qe = new QueryExecutor(getPersistenceContext());
-			QueryExpression qx = qes.getQueryExpression();
-			DataObjectQueryResult<DataObject> result = qe.execute(qx, opts, this.connection);
+			QueryExecutor qe = new QueryExecutor(getPersistenceContext());			
+			DataObjectQueryResult<DataObject> result = qe.execute(qx, opts, getConnection());
 			return result;
 		}
 		catch (SQLException e) {
 			throw new QueryException(e.getMessage(), e);
 		}
 	}
-		
-	public Connection getConnection() {
-		return connection;
-	}
 	
+		
 	@Override
 	public EntitySession asEntitySession() {
 		return this;
@@ -315,9 +326,8 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	
 	@Override
 	public void flush() {
-		unificationContext.close();
-	}
-	
+		getUnificationContext().close();
+	}	
 
 	@Override
 	public <		
@@ -331,5 +341,56 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	>
 	E newEntity(T type) {
 		return type.getMetaData().getFactory().newEntity();
-	}	
+	}
+	
+	
+	
+		
+	@Override
+	public void execute(SelectStatement statement, ResultSetProcessor qp)
+			throws QueryException {
+		try {
+			StatementExecutor se = new StatementExecutor(getPersistenceContext());
+			se.execute(statement, getConnection(), qp);
+		}
+		catch (SQLException e) {
+			throw new QueryException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public void execute(Statement statement, QueryProcessor qp)
+			throws QueryException {
+		try {
+			StatementExecutor se = new StatementExecutor(getPersistenceContext());
+			se.execute(statement, getConnection(), qp);
+		}
+		catch (SQLException e) {
+			throw new QueryException(e.getMessage());
+		}		
+	}
+
+	@Override
+	public void execute(SQLDataChangeStatement statement, UpdateProcessor qp)
+			throws QueryException {
+		try {
+			StatementExecutor se = new StatementExecutor(getPersistenceContext());
+			se.execute(statement, getConnection(), qp);
+		}
+		catch (SQLException e) {
+			throw new QueryException(e.getMessage());
+		}				
+	}
+
+	@Override
+	public void execute(SQLSchemaStatement statement) throws QueryException {
+		try {
+			StatementExecutor se = new StatementExecutor(getPersistenceContext());
+			se.execute(statement, getConnection());
+		}
+		catch (SQLException e) {
+			throw new QueryException(e.getMessage());
+		}					
+	}
+	
 }

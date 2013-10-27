@@ -4,6 +4,7 @@
 package com.appspot.relaxe.expr.ddl.types;
 
 import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.IntLiteral;
 import com.appspot.relaxe.expr.Symbol;
 import com.appspot.relaxe.expr.VisitContext;
 
@@ -14,7 +15,7 @@ public abstract class AbstractCharacterTypeDefinition
 	 * 
 	 */
 	private static final long serialVersionUID = 7291068267695357641L;
-	private Specification length = null;
+	private IntLiteral length = null;
     
     /**
 	 * No-argument constructor for GWT Serialization
@@ -27,7 +28,7 @@ public abstract class AbstractCharacterTypeDefinition
             throw new IllegalArgumentException("illegal varchar length: " + length);
         }
         
-        this.length = (length == null) ? null : new Specification(length);
+        this.length = (length == null) ? null : IntLiteral.valueOf(length.intValue());
     }    
     
     @Override
@@ -40,4 +41,10 @@ public abstract class AbstractCharacterTypeDefinition
 	        Symbol.PAREN_RIGHT.traverse(vc, v);
         }
     }
+    
+    public IntLiteral getLength() {
+    	return this.length;
+    }
+    
+    
 }

@@ -84,15 +84,20 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		// I imp = getImplementation();
 		PersistenceContext<I> pc = getPersistenceContext();
 		String h = getHost();
+		Integer p = getPort();
 		
 		String d = getDatabase();
 		
 		Properties c = getJdbcConfig();
 		
 		logger().debug("jdbc config for context: " + c);								
-		DefaultTestContext<I> tc = new DefaultTestContext<I>(pc, h, null, d, c);		
+		DefaultTestContext<I> tc = new DefaultTestContext<I>(pc, h, p, d, c);		
 						
 		return tc;
+	}
+	
+	public Integer getPort() {
+		return null;
 	}
 
 	protected Properties getJdbcConfig()

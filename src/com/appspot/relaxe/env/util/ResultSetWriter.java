@@ -217,7 +217,7 @@ public class ResultSetWriter
 	
 	
 	@Override
-	public void updated(int updateCount) throws SQLException {
+	public void updated(int updateCount) {
 		out.print("updated: ");
 		out.println(updateCount);		
 	}
@@ -261,7 +261,7 @@ public class ResultSetWriter
 	public void prepare() {
 		if (this.out == null) {
 			throw new NullPointerException("no output stream available");
-		}		
+		}
 	}
 	
 	
@@ -275,6 +275,6 @@ public class ResultSetWriter
 		out.println("\"" + s + "\"");
 //		out.println("-----------------------------------------");
 	}
-	
+
 	
 }

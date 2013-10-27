@@ -1,10 +1,16 @@
 @echo off
 
+if "%IMPTAG%" == "" GOTO :no_imp_tag
+
 if "%TARGET%" == "" GOTO :no_target
 
 if "%TYPE_MAPPER_IMPLEMENTATION%" == "" GOTO :set_default_type_mapper
 
-:generate
+:type_mapper_set
+
+if "%ROOT_PACKAGE%" == "" GOTO :set_default_root_package
+
+:root_package_set
 
 REM tstamp
 
@@ -12,10 +18,9 @@ SET ROOT=%~dp0..
 SET JARDIR=%ROOT%\lib
 SET TEMPLATE_DIR=%ROOT%\war\WEB-INF\templates
 
-SET ROOT_PACKAGE=com.appspot.relaxe.gen.%TARGET%.ent
-REM SET CC_PACKAGE=com.appspot.relaxe.%TARGET%.genctx
+SET ROOT_PACKAGE=com.appspot.relaxe.gen.%IMPTAG%.%TARGET%.ent
 SET CC_PACKAGE=com.appspot.relaxe.%TARGET%.genctx
-SET GENSRC=%ROOT%\%IMPDIR%\%TARGET%\src\out
+SET GENSRC=%ROOT%\%IMPTAG%\%TARGET%\src\out
 
 MKDIR %ROOT%\gen 2> nul
 MKDIR %GENSRC% 2> nul
@@ -36,10 +41,21 @@ GOTO :finally
 echo Undefined environment variable: TARGET
 GOTO :finally
 
+:no_imp_tag
+echo Undefined environment variable: IMPTAG
+GOTO :finally
+
+
 :set_default_type_mapper
 SET TYPE_MAPPER_IMPLEMENTATION=com.appspot.relaxe.DefaultTypeMapper
 echo No type mapper set, using default: %TYPE_MAPPER_IMPLEMENTATION%
-GOTO :generate
+GOTO :type_mapper_set
+
+
+:set_default_root_package
+SET ROOT_PACKAGE=com.appspot.relaxe.gen.%IMPTAG%.%TARGET%.ent
+echo No root package set, using default: %ROOT_PACKAGE%
+GOTO :root_package_set
 
 
 :finally

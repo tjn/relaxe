@@ -8,9 +8,9 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 
 import com.appspot.relaxe.ent.FetchOptions;
-import com.appspot.relaxe.gen.pagila.ent.pub.Film;
-import com.appspot.relaxe.gen.pagila.ent.pub.Film.Attribute;
-import com.appspot.relaxe.gen.pagila.ent.pub.Language;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film.Attribute;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Language;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 import com.appspot.relaxe.service.DataAccessSession;

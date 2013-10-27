@@ -25,6 +25,7 @@ public abstract class AbstractMySQLTestCase
 	protected Properties getJdbcConfig() throws IOException {		
 		return getJdbcConfigForDatabase();
 	}
+	
 
 	@Override
 	protected String implementationTag() {

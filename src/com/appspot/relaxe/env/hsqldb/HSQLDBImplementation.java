@@ -14,7 +14,7 @@ public class HSQLDBImplementation
 	extends DefaultImplementation<HSQLDBImplementation> {
 
 	private SQLSyntax syntax;
-        
+	
 	public HSQLDBImplementation() {
 	}
 
@@ -150,11 +150,6 @@ public class HSQLDBImplementation
 		return HSQLDBEnvironment.environment();
 	}
 	
-//	@Override
-//	protected DefaultValueExtractorFactory createValueExtractorFactory() {
-//		return new HSQLDBValueExtractorFactory();
-//	}
-	
 	@Override
 	public String createJdbcUrl(String database) {
 		return createJdbcUrl(null, database);		
@@ -162,7 +157,7 @@ public class HSQLDBImplementation
 	
 	@Override
 	public String createJdbcUrl(String host, String database) {
-		return createJdbcUrl(host, 5432, database);		
+		return createJdbcUrl(host, -1, database);		
 	}
 	
 	@Override
@@ -171,11 +166,7 @@ public class HSQLDBImplementation
 			throw new NullPointerException("database");
 		}
 		
-		if (host == null) {
-			host = "127.0.0.1"; 
-		}
-		
-		return "jdbc:hsqldb://" + host + ":" + port + "/" + database;				
+		return "jdbc:hsqldb:" + database;				
 	}
 	
 	@Override

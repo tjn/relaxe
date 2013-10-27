@@ -9,11 +9,13 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import com.appspot.relaxe.exec.QueryProcessor;
+import com.appspot.relaxe.exec.UpdateProcessor;
 import com.appspot.relaxe.query.QueryException;
 
 
 
-public class SimpleQueryProcessor implements QueryProcessor {
+public class SimpleQueryProcessor 
+	implements QueryProcessor, UpdateProcessor {
 
 	private long preparedAt;
 	private long startedAt;
@@ -64,7 +66,7 @@ public class SimpleQueryProcessor implements QueryProcessor {
 
 	@Override
 	public void prepare() {
-		this.preparedAt = System.currentTimeMillis();		
+		this.preparedAt = System.currentTimeMillis();
 	}
 
 	@Override
@@ -87,7 +89,7 @@ public class SimpleQueryProcessor implements QueryProcessor {
 	}
 
 	@Override
-	public void abort(Throwable e) {
+	public void abort(Exception e) {
 		out.println("query failed: " + e.getMessage());		
 	}
 
@@ -129,7 +131,7 @@ public class SimpleQueryProcessor implements QueryProcessor {
 	
 
 	public static long process(ResultSet rs, QueryProcessor qp) 
-	   throws SQLException {
+	   throws Exception {
 
 	    qp.prepare();
 	         
@@ -145,7 +147,7 @@ public class SimpleQueryProcessor implements QueryProcessor {
 	                
 	        qp.endQuery();                  
 	    }
-	    catch (Throwable e) {
+	    catch (Exception e) {
 //	        logger().error(e.getMessage(), e);
 	        qp.abort(e);
 	    }

@@ -3,11 +3,16 @@
  */
 package com.appspot.relaxe.meta;
 
+import org.apache.log4j.Logger;
+
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.BigIntTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.BooleanTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.CharTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.DateTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.DecimalTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.DoubleTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.FloatTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.IntTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.LongVarcharTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.NumericTypeDefinition;
@@ -19,11 +24,13 @@ import com.appspot.relaxe.expr.ddl.types.TimestampTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.TinyIntTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.TypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
+import com.appspot.relaxe.types.BooleanType;
 import com.appspot.relaxe.types.CharType;
 import com.appspot.relaxe.types.DateType;
 import com.appspot.relaxe.types.DecimalType;
 import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.LongType;
+import com.appspot.relaxe.types.LongVarcharType;
 import com.appspot.relaxe.types.NumericType;
 import com.appspot.relaxe.types.PrimitiveType;
 import com.appspot.relaxe.types.TimeType;
@@ -32,8 +39,7 @@ import com.appspot.relaxe.types.VarcharType;
 
 public abstract class DefaultDataTypeMap 
 	implements DataTypeMap {
-	
-	
+
 	public DefaultDataTypeMap() {
 	}
 	
@@ -45,10 +51,13 @@ public abstract class DefaultDataTypeMap
 			case PrimitiveType.INTEGER:
 				return IntegerType.TYPE;
 			case PrimitiveType.BIGINT:
-				return LongType.TYPE;							
+				return LongType.TYPE;	
+			case PrimitiveType.BOOLEAN:
+				return BooleanType.TYPE;
 			case PrimitiveType.VARCHAR:
-			case PrimitiveType.LONGVARCHAR:
 				return VarcharType.TYPE;
+			case PrimitiveType.LONGVARCHAR:
+				return LongVarcharType.TYPE;
 			case PrimitiveType.CHAR:			
 				return CharType.TYPE;
 			case PrimitiveType.NUMERIC:			
@@ -82,25 +91,25 @@ public abstract class DefaultDataTypeMap
 						
 		switch (t) {
 		case PrimitiveType.INTEGER:
-			def = IntTypeDefinition.get(s);
+			def = IntTypeDefinition.get(null);
 			break;
 		case PrimitiveType.BIGINT:
-			def = BigIntTypeDefinition.get(s);	
+			def = BigIntTypeDefinition.get(null);	
 			break;							
 		case PrimitiveType.SMALLINT:
-			def = SmallIntTypeDefinition.get(s);
+			def = SmallIntTypeDefinition.get(null);
 			break;										
 		case PrimitiveType.TINYINT:
-			def = TinyIntTypeDefinition.get(s);
+			def = TinyIntTypeDefinition.get(null);
 			break;
 		case PrimitiveType.VARCHAR:			
-			def = VarcharTypeDefinition.get(dataType.getCharOctetLength());
+			def = VarcharTypeDefinition.get(getCharOctetLength(dataType));
 			break;
 		case PrimitiveType.LONGVARCHAR:
-			def = LongVarcharTypeDefinition.get(dataType.getCharOctetLength());
+			def = LongVarcharTypeDefinition.get(getCharOctetLength(dataType));
 			break;
 		case PrimitiveType.CHAR:			
-			def = CharTypeDefinition.get(dataType.getCharOctetLength());
+			def = CharTypeDefinition.get(getCharOctetLength(dataType));
 			break;
 		case PrimitiveType.NUMERIC:			
 			def = NumericTypeDefinition.get(s, Integer.valueOf(dataType.getDecimalDigits()));
@@ -117,6 +126,17 @@ public abstract class DefaultDataTypeMap
 		case PrimitiveType.TIME:			
 			def = TimeTypeDefinition.get();
 			break;
+		case PrimitiveType.BOOLEAN:
+			// fall-through
+		case PrimitiveType.BIT:			
+			def = BooleanTypeDefinition.get();
+			break;
+		case PrimitiveType.DOUBLE:			
+			def = DoubleTypeDefinition.DEFINITION;
+			break;
+		case PrimitiveType.FLOAT:			
+			def = FloatTypeDefinition.DEFINITION;
+			break;			
 		case PrimitiveType.DISTINCT:			
 		case PrimitiveType.OTHER:
 			SchemaElementName name = newName(dataType.getTypeName());
@@ -124,11 +144,14 @@ public abstract class DefaultDataTypeMap
 			break;
 		case PrimitiveType.ARRAY:			
 			PrimitiveType<?> pt = getType(dataType);
-			com.appspot.relaxe.types.ArrayType<?, ?> at = pt.asArrayType();			
-			PrimitiveType<?> et = at.getElementType();			
-			DataTypeImpl dti = new DataTypeImpl(et.getSqlType(), et.getName());
-			SQLTypeDefinition idef = getSQLTypeDefinition(dti);
-			def = new SQLArrayTypeDefinition(idef);
+			
+			if (pt != null) {
+				com.appspot.relaxe.types.ArrayType<?, ?> at = pt.asArrayType();			
+				PrimitiveType<?> et = at.getElementType();			
+				DataTypeImpl dti = new DataTypeImpl(et.getSqlType(), et.getName());
+				SQLTypeDefinition idef = getSQLTypeDefinition(dti);
+				def = new SQLArrayTypeDefinition(idef);
+			}
 			break;
 		default:
 			break;
@@ -138,7 +161,29 @@ public abstract class DefaultDataTypeMap
 	}
 
 	protected Integer getSize(DataType dataType) {
-		return dataType.getSize();
+		Integer size = dataType.getSize();				
+		return size;
+	}
+
+	private Integer getCharOctetLength(DataType dataType) {
+		Integer size = dataType.getCharOctetLength();
+		
+		if (size == null) {
+			int t = dataType.getDataType();
+			
+			switch (t) {
+			case PrimitiveType.CHAR:				
+			case PrimitiveType.VARCHAR:
+				size = Integer.valueOf(1024 * 1024);
+				break;
+			case PrimitiveType.LONGVARCHAR:				
+			case PrimitiveType.LONGNVARCHAR:
+			default:
+				break;
+			}
+		}
+		
+		return size;
 	}
 
 	protected abstract SchemaElementName newName(String typeName);

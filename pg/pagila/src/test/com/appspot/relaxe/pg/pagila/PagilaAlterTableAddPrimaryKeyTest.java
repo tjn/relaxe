@@ -4,7 +4,7 @@
 package com.appspot.relaxe.pg.pagila;
 
 import com.appspot.relaxe.expr.ddl.AlterTableAddPrimaryKey;
-import com.appspot.relaxe.gen.pagila.ent.pub.Film;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;

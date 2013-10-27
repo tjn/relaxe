@@ -69,4 +69,9 @@ public final class SchemaElementName
 	    return this.qualifier;
 	}
 	
+	public SchemaElementName withoutCatalog() {
+		SchemaName q = this.qualifier;		
+		Identifier cn = (q == null) ? null : q.getCatalogName();		
+		return (cn == null) ? this : new SchemaElementName(null, (q == null) ? null : q.getSchemaName(), this.name);				
+	}	
 }

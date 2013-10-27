@@ -35,6 +35,7 @@ import com.appspot.relaxe.env.GeneratedKeyHandler;
 import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.exec.QueryProcessor;
 import com.appspot.relaxe.exec.QueryProcessorAdapter;
+import com.appspot.relaxe.exec.UpdateProcessor;
 import com.appspot.relaxe.expr.Assignment;
 import com.appspot.relaxe.expr.ColumnReference;
 import com.appspot.relaxe.expr.Default;
@@ -79,7 +80,7 @@ public class PersistenceManager<
     C extends Content
 >
 {
-	private static final QueryProcessor NO_OPERATION = new QueryProcessorAdapter();
+	private static final UpdateProcessor NO_OPERATION = new QueryProcessorAdapter();
 	    
 //    private class PMElementTemplate
 //	    extends DefaultEntityQueryElementTemplate<A, R, T, E, H, F, M, C, PMElement>    	

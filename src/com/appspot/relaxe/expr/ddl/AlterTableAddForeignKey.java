@@ -7,6 +7,7 @@ package com.appspot.relaxe.expr.ddl;
 import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SQLKeyword;
+import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.Symbol;
 import com.appspot.relaxe.expr.VisitContext;
@@ -15,28 +16,37 @@ import com.appspot.relaxe.meta.ColumnMap;
 import com.appspot.relaxe.meta.ForeignKey;
 
 public class AlterTableAddForeignKey
-	extends Statement {
+	extends SQLSchemaStatement {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3990587941677143525L;
-	private ForeignKey foreignKey;	
+	private ForeignKey foreignKey;
+	
+	private SchemaElementName referencing;
+	private SchemaElementName referenced;
+	
 	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
 	protected AlterTableAddForeignKey() {
 	}
-		
+	
 	public AlterTableAddForeignKey(ForeignKey foreignKey) {
+		this(foreignKey, true);
+	}
+		
+	public AlterTableAddForeignKey(ForeignKey foreignKey, boolean relative) {
 		super(Name.ALTER_TABLE);
 		
 		if (foreignKey == null) {
 			throw new NullPointerException("foreignKey");
 		}
 		
-		this.foreignKey = foreignKey;
-		
+		this.referencing = foreignKey.getReferencing().getName(relative);
+		this.referenced = foreignKey.getReferenced().getName(relative);		
+		this.foreignKey = foreignKey;		
 	}
 	
 	@Override
@@ -47,7 +57,7 @@ public class AlterTableAddForeignKey
 		SQLKeyword.ALTER.traverse(vc, v);		
 		SQLKeyword.TABLE.traverse(vc, v);
 		
-		fk.getReferencing().getName().traverse(vc, v);
+		this.referencing.traverse(vc, v);
 		
 		ColumnMap cm = fk.getColumnMap();
 				
@@ -74,7 +84,7 @@ public class AlterTableAddForeignKey
 		
 		Symbol.PAREN_RIGHT.traverse(vc, v);
 		SQLKeyword.REFERENCES.traverse(vc, v);
-		fk.getReferenced().getName().traverse(vc, v);
+		this.referenced.traverse(vc, v);
 		Symbol.PAREN_LEFT.traverse(vc, v);
 		
 		for (int i = 0; i < rca.length; i++) {

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="tools"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="config"/>
 	<classpathentry kind="src" path="pg/common"/>
@@ -12,9 +11,16 @@
 	<classpathentry kind="src" path="mysql/sakila/src/test"/>
 	<classpathentry kind="src" path="mysql/samples/src/java"/>
 	<classpathentry kind="src" path="mysql/samples/src/test"/>
-	<classpathentry kind="src" path="pg/pagila/src/out"/>
 	<classpathentry kind="src" path="mysql/sakila/src/out"/>
 	<classpathentry kind="src" path="mysql/samples/src/out"/>
+	<classpathentry kind="src" path="tools"/>
+	<classpathentry kind="src" path="hsqldb/common"/>
+	<classpathentry kind="src" path="mariadb/common"/>
+	<classpathentry kind="src" path="pg/pp/src/out"/>
+	<classpathentry kind="src" path="pg/pagila/src/out"/>
+	<classpathentry kind="src" path="mariadb/sakila/src/test"/>
+	<classpathentry kind="src" path="mariadb/sakila/src/java"/>
+	<classpathentry kind="src" path="mariadb/sakila/src/out"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache Log4J"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
@@ -22,5 +28,7 @@
 	<classpathentry kind="lib" path="lib/util.jar"/>
 	<classpathentry kind="lib" path="lib/postgresql-9.2-1002.jdbc4.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.18-bin.jar"/>
+	<classpathentry kind="lib" path="lib/hsqldb.jar"/>
+	<classpathentry kind="lib" path="lib/mariadb-java-client-bzr-trunk-20131027.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

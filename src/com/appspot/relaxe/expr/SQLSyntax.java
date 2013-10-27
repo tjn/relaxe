@@ -12,9 +12,9 @@ public interface SQLSyntax {
     
     DeleteStatement newDeleteStatement(TableReference tref, Predicate p);    
     
-    AlterTableDropConstraint newAlterTableDropForeignKey(ForeignKey fk);
-    
+    AlterTableDropConstraint newAlterTableDropForeignKey(ForeignKey fk);    
     AlterTableDropConstraint newAlterTableDropPrimaryKey(PrimaryKey pk);
-        
+    
+    
 
 }

@@ -76,8 +76,7 @@ public class EntityQueryExecutor<
 		
 		EntityReader<?, ?, ?, ?, ?, ?, ?, ?, ?> eb = 
 				new EntityReader<A, R, T, E, H, F, M, C, RE>(pc.getValueExtractorFactory(), eqb, content, this.unificationContext);
-				
-				
+								
 		QueryExecutor.SliceStatement sb = se.createStatement(qe, opts, c);
 						
 		StatementExecutor sx = new StatementExecutor(pc);

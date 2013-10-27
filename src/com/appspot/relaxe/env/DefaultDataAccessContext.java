@@ -62,7 +62,7 @@ public class DefaultDataAccessContext<I extends Implementation<I>>
 		try {
 			final Connection c = connectionManager.reserve();
 			
-			return new AbstractDataAccessSession<I>(getPersistenceContext(), c) {
+			return new DefaultDataAccessSession<I>(getPersistenceContext(), c) {
 				@Override
 				protected void closed() {
 					connectionManager.release(c);

@@ -195,10 +195,9 @@ public class QueryTool {
 			processAdHoc(ps, qp);			
 		}
 	}
-	
-	
+		
 	public static void processAdHoc(PreparedStatement ps, QueryProcessor qp) 
-		throws SQLException {
+		throws Exception {
 
 	    qp.prepare();
 				
@@ -234,7 +233,7 @@ public class QueryTool {
 				moreResults = ps.getMoreResults();				
 			} while (moreResults || countProcessed);			
 		}
-		catch (Throwable e) {
+		catch (Exception e) {
 			logger().error(e.getMessage(), e);
 			qp.abort(e);
 		}
@@ -244,7 +243,7 @@ public class QueryTool {
 	}
 
 	public static long process(ResultSet rs, QueryProcessor qp) 
-	   throws SQLException {
+	   throws Exception {
 
        qp.prepare();
             
@@ -260,7 +259,7 @@ public class QueryTool {
                    
            qp.endQuery();                  
        }
-       catch (Throwable e) {
+       catch (Exception e) {
            logger().error(e.getMessage(), e);
            qp.abort(e);
        }

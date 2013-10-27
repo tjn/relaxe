@@ -39,6 +39,10 @@ public class HSQLDBEnvironment
 
 	private static class HSQLDBDataTypeMap
 		extends DefaultDataTypeMap {
+		
+		
+		
+		
 
 		@Override
 		protected SchemaElementName newName(String typeName) {

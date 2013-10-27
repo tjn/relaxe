@@ -14,7 +14,7 @@ public class ImmutableSchemaElement
 	 */
 	private static final long serialVersionUID = -5769270673777439062L;
 	private Environment environment;
-	private SchemaElementName name;		
+	private SchemaElementName name;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -37,6 +37,13 @@ public class ImmutableSchemaElement
 	public SchemaElementName getName() {
 		return this.name;
 	}
+	
+	
+	@Override
+	public SchemaElementName getName(boolean relative) {
+		return relative ? this.name.withoutCatalog() : this.name;
+	}
+	
 
 	@Override
 	public String getQualifiedName() {

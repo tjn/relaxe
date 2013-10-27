@@ -14,11 +14,7 @@ public class QueryProcessorAdapter
 	implements QueryProcessor {
 
 	@Override
-	public void abort(Throwable e) {
-	}
-
-	@Override
-	public void endQuery() throws QueryException {
+	public void prepare() {		
 	}
 
 	@Override
@@ -26,19 +22,34 @@ public class QueryProcessorAdapter
 	}
 
 	@Override
-	public void prepare() {
+	public void process(ResultSet rs, long ordinal)
+			throws QueryException, SQLException {
 	}
 
 	@Override
-	public void process(ResultSet rs, long ordinal) throws QueryException, SQLException {
-				
+	public void abort(Exception e)
+		throws QueryException {
+		try {
+			throw e;
+		}
+		catch (QueryException qe) {
+			throw qe;
+		}
+		catch (Exception oe) {
+			throw new QueryException(oe.getMessage(), oe);
+		}		
 	}
 
 	@Override
-	public void startQuery(ResultSetMetaData m) throws QueryException, SQLException {				
+	public void startQuery(ResultSetMetaData m) 
+			throws QueryException, SQLException {
 	}
 
 	@Override
-	public void updated(int updateCount) {
+	public void endQuery() throws QueryException {
+	}
+
+	@Override
+	public void updated(int count) {	
 	}
 }

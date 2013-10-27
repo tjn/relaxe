@@ -19,7 +19,7 @@ public class MutableDataObjectProcessor
 	
 	@Override
 	public void prepare() {
-		this.content = new MutableDataObject(getMetaData());		
+		this.content = new MutableDataObject(getMetaData());
 	}
 	
 	@Override

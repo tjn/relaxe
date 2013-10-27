@@ -9,7 +9,6 @@ import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
-import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.env.mysql.MySQLImplementation;
 import com.appspot.relaxe.mysql.AbstractMySQLTestCase;

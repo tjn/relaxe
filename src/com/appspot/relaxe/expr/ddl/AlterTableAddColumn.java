@@ -13,7 +13,7 @@ import com.appspot.relaxe.expr.VisitContext;
 import com.appspot.relaxe.expr.ddl.types.DataTypeDefinition;
 
 public class AlterTableAddColumn
-	extends Statement {
+	extends SQLSchemaStatement {
 	/**
 	 * 
 	 */

@@ -4,7 +4,7 @@
 package com.appspot.relaxe.expr;
 
 public class UpdateStatement
-	extends Statement {
+	extends SQLDataChangeStatement {
 
 	/**
 	 * 

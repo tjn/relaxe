@@ -5,8 +5,8 @@ package com.appspot.relaxe.paging;
 
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObjectQueryResult;
-import com.appspot.relaxe.ent.QueryExpressionSource;
+import com.appspot.relaxe.expr.QueryExpression;
 
 public interface DataObjectFetcher
-	extends Fetcher<QueryExpressionSource, DataObjectQueryResult<DataObject>, PageReceiver<DataObjectQueryResult<DataObject>>> {
+	extends Fetcher<QueryExpression, DataObjectQueryResult<DataObject>, PageReceiver<DataObjectQueryResult<DataObject>>> {
 }

@@ -9,7 +9,7 @@ import java.util.Collections;
 import com.appspot.relaxe.meta.Table;
 
 public class InsertStatement
-	extends Statement {
+	extends SQLDataChangeStatement {
 
 	/**
 	 * 

@@ -10,7 +10,7 @@ import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.VisitContext;
 
 public class CreateSchema
-	extends Statement {
+	extends SQLSchemaStatement {
 
 	/**
 	 * 

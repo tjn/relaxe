@@ -193,9 +193,13 @@ public abstract class JDBCTestCase
 	public static Logger logger() {
 		return JDBCTestCase.logger;
 	}
+		
+	public void dumpMetaData() throws QueryException, SQLException {
+		dumpMetaData(getConnection());
+	}
 
-	public void dumpMetaData() throws QueryException, SQLException {		
-		Connection c = getConnection();		
+	public static void dumpMetaData(Connection c) throws QueryException, SQLException {	
+				
 		DatabaseMetaData meta = c.getMetaData();
 		
 		com.appspot.relaxe.env.util.ResultSetWriter rw = new ResultSetWriter(System.out, false);		
@@ -326,6 +330,10 @@ public abstract class JDBCTestCase
 
 		rw.header("Table Types");
 		rw.apply(meta.getTableTypes());
+				
+		rw.header("Type info");
+		rw.apply(meta.getTypeInfo());
+
 		
 		try {
 			rw.header("Attributes");			
@@ -543,7 +551,7 @@ public abstract class JDBCTestCase
         
         QueryProcessor qp = new SimpleQueryProcessor(pw) {
             @Override
-            public void abort(Throwable e) {             
+            public void abort(Exception e) {             
                 throw new RuntimeException(e);
             }
         };

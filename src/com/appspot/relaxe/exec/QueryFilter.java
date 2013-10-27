@@ -28,7 +28,8 @@ public class QueryFilter
 	
 
 	@Override
-	public void abort(Throwable e) {
+	public void abort(Exception e) 
+		throws QueryException, SQLException {
 		this.inner.abort(e);
 	}
 
@@ -64,7 +65,7 @@ public class QueryFilter
 	}
 
 	@Override
-	public void updated(int updateCount) throws SQLException {
+	public void updated(int updateCount) {
 		this.inner.updated(updateCount);		
 	}
 	

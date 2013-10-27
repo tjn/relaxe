@@ -7,6 +7,7 @@ package com.appspot.relaxe.expr.ddl;
 import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SQLKeyword;
+import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.Symbol;
 import com.appspot.relaxe.expr.VisitContext;
@@ -15,12 +16,13 @@ import com.appspot.relaxe.meta.ColumnMap;
 import com.appspot.relaxe.meta.PrimaryKey;
 
 public class AlterTableAddPrimaryKey
-	extends Statement {
+	extends SQLSchemaStatement {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3990587941677143525L;
-	private PrimaryKey primaryKey;	
+	private PrimaryKey primaryKey;
+	private SchemaElementName tableName;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -29,15 +31,22 @@ public class AlterTableAddPrimaryKey
 	}
 		
 	public AlterTableAddPrimaryKey(PrimaryKey primaryKey) {
+		this(primaryKey, true);		
+	}
+	
+	public AlterTableAddPrimaryKey(PrimaryKey primaryKey, boolean relative) {
 		super(Name.ALTER_TABLE);
 		
 		if (primaryKey == null) {
 			throw new NullPointerException("primaryKey");
 		}
 		
+		SchemaElementName sen = primaryKey.getTable().getName();				
+		this.tableName = relative ? sen.withoutCatalog() : sen;
 		this.primaryKey = primaryKey;
 		
 	}
+	 
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {		
@@ -46,7 +55,7 @@ public class AlterTableAddPrimaryKey
 		SQLKeyword.ALTER.traverse(vc, v);		
 		SQLKeyword.TABLE.traverse(vc, v);
 		
-		pk.getTable().getName().traverse(vc, v);
+		this.tableName.traverse(vc, v);
 		
 		ColumnMap cm = pk.getColumnMap();
 				

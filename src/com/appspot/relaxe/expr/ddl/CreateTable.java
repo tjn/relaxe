@@ -27,7 +27,7 @@ import com.appspot.relaxe.meta.Environment;
 import com.appspot.relaxe.meta.PrimaryKey;
 
 public class CreateTable
-	extends Statement {
+	extends SQLSchemaStatement {
 	
 	/**
 	 * 
@@ -45,21 +45,20 @@ public class CreateTable
 	}
 	
 	public CreateTable(BaseTable table) {
-		this(null, table, true);
+		this(null, table, true, false);
 	}
 	
 	public CreateTable(BaseTable table, boolean primaryKey) {
-		this(null, table, primaryKey);
+		this(null, table, true, primaryKey);
 	}
 	
-	public CreateTable(DataTypeMap tm, BaseTable table, boolean primaryKey) {
+	public CreateTable(DataTypeMap tm, BaseTable table, boolean relative, boolean primaryKey) {
 		super(Name.CREATE_TABLE);
 		
 		if (table == null) {
 			throw new NullPointerException("table");
 		}
-				
-		
+						
 		List<BaseTableElement> elements = new ArrayList<BaseTableElement>();
 		
 		ColumnMap cm = table.columnMap();
@@ -78,8 +77,7 @@ public class CreateTable
 			if (type == null) {
 				throw new RuntimeException(
 						concat("Column ", table.getQualifiedName(), ".", col.getColumnName().getName(), 
-								": unsupported column type: ", t.getDataType(), " (", t.getTypeName(), ") ", 
-								col.getColumnName().getName()));  
+								": unsupported column type: ", t.getDataType(), " (", t.getTypeName(), ")"));  
 			}
 						
 			ElementList<ColumnConstraint> cl = col.isDefinitelyNotNullable() ? nnc : null;			
@@ -96,8 +94,8 @@ public class CreateTable
 				elements.add(new PrimaryKeyConstraint(pk));
 			}
 		}
-		
-		this.tableName = table.getName();
+				
+		this.tableName = relative ? table.getName().withoutCatalog() : table.getName();		
 		this.elementList = new ElementList<BaseTableElement>(elements);
 	}
 	

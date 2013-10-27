@@ -30,7 +30,7 @@ public class VarcharTypeDefinition
     }
     
     public static VarcharTypeDefinition get(Integer length) {
-        return (length == null) ? new VarcharTypeDefinition(null) : new VarcharTypeDefinition(length);
+        return new VarcharTypeDefinition(length);
     }
     
     public VarcharTypeDefinition(Integer length) {

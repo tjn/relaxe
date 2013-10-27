@@ -6,10 +6,12 @@ package com.appspot.relaxe.pg.pagila;
 import org.apache.log4j.Logger;
 
 import com.appspot.relaxe.env.pg.PGEnvironment;
+import com.appspot.relaxe.expr.SchemaElementName;
+import com.appspot.relaxe.expr.SchemaName;
 import com.appspot.relaxe.expr.ddl.CreateTable;
 import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
-import com.appspot.relaxe.gen.pagila.ent.pub.Film;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
@@ -25,6 +27,25 @@ public class PagilaCreateTableTest extends TestCase {
 	public void testCreateTable() {
 		
 		BaseTable table = Film.Type.TYPE.getMetaData().getBaseTable();
+		
+		{
+			SchemaElementName sen = table.getName();
+			assertNotNull(sen);
+			SchemaName q = sen.getQualifier();
+			assertNotNull(q);
+			assertNotNull(q.getSchemaName());
+			assertNull(q.getCatalogName());
+		}
+
+		{
+			SchemaElementName sen = table.getPrimaryKey().getName();
+			assertNotNull(sen);
+			SchemaName q = sen.getQualifier();
+			assertNotNull(q);
+			assertNotNull(q.getSchemaName());
+			assertNull(q.getCatalogName());
+		}
+
 				
 		{
 			Column title = table.columnMap().get("TITLE");

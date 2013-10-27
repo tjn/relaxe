@@ -5,12 +5,12 @@ package com.appspot.relaxe.pg.pagila;
 
 import com.appspot.relaxe.SimpleUnificationContext;
 import com.appspot.relaxe.ent.im.EntityIdentityMap;
-import com.appspot.relaxe.gen.pagila.ent.pub.Film;
-import com.appspot.relaxe.gen.pagila.ent.pub.Film.Attribute;
-import com.appspot.relaxe.gen.pagila.ent.pub.Film.Holder;
-import com.appspot.relaxe.gen.pagila.ent.pub.Film.MetaData;
-import com.appspot.relaxe.gen.pagila.ent.pub.Film.Reference;
-import com.appspot.relaxe.gen.pagila.ent.pub.Film.Type;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film.Attribute;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film.Holder;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film.MetaData;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film.Reference;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film.Type;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 
 

@@ -3,6 +3,7 @@
  */
 package com.appspot.relaxe.env.pg;
 
+import com.appspot.relaxe.env.pg.expr.PGByteArrayTypeDefinition;
 import com.appspot.relaxe.env.pg.expr.PGTextArrayTypeDefinition;
 import com.appspot.relaxe.env.pg.expr.PGTextTypeDefinition;
 import com.appspot.relaxe.expr.SchemaElementName;
@@ -19,13 +20,21 @@ public class PGDataTypeMap
 	
 	@Override
 	public SQLTypeDefinition getSQLTypeDefinition(DataType t) {
-					
-		if (t.getDataType() == PrimitiveType.VARCHAR && PGTextTypeDefinition.NAME.equals(t.getTypeName())) {
+		
+//		if (t.getDataType() == PrimitiveType.VARCHAR && t.getCharOctetLength()) {
+//			return PGTextTypeDefinition.DEFINITION;
+//		}
+		
+		if (SQLTypeDefinition.isTextType(t.getDataType()) && PGTextTypeDefinition.NAME.equals(t.getTypeName())) {
 			return PGTextTypeDefinition.DEFINITION;
 		}
 		
 		if (t.getDataType() == PrimitiveType.ARRAY && PGTextArrayTypeDefinition.NAME.equals(t.getTypeName())) {
 			return PGTextArrayTypeDefinition.DEFINITION;
+		}
+						
+		if (SQLTypeDefinition.isBinaryType(t.getDataType()) && PGByteArrayTypeDefinition.NAME.equals(t.getTypeName())) {
+			return PGByteArrayTypeDefinition.DEFINITION;
 		}
 		
 		return super.getSQLTypeDefinition(t);

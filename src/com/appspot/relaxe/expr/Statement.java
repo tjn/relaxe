@@ -11,7 +11,7 @@ public abstract class Statement
 	 */
 	private static final long serialVersionUID = -7451238461402923413L;
 
-	enum Type {
+	public enum Type {
 		/**
 		 * CREATE_SCHEMA/ALTER_TABLE/DROP_SCHEMA/TRUNCATE/COMMENT/RENAME -statement 
 		 */			  

@@ -1,8 +1,8 @@
 @echo off
 
 SET ROOT=%~dp0..
-SET IMPDIR=pg
-SET JDBC_CONFIG=%ROOT%\config\%IMPDIR%\%TARGET%.properties
+SET IMPTAG=pg
+SET JDBC_CONFIG=%ROOT%\config\%IMPTAG%\%TARGET%.properties
 SET ENV=com.appspot.relaxe.meta.impl.pg.PGImplementation
 
 echo %TARGET%

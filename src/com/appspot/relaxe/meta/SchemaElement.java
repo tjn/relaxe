@@ -11,6 +11,7 @@ public interface SchemaElement
 	
 	Environment getEnvironment();
 	SchemaElementName getName();
+	SchemaElementName getName(boolean relative);
 	
 	@Override
 	Identifier getUnqualifiedName();

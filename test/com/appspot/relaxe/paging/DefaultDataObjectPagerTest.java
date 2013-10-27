@@ -44,7 +44,7 @@ public abstract class DefaultDataObjectPagerTest<I extends Implementation<I>> ex
 		
 		Map<Command, ValueModel<String>> nmm = DefaultPagerModel.createNameModelMap(nm);		
 							
-		DefaultDataObjectPager p = new DefaultDataObjectPager(q, f, 20, nmm);
+		DefaultDataObjectPager p = new DefaultDataObjectPager(q.getQueryExpression(), f, 20, nmm);
 		
 		// table is expected to contain at least 40 rows.
 

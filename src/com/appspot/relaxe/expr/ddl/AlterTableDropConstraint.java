@@ -14,7 +14,7 @@ import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.PrimaryKey;
 
 public class AlterTableDropConstraint
-    extends Statement {
+    extends SQLSchemaStatement {
 
     /**
 	 * 
