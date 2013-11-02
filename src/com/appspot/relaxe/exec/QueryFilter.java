@@ -35,8 +35,8 @@ public class QueryFilter
 
 
 	@Override
-	public void endQuery() throws QueryException {
-		this.inner.endQuery();		
+	public void endResultSet() throws QueryException, SQLException {
+		this.inner.endResultSet();		
 	}
 
 
@@ -47,7 +47,8 @@ public class QueryFilter
 
 
 	@Override
-	public void prepare() {
+	public void prepare() 
+			throws QueryException {
 		this.inner.prepare();		
 	}
 
@@ -59,8 +60,8 @@ public class QueryFilter
 
 
 	@Override
-	public void startQuery(ResultSetMetaData m) throws QueryException, SQLException {
-		this.inner.startQuery(m);
+	public void startResultSet(ResultSetMetaData m) throws QueryException, SQLException {
+		this.inner.startResultSet(m);
 		
 	}
 

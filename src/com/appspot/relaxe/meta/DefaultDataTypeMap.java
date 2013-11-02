@@ -3,8 +3,6 @@
  */
 package com.appspot.relaxe.meta;
 
-import org.apache.log4j.Logger;
-
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.BigIntTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.BooleanTypeDefinition;

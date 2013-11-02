@@ -84,8 +84,8 @@ public class EntityQueryExecutor<
 		SelectStatement ss = sb.getStatement();
 		Query q = new Query(ss);		
 		logger().debug("execute: executing statement...");
-		QueryTime qt = sx.execute(ss, c, eb);
-		logger().debug("execute: qt: " + qt.getQueryExecutionTime());
+		QueryTime qt = sx.executeSelect(ss, c, eb);
+		logger().debug("execute: qt: " + qt.getExecutionTime());
 		
 		DataObject.MetaData meta = eb.getMetaData();		
 

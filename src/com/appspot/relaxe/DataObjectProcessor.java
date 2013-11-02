@@ -42,7 +42,7 @@ public abstract class DataObjectProcessor<O extends MutableDataObject>
 
 	
 	@Override
-	public void startQuery(ResultSetMetaData m) throws QueryException, SQLException {
+	public void startResultSet(ResultSetMetaData m) throws QueryException, SQLException {
 		ValueExtractorFactory vef = this.valueExtractorFactory;
 		
 		int cc = m.getColumnCount();

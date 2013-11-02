@@ -41,12 +41,12 @@ public class QueryProcessorAdapter
 	}
 
 	@Override
-	public void startQuery(ResultSetMetaData m) 
+	public void startResultSet(ResultSetMetaData m) 
 			throws QueryException, SQLException {
 	}
 
 	@Override
-	public void endQuery() throws QueryException {
+	public void endResultSet() throws QueryException {
 	}
 
 	@Override

@@ -213,13 +213,13 @@ public class QueryTool {
 					
 					long ordinal = 1;
 					
-					qp.startQuery(rs.getMetaData());
+					qp.startResultSet(rs.getMetaData());
 					
 					while (rs.next()) {
 						qp.process(rs, ordinal++);
 					}
 					
-					qp.endQuery();					
+					qp.endResultSet();					
 				}
 				else {
 					int count = ps.getUpdateCount();
@@ -250,14 +250,14 @@ public class QueryTool {
        long ordinal = 0;
        
        try {        
-           qp.startQuery(rs.getMetaData());
+           qp.startResultSet(rs.getMetaData());
                    
            while (rs.next()) {
                ordinal++;
                qp.process(rs, ordinal);
            }
                    
-           qp.endQuery();                  
+           qp.endResultSet();                  
        }
        catch (Exception e) {
            logger().error(e.getMessage(), e);

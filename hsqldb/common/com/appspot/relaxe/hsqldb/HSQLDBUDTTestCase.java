@@ -4,22 +4,10 @@
 package com.appspot.relaxe.hsqldb;
 
 import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.Types;
-import java.util.Properties;
-
-import com.appspot.relaxe.AbstractUnitTest;
-import com.appspot.relaxe.TestContext;
-import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.hsqldb.HSQLDBImplementation;
-import com.appspot.relaxe.env.hsqldb.HSQLDBPersistenceContext;
 import com.appspot.relaxe.env.util.ResultSetWriter;
-import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 
 
 public class HSQLDBUDTTestCase

@@ -12,7 +12,6 @@ import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.SchemaElementName;
-import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.Symbol;
 import com.appspot.relaxe.expr.VisitContext;
 import com.appspot.relaxe.expr.ddl.types.CharTypeDefinition;

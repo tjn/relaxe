@@ -5,8 +5,11 @@ package com.appspot.relaxe.env.hsqldb;
 
 import com.appspot.relaxe.env.CatalogFactory;
 import com.appspot.relaxe.env.DefaultImplementation;
+import com.appspot.relaxe.env.hsqldb.expr.HSQLDBArrayTypeDefinition;
 import com.appspot.relaxe.expr.DefaultSQLSyntax;
 import com.appspot.relaxe.expr.SQLSyntax;
+import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
 import com.appspot.relaxe.meta.SerializableEnvironment;
 import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBEnvironment;
 
@@ -133,6 +136,11 @@ public class HSQLDBImplementation
 
     public static class HSQLDBSyntax
         extends DefaultSQLSyntax {
+    	
+    	@Override
+    	public SQLTypeDefinition newArrayTypeDefinition(SQLTypeDefinition elementType) {
+    		return new HSQLDBArrayTypeDefinition(elementType, null);
+    	}
 
     }
 
@@ -192,5 +200,7 @@ public class HSQLDBImplementation
 	public HSQLDBImplementation self() {
 		return this;
 	}
+	
+	
 	
 }

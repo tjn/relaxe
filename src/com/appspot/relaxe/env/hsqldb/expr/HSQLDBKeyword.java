@@ -15,6 +15,7 @@ public enum HSQLDBKeyword
     implements Token {
     
     SHUTDOWN,
+    ARRAY,
 //    ,
     ;
         

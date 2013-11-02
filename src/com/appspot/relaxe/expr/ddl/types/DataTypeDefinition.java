@@ -7,7 +7,6 @@ package com.appspot.relaxe.expr.ddl.types;
 import com.appspot.relaxe.expr.CompoundElement;
 import com.appspot.relaxe.expr.Element;
 import com.appspot.relaxe.expr.ElementVisitor;
-import com.appspot.relaxe.expr.Token;
 import com.appspot.relaxe.expr.VisitContext;
 import com.appspot.relaxe.expr.ddl.ColumnDataType;
 

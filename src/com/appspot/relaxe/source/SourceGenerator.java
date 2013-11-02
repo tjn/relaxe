@@ -537,14 +537,14 @@ public class SourceGenerator {
 
 		String src = getTemplateForHasKeyInterface();
 
-		logger().info("generateHasKeyInterface: src 1=" + src);
+//		logger().debug("generateHasKeyInterface: src 1=" + src);
 
 		src = replaceAllWithComment(src, Tag.PACKAGE_NAME, hki.getPackageName());
 		src = replaceAll(src, Tag.HAS_KEY_INTERFACE, hki.getUnqualifiedName());
 		src = replaceAll(src, Tag.HAS_INTERFACE, hp.getUnqualifiedName());
 		src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
 
-		logger().info("generateHasKeyInterface: src 2=" + src);
+//		logger().info("generateHasKeyInterface: src 2=" + src);
 
 		return src;
 	}

@@ -3,12 +3,19 @@
  */
 package com.appspot.relaxe.pg.pagila;
 
+import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.apache.log4j.Logger;
 
+import com.appspot.relaxe.DefaultTableMapper;
+import com.appspot.relaxe.DefaultTypeMapper;
 import com.appspot.relaxe.TestContext;
+import com.appspot.relaxe.build.Builder;
+import com.appspot.relaxe.env.CatalogFactory;
 import com.appspot.relaxe.env.DefaultDataAccessContext;
 import com.appspot.relaxe.env.hsqldb.HSQLDBImplementation;
 import com.appspot.relaxe.env.hsqldb.HSQLDBPersistenceContext;
@@ -25,7 +32,6 @@ import com.appspot.relaxe.expr.ddl.CreateTable;
 import com.appspot.relaxe.expr.ddl.types.AbstractCharacterTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.IntTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.VarBinaryTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.DataTypeTest;
@@ -44,6 +50,7 @@ import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 import com.appspot.relaxe.service.DataAccessContext;
 import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.StatementSession;
+import com.appspot.relaxe.source.SourceGenerator;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public class PagilaExportDDLTest 
@@ -66,10 +73,13 @@ public class PagilaExportDDLTest
 		TestContext<PGImplementation> ctx = getCurrent();
 		Catalog cat = ctx.getCatalog();
 		
-		HSQLDBImplementation hi = new HSQLDBImplementation();
+		final HSQLDBImplementation hi = new HSQLDBImplementation();
 		HSQLDBPersistenceContext hpc = new HSQLDBPersistenceContext(hi);		
 		HSQLDBEnvironment henv = hi.getEnvironment();
 		final DataTypeMap htm = henv.getDataTypeMap();
+		
+		hi.getSyntax();
+		
 		final DataTypeMap dtm = new DataTypeMap() {			
 			@Override
 			public PrimitiveType<?> getType(DataType type) {
@@ -86,11 +96,11 @@ public class PagilaExportDDLTest
 					logger.debug("unmapped: " + dataType.getTypeName() + ": " + dataType.getDataType());
 					
 					if (t == PrimitiveType.ARRAY && dataType.getTypeName().equals("_text")) {
-						def = new SQLArrayTypeDefinition(VarcharTypeDefinition.get(null));
+						def = hi.getSyntax().newArrayTypeDefinition(VarcharTypeDefinition.get(1024));
 					}
 					
-					if (t == PrimitiveType.BINARY && dataType.getTypeName().equals("bytea")) {
-						def = new SQLArrayTypeDefinition(VarBinaryTypeDefinition.get());
+					if (t == PrimitiveType.BINARY && dataType.getTypeName().equals("bytea")) {												
+						def = VarBinaryTypeDefinition.get(dataType.getSize());
 					}
 					
 					if (SQLTypeDefinition.isBinaryType(t)) {
@@ -113,8 +123,6 @@ public class PagilaExportDDLTest
 			IntLiteral len = cd.getLength();
 			assertNotNull(len);
 		}
-		
-		
 				
 		Collection<Schema> sc = new ArrayList<Schema>(); 
 		
@@ -164,14 +172,14 @@ public class PagilaExportDDLTest
 		
 		for (Statement st : sl) {
 			write(buf, st);		
-		}
-			
+		}			
 								
-		// String url = hi.createJdbcUrl("mem:test");
-		String url = hi.createJdbcUrl("file:testdata/hsql");
+		String url = hi.createJdbcUrl("mem:test");
+		// String url = hi.createJdbcUrl("file:testdata/hsql");
 		DataAccessContext hctx = new DefaultDataAccessContext<HSQLDBImplementation>(hpc, url, null);
-						
-		DataAccessSession das = hctx.newSession();		
+										
+		DataAccessSession das = hctx.newSession();
+				
 		StatementSession ss = das.asStatementSession();
 		
 //		{
@@ -196,19 +204,73 @@ public class PagilaExportDDLTest
 			CreateDomain cd = new CreateDomain(hid.newName("mpaa_rating"), VarcharTypeDefinition.get(20));
 			ss.execute(cd, qp);
 		}
+		
+		{	
+			CreateDomain cd = new CreateDomain(hid.newName("tsvector"), VarcharTypeDefinition.get(1024));
+			ss.execute(cd, qp);
+		}
+		
+//		{	
+//			CreateDomain cd = new CreateDomain(hid.newName("mpaa_rating"), VarcharTypeDefinition.get(20));
+//			ss.execute(cd, qp);
+//		}
 	
-		try {		
+//		try {		
 			for (Statement st : sl) {
 				logger.debug("executing: " + st.generate());
 				ss.execute(st, qp);
 				logger.debug("executed: " + st.generate());
 			}
-		}
-		catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
+//		}
+//		catch (Exception e) {
+//			logger.error(e.getMessage(), e);
+//		}
 		
 		das.commit();
+		
+		
+		
+		CatalogFactory hcf = hi.catalogFactory();
+		
+		Connection c = null;
+		
+		try {			
+			c = DriverManager.getConnection(url);
+			
+			long s = System.currentTimeMillis();
+			Catalog hcat = hcf.create(c);
+			long e = System.currentTimeMillis();
+			
+			logger.info("hcat: " + hcat + " : " + (e - s));
+			
+			SourceGenerator gen = new SourceGenerator(new File("hsqldb/pagila/src/out"));
+			
+			DefaultTableMapper tam = new DefaultTableMapper("com.appspot.relaxe.gen.hsqldb.pagila.ent");
+			DefaultTypeMapper tym = new DefaultTypeMapper();
+			
+			gen.run(hcat, tam, tym, henv);
+						
+//			Builder hb = new Builder();
+//			
+//			hb.setCatalog(hcat);
+//			hb.setConnection(c);
+//			
+//			hb.setSourceDir(new File("hsqldb/pagila/src/out"));
+//			hb.setImplementation(hi);
+//			hb.setRootPackage("com.appspot.relaxe.gen.hsqldb.pagila.ent");
+//			hb.setTypeMapper(new DefaultTypeMapper());			
+//			hb.setTargetEnvironment(henv);
+//			
+//			hb.setVerbose(true);
+			// hb.
+			
+			logger.info("hcat: " + hcat + " : " + (e - s));
+		}
+		finally {
+			c = close(c);
+		}
+				
+		
 		
 		logger.debug("shutdown: " + Shutdown.STATEMENT.generate());
 		ss.execute(Shutdown.STATEMENT, qp);		

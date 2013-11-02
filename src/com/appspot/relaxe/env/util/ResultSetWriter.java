@@ -43,7 +43,7 @@ public class ResultSetWriter
 	}	
 	
 	@Override
-	public void startQuery(ResultSetMetaData m) throws SQLException {
+	public void startResultSet(ResultSetMetaData m) throws SQLException {
 		int cc = m.getColumnCount();
 		
 		StringBuffer buf = new StringBuffer();
@@ -224,7 +224,7 @@ public class ResultSetWriter
 	
 		
 	@Override
-	public void endQuery() throws QueryException {		
+	public void endResultSet() throws QueryException {		
 		if (closeAtEnd) {
 			this.out.close();
 			this.out = null;

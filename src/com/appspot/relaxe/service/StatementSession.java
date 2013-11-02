@@ -17,10 +17,10 @@ public interface StatementSession {
 	void execute(Statement statement, QueryProcessor qp)
 			throws QueryException;
 	
-	void execute(SelectStatement statement, ResultSetProcessor qp)
+	void executeSelect(SelectStatement statement, ResultSetProcessor qp)
 			throws QueryException;	
 	
-	void execute(SQLDataChangeStatement statement, UpdateProcessor qp)
+	void executeUpdate(SQLDataChangeStatement statement, UpdateProcessor qp)
 			throws QueryException;
 	
 	void execute(SQLSchemaStatement statement)

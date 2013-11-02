@@ -18,9 +18,9 @@ public interface ResultSetProcessor
 	public void abort(Exception e)
 		throws QueryException, SQLException;
 	
-	public void startQuery(ResultSetMetaData m) 
+	public void startResultSet(ResultSetMetaData m) 
 		throws QueryException, SQLException;
 	
-	public void endQuery()
-		throws QueryException;
+	public void endResultSet()
+		throws QueryException, SQLException;
 }

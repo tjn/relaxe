@@ -3,8 +3,14 @@
  */
 package com.appspot.relaxe.exec;
 
+import com.appspot.relaxe.query.QueryException;
+
 
 public interface ResultProcessor {
-	public void prepare();
+	public void prepare()
+			throws QueryException;
+	
 	public void finish();
+
+	
 }

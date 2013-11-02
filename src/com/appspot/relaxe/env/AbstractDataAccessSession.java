@@ -347,11 +347,11 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	
 		
 	@Override
-	public void execute(SelectStatement statement, ResultSetProcessor qp)
+	public void executeSelect(SelectStatement statement, ResultSetProcessor qp)
 			throws QueryException {
 		try {
 			StatementExecutor se = new StatementExecutor(getPersistenceContext());
-			se.execute(statement, getConnection(), qp);
+			se.executeSelect(statement, getConnection(), qp);
 		}
 		catch (SQLException e) {
 			throw new QueryException(e.getMessage());
@@ -371,11 +371,11 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	}
 
 	@Override
-	public void execute(SQLDataChangeStatement statement, UpdateProcessor qp)
+	public void executeUpdate(SQLDataChangeStatement statement, UpdateProcessor qp)
 			throws QueryException {
 		try {
 			StatementExecutor se = new StatementExecutor(getPersistenceContext());
-			se.execute(statement, getConnection(), qp);
+			se.executeUpdate(statement, getConnection(), qp);
 		}
 		catch (SQLException e) {
 			throw new QueryException(e.getMessage());

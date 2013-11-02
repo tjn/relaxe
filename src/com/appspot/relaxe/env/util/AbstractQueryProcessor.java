@@ -28,13 +28,13 @@ public abstract class AbstractQueryProcessor
 		long ordinal = 0;
 											
 		try {							
-			startQuery(rs.getMetaData());
+			startResultSet(rs.getMetaData());
 						
 			while(rs.next()) {
 				process(rs, ++ordinal);
 			}			
 	
-			endQuery();
+			endResultSet();
 		}
 		catch (Exception e) {
 			abort(e);			
@@ -62,11 +62,11 @@ public abstract class AbstractQueryProcessor
 	}
 
 	@Override
-	public void startQuery(ResultSetMetaData m)
+	public void startResultSet(ResultSetMetaData m)
 			throws QueryException, SQLException {
 	}
 
 	@Override
-	public void endQuery() throws QueryException {
+	public void endResultSet() throws QueryException {
 	}
 }

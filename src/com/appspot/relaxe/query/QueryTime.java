@@ -12,7 +12,7 @@ public class QueryTime
 	 * 
 	 */
 	private static final long serialVersionUID = -7899684211701751541L;
-	private long queryExecutionTime;
+	private long executionTime;
 	private long populationTime;
 	
 	/**
@@ -22,19 +22,19 @@ public class QueryTime
 	private QueryTime() {
 	}
 	
-	public QueryTime(long queryExecutionTime) {
+	public QueryTime(long executionTime) {
 		super();
-		this.queryExecutionTime = queryExecutionTime;
+		this.executionTime = executionTime;
 	}
 
-	public QueryTime(long queryExecutionTime, long populationTime) {
+	public QueryTime(long executionTime, long populationTime) {
 		super();
-		this.queryExecutionTime = queryExecutionTime;
+		this.executionTime = executionTime;
 		this.populationTime = populationTime;
 	}
 	
-	public long getQueryExecutionTime() {
-		return queryExecutionTime;
+	public long getExecutionTime() {
+		return executionTime;
 	}
 	
 	public long getPopulationTime() {
@@ -47,7 +47,7 @@ public class QueryTime
 		
 		buf.append(super.toString());
 		buf.append(": execution=");
-		buf.append(this.queryExecutionTime);
+		buf.append(this.executionTime);
 		buf.append("ms; population: ");
 		buf.append(this.populationTime);
 		buf.append("ms");		

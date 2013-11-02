@@ -94,14 +94,14 @@ public class SimpleQueryProcessor
 	}
 
 	@Override
-	public void endQuery() {
+	public void endResultSet() {
 		this.processedAt = System.currentTimeMillis();
 		out.println("processing-time: " + getProcessingTime());
 		out.println("rows processed: " + this.rows);
 	}
 
 	@Override
-	public void startQuery(ResultSetMetaData m) 
+	public void startResultSet(ResultSetMetaData m) 
 		throws SQLException {
 				
 		startedAt = System.currentTimeMillis();
@@ -138,14 +138,14 @@ public class SimpleQueryProcessor
 	    long ordinal = 0;
 	    
 	    try {        
-	        qp.startQuery(rs.getMetaData());
+	        qp.startResultSet(rs.getMetaData());
 	                
 	        while (rs.next()) {
 	            ordinal++;
 	            qp.process(rs, ordinal);
 	        }
 	                
-	        qp.endQuery();                  
+	        qp.endResultSet();                  
 	    }
 	    catch (Exception e) {
 //	        logger().error(e.getMessage(), e);

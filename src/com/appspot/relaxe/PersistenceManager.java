@@ -33,7 +33,6 @@ import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.env.GeneratedKeyHandler;
 import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.exec.QueryProcessor;
 import com.appspot.relaxe.exec.QueryProcessorAdapter;
 import com.appspot.relaxe.exec.UpdateProcessor;
 import com.appspot.relaxe.expr.Assignment;
@@ -80,7 +79,6 @@ public class PersistenceManager<
     C extends Content
 >
 {
-	private static final UpdateProcessor NO_OPERATION = new QueryProcessorAdapter();
 	    
 //    private class PMElementTemplate
 //	    extends DefaultEntityQueryElementTemplate<A, R, T, E, H, F, M, C, PMElement>    	
@@ -633,7 +631,7 @@ public class PersistenceManager<
     	if (q != null) {
     		try {
 	    		StatementExecutor se = new StatementExecutor(getPersistenceContext());
-	    		se.execute(q, c, NO_OPERATION);
+	    		se.executeUpdate(q, c);
     		}
     		catch (SQLException e) {
     			logger().error(e.getMessage(), e);
