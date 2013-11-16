@@ -55,7 +55,7 @@ public class DefaultTestContext<I extends Implementation<I>>
 		this.persistenceContext = persistenceContext;
 		this.jdbcProperties = jdbcProperties;
 		I imp = persistenceContext.getImplementation();
-		this.jdbcURL = (port == null) ? imp.createJdbcUrl(host, database) : imp.createJdbcUrl(host, port.intValue(), database);		
+		this.jdbcURL = (port == null) ? imp.createJdbcUrl(host, database) : imp.createJdbcUrl(host, port, database);		
 	}
 	
 	@Override

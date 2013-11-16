@@ -40,7 +40,7 @@ public class AppEngineImplementation
 	 * <code>port</code> is ignored.
 	 */
 	@Override
-	public String createJdbcUrl(String instanceName, int port, String database) {
+	public String createJdbcUrl(String instanceName, Integer port, String database) {
 		return createJdbcUrl(instanceName, database);
 	}	
 }

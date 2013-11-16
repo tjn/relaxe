@@ -26,52 +26,6 @@ public class PGImplementation
 		return new PGCatalogFactory(this.environment);
 	}
     
-//    public ColumnDefinition serialColumnDefinition(String columnName, boolean big) {
-//    	return this.environment.serialColumnDefinition(columnName, big);
-//    }
-    
-    
-
-//    public static class PGGeneratedKeyHandler implements GeneratedKeyHandler {
-//    	
-//    	private PersistenceContext context;
-//    	
-//		public PGGeneratedKeyHandler(PersistenceContext context) {
-//			super();			
-//			this.context = context;
-//		}
-//
-//		@Override
-//		public <
-//			A extends Attribute,
-//			R extends Reference,
-//			T extends ReferenceType<A, R, T, E, ?, ?, M, ?>,
-//			E extends Entity<A, R, T, E, ?, ?, M, ?>,
-//			M extends EntityMetaData<A, R, T, E, ?, ?, M, ?>
-//		>
-//		void processGeneratedKeys(
-//				InsertStatement ins, E target, ResultSet rs) throws SQLException {
-//			ResultSetMetaData meta = rs.getMetaData();
-//			M em = target.getMetaData();
-//										
-//			ResultSetMetaData rsmd = rs.getMetaData();
-//			
-//			int cc = rsmd.getColumnCount();
-//			
-//			AttributeWriterFactory wf = context.getAttributeWriterFactory();								
-//			ResultSetColumnResolver cr = new ResultSetColumnResolver(em.getBaseTable(), meta);
-//																											
-//			for (int i = 1; i <= cc; i++) {
-//				AbstractAttributeWriter<A, E> w = wf.createWriter(em, cr, i);
-//				
-//				if (w != null) {
-//					w.write(rs, target);
-//				}
-//			}
-//		}
-//	}
-
-
     @Override
     public String defaultDriverClassName() {
         return "org.postgresql.Driver";
@@ -108,11 +62,11 @@ public class PGImplementation
 	
 	@Override
 	public String createJdbcUrl(String host, String database) {
-		return createJdbcUrl(host, 5432, database);		
+		return createJdbcUrl(host, null, database);		
 	}
 	
 	@Override
-	public String createJdbcUrl(String host, int port, String database) {
+	public String createJdbcUrl(String host, Integer port, String database) {
 		if (database == null) {
 			throw new NullPointerException("database");
 		}
@@ -121,26 +75,26 @@ public class PGImplementation
 			host = "127.0.0.1"; 
 		}
 		
-		return "jdbc:postgresql://" + host + ":" + port + "/" + database;				
+		StringBuilder buf = new StringBuilder();
+		
+		buf.append("jdbc:postgresql://");
+		buf.append(host);
+		
+		if (port != null) {
+			buf.append(":");	
+			buf.append(port.intValue());
+		}		
+		
+		buf.append("/");		
+		buf.append(database);
+		
+		return buf.toString();
 	}
 	
 	@Override
 	public SerializableEnvironment environment() {
 		return this.environment;		
 	}
-
-//	public java.sql.Driver getDriver() {		
-//		if (driver == null) {
-//			driver = new org.postgresql.Driver();
-//		}
-//				
-//		return driver;
-//	}
-
-//	@Override
-//	protected DefaultAttributeWriterFactory createAttributeWriterFactory() {
-//		return new PGAttributeWriterFactory();
-//	}
 
 
 	@Override

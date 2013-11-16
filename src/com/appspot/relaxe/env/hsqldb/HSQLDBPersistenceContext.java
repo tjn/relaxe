@@ -13,7 +13,7 @@ public class HSQLDBPersistenceContext
 	private GeneratedKeyHandler generatedKeyHandler;
 	
 	public HSQLDBPersistenceContext() {
-		this(new HSQLDBImplementation());
+		this(new HSQLDBImplementation.Mem());
 	}
 		
 	public HSQLDBPersistenceContext(HSQLDBImplementation implementation) {

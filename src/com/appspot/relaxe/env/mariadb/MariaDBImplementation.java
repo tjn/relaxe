@@ -80,7 +80,7 @@ public class MariaDBImplementation
 	}
 
 	@Override
-	public String createJdbcUrl(String host, int port, String database) {
+	public String createJdbcUrl(String host, Integer port, String database) {
 		host = (host == null) ? "" : host;
 		return "jdbc:mariadb://" + host + ":" + port + "/" + database;
 	}

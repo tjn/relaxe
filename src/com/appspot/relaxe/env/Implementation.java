@@ -31,7 +31,7 @@ public interface Implementation<I extends Implementation<I>> {
 	
 	String createJdbcUrl(String database);
 	String createJdbcUrl(String host, String database);
-	String createJdbcUrl(String host, int port, String database);
+	String createJdbcUrl(String host, Integer port, String database);
 	
 	SerializableEnvironment environment();
 	
