@@ -85,7 +85,7 @@ public class IntegerHolder
 		return this;
 	}
 
-	public static IntegerHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public static IntegerHolder as(PrimitiveHolder<?, ?, ?> holder) {
 		return holder.asIntegerHolder();
 	}
 
