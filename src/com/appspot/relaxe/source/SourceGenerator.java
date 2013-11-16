@@ -4240,22 +4240,18 @@ public class SourceGenerator {
 
 		AttributeInfo a = tym.getAttributeInfo(c.getDataType());
 
-		DataType ct = c.getDataType();
-		final int type = ct.getDataType();
-
-		String cdesc = "column " + columnName(t, c) + " of type (" + type
-				+ ") (" + AbstractPrimitiveType.getSQLTypeName(type) + ") ("
-				+ ct.getTypeName() + ")";
-
+				
 		if (a == null) {
-			logger().warn("no attribute-info for " + cdesc);
+			String msg = columnDescription("no attribute-info for ", t, c);
+			logger().warn(msg);
 			return "";
 		}
 
 		Class<?> kc = a.getKeyType();
 
 		if (kc == null) {
-			logger().warn("no attribute key type for " + cdesc);
+			String msg = columnDescription("no attribute-info key type for ", t, c);
+			logger().warn(msg);
 			return "";
 		}
 
@@ -4294,6 +4290,17 @@ public class SourceGenerator {
 		buf.append(");\n");
 
 		return buf.toString();
+	}
+
+	protected String columnDescription(String prefix, BaseTable t, Column c) {
+		DataType ct = c.getDataType();		
+		int type = ct.getDataType();
+		
+		String cdesc = "column " + columnName(t, c) + " of type (" + type
+				+ ") (" + AbstractPrimitiveType.getSQLTypeName(type) + ") ("
+				+ ct.getTypeName() + ")";
+		
+		return cdesc;
 	}
 
 	private String keyConstantExpression(BaseTable t, Column c, JavaType intf,
