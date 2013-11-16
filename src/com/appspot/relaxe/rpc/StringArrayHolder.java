@@ -4,10 +4,10 @@
 package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.types.ArrayType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public abstract class StringArrayHolder<
-	E extends AbstractPrimitiveType<E>, 
+	E extends PrimitiveType<E>, 
 	T extends ArrayType<T, E>, 
 	H extends StringArrayHolder<E, T, H>
 >
@@ -38,5 +38,5 @@ public abstract class StringArrayHolder<
 	
 	public String[] getContent() {
 		return StringArray.copy(content);
-	}
+	}	
 }

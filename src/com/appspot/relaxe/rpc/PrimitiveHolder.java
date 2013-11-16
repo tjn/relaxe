@@ -57,4 +57,6 @@ public interface PrimitiveHolder<
 	IntervalHolder.DayTime asDayTimeIntervalHolder();
 	
 	IntervalHolder.YearMonth asYearMonthIntervalHolder();
+	
+	VarcharArrayHolder asVarcharArrayHolder();
 }

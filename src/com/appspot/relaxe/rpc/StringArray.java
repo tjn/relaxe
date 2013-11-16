@@ -3,6 +3,8 @@
  */
 package com.appspot.relaxe.rpc;
 
+import java.util.List;
+
 
 public class StringArray
 	extends AbstractArray<String> {
@@ -29,15 +31,18 @@ public class StringArray
 		super(copy(content));
 	}
 	
+	public StringArray(List<String> content) {
+		super(copy(content.toArray(EMPTY)));
+	}
+	
 	@Override
 	public String[] toArray() {		
 		return copy(this.getContent());
-	}
+	}	
 	
 	public static String[] copy(String[] src) {
 		String[] dest = new String[src.length];
 		System.arraycopy(src, 0, dest, 0, src.length);
 		return dest;
-	}
-	
+	}		
 }

@@ -14,7 +14,10 @@ import org.apache.log4j.Logger;
 import com.appspot.relaxe.DefaultTableMapper;
 import com.appspot.relaxe.DefaultTypeMapper;
 import com.appspot.relaxe.TestContext;
-import com.appspot.relaxe.build.Builder;
+import com.appspot.relaxe.ent.value.HasVarcharArray;
+import com.appspot.relaxe.ent.value.HasVarcharArrayKey;
+import com.appspot.relaxe.ent.value.VarcharArrayAccessor;
+import com.appspot.relaxe.ent.value.VarcharArrayKey;
 import com.appspot.relaxe.env.CatalogFactory;
 import com.appspot.relaxe.env.DefaultDataAccessContext;
 import com.appspot.relaxe.env.hsqldb.HSQLDBImplementation;
@@ -47,39 +50,32 @@ import com.appspot.relaxe.meta.Schema;
 import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBEnvironment;
 import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
+import com.appspot.relaxe.query.QueryException;
+import com.appspot.relaxe.rpc.StringArray;
+import com.appspot.relaxe.rpc.VarcharArrayHolder;
 import com.appspot.relaxe.service.DataAccessContext;
 import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.StatementSession;
+import com.appspot.relaxe.source.DefaultAttributeInfo;
 import com.appspot.relaxe.source.SourceGenerator;
 import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.VarcharArrayType;
 
 public class PagilaExportDDLTest 
 	extends AbstractPagilaTestCase {
 	
 	private static Logger logger = Logger.getLogger(PagilaExportDDLTest.class);	
 	
-	private void line(StringBuilder buf, int eols, String ... elems) {
-		for (int i = 0; i < elems.length; i++) {
-			buf.append(elems[i]);
-		}
-		
-		for (int i = 0; i < eols; i++) {
-			buf.append("\n");	
-		}		
-	}
-	
 	public void testTransform() throws Exception {
 		
 		TestContext<PGImplementation> ctx = getCurrent();
 		Catalog cat = ctx.getCatalog();
 		
-		final HSQLDBImplementation hi = new HSQLDBImplementation();
+		final HSQLDBImplementation hi = new HSQLDBImplementation.File();
 		HSQLDBPersistenceContext hpc = new HSQLDBPersistenceContext(hi);		
 		HSQLDBEnvironment henv = hi.getEnvironment();
 		final DataTypeMap htm = henv.getDataTypeMap();
-		
-		hi.getSyntax();
-		
+						
 		final DataTypeMap dtm = new DataTypeMap() {			
 			@Override
 			public PrimitiveType<?> getType(DataType type) {
@@ -145,28 +141,9 @@ public class PagilaExportDDLTest
 			sl.add(def);
 		}
 			
-		for (Schema s : sc) {
-			for (BaseTable t : s.baseTables().values()) {
-				CreateTable def = new CreateTable(dtm, t, true, false);
-				sl.add(def);
-			}
-		}
-		
-		for (Schema s : sc) {
-			for (PrimaryKey pk : s.primaryKeys().values()) {
-				AlterTableAddPrimaryKey def = new AlterTableAddPrimaryKey(pk);
-				sl.add(def);				
-			}
-		}
-		
-		for (Schema s : sc) {
-			Collection<ForeignKey> fks = s.foreignKeys().values();
-			
-			for (ForeignKey fk : fks) {
-				AlterTableAddForeignKey def = new AlterTableAddForeignKey(fk);				
-				sl.add(def);
-			}
-		}		
+		addCreateTableStatements(dtm, sc, sl);		
+		addPrimaryKeyStatements(sc, sl);		
+		addForeignKeyStatements(sc, sl);		
 
 		StringBuilder buf = new StringBuilder();
 		
@@ -174,64 +151,25 @@ public class PagilaExportDDLTest
 			write(buf, st);		
 		}			
 								
-		String url = hi.createJdbcUrl("mem:test");
-		// String url = hi.createJdbcUrl("file:testdata/hsql");
+		String url = hi.createJdbcUrl("testdata/hsql");
 		DataAccessContext hctx = new DefaultDataAccessContext<HSQLDBImplementation>(hpc, url, null);
 										
-		DataAccessSession das = hctx.newSession();
-				
+		DataAccessSession das = hctx.newSession();				
 		StatementSession ss = das.asStatementSession();
-		
-//		{
-//			logger.debug("dropping public schema");
-//			Identifier p = hi.getEnvironment().getIdentifierRules().toDelimitedIdentifier("PUBLIC");
-//			DropSchema ds = new DropSchema(p, true);
-//			ss.execute(ds);
-//			logger.debug("dropped");
-//		}
-						
+								
 		QueryProcessor qp = new QueryProcessorAdapter();
+		IdentifierRules hid = hi.getEnvironment().getIdentifierRules();	
+		createDomains(ss, qp, hid);
 		
-		
-		IdentifierRules hid = hi.getEnvironment().getIdentifierRules();
-	
-		{
-			CreateDomain cd = new CreateDomain(hid.newName("year"), IntTypeDefinition.DEFINITION);
-			ss.execute(cd, qp);
+		for (Statement st : sl) {
+			logger.debug("executing: " + st.generate());
+			ss.execute(st, qp);
+			logger.debug("executed: " + st.generate());
 		}
-		
-		{	
-			CreateDomain cd = new CreateDomain(hid.newName("mpaa_rating"), VarcharTypeDefinition.get(20));
-			ss.execute(cd, qp);
-		}
-		
-		{	
-			CreateDomain cd = new CreateDomain(hid.newName("tsvector"), VarcharTypeDefinition.get(1024));
-			ss.execute(cd, qp);
-		}
-		
-//		{	
-//			CreateDomain cd = new CreateDomain(hid.newName("mpaa_rating"), VarcharTypeDefinition.get(20));
-//			ss.execute(cd, qp);
-//		}
-	
-//		try {		
-			for (Statement st : sl) {
-				logger.debug("executing: " + st.generate());
-				ss.execute(st, qp);
-				logger.debug("executed: " + st.generate());
-			}
-//		}
-//		catch (Exception e) {
-//			logger.error(e.getMessage(), e);
-//		}
 		
 		das.commit();
 		
-		
-		
 		CatalogFactory hcf = hi.catalogFactory();
-		
 		Connection c = null;
 		
 		try {			
@@ -246,42 +184,106 @@ public class PagilaExportDDLTest
 			SourceGenerator gen = new SourceGenerator(new File("hsqldb/pagila/src/out"));
 			
 			DefaultTableMapper tam = new DefaultTableMapper("com.appspot.relaxe.gen.hsqldb.pagila.ent");
-			DefaultTypeMapper tym = new DefaultTypeMapper();
+			
+			DefaultTypeMapper tym = new DefaultTypeMapper() {
+				{
+					DefaultAttributeInfo info = new DefaultAttributeInfo();
+			    	info.setAttributeType(StringArray.class);
+		        	info.setHolderType(VarcharArrayHolder.class);
+		        	info.setKeyType(VarcharArrayKey.class);
+		        	info.setAccessorType(VarcharArrayAccessor.class);
+		        	info.setPrimitiveType(VarcharArrayType.TYPE);
+		        	info.setContainerType(HasVarcharArray.class);
+		        	info.setContainerMetaType(HasVarcharArrayKey.class);
+					
+					register(PrimitiveType.ARRAY, "VARCHAR(1024) ARRAY", info);
+				}
+			};
 			
 			gen.run(hcat, tam, tym, henv);
 						
-//			Builder hb = new Builder();
-//			
-//			hb.setCatalog(hcat);
-//			hb.setConnection(c);
-//			
-//			hb.setSourceDir(new File("hsqldb/pagila/src/out"));
-//			hb.setImplementation(hi);
-//			hb.setRootPackage("com.appspot.relaxe.gen.hsqldb.pagila.ent");
-//			hb.setTypeMapper(new DefaultTypeMapper());			
-//			hb.setTargetEnvironment(henv);
-//			
-//			hb.setVerbose(true);
-			// hb.
-			
 			logger.info("hcat: " + hcat + " : " + (e - s));
 		}
 		finally {
 			c = close(c);
 		}
+		
+		
+		
+		
+		
+		
 				
-		
-		
 		logger.debug("shutdown: " + Shutdown.STATEMENT.generate());
 		ss.execute(Shutdown.STATEMENT, qp);		
 					
 		das.close();
+	}
+
+	protected void addCreateTableStatements(final DataTypeMap dtm,
+			Collection<Schema> sc, List<Statement> sl) {
+		for (Schema s : sc) {
+			for (BaseTable t : s.baseTables().values()) {
+				CreateTable def = new CreateTable(dtm, t, true, false);
+				sl.add(def);
+			}
+		}
+	}
+
+	protected void addPrimaryKeyStatements(Collection<Schema> sc,
+			List<Statement> sl) {
+		for (Schema s : sc) {
+			for (PrimaryKey pk : s.primaryKeys().values()) {
+				AlterTableAddPrimaryKey def = new AlterTableAddPrimaryKey(pk);
+				sl.add(def);				
+			}
+		}
+	}
+
+	protected void addForeignKeyStatements(Collection<Schema> sc,
+			List<Statement> sl) {
+		for (Schema s : sc) {
+			Collection<ForeignKey> fks = s.foreignKeys().values();
+			
+			for (ForeignKey fk : fks) {
+				AlterTableAddForeignKey def = new AlterTableAddForeignKey(fk);				
+				sl.add(def);
+			}
+		}
+	}
+
+	protected void createDomains(StatementSession ss, QueryProcessor qp,
+			IdentifierRules hid) throws QueryException {
+		{
+			CreateDomain cd = new CreateDomain(hid.newName("year"), IntTypeDefinition.DEFINITION);
+			ss.execute(cd, qp);
+		}
 		
-		// logger().debug(buf.toString());
+		{	
+			CreateDomain cd = new CreateDomain(hid.newName("mpaa_rating"), VarcharTypeDefinition.get(20));
+			ss.execute(cd, qp);
+		}
+		
+		{	
+			CreateDomain cd = new CreateDomain(hid.newName("tsvector"), VarcharTypeDefinition.get(1024));
+			ss.execute(cd, qp);
+		}
 	}
 	
 	protected void write(StringBuilder buf, Statement st) {
 		line(buf, 1, st.generate());
 		line(buf, 2, ";");		
 	}
+	
+	private void line(StringBuilder buf, int eols, String ... elems) {
+		for (int i = 0; i < elems.length; i++) {
+			buf.append(elems[i]);
+		}
+		
+		for (int i = 0; i < eols; i++) {
+			buf.append("\n");	
+		}		
+	}
+	
+	
 }

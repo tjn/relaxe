@@ -60,7 +60,7 @@ public abstract class AbstractPrimitiveHolder<
 	public VarcharHolder asVarcharHolder() {
 		return null;
 	}
-
+	
 	@Override
 	public StringHolder<?, ?> asStringHolder() {
 		return null;
@@ -130,6 +130,12 @@ public abstract class AbstractPrimitiveHolder<
 	 */		
 	@Override
 	public IntervalHolder.YearMonth asYearMonthIntervalHolder() {
+		return null;
+	}
+	
+
+	@Override
+	public VarcharArrayHolder asVarcharArrayHolder() {
 		return null;
 	}
 }

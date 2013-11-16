@@ -6,12 +6,12 @@ package com.appspot.relaxe.rpc;
 import java.io.Serializable;
 
 import com.appspot.relaxe.types.ArrayType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.PrimitiveType;
 
 public abstract class ArrayHolder<
 	V extends Serializable, 
 	A extends ArrayValue<V>, 
-	E extends AbstractPrimitiveType<E>, 
+	E extends PrimitiveType<E>, 
 	T extends ArrayType<T, E>, 
 	H extends ArrayHolder<V, A, E, T, H>
 >

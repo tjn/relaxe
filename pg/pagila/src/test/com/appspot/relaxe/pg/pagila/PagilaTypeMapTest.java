@@ -29,9 +29,9 @@ public class PagilaTypeMapTest
 	
 	public void testTypeMap() throws Exception {
 		
-		HSQLDBImplementation hi = new HSQLDBImplementation();
-		HSQLDBPersistenceContext hpc = new HSQLDBPersistenceContext(hi);		
+		HSQLDBImplementation hi = new HSQLDBImplementation.Mem();
 		HSQLDBEnvironment henv = hi.getEnvironment();
+
 		final DataTypeMap htm = henv.getDataTypeMap();
 		final DataTypeMap dtm = new DataTypeMap() {			
 			@Override
