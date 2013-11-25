@@ -10,6 +10,8 @@ if "%TYPE_MAPPER_IMPLEMENTATION%" == "" GOTO :set_default_type_mapper
 
 if "%ROOT_PACKAGE%" == "" GOTO :set_default_root_package
 
+echo JDBC_URL=%JDBC_URL%
+
 :root_package_set
 
 REM tstamp
@@ -20,7 +22,7 @@ SET TEMPLATE_DIR=%ROOT%\war\WEB-INF\templates
 
 SET ROOT_PACKAGE=com.appspot.relaxe.gen.%IMPTAG%.%TARGET%.ent
 SET CC_PACKAGE=com.appspot.relaxe.%TARGET%.genctx
-SET GENSRC=%ROOT%\%IMPTAG%\%TARGET%\src\out
+SET GENSRC=%ROOT%\impl\%IMPTAG%\%TARGET%\src\out
 
 MKDIR %ROOT%\gen 2> nul
 MKDIR %GENSRC% 2> nul
@@ -30,7 +32,10 @@ REM echo %JARDIR%
 REM Build java classpath:
 SET META_GEN_CLASSPATH=%META_GEN_CLASSPATH%;%ROOT%\classes
 SET META_GEN_CLASSPATH=%META_GEN_CLASSPATH%;%JARDIR%\util.jar
-SET META_GEN_CLASSPATH=%META_GEN_CLASSPATH%;%JARDIR%\log4j.jar
+SET META_GEN_CLASSPATH=%META_GEN_CLASSPATH%;%JARDIR%\slf4j-api-1.7.5.jar
+REM SET META_GEN_CLASSPATH=%META_GEN_CLASSPATH%;%JARDIR%\logback-core-1.0.13.jar
+SET META_GEN_CLASSPATH=%META_GEN_CLASSPATH%;%JARDIR%\log4j-1.2.17.jar
+SET META_GEN_CLASSPATH=%META_GEN_CLASSPATH%;%JARDIR%\slf4j-log4j12-1.7.5.jar
 
 REM ready to go:
 REM echo would run: 

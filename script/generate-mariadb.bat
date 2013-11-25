@@ -7,7 +7,9 @@ SET IMPTAG=mariadb
 SET JDBC_CONFIG=%ROOT%\config\%IMPTAG%\%TARGET%.properties
 SET ENV=com.appspot.relaxe.env.mariadb.MariaDBImplementation
 
-SET META_GEN_CLASSPATH=%ROOT%\lib\mariadb-java-client-1.1.5.jar
+REM SET META_GEN_CLASSPATH=%ROOT%\lib\jdbc\mariadb-java-client\mariadb-java-client-bzr-trunk-20131123.jar
+REM SET META_GEN_CLASSPATH=%ROOT%\lib\jdbc\mariadb-java-client\mariadb-java-client-1.1.5.jar
+SET META_GEN_CLASSPATH=%ROOT%\lib\jdbc\mariadb-java-client\mariadb-java-client-bzr-rev492.jar
 
 generate
 @echo on
