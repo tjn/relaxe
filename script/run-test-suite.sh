@@ -18,9 +18,10 @@ mkdir -p $GENSRC
 
 # Build java classpath:
 META_GEN_CP=$ROOT/classes
-META_GEN_CP=$META_GEN_CP:$JARDIR/postgresql-8.4-701.jdbc3.jar
+META_GEN_CP=$META_GEN_CP:$JARDIR/jdbc/postgresql/postgresql-9.3-1100-jdbc4.jar
 META_GEN_CP=$META_GEN_CP:$JARDIR/util.jar
-META_GEN_CP=$META_GEN_CP:$JARDIR/log4j.jar
+META_GEN_CP=$META_GEN_CP:$JARDIR/slf4j-api-1.7.5.jar
+META_GEN_CP=$META_GEN_CP:$JARDIR/logback-core-1.0.13.jar
 META_GEN_CP=$META_GEN_CP:$JARDIR/junit.jar
 
 # REM ready to go:

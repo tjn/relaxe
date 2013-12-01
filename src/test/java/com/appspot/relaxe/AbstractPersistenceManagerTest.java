@@ -143,8 +143,8 @@ public abstract class AbstractPersistenceManagerTest<I extends Implementation<I>
 		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
 		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
 	>
-	void delete(E e) throws EntityException, SQLException, QueryException {
-		delete(e, getPersistenceContext(), getConnection());		
+	void delete(Entity<A, R, T, E, H, F, M, C> e) throws EntityException, SQLException, QueryException {
+		delete(e.self(), getPersistenceContext(), getConnection());		
 	}
 
 	protected UnificationContext getUnificationContext() {

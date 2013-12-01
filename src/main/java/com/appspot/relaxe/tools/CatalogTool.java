@@ -72,11 +72,9 @@ public abstract class CatalogTool {
     
     public static final Option OPTION_SCHEMA = 
         new SimpleOption("schema", "s", new Parameter(false), "Process this schema only.");  
-    	
 
     public static final Option OPTION_TABLE = 
         new SimpleOption("table", "t", new Parameter(false), "Process this table only.");  
-
     
     private Connection connection;
     private Catalog catalog;

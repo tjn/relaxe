@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="project" default="show-env" xmlns:ivy="antlib:org.apache.ivy.ant">
+  <description>
+  </description>
+  
+  <property name="build.root.dir" location="build"/>  
+  <property name="data.root.dir" location="data"/>
+  
+  <property name="src.dir" location="src/main/java"/>
+	<property name="build.dir" location="${build.root.dir}/classes/main"/>
+	
+	<property name="tools.src.dir" location="src/tools"/>
+	<property name="tools.build.dir" location="${build.root.dir}/classes/tools"/>
+			
+  <property name="test.src.dir" location="src/test/java"/>
+	<property name="test.build.dir" location="${build.root.dir}/classes/test"/>
+	
+	<property name="output.jar" location="${build.root.dir}/relaxe.jar"/>
+	<property name="src.output.jar" location="${build.root.dir}/relaxe-sources.jar"/>
+	
+	<property name="pom.file" location="pom.xml"/>	
+						
+	<path id="compile.cp">
+		<fileset dir="lib" >
+			<include name="*.jar" />			
+		</fileset>
+	</path>
+	
+	<path id="runtime.cp">
+		<path refid="compile.cp"/>
+		<pathelement location="config" />
+		<fileset dir="lib/runtime" includes="*.jar" />
+	</path>
+
+	<path id="tools.compile.cp">
+		<path refid="compile.cp"/>
+	  <pathelement location="${build.dir}" />		
+	</path>
+	
+	<path id="test.compile.cp">
+		<path refid="runtime.cp"/>
+		<pathelement location="${build.dir}" />
+		<pathelement location="${tools.build.dir}" />		
+		<fileset dir="lib/test" includes="*.jar" />
+	</path>
+	
+	<target name="init" depends="init.os">
+		<tstamp />
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${test.build.dir}" />
+		<mkdir dir="${tools.build.dir}" />
+		<mkdir dir="${data.root.dir}" />
+		<mkdir dir="${data.root.dir}/sakila" />
+	</target>
+
+	<condition property="os.unix">
+		 <os family="unix" />
+	</condition>
+	
+	<condition property="os.windows">
+	   <os family="windows" />
+	</condition>
+	
+	<condition property="os.other">
+		<not>
+			<or>
+				<os family="unix" />
+				<os family="windows" />
+			</or>
+		</not>
+	</condition>
+	
+	<target name="init.os" depends="init.os.unix, init.os.windows, init.os.other" />
+	
+	<target name="init.os.unix" if="os.unix">
+		<property name="exec.ext" value="" />
+	</target>
+	
+	<target name="init.os.windows" if="os.windows">		
+		<property name="exec.ext" value=".exe" />
+	</target>
+	
+	<target name="init.os.other" if="os.other">		
+		<fail message="Unsupported OS to build on: ${os.name}" />
+	</target>
+	
+	<target name="env">
+		<echoproperties />
+	</target>
+	
+	
+	<target name="check" depends="init">
+		
+		<property name="psql"	value="psql${exec.ext}" />
+
+		<available file="${psql}" filepath="${java.library.path}" property="psql.exists" />
+		<fail unless="psql.exists" message="Could not find psql.exe in path" />
+		<echo>psql exists in path: ${psql.exists}</echo>
+		
+		<property name="mysql"	value="mysql${exec.ext}" />
+		<available file="${mysql}" filepath="${java.library.path}" property="mysql.exists" />
+		<fail unless="mysql.exists" message="Could not find mysql.exe in path" />
+		<echo>mysql exists in path: ${mysql.exists}</echo>
+		
+		
+		
+<!--			
+		<available file="python.exe" filepath="${java.library.path}" property="psql.exists" />
+		<echo>python exists ${python.exists}</echo>
+-->		
+	</target>
+	
+		
+	<target name="clean">
+		<delete dir="${build.root.dir}" includeemptydirs="true" includes="**/*" />
+	</target>
+
+	<target name="compile" depends="init, copy-resources" description="Compiles the sources">
+			<javac classpathref="compile.cp" destdir="${build.dir}" srcdir="${src.dir}" verbose="off" includeantruntime="false">        	
+				<compilerarg value="-Xlint:all"/>
+			</javac>
+	</target>
+	
+	<target name="copy-resources" depends="init" description="Copy resources">
+		<copy todir="${build.dir}" verbose="on">
+			<fileset dir="${src.dir}" excludes="**/*.java" />
+		</copy>
+	</target>
+	
+	<target name="compile-tools" depends="compile" description="Compiles the sources for tools">
+			<javac classpathref="tools.compile.cp" destdir="${tools.build.dir}" srcdir="${tools.src.dir}" verbose="off" includeantruntime="false">
+				<compilerarg value="-Xlint"/>
+			</javac>
+	</target>
+	
+	<target name="jar" depends="init, compile" description="Creates a jar">
+		<jar basedir="${build.dir}" destfile="${output.jar}" />
+	</target>
+	
+	<target name="src.jar" depends="init, compile" description="Creates a source package">
+			<jar destfile="${src.output.jar}" >			
+				<fileset dir="${src.dir}" />
+				<fileset dir="${tools.src.dir}" />				
+			</jar>
+	</target>
+	
+
+	<target name="compile-tests" depends="compile, compile-tools" description="Compiles the sources for tests">
+			<javac classpathref="test.compile.cp" destdir="${test.build.dir}" srcdir="${test.src.dir}" verbose="off" includeantruntime="false">
+				<compilerarg value="-Xlint"/>
+			</javac>
+	</target>
+	
+	
+	<!-- 
+		======== PG/Pagila ========
+	-->
+
+	<target name="compile.pg.pagila" depends="compile-tests" description="Compiles the sources for PostgreSQL/Pagila">
+		<impl.compile implementation="pg" target="pagila" driver-artifact="postgresql" />		
+	</target>
+	
+	<target name="generate.pg.pagila" depends="compile.pg.pagila" description="Generates the sources for PG/Pagila">
+		<generate 
+			implementation="pg"
+			driver-artifact="postgresql"
+			target="pagila"
+			jdbc.url="jdbc:postgresql:pagila"
+			env="com.appspot.relaxe.meta.impl.pg.PGImplementation" 
+			environment-implementation="com.appspot.relaxe.env.pg.PGEnvironment" 
+			type-mapper="com.appspot.relaxe.pg.pagila.PagilaTypeMapper"
+		/>		
+	</target>
+
+	<target name="compile.gen.pg.pagila" depends="generate.pg.pagila" description="Compiles the sources generated for PostgreSQL/Pagila">
+			<impl.compile.gen implementation="pg" driver-artifact="postgresql" target="pagila" />		
+	</target>	
+
+	<target name="test.gen.pg.pagila" depends="compile.gen.pg.pagila" description="Run tests for PostgreSQL/Pagila">
+			<impl.test implementation="pg" driver-artifact="postgresql" target="pagila" />		
+	</target>	
+	
+	<target name="test" 
+		depends="
+			test.gen.pg.pagila,
+			test.gen.mysql.sakila,
+			test.gen.mariadb.sakila" 	
+		description="Generates sources, compiles and runs the tests for all implementations" />
+	
+	<!-- 
+			======== MySQL/Sakila ========
+	-->
+
+	<target name="compile.mysql.sakila" depends="compile-tests" description="Compiles the sources for MySQL/Sakila">
+			<impl.compile implementation="mysql" target="sakila" driver-artifact="mysql-connector-java" />		
+	</target>	
+	
+	<target name="generate.mysql.sakila" depends="compile.mysql.sakila" description="Generates the sources for pagila">
+		<generate 
+			implementation="mysql"
+			driver-artifact="mysql-connector-java"			
+			target="sakila"
+			jdbc.url="jdbc:mysql://127.0.0.1/sakila"
+			env="com.appspot.relaxe.env.mysql.MySQLImplementation" 
+			environment-implementation="com.appspot.relaxe.meta.impl.mysql.MySQLEnvironment" 
+			schema-opts="--schema sakila -o sakila"
+		/>		
+	</target>		
+	
+	<target name="compile.gen.mysql.sakila" depends="generate.mysql.sakila" description="Compiles the sources generated for MySQL/Sakila">
+			<impl.compile.gen implementation="mysql" driver-artifact="mysql-connector-java" target="sakila" />		
+	</target>	
+	
+	<target name="test.gen.mysql.sakila" depends="compile.gen.mysql.sakila" description="Run tests for MySQL/Sakila">
+			<impl.test implementation="mysql" driver-artifact="mysql-connector-java" target="sakila" />		
+	</target>		
+
+
+	<!-- 
+			======== MariaDB/Sakila ========
+	-->
+
+	<target name="compile.mariadb.sakila" depends="compile-tests" description="Compiles the sources for MariaDB/Sakila">
+			<impl.compile implementation="mariadb" target="sakila" driver-artifact="mariadb-java-client" />		
+	</target>	
+	
+	<target name="generate.mariadb.sakila" depends="compile.mariadb.sakila" description="Generates the sources for MariaDB/Sakila">
+		<generate 
+			implementation="mariadb"
+			driver-artifact="mariadb-java-client"			
+			target="sakila"
+			jdbc.url="jdbc:mariadb://127.0.0.1/sakila"
+			env="com.appspot.relaxe.env.mariadb.MariaDBImplementation" 
+			environment-implementation="com.appspot.relaxe.meta.impl.mariadb.MariaDBEnvironment" 
+			schema-opts="--schema sakila -o sakila"
+		/>		
+	</target>		
+	
+	<target name="compile.gen.mariadb.sakila" depends="generate.mariadb.sakila" description="Compiles the sources generated for MariaDB/Sakila">
+			<impl.compile.gen implementation="mariadb" driver-artifact="mariadb-java-client" target="sakila" />		
+	</target>	
+	
+	<target name="test.gen.mariadb.sakila" depends="compile.gen.mariadb.sakila" description="Run tests for MariaDB/Sakila">
+			<impl.test implementation="mariadb" driver-artifact="mariadb-java-client" target="sakila" />		
+	</target>
+		
+
+	<target name="generate.postgres.pp" depends="compile.pg.pagila" description="Generates the sources for PostgreSQL/Pagila (portable)">
+		<generate 
+			implementation="pg"
+			driver-artifact="postgresql"			
+			target="pp"
+			ported="pagila"
+			jdbc.url="jdbc:postgresql:pagila"
+			env="com.appspot.relaxe.meta.impl.pg.PGImplementation" 
+			environment-implementation="com.appspot.relaxe.meta.PortableEnvironment" 			
+			type-mapper="com.appspot.relaxe.pg.pagila.PagilaTypeMapper"
+		/>		
+	</target>
+
+<!--		
+	<target name="compile.gen.postgres.pp" depends="generate.postgres.pp" description="Compiles the sources generated for PostgreSQL/Pagila (portable)">
+			<impl.compile.gen implementation="pg" driver-artifact="postgresql" target="pp" />		
+	</target>	
+
+	<target name="test.gen.postgres.pp" depends="compile.gen.postgres.pp" description="Run tests for PostgreSQL/Pagila (portable)">
+			<impl.test implementation="pg" driver-artifact="postgresql" target="pp" />		
+	</target>	
+-->	
+		
+	<target name="retrieve">
+		<ivy:resolve />
+		<ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" conf="compile"/>
+		<ivy:retrieve pattern="lib/[conf]/[artifact]-[revision].[ext]" conf="runtime"/>		
+		<ivy:retrieve pattern="lib/[conf]/[artifact]-[revision].[ext]" conf="test"/>		
+		<ivy:retrieve pattern="lib/[conf]/[artifact]/[artifact]-[revision].[ext]" conf="jdbc"/>
+	</target>
+	
+	<target name="deliver">
+		<ivy:resolve />
+		<ivy:deliver />
+	</target>
+	
+	
+	<target name="makepom">
+				
+	
+			<ivy:resolve />			
+			<ivy:makepom ivyfile="ivy.xml" pomfile="${pom.file}" />			
+	</target>
+
+	
+	
+	<target name="download.databases" depends="download.sakila, download.pagila" />	
+	
+	<target name="download.sakila" depends="init">	
+		<get src="http://downloads.mysql.com/docs/sakila-db.tar.gz" dest="${data.root.dir}/sakila-db.tar.gz" verbose="on"/>		
+		<untar src="${data.root.dir}/sakila-db.tar.gz" dest="${data.root.dir}" compression="gzip" />
+	</target>	
+
+	<target name="download.pagila" depends="init">	
+			<get src="http://pgfoundry.org/frs/download.php/1719/pagila-0.10.1.zip" dest="${data.root.dir}/pagila-0.10.1.zip" verbose="on"/>		
+			<unzip src="${data.root.dir}/pagila-0.10.1.zip" dest="${data.root.dir}" />
+	</target>	
+	
+	<macrodef name="generate">
+		<attribute name="implementation" />
+		<attribute name="driver-artifact" />		
+		<attribute name="target" />
+		<attribute name="env" />
+		<attribute name="jdbc.url" />		
+		<attribute name="environment-implementation" default="com.appspot.relaxe.meta.PortableEnvironment"/>				
+	  <attribute name="type-mapper" default="com.appspot.relaxe.DefaultTypeMapper"/>
+		<attribute name="jdbc.config" default="config/@{implementation}/@{target}.properties"/>
+		<attribute name="out.dir" default="${build.root.dir}/impl/@{implementation}/@{target}/src/gen"/>
+		<attribute name="template.dir" default="${build.root.dir}/impl/@{implementation}/@{target}/templates"/>
+		<attribute name="root.package" default="com.appspot.relaxe.gen.@{implementation}.@{target}.ent"/>
+		<attribute name="cc.package" default="com.appspot.relaxe.gen.@{implementation}/@{target}.genctx"/>
+		<attribute name="ported" default="@{target}"/>
+		<attribute name="schema-opts" default=""/>
+				
+		<sequential>
+			<path id="@{implementation}.generation.cp">
+				<path refid="runtime.cp"/>				
+				<pathelement location="${build.dir}" />
+				<pathelement location="${build.root.dir}/impl/@{implementation}/@{target}/classes" />				
+				<pathelement location="${build.root.dir}/impl/@{implementation}/@{ported}/classes" />
+				
+				<fileset dir="lib/jdbc/@{driver-artifact}" >
+					<include name="*.jar" />			
+				</fileset>
+			</path>
+			
+			<echo>Generate sources - implementation=@{implementation}, target=@{target}</echo>
+			<echo>jdbc.config: @{jdbc.config}</echo>
+			
+			<mkdir dir="@{out.dir}" />
+			<mkdir dir="@{template.dir}" />
+			
+			<java classname="com.appspot.relaxe.build.Builder" classpathref="@{implementation}.generation.cp">
+				<arg value="-g"/>
+				<arg value="@{out.dir}" />
+				<arg value="-t"/>
+				<arg value="@{template.dir}" />
+				<arg value="-j"/>
+				<arg value="@{jdbc.config}" />
+				<arg value="-u"/>
+				<arg value="@{jdbc.url}" />
+				<arg value="-e"/>
+				<arg value="@{env}" />				
+				<arg value="--root-package"/>				
+				<arg value="@{root.package}" />
+				<arg value="--environment-implementation"/>
+				<arg value="@{environment-implementation}" />
+				<arg value="--type-mapper-implementation"/>
+				<arg value="@{type-mapper}" />
+				<arg value="--catalog-context-package"/>
+				<arg value="@{cc.package}" />
+				<arg line="@{schema-opts}" />
+			</java>
+   </sequential>
+	</macrodef>
+		
+
+
+	<macrodef name="impl.compile">
+		<attribute name="implementation" />
+		<attribute name="driver-artifact" />		
+		<attribute name="target" />
+		<attribute name="destdir" default="${build.root.dir}/impl/@{implementation}/@{target}/classes"/>
+		
+		<sequential>
+			<path id="@{implementation}.@{target}.cp">
+				<path refid="test.compile.cp"/>
+				<pathelement location="${build.dir}" />
+				<pathelement location="${test.build.dir}" />
+				<fileset dir="lib/jdbc/@{driver-artifact}" >
+					<include name="*.jar" />			
+				</fileset>
+			</path>
+			
+			<echo>implementation is @{implementation}</echo>			
+			<mkdir dir="@{destdir}" />
+				
+			<javac 
+					classpathref="@{implementation}.@{target}.cp" 
+					destdir="@{destdir}" 
+					srcdir="impl/@{implementation}/common:impl/@{implementation}/@{target}/src/main" 
+					verbose="off" includeantruntime="false">				
+				<compilerarg value="-Xlint"/>
+			</javac>			
+   </sequential>
+	</macrodef>
+	
+	
+	<macrodef name="impl.test" description="Runs the test suite for impl/target">
+		<attribute name="implementation" />
+		<attribute name="driver-artifact" />				
+		<attribute name="target" />
+		<attribute name="target.base.dir" default="${build.root.dir}/impl/@{implementation}/@{target}"/>
+
+		<sequential>
+			<path id="@{implementation}.@{target}.runtest.cp">
+				<path refid="test.compile.cp"/>
+				<pathelement location="${build.dir}" />
+				<pathelement location="${test.build.dir}" />
+				<pathelement location="@{target.base.dir}/classes" />
+				<fileset dir="lib/jdbc/@{driver-artifact}" >
+					<include name="*.jar" />			
+				</fileset>
+			</path>
+			
+			<java 
+					classname="junit.textui.TestRunner" 
+					classpathref="@{implementation}.@{target}.runtest.cp"
+					fork="yes" failonerror="yes"
+			>
+				<arg value="com.appspot.relaxe.@{implementation}.@{target}.AllTests"/>
+			</java>			
+   </sequential>	
+	</macrodef>
+	
+	<macrodef name="impl.compile.gen" description="Compiles the sources generated for impl/target">
+		<attribute name="implementation" />
+		<attribute name="driver-artifact" />				
+		<attribute name="target" />
+		<attribute name="target.base.dir" default="${build.root.dir}/impl/@{implementation}/@{target}"/>
+		
+		<attribute name="impl.src.dir" default="impl/@{implementation}/common"/>
+		<attribute name="target.src.dir" default="impl/@{implementation}/@{target}/src/main"/>
+		<attribute name="target.test.src.dir" default="impl/@{implementation}/@{target}/src/test"/>
+		
+		<sequential>
+			<path id="@{implementation}.test.cp">
+				<path refid="test.compile.cp" />
+				<pathelement location="${build.dir}" />
+				<pathelement location="${test.build.dir}" />
+				<fileset dir="lib/jdbc/@{driver-artifact}" >
+					<include name="*.jar" />			
+				</fileset>
+			</path>
+			
+			<mkdir dir="@{target.base.dir}/classes" />
+			<mkdir dir="@{impl.src.dir}" />			
+			<mkdir dir="@{target.src.dir}" />			
+			<mkdir dir="@{target.test.src.dir}" />
+							
+			<javac 
+					classpathref="@{implementation}.test.cp" 
+					destdir="@{target.base.dir}/classes" 
+					srcdir="@{impl.src.dir}:@{target.src.dir}:@{target.test.src.dir}:@{target.base.dir}/src/gen"
+					verbose="off" includeantruntime="false">				
+				<compilerarg value="-Xlint"/>
+			</javac>			
+   </sequential>
+	</macrodef>	
+
+</project>

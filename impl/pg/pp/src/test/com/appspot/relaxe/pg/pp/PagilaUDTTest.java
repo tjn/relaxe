@@ -20,23 +20,42 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.mysql.sakila;
+package com.appspot.relaxe.pg.pp;
 
-import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.mysql.MySQLImplementation;
-import com.appspot.relaxe.mysql.AbstractMySQLTestCase;
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import com.appspot.relaxe.TestContext;
+import com.appspot.relaxe.meta.impl.pg.PGImplementation;
+import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 
 
-public abstract class MySQLSakilaTestCase
-	extends AbstractMySQLTestCase {
-	
-	@Override
-	protected PersistenceContext<MySQLImplementation> createPersistenceContext() {
-		return new SakilaPersistenceContext();
-	}
+public class PagilaUDTTest 
+	extends AbstractPagilaTestCase {
+
+	public void testLoad() throws Exception {		
+		logger().debug("testLoad - enter");
 		
-	@Override
-	public String getDatabase() {
-		return "sakila";
-	}	
+		TestContext<PGImplementation> ts = getCurrent();
+		Connection c = ts.newConnection();
+		
+		DatabaseMetaData meta = c.getMetaData();
+		
+		Statement st = c.createStatement();
+		
+		ResultSet rs = st.executeQuery("select a2_8 from public.default_test");
+		
+		if (rs.next()) {
+			Array array = rs.getArray(1);
+			
+			logger().debug("baseType: " + array.getBaseType());
+			String baseTypeName = array.getBaseTypeName();			
+			logger().debug("baseTypeName: " + baseTypeName);			
+		}
+		
+		logger().debug("testLoad - exit");
+	}
+
 }

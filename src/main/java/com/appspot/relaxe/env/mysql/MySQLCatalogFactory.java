@@ -29,7 +29,7 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.appspot.relaxe.env.DefaultCatalogFactory2;
+import com.appspot.relaxe.env.DefaultCatalogFactory;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaName;
 import com.appspot.relaxe.meta.ImmutableSchema;
@@ -37,7 +37,7 @@ import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.meta.impl.mysql.MySQLEnvironment;
 
 
-public class MySQLCatalogFactory extends DefaultCatalogFactory2 {
+public class MySQLCatalogFactory extends DefaultCatalogFactory {
 
 	private final static Logger logger = LoggerFactory.getLogger(MySQLCatalogFactory.class);
 	

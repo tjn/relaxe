@@ -22,11 +22,11 @@
  */
 package com.appspot.relaxe.env.hsqldb;
 
-import com.appspot.relaxe.env.DefaultCatalogFactory2;
+import com.appspot.relaxe.env.DefaultCatalogFactory;
 import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBEnvironment;
 
 public class HSQLDBCatalogFactory
-	extends DefaultCatalogFactory2 {
+	extends DefaultCatalogFactory {
 
 	public HSQLDBCatalogFactory(HSQLDBEnvironment env) {
 		super(env);

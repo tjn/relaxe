@@ -22,16 +22,12 @@
  */
 package com.appspot.relaxe.mysql.sakila;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.appspot.relaxe.mariadb.AbstractMariaDBTestCase;
-
 public class SizeTest
-	extends MySQLSakilaTestCase {
+	extends AbstractMySQLSakilaTestCase {
 
 	
 	public void testSize1() throws Exception {

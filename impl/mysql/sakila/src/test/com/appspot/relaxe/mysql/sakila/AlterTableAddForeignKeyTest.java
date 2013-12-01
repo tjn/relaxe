@@ -26,10 +26,9 @@ import com.appspot.relaxe.expr.ddl.AlterTableAddForeignKey;
 import com.appspot.relaxe.gen.mysql.sakila.ent.sakila.Film;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.ForeignKey;
-import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 
 public class AlterTableAddForeignKeyTest
-	extends AbstractPagilaTestCase {
+	extends AbstractMySQLSakilaTestCase {
 		
 	public void testAlterTableFK() {		
 		Film.MetaData meta = Film.Type.TYPE.getMetaData();

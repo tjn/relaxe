@@ -68,7 +68,7 @@ public abstract class DefaultEntityQueryElement<
 		
 //	private transient TableReference tableReference;
 	
-	private Set<EntityQueryPredicate> predicates = new HashSet<>();
+	private Set<EntityQueryPredicate> predicates = new HashSet<EntityQueryPredicate>();
 					
 	/**
 	 * No-argument constructor for GWT Serialization

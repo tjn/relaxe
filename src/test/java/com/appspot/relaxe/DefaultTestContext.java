@@ -41,15 +41,7 @@ public class DefaultTestContext<I extends Implementation<I>>
 	private PersistenceContext<I> persistenceContext;
 	private Properties jdbcProperties;
 	private String jdbcURL;
-	
-//	public DefaultTestContext(PersistenceContext<I> persistenceContext) {
-//		this(persistenceContext, "test");
-//	}
-		
-//	public DefaultTestContext(PersistenceContext<I> persistenceContext, String database) {
-//		init(persistenceContext, database, createJdbcProperties());
-//	}
-	
+
 	public DefaultTestContext(PersistenceContext<I> persistenceContext, String database, Properties jdbcProperties) {		
 		init(persistenceContext, null, null, database, jdbcProperties);
 	}
@@ -57,13 +49,6 @@ public class DefaultTestContext<I extends Implementation<I>>
 	public DefaultTestContext(PersistenceContext<I> persistenceContext, String host, Integer port, String database, Properties jdbcProperties) {		
 		init(persistenceContext, host, port, database, jdbcProperties);
 	}
-
-//	protected Properties createJdbcProperties() {
-//		Properties config = new Properties();		
-//		config.setProperty("user", "test");
-//		config.setProperty("password", "test");		
-//		return config;
-//	}
 
 	private void init(PersistenceContext<I> persistenceContext, String host, Integer port, String database, Properties jdbcProperties) {		
 				
@@ -86,7 +71,8 @@ public class DefaultTestContext<I extends Implementation<I>>
 	public Catalog getCatalog() throws SQLException, QueryException, ClassNotFoundException {
 		if (catalog == null) {
 			Connection c = newConnection();
-			CatalogFactory cf = getImplementation().catalogFactory();
+			I imp = getPersistenceContext().getImplementation();			
+			CatalogFactory cf = imp.catalogFactory();
 			this.catalog = cf.create(c);
 			c.close();
 			
@@ -96,13 +82,8 @@ public class DefaultTestContext<I extends Implementation<I>>
 	}
 
 	@Override
-	public I getImplementation() {
-		return this.persistenceContext.getImplementation();
-	}
-
-	@Override
 	public Connection newConnection() throws SQLException, ClassNotFoundException {
-		I imp = getImplementation();
+		I imp = getPersistenceContext().getImplementation();
 //		Driver drv = imp.getDriver();		
 //		Connection c = drv.connect(jdbcUrl, jdbcProperties);
 		Class.forName(imp.defaultDriverClassName());

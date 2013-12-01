@@ -20,23 +20,13 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe;
+package com.appspot.relaxe.pg.pp;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
-
+import com.appspot.relaxe.AbstractUnitTest;
 import com.appspot.relaxe.env.Implementation;
-import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.meta.Catalog;
-import com.appspot.relaxe.query.QueryException;
 
 
-public interface TestContext<I extends Implementation<I>> {
-
-    public PersistenceContext<I> getPersistenceContext();    
-    public Connection newConnection() throws SQLException, ClassNotFoundException;    
-    public Catalog getCatalog() throws SQLException, QueryException, ClassNotFoundException;
-    public String getJdbcURL();
-	public Properties getJdbcConfig();
+public abstract class EntityQueryExecutorTest<I extends Implementation<I>> extends AbstractUnitTest<I> {
+	
+		
 }

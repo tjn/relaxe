@@ -20,23 +20,35 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe;
+package com.appspot.relaxe.pg.pp;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
+import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.value.HasInteger;
+import com.appspot.relaxe.ent.value.HasIntegerKey;
+import com.appspot.relaxe.ent.value.IntegerKey;
+import com.appspot.relaxe.gen.pg.pp.ent.pub.Film;
+import com.appspot.relaxe.types.IntegerType;
 
-import com.appspot.relaxe.env.Implementation;
-import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.meta.Catalog;
-import com.appspot.relaxe.query.QueryException;
+import junit.framework.TestCase;
 
+public class PagilaIntegerKeyTest extends TestCase {
 
-public interface TestContext<I extends Implementation<I>> {
+	public void testEquals() {
+//		LiteralCatalog litcat = LiteralCatalog.getInstance();
+		test(Film.Type.TYPE.getMetaData(), Film.Attribute.FILM_ID);
+	}
 
-    public PersistenceContext<I> getPersistenceContext();    
-    public Connection newConnection() throws SQLException, ClassNotFoundException;    
-    public Catalog getCatalog() throws SQLException, QueryException, ClassNotFoundException;
-    public String getJdbcURL();
-	public Properties getJdbcConfig();
+	private
+	<
+		A extends Attribute,
+		E extends HasInteger<A, E>,
+		M extends HasIntegerKey<A, E>
+	>
+	void test(M meta, A name) {
+		IntegerKey<A, E> ik1 = IntegerKey.get(meta, name);
+		assertNotNull(ik1);
+		assertSame(IntegerType.TYPE, ik1.type());
+		IntegerKey<A, E> ik2 = IntegerKey.get(meta, name);
+		assertSame(ik1, ik2);
+	}
 }

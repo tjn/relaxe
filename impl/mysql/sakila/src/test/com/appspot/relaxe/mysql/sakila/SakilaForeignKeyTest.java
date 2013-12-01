@@ -27,11 +27,11 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 
 import com.appspot.relaxe.env.util.ResultSetWriter;
-import com.appspot.relaxe.mysql.sakila.MySQLSakilaTestCase;
+import com.appspot.relaxe.mysql.sakila.AbstractMySQLSakilaTestCase;
 
 
 public class SakilaForeignKeyTest
-	extends MySQLSakilaTestCase {
+	extends AbstractMySQLSakilaTestCase {
 		
 	public void testForeignKeys() throws Exception {
 		Connection c = getContext().newConnection();		

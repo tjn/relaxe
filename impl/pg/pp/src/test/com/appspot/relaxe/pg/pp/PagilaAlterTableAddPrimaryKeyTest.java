@@ -20,23 +20,35 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe;
+package com.appspot.relaxe.pg.pp;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
+import com.appspot.relaxe.expr.ddl.AlterTableAddPrimaryKey;
+import com.appspot.relaxe.gen.pg.pp.ent.pub.Film;
+import com.appspot.relaxe.meta.BaseTable;
+import com.appspot.relaxe.meta.PrimaryKey;
+import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 
-import com.appspot.relaxe.env.Implementation;
-import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.meta.Catalog;
-import com.appspot.relaxe.query.QueryException;
+public class PagilaAlterTableAddPrimaryKeyTest
+	extends AbstractPagilaTestCase {
 
+	public void testAlterTablePK() {
+		Film.MetaData meta = Film.Type.TYPE.getMetaData();
+		BaseTable t = meta.getBaseTable();
 
-public interface TestContext<I extends Implementation<I>> {
+		PrimaryKey pk = t.getPrimaryKey();
 
-    public PersistenceContext<I> getPersistenceContext();    
-    public Connection newConnection() throws SQLException, ClassNotFoundException;    
-    public Catalog getCatalog() throws SQLException, QueryException, ClassNotFoundException;
-    public String getJdbcURL();
-	public Properties getJdbcConfig();
+		assertNotNull(pk);
+
+		assertNotNull(pk.getUnqualifiedName());
+
+		AlterTableAddPrimaryKey pkdef = new AlterTableAddPrimaryKey(pk);
+		String result = pkdef.generate();
+
+		logger().debug("result: " + result);
+
+		assertNotNull(result);
+
+		assertTrue(result.matches("ALTER TABLE +public.film +ADD +CONSTRAINT +film_pkey +PRIMARY KEY *\\(film_id\\) *"));
+	}
+
 }

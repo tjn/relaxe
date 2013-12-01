@@ -135,13 +135,13 @@ public class EntityQueryExpressionBuilder<
 		
 		populateTableReferenceMap();
 		
-		Map<EntityQueryElementTag, TableReference> visited = new HashMap<>();
+		Map<EntityQueryElementTag, TableReference> visited = new HashMap<EntityQueryElementTag, TableReference>();
 		AbstractTableReference tref = createTableReference(null, root, null, null, null, visited);
 				
 		Select.Builder sb = new Select.Builder();
 		
 		addAttributes(sb);
-		From f = new From(tref);		
+		From f = new From(tref);
 		
 		Predicate p = createPredicate();
 		Where w = (p == null) ? null : new Where(p);

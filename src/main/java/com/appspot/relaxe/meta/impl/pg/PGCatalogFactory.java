@@ -26,12 +26,12 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.env.DefaultCatalogFactory2;
+import com.appspot.relaxe.env.DefaultCatalogFactory;
 import com.appspot.relaxe.env.pg.PGEnvironment;
 
 
 public class PGCatalogFactory
-	extends DefaultCatalogFactory2 {
+	extends DefaultCatalogFactory {
 
 	public PGCatalogFactory(PGEnvironment env) {
 		super(env);

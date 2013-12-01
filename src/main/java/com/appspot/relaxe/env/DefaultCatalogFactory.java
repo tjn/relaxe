@@ -66,15 +66,15 @@ import java.sql.DatabaseMetaData;
 
 import fi.tnie.util.io.IOHelper;
 
-public class DefaultCatalogFactory2 
+public class DefaultCatalogFactory 
 	extends AbstractCatalogFactory {
 
-	private static Logger logger = LoggerFactory.getLogger(DefaultCatalogFactory2.class);
+	private static Logger logger = LoggerFactory.getLogger(DefaultCatalogFactory.class);
 		
 //	TODO: requiring environment as an argument for constructor, makes
 //	instantiating via Class.newInstance() (too) painful 
 //	in Environment -implementations.
-	public DefaultCatalogFactory2(Environment environment) {
+	public DefaultCatalogFactory(Environment environment) {
 		super(environment);		
 	}	
 	
@@ -439,12 +439,9 @@ public class DefaultCatalogFactory2
 		// 23. IS_AUTOINCREMENT String => Indicates whether this column is auto incremented
 		
 					
-
-
 		String name = rs.getString(4);	
 
-
-		short type = rs.getShort(5);
+		int type = rs.getInt(5);
 		String typeName = rs.getString(6);
 		
 		// DefaultMutableColumn col = null;
@@ -456,12 +453,20 @@ public class DefaultCatalogFactory2
 		
         v = rs.getInt(9);
         Integer dd = rs.wasNull() ? null : Integer.valueOf(v);
-        
-        logger.info("name: {}", name);
-        logger.info("dd: {}", dd);
-        
+                
         v = rs.getInt(10);
         Integer radix = rs.wasNull() ? null : Integer.valueOf(v);
+        
+        
+        if (logger().isDebugEnabled()) {
+            logger.debug("name: {}", name);
+            logger.debug("type: {}", Integer.toString(type));
+            logger.debug("type-name: {}", typeName);
+            logger.debug("column-size: {}", size);
+            logger.debug("decimal-digits: {}", dd);       	
+            logger.debug("radix: {}", radix);
+        }
+        
 					    			
 			// col = new DefaultMutableColumn(this.table, ci, dataType, ai);
 				
@@ -661,7 +666,7 @@ public class DefaultCatalogFactory2
 	// }
 
 	public static Logger logger() {
-		return DefaultCatalogFactory2.logger;
+		return DefaultCatalogFactory.logger;
 	}
 
 //	protected ResultSet getTablesForSchema(DatabaseMetaData meta,

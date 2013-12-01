@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.appspot.relaxe.env.CatalogFactory;
-import com.appspot.relaxe.env.DefaultCatalogFactory2;
+import com.appspot.relaxe.env.DefaultCatalogFactory;
 import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.env.mysql.MySQLCatalogFactory;
 import com.appspot.relaxe.env.mysql.MySQLImplementation;
@@ -68,7 +68,7 @@ public class MySQLCatalogFactoryTest extends DBMetaTestCase<MySQLImplementation>
 
     public void testGetSchemaNameFromSchemas() throws SQLException {
         DatabaseMetaData meta = meta();
-        DefaultCatalogFactory2 f = factory();
+        DefaultCatalogFactory f = factory();
                 
         ResultSet schemas = f.getSchemas(meta);
         Set<String> names = new HashSet<String>();
