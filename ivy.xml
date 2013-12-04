@@ -1,5 +1,7 @@
 <ivy-module version="1.0">
-    <info organisation="org.relaxe" module="relaxe" revision="snapshot" />
+    <info organisation="org.relaxe" module="relaxe" revision="snapshot" >
+    	<license name="GNU Affero General Public License, version 3" url="http://www.gnu.org/licenses/agpl-3.0.txt"/>
+    </info>
     
     <configurations defaultconfmapping="compile->default;runtime->default;test->default;jdbc->default">
 			<conf name="compile" />
