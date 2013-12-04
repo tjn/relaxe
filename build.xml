@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="project" default="show-env" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="project" default="env" xmlns:ivy="antlib:org.apache.ivy.ant">
   <description>
   </description>
   
@@ -88,10 +88,8 @@
 	<target name="env">
 		<echoproperties />
 	</target>
-	
-	
-	<target name="check" depends="init">
 		
+	<target name="check" depends="init">		
 		<property name="psql"	value="psql${exec.ext}" />
 
 		<available file="${psql}" filepath="${java.library.path}" property="psql.exists" />
@@ -102,13 +100,6 @@
 		<available file="${mysql}" filepath="${java.library.path}" property="mysql.exists" />
 		<fail unless="mysql.exists" message="Could not find mysql.exe in path" />
 		<echo>mysql exists in path: ${mysql.exists}</echo>
-		
-		
-		
-<!--			
-		<available file="python.exe" filepath="${java.library.path}" property="psql.exists" />
-		<echo>python exists ${python.exists}</echo>
--->		
 	</target>
 	
 		
