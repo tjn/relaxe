@@ -19,6 +19,8 @@
 	<property name="output.jar" location="${build.root.dir}/relaxe.jar"/>
 	<property name="src.output.jar" location="${build.root.dir}/relaxe-sources.jar"/>
 	
+	<property name="jdbc-config.dir" location="config"/>
+	
 	<property name="pom.file" location="pom.xml"/>	
 						
 	<path id="compile.cp">
@@ -29,7 +31,7 @@
 	
 	<path id="runtime.cp">
 		<path refid="compile.cp"/>
-		<pathelement location="config" />
+		<pathelement location="${jdbc-config.dir}" />
 		<fileset dir="lib/runtime" includes="*.jar" />
 	</path>
 
@@ -308,7 +310,7 @@
 		<attribute name="jdbc.url" />		
 		<attribute name="environment-implementation" default="com.appspot.relaxe.meta.PortableEnvironment"/>				
 	  <attribute name="type-mapper" default="com.appspot.relaxe.DefaultTypeMapper"/>
-		<attribute name="jdbc.config" default="config/@{implementation}/@{target}.properties"/>
+		<attribute name="jdbc.config" default="${jdbc-config.dir}/@{implementation}/@{target}.properties"/>
 		<attribute name="out.dir" default="${build.root.dir}/impl/@{implementation}/@{target}/src/gen"/>
 		<attribute name="template.dir" default="${build.root.dir}/impl/@{implementation}/@{target}/templates"/>
 		<attribute name="root.package" default="com.appspot.relaxe.gen.@{implementation}.@{target}.ent"/>
