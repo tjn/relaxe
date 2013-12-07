@@ -137,7 +137,7 @@
 	</target>
 	
 
-	<target name="compile-tests" depends="compile, compile-tools" description="Compiles the sources for tests">
+	<target name="compile-tests" depends="compile, retrieve-test-dependencies, compile-tools" description="Compiles the sources for tests">
 			<javac classpathref="test.compile.cp" destdir="${test.build.dir}" srcdir="${test.src.dir}" verbose="off" includeantruntime="false">
 				<compilerarg value="-Xlint"/>
 			</javac>
