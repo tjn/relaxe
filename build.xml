@@ -107,7 +107,7 @@
 		<delete dir="${build.root.dir}" includeemptydirs="true" includes="**/*" />
 	</target>
 
-	<target name="compile" depends="init, copy-resources" description="Compiles the sources">
+	<target name="compile" depends="init, retrieve-compilation-dependencies, copy-resources" description="Compiles the sources">
 			<javac classpathref="compile.cp" destdir="${build.dir}" srcdir="${src.dir}" verbose="off" includeantruntime="false">        	
 				<compilerarg value="-Xlint:all"/>
 			</javac>
@@ -142,7 +142,8 @@
 				<compilerarg value="-Xlint"/>
 			</javac>
 	</target>
-	
+		
+	<target name="prepare-test" depends="retrieve-test-dependencies" description="" />	
 	
 	<!-- 
 		======== PG/Pagila ========
@@ -168,7 +169,7 @@
 			<impl.compile.gen implementation="pg" driver-artifact="postgresql" target="pagila" />		
 	</target>	
 
-	<target name="test.gen.pg.pagila" depends="compile.gen.pg.pagila" description="Run tests for PostgreSQL/Pagila">
+	<target name="test.gen.pg.pagila" depends="compile.gen.pg.pagila, prepare-test" description="Run tests for PostgreSQL/Pagila">
 			<impl.test implementation="pg" driver-artifact="postgresql" target="pagila" />		
 	</target>	
 	
@@ -203,7 +204,7 @@
 			<impl.compile.gen implementation="mysql" driver-artifact="mysql-connector-java" target="sakila" />		
 	</target>	
 	
-	<target name="test.gen.mysql.sakila" depends="compile.gen.mysql.sakila" description="Run tests for MySQL/Sakila">
+	<target name="test.gen.mysql.sakila" depends="compile.gen.mysql.sakila, prepare-test" description="Run tests for MySQL/Sakila">
 			<impl.test implementation="mysql" driver-artifact="mysql-connector-java" target="sakila" />		
 	</target>		
 
@@ -232,7 +233,7 @@
 			<impl.compile.gen implementation="mariadb" driver-artifact="mariadb-java-client" target="sakila" />		
 	</target>	
 	
-	<target name="test.gen.mariadb.sakila" depends="compile.gen.mariadb.sakila" description="Run tests for MariaDB/Sakila">
+	<target name="test.gen.mariadb.sakila" depends="compile.gen.mariadb.sakila, prepare-test" description="Run tests for MariaDB/Sakila">
 			<impl.test implementation="mariadb" driver-artifact="mariadb-java-client" target="sakila" />		
 	</target>
 		
@@ -260,13 +261,17 @@
 	</target>	
 -->	
 		
-	<target name="retrieve">
+	<target name="retrieve-compilation-dependencies">
 		<ivy:resolve />
 		<ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" conf="compile"/>
+	</target>
+	
+	<target name="retrieve-test-dependencies">
+		<ivy:resolve />
 		<ivy:retrieve pattern="lib/[conf]/[artifact]-[revision].[ext]" conf="runtime"/>		
 		<ivy:retrieve pattern="lib/[conf]/[artifact]-[revision].[ext]" conf="test"/>		
 		<ivy:retrieve pattern="lib/[conf]/[artifact]/[artifact]-[revision].[ext]" conf="jdbc"/>
-	</target>
+	</target>	
 	
 	<target name="deliver">
 		<ivy:resolve />
