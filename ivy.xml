@@ -11,7 +11,7 @@
 		</configurations>
 						
     <dependencies>
-				<!-- compilation dependencies -->
+		<!-- compilation dependencies -->
         <dependency org="org.slf4j" name="slf4j-api" rev="1.7.5" conf="compile" />
         
         <!-- runtime -->
@@ -32,7 +32,7 @@
         <!-- JDBC drivers -->
         <dependency org="org.postgresql" name="postgresql" rev="9.3-1100-jdbc4" conf="jdbc" />        
         <dependency org="mysql" name="mysql-connector-java" rev="5.1.27" conf="jdbc"/>
-        <dependency org="hsqldb" name="hsqldb" rev="1.8.0.10" conf="jdbc" />
+        <dependency org="org.hsqldb" name="hsqldb" rev="2.3.1" conf="jdbc" />
         <dependency org="org.jumpmind.symmetric.jdbc" name="mariadb-java-client" rev="1.1.1" conf="jdbc"/>
 
     </dependencies>

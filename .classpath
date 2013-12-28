@@ -15,11 +15,11 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache CSV"/>
 	<classpathentry kind="lib" path="lib/util.jar"/>
-	<classpathentry kind="lib" path="lib/jdbc/hsqldb/hsqldb-1.8.0.10.jar"/>
 	<classpathentry kind="lib" path="lib/jdbc/mysql-connector-java/mysql-connector-java-5.1.27.jar"/>
 	<classpathentry kind="lib" path="lib/jdbc/postgresql/postgresql-9.3-1100-jdbc4.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="lib/commons-csv-20070823.jar"/>
+	<classpathentry kind="lib" path="lib/jdbc/hsqldb/hsqldb-2.3.1.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
