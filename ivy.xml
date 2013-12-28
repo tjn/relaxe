@@ -4,8 +4,8 @@
     </info>
     
     <configurations defaultconfmapping="compile->default;runtime->default;test->default;jdbc->default">
-			<conf name="compile" />
-			<conf name="runtime"/>
+		<conf name="compile" />
+		<conf name="runtime"/>
 	    <conf name="test" extends="runtime"/>
 	    <conf name="jdbc" />	    
 		</configurations>
@@ -15,13 +15,14 @@
         <dependency org="org.slf4j" name="slf4j-api" rev="1.7.5" conf="compile" />
         
         <!-- runtime -->
-        <!--
+        <!--        
+        <dependency org="log4j" name="log4j" rev="1.2.17" conf="runtime"/>
+        <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.5" conf="runtime"/>
+        -->
+                
         <dependency org="ch.qos.logback" name="logback-core" rev="1.0.13" conf="runtime"/>
         <dependency org="ch.qos.logback" name="logback-classic" rev="1.0.13" conf="runtime"/>
-        -->
         <dependency org="log4j" name="log4j" rev="1.2.17" conf="runtime"/>
-        <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.5" conf="runtime"/>              
-
                 
         <!-- testing dependencies -->
         <dependency org="junit" name="junit" rev="4.11" conf="test"/>
