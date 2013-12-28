@@ -30,6 +30,7 @@ import java.util.Comparator;
 import com.appspot.relaxe.expr.AbstractIdentifierRules;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.meta.AbstractIdentifierComparator;
+import com.appspot.relaxe.meta.Folding;
 import com.appspot.relaxe.meta.IdentifierRules;
 import com.appspot.relaxe.meta.NullComparator;
 
@@ -65,6 +66,11 @@ public class MariaDBIdentifierRules
 			String n = ident.getName();
 			return n; 
 		}
+	}
+		
+	@Override
+	public Folding getFolding() {
+		return null;
 	}
 	
 	
