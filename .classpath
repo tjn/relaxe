@@ -4,24 +4,14 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/tools"/>
+	<classpathentry kind="src" path="impl/hsqldb/common"/>
 	<classpathentry kind="src" path="impl/mariadb/common"/>
 	<classpathentry kind="src" path="impl/mariadb/sakila/src/main"/>
-	<classpathentry kind="src" path="impl/mariadb/sakila/src/out"/>
-	<classpathentry kind="src" path="impl/mariadb/sakila/src/test"/>
 	<classpathentry kind="src" path="impl/mysql/common"/>
 	<classpathentry kind="src" path="impl/mysql/sakila/src/main"/>
-	<classpathentry kind="src" path="impl/mysql/sakila/src/out"/>
-	<classpathentry kind="src" path="impl/mysql/sakila/src/test"/>
-	<classpathentry kind="src" path="impl/mysql/samples/src/main"/>
-	<classpathentry kind="src" path="impl/mysql/samples/src/out"/>
-	<classpathentry kind="src" path="impl/mysql/samples/src/test"/>
 	<classpathentry kind="src" path="impl/pg/common"/>
 	<classpathentry kind="src" path="impl/pg/pagila/src/main"/>
-	<classpathentry kind="src" path="impl/pg/pagila/src/out"/>
-	<classpathentry kind="src" path="impl/pg/pagila/src/test"/>
-	<classpathentry kind="src" path="impl/pg/pp/src/test"/>
-	<classpathentry kind="src" path="impl/pg/pp/src/out"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>	
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache CSV"/>
 	<classpathentry kind="lib" path="lib/util.jar"/>
@@ -29,7 +19,7 @@
 	<classpathentry kind="lib" path="lib/jdbc/mysql-connector-java/mysql-connector-java-5.1.27.jar"/>
 	<classpathentry kind="lib" path="lib/jdbc/postgresql/postgresql-9.3-1100-jdbc4.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/slf4j-log4j12-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/commons-csv-20070823.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
