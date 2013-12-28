@@ -32,7 +32,7 @@ import com.appspot.relaxe.expr.ddl.types.VarBinaryTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.DataTypeTest;
+// import com.appspot.relaxe.gen.pg.pagila.ent.pub.DataTypeTest;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.DataTypeMap;
@@ -84,17 +84,17 @@ public class PagilaTypeMapTest
 			}
 		};
 		
-		{
-			DataTypeTest.MetaData tm = DataTypeTest.Type.TYPE.getMetaData();
-						
-			Column col = tm.getColumn(DataTypeTest.Attribute.CV);			
-			DataType t = col.getDataType();
-			
-			SQLTypeDefinition def = dtm.getSQLTypeDefinition(t);
-			AbstractCharacterTypeDefinition cd = (AbstractCharacterTypeDefinition) def;
-			IntLiteral len = cd.getLength();
-			assertNotNull(len);
-		}
+//		{
+//			DataTypeTest.MetaData tm = DataTypeTest.Type.TYPE.getMetaData();
+//						
+//			Column col = tm.getColumn(DataTypeTest.Attribute.CV);			
+//			DataType t = col.getDataType();
+//			
+//			SQLTypeDefinition def = dtm.getSQLTypeDefinition(t);
+//			AbstractCharacterTypeDefinition cd = (AbstractCharacterTypeDefinition) def;
+//			IntLiteral len = cd.getLength();
+//			assertNotNull(len);
+//		}
 	}
 		
 }

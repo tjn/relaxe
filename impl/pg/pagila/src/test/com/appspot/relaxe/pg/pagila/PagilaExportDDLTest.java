@@ -57,7 +57,7 @@ import com.appspot.relaxe.expr.ddl.types.IntTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.VarBinaryTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.DataTypeTest;
+
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.Column;
@@ -128,17 +128,17 @@ public class PagilaExportDDLTest
 			}
 		};
 		
-		{
-			DataTypeTest.MetaData tm = DataTypeTest.Type.TYPE.getMetaData();
-						
-			Column col = tm.getColumn(DataTypeTest.Attribute.CV);			
-			DataType t = col.getDataType();
-			
-			SQLTypeDefinition def = dtm.getSQLTypeDefinition(t);
-			AbstractCharacterTypeDefinition cd = (AbstractCharacterTypeDefinition) def;
-			IntLiteral len = cd.getLength();
-			assertNotNull(len);
-		}
+//		{
+//			DataTypeTest.MetaData tm = DataTypeTest.Type.TYPE.getMetaData();
+//						
+//			Column col = tm.getColumn(DataTypeTest.Attribute.CV);			
+//			DataType t = col.getDataType();
+//			
+//			SQLTypeDefinition def = dtm.getSQLTypeDefinition(t);
+//			AbstractCharacterTypeDefinition cd = (AbstractCharacterTypeDefinition) def;
+//			IntLiteral len = cd.getLength();
+//			assertNotNull(len);
+//		}
 				
 		Collection<Schema> sc = new ArrayList<Schema>(); 
 		
