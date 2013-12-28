@@ -11,7 +11,7 @@
 	<classpathentry kind="src" path="impl/mysql/sakila/src/main"/>
 	<classpathentry kind="src" path="impl/pg/common"/>
 	<classpathentry kind="src" path="impl/pg/pagila/src/main"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>	
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache CSV"/>
 	<classpathentry kind="lib" path="lib/util.jar"/>
@@ -20,6 +20,8 @@
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="lib/commons-csv-20070823.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/logback-classic-1.0.13.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/logback-core-1.0.13.jar"/>
 	<classpathentry kind="lib" path="lib/jdbc/hsqldb/hsqldb-2.3.1.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
