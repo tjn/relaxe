@@ -119,6 +119,34 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	public Integer getPort() {
 		return null;
 	}
+	
+	public Integer getPort(int defaultPort) {		 				
+		Integer port = getInteger("jdbc.url.port");
+		
+		if (port == null) {
+			port = Integer.valueOf(defaultPort);
+		}
+		
+		return null;		
+	}
+
+	private Integer getInteger(String key) {		
+		Integer value = null;
+		
+		try {
+			Properties config = getJdbcConfigForDatabase();
+			String p = config.getProperty(key);
+			value = (p == null) ? null : Integer.valueOf(p);			
+		}
+		catch (IOException e) {
+			logger.warn(e.getMessage());
+		}	
+		catch (NumberFormatException e) {
+			logger.warn(e.getMessage());
+		}
+		
+		return value;
+	}
 
 	protected Properties getJdbcConfig()
 		throws IOException {
@@ -137,6 +165,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		return getJdbcConfig(buf.toString());
 	}
 	
+			
 	
 	protected Properties getJdbcConfig(String profile) 
 		throws IOException {

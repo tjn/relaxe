@@ -50,4 +50,9 @@ public abstract class AbstractMySQLTestCase
 	protected String implementationTag() {
 		return "mysql";
 	}
+	
+	@Override
+	public Integer getPort() {
+		return getPort(3306);
+	}
 }

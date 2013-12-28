@@ -48,4 +48,9 @@ public abstract class AbstractPGTestCase
 	protected String implementationTag() {
 		return "pg";
 	}
+	
+	@Override
+	public Integer getPort() {
+		return getPort(5432);
+	}
 }

@@ -50,9 +50,8 @@ public abstract class AbstractMariaDBTestCase
 		return "mariadb";
 	}
 	
-
 	@Override
 	public Integer getPort() {
-		return Integer.valueOf(3307);
+		return getPort(3307);
 	}
 }
