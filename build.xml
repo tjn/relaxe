@@ -105,7 +105,7 @@
 	</target>
 	
 		
-	<target name="clean">
+	<target name="clean" description="Deletes build dir and all content in it" >
 		<delete dir="${build.root.dir}" includeemptydirs="true" includes="**/*" />
 	</target>
 
