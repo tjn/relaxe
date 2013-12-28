@@ -487,6 +487,12 @@ public class SourceGenerator {
 	 */
 	public Properties run(Catalog cat, TableMapper tm, TypeMapper typeMapper,
 			Environment targetEnvironment) throws QueryException, IOException {
+		
+		logger().debug("run - enter");
+		
+		logger().debug("catalog: {}", cat.getName());
+		logger().debug("environment: {}", cat.getEnvironment());
+		logger().debug("target environment: {}", targetEnvironment);
 
 		Map<File, String> gm = new HashMap<File, String>();
 		Properties generated = new Properties();
@@ -542,8 +548,10 @@ public class SourceGenerator {
 		// JavaType lc = tm.literalContextType();
 		// CharSequence src = generateLiteralContext(lc, cat, tm, il, fm);
 		// logger().debug("generated lit ctx: src={" + src + "}");
-		// writeIfGenerated(getSourceDir(), lc, src, generated, gm);
+		// writeIfGenerated(getSourceDir(), lc, src, generated, gm);		
 		// }
+		
+		logger().debug("run - exit");
 
 		return generated;
 	}
@@ -2798,11 +2806,11 @@ public class SourceGenerator {
 				" = env.getIdentifierRules();");
 
 		SchemaElementName sen = t.getName();
+		
+		
 
 		line(buf, identifierDeclaration("c", null, irvar));
-		line(buf,
-				identifierDeclaration("s", sen.getQualifier().getSchemaName(),
-						irvar));
+		line(buf, identifierDeclaration("s", sen.getQualifier().getSchemaName(), irvar));
 		line(buf, identifierDeclaration("t", sen.getUnqualifiedName(), irvar));
 
 		JavaType intf = tam.entityType(t, Part.INTERFACE);
