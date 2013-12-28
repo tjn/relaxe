@@ -159,7 +159,7 @@ public class PagilaPersistenceManagerTest
 
 	@Override
 	protected String getUsername() {
-		return "relaxe_tester";
+		return "pagila";
 	}
 
     public void testSync1()

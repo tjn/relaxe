@@ -65,7 +65,7 @@ public class SimpleTestContext<I extends Implementation<I>>
     
     public SimpleTestContext(I impl) {
     	// TODO: remove user name
-    	this(impl, null, "pagila", "relaxe_tester", "password");
+    	this(impl, null, "pagila", "pagila", "password");
     }
     
     

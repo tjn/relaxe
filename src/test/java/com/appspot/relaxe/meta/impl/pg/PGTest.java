@@ -56,7 +56,7 @@ public abstract class PGTest
 	
 	@Override
 	public String getUser() {
-		return "relaxe_tester";
+		return "pagila";
 	}
 
 
