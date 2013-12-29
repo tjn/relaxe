@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import com.appspot.relaxe.DefaultTableMapper;
 import com.appspot.relaxe.DefaultTypeMapper;
+import com.appspot.relaxe.QueryHelper;
 import com.appspot.relaxe.TestContext;
 import com.appspot.relaxe.ent.value.HasVarcharArray;
 import com.appspot.relaxe.ent.value.HasVarcharArrayKey;
@@ -41,7 +42,7 @@ import com.appspot.relaxe.ent.value.VarcharArrayAccessor;
 import com.appspot.relaxe.ent.value.VarcharArrayKey;
 import com.appspot.relaxe.env.CatalogFactory;
 import com.appspot.relaxe.env.DefaultDataAccessContext;
-import com.appspot.relaxe.env.PersistenceContext;
+import com.appspot.relaxe.env.hsqldb.AbstractHSQLDBImplementation;
 import com.appspot.relaxe.env.hsqldb.HSQLDBFileImplementation;
 import com.appspot.relaxe.env.hsqldb.HSQLDBImplementation;
 import com.appspot.relaxe.env.hsqldb.HSQLDBPersistenceContext;
@@ -51,6 +52,7 @@ import com.appspot.relaxe.exec.QueryProcessorAdapter;
 import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.ddl.AlterTableAddForeignKey;
 import com.appspot.relaxe.expr.ddl.AlterTableAddPrimaryKey;
+import com.appspot.relaxe.expr.ddl.AlterTableDropConstraint;
 import com.appspot.relaxe.expr.ddl.CreateDomain;
 import com.appspot.relaxe.expr.ddl.CreateSchema;
 import com.appspot.relaxe.expr.ddl.CreateTable;
@@ -67,6 +69,7 @@ import com.appspot.relaxe.meta.IdentifierRules;
 import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.meta.Schema;
 import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBEnvironment;
+import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBTest;
 import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 import com.appspot.relaxe.query.QueryException;
@@ -80,18 +83,75 @@ import com.appspot.relaxe.source.SourceGenerator;
 import com.appspot.relaxe.types.PrimitiveType;
 import com.appspot.relaxe.types.VarcharArrayType;
 
-public class PagilaExportDDLTest 
+public class PagilaHSQLDBPortGenerator
 	extends AbstractPagilaTestCase {
 	
-	private static Logger logger = LoggerFactory.getLogger(PagilaExportDDLTest.class);	
+	private static Logger logger = LoggerFactory.getLogger(PagilaHSQLDBPortGenerator.class);
+	
+	private String dataDir;
+	
+	public PagilaHSQLDBPortGenerator() {		
+	}
+	
+	public PagilaHSQLDBPortGenerator(String dataDir) {
+		this.dataDir = dataDir;
+	}
+	
+		
+	public static void main(String[] args) {
+		try {
+			String dd = (args.length == 0) ? null : args[0];					
+			PagilaHSQLDBPortGenerator pgen = new PagilaHSQLDBPortGenerator(dd);			
+			pgen.setUp();
+			
+			try {
+				pgen.testTransform();		
+			}
+			finally {
+				pgen.tearDown();	
+			}
+		} 
+		catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}	
+	
 	
 	public void testTransform() throws Exception {
+		logger.debug("testTransform - enter");
 		
-		TestContext<PGImplementation> ctx = getCurrent();
-		Catalog cat = ctx.getCatalog();
+		try {						
+			TestContext<PGImplementation> tc = getCurrent();
+			Catalog cat = tc.getCatalog();
+			transform(cat);
+		} 
+		catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		finally {
+			logger.debug("testTransform - exit");
+		}		
+	}
+	
+	
+	public void transform(Catalog cat) throws Exception {
+				
+		final AbstractHSQLDBImplementation hi = new HSQLDBFileImplementation();
+		HSQLDBPersistenceContext hpc = new HSQLDBPersistenceContext(hi);
+				
+		String tdc = hi.defaultDriverClassName();
 		
-		final HSQLDBImplementation hi = new HSQLDBFileImplementation();
-		HSQLDBPersistenceContext hpc = new HSQLDBPersistenceContext(hi);		
+		HSQLDBTest ht = new HSQLDBTest();
+		final String titag = ht.implementationTag();
+						
+		if (tdc != null) {
+			Class.forName(tdc);
+		}		
+		
+		if (this.dataDir == null) {
+			this.dataDir = ht.getDatabase();
+		}
+						
 		HSQLDBEnvironment henv = hi.getEnvironment();
 		final DataTypeMap htm = henv.getDataTypeMap();
 						
@@ -126,23 +186,11 @@ public class PagilaExportDDLTest
 				return def;
 			}
 		};
-		
-//		{
-//			DataTypeTest.MetaData tm = DataTypeTest.Type.TYPE.getMetaData();
-//						
-//			Column col = tm.getColumn(DataTypeTest.Attribute.CV);			
-//			DataType t = col.getDataType();
-//			
-//			SQLTypeDefinition def = dtm.getSQLTypeDefinition(t);
-//			AbstractCharacterTypeDefinition cd = (AbstractCharacterTypeDefinition) def;
-//			IntLiteral len = cd.getLength();
-//			assertNotNull(len);
-//		}
-				
+						
 		Collection<Schema> sc = new ArrayList<Schema>(); 
 		
-		List<Statement> sl = new ArrayList<Statement>(); 
-		
+		List<Statement> sl = new ArrayList<Statement>();
+			
 		for (Schema s : cat.schemas().values()) {
 			String name = s.getUnqualifiedName().getName();
 			
@@ -152,6 +200,7 @@ public class PagilaExportDDLTest
 			
 			sc.add(s);
 			
+			// A new HSQLDB database contains a 'public' schema initially.  
 			if ("public".equalsIgnoreCase(s.getUnqualifiedName().getName())) {
 				continue;
 			}
@@ -159,50 +208,56 @@ public class PagilaExportDDLTest
 			CreateSchema def = new CreateSchema(s.getUnqualifiedName());
 			sl.add(def);
 		}
+		
+		List<Statement> addfks = new ArrayList<Statement>(); 
+		
 			
-		addCreateTableStatements(dtm, sc, sl);		
+		addCreateTableStatements(dtm, sc, sl);
 		addPrimaryKeyStatements(sc, sl);		
-		addForeignKeyStatements(sc, sl);		
+		addForeignKeyStatements(sc, addfks);
+		
+		sl.addAll(addfks);		
 
 		StringBuilder buf = new StringBuilder();
 		
 		for (Statement st : sl) {
 			write(buf, st);		
 		}			
-								
-		String url = hi.createJdbcUrl("testdata/hsql");
+				
+		logger().info("target data-dir: {}", dataDir);
+														
+		String url = hi.createJdbcUrl(dataDir);
 		
-		PersistenceContext<HSQLDBImplementation> pc = hpc;
-		DataAccessContext hctx = new DefaultDataAccessContext<HSQLDBImplementation>(pc, url, null);
+		logger().info("target url: {}", url);
+		
+		DataAccessContext hctx = new DefaultDataAccessContext<HSQLDBImplementation>(hpc, url, null);
+					
 										
 		DataAccessSession das = hctx.newSession();				
 		StatementSession ss = das.asStatementSession();
 								
 		QueryProcessor qp = new QueryProcessorAdapter();
 		IdentifierRules hid = hi.getEnvironment().getIdentifierRules();	
-		createDomains(ss, qp, hid);
+		createDomains(ss, qp, hid);		
 		
-		for (Statement st : sl) {
-			logger.debug("executing: " + st.generate());
-			ss.execute(st, qp);
-			logger.debug("executed: " + st.generate());
-		}
+		executeAll(ss, qp, sl);
 		
 		das.commit();
 		
 		CatalogFactory hcf = hi.catalogFactory();
 		Connection c = null;
+		Catalog hcat = null;
 		
 		try {			
 			c = DriverManager.getConnection(url);
 			
 			long s = System.currentTimeMillis();
-			Catalog hcat = hcf.create(c);
+			hcat = hcf.create(c);
 			long e = System.currentTimeMillis();
 			
 			logger.info("hcat: " + hcat + " : " + (e - s));
 			
-			SourceGenerator gen = new SourceGenerator(new File("build/impl/hsqldb/pagila/src/g"));
+			SourceGenerator gen = new SourceGenerator(new File("build/impl/" + titag + "/pagila/src/gen"));
 			
 			DefaultTableMapper tam = new DefaultTableMapper("com.appspot.relaxe.gen.hsqldb.pagila.ent");
 			
@@ -225,20 +280,66 @@ public class PagilaExportDDLTest
 						
 			logger.info("hcat: " + hcat + " : " + (e - s));
 		}
-		finally {
-			c = close(c);
+		finally {			
+			c = QueryHelper.doClose(c);
 		}
 		
-		
-		
-		
-		
-		
+//				
+//		logger().info("dropping foreign keys temporarily...");
+//		List<Statement> dropfks = new ArrayList<Statement>();
+//		dropForeignKeyStatements(sc, dropfks);
+//		executeAll(ss, qp, dropfks);		
+//		das.commit();						
+//		
+//		for (Schema s : sc) {
+//			SchemaElementMap<BaseTable> tm = s.baseTables();
+//			
+//			final Schema ts = hcat.schemas().get(s.getUnqualifiedName());
+//			List<Identifier> nl = new ArrayList<Identifier>();
+//			
+//			for (BaseTable src : tm.values()) {
+//				BaseTable dest = ts.baseTables().get(src.getUnqualifiedName());
+//												
+//				nl.clear();
+//				
+//				for(Column col : src.columnMap().values()) {
+//					String n = col.getColumnName().getName();
+//					Column tcol = dest.columnMap().get(n);
+//					nl.add(tcol.getColumnName());
+//				}				
+//							
+//				ElementList<Identifier> names = new ElementList<Identifier>(nl);
+//				
+//				List<ValueRow> rows = new ArrayList<ValueRow>();
+//								
+////				new ElementList<ValuesListElement>(elems);
+////				new MutableValueParameter<>(column, null);
+//											
+//				InsertStatement ins = new InsertStatement(dest, names, rows);
+//				ins.generate();
+//				
+//			}
+//			
+//		}
+//			
+//		logger().info("restoring foreign keys...");
+//		executeAll(ss, qp, addfks);		
+//		das.commit();		
+
 				
 		logger.debug("shutdown: " + Shutdown.STATEMENT.generate());
 		ss.execute(Shutdown.STATEMENT, qp);		
 					
 		das.close();
+	}
+
+	private void executeAll(StatementSession ss, QueryProcessor qp, List<Statement> statements) throws QueryException {
+		for (Statement st : statements) {
+			String stmt = st.generate();
+			logger.debug("executing: {}", stmt);
+			ss.execute(st, qp);
+			logger.debug("executed: {}", stmt);
+		}
 	}
 
 	protected void addCreateTableStatements(final DataTypeMap dtm,
@@ -268,6 +369,17 @@ public class PagilaExportDDLTest
 			
 			for (ForeignKey fk : fks) {
 				AlterTableAddForeignKey def = new AlterTableAddForeignKey(fk);				
+				sl.add(def);
+			}
+		}
+	}
+	
+	protected void dropForeignKeyStatements(Collection<Schema> sc, List<Statement> sl) {
+		for (Schema s : sc) {
+			Collection<ForeignKey> fks = s.foreignKeys().values();
+			
+			for (ForeignKey fk : fks) {				
+				AlterTableDropConstraint def = new AlterTableDropConstraint(fk);				
 				sl.add(def);
 			}
 		}

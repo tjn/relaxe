@@ -20,32 +20,14 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
+
 package com.appspot.relaxe.env.hsqldb;
 
-import com.appspot.relaxe.env.DefaultGeneratedKeyHandler;
-import com.appspot.relaxe.env.DefaultPersistenceContext;
-import com.appspot.relaxe.env.GeneratedKeyHandler;
+public class HSQLSImplementation
+	extends AbstractHSQLDBServerImplementation {
 
-public class HSQLDBPersistenceContext
-	extends DefaultPersistenceContext<HSQLDBImplementation> {
-
-	private GeneratedKeyHandler generatedKeyHandler;
-	
-	public HSQLDBPersistenceContext() {
-		this(new HSQLDBMemImplementation());
-	}
-		
-	public HSQLDBPersistenceContext(HSQLDBImplementation implementation) {
-		super(implementation);
-	}
-	
 	@Override
-	public GeneratedKeyHandler generatedKeyHandler() {
-		if (generatedKeyHandler == null) {			
-			generatedKeyHandler = new DefaultGeneratedKeyHandler(getValueExtractorFactory());
-		}
-
-		return generatedKeyHandler;
-	}	
-
+	public String subprotocol() {
+		return "hsqls";
+	}		
 }

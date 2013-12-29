@@ -170,16 +170,36 @@
 	<target name="compile.gen.pg.pagila" depends="generate.pg.pagila" description="Compiles the sources generated for PostgreSQL/Pagila">
 			<impl.compile.gen implementation="pg" driver-artifact="postgresql" target="pagila" />		
 	</target>	
-
+	
 	<target name="test.gen.pg.pagila" depends="compile.gen.pg.pagila, prepare-test" description="Run tests for PostgreSQL/Pagila">
 			<impl.test implementation="pg" driver-artifact="postgresql" target="pagila" />		
 	</target>	
+
 	
+	<target name="compile.hsqldb.pagila" depends="compile-tests" description="Compiles the sources for HSQLDB/Pagila">
+		<impl.compile implementation="hsqldb" target="pagila" driver-artifact="hsqldb" />		
+	</target>
+		
+	<target name="generate.hsqldb.pagila" depends="compile.hsqldb.pagila, generate.hsqldb.data" description="Generates the sources for HSQLDB/Pagila">
+		<generate 
+			implementation="hsqldb"
+			driver-artifact="hsqldb"
+			target="pagila"
+			jdbc.url="jdbc:hsqldb:file:build/data/pg-hsqldb/pagila"
+			env="com.appspot.relaxe.env.hsqldb.HSQLDBFileImplementation" 
+			environment-implementation="com.appspot.relaxe.meta.impl.hsqldb.HSQLDBEnvironment" 
+			type-mapper="com.appspot.relaxe.hsqldb.pagila.HSQLDBPagilaTypeMapper"
+		/>		
+	</target>	
+
+	
+	<!-- no tests yet for hsqldb -->
 	<target name="test" 
 		depends="
 			test.gen.pg.pagila,
 			test.gen.mysql.sakila,
-			test.gen.mariadb.sakila" 	
+			test.gen.mariadb.sakila,
+			generate.hsqldb.pagila" 	
 		description="Generates sources, compiles and runs the tests for all implementations" />
 	
 	<!-- 
@@ -237,6 +257,17 @@
 	
 	<target name="test.gen.mariadb.sakila" depends="compile.gen.mariadb.sakila, prepare-test" description="Run tests for MariaDB/Sakila">
 			<impl.test implementation="mariadb" driver-artifact="mariadb-java-client" target="sakila" />		
+	</target>
+	
+	
+	<target name="generate.hsqldb.data" depends="compile-tests, compile.pg.pagila" description="Ports Pagila database from postgres to HSQLDB">
+		<impl.port.data
+			source.implementation="pg" 
+			source.driver-artifact="postgresql"
+			source.target="pagila"
+			dest.implementation="hsqldb"
+			dest.driver-artifact="hsqldb"
+			transformer.class="com.appspot.relaxe.pg.pagila.PagilaHSQLDBPortGenerator" />
 	</target>
 		
 
@@ -304,12 +335,12 @@
 	
 	<macrodef name="generate">
 		<attribute name="implementation" />
-		<attribute name="driver-artifact" />		
+		<attribute name="driver-artifact"/>		
 		<attribute name="target" />
 		<attribute name="env" />
 		<attribute name="jdbc.url" />		
 		<attribute name="environment-implementation" default="com.appspot.relaxe.meta.PortableEnvironment"/>				
-	  <attribute name="type-mapper" default="com.appspot.relaxe.DefaultTypeMapper"/>
+	  	<attribute name="type-mapper" default="com.appspot.relaxe.DefaultTypeMapper"/>
 		<attribute name="jdbc.config" default="${jdbc-config.dir}/@{implementation}/@{target}.properties"/>
 		<attribute name="out.dir" default="${build.root.dir}/impl/@{implementation}/@{target}/src/gen"/>
 		<attribute name="template.dir" default="${build.root.dir}/impl/@{implementation}/@{target}/templates"/>
@@ -367,6 +398,7 @@
 		<attribute name="driver-artifact" />		
 		<attribute name="target" />
 		<attribute name="destdir" default="${build.root.dir}/impl/@{implementation}/@{target}/classes"/>
+		<attribute name="impl.src.dir" default="impl/@{implementation}/@{target}/src/main"/>
 		
 		<sequential>
 			<path id="@{implementation}.@{target}.cp">
@@ -380,15 +412,18 @@
 			
 			<echo>implementation is @{implementation}</echo>			
 			<mkdir dir="@{destdir}" />
+			
+			<!-- There might not be any per-implementation src dir--> 
+			<mkdir dir="@{impl.src.dir}" />
 				
 			<javac 
 					classpathref="@{implementation}.@{target}.cp" 
 					destdir="@{destdir}" 
-					srcdir="impl/@{implementation}/common:impl/@{implementation}/@{target}/src/main" 
+					srcdir="impl/@{implementation}/common:@{impl.src.dir}" 
 					verbose="off" includeantruntime="false">				
 				<compilerarg value="-Xlint"/>
 			</javac>			
-   </sequential>
+   		</sequential>
 	</macrodef>
 	
 	
@@ -416,8 +451,51 @@
 			>
 				<arg value="com.appspot.relaxe.@{implementation}.@{target}.AllTests"/>
 			</java>			
-   </sequential>	
+	   </sequential>	
 	</macrodef>
+	
+	
+	<macrodef name="impl.port.data" description="Ports database from an implementation to another">
+		<attribute name="source.implementation" />
+		<attribute name="source.driver-artifact" />
+		
+		<attribute name="source.target" />
+		
+		<attribute name="dest.implementation" />
+		<attribute name="dest.driver-artifact" />
+	
+		<attribute name="transformer.class" />		
+		<attribute name="source.base.dir" default="${build.root.dir}/impl/@{source.implementation}/@{source.target}"/>
+		
+		<attribute name="dest.data.dir" default="${build.root.dir}/data/@{source.implementation}-@{dest.implementation}"/>
+		<attribute name="cpid" default="@{source.implementation}-@{dest.implementation}.runtest.cp" />
+		
+		<sequential>
+			<path id="@{cpid}">
+				<path refid="test.compile.cp"/>
+				<pathelement location="${build.dir}" />
+				<pathelement location="${test.build.dir}" />
+				<pathelement location="${build.root.dir}/impl/@{source.implementation}/@{source.target}/classes" />
+				
+				<fileset dir="lib/jdbc/@{source.driver-artifact}" >
+					<include name="*.jar" />			
+				</fileset>
+				<fileset dir="lib/jdbc/@{dest.driver-artifact}" >
+					<include name="*.jar" />			
+				</fileset>
+			</path>
+			
+			<mkdir dir="@{dest.data.dir}"/>
+			
+			<java 
+					classname="@{transformer.class}"
+					classpathref="@{cpid}"
+					fork="yes" failonerror="yes"
+			>
+				<!--<arg value="@{transformer.class}"/>-->
+			</java>			
+	   </sequential>	
+	</macrodef>	
 	
 	<macrodef name="impl.compile.gen" description="Compiles the sources generated for impl/target">
 		<attribute name="implementation" />

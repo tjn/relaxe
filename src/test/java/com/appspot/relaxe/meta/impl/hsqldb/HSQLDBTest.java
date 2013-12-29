@@ -48,7 +48,7 @@ public class HSQLDBTest
 	
 	@Override
 	public String getDatabase() {
-		return "test";
+		return "build/data/" + implementationTag() + "/pagila";
 	}
 	
 	@Override
@@ -146,7 +146,7 @@ public class HSQLDBTest
 	}
 	
 	@Override
-	protected String implementationTag() {
+	public String implementationTag() {
 		return "hsqldb";
 	}
 }

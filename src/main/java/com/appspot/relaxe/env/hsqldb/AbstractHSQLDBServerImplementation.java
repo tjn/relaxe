@@ -22,30 +22,28 @@
  */
 package com.appspot.relaxe.env.hsqldb;
 
-import com.appspot.relaxe.env.DefaultGeneratedKeyHandler;
-import com.appspot.relaxe.env.DefaultPersistenceContext;
-import com.appspot.relaxe.env.GeneratedKeyHandler;
-
-public class HSQLDBPersistenceContext
-	extends DefaultPersistenceContext<HSQLDBImplementation> {
-
-	private GeneratedKeyHandler generatedKeyHandler;
-	
-	public HSQLDBPersistenceContext() {
-		this(new HSQLDBMemImplementation());
-	}
-		
-	public HSQLDBPersistenceContext(HSQLDBImplementation implementation) {
-		super(implementation);
-	}
+public abstract class AbstractHSQLDBServerImplementation
+	extends AbstractHSQLDBImplementation {	
 	
 	@Override
-	public GeneratedKeyHandler generatedKeyHandler() {
-		if (generatedKeyHandler == null) {			
-			generatedKeyHandler = new DefaultGeneratedKeyHandler(getValueExtractorFactory());
+	public String createJdbcUrl(String host, Integer port, String database) {		
+		if (database == null) {
+			throw new NullPointerException("database");
 		}
-
-		return generatedKeyHandler;
-	}	
-
+		
+		StringBuilder buf = new StringBuilder();
+		
+		buf.append("jdbc:hsqldb:");
+		buf.append(subprotocol());
+		buf.append("//");
+		buf.append(host);
+		if (port != null) {
+			buf.append(":");	
+			buf.append(port.intValue());
+		}
+		buf.append("/");
+		buf.append(database);
+		
+		return buf.toString();		
+	}		
 }

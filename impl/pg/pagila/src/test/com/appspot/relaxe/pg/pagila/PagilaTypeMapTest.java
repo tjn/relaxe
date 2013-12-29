@@ -25,15 +25,12 @@ package com.appspot.relaxe.pg.pagila;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.appspot.relaxe.env.hsqldb.HSQLDBImplementation;
-import com.appspot.relaxe.expr.IntLiteral;
-import com.appspot.relaxe.expr.ddl.types.AbstractCharacterTypeDefinition;
+import com.appspot.relaxe.env.hsqldb.AbstractHSQLDBImplementation;
+import com.appspot.relaxe.env.hsqldb.HSQLDBMemImplementation;
 import com.appspot.relaxe.expr.ddl.types.VarBinaryTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
-// import com.appspot.relaxe.gen.pg.pagila.ent.pub.DataTypeTest;
-import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBEnvironment;
@@ -48,7 +45,7 @@ public class PagilaTypeMapTest
 	
 	public void testTypeMap() throws Exception {
 		
-		HSQLDBImplementation hi = new HSQLDBImplementation.Mem();
+		AbstractHSQLDBImplementation hi = new HSQLDBMemImplementation();
 		HSQLDBEnvironment henv = hi.getEnvironment();
 
 		final DataTypeMap htm = henv.getDataTypeMap();

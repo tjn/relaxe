@@ -22,30 +22,11 @@
  */
 package com.appspot.relaxe.env.hsqldb;
 
-import com.appspot.relaxe.env.DefaultGeneratedKeyHandler;
-import com.appspot.relaxe.env.DefaultPersistenceContext;
-import com.appspot.relaxe.env.GeneratedKeyHandler;
+public class HTTPImplementation
+	extends AbstractHSQLDBServerImplementation {
 
-public class HSQLDBPersistenceContext
-	extends DefaultPersistenceContext<HSQLDBImplementation> {
-
-	private GeneratedKeyHandler generatedKeyHandler;
-	
-	public HSQLDBPersistenceContext() {
-		this(new HSQLDBMemImplementation());
-	}
-		
-	public HSQLDBPersistenceContext(HSQLDBImplementation implementation) {
-		super(implementation);
-	}
-	
 	@Override
-	public GeneratedKeyHandler generatedKeyHandler() {
-		if (generatedKeyHandler == null) {			
-			generatedKeyHandler = new DefaultGeneratedKeyHandler(getValueExtractorFactory());
-		}
-
-		return generatedKeyHandler;
-	}	
-
+	public String subprotocol() {
+		return "http";
+	}		
 }
