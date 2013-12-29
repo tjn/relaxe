@@ -29,7 +29,6 @@ import java.util.Comparator;
 
 import com.appspot.relaxe.expr.AbstractIdentifierRules;
 import com.appspot.relaxe.expr.Identifier;
-import com.appspot.relaxe.expr.IllegalIdentifierException;
 import com.appspot.relaxe.meta.AbstractIdentifierComparator;
 import com.appspot.relaxe.meta.Folding;
 import com.appspot.relaxe.meta.IdentifierRules;
