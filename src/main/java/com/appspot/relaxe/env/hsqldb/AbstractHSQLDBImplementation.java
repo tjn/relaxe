@@ -37,6 +37,15 @@ public abstract class AbstractHSQLDBImplementation
 
 	private SQLSyntax syntax;
 	
+	private static AbstractHSQLDBImplementation[] alternatives = new AbstractHSQLDBImplementation[] {
+		new HSQLDBFileImplementation(),
+		new HSQLDBMemImplementation(),
+		new HSQLImplementation(),
+		new HSQLSImplementation(),
+		new HTTPImplementation(),
+		new HTTPSImplementation()
+	};
+	
 	public AbstractHSQLDBImplementation() {
 	}
 
@@ -109,6 +118,23 @@ public abstract class AbstractHSQLDBImplementation
 	
 	@Override
 	public HSQLDBImplementation self() {	
+		return null;
+	}
+	
+	
+	public static HSQLDBImplementation resolve(String jdbcURL) {
+		if (!jdbcURL.startsWith("jdbc:hsqldb:")) {
+			return null;
+		}
+		
+		String tail = jdbcURL.substring("jdbc:hsqldb:".length());
+				
+		for (AbstractHSQLDBImplementation hi : alternatives) {
+			if (tail.startsWith(hi.subprotocol())) {
+				return hi;
+			}
+		}		
+		
 		return null;
 	}
 	

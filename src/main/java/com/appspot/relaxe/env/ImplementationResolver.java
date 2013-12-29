@@ -22,19 +22,13 @@
  */
 package com.appspot.relaxe.env;
 
-import java.util.Properties;
-
-import com.appspot.relaxe.ValueAssignerFactory;
-import com.appspot.relaxe.ValueExtractorFactory;
-import com.appspot.relaxe.service.DataAccessContext;
-
-public interface PersistenceContext<I extends Implementation<I>> {
+public interface ImplementationResolver {
 	
-	I getImplementation();	
-	GeneratedKeyHandler generatedKeyHandler();	
-	ValueExtractorFactory getValueExtractorFactory();			
-	ValueAssignerFactory getValueAssignerFactory();
-			
-	DataAccessContext newDataAccessContext(String jdbcURL, Properties jdbcConfig);
-
+	/**
+	 * Returns an implementation suitable for use with database addressed by JDBC URL
+	 *  
+	 * @param jdbcURL
+	 * @return
+	 */
+	Implementation<?> resolve(String jdbcURL);	
 }

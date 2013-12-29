@@ -22,8 +22,11 @@
  */
 package com.appspot.relaxe.env;
 
+import java.util.Properties;
+
 import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.ValueExtractorFactory;
+import com.appspot.relaxe.service.DataAccessContext;
 
 /**
  * TODO: This needs to be fixed. DefaultImplementation should not extend a DefaultEnvironment.
@@ -61,5 +64,12 @@ public abstract class DefaultPersistenceContext<I extends Implementation<I>>
 	@Override
 	public I getImplementation() {
 		return this.implementation;
-	}	
+	}
+	
+	@Override
+	public DataAccessContext newDataAccessContext(String jdbcURL, Properties jdbcConfig) {		
+		return new DefaultDataAccessContext<I>(this, jdbcURL, jdbcConfig);
+	}
+
+
 }

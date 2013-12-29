@@ -22,30 +22,18 @@
  */
 package com.appspot.relaxe.pg.pagila;
 
-import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.appspot.relaxe.DefaultTableMapper;
-import com.appspot.relaxe.DefaultTypeMapper;
-import com.appspot.relaxe.QueryHelper;
-import com.appspot.relaxe.TestContext;
-import com.appspot.relaxe.ent.value.HasVarcharArray;
-import com.appspot.relaxe.ent.value.HasVarcharArrayKey;
-import com.appspot.relaxe.ent.value.VarcharArrayAccessor;
-import com.appspot.relaxe.ent.value.VarcharArrayKey;
-import com.appspot.relaxe.env.CatalogFactory;
-import com.appspot.relaxe.env.DefaultDataAccessContext;
-import com.appspot.relaxe.env.hsqldb.AbstractHSQLDBImplementation;
-import com.appspot.relaxe.env.hsqldb.HSQLDBFileImplementation;
-import com.appspot.relaxe.env.hsqldb.HSQLDBImplementation;
-import com.appspot.relaxe.env.hsqldb.HSQLDBPersistenceContext;
+import com.appspot.relaxe.env.DefaultResolver;
+import com.appspot.relaxe.env.Implementation;
+import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.env.hsqldb.expr.Shutdown;
 import com.appspot.relaxe.exec.QueryProcessor;
 import com.appspot.relaxe.exec.QueryProcessorAdapter;
@@ -64,95 +52,158 @@ import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.DataTypeMap;
+import com.appspot.relaxe.meta.Environment;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.IdentifierRules;
 import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.meta.Schema;
-import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBEnvironment;
-import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBTest;
-import com.appspot.relaxe.meta.impl.pg.PGImplementation;
-import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 import com.appspot.relaxe.query.QueryException;
-import com.appspot.relaxe.rpc.StringArray;
-import com.appspot.relaxe.rpc.VarcharArrayHolder;
 import com.appspot.relaxe.service.DataAccessContext;
 import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.StatementSession;
-import com.appspot.relaxe.source.DefaultAttributeInfo;
-import com.appspot.relaxe.source.SourceGenerator;
+import com.appspot.relaxe.tools.CatalogTool;
+import com.appspot.relaxe.tools.ToolConfigurationException;
+import com.appspot.relaxe.tools.ToolException;
 import com.appspot.relaxe.types.PrimitiveType;
-import com.appspot.relaxe.types.VarcharArrayType;
+import fi.tnie.util.cli.CommandLine;
+import fi.tnie.util.cli.Option;
+import fi.tnie.util.cli.Parameter;
+import fi.tnie.util.cli.SimpleOption;
+import fi.tnie.util.io.IOHelper;
 
 public class PagilaHSQLDBPortGenerator
-	extends AbstractPagilaTestCase {
-	
+	extends CatalogTool {	
 	private static Logger logger = LoggerFactory.getLogger(PagilaHSQLDBPortGenerator.class);
 	
-	private String dataDir;
-	
+//	private String dataDir;	
+
+//    public static final Option OPTION_DESTINATION_CONTEXT = 
+//            new SimpleOption("destination-persistence-context", "d", new Parameter(false),
+//                "Fully qualified name of the class which implements '" + 
+//                PersistenceContext.class.getName() + "'. " +
+//               "Implementation must have a no-arg public constructor.");
+    
+//    public static final Option OPTION_JDBC_URL = 
+//            new SimpleOption("jdbc-url", "u", new Parameter(false), "JDBC Driver URL of the source database");
+        
+//    public static final Option OPTION_JDBC_CONFIG = 
+//            new SimpleOption("jdbc-driver-config", "j", 
+//                new Parameter(false), "JDBC Driver configuration for the source database connection as file path to Java properties file");
+    
+    public static final Option OPTION_DESTINATION_JDBC_URL = 
+            new SimpleOption("destination-jdbc-url", "d", 
+            		new Parameter(false), "JDBC Driver URL of the destination database");
+
+    public static final Option OPTION_DESTINATION_JDBC_CONFIG = 
+            new SimpleOption("destination-jdbc-driver-config", null, 
+                new Parameter(false), "JDBC Driver configuration for the destination database connection as file path to Java properties file");
+
+    public static final Option OPTION_DESTINATION_PERSISTENCE_CONTEXT = 
+            new SimpleOption("destination-persistence-context", "x", new Parameter(false),
+                "Fully qualified name of the class which implements '" + 
+                PersistenceContext.class.getName() + "'. " +
+               "Implementation must have a no-arg public constructor.");
+
+    
 	public PagilaHSQLDBPortGenerator() {		
+		super(CatalogTool.OPTION_ENV, 
+			  CatalogTool.OPTION_HELP,			  
+			  CatalogTool.OPTION_JDBC_URL,
+			  CatalogTool.OPTION_JDBC_CONFIG,			  
+			  PagilaHSQLDBPortGenerator.OPTION_DESTINATION_JDBC_URL,
+			  PagilaHSQLDBPortGenerator.OPTION_DESTINATION_JDBC_CONFIG,
+			  PagilaHSQLDBPortGenerator.OPTION_DESTINATION_PERSISTENCE_CONTEXT);
 	}
 	
-	public PagilaHSQLDBPortGenerator(String dataDir) {
-		this.dataDir = dataDir;
-	}
 	
+	private PersistenceContext<?> destinationPersistenceContext;
+	private String destinationJdbcUrl;
+	private Properties destinationJdbcConfig;
+	
+	public PagilaHSQLDBPortGenerator(
+			String jdbcUrl, Properties jdbcConfig, 
+			PersistenceContext<?> destinationPersistenceContext, 
+			String destinationJdbcUrl, Properties destinationJdbcConfig) {
+		super();
+		setJdbcURL(jdbcUrl);
+		setJdbcConfig(jdbcConfig);
+		this.destinationJdbcUrl = destinationJdbcUrl;
+		this.destinationPersistenceContext = destinationPersistenceContext;
+		this.destinationJdbcConfig = destinationJdbcConfig;
+	}
 		
-	public static void main(String[] args) {
-		try {
-			String dd = (args.length == 0) ? null : args[0];					
-			PagilaHSQLDBPortGenerator pgen = new PagilaHSQLDBPortGenerator(dd);			
-			pgen.setUp();
+	
+	@Override
+	protected void init(CommandLine cl) throws ToolConfigurationException, ToolException {
+		super.init(cl);
+		
+		try {		
+			this.destinationJdbcUrl = cl.value(require(cl, OPTION_DESTINATION_JDBC_URL));
 			
+			String destConfigPath = cl.value(OPTION_DESTINATION_JDBC_CONFIG);					
+			this.destinationJdbcConfig = (destConfigPath == null) ? null : IOHelper.doLoad(destConfigPath);
+			
+			initPersistenceContext(cl);
+		}
+        catch (IOException e) {
+            e.printStackTrace();
+            throw new ToolException(e.getMessage(), e);
+        }
+	}
+
+
+	private void initPersistenceContext(CommandLine cl)
+			throws ToolConfigurationException {
+		String jdbcURL = getJdbcURL();
+		String pctype = cl.value(PagilaHSQLDBPortGenerator.OPTION_DESTINATION_PERSISTENCE_CONTEXT);		
+		
+		if (pctype == null) {			
+			DefaultResolver dr = new DefaultResolver();
+			this.destinationPersistenceContext = dr.resolveDefaultContext(jdbcURL);
+			
+			if (destinationPersistenceContext == null) {
+				throw new ToolConfigurationException("Unable to resolve default persistence context by JDBC URL: " + jdbcURL);
+			}
+		}
+		else {
 			try {
-				pgen.testTransform();		
-			}
-			finally {
-				pgen.tearDown();	
-			}
-		} 
-		catch (Exception e) {
-			logger.error(e.getMessage(), e);
+				this.destinationPersistenceContext = (PersistenceContext<?>) instantiate(pctype);
+			} 
+			catch (Exception e) {
+				throw new ToolConfigurationException(e.getMessage(), e);
+			}									
 		}
 	}	
 	
+
+	public static void main(String[] args) {
+		System.exit(new PagilaHSQLDBPortGenerator().run(args));
+	}	
 	
-	public void testTransform() throws Exception {
-		logger.debug("testTransform - enter");
-		
-		try {						
-			TestContext<PGImplementation> tc = getCurrent();
-			Catalog cat = tc.getCatalog();
-			transform(cat);
+	@Override
+	protected void run() throws ToolException {		
+	
+		try {			
+			transform(getCatalog());
 		} 
 		catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		finally {
-			logger.debug("testTransform - exit");
-		}		
-	}
-	
+			throw new ToolException(e.getMessage(), e);
+		}	
+	}		
 	
 	public void transform(Catalog cat) throws Exception {
-				
-		final AbstractHSQLDBImplementation hi = new HSQLDBFileImplementation();
-		HSQLDBPersistenceContext hpc = new HSQLDBPersistenceContext(hi);
-				
-		String tdc = hi.defaultDriverClassName();
-		
-		HSQLDBTest ht = new HSQLDBTest();
-		final String titag = ht.implementationTag();
+								
+								
+		final Implementation<?> di = this.destinationPersistenceContext.getImplementation();
+		String tdc = di.defaultDriverClassName();
 						
 		if (tdc != null) {
-			Class.forName(tdc);
+			Class.forName(tdc);		
 		}		
 		
-		if (this.dataDir == null) {
-			this.dataDir = ht.getDatabase();
-		}
-						
-		HSQLDBEnvironment henv = hi.getEnvironment();
+							
+		Environment henv = di.environment();
+		
 		final DataTypeMap htm = henv.getDataTypeMap();
 						
 		final DataTypeMap dtm = new DataTypeMap() {			
@@ -171,7 +222,7 @@ public class PagilaHSQLDBPortGenerator
 					logger.debug("unmapped: " + dataType.getTypeName() + ": " + dataType.getDataType());
 					
 					if (t == PrimitiveType.ARRAY && dataType.getTypeName().equals("_text")) {
-						def = hi.getSyntax().newArrayTypeDefinition(VarcharTypeDefinition.get(1024));
+						def = di.getSyntax().newArrayTypeDefinition(VarcharTypeDefinition.get(1024));
 					}
 					
 					if (t == PrimitiveType.BINARY && dataType.getTypeName().equals("bytea")) {												
@@ -209,14 +260,13 @@ public class PagilaHSQLDBPortGenerator
 			sl.add(def);
 		}
 		
-		List<Statement> addfks = new ArrayList<Statement>(); 
+		 
 		
 			
 		addCreateTableStatements(dtm, sc, sl);
-		addPrimaryKeyStatements(sc, sl);		
-		addForeignKeyStatements(sc, addfks);
-		
-		sl.addAll(addfks);		
+		addPrimaryKeyStatements(sc, sl);
+				
+//		sl.addAll(addfks);		
 
 		StringBuilder buf = new StringBuilder();
 		
@@ -224,65 +274,29 @@ public class PagilaHSQLDBPortGenerator
 			write(buf, st);		
 		}			
 				
-		logger().info("target data-dir: {}", dataDir);
-														
-		String url = hi.createJdbcUrl(dataDir);
+//		logger().info("target data-dir: {}", dataDir);
+		
+																
+		// String url = hi.createJdbcUrl(dataDir);
+		String url = getDestinationJdbcUrl();
 		
 		logger().info("target url: {}", url);
 		
-		DataAccessContext hctx = new DefaultDataAccessContext<HSQLDBImplementation>(hpc, url, null);
-					
+		PersistenceContext<?> destctx = this.destinationPersistenceContext;
+		
+		DataAccessContext hctx = destctx.newDataAccessContext(getDestinationJdbcUrl(), getDestinationJdbcConfig());
+							
 										
 		DataAccessSession das = hctx.newSession();				
 		StatementSession ss = das.asStatementSession();
 								
 		QueryProcessor qp = new QueryProcessorAdapter();
-		IdentifierRules hid = hi.getEnvironment().getIdentifierRules();	
+		IdentifierRules hid = destctx.getImplementation().environment().getIdentifierRules();	
 		createDomains(ss, qp, hid);		
 		
 		executeAll(ss, qp, sl);
 		
 		das.commit();
-		
-		CatalogFactory hcf = hi.catalogFactory();
-		Connection c = null;
-		Catalog hcat = null;
-		
-		try {			
-			c = DriverManager.getConnection(url);
-			
-			long s = System.currentTimeMillis();
-			hcat = hcf.create(c);
-			long e = System.currentTimeMillis();
-			
-			logger.info("hcat: " + hcat + " : " + (e - s));
-			
-			SourceGenerator gen = new SourceGenerator(new File("build/impl/" + titag + "/pagila/src/gen"));
-			
-			DefaultTableMapper tam = new DefaultTableMapper("com.appspot.relaxe.gen.hsqldb.pagila.ent");
-			
-			DefaultTypeMapper tym = new DefaultTypeMapper() {
-				{
-					DefaultAttributeInfo info = new DefaultAttributeInfo();
-			    	info.setAttributeType(StringArray.class);
-		        	info.setHolderType(VarcharArrayHolder.class);
-		        	info.setKeyType(VarcharArrayKey.class);
-		        	info.setAccessorType(VarcharArrayAccessor.class);
-		        	info.setPrimitiveType(VarcharArrayType.TYPE);
-		        	info.setContainerType(HasVarcharArray.class);
-		        	info.setContainerMetaType(HasVarcharArrayKey.class);
-					
-					register(PrimitiveType.ARRAY, "VARCHAR(1024) ARRAY", info);
-				}
-			};
-			
-			gen.run(hcat, tam, tym, henv);
-						
-			logger.info("hcat: " + hcat + " : " + (e - s));
-		}
-		finally {			
-			c = QueryHelper.doClose(c);
-		}
 		
 //				
 //		logger().info("dropping foreign keys temporarily...");
@@ -321,10 +335,14 @@ public class PagilaHSQLDBPortGenerator
 //			}
 //			
 //		}
-//			
-//		logger().info("restoring foreign keys...");
-//		executeAll(ss, qp, addfks);		
-//		das.commit();		
+		
+		List<Statement> addfks = new ArrayList<Statement>();
+		addForeignKeyStatements(sc, addfks);
+		
+			
+		logger().info("add foreign keys...");
+		executeAll(ss, qp, addfks);		
+		das.commit();		
 
 				
 		logger.debug("shutdown: " + Shutdown.STATEMENT.generate());
@@ -418,5 +436,21 @@ public class PagilaHSQLDBPortGenerator
 		}		
 	}
 	
+    protected Object instantiate(String typename) throws Exception {
+		Class<?> clazz = Class.forName(typename);		
+		return clazz.newInstance();
+	}
+
 	
+	public Logger logger() {
+		return logger;
+	}
+	
+	public String getDestinationJdbcUrl() {
+		return destinationJdbcUrl;
+	}
+	
+	private Properties getDestinationJdbcConfig() {
+		return destinationJdbcConfig;
+	}
 }

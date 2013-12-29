@@ -33,6 +33,7 @@ import java.util.Properties;
 
 import com.appspot.relaxe.QueryHelper;
 import com.appspot.relaxe.env.CatalogFactory;
+import com.appspot.relaxe.env.DefaultResolver;
 import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.env.mysql.MySQLImplementation;
 import com.appspot.relaxe.meta.Catalog;
@@ -244,27 +245,35 @@ public abstract class CatalogTool {
              if (jdbcConfig == null) {
                 throw new NullPointerException("'jdbcConfig' must not be null");
              }
-             
-             String implementationTypeName = null;
-             
+                                       
              if (impl == null) {
-                 if (jdbcURL.toLowerCase().startsWith("jdbc:postgresql:")) {
-                     implementationTypeName = PGImplementation.class.getName();
-                 }
-                 
-                 if (jdbcURL.toLowerCase().startsWith("jdbc:mysql:")) {
-                     implementationTypeName = MySQLImplementation.class.getName();
-                 }
-                 
-                 if (implementationTypeName == null) {
+            	 DefaultResolver ir = new DefaultResolver();
+            	 impl = ir.resolve(jdbcURL);
+
+                 if (impl == null) {
                      throw new ToolConfigurationException(
-                             "Environment-type is not set and " +
+                             "Implementation is not set and " +
                              "can not be determined from jdbc-url: " + jdbcURL);
                  }  
+
+//            	 
+//                 if (jdbcURL.toLowerCase().startsWith("jdbc:postgresql:")) {
+//                     implementationTypeName = PGImplementation.class.getName();
+//                 }
+//                 
+//                 if (jdbcURL.toLowerCase().startsWith("jdbc:mysql:")) {
+//                     implementationTypeName = MySQLImplementation.class.getName();
+//                 }
                  
-                 Class<?> implementationType = Class.forName(implementationTypeName);
-                 Object io = implementationType.newInstance();                 
-                 impl = (Implementation<?>) io;                 
+//                 if (implementationTypeName == null) {
+//                     throw new ToolConfigurationException(
+//                             "Environment-type is not set and " +
+//                             "can not be determined from jdbc-url: " + jdbcURL);
+//                 }  
+//                 
+//                 Class<?> implementationType = Class.forName(implementationTypeName);
+//                 Object io = implementationType.newInstance();                 
+//                 impl = (Implementation<?>) io;               
              }
              
              setJdbcURL(jdbcURL);
@@ -283,14 +292,14 @@ public abstract class CatalogTool {
              e.printStackTrace();
              throw new ToolException(e.getMessage(), e);
          } 
-         catch (InstantiationException e) {
-             e.printStackTrace();
-             throw new ToolException(e.getMessage(), e);
-         } 
-         catch (IllegalAccessException e) {
-             e.printStackTrace();
-             throw new ToolException(e.getMessage(), e);
-         } 
+//         catch (InstantiationException e) {
+//             e.printStackTrace();
+//             throw new ToolException(e.getMessage(), e);
+//         } 
+//         catch (IllegalAccessException e) {
+//             e.printStackTrace();
+//             throw new ToolException(e.getMessage(), e);
+//         } 
          catch (SQLException e) {
              e.printStackTrace();
              throw new ToolException(e.getMessage(), e);
@@ -390,7 +399,8 @@ public abstract class CatalogTool {
         this.implementation = environment;
     }
     
-    
+
+
     
     
 }

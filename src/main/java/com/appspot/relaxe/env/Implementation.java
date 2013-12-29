@@ -55,7 +55,7 @@ public interface Implementation<I extends Implementation<I>> {
 	SerializableEnvironment environment();
 	
 	I self();
-	
+		
 	Properties getDefaultProperties();
 	
 }

@@ -265,8 +265,13 @@
 			source.implementation="pg" 
 			source.driver-artifact="postgresql"
 			source.target="pagila"
+			source.jdbc.url="jdbc:postgresql:pagila"
+			source.jdbc.config="config/pg/pagila.properties"
 			dest.implementation="hsqldb"
 			dest.driver-artifact="hsqldb"
+			dest.jdbc.url="jdbc:hsqldb:file:build/data/pg-hsqldb/pagila"
+			dest.jdbc.config="config/hsqldb/pagila.properties"
+			dest.persistence-context.class="com.appspot.relaxe.env.hsqldb.HSQLDBPersistenceContext"
 			transformer.class="com.appspot.relaxe.pg.pagila.PagilaHSQLDBPortGenerator" />
 	</target>
 		
@@ -429,7 +434,7 @@
 	
 	<macrodef name="impl.test" description="Runs the test suite for impl/target">
 		<attribute name="implementation" />
-		<attribute name="driver-artifact" />				
+		<attribute name="driver-artifact" />		
 		<attribute name="target" />
 		<attribute name="target.base.dir" default="${build.root.dir}/impl/@{implementation}/@{target}"/>
 
@@ -458,11 +463,15 @@
 	<macrodef name="impl.port.data" description="Ports database from an implementation to another">
 		<attribute name="source.implementation" />
 		<attribute name="source.driver-artifact" />
-		
+		<attribute name="source.jdbc.url" />
+		<attribute name="source.jdbc.config" />
 		<attribute name="source.target" />
 		
 		<attribute name="dest.implementation" />
 		<attribute name="dest.driver-artifact" />
+		<attribute name="dest.jdbc.url" />
+		<attribute name="dest.jdbc.config" />
+		<attribute name="dest.persistence-context.class" />
 	
 		<attribute name="transformer.class" />		
 		<attribute name="source.base.dir" default="${build.root.dir}/impl/@{source.implementation}/@{source.target}"/>
@@ -488,11 +497,21 @@
 			<mkdir dir="@{dest.data.dir}"/>
 			
 			<java 
-					classname="@{transformer.class}"
-					classpathref="@{cpid}"
-					fork="yes" failonerror="yes"
+				classname="@{transformer.class}"
+				classpathref="@{cpid}"
+				fork="yes" 
+				failonerror="yes"
 			>
-				<!--<arg value="@{transformer.class}"/>-->
+				<arg value="--jdbc-url"/>
+				<arg value="@{source.jdbc.url}"/>					
+				<arg value="--jdbc-driver-config"/>
+				<arg value="@{source.jdbc.config}"/>								
+				<arg value="--destination-jdbc-url"/>
+				<arg value="@{dest.jdbc.url}"/>
+				<arg value="--destination-jdbc-driver-config"/>
+				<arg value="@{dest.jdbc.config}"/>
+				<arg value="--destination-persistence-context"/>
+				<arg value="@{dest.persistence-context.class}"/>				
 			</java>			
 	   </sequential>	
 	</macrodef>	
