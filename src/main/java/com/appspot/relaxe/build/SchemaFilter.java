@@ -1,6 +1,6 @@
 /*
- * This file is part of the Relaxe project.
- * Copyright (c) 2009-2013 Topi Nieminen
+ * This file is part of Relaxe.
+ * Copyright (c) 2013 Topi Nieminen
  * Author: Topi Nieminen <topi.nieminen@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
