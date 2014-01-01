@@ -78,9 +78,9 @@ public class DefaultTableMapperTest extends TestCase {
 	
 	public void testToJavaIdentifier5() {
 		TableMapper tm = newMapper();
-		String jid = tm.toJavaIdentifier("öä");
+		String jid = tm.toJavaIdentifier("Ã¶Ã¤");
 		assertNotNull(jid);
-		assertEquals("öä", jid);		
+		assertEquals("Ã¶Ã¤", jid);		
 	}
 
 	protected TableMapper newMapper() {
