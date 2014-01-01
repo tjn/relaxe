@@ -4427,13 +4427,7 @@ public class SourceGenerator {
 			line(nb, "@Override");
 		}
 				
-
-		a(nb, "public ");
-		a(nb, type);
-		a(nb, " ");
-		a(nb, prefix);
-		a(nb, n);
-		a(nb, "()");
+		line(nb, "public ", type, " ", prefix, n, "()");
 
 		if (!impl) {
 			line(nb, ";", 1);
@@ -4483,6 +4477,7 @@ public class SourceGenerator {
 			if (impl) {
 				line(nb, "@Override");
 			}			
+			
 			line(nb, "public void set", n, "(", htname, " newValue)");
 			
 			if (!impl) {
