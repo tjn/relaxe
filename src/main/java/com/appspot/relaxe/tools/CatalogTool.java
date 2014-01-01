@@ -35,9 +35,7 @@ import com.appspot.relaxe.QueryHelper;
 import com.appspot.relaxe.env.CatalogFactory;
 import com.appspot.relaxe.env.DefaultResolver;
 import com.appspot.relaxe.env.Implementation;
-import com.appspot.relaxe.env.mysql.MySQLImplementation;
 import com.appspot.relaxe.meta.Catalog;
-import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 import com.appspot.relaxe.query.QueryException;
 
 import fi.tnie.util.cli.Parameter;
