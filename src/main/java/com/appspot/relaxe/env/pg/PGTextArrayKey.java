@@ -112,6 +112,6 @@ public class PGTextArrayKey<
 
 	@Override
 	public PGTextArrayHolder newHolder(StringArray newValue) {
-		return PGTextArrayHolder.newHolder(newValue);
+		return PGTextArrayHolder.valueOf(newValue);
 	}
 }

@@ -32,6 +32,7 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(PagilaAlterTableAddForeignKeyTest.class);
 		suite.addTestSuite(PagilaAlterTableAddPrimaryKeyTest.class);
+		suite.addTestSuite(PagilaEntityAttributeTest.class);
 		suite.addTestSuite(PagilaCreateTableTest.class);
 		suite.addTestSuite(PagilaDataAccessSessionTest.class);
 		suite.addTestSuite(PagilaDefaultEntityQueryTest.class);

@@ -59,7 +59,7 @@ public class PGTextArrayHolder
 		return PGTextArrayType.TYPE;
 	}
 
-	public static PGTextArrayHolder newHolder(ArrayValue<String> newValue) {
+	public static PGTextArrayHolder valueOf(ArrayValue<String> newValue) {
 		return new PGTextArrayHolder(newValue);
 	}
 

@@ -367,6 +367,8 @@ public interface {{table-interface}}
 				}
 			}
 		}
+		
+	{{entity-attribute-accessor-signature-list}}
 
 	interface Content extends com.appspot.relaxe.ent.Content {  
   		{{value-accessor-list}}

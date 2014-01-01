@@ -52,6 +52,6 @@ class PGTextArrayExtractor
 		
 		String[] ac = (String[]) a.getArray();
 		StringArray sa = new StringArray(ac);
-		return PGTextArrayHolder.newHolder(sa);
+		return PGTextArrayHolder.valueOf(sa);
 	}
 }

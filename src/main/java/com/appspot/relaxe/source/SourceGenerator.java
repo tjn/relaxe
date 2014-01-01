@@ -45,8 +45,10 @@ import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.appspot.relaxe.build.SchemaFilter;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.im.EntityIdentityMap;
@@ -131,11 +133,16 @@ public class SourceGenerator {
 		 * TODO: which accessors
 		 */
 		ACCESSOR_LIST,
+		
+		ENTITY_ATTRIBUTE_ACCESSOR_SIGNATURE_LIST,
+		
+		ENTITY_ATTRIBUTE_ACCESSOR_LIST,
 
 		/**
 		 * static attribute key declarations in interface
 		 */
-		ATTRIBUTE_KEY_LIST, REFERENCE_KEY_VARIABLE,
+		ATTRIBUTE_KEY_LIST, 
+		REFERENCE_KEY_VARIABLE,
 
 		REFERENCE_KEY_LIST,
 
@@ -1497,16 +1504,23 @@ public class SourceGenerator {
 		// String type = createEnumType(getEnumTemplate(), "Query", queries(t));
 		// src = replaceAll(src, "{{query-name-type}}", type);
 		// }
+		
+		
+		{
+			String code = entityAttributeAccessorList(cat, t, tm, tym, false);
+			src = replaceAllWithComment(src, Tag.ENTITY_ATTRIBUTE_ACCESSOR_SIGNATURE_LIST, code);
+		}		
+		
+		
 
 		{
-			String code = accessors(cat, t, tm, tym, false);
+			String code = contentAccessors(cat, t, tm, tym, false);
 			src = replaceAll(src, "{{abstract-accessor-list}}", code);
 		}
 
 		{
 			String code = queryElementVariableList(cat, t, tm, tym, false);
-			src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_VARIABLE_LIST,
-					code);
+			src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_VARIABLE_LIST, code);
 		}
 
 		{
@@ -2114,7 +2128,6 @@ public class SourceGenerator {
 		Column column = columns.get(0);
 
 		AttributeInfo ai = tym.getAttributeInfo(column.getDataType());
-
 		String n = getKeyName(ai.getKeyType());
 		n = removeSuffix(n, "Key");
 
@@ -2598,7 +2611,7 @@ public class SourceGenerator {
 		boolean qualify = hasAmbiguousSimpleNamesForReferenceKeys(t, tam);
 
 		{
-			String code = accessors(cat, t, tam, tym, true);
+			String code = contentAccessors(cat, t, tam, tym, true);
 			src = replaceAll(src, Tag.ACCESSOR_LIST, code);
 		}
 
@@ -2614,6 +2627,11 @@ public class SourceGenerator {
 			logger().debug("generateImplementation: code=" + code);
 			src = replaceAll(src, Tag.ATTRIBUTE_KEY_MAP_LIST, code);
 		}
+		
+		{
+			String code = entityAttributeAccessorList(cat, t, tam, tym, true);
+			src = replaceAllWithComment(src, Tag.ENTITY_ATTRIBUTE_ACCESSOR_LIST, code);
+		}				
 
 		{
 			String code = referenceKeyMapList(t, tam, qualify);
@@ -4357,15 +4375,125 @@ public class SourceGenerator {
 			NameQualification nq, TableMapper tm) {
 		return columnEnumeratedName(t, c, EnumSet.of(nq), tm);
 	}
+	
+	private String entityAttributeAccessorList(Catalog cat, BaseTable t, TableMapper tam, TypeMapper tym, boolean impl) {
+		
+		StringBuilder buf = new StringBuilder();
+		
+		List<Column> cols = getAttributeColumnList(cat, t, tym);
 
-	private String accessors(Catalog cat, BaseTable t, TableMapper tm,
+		for (Column c : cols) {
+			AttributeInfo a = tym.getAttributeInfo(c.getDataType());
+
+			if (a == null) {
+				continue;
+			}
+
+			Class<?> at = a.getAttributeType();
+			Class<?> ht = a.getHolderType();
+
+			if (at != null && ht != null) {
+				String code = formatEntityAttributeAccessor(t, c, a, tam, tym, impl);
+				buf.append(code);
+			}
+		}
+		
+		return buf.toString();
+	}
+
+	private String formatEntityAttributeAccessor(Table table, Column c, AttributeInfo info, TableMapper tam, TypeMapper tym, boolean impl) {
+		// final String attributeName = attr(c);
+		Class<?> attributeType = info.getAttributeType();
+		Class<?> holderType = info.getHolderType();
+		
+		String htname = holderType.getCanonicalName();
+
+		final String type = attributeType.getCanonicalName();
+
+		StringBuilder nb = new StringBuilder();
+		final String n = name(c.getColumnName().getName());
+
+		boolean b = attributeType.equals(Boolean.class);
+		
+		JavaType intf = tam.entityType(table, Part.INTERFACE);
+
+		// String vv = valueVariableName(table, c);			
+
+		String prefix = b ? "is" : "get";
+		
+		String typeName = getAccessorNameSuffix(c, tym);
+				
+
+		a(nb, "public ");
+		a(nb, type);
+		a(nb, " ");
+		a(nb, prefix);
+		a(nb, n);
+		a(nb, "()");
+
+		if (!impl) {
+			line(nb, ";", 1);
+		} else {
+			// getter implementation
+			line(nb, " {", 1);
+					
+			// example: 
+			// IntegerHolder h = getInteger(Film.FILM_ID);
+			// return (h == null) ? null : h.value();
+								
+			line(nb, htname, " h = ", "get", typeName, "(", intf.getQualifiedName(), ".", attr(c), ");");			
+			line(nb, "return (h == null) ? null : h.value();");
+			
+			line(nb, "}", 2);
+		}
+		
+
+		if (holderType != null) {
+			
+//		    sample:
+//			@Override
+//		    public void setFilmId(java.lang.Integer newValue) {
+//		    	setInteger(FILM_ID, IntegerHolder.valueOf(newValue));    	
+//		    }
+			
+			line(nb, "public void set", n, "(", type, " newValue)");
+			
+			if (!impl) {
+				line(nb, ";", 1);
+			} else {
+				line(nb, " {", 1);
+				line(nb, "set", typeName, "(", intf.getQualifiedName(), ".", attr(c), ", ", htname, ".valueOf(newValue));");				
+				line(nb, "}", 2);
+			}
+
+//			sample:
+//		    @Override
+//		    public void setFilmId(IntegerHolder newValue) {
+//		    	setInteger(FILM_ID, newValue);    	
+//		    }    			
+			
+			line(nb, "public void set", n, "(", htname, " newValue)");
+			
+			if (!impl) {
+				line(nb, ";", 1);
+			} else {
+				line(nb, " {", 1);
+				line(nb, "set", typeName, "(", intf.getQualifiedName(), ".", attr(c), ", newValue);");				
+				line(nb, "}", 2);
+			}			
+		}
+
+		return nb.toString();
+	}	
+
+	private String contentAccessors(Catalog cat, BaseTable t, TableMapper tm,
 			TypeMapper tym, boolean impl) {
 		StringBuilder content = new StringBuilder();
-		accessors(cat, t, content, tm, tym, impl);
+		contentAccessors(cat, t, content, tm, tym, impl);
 		return content.toString();
 	}
 
-	private void accessors(Catalog cat, BaseTable t, StringBuilder content,
+	private void contentAccessors(Catalog cat, BaseTable t, StringBuilder content,
 			TableMapper tm, TypeMapper tym, boolean impl) {
 		List<Column> cols = getAttributeColumnList(cat, t, tym);
 
@@ -4380,13 +4508,13 @@ public class SourceGenerator {
 			Class<?> ht = a.getHolderType();
 
 			if (at != null && ht != null) {
-				String code = formatAccessors(t, c, a, impl);
+				String code = formatContentAccessors(t, c, a, impl);
 				content.append(code);
 			}
 		}
 	}
 
-	private String formatAccessors(Table table, Column c, AttributeInfo info,
+	private String formatContentAccessors(Table table, Column c, AttributeInfo info,
 			boolean impl) {
 		// final String attributeName = attr(c);
 		Class<?> attributeType = info.getAttributeType();
@@ -4438,35 +4566,6 @@ public class SourceGenerator {
 				line(nb, " {", 1);
 				a(nb, vv);
 				line(nb, "().set(newValue);", 1);
-
-				// String hn = getSimpleName(holderType);
-				//
-				// a(nb, "set");
-				//
-				// if (!attributeType.isPrimitive()) {
-				// a(nb, hn);
-				// a(nb, "(");
-				// a(nb, getAttributeType());
-				// a(nb, ".");
-				// a(nb, attributeName);
-				// a(nb, ", ");
-				// a(nb, holderType.getName());
-				// a(nb, ".valueOf(newValue)");
-				// }
-				// else {
-				// Class<?> wt = wrapper(attributeType);
-				// a(nb, getSimpleName(wt));
-				// a(nb, "(");
-				// a(nb, getAttributeType());
-				// a(nb, ".");
-				// a(nb, attributeName);
-				// a(nb, ", ");
-				// a(nb, wt.getName());
-				// a(nb, ".valueOf(");
-				// a(nb, "newValue");
-				// a(nb, ")");
-				// }
-				// a(nb, ");", 1);
 				line(nb, "}", 2);
 			}
 		}
@@ -4516,9 +4615,8 @@ public class SourceGenerator {
 				upper = true;
 				continue;
 			}
-
-			nb.append(upper ? Character.toUpperCase(c) : Character
-					.toLowerCase(c));
+			
+			nb.append(upper ? Character.toUpperCase(c) : Character.toLowerCase(c));
 			upper = false;
 		}
 
@@ -4919,6 +5017,14 @@ public class SourceGenerator {
 		}
 
 		return id;
+	}
+	
+	
+	
+	private String getAccessorNameSuffix(Column column, TypeMapper typeMapper) {
+		AttributeInfo ai = typeMapper.getAttributeInfo(column.getDataType());
+		String n = getKeyName(ai.getKeyType());
+		return removeSuffix(n, "Key");		
 	}
 
 }
