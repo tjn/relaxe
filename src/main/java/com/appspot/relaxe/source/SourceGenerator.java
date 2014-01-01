@@ -4422,6 +4422,10 @@ public class SourceGenerator {
 		String prefix = b ? "is" : "get";
 		
 		String typeName = getAccessorNameSuffix(c, tym);
+		
+		if (impl) {
+			line(nb, "@Override");
+		}
 				
 
 		a(nb, "public ");
@@ -4456,6 +4460,10 @@ public class SourceGenerator {
 //		    	setInteger(FILM_ID, IntegerHolder.valueOf(newValue));    	
 //		    }
 			
+			if (impl) {
+				line(nb, "@Override");
+			}			
+			
 			line(nb, "public void set", n, "(", type, " newValue)");
 			
 			if (!impl) {
@@ -4470,8 +4478,11 @@ public class SourceGenerator {
 //		    @Override
 //		    public void setFilmId(IntegerHolder newValue) {
 //		    	setInteger(FILM_ID, newValue);    	
-//		    }    			
+//		    }    		
 			
+			if (impl) {
+				line(nb, "@Override");
+			}			
 			line(nb, "public void set", n, "(", htname, " newValue)");
 			
 			if (!impl) {
