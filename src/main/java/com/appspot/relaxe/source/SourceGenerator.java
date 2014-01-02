@@ -25,6 +25,8 @@ package com.appspot.relaxe.source;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -4427,7 +4429,7 @@ public class SourceGenerator {
 			line(nb, "@Override");
 		}
 				
-		line(nb, "public ", type, " ", prefix, n, "()");
+		line(nb, "public ", htname, " ", prefix, n, "()");
 
 		if (!impl) {
 			line(nb, ";", 1);
@@ -4437,35 +4439,59 @@ public class SourceGenerator {
 					
 			// example: 
 			// IntegerHolder h = getInteger(Film.FILM_ID);
-			// return (h == null) ? null : h.value();
+			// return h;
 								
 			line(nb, htname, " h = ", "get", typeName, "(", intf.getQualifiedName(), ".", attr(c), ");");			
-			line(nb, "return (h == null) ? null : h.value();");
+			line(nb, "return h;");
 			
 			line(nb, "}", 2);
 		}
 		
 
 		if (holderType != null) {
+			Method vom = null;
+			
+			try {
+				Method m = holderType.getMethod("valueOf", attributeType);
+																
+				if (((m.getModifiers() & Modifier.STATIC) != Modifier.STATIC)) {
+					throw new Exception("valueOf -method is not static"); 
+				}
+				
+				if (((m.getModifiers() & Modifier.PUBLIC) != Modifier.PUBLIC)) {
+					throw new Exception("valueOf -method is not public"); 
+				}
+				
+				vom = m;
+			}
+			catch (NoSuchMethodException e) {
+				logger().debug("Holder type {} does not contain applicable valueOf -method", holderType);
+			}
+			catch (Exception e) {
+				logger().warn(e.getMessage(), holderType);
+			}
+			
 			
 //		    sample:
 //			@Override
 //		    public void setFilmId(java.lang.Integer newValue) {
 //		    	setInteger(FILM_ID, IntegerHolder.valueOf(newValue));    	
-//		    }
+//		    }					
 			
-			if (impl) {
-				line(nb, "@Override");
-			}			
-			
-			line(nb, "public void set", n, "(", type, " newValue)");
-			
-			if (!impl) {
-				line(nb, ";", 1);
-			} else {
-				line(nb, " {", 1);
-				line(nb, "set", typeName, "(", intf.getQualifiedName(), ".", attr(c), ", ", htname, ".valueOf(newValue));");				
-				line(nb, "}", 2);
+			if (vom != null) {
+				if (impl) {
+					line(nb, "@Override");
+				}			
+				
+				line(nb, "public void set", n, "(", type, " newValue)");
+				
+				if (!impl) {
+					line(nb, ";", 1);
+				} else {
+					line(nb, " {", 1);
+					line(nb, "set", typeName, "(", intf.getQualifiedName(), ".", attr(c), ", ", htname, ".valueOf(newValue));");				
+					line(nb, "}", 2);
+				}
 			}
 
 //			sample:

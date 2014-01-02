@@ -15,7 +15,8 @@ public class PagilaEntityAttributeTest
 			Integer value = Integer.valueOf(13);		
 			fo.setFilmId(value);
 			assertNotNull(fo.getFilmId());
-			assertEquals(fo.getFilmId(), value);
+			assertNotNull(fo.getFilmId().value());
+			assertEquals(value, fo.getFilmId().value());
 			
 			IntegerHolder h = fo.getInteger(Film.FILM_ID);
 			assertNotNull(h);
@@ -25,17 +26,21 @@ public class PagilaEntityAttributeTest
 		{
 			Integer value = Integer.valueOf(5);
 			fo.setInteger(Film.FILM_ID, IntegerHolder.valueOf(value));
-			assertEquals(value, fo.getFilmId());
+			assertEquals(value, fo.getFilmId().value());
 		}
 		
 		{			
 			fo.setInteger(Film.FILM_ID, IntegerHolder.valueOf(null));
-			assertTrue(fo.getFilmId() == null);
+			assertNotNull(fo.getFilmId());
+			assertTrue(fo.getFilmId().isNull());
+			assertTrue(fo.getFilmId().value() == null);
 		}
 		
 		{			
 			fo.setInteger(Film.FILM_ID, IntegerHolder.NULL_HOLDER);
-			assertTrue(fo.getFilmId() == null);
+			assertNotNull(fo.getFilmId());
+			assertTrue(fo.getFilmId().isNull());
+			assertTrue(fo.getFilmId().value() == null);
 		}
 		
 		{
