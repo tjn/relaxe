@@ -1607,11 +1607,11 @@ public class SourceGenerator {
 		StringBuilder buf = new StringBuilder();
 
 		for (ForeignKey fk : fks) {
-			// SAMPLE: private EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?>
+			// SAMPLE: private EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?>
 			// languageQueryElement;
 
 			line(buf, "private ", EntityQueryElement.class.getCanonicalName(),
-					"<?, ?, ?, ?, ?, ?, ?, ?, ?> ",
+					"<?, ?, ?, ?, ?, ?, ?, ?> ",
 					queryElementVariableName(fk), ";");
 		}
 
@@ -1638,7 +1638,7 @@ public class SourceGenerator {
 			line(buf, "switch(key.name()) {");
 
 			for (ForeignKey fk : fks) {
-				// SAMPLE: private EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?>
+				// SAMPLE: private EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?>
 				// languageQueryElement;
 
 				line(buf, "case ", referenceName(fk), ":");
@@ -1670,7 +1670,7 @@ public class SourceGenerator {
 			line(buf, "switch(key.name()) {");
 
 			for (ForeignKey fk : fks) {
-				// SAMPLE: private EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?>
+				// SAMPLE: private EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?>
 				// languageQueryElement;
 
 				line(buf, "case ", referenceName(fk), ":");
@@ -1827,10 +1827,10 @@ public class SourceGenerator {
 		JavaType type = tm.entityType(ref, Part.INTERFACE);
 
 		String qn = type.getQualifiedName();
-
+		
 		line(buf, "public ", qn, ".QueryElement getQueryElement(", qn,
 				".Key<Attribute, Reference, Type, ", itf.getUnqualifiedName(),
-				", Holder, Factory, MetaData, Content> key) {");
+				", Holder, Factory, MetaData> key) {");
 
 		line(buf, "if (key == null) {");
 		line(buf, "throw new java.lang.NullPointerException(\"key\");");
@@ -3442,13 +3442,13 @@ public class SourceGenerator {
 		// // Sample output:
 		// public static class OrganizationKey
 		// extends Organization.Key<Person.Reference, Person.Type, Person,
-		// Person.MetaData, Content> {
+		// Person.MetaData> {
 		//
 		// private static final long serialVersionUID = 1L;
 		//
 		// protected OrganizationKey(
 		// EntityMetaData<com.appspot.relaxe.gen.ent.personal.Person.Attribute,
-		// Reference, Type, Person, Content> meta, Reference name) {
+		// Reference, Type, Person> meta, Reference name) {
 		// super(Person.TYPE, name);
 		// }
 
@@ -3592,10 +3592,6 @@ public class SourceGenerator {
 
 		nb.append(source.getUnqualifiedName());
 		nb.append(".MetaData");
-		nb.append(", ");
-
-		nb.append(source.getUnqualifiedName());
-		nb.append(".Content");
 
 		nb.append(">");
 
@@ -3753,10 +3749,6 @@ public class SourceGenerator {
 
 		buf.append(q);
 		buf.append(".MetaData");
-		buf.append(", ");
-
-		buf.append(q);
-		buf.append(".Content");
 
 		return buf.toString();
 	}
@@ -4090,10 +4082,6 @@ public class SourceGenerator {
 
 		buf.append(rt.getUnqualifiedName());
 		buf.append(".MetaData");
-		buf.append(", ");
-
-		buf.append(rt.getUnqualifiedName());
-		buf.append(".Content");
 
 		buf.append("> ");
 		buf.append(referenceName);
@@ -4257,8 +4245,7 @@ public class SourceGenerator {
 
 		// sample output:
 		// {
-		// final Project.Key<Reference, Type, HourReport, HourReport.MetaData,
-		// HourReport.Content> pk = FK_HHR_PROJECT;
+		// final Project.Key<Reference, Type, HourReport, HourReport.MetaData> pk = FK_HHR_PROJECT;
 		// ForeignKey fk = m.getForeignKey(pk.name());
 		// TableReference tref = ctx.getQuery().getReferenced(tableRef, fk);
 		//

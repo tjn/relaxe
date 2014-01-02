@@ -56,13 +56,12 @@ import com.appspot.relaxe.types.ReferenceType;
 public interface EntityQuery<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M, C>,
-	E extends Entity<A, R, T, E, H, F, M, C>,
-	H extends ReferenceHolder<A, R, T, E, H, M, C>,
-	F extends EntityFactory<E, H, M, F, C>,
-	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-	C extends Content,	
-	RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>
+	T extends ReferenceType<A, R, T, E, H, F, M>,
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>,
+	RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
 >
 	extends Request {
 	
@@ -83,13 +82,12 @@ public interface EntityQuery<
 	interface Builder<
 		A extends Attribute,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M, C>,
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content,	
-		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
 	> {
 		void setRootElement(RE root);		
 		RE getRootElement();
@@ -136,39 +134,39 @@ public interface EntityQuery<
 		public 
 		<
 			XA extends com.appspot.relaxe.ent.Attribute,
-			XE extends Entity<XA, ?, ?, XE, ?, ?, ?, ?>,
-			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, ?, XQ>
+			XE extends Entity<XA, ?, ?, XE, ?, ?, ?>,
+			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ>
 		>		
-		void asc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, ?, XQ> element, PrimitiveKey<XA, XE, ?, ?, ?, ?> attribute);
+		void asc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ> element, PrimitiveKey<XA, XE, ?, ?, ?, ?> attribute);
 				
 		public 
 		<
 			XA extends com.appspot.relaxe.ent.Attribute,
-			XE extends Entity<XA, ?, ?, XE, ?, ?, ?, ?>,
-			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, ?, XQ>
+			XE extends Entity<XA, ?, ?, XE, ?, ?, ?>,
+			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ>
 		>		
-		void desc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, ?, XQ> element, PrimitiveKey<XA, XE, ?, ?, ?, ?> attribute);
+		void desc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ> element, PrimitiveKey<XA, XE, ?, ?, ?, ?> attribute);
 		
 		
 		public 
 		<
 			XA extends com.appspot.relaxe.ent.Attribute,			
-			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, ?, XQ>
+			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ>
 		>		
-		void asc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute);
+		void asc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute);
 
 		public 
 		<
 			XA extends com.appspot.relaxe.ent.Attribute,			
-			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, ?, XQ>
+			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ>
 		>		
-		void desc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute);
+		void desc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute);
 		
 		void asc(PrimitiveKey<A, E, ?, ?, ?, ?> key);
 		
 		void desc(PrimitiveKey<A, E, ?, ?, ?, ?> key);
 		
 		
-		EntityQuery<A, R, T, E, H, F, M, C, RE> newQuery();
+		EntityQuery<A, R, T, E, H, F, M, RE> newQuery();
 	}
 }

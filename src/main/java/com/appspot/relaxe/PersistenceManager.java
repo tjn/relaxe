@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.appspot.relaxe.ent.Attribute;
-import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.DefaultEntityQuery;
 import com.appspot.relaxe.ent.DefaultEntityQueryElement;
 import com.appspot.relaxe.ent.Entity;
@@ -88,17 +87,16 @@ import com.appspot.relaxe.types.ReferenceType;
 public class PersistenceManager<
     A extends Attribute,
     R extends Reference,
-    T extends ReferenceType<A, R, T, E, H, F, M, C>,
-    E extends Entity<A, R, T, E, H, F, M, C>,
-    H extends ReferenceHolder<A, R, T, E, H, M, C>,
-    F extends EntityFactory<E, H, M, F, C>,
-    M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-    C extends Content
+    T extends ReferenceType<A, R, T, E, H, F, M>,
+    E extends Entity<A, R, T, E, H, F, M>,
+    H extends ReferenceHolder<A, R, T, E, H, M>,
+    F extends EntityFactory<E, H, M, F>,
+    M extends EntityMetaData<A, R, T, E, H, F, M>
 >
 {
 	    
 //    private class PMElementTemplate
-//	    extends DefaultEntityQueryElementTemplate<A, R, T, E, H, F, M, C, PMElement>    	
+//	    extends DefaultEntityQueryElementTemplate<A, R, T, E, H, F, M, PMElement>    	
 //	{
 //	    /**
 //		 * 
@@ -131,7 +129,7 @@ public class PersistenceManager<
 //	}
     
     private class PMElement
-    	extends DefaultEntityQueryElement<A, R, T, E, H, F, M, C, PMElement> {
+    	extends DefaultEntityQueryElement<A, R, T, E, H, F, M, PMElement> {
     	
     	private M meta;
     	
@@ -163,7 +161,7 @@ public class PersistenceManager<
 		}
 
 		@Override
-		public EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> k) {
+		public EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k) {
 			return null;
 		}
 
@@ -195,7 +193,7 @@ public class PersistenceManager<
         	return null;
         }        
         
-        final EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> meta = pe.getMetaData();
+        final EntityMetaData<?, ?, ?, ?, ?, ?, ?> meta = pe.getMetaData();
     	TableReference tref = new TableReference(meta.getBaseTable());
     	Predicate pkp = getPKPredicate(tref, pe);
     	return getSyntax().newDeleteStatement(tref, pkp);
@@ -255,13 +253,13 @@ public class PersistenceManager<
     	for (R r : meta.relationships()) {
             ForeignKey fk = meta.getForeignKey(r);
             
-            ReferenceHolder<?, ?, ?, ?, ?, ?, ?> rh = pe.ref(r);
+            ReferenceHolder<?, ?, ?, ?, ?, ?> rh = pe.ref(r);
                                     
             if (rh == null) {
             	continue;
             }
             
-            Entity<?, ?, ?, ?, ?, ?, ?, ?> ref = rh.value();
+            Entity<?, ?, ?, ?, ?, ?, ?> ref = rh.value();
 
             if (ref == null) {
             	for (Column c : fk.getColumnMap().values()) {                	
@@ -346,7 +344,7 @@ public class PersistenceManager<
     	Map<Column, Assignment> am = new LinkedHashMap<Column, Assignment>();
     	
     	for (R r : meta.relationships()) {
-   			EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
+   			EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
    			processKey(ek, am);
 	    }
     	
@@ -366,17 +364,16 @@ public class PersistenceManager<
 
     private 
     <	
-    	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM, RC>,
+    	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
 		RA extends Attribute,
 		RR extends Reference,	
-		RE extends Entity<RA, RR, RT, RE, RH, RF, RM, RC>,
-		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM, RC>,
-		RF extends EntityFactory<RE, RH, RM, RF, RC>,
-		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM, RC>,
-		RC extends Content,
-		RK extends EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, RK>
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
+		RK extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK>
     >    
-    void processKey(EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, RK> key, Map<Column, Assignment> am) {
+    void processKey(EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK> key, Map<Column, Assignment> am) {
     	
     	logger().debug("processKey - enter: " + key.name());
     	
@@ -513,17 +510,17 @@ public class PersistenceManager<
 		}
 	}
     
-    private E sync(EntityQueryElement<A, R, T, E, H, F, M, C, PMElement> qe, Connection c) 
+    private E sync(EntityQueryElement<A, R, T, E, H, F, M, PMElement> qe, Connection c) 
 		throws EntityException, SQLException, QueryException  {
     	E stored = null;
 
-		EntityQueryExecutor<A, R, T, E, H, F, M, C, PMElement> ee = 
-				new EntityQueryExecutor<A, R, T, E, H, F, M, C, PMElement>(getPersistenceContext(), getUnificationContext());
+		EntityQueryExecutor<A, R, T, E, H, F, M, PMElement> ee = 
+				new EntityQueryExecutor<A, R, T, E, H, F, M, PMElement>(getPersistenceContext(), getUnificationContext());
 		
 		
 		PMElement pe = qe.self();    		
 		
-		EntityQuery.Builder<A, R, T, E, H, F, M, C, PMElement> builder = new DefaultEntityQuery.Builder<A, R, T, E, H, F, M, C, PMElement>(pe);
+		EntityQuery.Builder<A, R, T, E, H, F, M, PMElement> builder = new DefaultEntityQuery.Builder<A, R, T, E, H, F, M, PMElement>(pe);
 				
 		E e = getTarget();
 				
@@ -537,9 +534,9 @@ public class PersistenceManager<
 		}		
 		
 		
-		EntityQuery<A, R, T, E, H, F, M, C, PMElement> query = builder.newQuery();
+		EntityQuery<A, R, T, E, H, F, M, PMElement> query = builder.newQuery();
 		
-		EntityQueryResult<A, R, T, E, H, F, M, C, PMElement> er = ee.execute(query, null, c);
+		EntityQueryResult<A, R, T, E, H, F, M, PMElement> er = ee.execute(query, null, c);
 		QueryResult<EntityDataObject<E>> qr = er.getContent();    		
 		List<? extends EntityDataObject<E>> cl = qr.getContent();
 		logger().debug("merge: cl.size()=" + cl.size());
@@ -594,13 +591,12 @@ public class PersistenceManager<
     <
     	DA extends Attribute,
     	DR extends Reference,
-    	DT extends ReferenceType<DA, DR, DT, DE, DH, DF, DM, DC>,	
-		DE extends Entity<DA, DR, DT, DE, DH, DF, DM, DC>,
-		DH extends ReferenceHolder<DA, DR, DT, DE, DH, DM, DC>,
-		DF extends EntityFactory<DE, DH, DM, DF, DC>,
-		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM, DC>,
-		DC extends Content, 
-		DX extends EntityQueryElement<DA, DR, DT, DE, DH, DF, DM, DC, DX>
+    	DT extends ReferenceType<DA, DR, DT, DE, DH, DF, DM>,	
+		DE extends Entity<DA, DR, DT, DE, DH, DF, DM>,
+		DH extends ReferenceHolder<DA, DR, DT, DE, DH, DM>,
+		DF extends EntityFactory<DE, DH, DM, DF>,
+		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM>, 
+		DX extends EntityQueryElement<DA, DR, DT, DE, DH, DF, DM, DX>
     >    
     void mergeDependencies(DE target, DX qe, Connection c) throws EntityException, SQLException, QueryException {
     	
@@ -612,23 +608,23 @@ public class PersistenceManager<
     	final MergeMode ms = getMergeMode();
     	
     	for (DR dr : rs) {
-			EntityKey<DA, DR, DT, DE, DH, DF, DM, DC, ?, ?, ?, ?, ?, ?, ?, ?, ?> ek = m.getEntityKey(dr);
+			EntityKey<DA, DR, DT, DE, DH, DF, DM, ?, ?, ?, ?, ?, ?, ?, ?> ek = m.getEntityKey(dr);
 			
 			String id = ek.name().identifier();
 			logger().debug("mergeDependencies: id=" + id);			
 			
-			ReferenceHolder<?, ?, ?, ?, ?, ?, ?> rh = ek.get(target);
+			ReferenceHolder<?, ?, ?, ?, ?, ?> rh = ek.get(target);
 			
 			if (rh == null || rh.isNull()) {
 				logger().debug("no ref");
 				continue;
 			}
 			
-			Entity<?, ?, ?, ?, ?, ?, ?, ?> rv = rh.value();
+			Entity<?, ?, ?, ?, ?, ?, ?> rv = rh.value();
 								
 			if (ms == MergeMode.ALL || (!rv.isIdentified())) {
 				logger().debug("merging dependency: " + id);
-				PersistenceManager<?, ?, ?, ?, ?, ?, ?, ?> pm = create(rv, getPersistenceContext());
+				PersistenceManager<?, ?, ?, ?, ?, ?, ?> pm = create(rv, getPersistenceContext());
 				pm.merge(c);
 			}
 			else {
@@ -719,9 +715,8 @@ public class PersistenceManager<
    
     private Predicate getPKPredicate(TableReference tref, E pe)
             throws EntityException {
-        	
 
-        EntityMetaData<A, R, T, E, ?, ?, ?, ?> meta = pe.getMetaData();
+        EntityMetaData<A, R, T, E, ?, ?, ?> meta = pe.getMetaData();
         Collection<Column> pkcols = meta.getBaseTable().getPrimaryKey().getColumnMap().values();
 
         if (pkcols.isEmpty()) {
@@ -772,15 +767,14 @@ public class PersistenceManager<
 	private <
 		DA extends Attribute, 
 		DR extends com.appspot.relaxe.ent.Reference, 
-		DT extends ReferenceType<DA, DR, DT, DE, DH, DF, DM, DC>, 
-		DE extends Entity<DA, DR, DT, DE, DH, DF, DM, DC>,
-		DH extends ReferenceHolder<DA, DR, DT, DE, DH, DM, DC>,
-		DF extends EntityFactory<DE, DH, DM, DF, DC>,
-		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM, DC>,
-		DC extends Content
+		DT extends ReferenceType<DA, DR, DT, DE, DH, DF, DM>, 
+		DE extends Entity<DA, DR, DT, DE, DH, DF, DM>,
+		DH extends ReferenceHolder<DA, DR, DT, DE, DH, DM>,
+		DF extends EntityFactory<DE, DH, DM, DF>,
+		DM extends EntityMetaData<DA, DR, DT, DE, DH, DF, DM>
 	>
-	PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> create(Entity<DA, DR, DT, DE, DH, DF, DM, DC> e, PersistenceContext<?> pc) {
-		PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM, DC>(e.self(), pc, getMergeMode(), getUnificationContext());
+	PersistenceManager<DA, DR, DT, DE, DH, DF, DM> create(Entity<DA, DR, DT, DE, DH, DF, DM> e, PersistenceContext<?> pc) {
+		PersistenceManager<DA, DR, DT, DE, DH, DF, DM> pm = new PersistenceManager<DA, DR, DT, DE, DH, DF, DM>(e.self(), pc, getMergeMode(), getUnificationContext());
 		return pm;
 	}
 

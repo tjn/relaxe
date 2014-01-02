@@ -41,12 +41,11 @@ import com.appspot.relaxe.types.ReferenceType;
 public interface Entity<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M, C>,
-	E extends Entity<A, R, T, E, H, F, M, C>,
-	H extends ReferenceHolder<A, R, T, E, H, M, C>,
-	F extends EntityFactory<E, H, M, F, C>,
-	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-	C extends Content
+	T extends ReferenceType<A, R, T, E, H, F, M>,
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>
 >
 	extends
 	HasString<A, E>,
@@ -65,15 +64,14 @@ public interface Entity<
 	<
 		RA extends Attribute,
 		RR extends Reference,
-		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM, RC>,
-		RE extends Entity<RA, RR, RT, RE, RH, RF, RM, RC>,
-		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM, RC>,
-		RF extends EntityFactory<RE, RH, RM, RF, RC>,
-		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM, RC>,
-		RC extends Content,
-		K extends EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, K>
+		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
+		K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>
 	>
-	RH getRef(EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, K> k);
+	RH getRef(EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K> k);
 
 	<
 		S extends Serializable,
@@ -81,30 +79,24 @@ public interface Entity<
 		RH extends PrimitiveHolder<S, P, RH>,
 		K extends PrimitiveKey<A, E, S, P, RH, K>
 	>
-	void set(K k, RH newValue)
-		throws EntityRuntimeException;
+	void set(K k, RH newValue);
 
-
-
-	public Entity<?, ?, ?, ?, ?, ?, ?, ?> getRef(R k);
+	public Entity<?, ?, ?, ?, ?, ?, ?> getRef(R k);
 
 	<
 		RA extends Attribute,
 		RR extends Reference,
-		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM, RC>,
-		RE extends Entity<RA, RR, RT, RE, RH, RF, RM, RC>,
-		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM, RC>,
-		RF extends EntityFactory<RE, RH, RM, RF, RC>,
-		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM, RC>,
-		RC extends Content,
-		K extends EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, K>
+		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,		
+		K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>
 	>
-	void setRef(EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, K> k, RH newValue);
+	void setRef(EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K> k, RH newValue);
 
 	PrimitiveHolder<?, ?, ?> value(A attribute) throws EntityRuntimeException;
-
-	C getContent();
-
+	
 	/***
 	 * Returns the value of the corresponding column.
 	 *
@@ -141,7 +133,7 @@ public interface Entity<
 	 * @return Scalar value or <code>null</code>, if the value is not set
 	 * @throws NullPointerException If <code>c</code> is <code>null</code>.
 	 */
-	ReferenceHolder<?, ?, ?, ?, ?, ?, ?> ref(R ref);
+	ReferenceHolder<?, ?, ?, ?, ?, ?> ref(R ref);
 
 	EntityDiff<A, R, T, E> diff(E another) throws EntityRuntimeException;
 

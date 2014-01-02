@@ -52,9 +52,9 @@ public final class MariaDBGeneratedKeyHandler
 	<
 		A extends Attribute,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, ?, ?, M, ?>,
-		E extends Entity<A, R, T, E, ?, ?, M, ?>,
-		M extends EntityMetaData<A, R, T, E, ?, ?, M, ?>
+		T extends ReferenceType<A, R, T, E, ?, ?, M>,
+		E extends Entity<A, R, T, E, ?, ?, M>,
+		M extends EntityMetaData<A, R, T, E, ?, ?, M>
 	>
 	ColumnResolver createColumnResolver(ResultSetMetaData meta, M em)
 		throws RuntimeException {

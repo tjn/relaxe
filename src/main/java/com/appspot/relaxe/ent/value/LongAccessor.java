@@ -29,7 +29,7 @@ import com.appspot.relaxe.types.LongType;
 
 public class LongAccessor<
 	A extends Attribute,
-	E extends Entity<A, ?, ?, E, ?, ?, ?, ?> & HasLong<A, E>
+	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasLong<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, Long, LongType, LongHolder, LongKey<A, E>> {
 

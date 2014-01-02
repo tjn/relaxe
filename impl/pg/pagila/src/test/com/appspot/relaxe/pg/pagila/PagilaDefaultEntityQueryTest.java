@@ -41,7 +41,6 @@ import com.appspot.relaxe.gen.pg.pagila.ent.pub.Category;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Attribute;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Content;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Factory;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Holder;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.MetaData;
@@ -75,7 +74,7 @@ public class PagilaDefaultEntityQueryTest
     	
     	FilmActor.Query faq = new FilmActor.Query(fae);
     	    	
-    	EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, Content, QueryElement> qxb = newQueryExpressionBuilder(faq);    	
+    	EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, QueryElement> qxb = newQueryExpressionBuilder(faq);    	
     	    	
     	logger().debug("testQuery1: qxb: {}" + qxb);
     	
@@ -90,8 +89,8 @@ public class PagilaDefaultEntityQueryTest
     	
     	ValueExtractorFactory vef = pc.getValueExtractorFactory();
     	    	    	    	
-    	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content, FilmActor.QueryElement> er
-    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content, FilmActor.QueryElement>(vef, qxb, ic);
+    	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement> er
+    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement>(vef, qxb, ic);
     	    	
     	StatementExecutor se = new StatementExecutor(pc);
     	    	    	
@@ -109,13 +108,13 @@ public class PagilaDefaultEntityQueryTest
 			assertNotNull(root);
 			assertTrue(root.isIdentified());
 			
-			assertNull(root.getContent().lastUpdate().getHolder());
+			assertNull(root.getLastUpdate());
 			
 			{
 				Actor.Holder ah = root.getActor(FilmActor.ACTOR);
 				assertNotNull(ah);
 				assertFalse(ah.isNull());
-				assertNotNull(ah.value().getContent().getActorId());
+				assertNotNull(ah.value().getActorId());
 				assertEquals(1, ah.value().attributes().size());
 			}
 			
@@ -123,15 +122,15 @@ public class PagilaDefaultEntityQueryTest
 				Film.Holder fh = root.getFilm(FilmActor.FILM);
 				assertNotNull(fh);
 				assertFalse(fh.isNull());
-				assertNotNull(fh.value().getContent().getFilmId());
+				assertNotNull(fh.value().getFilmId());
 				assertEquals(1, fh.value().attributes().size());
 			}
 		}
     }
 
-	protected EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, Content, QueryElement> newQueryExpressionBuilder(
+	protected EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, QueryElement> newQueryExpressionBuilder(
 			FilmActor.Query faq) {
-		EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, Content, QueryElement> qeb = new EntityQueryExpressionBuilder<>(faq);
+		EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, QueryElement> qeb = new EntityQueryExpressionBuilder<>(faq);
 		return qeb;
 	}
     
@@ -146,12 +145,11 @@ public class PagilaDefaultEntityQueryTest
     	Film film = newEntity(Film.Type.TYPE);
     	
     	Category category = newEntity(Category.Type.TYPE);
-    	category.getContent().setName("project name");
+    	category.setName("project name");
     	
-    	Actor actor = newEntity(Actor.Type.TYPE);
-    	Actor.Content ac = actor.getContent();
-    	ac.firstName().set("Emilio");
-    	ac.lastName().set("Bullock");
+    	Actor actor = newEntity(Actor.Type.TYPE);    	
+    	actor.setFirstName("Emilio");
+    	actor.setLastName("Bullock");
     	    	
     	FilmCategory fc = newEntity(FilmCategory.Type.TYPE);
     	fc.setFilm(FilmCategory.FILM, film.ref());
@@ -163,7 +161,7 @@ public class PagilaDefaultEntityQueryTest
     	    	    	
     	FilmActor.Query qo = new FilmActor.Query(faq);
     	
-    	EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, Content, QueryElement> qxb = 
+    	EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, QueryElement> qxb = 
     			newQueryExpressionBuilder(qo);
     	
     	String qs = qxb.getQueryExpression().generate();
@@ -174,8 +172,8 @@ public class PagilaDefaultEntityQueryTest
     	UnificationContext ic = new SimpleUnificationContext();
     	ValueExtractorFactory vef = imp.getValueExtractorFactory();
     	    	    	    	
-    	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content, FilmActor.QueryElement> eb
-    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.Content, FilmActor.QueryElement>(vef, qxb, ic);
+    	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement> eb
+    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement>(vef, qxb, ic);
     	   	
     	StatementExecutor se = new StatementExecutor(getPersistenceContext());
     	
@@ -200,9 +198,11 @@ public class PagilaDefaultEntityQueryTest
 			assertFalse(ah.isNull());
 			
 			
-			Actor.Content acc = ah.value().getContent();
-			assertNotNull(acc);
-			assertNotNull(acc.firstName());
+			Actor a = ah.value();
+			assertNotNull(a);
+			assertNotNull(a.getActorId());
+			assertNotNull(a.getActorId().value());
+			assertNull(a.getFirstName());			
 		}
     }
 }

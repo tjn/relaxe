@@ -169,7 +169,7 @@ public class PagilaDataAccessSessionTest
 		
 		for (Film film : list) {			
 			assertNotNull(film);
-			logger().debug("film: " + film.getContent().getFilmId());
+			logger().debug("film: " + film.getFilmId());
 			logger().debug("film.attributes(): " + film.attributes());
 			logger().debug("meta.attributes(): " + meta.attributes());
 			

@@ -41,7 +41,6 @@ import com.appspot.relaxe.SLF4JLogger;
 import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.QueryHelper;
 import com.appspot.relaxe.ent.Attribute;
-import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
@@ -344,21 +343,20 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	protected <
 		A extends Attribute, 
 		R extends com.appspot.relaxe.ent.Reference, 
-		T extends ReferenceType<A, R, T, E, H, F, M, C>, 
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		T extends ReferenceType<A, R, T, E, H, F, M>, 
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
-	PersistenceManager<A, R, T, E, H, F, M, C> create(E e) {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, getPersistenceContext(), null);
+	PersistenceManager<A, R, T, E, H, F, M> create(E e) {
+		PersistenceManager<A, R, T, E, H, F, M> pm = new PersistenceManager<A, R, T, E, H, F, M>(e, getPersistenceContext(), null);
 		return pm;
 	}
 	
 	public <
-		T extends ReferenceType<?, ?, T, E, ?, ?, ?, ?>,
-		E extends Entity<?, ?, T, E, ?, ?, ?, ?>
+		T extends ReferenceType<?, ?, T, E, ?, ?, ?>,
+		E extends Entity<?, ?, T, E, ?, ?, ?>
 	> 
 	E newEntity(T type) {
 		return type.getMetaData().getFactory().newEntity();
@@ -395,16 +393,15 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	protected <
 		A extends Attribute, 
 		R extends com.appspot.relaxe.ent.Reference, 
-		T extends ReferenceType<A, R, T, E, H, F, M, C>, 
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content,
-	    RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>
+		T extends ReferenceType<A, R, T, E, H, F, M>, 
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>,
+	    RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
 	>
-	QueryExpression toQueryExpression(EntityQuery<A, R, T, E, H, F, M, C, RE> qo) {
-		EntityQueryExpressionBuilder<A, R, T, E, H, F, M, C, RE> eqb = new EntityQueryExpressionBuilder<A, R, T, E, H, F, M, C, RE>(qo);
+	QueryExpression toQueryExpression(EntityQuery<A, R, T, E, H, F, M, RE> qo) {
+		EntityQueryExpressionBuilder<A, R, T, E, H, F, M, RE> eqb = new EntityQueryExpressionBuilder<A, R, T, E, H, F, M, RE>(qo);
 		return eqb.getQueryExpression();
 	}
 }

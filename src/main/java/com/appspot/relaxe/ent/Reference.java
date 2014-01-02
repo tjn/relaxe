@@ -30,5 +30,5 @@ import com.appspot.relaxe.types.ReferenceType;
 public interface Reference
 	extends Identifiable, Serializable {
 		
-	ReferenceType<?, ?, ?, ?, ?, ?, ?, ?> type();		
+	ReferenceType<?, ?, ?, ?, ?, ?, ?> type();		
 }

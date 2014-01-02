@@ -29,7 +29,7 @@ import com.appspot.relaxe.types.IntegerType;
 
 public class IntegerAccessor<
 	A extends Attribute,
-	E extends Entity<A, ?, ?, E, ?, ?, ?, ?> & HasInteger<A, E>
+	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasInteger<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, E>> {
 

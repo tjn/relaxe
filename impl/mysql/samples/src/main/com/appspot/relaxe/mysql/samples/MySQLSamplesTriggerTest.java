@@ -53,7 +53,7 @@ public class MySQLSamplesTriggerTest
 		A extends Attribute, 
 		R extends com.appspot.relaxe.ent.Reference, 
 		T extends ReferenceType<A, R, T, E, H, F, M, C>, 
-		E extends Entity<A, R, T, E, H, F, M, C>,
+		E extends Entity<?, ?, ?, ?, ?, ?, ?>,
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,

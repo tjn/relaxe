@@ -1,6 +1,6 @@
 
 {	
-	final {{referenced-table-interface-qualified}}.Key<Attribute, Reference, Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Content> pk = {{reference-key-variable}};					
+	final {{referenced-table-interface-qualified}}.Key<Attribute, Reference, Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData> pk = {{reference-key-variable}};					
 	com.appspot.relaxe.meta.ForeignKey fk = m.getForeignKey(pk.name());				
 	com.appspot.relaxe.expr.TableReference tref = ctx.getQueryContext().getReferenced(tableRef, fk);
 

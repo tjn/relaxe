@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appspot.relaxe.ent.Attribute;
-import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.value.PrimitiveKey;
@@ -40,12 +39,11 @@ import com.appspot.relaxe.types.ReferenceType;
 
 public abstract class DefaultAttributeModelMap<
 	A extends Attribute,
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, C>,
-	E extends Entity<A, ?, T, E, ?, ?, ?, C>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?>,
 	V extends Serializable,
 	P extends AbstractPrimitiveType<P>,
 	H extends AbstractPrimitiveHolder<V, P, H>,
-	C extends Content,
 	D extends AttributeModelMap<A, V, P, H, T, E, D>	
 	>
 	implements AttributeModelMap<A, V, P, H, T, E, D> {

@@ -20,11 +20,10 @@ public interface {{table-interface}}
         {{table-interface}},
         {{table-interface}}.Holder,		
         {{table-interface}}.Factory,
-        {{table-interface}}.MetaData,
-        {{table-interface}}.Content
+        {{table-interface}}.MetaData
     > {{reference-list}} {{attribute-container-interface-list}} {
     
-	class Type extends ReferenceType<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content> {
+	class Type extends ReferenceType<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData> {
 		private static final long serialVersionUID = 1L;
 		
 		@Override
@@ -41,7 +40,7 @@ public interface {{table-interface}}
 	}
 	
 	public static class Holder
-		extends ReferenceHolder<Attribute, Reference, Type, {{table-interface}}, Holder, MetaData, Content> {
+		extends ReferenceHolder<Attribute, Reference, Type, {{table-interface}}, Holder, MetaData> {
 		
 		/**
 		 * 
@@ -72,12 +71,12 @@ public interface {{table-interface}}
 	}
 	
 	interface Factory
-		extends com.appspot.relaxe.ent.EntityFactory<{{table-interface}}, Holder, MetaData, Factory, Content> {
+		extends com.appspot.relaxe.ent.EntityFactory<{{table-interface}}, Holder, MetaData, Factory> {
 		
 	}
 			
 	interface MetaData
-		extends com.appspot.relaxe.ent.EntityMetaData<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content>		
+		extends com.appspot.relaxe.ent.EntityMetaData<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData>		
 		{{implemented-has-key-list}} {{attribute-key-container-interface-list}}
 	{		
 		@Override
@@ -93,14 +92,13 @@ public interface {{table-interface}}
 	public static abstract class Key<
 		A extends com.appspot.relaxe.ent.Attribute,
 		R extends com.appspot.relaxe.ent.Reference,	
-		T extends ReferenceType<A, R, T, E, H, F, M, C>,
-		E extends Entity<A, R, T, E, H, F, M, C> & Has{{table-interface}}<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,
-		M extends EntityMetaData<A, R, T, E, H, F, M, C> & Has{{table-interface}}Key<A, R, T, E, H, F, M, C>,
-		C extends com.appspot.relaxe.ent.Content
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M> & Has{{table-interface}}<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M> & Has{{table-interface}}Key<A, R, T, E, H, F, M>
 	>
-		extends AbstractEntityKey<A, R, T, E, H, F, M, C, {{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Content, {{table-interface}}.Key<A, R, T, E, H, F, M, C>> {
+		extends AbstractEntityKey<A, R, T, E, H, F, M, {{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Key<A, R, T, E, H, F, M>> {
 
 		private static final long serialVersionUID = 1L;
 		
@@ -138,7 +136,7 @@ public interface {{table-interface}}
 		}
 		
 		@Override
-		public {{table-interface}}.Key<A, R, T, E, H, F, M, C> self() {		
+		public {{table-interface}}.Key<A, R, T, E, H, F, M> self() {		
 			return this;
 		}
 	}
@@ -155,7 +153,7 @@ public interface {{table-interface}}
 
 		public static class QueryElement
 			extends com.appspot.relaxe.ent.DefaultEntityQueryElement<
-				Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content, QueryElement> {
+				Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, QueryElement> {
 		
 			private java.util.Set<Attribute> attributes;
 			
@@ -204,8 +202,8 @@ public interface {{table-interface}}
 			}
 			
 			@Override
-			public com.appspot.relaxe.ent.EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(
-					com.appspot.relaxe.ent.value.EntityKey<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content, ?, ?, ?, ?, ?, ?, ?, ?, ?> key) {
+			public com.appspot.relaxe.ent.EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(
+					com.appspot.relaxe.ent.value.EntityKey<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, ?, ?, ?, ?, ?, ?, ?, ?> key) {
 				// {{query-element-getter-body}}
 			}
 			
@@ -221,8 +219,7 @@ public interface {{table-interface}}
 					{{table-interface}}, 
 					Holder, 
 					Factory, 
-					MetaData, 
-					Content, 
+					MetaData,
 					QueryElement
 				> {
 				
@@ -236,8 +233,8 @@ public interface {{table-interface}}
 								
 				
 				@Override
-				public com.appspot.relaxe.ent.EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(
-						com.appspot.relaxe.ent.value.EntityKey<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content, ?, ?, ?, ?, ?, ?, ?, ?, ?> key) {											
+				public com.appspot.relaxe.ent.EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(
+						com.appspot.relaxe.ent.value.EntityKey<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, ?, ?, ?, ?, ?, ?, ?, ?> key) {											
 					// {{query-element-getter-body}}
 				}
 				
@@ -247,13 +244,12 @@ public interface {{table-interface}}
 				public <
 					RA extends com.appspot.relaxe.ent.Attribute, 
 					RR extends com.appspot.relaxe.ent.Reference, 
-					RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM, RC>, 
-					RE extends Entity<RA, RR, RT, RE, RH, RF, RM, RC>, 
-					RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM, RC>, 
-					RF extends EntityFactory<RE, RH, RM, RF, RC>, 
-					RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM, RC>, 
-					RC extends com.appspot.relaxe.ent.Content, 
-					RQ extends com.appspot.relaxe.ent.EntityQueryElement<RA, RR, RT, RE, RH, RF, RM, RC, RQ>, 
+					RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>, 
+					RE extends Entity<RA, RR, RT, RE, RH, RF, RM>, 
+					RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>, 
+					RF extends EntityFactory<RE, RH, RM, RF>, 
+					RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
+					RQ extends com.appspot.relaxe.ent.EntityQueryElement<RA, RR, RT, RE, RH, RF, RM, RQ>, 
 					K extends com.appspot.relaxe.ent.value.EntityKey<
 						{{table-interface}}.Attribute, 
 						{{table-interface}}.Reference, 
@@ -261,9 +257,8 @@ public interface {{table-interface}}
 						{{table-interface}}, 
 						{{table-interface}}.Holder, 
 						{{table-interface}}.Factory, 
-						{{table-interface}}.MetaData, 
-						{{table-interface}}.Content, 
-						RA, RR, RT, RE, RH, RF, RM, RC, K
+						{{table-interface}}.MetaData,
+						RA, RR, RT, RE, RH, RF, RM, K
 					>
 				> 
 				void setQueryElement(K key, RQ qe) {
@@ -324,7 +319,7 @@ public interface {{table-interface}}
 				
 		public static class Query
 			extends com.appspot.relaxe.ent.DefaultEntityQuery<
-				Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content, QueryElement
+				Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, QueryElement
 			> 
 		{
 			/**
@@ -355,7 +350,7 @@ public interface {{table-interface}}
 			}
 			
 			public static class Builder
-				extends com.appspot.relaxe.ent.DefaultEntityQuery.Builder<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content, QueryElement> {
+				extends com.appspot.relaxe.ent.DefaultEntityQuery.Builder<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, QueryElement> {
 
 				public Builder(QueryElement root) {
 					super(root);
@@ -369,13 +364,6 @@ public interface {{table-interface}}
 		}
 		
 	{{entity-attribute-accessor-signature-list}}
-
-	interface Content extends com.appspot.relaxe.ent.Content {  
-  		{{value-accessor-list}}
-		{{abstract-accessor-list}}
-	}
-		
-	Content getContent();
 
 } 
 

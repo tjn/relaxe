@@ -39,11 +39,12 @@ import com.appspot.relaxe.types.ReferenceType;
 public class AbstractKeyIdentityMap<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, RH, ?, M, ?>,
-	E extends Entity<A, R, T, E, RH, ?, M, ?>,
-	RH extends ReferenceHolder<A, R, T, E, RH, M, ?>,
-	M extends EntityMetaData<A, R, T, E, RH, ?, M, ?>,
+	T extends ReferenceType<A, R, T, E, RH, ?, M>,
+	E extends Entity<A, R, T, E, RH, ?, M>,
+	RH extends ReferenceHolder<A, R, T, E, RH, M>,
+	M extends EntityMetaData<A, R, T, E, RH, ?, M>,
 	V extends Serializable,
+	// TODO :fix type:
 	P extends AbstractPrimitiveType<P>,
 	H extends AbstractPrimitiveHolder<V, P, H>,	
 	K extends AbstractPrimitiveKey<A, E, V, P, H, K>

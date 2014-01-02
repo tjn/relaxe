@@ -60,12 +60,11 @@ public class SakilaPersistenceManagerTest
 	    
 	    // SakilaFactory sf = new SakilaFactoryImpl(); 
 	    
-	    Actor a = newEntity(Actor.Type.TYPE);
-	    Actor.Content ac = a.getContent();        
-	    ac.setFirstName("Dana");
-	    ac.setLastName("Brooks");
+	    Actor a = newEntity(Actor.Type.TYPE);	            
+	    a.setFirstName("Dana");
+	    a.setLastName("Brooks");
 	
-	    PersistenceManager<Actor.Attribute, Reference, Type, Actor, Holder, Factory, MetaData, Actor.Content> pm = create(a);
+	    PersistenceManager<Actor.Attribute, Reference, Type, Actor, Holder, Factory, MetaData> pm = create(a);
 	    
 	    pm.merge(c);
 	    c.commit();        
@@ -85,17 +84,15 @@ public class SakilaPersistenceManagerTest
 	    Connection c = getConnection();
 	    assertFalse(c.getAutoCommit());
 	            
-	    Actor a = newEntity(Actor.Type.TYPE);
-	    Actor.Content ac = a.getContent();        
-	    ac.setFirstName("Dana");
-	    ac.setLastName("Brooks");
+	    Actor a = newEntity(Actor.Type.TYPE);	            
+	    a.setFirstName("Dana");
+	    a.setLastName("Brooks");
 	
-	    Film f = newEntity(Film.Type.TYPE);
-	    Film.Content fc = f.getContent();
-	    fc.setTitle("New Film");
+	    Film f = newEntity(Film.Type.TYPE);	    
+	    f.setTitle("New Film");
 	    	    
 	    Language lang = newEntity(Language.Type.TYPE);
-	    lang.getContent().setName("English");	    	    
+	    lang.setName("English");	    	    
 	    f.setLanguage(Film.LANGUAGE, lang.ref());
 	    
 	    FilmActor filmActor = newEntity(FilmActor.Type.TYPE);
@@ -119,7 +116,7 @@ public class SakilaPersistenceManagerTest
 	    c.commit();
 	    
 	    assertTrue(lang.isIdentified());
-	    logger().debug("testMergeDependent: lang.getContent().getLanguageId()=" + lang.getContent().getLanguageId());
+	    logger().debug("testMergeDependent: lang.getContent().getLanguageId()=" + lang.getLanguageId());
 	    
 	    delete(lang);
 	    c.commit();

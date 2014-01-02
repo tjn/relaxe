@@ -28,7 +28,7 @@ import com.appspot.relaxe.ent.value.AbstractPrimitiveAccessor;
 
 public class MPAARatingAccessor<
 	A extends Attribute,
-	E extends Entity<A, ?, ?, E, ?, ?, ?, ?> & HasMPAARating<A, E>
+	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasMPAARating<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, MPAARating, MPAARatingType, MPAARatingHolder, MPAARatingKey<A, E>> {
 

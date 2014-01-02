@@ -55,9 +55,9 @@ public abstract class EntityQueryExpressionSortKey
 	
 	public <
 		A extends com.appspot.relaxe.ent.Attribute,
-		M extends EntityMetaData<A, ?, ?, ?, ?, ?, M, ?>
+		M extends EntityMetaData<A, ?, ?, ?, ?, ?, M>
 	>	
-	EntityQueryExpressionSortKey(EntityQueryElement<A, ?, ?, ?, ?, ?, M, ?, ?> element, A attribute) {
+	EntityQueryExpressionSortKey(EntityQueryElement<A, ?, ?, ?, ?, ?, M, ?> element, A attribute) {
 		super();
 		
 		if (element == null) {
@@ -106,10 +106,10 @@ public abstract class EntityQueryExpressionSortKey
 
 		public <
 			A extends Attribute, 
-			M extends EntityMetaData<A, ?, ?, ?, ?, ?, M, ?>
+			M extends EntityMetaData<A, ?, ?, ?, ?, ?, M>
 		> 
 		Asc(
-			EntityQueryElement<A, ?, ?, ?, ?, ?, M, ?, ?> element, A attribute) {
+			EntityQueryElement<A, ?, ?, ?, ?, ?, M, ?> element, A attribute) {
 			super(element, attribute);		
 		}
 				
@@ -136,10 +136,10 @@ public abstract class EntityQueryExpressionSortKey
 
 		public <
 			A extends Attribute, 
-			M extends EntityMetaData<A, ?, ?, ?, ?, ?, M, ?>
+			M extends EntityMetaData<A, ?, ?, ?, ?, ?, M>
 		> 
 		Desc(
-			EntityQueryElement<A, ?, ?, ?, ?, ?, M, ?, ?> element, A attribute) {
+			EntityQueryElement<A, ?, ?, ?, ?, ?, M, ?> element, A attribute) {
 			super(element, attribute);		
 		}
 

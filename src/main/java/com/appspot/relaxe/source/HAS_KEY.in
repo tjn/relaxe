@@ -8,14 +8,13 @@ package {{package-name}};
 public interface {{has-key-interface}}<
 	A extends com.appspot.relaxe.ent.Attribute,
 	R extends com.appspot.relaxe.ent.Reference,
-	T extends com.appspot.relaxe.types.ReferenceType<A, R, T, E, H, F, M, C>,
-	E extends com.appspot.relaxe.ent.Entity<A, R, T, E, H, F, M, C> & {{has-interface}}<A, R, T, E, H, F, M, C>,
-	H extends com.appspot.relaxe.rpc.ReferenceHolder<A, R, T, E, H, M, C>,
-	F extends com.appspot.relaxe.ent.EntityFactory<E, H, M, F, C>,		
-	M extends com.appspot.relaxe.ent.EntityMetaData<A, R, T, E, H, F, M, C> & {{has-key-interface}}<A, R, T, E, H, F, M, C>,
-	C extends com.appspot.relaxe.ent.Content
+	T extends com.appspot.relaxe.types.ReferenceType<A, R, T, E, H, F, M>,
+	E extends com.appspot.relaxe.ent.Entity<A, R, T, E, H, F, M> & {{has-interface}}<A, R, T, E, H, F, M>,
+	H extends com.appspot.relaxe.rpc.ReferenceHolder<A, R, T, E, H, M>,
+	F extends com.appspot.relaxe.ent.EntityFactory<E, H, M, F>,		
+	M extends com.appspot.relaxe.ent.EntityMetaData<A, R, T, E, H, F, M> & {{has-key-interface}}<A, R, T, E, H, F, M>
 	>
 {
-	public {{table-interface}}.Key<A, R, T, E, H, F, M, C> get{{table-interface}}Key(R ref);
+	public {{table-interface}}.Key<A, R, T, E, H, F, M> get{{table-interface}}Key(R ref);
 }
 	

@@ -42,14 +42,13 @@ import com.appspot.relaxe.types.ReferenceType;
 public abstract class AbstractEntity<
 	A extends Attribute,
 	R extends Reference, 
-	T extends ReferenceType<A, R, T, E, H, F, M, C>,	
-	E extends Entity<A, R, T, E, H, F, M, C>,
-	H extends ReferenceHolder<A, R, T, E, H, M, C>,
-	F extends EntityFactory<E, H, M, F, C>, 
-	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-	C extends Content
+	T extends ReferenceType<A, R, T, E, H, F, M>,	
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>, 
+	M extends EntityMetaData<A, R, T, E, H, F, M>
 > 
-	implements Entity<A, R, T, E, H, F, M, C>
+	implements Entity<A, R, T, E, H, F, M>
 {
 	/**
 	 * 
@@ -83,11 +82,11 @@ public abstract class AbstractEntity<
 			return null;
 		}
 	
-		Entity<?, ?, ?, ?, ?, ?, ?, ?> ref = null;
+		Entity<?, ?, ?, ?, ?, ?, ?> ref = null;
 		R r = null;
 		
 		for (R ri : rs) {						
-			ReferenceHolder<?, ?, ?, ?, ?, ?, ?> rh = ref(ri);
+			ReferenceHolder<?, ?, ?, ?, ?, ?> rh = ref(ri);
 			
 			if (rh != null) {
 				ref = rh.value();
@@ -210,8 +209,8 @@ public abstract class AbstractEntity<
 		
 		for (R r : rs) {
 			try {
-				EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);
-				ReferenceHolder<?, ?, ?, ?, ?, ?, ?> rh = k.get(self());
+				EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);
+				ReferenceHolder<?, ?, ?, ?, ?, ?> rh = k.get(self());
 				
 				if (rh != null) {
 					rc++;

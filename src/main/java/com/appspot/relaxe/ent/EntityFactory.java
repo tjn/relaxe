@@ -25,11 +25,10 @@ package com.appspot.relaxe.ent;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 
 public interface EntityFactory<
-	E extends Entity<?, ?, ?, E, H, F, M, C>,
-	H extends ReferenceHolder<?, ?, ?, E, H, M, C>,
-	M extends EntityMetaData<?, ?, ?, E, H, F, M, C>,
-	F extends EntityFactory<E, H, M, F, C>,
-	C extends Content
+	E extends Entity<?, ?, ?, E, H, F, M>,
+	H extends ReferenceHolder<?, ?, ?, E, H, M>,
+	M extends EntityMetaData<?, ?, ?, E, H, F, M>,
+	F extends EntityFactory<E, H, M, F>
 > {
 	E newEntity();
 	H newHolder(E value);

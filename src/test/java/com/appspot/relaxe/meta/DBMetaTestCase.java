@@ -441,8 +441,8 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
 	}
 
 	public <
-		T extends ReferenceType<?, ?, T, E, ?, ?, ?, ?>,
-		E extends Entity<?, ?, T, E, ?, ?, ?, ?>
+		T extends ReferenceType<?, ?, T, E, ?, ?, ?>,
+		E extends Entity<?, ?, T, E, ?, ?, ?>
 	> 
 	E newEntity(T type) {
 		return type.getMetaData().getFactory().newEntity();

@@ -23,7 +23,6 @@
 package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.ent.Attribute;
-import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.Reference;
@@ -42,11 +41,10 @@ import com.appspot.relaxe.types.ReferenceType;
 public abstract class ReferenceHolder<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, V, H, ?, M, C>,
-	V extends Entity<A, R, T, V, H, ?, M, C>,
-	H extends ReferenceHolder<A, R, T, V, H, M, C>,
-	M extends EntityMetaData<A, R, T, V, H, ?, M, C>,
-	C extends Content
+	T extends ReferenceType<A, R, T, V, H, ?, M>,
+	V extends Entity<A, R, T, V, H, ?, M>,
+	H extends ReferenceHolder<A, R, T, V, H, M>,
+	M extends EntityMetaData<A, R, T, V, H, ?, M>
 >
 	extends AbstractHolder<V, T, H> {
 

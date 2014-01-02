@@ -22,8 +22,7 @@ class {{table-impl-class}}
     extends {{table-impl-base}} {
         
     private {{table-interface}}.Holder holder;
-    private transient {{table-interface}}.Content content;
-    
+        
     /**
      * generated list below: 
      */
@@ -98,8 +97,7 @@ class {{table-impl-class}}
         {{table-interface}},
         {{table-interface}}.Holder,
         {{table-interface}}.Factory,
-        {{table-interface}}.MetaData,
-        {{table-interface}}.Content
+        {{table-interface}}.MetaData
     >
     	implements {{table-interface}}.MetaData
     {
@@ -127,8 +125,8 @@ class {{table-impl-class}}
 
 {{reference-key-map-list}}
 
-		private java.util.Map<{{table-interface}}.Reference, EntityKey<Attribute, Reference, Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Content, ?, ?, ?, ?, ?, ?, ?, ?, ?>> entityKeyMap = 
-			new java.util.TreeMap<{{table-interface}}.Reference, EntityKey<Attribute, Reference, Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Content, ?, ?, ?, ?, ?, ?, ?, ?, ?>>();
+		private java.util.Map<{{table-interface}}.Reference, EntityKey<Attribute, Reference, Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, ?, ?, ?, ?, ?, ?, ?, ?>> entityKeyMap = 
+			new java.util.TreeMap<{{table-interface}}.Reference, EntityKey<Attribute, Reference, Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, ?, ?, ?, ?, ?, ?, ?, ?>>();
 			
 		
 		{{attribute-key-container-implementation}}
@@ -197,7 +195,7 @@ class {{table-impl-class}}
 		}	
 
 		@Override
-		public EntityKey<Attribute, Reference, Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Content, ?, ?, ?, ?, ?, ?, ?, ?, ?> getEntityKey(Reference ref) {			
+		public EntityKey<Attribute, Reference, Type, {{table-interface}}, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, ?, ?, ?, ?, ?, ?, ?, ?> getEntityKey(Reference ref) {			
 			if (ref == null) {
 				throw new NullPointerException("ref");
 			}
@@ -207,7 +205,7 @@ class {{table-impl-class}}
     }
     
 	public static class BuilderImpl
-		extends com.appspot.relaxe.ent.DefaultEntityBuilder<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData, Content>
+		extends com.appspot.relaxe.ent.DefaultEntityBuilder<Attribute, Reference, Type, {{table-interface}}, Holder, Factory, MetaData>
 		implements Builder {
 		
 		private Linker[] linkerList = {};
@@ -319,24 +317,6 @@ class {{table-impl-class}}
      */
     {{reference-map-list}}
     
-    @Override
-	public Content getContent() {
-		if (this.content == null) {
-			this.content = new Content() {
-			    /**
-			     * generated value variable list below: 
-			     */
-			    {{value-variable-list}}				
-
-				{{value-accessor-list}}
-				 
-			  	{{accessor-list}}			
-			};
-		}
-		
-		return this.content;
-	}
-	
 	{{entity-attribute-accessor-list}}    
 } 
 

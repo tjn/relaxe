@@ -29,7 +29,7 @@ import com.appspot.relaxe.types.BooleanType;
 
 public class BooleanAccessor<
 	A extends Attribute,
-	E extends Entity<A, ?, ?, E, ?, ?, ?, ?> & HasBoolean<A, E>
+	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasBoolean<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, Boolean, BooleanType, BooleanHolder, BooleanKey<A, E>> {
 

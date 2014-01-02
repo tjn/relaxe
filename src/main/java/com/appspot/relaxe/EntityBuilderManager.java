@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.appspot.relaxe.ent.Attribute;
-import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityBuildContext;
 import com.appspot.relaxe.ent.EntityBuilder;
@@ -49,18 +48,17 @@ import com.appspot.relaxe.types.ReferenceType;
 public class EntityBuilderManager<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M, C>,
-	E extends Entity<A, R, T, E, H, F, M, C>,
-	H extends ReferenceHolder<A, R, T, E, H, M, C>,
-	F extends EntityFactory<E, H, M, F, C>,
-	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-	C extends Content,
-	QE extends EntityQueryElement<A, R, T, E, H, F, M, C, QE>
+	T extends ReferenceType<A, R, T, E, H, F, M>,
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>,
+	QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
 >
 	extends DataObjectProcessor<MutableEntityDataObject<E>> {
 			
-//	private EntityQuery<A, R, T, E, H, F, M, C, QE> query;
-	private EntityQueryExpressionBuilder<A, R, T, E, H, F, M, C, QE> builder;
+//	private EntityQuery<A, R, T, E, H, F, M, QE> query;
+	private EntityQueryExpressionBuilder<A, R, T, E, H, F, M, QE> builder;
 //	private M meta;
 	
 	private static Logger logger = LoggerFactory.getLogger(EntityBuilderManager.class);
@@ -70,7 +68,7 @@ public class EntityBuilderManager<
 		
 	private EntityBuilder<E, H> rootBuilder;
 						
-	public EntityBuilderManager(ValueExtractorFactory vef, EntityQueryExpressionBuilder<A, R, T, E, H, F, M, C, QE> builder, UnificationContext unificationContext) 
+	public EntityBuilderManager(ValueExtractorFactory vef, EntityQueryExpressionBuilder<A, R, T, E, H, F, M, QE> builder, UnificationContext unificationContext) 
 		throws QueryException {
 		super(vef, builder.getQueryExpression());		
 		this.builder = builder;
@@ -146,7 +144,7 @@ public class EntityBuilderManager<
 		return identityContext;
 	}
 
-	public EntityQuery<A, R, T, E, H, F, M, C, QE> getQuery() {
+	public EntityQuery<A, R, T, E, H, F, M, QE> getQuery() {
 		return builder.getQuery();
 	}
 

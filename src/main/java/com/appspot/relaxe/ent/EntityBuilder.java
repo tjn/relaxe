@@ -25,8 +25,8 @@ package com.appspot.relaxe.ent;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 
 public interface EntityBuilder<
-	E extends Entity<?, ?, ?, E, H, ?, ?, ?>,
-	H extends ReferenceHolder<?, ?, ?, E, H, ?, ?>
+	E extends Entity<?, ?, ?, E, H, ?, ?>,
+	H extends ReferenceHolder<?, ?, ?, E, H, ?>
 > {	
 	
 	/**

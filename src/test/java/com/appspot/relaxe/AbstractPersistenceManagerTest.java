@@ -27,7 +27,6 @@ import java.sql.SQLException;
 
 import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.ent.Attribute;
-import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityException;
 import com.appspot.relaxe.ent.EntityFactory;
@@ -50,33 +49,31 @@ public abstract class AbstractPersistenceManagerTest<I extends Implementation<I>
 	protected <
 		A extends Attribute, 
 		R extends com.appspot.relaxe.ent.Reference, 
-		T extends ReferenceType<A, R, T, E, H, F, M, C>, 
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		T extends ReferenceType<A, R, T, E, H, F, M>, 
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
-	PersistenceManager<A, R, T, E, H, F, M, C> create(E e) {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = 
-				new PersistenceManager<A, R, T, E, H, F, M, C>(e, getPersistenceContext(), getUnificationContext());
+	PersistenceManager<A, R, T, E, H, F, M> create(E e) {
+		PersistenceManager<A, R, T, E, H, F, M> pm = 
+				new PersistenceManager<A, R, T, E, H, F, M>(e, getPersistenceContext(), getUnificationContext());
 		return pm;
 	}
 		
 	protected <
 		A extends Attribute, 
 		R extends com.appspot.relaxe.ent.Reference, 
-		T extends ReferenceType<A, R, T, E, H, F, M, C>, 
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		T extends ReferenceType<A, R, T, E, H, F, M>, 
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
 	E merge(E e, PersistenceContext<?> pctx, Connection c) 
 			throws EntityException, SQLException, QueryException {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = 
-				new PersistenceManager<A, R, T, E, H, F, M, C>(e, pctx, getUnificationContext());
+		PersistenceManager<A, R, T, E, H, F, M> pm = 
+				new PersistenceManager<A, R, T, E, H, F, M>(e, pctx, getUnificationContext());
 		pm.merge(c);
 		return e;
 	}
@@ -85,16 +82,15 @@ public abstract class AbstractPersistenceManagerTest<I extends Implementation<I>
 	protected <
 		A extends Attribute, 
 		R extends com.appspot.relaxe.ent.Reference, 
-		T extends ReferenceType<A, R, T, E, H, F, M, C>, 
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		T extends ReferenceType<A, R, T, E, H, F, M>, 
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
 	E sync(E e, PersistenceContext<?> pctx, Connection c) throws EntityException, SQLException, QueryException {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = 
-				new PersistenceManager<A, R, T, E, H, F, M, C>(e, pctx, getUnificationContext());
+		PersistenceManager<A, R, T, E, H, F, M> pm = 
+				new PersistenceManager<A, R, T, E, H, F, M>(e, pctx, getUnificationContext());
 		return pm.sync(c);		
 	}
 
@@ -102,30 +98,28 @@ public abstract class AbstractPersistenceManagerTest<I extends Implementation<I>
 	protected <
 		A extends Attribute, 
 		R extends com.appspot.relaxe.ent.Reference, 
-		T extends ReferenceType<A, R, T, E, H, F, M, C>, 
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		T extends ReferenceType<A, R, T, E, H, F, M>, 
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
 	void delete(E e, PersistenceContext<?> pctx, Connection c) throws EntityException, SQLException, QueryException {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = 
-				new PersistenceManager<A, R, T, E, H, F, M, C>(e, pctx, getUnificationContext());
+		PersistenceManager<A, R, T, E, H, F, M> pm = 
+				new PersistenceManager<A, R, T, E, H, F, M>(e, pctx, getUnificationContext());
 		pm.delete(c);		
 	}
 	
 	protected <
 		A extends Attribute, 
 		R extends com.appspot.relaxe.ent.Reference, 
-		T extends ReferenceType<A, R, T, E, H, F, M, C>, 
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content,
-		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
-		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
+		T extends ReferenceType<A, R, T, E, H, F, M>, 
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>,
+		Q extends EntityQuery<A, R, T, E, H, F, M, RE>
 	>
 	E merge(E e) throws EntityException, SQLException, QueryException {		
 		return merge(e, getPersistenceContext(), getConnection());		
@@ -134,16 +128,15 @@ public abstract class AbstractPersistenceManagerTest<I extends Implementation<I>
 	protected <
 		A extends Attribute, 
 		R extends com.appspot.relaxe.ent.Reference, 
-		T extends ReferenceType<A, R, T, E, H, F, M, C>, 
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content,
-		RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>,
-		Q extends EntityQuery<A, R, T, E, H, F, M, C, RE>
+		T extends ReferenceType<A, R, T, E, H, F, M>, 
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>,
+		Q extends EntityQuery<A, R, T, E, H, F, M, RE>
 	>
-	void delete(Entity<A, R, T, E, H, F, M, C> e) throws EntityException, SQLException, QueryException {
+	void delete(Entity<A, R, T, E, H, F, M> e) throws EntityException, SQLException, QueryException {
 		delete(e.self(), getPersistenceContext(), getConnection());		
 	}
 

@@ -30,7 +30,7 @@ import com.appspot.relaxe.rpc.StringArray;
 
 public class PGTextArrayAccessor<
 	A extends Attribute,
-	E extends Entity<A, ?, ?, E, ?, ?, ?, ?> & HasPGTextArray<A, E>
+	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasPGTextArray<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, StringArray, PGTextArrayType, PGTextArrayHolder, PGTextArrayKey<A, E>> {
 

@@ -36,10 +36,10 @@ import com.appspot.relaxe.types.ReferenceType;
 public class LongIdentityMap<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, ?, M, ?>,
-	E extends Entity<A, R, T, E, H, ?, M, ?> & HasLong<A, E>,
-	H extends ReferenceHolder<A, R, T, E, H, M, ?>,
-	M extends EntityMetaData<A, R, T, E, H, ?, M, ?>
+	T extends ReferenceType<A, R, T, E, H, ?, M>,
+	E extends Entity<A, R, T, E, H, ?, M> & HasLong<A, E>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	M extends EntityMetaData<A, R, T, E, H, ?, M>
 	>
 	extends AbstractKeyIdentityMap<A, R, T, E, H, M, Long, LongType, LongHolder, LongKey<A, E>>
 {		

@@ -27,7 +27,7 @@ import com.appspot.relaxe.meta.ForeignKey;
 
 public interface EntityQueryContext {
 
-	EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> getQuery();
+	EntityQuery<?, ?, ?, ?, ?, ?, ?, ?> getQuery();
 	
 	TableReference getTableRef(EntityQueryElementTag tag); 
 

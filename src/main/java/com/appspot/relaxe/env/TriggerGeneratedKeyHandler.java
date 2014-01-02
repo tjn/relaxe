@@ -73,9 +73,9 @@ public class TriggerGeneratedKeyHandler
 	public <
 		A extends Attribute, 
 		R extends Reference, 
-		T extends com.appspot.relaxe.types.ReferenceType<A,R,T,E,?,?,M,?>, 
-		E extends com.appspot.relaxe.ent.Entity<A,R,T,E,?,?,M,?>, 
-		M extends com.appspot.relaxe.ent.EntityMetaData<A,R,T,E,?,?,M,?>
+		T extends com.appspot.relaxe.types.ReferenceType<A,R,T,E,?,?,M>, 
+		E extends com.appspot.relaxe.ent.Entity<A,R,T,E,?,?,M>, 
+		M extends com.appspot.relaxe.ent.EntityMetaData<A,R,T,E,?,?,M>
 	> 
 	void processGeneratedKeys(com.appspot.relaxe.expr.InsertStatement ins, final E target, final Statement statement) 
 		throws java.sql.SQLException {

@@ -57,12 +57,11 @@ public class PagilaPersistenceManagerTest
 	    
 	    // PublicFactory pf = new PublicFactoryImpl(); 
 	    
-	    Actor a = newEntity(Actor.Type.TYPE);
-	    Actor.Content ac = a.getContent();        
-	    ac.setFirstName("Dana");
-	    ac.setLastName("Brooks");
+	    Actor a = newEntity(Actor.Type.TYPE);	            
+	    a.setFirstName("Dana");
+	    a.setLastName("Brooks");
 	
-	    PersistenceManager<Actor.Attribute, Reference, Type, Actor, Holder, Factory, MetaData, Actor.Content> pm = create(a);
+	    PersistenceManager<Actor.Attribute, Reference, Type, Actor, Holder, Factory, MetaData> pm = create(a);
 	    
 	    pm.merge(c);
 	    c.commit();        
@@ -82,17 +81,15 @@ public class PagilaPersistenceManagerTest
 	    Connection c = getConnection();
 	    assertFalse(c.getAutoCommit());
 	    
-	    final Actor a = newEntity(Actor.Type.TYPE);
-	    Actor.Content ac = a.getContent();        
-	    ac.setFirstName("Dana");
-	    ac.setLastName("Brooks");
+	    final Actor a = newEntity(Actor.Type.TYPE);	            
+	    a.setFirstName("Dana");
+	    a.setLastName("Brooks");
 	
-	    Film f = newEntity(Film.Type.TYPE);
-	    Film.Content fc = f.getContent();
-	    fc.setTitle("New Film");
+	    Film f = newEntity(Film.Type.TYPE);	    
+	    f.setTitle("New Film");
 	    	    
 	    Language lang = newEntity(Language.Type.TYPE);
-	    lang.getContent().setName("English");	    	    
+	    lang.setName("English");	    	    
 	    f.setLanguage(Film.LANGUAGE, lang.ref());
 	    
 	    FilmActor filmActor = newEntity(FilmActor.Type.TYPE);
@@ -126,7 +123,7 @@ public class PagilaPersistenceManagerTest
 	    c.commit();
 	    
 	    assertTrue(lang.isIdentified());
-	    logger().debug("testMergeDependent: lang.getContent().getLanguageId()=" + lang.getContent().getLanguageId());
+	    logger().debug("testMergeDependent: lang.getLanguageId()=" + lang.getLanguageId());
 	    
 	    delete(lang);
 	    c.commit();
@@ -175,7 +172,7 @@ public class PagilaPersistenceManagerTest
 	    
 	    final Actor a = newEntity(Actor.Type.TYPE);
 	    Integer id = Integer.valueOf(1);
-	    a.getContent().setActorId(id);	    
+	    a.setActorId(id);	    
 	    assertEquals(a.attributes().size(), 1);
 	    
 	    Actor sr = sync(a, pc, c);
@@ -192,14 +189,13 @@ public class PagilaPersistenceManagerTest
 	    PersistenceContext<PGImplementation> pc = getPersistenceContext();
 	    assertFalse(c.getAutoCommit());
 	    
-	    final Actor a = newEntity(Actor.Type.TYPE);
-	    Actor.Content ac = a.getContent();        
-	    ac.setFirstName("Dana");
-	    ac.setLastName("Brooks");
+	    final Actor a = newEntity(Actor.Type.TYPE);	            
+	    a.setFirstName("Dana");
+	    a.setLastName("Brooks");
 	    
 	    final Actor ma = merge(a, pc, c);
 	    
-	    Integer aid = ma.getContent().getActorId();
+	    Integer aid = ma.getActorId().value();
 	    assertNotNull(aid);
 	        	
 	    Set<Attribute> expected = ma.getMetaData().attributes();
@@ -212,7 +208,7 @@ public class PagilaPersistenceManagerTest
 	    
 	    	    
 	    Actor pa = newEntity(Actor.Type.TYPE);
-	    pa.getContent().setActorId(aid);	    
+	    pa.setActorId(aid);	    
 	    assertEquals(pa.attributes().size(), 1);
 	    
 	    Actor sr = sync(pa, pc, c);	        	        	    

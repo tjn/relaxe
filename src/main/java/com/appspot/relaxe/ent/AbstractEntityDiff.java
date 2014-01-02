@@ -33,9 +33,9 @@ import com.appspot.relaxe.types.ReferenceType;
 public abstract class AbstractEntityDiff<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, ?, ?, M, ?>,
-	E extends Entity<A, R, T, E, ?, ?, M, ?>,
-	M extends EntityMetaData<A, R, T, E, ?, ?, M, ?>
+	T extends ReferenceType<A, R, T, E, ?, ?, M>,
+	E extends Entity<A, R, T, E, ?, ?, M>,
+	M extends EntityMetaData<A, R, T, E, ?, ?, M>
 >
 	implements EntityDiff<A, R, T, E>
 {
@@ -91,7 +91,7 @@ public abstract class AbstractEntityDiff<
 	 */
 
 	protected Map<A, Change> attributes(E original, E modified) throws EntityRuntimeException {				
-		EntityMetaData<A, R, T, E, ?, ?, ?, ?> meta = original.getMetaData();
+		EntityMetaData<A, R, T, E, ?, ?, ?> meta = original.getMetaData();
 		Map<A, Change> cm = new HashMap<A, Change>();
 
 		for (A a : meta.attributes()) {
@@ -132,8 +132,8 @@ public abstract class AbstractEntityDiff<
 		Map<R, Change> cm = new HashMap<R, Change>();
 
 		for (R r : meta.relationships()) {
-			Entity<?,?,?,?,?,?,?,?> o = original.ref(r).value();
-			Entity<?,?,?,?,?,?,?,?> m = modified.ref(r).value();
+			Entity<?,?,?,?,?,?,?> o = original.ref(r).value();
+			Entity<?,?,?,?,?,?,?> m = modified.ref(r).value();
 
 			if ((o == null && m == null) || (o == m)) {
 				continue;
@@ -159,7 +159,7 @@ public abstract class AbstractEntityDiff<
 	}
 
 	private
-	<P extends Entity<?, ?, ?, ?, ?, ?, ?, ?>>
+	<P extends Entity<?, ?, ?, ?, ?, ?, ?>>
 	boolean primaryKeyDiffers(P o, P m) throws EntityRuntimeException {
 		Map<Column, PrimitiveHolder<?,?,?>> a = o.getPrimaryKey();
 		Map<Column, PrimitiveHolder<?,?,?>> b = m.getPrimaryKey();

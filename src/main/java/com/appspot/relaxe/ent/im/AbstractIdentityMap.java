@@ -37,10 +37,10 @@ import com.appspot.relaxe.types.ReferenceType;
 public abstract class AbstractIdentityMap<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, ?, M, ?>,
-	E extends Entity<A, R, T, E, H, ?, M, ?>,
-	H extends ReferenceHolder<A, R, T, E, H, M, ?>,
-	M extends EntityMetaData<A, R, T, E, H, ?, M, ?>,
+	T extends ReferenceType<A, R, T, E, H, ?, M>,
+	E extends Entity<A, R, T, E, H, ?, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	M extends EntityMetaData<A, R, T, E, H, ?, M>,
 	K
 >
 	implements EntityIdentityMap<A, R, T, E, H, M> {

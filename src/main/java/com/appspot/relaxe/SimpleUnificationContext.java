@@ -37,7 +37,7 @@ public class SimpleUnificationContext implements UnificationContext {
 
 	private Set<ContextRegistration> registrationSet;
 	
-	// private Map<EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>, EntityIdentityMap<Attribute, Reference, ReferenceType<A,R,T,E,H,?,M,?>, Entity<A,R,T,E,H,?,M,?>, ReferenceHolder<A,R,T,E,H,M,?>, EntityMetaData<A,R,T,E,H,?,M,?>>> identityMap;
+	// private Map<EntityMetaData<?, ?, ?, ?, ?, ?, ?>, EntityIdentityMap<Attribute, Reference, ReferenceType<A,R,T,E,H,?,M,?>, Entity<?,?,?,?,?,?,?>, ReferenceHolder<A,R,T,E,H,M,?>, EntityMetaData<A,R,T,E,H,?,M,?>>> identityMap;
 	
 	private static Logger logger = LoggerFactory.getLogger(SimpleUnificationContext.class);
 	
@@ -76,7 +76,7 @@ public class SimpleUnificationContext implements UnificationContext {
 	
 //	public <		
 //		T extends ReferenceType<?, ?, T, E, H, ?, M, ?>,
-//		E extends Entity<?, ?, T, E, H, ?, M, ?>,		
+//		E extends Entity<?, ?, ?, ?, ?, ?, ?>,		
 //		H extends ReferenceHolder<?, ?, T, E, H, M, ?>, 
 //		M extends EntityMetaData<?, ?, T, E, H, ?, M, ?>
 //	>	

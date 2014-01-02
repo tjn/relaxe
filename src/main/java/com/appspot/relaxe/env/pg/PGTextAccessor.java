@@ -29,7 +29,7 @@ import com.appspot.relaxe.ent.value.AbstractPrimitiveAccessor;
 
 public class PGTextAccessor<
 	A extends Attribute,
-	E extends Entity<A, ?, ?, E, ?, ?, ?, ?> & HasPGText<A, E>
+	E extends Entity<A, ?, ?, E, ?, ?, ?> & HasPGText<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, String, PGTextType, PGTextHolder, PGTextKey<A, E>> {
 

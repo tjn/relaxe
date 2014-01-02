@@ -23,7 +23,6 @@
 package com.appspot.relaxe;
 
 import com.appspot.relaxe.ent.Attribute;
-import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
@@ -35,23 +34,21 @@ import com.appspot.relaxe.types.ReferenceType;
 public abstract class DefaultEntityKey<
 	A extends Attribute,
 	R extends Reference,	
-	T extends ReferenceType<A, R, T, E, H, F, M, C>,
-	E extends Entity<A, R, T, E, H, F, M, C>,
-	H extends ReferenceHolder<A, R, T, E, H, M, C>,
-	F extends EntityFactory<E, H, M, F, C>,
-	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-	C extends Content,
+	T extends ReferenceType<A, R, T, E, H, F, M>,
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>,
 	RA extends Attribute,
 	RR extends Reference,	
-	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM, RC>,
-	RE extends Entity<RA, RR, RT, RE, RH, RF, RM, RC>,
-	RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM, RC>,
-	RF extends EntityFactory<RE, RH, RM, RF, RC>,
-	RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM, RC>,
-	RC extends Content,
-	K extends EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, K>
+	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+	RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+	RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+	RF extends EntityFactory<RE, RH, RM, RF>,
+	RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
+	K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>
 >
-	implements EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, K> {
+	implements EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K> {
 	
 	/**
 	 * 

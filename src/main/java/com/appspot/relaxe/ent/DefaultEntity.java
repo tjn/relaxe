@@ -59,14 +59,13 @@ import com.appspot.relaxe.types.ReferenceType;
 public abstract class DefaultEntity<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M, C>,	
-	E extends Entity<A, R, T, E, H, F, M, C>,
-	H extends ReferenceHolder<A, R, T, E, H, M, C>,
-	F extends EntityFactory<E, H, M, F, C>, 
-	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-	C extends Content
+	T extends ReferenceType<A, R, T, E, H, F, M>,	
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>, 
+	M extends EntityMetaData<A, R, T, E, H, F, M>
 >
-	extends AbstractEntity<A, R, T, E, H, F, M, C> {
+	extends AbstractEntity<A, R, T, E, H, F, M> {
 
 	/**
 	 *
@@ -128,14 +127,13 @@ public abstract class DefaultEntity<
 	public <
 		RA extends Attribute,
 		RR extends Reference,
-		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM, RC>,
-		RE extends Entity<RA, RR, RT, RE, RH, RF, RM, RC>,
-		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM, RC>,
-		RF extends EntityFactory<RE, RH, RM, RF, RC>,
-		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM, RC>,
-		RC extends Content,
-		RK extends EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, RK>
-	> RH getRef(EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, RK> k) {
+		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
+		RK extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK>
+	> RH getRef(EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK> k) {
 		return k.get(self());
 	}
 	
@@ -143,22 +141,21 @@ public abstract class DefaultEntity<
 	public <
 		RA extends Attribute,
 		RR extends Reference,
-		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM, RC>,
-		RE extends Entity<RA, RR, RT, RE, RH, RF, RM, RC>,
-		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM, RC>,
-		RF extends EntityFactory<RE, RH, RM, RF, RC>,
-		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM, RC>,
-		RC extends Content,
-		RK extends EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, RK>
+		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
+		RK extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK>
 	> 
-	void setRef(EntityKey<A, R, T, E, H, F, M, C, RA, RR, RT, RE, RH, RF, RM, RC, RK> k, RH newValue) {		
+	void setRef(EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, RK> k, RH newValue) {		
 		k.set(self(), newValue);
 	}
 	
 	@Override
-	public Entity<?, ?, ?, ?, ?, ?, ?, ?> getRef(R r) {
-		EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = getMetaData().getEntityKey(r);
-		ReferenceHolder<?, ?, ?, ?, ?, ?, ?> rh = getRef(k.self());
+	public Entity<?, ?, ?, ?, ?, ?, ?> getRef(R r) {
+		EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k = getMetaData().getEntityKey(r);
+		ReferenceHolder<?, ?, ?, ?, ?, ?> rh = getRef(k.self());
 		return (rh == null) ? null : rh.value();		
 	}
 	
@@ -177,7 +174,7 @@ public abstract class DefaultEntity<
 		}
 		
 		for (R r : meta.relationships()) {
-			EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
+			EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
 			ek.copy(src, dest);			
 		}
 		
@@ -222,9 +219,9 @@ public abstract class DefaultEntity<
 	
 	
 	@Override
-	public com.appspot.relaxe.rpc.ReferenceHolder<?,?,?,?,?,?,?> ref(R ref) {
-		EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = getMetaData().getEntityKey(ref);
-		ReferenceHolder<?, ?, ?, ?, ?, ?, ?> rh = getRef(k.self());
+	public com.appspot.relaxe.rpc.ReferenceHolder<?,?,?,?,?,?> ref(R ref) {
+		EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k = getMetaData().getEntityKey(ref);
+		ReferenceHolder<?, ?, ?, ?, ?, ?> rh = getRef(k.self());
 		return rh;
 	}	
 }

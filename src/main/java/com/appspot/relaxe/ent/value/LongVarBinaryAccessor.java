@@ -29,7 +29,7 @@ import com.appspot.relaxe.types.LongVarBinaryType;
 
 public class LongVarBinaryAccessor<
 	A extends Attribute,
-	E extends Entity<A, ?, ?, E, ?, ?, ?, ?> & HasLongVarBinary<A, E>
+	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasLongVarBinary<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, LongVarBinary, LongVarBinaryType, LongVarBinaryHolder, LongVarBinaryKey<A, E>> {
 

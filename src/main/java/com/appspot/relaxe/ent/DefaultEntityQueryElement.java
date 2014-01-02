@@ -49,15 +49,14 @@ import com.appspot.relaxe.types.ReferenceType;
 public abstract class DefaultEntityQueryElement<
 	A extends Attribute,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M, C>,
-	E extends Entity<A, R, T, E, H, F, M, C>,
-	H extends ReferenceHolder<A, R, T, E, H, M, C>,
-	F extends EntityFactory<E, H, M, F, C>,
-	M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-	C extends com.appspot.relaxe.ent.Content,		
-	QE extends EntityQueryElement<A, R, T, E, H, F, M, C, QE>
+	T extends ReferenceType<A, R, T, E, H, F, M>,
+	E extends Entity<A, R, T, E, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>,
+	QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
 > 
-	implements EntityQueryElement<A, R, T, E, H, F, M, C, QE>	
+	implements EntityQueryElement<A, R, T, E, H, F, M, QE>	
 {
 
 	/**
@@ -84,33 +83,33 @@ public abstract class DefaultEntityQueryElement<
 		
 
 	@Override
-	public abstract EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> k);
+	public abstract EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(EntityKey<A, R, T, E,H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k);
 		
 	
 //	public abstract static class DefaultBuilder<
 //		A extends com.appspot.relaxe.ent.Attribute,
 //		R extends com.appspot.relaxe.ent.Reference,
-//		T extends ReferenceType<A, R, T, E, H, F, M, C>,
-//		E extends Entity<A, R, T, E, H, F, M, C>,
-//		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-//		F extends EntityFactory<E, H, M, F, C>,		
-//		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
+//		T extends ReferenceType<A, R, T, E, H, F, M>,
+//		E extends Entity<A, R, T, E, H, F, M>,
+//		H extends ReferenceHolder<A, R, T, E, H, M>,
+//		F extends EntityFactory<E, H, M, F>,		
+//		M extends EntityMetaData<A, R, T, E, H, F, M>,
 //		C extends com.appspot.relaxe.ent.Content,	
-//		QE extends EntityQueryElement<A, R, T, E, H, F, M, C, QE>
+//		QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
 //	>
-//		implements EntityQueryElement.Builder<A, R, T, E, H, F, M, C, QE>
+//		implements EntityQueryElement.Builder<A, R, T, E, H, F, M, QE>
 //	{
 //		
 //		private Map<>
 //		
 //		@Override
-//		public EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(
-//				EntityKey<A, R, T, E, H, F, M, C, ?, ?, ?, ?, ?, ?, ?, ?, ?> k) {		
+//		public EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(
+//				EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?, ?> k) {		
 //			return null;
 //		}
 //		
 //		@Override
-//		public <RA extends Attribute, RR extends Reference, RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM, RC>, RE extends Entity<RA, RR, RT, RE, RH, RF, RM, RC>, RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM, RC>, RF extends EntityFactory<RE, RH, RM, RF, RC>, RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM, RC>, RC extends Content, RQ extends EntityQueryElement<RA, RR, RT, RE, RH, RF, RM, RC, RQ>, K extends EntityKey<com.appspot.relaxe.gen.sakila.ent.sakila.Film.Attribute, com.appspot.relaxe.gen.sakila.ent.sakila.Film.Reference, Type, Film, Holder, Factory, MetaData, com.appspot.relaxe.gen.sakila.ent.sakila.Film.Content, RA, RR, RT, RE, RH, RF, RM, RC, K>> void setQueryElement(
+//		public <RA extends Attribute, RR extends Reference, RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>, RE extends Entity<RA, RR, RT, RE, RH, RF, RM>, RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>, RF extends EntityFactory<RE, RH, RM, RF>, RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM> extends Content, RQ extends EntityQueryElement<RA, RR, RT, RE, RH, RF, RM, RQ>, K extends EntityKey<com.appspot.relaxe.gen.sakila.ent.sakila.Film.Attribute, com.appspot.relaxe.gen.sakila.ent.sakila.Film.Reference, Type, Film, Holder, Factory, MetaData, com.appspot.relaxe.gen.sakila.ent.sakila.Film.Content, RA, RR, RT, RE, RH, RF, RM, K>> void setQueryElement(
 //				K key, QE queryElement) {
 //					
 //		}

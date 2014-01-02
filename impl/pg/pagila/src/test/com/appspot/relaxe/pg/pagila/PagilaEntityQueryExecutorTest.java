@@ -29,7 +29,6 @@ import com.appspot.relaxe.EntityQueryExecutor;
 import com.appspot.relaxe.EntityQueryExpressionBuilder;
 import com.appspot.relaxe.SimpleUnificationContext;
 import com.appspot.relaxe.ent.Attribute;
-import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObjectQueryResult;
 import com.appspot.relaxe.ent.Entity;
@@ -79,13 +78,12 @@ public class PagilaEntityQueryExecutorTest
 				Film, 
 				Film.Holder, 
 				Film.Factory, 
-				Film.MetaData,
-				Film.Content,
+				Film.MetaData,				
 				Film.QueryElement
 			> qe = createExecutor(Film.Type.TYPE.getMetaData(), pc);
 			
 			
-			EntityQueryResult<Film.Attribute, Film.Reference, Film.Type, Film, Film.Holder, Film.Factory, Film.MetaData, Film.Content, Film.QueryElement> er = qe.execute(query, opts, c);
+			EntityQueryResult<Film.Attribute, Film.Reference, Film.Type, Film, Film.Holder, Film.Factory, Film.MetaData, Film.QueryElement> er = qe.execute(query, opts, c);
 			assertNotNull(er);
 			
 			DataObjectQueryResult<EntityDataObject<Film>> qr = er.getContent(); 
@@ -128,16 +126,15 @@ public class PagilaEntityQueryExecutorTest
 	public <
 		A extends Attribute,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M, C>,
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content,
-		QE extends EntityQueryElement<A, R, T, E, H, F, M, C, QE>
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
 	>
-	EntityQueryExecutor<A, R, T, E, H, F, M, C, QE> createExecutor(M meta, PersistenceContext<?> persistenceContext) {
-		return new EntityQueryExecutor<A, R, T, E, H, F, M, C, QE>(persistenceContext, getIdentityContext());
+	EntityQueryExecutor<A, R, T, E, H, F, M, QE> createExecutor(M meta, PersistenceContext<?> persistenceContext) {
+		return new EntityQueryExecutor<A, R, T, E, H, F, M, QE>(persistenceContext, getIdentityContext());
 	}
 	
 	
@@ -348,8 +345,8 @@ public class PagilaEntityQueryExecutorTest
 				
 		Film.Query qo = qb.newQuery();
 				
-		EntityQueryExpressionBuilder<Film.Attribute, Film.Reference, Film.Type, Film, Film.Holder, Film.Factory, Film.MetaData, Film.Content, Film.QueryElement> ctx = 
-				new EntityQueryExpressionBuilder<Film.Attribute, Film.Reference, Film.Type, Film, Film.Holder, Film.Factory, Film.MetaData, Film.Content, Film.QueryElement>(qo);
+		EntityQueryExpressionBuilder<Film.Attribute, Film.Reference, Film.Type, Film, Film.Holder, Film.Factory, Film.MetaData, Film.QueryElement> ctx = 
+				new EntityQueryExpressionBuilder<Film.Attribute, Film.Reference, Film.Type, Film, Film.Holder, Film.Factory, Film.MetaData, Film.QueryElement>(qo);
 		
 		QueryExpression qe = ctx.getQueryExpression();
 						
@@ -528,7 +525,7 @@ public class PagilaEntityQueryExecutorTest
 			
 			assertSame(oh, lh);
 		
-			Entity<?, ?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.ORIGINAL_LANGUAGE.name());
+			Entity<?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.ORIGINAL_LANGUAGE.name());
 			assertNotNull(e);	
 		}
 	}
@@ -577,7 +574,7 @@ public class PagilaEntityQueryExecutorTest
 			
 			assertSame(oh, lh);
 		
-			Entity<?, ?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.ORIGINAL_LANGUAGE.name());
+			Entity<?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.ORIGINAL_LANGUAGE.name());
 			assertNotNull(e);			
 		}
 	}

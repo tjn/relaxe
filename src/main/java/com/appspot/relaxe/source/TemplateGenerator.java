@@ -46,7 +46,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import com.appspot.relaxe.ent.Attribute;
-import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityContext;
 import com.appspot.relaxe.ent.EntityFactory;
@@ -94,7 +93,7 @@ public class TemplateGenerator {
 			File sd = dm.get(s);
 						
 			for (BaseTable t : tables) {
-				EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> meta = ctx.getMetaData(t);
+				EntityMetaData<?, ?, ?, ?, ?, ?, ?> meta = ctx.getMetaData(t);
 				
 				
 				String tn = np.getTemplate(t);				
@@ -115,12 +114,11 @@ public class TemplateGenerator {
 	<
 		A extends Attribute,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M, C>,	
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,	 
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		T extends ReferenceType<A, R, T, E, H, F, M>,	
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,	 
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
 	void generateTemplate(M meta, XMLStreamWriter w, NamingPolicy np) throws XMLStreamException {
 		BaseTable t = meta.getBaseTable();
@@ -146,12 +144,11 @@ public class TemplateGenerator {
 	<
 		A extends Attribute,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M, C>,	
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,	 
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		T extends ReferenceType<A, R, T, E, H, F, M>,	
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,	 
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
 	void generateAttributeRows(M meta, XMLStreamWriter w, NamingPolicy np) throws XMLStreamException {
 		
@@ -166,12 +163,11 @@ public class TemplateGenerator {
 	<
 		A extends Attribute,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M, C>,	
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,	 
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		T extends ReferenceType<A, R, T, E, H, F, M>,	
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,	 
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
 	void generateReferenceRows(M meta, XMLStreamWriter w, NamingPolicy np) throws XMLStreamException {		
 		
@@ -318,14 +314,13 @@ public class TemplateGenerator {
 	<
 		A extends Attribute,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M, C>,	
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,	 
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		T extends ReferenceType<A, R, T, E, H, F, M>,	
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,	 
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>		
-	void write(EntityMetaData<A, R, T, E, H, F, M, C> meta, NamingPolicy np, File tf, XMLOutputFactory xof) throws IOException, XMLStreamException, TransformerException {
+	void write(EntityMetaData<A, R, T, E, H, F, M> meta, NamingPolicy np, File tf, XMLOutputFactory xof) throws IOException, XMLStreamException, TransformerException {
 		
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		XMLStreamWriter w = xof.createXMLStreamWriter(os);

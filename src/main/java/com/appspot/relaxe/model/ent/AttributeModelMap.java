@@ -39,8 +39,8 @@ public interface AttributeModelMap<
 	V extends Serializable,
 	P extends AbstractPrimitiveType<P>,
 	H extends AbstractPrimitiveHolder<V, P, H>,
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?, ?>,
+	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
+	E extends Entity<A, ?, T, E, ?, ?, ?>,
 	D extends AttributeModelMap<A, V, P, H, T, E, D>
 >	
 {	

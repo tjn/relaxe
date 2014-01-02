@@ -43,24 +43,22 @@ public interface EntitySession {
 	<
 		A extends Attribute,
 		R extends Reference,	
-		T extends ReferenceType<A, R, T, E, H, F, M, C>,
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends com.appspot.relaxe.ent.Content
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
 	E merge(E e) throws EntityException;
 	
 	<
 		A extends Attribute,
 		R extends Reference,	
-		T extends ReferenceType<A, R, T, E, H, F, M, C>,
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends com.appspot.relaxe.ent.Content
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
 	E insert(E e)
 		throws EntityException;
@@ -69,12 +67,11 @@ public interface EntitySession {
 	<
 		A extends Attribute,
 		R extends Reference,	
-		T extends ReferenceType<A, R, T, E, H, F, M, C>,
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends com.appspot.relaxe.ent.Content
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
 	E update(E e)
 		throws EntityException;	
@@ -82,12 +79,11 @@ public interface EntitySession {
 	<
 		A extends Attribute,
 		R extends Reference,	
-		T extends ReferenceType<A, R, T, E, H, F, M, C>,
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends com.appspot.relaxe.ent.Content
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
 	void delete(E e)
 		throws EntityException;
@@ -96,42 +92,39 @@ public interface EntitySession {
 	<
 		A extends Attribute,
 		R extends Reference,	
-		T extends ReferenceType<A, R, T, E, H, F, M, C>,
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends com.appspot.relaxe.ent.Content
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
 	E sync(E e) throws EntityException;	
 	
 	public <
 		A extends Attribute,
 		R extends Reference,	
-		T extends ReferenceType<A, R, T, E, H, F, M, C>,
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends com.appspot.relaxe.ent.Content,		
-	    RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>,		
+	    RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
 	>
-	EntityQueryResult<A, R, T, E, H, F, M, C, RE> query(EntityQuery<A, R, T, E, H, F, M, C, RE> query, FetchOptions opts)
+	EntityQueryResult<A, R, T, E, H, F, M, RE> query(EntityQuery<A, R, T, E, H, F, M, RE> query, FetchOptions opts)
 		throws EntityException;
 	
 	
 	public <
 		A extends Attribute,
 		R extends Reference,	
-		T extends ReferenceType<A, R, T, E, H, F, M, C>,
-		E extends Entity<A, R, T, E, H, F, M, C>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends com.appspot.relaxe.ent.Content,
-	    RE extends EntityQueryElement<A, R, T, E, H, F, M, C, RE>	
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, H, F, M>,
+	    RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>	
 	>
-	List<E> load(EntityQuery<A, R, T, E, H, F, M, C, RE> q, FetchOptions opts)
+	List<E> load(EntityQuery<A, R, T, E, H, F, M, RE> q, FetchOptions opts)
 			throws EntityException;
 	
 	/**
@@ -144,11 +137,11 @@ public interface EntitySession {
 	public <		
 		A extends Attribute,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M, ?>,
-		E extends Entity<A, R, T, E, H, F, M, ?>,
-		H extends ReferenceHolder<A, R, T, E, H, M, ?>,
-		F extends EntityFactory<E, H, M, F, ?>,
-		M extends EntityMetaData<A, R, T, E, H, F, M, ?>		
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M>		
 	>
 	E newEntity(T type);
 }

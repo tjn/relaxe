@@ -43,7 +43,7 @@ import com.appspot.relaxe.meta.Catalog;
 public class DefaultEntityContext
 	implements EntityContext {
 			
-	private Map<BaseTable, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> metaMap;	
+	private Map<BaseTable, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> metaMap;	
 	private Catalog	catalog;
 	private Catalog boundTo;	
 	private ClassLoader loader;
@@ -123,7 +123,7 @@ public class DefaultEntityContext
 			logger().error("no interface type for " + t);
 		}
 		else {
-			EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> meta = getMetaData(t);			
+			EntityMetaData<?, ?, ?, ?, ?, ?, ?> meta = getMetaData(t);			
 			
 			if (meta != null) {
 				throw new IllegalStateException("duplicate meta-data mapping for table: " + t);
@@ -138,7 +138,7 @@ public class DefaultEntityContext
 				Class<?> m = Class.forName(impl.getQualifiedName(), false, pl);
 				
 //				this is ugly, isn't it:
-				Entity<?,?,?,?,?,?,?,?> prototype = (Entity<?,?,?,?,?,?,?,?>) m.newInstance();								
+				Entity<?,?,?,?,?,?,?> prototype = (Entity<?,?,?,?,?,?,?>) m.newInstance();								
 				meta = prototype.getMetaData();			
 				// meta.bind(t);
 				
@@ -156,17 +156,17 @@ public class DefaultEntityContext
 	}
 
 	@Override
-	public EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> getMetaData(BaseTable table) {					
+	public EntityMetaData<?, ?, ?, ?, ?, ?, ?> getMetaData(BaseTable table) {					
 		return getMetaMap().get(table);
 	}	
 	
-	private void register(EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> meta) {	    
+	private void register(EntityMetaData<?, ?, ?, ?, ?, ?, ?> meta) {	    
 		getMetaMap().put(meta.getBaseTable(), meta);		
 	}
 
-	public Map<BaseTable, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> getMetaMap() {
+	public Map<BaseTable, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> getMetaMap() {
 		if (metaMap == null) {
-			metaMap = new HashMap<BaseTable, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>>();
+			metaMap = new HashMap<BaseTable, EntityMetaData<?, ?, ?, ?, ?, ?, ?>>();
 		}
 
 		return metaMap;

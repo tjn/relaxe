@@ -33,7 +33,7 @@ import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 public class PrimitiveStamper<
 	A extends Attribute,
-	E extends Entity<A, ?, ?, E, ?, ?, ?, ?>,	
+	E extends Entity<A, ?, ?, E, ?, ?, ?>,	
 	S extends Serializable,
 	P extends AbstractPrimitiveType<P>,
 	H extends AbstractPrimitiveHolder<S, P, H>,	
