@@ -64,7 +64,7 @@ import com.appspot.relaxe.query.QueryException;
 
 import java.sql.DatabaseMetaData;
 
-import fi.tnie.util.io.IOHelper;
+import com.appspot.relaxe.io.IOHelper;
 
 public class DefaultCatalogFactory 
 	extends AbstractCatalogFactory {

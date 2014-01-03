@@ -23,7 +23,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache CSV"/>
-	<classpathentry kind="lib" path="lib/util.jar"/>
 	<classpathentry kind="lib" path="lib/jdbc/mysql-connector-java/mysql-connector-java-5.1.27.jar"/>
 	<classpathentry kind="lib" path="lib/jdbc/postgresql/postgresql-9.3-1100-jdbc4.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>

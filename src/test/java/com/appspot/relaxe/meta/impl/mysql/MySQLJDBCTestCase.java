@@ -42,7 +42,7 @@ import com.appspot.relaxe.meta.SchemaMap;
 import com.appspot.relaxe.meta.impl.common.JDBCTestCase;
 import com.appspot.relaxe.query.QueryException;
 
-import fi.tnie.util.io.Pipe;
+import com.appspot.relaxe.io.Pipe;
 
 public abstract class MySQLJDBCTestCase
 	extends JDBCTestCase {

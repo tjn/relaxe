@@ -44,11 +44,11 @@ import org.slf4j.LoggerFactory;
 
 import com.appspot.relaxe.exec.QueryProcessor;
 
-import fi.tnie.util.cli.CommandLine;
-import fi.tnie.util.cli.Option;
-import fi.tnie.util.cli.Parameter;
-import fi.tnie.util.cli.Parser;
-import fi.tnie.util.io.IOHelper;
+import com.appspot.relaxe.cli.CommandLine;
+import com.appspot.relaxe.cli.Option;
+import com.appspot.relaxe.cli.Parameter;
+import com.appspot.relaxe.cli.Parser;
+import com.appspot.relaxe.io.IOHelper;
 
 
 public class QueryTool {

@@ -31,10 +31,10 @@ import java.sql.Statement;
 
 import com.appspot.relaxe.env.util.ResultSetWriter;
 
-import fi.tnie.util.cli.CommandLine;
-import fi.tnie.util.cli.Parameter;
-import fi.tnie.util.cli.Parser;
-import fi.tnie.util.io.IOHelper;
+import com.appspot.relaxe.cli.CommandLine;
+import com.appspot.relaxe.cli.Parameter;
+import com.appspot.relaxe.cli.Parser;
+import com.appspot.relaxe.io.IOHelper;
 
 public class KeyGenerationInfo
     extends CatalogTool {

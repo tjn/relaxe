@@ -38,12 +38,12 @@ import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.query.QueryException;
 
-import fi.tnie.util.cli.Parameter;
-import fi.tnie.util.cli.CommandLine;
-import fi.tnie.util.cli.Option;
-import fi.tnie.util.cli.Parser;
-import fi.tnie.util.cli.SimpleOption;
-import fi.tnie.util.io.IOHelper;
+import com.appspot.relaxe.cli.Parameter;
+import com.appspot.relaxe.cli.CommandLine;
+import com.appspot.relaxe.cli.Option;
+import com.appspot.relaxe.cli.Parser;
+import com.appspot.relaxe.cli.SimpleOption;
+import com.appspot.relaxe.io.IOHelper;
 
 public abstract class CatalogTool {
         

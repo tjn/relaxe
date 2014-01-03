@@ -52,8 +52,8 @@ import com.appspot.relaxe.meta.Schema;
 import com.appspot.relaxe.meta.Table;
 import com.appspot.relaxe.query.QueryException;
 
-import fi.tnie.util.io.Launcher;
-import fi.tnie.util.io.RunResult;
+import com.appspot.relaxe.io.Launcher;
+import com.appspot.relaxe.io.RunResult;
 
 import junit.framework.TestCase;
 

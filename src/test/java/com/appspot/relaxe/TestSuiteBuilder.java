@@ -50,8 +50,8 @@ import com.appspot.relaxe.build.Builder;
 import com.appspot.relaxe.env.CatalogFactory;
 import com.appspot.relaxe.env.Implementation;
 
-import fi.tnie.util.io.FileProcessor;
-import fi.tnie.util.io.IOHelper;
+import com.appspot.relaxe.io.FileProcessor;
+import com.appspot.relaxe.io.IOHelper;
 
 public class TestSuiteBuilder
     extends TestCase {      

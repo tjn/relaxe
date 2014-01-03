@@ -20,46 +20,26 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.tools;
+package com.appspot.relaxe.cli;
 
-import com.appspot.relaxe.expr.Identifier;
-import com.appspot.relaxe.meta.Schema;
-import com.appspot.relaxe.meta.SchemaMap;
-
-import com.appspot.relaxe.cli.Parser;
-
-public class CatalogInfo
-    extends CatalogTool {
-        
-    /**
-     * @param args
+public interface Option {
+    /** 
+     * Single character flag or <code>null</code> if this option does not support short version.  
+     * @return
      */
-    public static void main(String[] args) {        
-        System.exit(new CatalogInfo().run(args));
-    }
+    String flag();
+    /**
+     * 
+     * @return
+     */
+    String name();
     
-    @Override
-    public void run() {
-        Identifier n = getCatalog().getName();
-        String cat = (n == null) ? null : n.getName();
-        message("Catalog loaded: " + ((cat == null) ? "<unnamed>" : cat));
-        
-        SchemaMap sm = getCatalog().schemas();
-        
-        message("schemas (" + sm.values().size() + ") {");
-        
-        for (Schema s : sm.values()) {
-        	message(s.getUnqualifiedName().getName());        		
-		}
-        
-        message("}");
-        
-        
-    }
     
-    @Override
-    protected void prepare(Parser p) {        
-        super.prepare(p);
-        addOption(p, OPTION_VERBOSE);        
-    }
+    /**
+     * 
+     * @return
+     */
+    String getDescription();
+            
+    Parameter getParameter();
 }

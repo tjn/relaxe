@@ -31,8 +31,8 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fi.tnie.util.io.Launcher;
-import fi.tnie.util.io.RunResult;
+import com.appspot.relaxe.io.Launcher;
+import com.appspot.relaxe.io.RunResult;
 
 public class PGRestore
 {

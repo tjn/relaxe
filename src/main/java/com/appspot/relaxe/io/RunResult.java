@@ -20,46 +20,43 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.tools;
+package com.appspot.relaxe.io;
 
-import com.appspot.relaxe.expr.Identifier;
-import com.appspot.relaxe.meta.Schema;
-import com.appspot.relaxe.meta.SchemaMap;
+import java.io.ByteArrayOutputStream;
 
-import com.appspot.relaxe.cli.Parser;
-
-public class CatalogInfo
-    extends CatalogTool {
-        
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {        
-        System.exit(new CatalogInfo().run(args));
+public class RunResult {
+    
+    private int exitCode;
+    private String output;
+    private String error;
+    
+    public RunResult(int exitCode) {
+        this(exitCode, null, null);
+    }
+            
+    public RunResult(int exitCode, ByteArrayOutputStream output, ByteArrayOutputStream error) {
+        this.exitCode = exitCode;        
+        this.output = (output == null) ? "" : new String(output.toByteArray());
+        this.error = (error == null) ? "" : new String(error.toByteArray());        
     }
     
-    @Override
-    public void run() {
-        Identifier n = getCatalog().getName();
-        String cat = (n == null) ? null : n.getName();
-        message("Catalog loaded: " + ((cat == null) ? "<unnamed>" : cat));
-        
-        SchemaMap sm = getCatalog().schemas();
-        
-        message("schemas (" + sm.values().size() + ") {");
-        
-        for (Schema s : sm.values()) {
-        	message(s.getUnqualifiedName().getName());        		
-		}
-        
-        message("}");
-        
-        
+    public boolean succeeded() {
+        return (this.exitCode == 0);
     }
     
-    @Override
-    protected void prepare(Parser p) {        
-        super.prepare(p);
-        addOption(p, OPTION_VERBOSE);        
+    public boolean failed() {
+        return (this.exitCode != 0);
     }
+    
+    public int getExitCode() {
+        return exitCode;
+    }
+    
+    public String getOutput() {
+        return this.output;
+    }
+        
+    public String getError() {
+        return this.error;
+    }    
 }

@@ -83,7 +83,7 @@ import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.PrimitiveType;
 
-import fi.tnie.util.io.IOHelper;
+import com.appspot.relaxe.io.IOHelper;
 
 public class SourceGenerator {
 

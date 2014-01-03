@@ -20,46 +20,42 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.tools;
+package com.appspot.relaxe.cli;
 
-import com.appspot.relaxe.expr.Identifier;
-import com.appspot.relaxe.meta.Schema;
-import com.appspot.relaxe.meta.SchemaMap;
+import java.util.List;
+import java.util.Set;
 
-import com.appspot.relaxe.cli.Parser;
 
-public class CatalogInfo
-    extends CatalogTool {
+/**
+ * TODO: cleanup 
+ */
+public interface CommandLine {
+            
+    // Map<Option, String> options();
+    // Option option(String o);
+    // List<Argument> present();
         
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {        
-        System.exit(new CatalogInfo().run(args));
-    }
+    Set<Option> options();
     
-    @Override
-    public void run() {
-        Identifier n = getCatalog().getName();
-        String cat = (n == null) ? null : n.getName();
-        message("Catalog loaded: " + ((cat == null) ? "<unnamed>" : cat));
+    boolean has(Option o);
         
-        SchemaMap sm = getCatalog().schemas();
-        
-        message("schemas (" + sm.values().size() + ") {");
-        
-        for (Schema s : sm.values()) {
-        	message(s.getUnqualifiedName().getName());        		
-		}
-        
-        message("}");
-        
-        
-    }
+    boolean isEmpty();
     
-    @Override
-    protected void prepare(Parser p) {        
-        super.prepare(p);
-        addOption(p, OPTION_VERBOSE);        
-    }
+    List<String> values(Option o);
+    
+    String value(Option o, String delim);
+    String value(Option o);
+    
+    // List<String> values(String a);
+    List<String> values(Parameter a);
+    
+    String value(Parameter a, String delim);
+    String value(Parameter a);
+    
+    Set<Parameter> parameters();
+    List<String> values();
+    
+    List<String> unknownOptions();
+    
+    boolean needsHelp(Option help);
 }
