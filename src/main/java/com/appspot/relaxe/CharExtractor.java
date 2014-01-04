@@ -32,7 +32,7 @@ import com.appspot.relaxe.rpc.CharHolder;
 import com.appspot.relaxe.types.CharType;
 
 
-class CharExtractor
+public class CharExtractor
 	extends ValueExtractor<String, CharType, CharHolder>
 {
 	public CharExtractor(int column) {

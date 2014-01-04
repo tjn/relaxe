@@ -33,7 +33,7 @@ import com.appspot.relaxe.rpc.TimestampHolder;
 import com.appspot.relaxe.types.TimestampType;
 
 
-class TimestampExtractor
+public class TimestampExtractor
 	extends ValueExtractor<Date, TimestampType, TimestampHolder>
 {
 	public TimestampExtractor(int column) {

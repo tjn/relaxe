@@ -33,7 +33,7 @@ import com.appspot.relaxe.rpc.DateHolder;
 import com.appspot.relaxe.types.DateType;
 
 
-class DateExtractor
+public class DateExtractor
 	extends ValueExtractor<Date, DateType, DateHolder>
 {
 	public DateExtractor(int column) {
