@@ -606,7 +606,8 @@ public class Parser {
             
             List<String> lines = columns(ot, wc1, d, wc2);
                         
-            w.write(join(lines, "\n"));            
+            w.write(join(lines, "\n"));
+            w.write("\n");
         }
         
         w.close();
