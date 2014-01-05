@@ -51,7 +51,7 @@ public class DataObjectColumnResolver
 	public Column getColumn(int index) {
 		ColumnExpr ce = metaData.column(index);
 		Identifier cn = ce.getColumnName();				
-		Column col = table.columnMap().get(cn);
+		Column col = table.getColumnMap().get(cn);
 		return col;
 	}
 

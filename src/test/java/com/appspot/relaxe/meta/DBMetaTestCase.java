@@ -324,8 +324,8 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
     			logger().debug("ref'ing: " + col.getUnqualifiedName().getContent());
     			logger().debug("ref'ed: " + rcol.getUnqualifiedName().getContent());
     			
-    			assertNotNull(fk.getReferencing().columnMap().get(col.getUnqualifiedName()));
-    			assertNotNull(fk.getReferenced().columnMap().get(rcol.getUnqualifiedName()));
+    			assertNotNull(fk.getReferencing().getColumnMap().get(col.getUnqualifiedName()));
+    			assertNotNull(fk.getReferenced().getColumnMap().get(rcol.getUnqualifiedName()));
     								
     			// TODO: 
     			// it should be enough for all referenced columns to be

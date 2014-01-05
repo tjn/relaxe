@@ -53,7 +53,7 @@ public class PagilaCreateCatalogTest
 		assertNotNull(ps);
 		BaseTable t = ps.baseTables().get("film");
 		assertNotNull(t);
-		Column c = t.columnMap().get("title");
+		Column c = t.getColumnMap().get("title");
 		assertNotNull(c);
 		
 		assertNotNull(c.getColumnName());

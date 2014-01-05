@@ -83,7 +83,7 @@ public abstract class DefaultEntityMetaData<
 			if (c == null) {
 				throw new NullPointerException(
 						"no column for attribute: " + a + " in " +
-						table.columnMap().keySet());
+						table.getColumnMap().keySet());
 			}
 
 			attributeMap.put(a, c);
@@ -96,7 +96,7 @@ public abstract class DefaultEntityMetaData<
 	}
 
 	protected Column map(BaseTable table, A a) {
-		return table.columnMap().get(a.identifier());
+		return table.getColumnMap().get(a.identifier());
 	}
 
 

@@ -199,7 +199,7 @@ public class ImmutableBaseTable
 	}
 	
 	@Override
-	public ColumnMap columnMap() {
+	public ColumnMap getColumnMap() {
 		return this.columnMap;
 	}
 }

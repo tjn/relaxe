@@ -113,7 +113,7 @@ public class ImmutableForeignKey
 			final BaseTable table = getTable();
 						
 			for (Identifier n : this.columnList) {
-				Column column = table.columnMap().get(n);
+				Column column = table.getColumnMap().get(n);
 				
 				if (column == null) {
 					throw new ElementInstantiationException("no column: " + n);

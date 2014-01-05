@@ -120,7 +120,7 @@ public class TriggerGeneratedKeyHandler
 					
 			while (keys.next()) {
 				String col = keys.getString(nc);
-				Column column = t.columnMap().get(col);
+				Column column = t.getColumnMap().get(col);
 				A a = meta.getAttribute(column);			
 				PrimitiveKey<A, E, ?, ?, ?, ?> key = meta.getKey(a);
 				ValueExtractor<?, ?, ?> ve = vef.createExtractor(column.getDataType(), vc);									

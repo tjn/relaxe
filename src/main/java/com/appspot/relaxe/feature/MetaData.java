@@ -60,7 +60,7 @@ public class MetaData
                 
         for (Schema s : cat.schemas().values()) {
             for (BaseTable t : s.baseTables().values()) {                
-                Column c = t.columnMap().get(n);
+                Column c = t.getColumnMap().get(n);
                 
                 if (c == null) {                    
                     result.add(addStatement(t, n));

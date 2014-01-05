@@ -69,7 +69,7 @@ public abstract class AbstractImmutableForeignKey
 		}
 				
 		Identifier cn = getReferencedColumnName(referencingColumn.getUnqualifiedName());
-		ColumnMap cm = getReferenced().columnMap();
+		ColumnMap cm = getReferenced().getColumnMap();
 		Column rc = cm.get(cn);
 		return rc;
 	}

@@ -340,7 +340,7 @@ public class SourceGenerator {
 		for (Schema s : cat.schemas().values()) {
 			if (schemaFilter.accept(s)) {
 				for (BaseTable table : s.baseTables().values()) {
-					ColumnMap cm = table.columnMap();
+					ColumnMap cm = table.getColumnMap();
 
 					for (Column c : cm.values()) {
 						errorList.clear();
@@ -886,7 +886,7 @@ public class SourceGenerator {
 
 		String et = env.getClass().getName();
 
-		for (Column c : t.columnMap().values()) {
+		for (Column c : t.getColumnMap().values()) {
 			String cn = columnEnumeratedName(t, c, nq, tm);
 			// String ten = tableEnumeratedName(tm, t);
 			Identifier un = c.getUnqualifiedName();
@@ -976,7 +976,7 @@ public class SourceGenerator {
 				boolean b = t.isBaseTable();
 				String te = b ? "LiteralBaseTable" : "LiteralView";
 
-				for (Column c : t.columnMap().values()) {
+				for (Column c : t.getColumnMap().values()) {
 					String cn = columnEnumeratedName(t, c, tm);
 					String tn = tableEnumeratedName(tm, t);
 					Identifier un = c.getUnqualifiedName();
@@ -2755,7 +2755,7 @@ public class SourceGenerator {
 
 		int ordinal = 1;
 
-		for (Column c : t.columnMap().values()) {
+		for (Column c : t.getColumnMap().values()) {
 			line(buf, "cmb.add(", columnConstantName(c, tm), ", ",
 					Integer.toString(ordinal), ", ",
 					generateNewDataType(c.getDataType()), ", ",
@@ -2776,7 +2776,7 @@ public class SourceGenerator {
 
 		tag(buf, tag);
 
-		ColumnMap columnMap = t.columnMap();
+		ColumnMap columnMap = t.getColumnMap();
 
 		Environment te = getTargetEnvironment(t.getEnvironment());
 
@@ -3955,7 +3955,7 @@ public class SourceGenerator {
 		Set<Identifier> fkcols = foreignKeyColumnMap(cat, t).keySet();
 		List<Column> attrs = new ArrayList<Column>();
 
-		for (Column c : t.columnMap().values()) {
+		for (Column c : t.getColumnMap().values()) {
 			if (!fkcols.contains(c.getColumnName())) {
 				attrs.add(c);
 			}

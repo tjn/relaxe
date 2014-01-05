@@ -68,7 +68,7 @@ public class PagilaCreateTableTest extends TestCase {
 
 				
 		{
-			Column title = table.columnMap().get("TITLE");
+			Column title = table.getColumnMap().get("TITLE");
 			assertNotNull(title);
 			DataType type = title.getDataType();
 			assertNotNull(type);
@@ -79,7 +79,7 @@ public class PagilaCreateTableTest extends TestCase {
 						
 		
 		{
-			Column desc = table.columnMap().get("DESCRIPTION");
+			Column desc = table.getColumnMap().get("DESCRIPTION");
 			assertNotNull(desc);
 			DataType type = desc.getDataType();
 			assertNotNull(type);
@@ -90,7 +90,7 @@ public class PagilaCreateTableTest extends TestCase {
 		}
 		
 		{
-			Column desc = table.columnMap().get("special_features");
+			Column desc = table.getColumnMap().get("special_features");
 			assertNotNull(desc);
 			DataType type = desc.getDataType();
 			assertNotNull(type);

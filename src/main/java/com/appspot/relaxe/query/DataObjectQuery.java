@@ -63,7 +63,7 @@ public class DataObjectQuery {
 		if (queryExpression == null) {
 			TableReference tr = new TableReference(table);
 			From f = new From(tr);		
-			Collection<Column> cols = table.columnMap().values();
+			Collection<Column> cols = table.getColumnMap().values();
 			List<SelectListElement> el = new ArrayList<SelectListElement>(cols.size());
 			
 			for (Column c : cols) {

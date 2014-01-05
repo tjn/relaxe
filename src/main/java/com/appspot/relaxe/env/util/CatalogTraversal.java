@@ -57,7 +57,7 @@ public class CatalogTraversal
 	}
 
 	private void traverse(Table t, CatalogVisitor v) {
-		for (Column c : t.columnMap().values()) {
+		for (Column c : t.getColumnMap().values()) {
 			v.visit(c);
 		}
 	}

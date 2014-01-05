@@ -60,10 +60,10 @@ public class PGWellKnownTableTest
 			assertSame(a, a.getPrimaryKey().getTable());		
 			assertSame(b, b.getPrimaryKey().getTable());
 			
-			assertEquals(3, a.columnMap().values().size());
+			assertEquals(3, a.getColumnMap().values().size());
 //			assertEquals(3, a.().size());
 			
-			assertEquals(2, b.columnMap().values().size());
+			assertEquals(2, b.getColumnMap().values().size());
 //			assertEquals(2, b.columns().size());		
 			
 			assertNotNull(a.foreignKeys());
@@ -80,7 +80,7 @@ public class PGWellKnownTableTest
 //			assertSame(fk, sk);		
 //			assertSame(sk, a.getSchema().constraints().get(fkcc));				
 									
-			Column cc = a.columnMap().get(COL_COUNTRY_CONTINENT);
+			Column cc = a.getColumnMap().get(COL_COUNTRY_CONTINENT);
 			assertNotNull(cc);
 			
 			assertEquals(1, fk.getColumnMap().values().size());

@@ -103,16 +103,16 @@ public abstract class CatalogTest<I extends Implementation<I>>
     public void testColumns() throws Exception {
     		BaseTable t = getFilmTable(getCatalog());
     		
-    		assertNotNull(t.columnMap());
+    		assertNotNull(t.getColumnMap());
 //    		assertNotNull(t.columns());
     		
-    		assertTrue(t.columnMap().keySet().size() > 1);
+    		assertTrue(t.getColumnMap().keySet().size() > 1);
 //    		assertTrue(t.columns().size() > 1);
     		
 //    		PrimaryKey pk = t.getPrimaryKey();
     //		pk.getColumn(name)
     					
-    		for (Column c : t.columnMap().values()) {
+    		for (Column c : t.getColumnMap().values()) {
     //			System.err.println(c.getUnqualifiedName() + ": " + c.getClass());
     			assertNotNull(c);			
     			assertNotNull(c.getColumnName());

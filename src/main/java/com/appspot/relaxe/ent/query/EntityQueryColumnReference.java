@@ -69,7 +69,7 @@ public class EntityQueryColumnReference
 	public ValueExpression expression(EntityQueryContext c) {
 		TableReference tref = c.getTableRef(element);
 		
-		Column column = tref.getTable().columnMap().get(columnName);
+		Column column = tref.getTable().getColumnMap().get(columnName);
 		
 		if (column == null) {
 			throw new NullPointerException("no column " + columnName.toString() + " in table " + tref.getTable().getQualifiedName());

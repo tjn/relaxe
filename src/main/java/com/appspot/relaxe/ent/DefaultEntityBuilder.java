@@ -178,7 +178,7 @@ public abstract class DefaultEntityBuilder<
 		ColumnExpr ce = ctx.getInputMetaData().column(index);
 		Identifier cn = ce.getColumnName();
 						
-		final Column col = table.columnMap().get(cn);
+		final Column col = table.getColumnMap().get(cn);
 		
 		if (col == null) {
 			throw new NullPointerException("unresolved column for cn: " + cn.getContent() + " in table " + table.getQualifiedName());

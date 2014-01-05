@@ -105,7 +105,7 @@ public abstract class ImmutableTable
 	}
 
 	@Override
-	public ColumnMap columnMap() {
+	public ColumnMap getColumnMap() {
 		return this.columnMap;
 	}
 	

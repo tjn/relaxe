@@ -72,7 +72,7 @@ public class TableReference
 			
 			List<Identifier> nl = this.columnNameList.getContent();
 			
-			for (final Column c : getTable().columnMap().values()) {
+			for (final Column c : getTable().getColumnMap().values()) {
 				nl.add(c.getColumnName());
 			}
 		}
@@ -93,13 +93,13 @@ public class TableReference
 
 	@Override
 	public void addAll(List<SelectListElement> dest) {
-		for (Column	c : getTable().columnMap().values()) {
+		for (Column	c : getTable().getColumnMap().values()) {
 			dest.add(new ColumnReference(this, c));
 		}
 	}
 	
 	@Override
 	public int getColumnCount() {		
-		return getTable().columnMap().size();
+		return getTable().getColumnMap().size();
 	}
 }

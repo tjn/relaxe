@@ -96,7 +96,7 @@ class CSVInsertTask
             String[] line = p.getLine();
             
             // configure by using the column headers:        
-            ColumnMap cm = table.columnMap();
+            ColumnMap cm = table.getColumnMap();
             List<Identifier> names = new ArrayList<Identifier>();  
             List<Column> columnList = new ArrayList<Column>();
                                                                     

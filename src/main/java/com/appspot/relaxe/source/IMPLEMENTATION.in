@@ -73,7 +73,7 @@ class {{table-impl-class}}
 		}
 				
 		@Override
-		public ColumnMap columnMap() {
+		public ColumnMap getColumnMap() {
 			return this.columnMap;
 		}
 		
@@ -172,7 +172,7 @@ class {{table-impl-class}}
 	    
 	    @Override
 		protected Column map(BaseTable table, Attribute a) {		
-			return table.columnMap().get(a.identifier());
+			return table.getColumnMap().get(a.identifier());
 		}
 
 		@Override

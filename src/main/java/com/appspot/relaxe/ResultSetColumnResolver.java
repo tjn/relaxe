@@ -51,7 +51,7 @@ public class ResultSetColumnResolver
 	public Column getColumn(int index) {
 		try {
 			String label = metaData.getColumnLabel(index);
-			Column col = table.columnMap().get(label);
+			Column col = table.getColumnMap().get(label);
 			return col;
 		}
 		catch (SQLException e) {

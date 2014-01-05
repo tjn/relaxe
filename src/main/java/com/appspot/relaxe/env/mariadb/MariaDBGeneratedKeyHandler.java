@@ -75,7 +75,7 @@ public final class MariaDBGeneratedKeyHandler
 	}
 
 	private Column findAutoIncrementColumn(BaseTable tbl) {
-		for (Column col : tbl.columnMap().values()) {
+		for (Column col : tbl.getColumnMap().values()) {
 			if (Boolean.TRUE.equals(col.isAutoIncrement())) {
 				return col;
 			}

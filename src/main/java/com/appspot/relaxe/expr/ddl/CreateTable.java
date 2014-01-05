@@ -79,7 +79,7 @@ public class CreateTable
 						
 		List<BaseTableElement> elements = new ArrayList<BaseTableElement>();
 		
-		ColumnMap cm = table.columnMap();
+		ColumnMap cm = table.getColumnMap();
 		
 		ElementList<ColumnConstraint> nnc = new ElementList<ColumnConstraint>(Collections.singleton(NotNull.NOT_NULL));
 		Environment env = table.getEnvironment();

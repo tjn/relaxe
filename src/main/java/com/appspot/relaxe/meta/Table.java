@@ -30,7 +30,7 @@ public interface Table
 	String SYSTEM_TABLE = "SYSTEM TABLE";
 	
 	String getTableType();
-	ColumnMap columnMap();
+	ColumnMap getColumnMap();
 	boolean isBaseTable();
 	
 	BaseTable asBaseTable();
