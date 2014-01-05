@@ -72,12 +72,10 @@ public class Builder
     private String catalogContextPackage;
     private File sourceDir;    
     private File templateDir;    
-    // private Class<? extends Environment> environmentType = null;
     private Environment targetEnvironment = null;
     
     private transient TableMapper tableMapper;
     private transient TypeMapper typeMapper;
-
     
     private SchemaFilter schemaFilter;
     
@@ -124,7 +122,6 @@ public class Builder
         addOption(p, OPTION_TEMPLATE_DIR);
         addOption(p, OPTION_ROOT_PACKAGE);
         addOption(p, OPTION_CATALOG_CONTEXT_PACKAGE);        
-//        addOption(p, OPTION_SCHEMA);        
         addOption(p, OPTION_INCLUDE_ONLY_SCHEMAS);
         addOption(p, OPTION_TYPE_MAPPER_IMPLEMENTATION);
         addOption(p, OPTION_ENVIRONMENT_IMPLEMENTATION);
