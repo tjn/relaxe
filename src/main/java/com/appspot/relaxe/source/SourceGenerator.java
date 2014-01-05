@@ -379,9 +379,9 @@ public class SourceGenerator {
 		Map<String, String> data = new LinkedHashMap<String, String>();
 
 		data.put("type-mapper", tm.getClass().getCanonicalName());
-		data.put("schema", n.getQualifier().getSchemaName().getName());
-		data.put("table", n.getUnqualifiedName().getName());
-		data.put("column", c.getColumnName().getName());
+		data.put("schema", n.getQualifier().getSchemaName().getContent());
+		data.put("table", n.getUnqualifiedName().getContent());
+		data.put("column", c.getColumnName().getContent());
 
 		DataType type = c.getDataType();
 		
@@ -1087,7 +1087,7 @@ public class SourceGenerator {
 					buf.append("(LiteralSchema.");
 					buf.append(sn);
 					buf.append(", \"");
-					buf.append(un.getName());
+					buf.append(un.getContent());
 					buf.append("\"),\n");
 				}
 			}
@@ -1107,7 +1107,7 @@ public class SourceGenerator {
 			}
 
 			Identifier un = s.getUnqualifiedName();
-			String n = un.getName();
+			String n = un.getContent();
 			buf.append(schemaEnumeratedName(s));
 			buf.append("(\"");
 			buf.append(n);
@@ -1119,7 +1119,7 @@ public class SourceGenerator {
 
 	private String schemaEnumeratedName(Schema s) {
 		Identifier un = s.getUnqualifiedName();
-		return un.getName().toUpperCase();
+		return un.getContent().toUpperCase();
 	}
 
 	private String tableEnumeratedName(TableMapper tm, Table t) {
@@ -1138,9 +1138,9 @@ public class SourceGenerator {
 		StringBuilder buf = new StringBuilder();
 		// buf.append(e.getSchema().getUnqualifiedName().getName());
 
-		buf.append(e.getName().getQualifier().getSchemaName().getName());
+		buf.append(e.getName().getQualifier().getSchemaName().getContent());
 		buf.append("_");
-		buf.append(e.getUnqualifiedName().getName());
+		buf.append(e.getUnqualifiedName().getContent());
 
 		String uc = buf.toString().toUpperCase();
 		return tm.toJavaIdentifier(uc);
@@ -1157,17 +1157,17 @@ public class SourceGenerator {
 
 		if (nq.contains(NameQualification.SCHEMA)) {
 			// t.getSchema().getUnqualifiedName().getName();
-			buf.append(t.getName().getQualifier().getSchemaName().getName());
+			buf.append(t.getName().getQualifier().getSchemaName().getContent());
 			buf.append("_");
 		}
 
 		if (nq.contains(NameQualification.TABLE)) {
-			buf.append(t.getUnqualifiedName().getName());
+			buf.append(t.getUnqualifiedName().getContent());
 			buf.append("_");
 		}
 
 		if (nq.contains(NameQualification.COLUMN)) {
-			buf.append(c.getUnqualifiedName().getName());
+			buf.append(c.getUnqualifiedName().getContent());
 		}
 
 		String n = buf.toString().toUpperCase();
@@ -2324,11 +2324,11 @@ public class SourceGenerator {
 	private String columnName(StringBuilder buf, BaseTable t, Column c) {
 		SchemaElementName n = t.getName();
 
-		buf.append(n.getQualifier().getSchemaName().getName());
+		buf.append(n.getQualifier().getSchemaName().getContent());
 		buf.append(".");
-		buf.append(n.getUnqualifiedName().getName());
+		buf.append(n.getUnqualifiedName().getContent());
 		buf.append(".");
-		buf.append(c.getColumnName().getName());
+		buf.append(c.getColumnName().getContent());
 
 		return buf.toString();
 	}
@@ -3064,7 +3064,7 @@ public class SourceGenerator {
 			buf.append(n.isDelimited() ? "toDelimitedIdentifier"
 					: "toIdentifier");
 			buf.append("(");
-			literal(buf, n.getName());
+			literal(buf, n.getContent());
 			buf.append(")");
 		}
 
@@ -3074,7 +3074,7 @@ public class SourceGenerator {
 	}
 
 	private String literal(Identifier name) {
-		return literal(name == null ? null : name.getName());
+		return literal(name == null ? null : name.getContent());
 	}
 
 	private String literal(String name) {
@@ -3144,7 +3144,7 @@ public class SourceGenerator {
 			if (ai.getKeyType() == null) {
 				logger().warn(
 						"no key type for column : "
-								+ c.getColumnName().getName());
+								+ c.getColumnName().getContent());
 				logger().warn(
 						"column-data-type : " + c.getDataType().getDataType());
 				logger().warn(
@@ -3155,7 +3155,7 @@ public class SourceGenerator {
 			if (ai.getHolderType() == null) {
 				logger().warn(
 						"no holder type for column : "
-								+ c.getColumnName().getName());
+								+ c.getColumnName().getContent());
 				logger().warn(
 						"column-data-type : " + c.getDataType().getDataType());
 				logger().warn(
@@ -3600,7 +3600,7 @@ public class SourceGenerator {
 
 	private void appendSchemaPrefix(SchemaElement element, StringBuilder nb) {
 		SchemaName n = element.getName().getQualifier();
-		String prefix = (n == null) ? "" : name(n.getSchemaName().getName());
+		String prefix = (n == null) ? "" : name(n.getSchemaName().getContent());
 		nb.append(prefix);
 	}
 
@@ -3827,7 +3827,7 @@ public class SourceGenerator {
 	}
 
 	private String valueVariableName(Table t, Column c) {
-		return variableName(c.getColumnName().getName());
+		return variableName(c.getColumnName().getContent());
 	}
 
 	private String variableName(String n) {
@@ -3930,7 +3930,7 @@ public class SourceGenerator {
 			if (k == null) {
 				logger().warn(
 						"no key type for column : "
-								+ c.getColumnName().getName());
+								+ c.getColumnName().getContent());
 				logger().warn(
 						"column-data-type : " + c.getDataType().getDataType());
 				logger().warn(
@@ -4400,7 +4400,7 @@ public class SourceGenerator {
 		final String type = attributeType.getCanonicalName();
 
 		StringBuilder nb = new StringBuilder();
-		final String n = name(c.getColumnName().getName());
+		final String n = name(c.getColumnName().getContent());
 
 		boolean b = attributeType.equals(Boolean.class);
 		
@@ -4542,7 +4542,7 @@ public class SourceGenerator {
 		final String type = attributeType.getCanonicalName();
 
 		StringBuilder nb = new StringBuilder();
-		final String n = name(c.getColumnName().getName());
+		final String n = name(c.getColumnName().getContent());
 
 		boolean b = attributeType.equals(Boolean.class);
 
@@ -4675,7 +4675,7 @@ public class SourceGenerator {
 			if (ai.getKeyType() == null) {
 				logger().warn(
 						"no key type for column : "
-								+ c.getColumnName().getName());
+								+ c.getColumnName().getContent());
 				logger().warn(
 						"column-data-type : " + c.getDataType().getDataType());
 				logger().warn(
@@ -4721,7 +4721,7 @@ public class SourceGenerator {
 	}
 
 	private String formatReferenceConstant(ForeignKey fk, TableMapper tm) {
-		final String kn = fk.getUnqualifiedName().getName();
+		final String kn = fk.getUnqualifiedName().getContent();
 
 		String n = referenceName(fk);
 
@@ -4765,9 +4765,9 @@ public class SourceGenerator {
 	}
 
 	protected String referenceName(ForeignKey fk) {
-		String n = fk.getUnqualifiedName().getName();
+		String n = fk.getUnqualifiedName().getContent();
 		return referenceName(
-				fk.getReferencing().getUnqualifiedName().getName(), n);
+				fk.getReferencing().getUnqualifiedName().getContent(), n);
 	}
 
 	protected String referenceName(final String table,
@@ -4815,7 +4815,7 @@ public class SourceGenerator {
 	private String attr(Column c) {
 		Identifier n = c.getColumnName();
 
-		String attr = n.getName().toUpperCase();
+		String attr = n.getContent().toUpperCase();
 
 		logger().debug("attr (" + attr + ") ordinary ? " + n.isOrdinary());
 
@@ -4973,7 +4973,7 @@ public class SourceGenerator {
 	}
 
 	public String getSimpleName(Identifier identifier) {
-		return translate(identifier.getName());
+		return translate(identifier.getContent());
 	}
 
 	private String translate(String n) {
@@ -5032,7 +5032,7 @@ public class SourceGenerator {
 		Environment te = this.targetEnvironment;
 
 		if (te != null) {
-			id = te.getIdentifierRules().toIdentifier(id.getName());
+			id = te.getIdentifierRules().toIdentifier(id.getContent());
 		}
 
 		return id;

@@ -257,7 +257,7 @@ public class Builder
 				public boolean accept(Schema s) {
 					Identifier n = s.getUnqualifiedName();
 					boolean include = ss.contains(n);
-					logger().debug("include schema '" + n.getName() + "' ? " + include);
+					logger().debug("include schema '" + n.getContent() + "' ? " + include);
 					return include;
 					
 				}

@@ -25,6 +25,27 @@ package com.appspot.relaxe.expr;
 public interface Identifier
 	extends Token {
 	
-	String getName();	
+	
+	/**
+	 * The represented identifier as string.   
+	 * 
+	 * @return
+	 */
+	String getContent();
+	
+	/**
+	 * Returns <code>true</code> if this identifier is delimited, <code>false</code> if ordinary   
+	 *  
+	 * @return
+	 */
 	boolean isDelimited();
+
+	
+	/**
+	 * For convenience, equivalent to <code>getContent()</code>
+	 * 
+	 * @return
+	 */
+	@Override
+	public String toString();
 }

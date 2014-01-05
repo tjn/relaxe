@@ -94,12 +94,12 @@ public abstract class AbstractCatalogFactory
 
 	protected String getCatalogPattern(SchemaName s) {		
 		Identifier cn = (s == null) ? null : s.getCatalogName();
-		return (cn == null) ? null : cn.getName();
+		return (cn == null) ? null : cn.getContent();
 	}
 
 	protected String getSchemaPattern(SchemaName s) {
 		Identifier sn = (s == null) ? null : s.getSchemaName();		
-		return (sn == null) ? null : sn.getName();
+		return (sn == null) ? null : sn.getContent();
 	}
 	
 	protected String getPrimaryKeyCatalogNameParameter(SchemaName s) {		
@@ -121,12 +121,12 @@ public abstract class AbstractCatalogFactory
 	
 	protected String getCatalogNameParameter(SchemaName s) {		
 		Identifier cn = (s == null) ? null : s.getCatalogName();
-		return (cn == null) ? null : cn.getName();
+		return (cn == null) ? null : cn.getContent();
 	}
 	
 	protected String getSchemaNameParameter(SchemaName s) {		
 		Identifier n = (s == null) ? null : s.getSchemaName();
-		return (n == null) ? null : n.getName();
+		return (n == null) ? null : n.getContent();
 	}
 
 

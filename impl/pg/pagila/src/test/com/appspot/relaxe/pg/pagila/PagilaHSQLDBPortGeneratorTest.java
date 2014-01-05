@@ -79,7 +79,7 @@ public class PagilaHSQLDBPortGeneratorTest
 		String destUrl = hi.createJdbcUrl(dataDir);
 				
 		PagilaHSQLDBPortGenerator gen = new PagilaHSQLDBPortGenerator(
-				tc.getJdbcURL(), tc.getJdbcConfig(), hpc, destUrl, hi.getDefaultProperties());
+				tc.getJdbcURL(), tc.getJdbcConfig(), hpc, destUrl, hi.getProperties());
 						
 		gen.transform(cat);
 	}	

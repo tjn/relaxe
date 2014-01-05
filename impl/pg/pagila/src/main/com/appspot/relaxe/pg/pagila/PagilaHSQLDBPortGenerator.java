@@ -243,7 +243,7 @@ public class PagilaHSQLDBPortGenerator
 		List<Statement> sl = new ArrayList<Statement>();
 			
 		for (Schema s : cat.schemas().values()) {
-			String name = s.getUnqualifiedName().getName();
+			String name = s.getUnqualifiedName().getContent();
 			
 			if (name.equalsIgnoreCase("pg_catalog") || name.equalsIgnoreCase("information_schema")) {
 				continue;
@@ -252,7 +252,7 @@ public class PagilaHSQLDBPortGenerator
 			sc.add(s);
 			
 			// A new HSQLDB database contains a 'public' schema initially.  
-			if ("public".equalsIgnoreCase(s.getUnqualifiedName().getName())) {
+			if ("public".equalsIgnoreCase(s.getUnqualifiedName().getContent())) {
 				continue;
 			}
 			

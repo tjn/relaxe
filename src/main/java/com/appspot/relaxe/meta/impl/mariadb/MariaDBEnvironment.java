@@ -68,7 +68,7 @@ public class MariaDBEnvironment
 				return null;
 			}
 			
-			String n = ident.getName();
+			String n = ident.getContent();
 			return n; 
 		}
 	}

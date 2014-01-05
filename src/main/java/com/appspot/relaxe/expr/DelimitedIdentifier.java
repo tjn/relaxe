@@ -38,16 +38,16 @@ public class DelimitedIdentifier
 	protected DelimitedIdentifier() {
 	}
 	
-	public DelimitedIdentifier(String name) {
-		super(name);
+	public DelimitedIdentifier(String content) {
+		super(content);
 	}	
 	
 	public String getToken() {
 		if (token == null) {			
 			String qm = "\"";
-			StringBuilder buf = new StringBuilder(getName().length() + 2);
+			StringBuilder buf = new StringBuilder(getContent().length() + 2);
 			buf.append(qm);
-			buf.append(getName().replace(qm, qm + qm));
+			buf.append(getContent().replace(qm, qm + qm));
 			buf.append(qm);
 			this.token = buf.toString();
 		}

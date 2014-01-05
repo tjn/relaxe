@@ -31,7 +31,7 @@ public abstract class AbstractIdentifier
 	 * 
 	 */
 	private static final long serialVersionUID = -2304652443656237941L;
-	private String name;
+	private String content;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -39,8 +39,8 @@ public abstract class AbstractIdentifier
 	protected AbstractIdentifier() {
 	}
 	
-	protected AbstractIdentifier(String name) {
-		this.name = name;
+	protected AbstractIdentifier(String content) {
+		this.content = content;
 	}
 	
 	@Override
@@ -50,8 +50,13 @@ public abstract class AbstractIdentifier
 	}
 	
 	@Override
-	public String getName() {
-		return this.name;
+	public String getContent() {
+		return this.content;
+	}
+	
+	@Override
+	public final String toString() {
+		return getContent();
 	}
 	
 	@Override

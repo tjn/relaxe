@@ -131,7 +131,7 @@ public class ImmutableColumn
 	
 	@Override
 	public String toString() {		
-		return getColumnName().getName();
+		return getColumnName().getContent();
 	}
 
     @Override

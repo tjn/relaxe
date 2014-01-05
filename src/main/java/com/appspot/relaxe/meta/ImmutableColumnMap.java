@@ -108,7 +108,7 @@ public class ImmutableColumnMap
 			Map<Identifier, Column> m = getContent();
 			
 			if (m.containsKey(name)) {
-				throw new IllegalArgumentException("duplicate column name: '" + name.getName());
+				throw new IllegalArgumentException("duplicate column name: '" + name.getContent());
 			}
 			
 			return name;

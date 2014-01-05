@@ -144,7 +144,7 @@ public class PagilaExportDDLTest
 		List<Statement> sl = new ArrayList<Statement>(); 
 		
 		for (Schema s : cat.schemas().values()) {
-			String name = s.getUnqualifiedName().getName();
+			String name = s.getUnqualifiedName().getContent();
 			
 			if (name.equalsIgnoreCase("pg_catalog") || name.equalsIgnoreCase("information_schema")) {
 				continue;
@@ -152,7 +152,7 @@ public class PagilaExportDDLTest
 			
 			sc.add(s);
 			
-			if ("public".equalsIgnoreCase(s.getUnqualifiedName().getName())) {
+			if ("public".equalsIgnoreCase(s.getUnqualifiedName().getContent())) {
 				continue;
 			}
 			

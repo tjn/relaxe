@@ -115,8 +115,8 @@ public class MariaDBImplementation
 	}
 	
 	@Override
-	public Properties getDefaultProperties() {
-		Properties cfg = super.getDefaultProperties();
+	public Properties getProperties() {
+		Properties cfg = super.getProperties();
 		
 		cfg.setProperty("nullCatalogMeansCurrent", "false");
 		cfg.setProperty("nullNamePatternMatchesAll", "false");

@@ -65,7 +65,7 @@ public abstract class DefaultImplementation<I extends Implementation<I>>
 	}
 	
 	@Override
-	public Properties getDefaultProperties() {
+	public Properties getProperties() {
 		return new Properties();
 	}	
 }

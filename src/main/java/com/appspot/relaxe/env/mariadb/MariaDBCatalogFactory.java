@@ -109,7 +109,7 @@ public class MariaDBCatalogFactory extends DefaultCatalogFactory {
     
     @Override
     protected String getCatalogNameParameter(SchemaName s) {
-    	return s.getSchemaName().getName();
+    	return s.getSchemaName().getContent();
     }
     
     @Override
@@ -149,7 +149,7 @@ public class MariaDBCatalogFactory extends DefaultCatalogFactory {
     @Override
 	protected void addPrimaryKey(PrimaryKey pk, ImmutableSchema.Builder sb) {
     	Identifier pkname = (pk == null) ? null : pk.getUnqualifiedName();
-    	String name = (pkname == null) ? null : pkname.getName();
+    	String name = (pkname == null) ? null : pkname.getContent();
     	
 		if (name != null && (!"PRIMARY".equals(name))) {
 			sb.add(pk);

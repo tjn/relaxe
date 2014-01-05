@@ -55,7 +55,12 @@ public interface Implementation<I extends Implementation<I>> {
 	SerializableEnvironment environment();
 	
 	I self();
-		
-	Properties getDefaultProperties();
+	
+	/**
+	 * Returns the JDBC driver properties to be used with this implementation.
+	 * 
+	 * @return
+	 */		
+	Properties getProperties();
 	
 }

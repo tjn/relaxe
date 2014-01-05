@@ -181,7 +181,7 @@ public abstract class DefaultEntityBuilder<
 		final Column col = table.columnMap().get(cn);
 		
 		if (col == null) {
-			throw new NullPointerException("unresolved column for cn: " + cn.getName() + " in table " + table.getQualifiedName());
+			throw new NullPointerException("unresolved column for cn: " + cn.getContent() + " in table " + table.getQualifiedName());
 		}		
 		
 		final Column resolved = (fk == null) ? col : fk.getReferenced(col);

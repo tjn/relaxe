@@ -387,7 +387,7 @@ public class DefaultCatalogFactory
 				Column column = createColumn(rs, cc);
 				tb.add(column);
 				
-				logger.debug(column.getColumnName().getName() + ": (" + column.getColumnDefault() + ")");				
+				logger.debug(column.getColumnName().getContent() + ": (" + column.getColumnDefault() + ")");				
 			}
 		}
 		finally {
@@ -513,9 +513,9 @@ public class DefaultCatalogFactory
 		logger().debug("getColumnsForTable:");		
 		logger().debug("cp: " + cp);
 		logger().debug("sp: " + sp);		
-		logger().debug("table: " + table.getName());
+		logger().debug("table: " + table.getContent());
 				
-		return meta.getColumns(cp, sp, table.getName(), "%");
+		return meta.getColumns(cp, sp, table.getContent(), "%");
 	}
 	
 	protected ResultSet getPrimaryKeyForTable(DatabaseMetaData meta, SchemaElementName sen) throws SQLException {
@@ -529,9 +529,9 @@ public class DefaultCatalogFactory
 		logger().debug("getPrimaryKeyForTable:");		
 		logger().debug("c: " + c);
 		logger().debug("s: " + s);		
-		logger().debug("table: " + tableName.getName());
+		logger().debug("table: " + tableName.getContent());
 							
-		ResultSet rs = meta.getPrimaryKeys(c, s, tableName.getName());
+		ResultSet rs = meta.getPrimaryKeys(c, s, tableName.getContent());
 		
 		return rs;
 	}
@@ -543,9 +543,9 @@ public class DefaultCatalogFactory
 		logger().debug("getForeignKeysForTable:");		
 		logger().debug("c: " + c);
 		logger().debug("s: " + s);		
-		logger().debug("table: " + tableName.getName());
+		logger().debug("table: " + tableName.getContent());
 							
-		ResultSet rs = meta.getImportedKeys(c, s, tableName.getName());
+		ResultSet rs = meta.getImportedKeys(c, s, tableName.getContent());
 		return rs;
 	}
 

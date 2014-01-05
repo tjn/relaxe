@@ -102,7 +102,7 @@ public class ImmutableCatalog
 			Identifier cat = schema.getCatalogName();
 			
 			if (!equal(cat, this.identifier)) {
-				String cn = (this.identifier == null) ? null : this.identifier.getName();
+				String cn = (this.identifier == null) ? null : this.identifier.getContent();
 				throw new IllegalArgumentException("schema " + schema.getName().generate() + " does not belong to the catalog (" + cn + ")");				
 			}			
 			

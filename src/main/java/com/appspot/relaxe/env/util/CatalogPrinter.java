@@ -63,7 +63,7 @@ public class CatalogPrinter {
 			if (!visited.contains(n)) {
 				visited.add(n);
 				
-				logger().info(indent(indent) + fk.getUnqualifiedName().getName());			
+				logger().info(indent(indent) + fk.getUnqualifiedName().getContent());			
 				
 				if (fk.getReferenced() == null) {
 					throw new NullPointerException(fk.getName() + ": 'fk.getReferenced()' must not be null");
@@ -82,7 +82,7 @@ public class CatalogPrinter {
 
 	private void print(Catalog c, PrintWriter w, int indent) {		
 		for (Schema s : c.schemas().values()) {			
-			logger().info(s.getUnqualifiedName().getName());
+			logger().info(s.getUnqualifiedName().getContent());
 			print(s, w, indent + 1);			
 		}
 	}

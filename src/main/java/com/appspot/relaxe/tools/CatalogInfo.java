@@ -41,7 +41,7 @@ public class CatalogInfo
     @Override
     public void run() {
         Identifier n = getCatalog().getName();
-        String cat = (n == null) ? null : n.getName();
+        String cat = (n == null) ? null : n.getContent();
         message("Catalog loaded: " + ((cat == null) ? "<unnamed>" : cat));
         
         SchemaMap sm = getCatalog().schemas();
@@ -49,7 +49,7 @@ public class CatalogInfo
         message("schemas (" + sm.values().size() + ") {");
         
         for (Schema s : sm.values()) {
-        	message(s.getUnqualifiedName().getName());        		
+        	message(s.getUnqualifiedName().getContent());        		
 		}
         
         message("}");

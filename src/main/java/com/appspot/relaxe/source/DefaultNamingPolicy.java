@@ -59,7 +59,7 @@ public class DefaultNamingPolicy
 
 	@Override
 	public String getLabelIdentifier(BaseTable t, Column c) {		
-		String n = c.getColumnName().getName();		
+		String n = c.getColumnName().getContent();		
 		n = toClass("meta." + n);
 		return n;
 	}
@@ -72,27 +72,27 @@ public class DefaultNamingPolicy
 
 	@Override
 	public String getTableStyle(BaseTable t) {
-		String n = t.getUnqualifiedName().getName();
+		String n = t.getUnqualifiedName().getContent();
 		
 		return n;
 	}
 
 	@Override
 	public String getTemplate(BaseTable table) {
-		String n = table.getUnqualifiedName().getName();				
+		String n = table.getUnqualifiedName().getContent();				
 		n = toIdentifier(n + getTemplateExtension());		
 		return n;
 	}
 
 	@Override
 	public String getTemplateDir(Schema schema) {
-		String n = schema.getUnqualifiedName().getName();				
+		String n = schema.getUnqualifiedName().getContent();				
 		return toIdentifier(n);
 	}
 
 	@Override
 	public String getValueIdentifier(BaseTable t, Column c) {
-		String n = c.getColumnName().getName();		
+		String n = c.getColumnName().getContent();		
 		n = toIdentifier(n);				
 		return n;
 	}
@@ -118,19 +118,19 @@ public class DefaultNamingPolicy
 	
 	@Override
 	public String getLabelIdentifier(ForeignKey fk) {
-		return toIdentifier("meta." + fk.getUnqualifiedName().getName());
+		return toIdentifier("meta." + fk.getUnqualifiedName().getContent());
 	}
 	
 	
 	@Override
 	public String getLabelText(BaseTable t, Column c) {
-		return c.getColumnName().getName();
+		return c.getColumnName().getContent();
 	}
 	
 	@Override
 	public String getLabelText(ForeignKey fk) {	
 		// TODO:
-		return fk.getUnqualifiedName().getName();
+		return fk.getUnqualifiedName().getContent();
 	}
 	
 	@Override
@@ -145,7 +145,7 @@ public class DefaultNamingPolicy
 	
 	@Override
 	public String getValueIdentifier(ForeignKey t, Column c) {
-		return toIdentifier(t.getUnqualifiedName().getName() + "." + c.getUnqualifiedName().getName());
+		return toIdentifier(t.getUnqualifiedName().getContent() + "." + c.getUnqualifiedName().getContent());
 	}
 
 }

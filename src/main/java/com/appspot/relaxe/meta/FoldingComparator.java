@@ -82,7 +82,7 @@ public abstract class FoldingComparator
 			return null;
 		}
 		
-		String n = ident.getName();
+		String n = ident.getContent();
 		return ident.isOrdinary() ? fold(n) : n; 
 	}
 }

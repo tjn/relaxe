@@ -38,23 +38,18 @@ public class OrdinaryIdentifier
 	private OrdinaryIdentifier() {
 	}
 	
-	public OrdinaryIdentifier(String name) {
-		super(name);		
+	public OrdinaryIdentifier(String content) {
+		super(content);		
 	}
 
 	@Override
 	public boolean isOrdinary() {	
 		return true;
 	}
-
-	@Override
-	public String toString() {		
-		return "[" + getName() + ": " + super.toString() + "]";
-	}
-
+	
 	@Override
 	public String getTerminalSymbol() {
-		return getName();
+		return getContent();
 	}
 	
 	@Override

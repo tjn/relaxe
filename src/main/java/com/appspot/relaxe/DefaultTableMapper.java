@@ -112,7 +112,7 @@ public class DefaultTableMapper
             n.append(".");
         }
         
-        String s = schema.getSchemaName().getName().toLowerCase();
+        String s = schema.getSchemaName().getContent().toLowerCase();
         
         if (s.equals("public")) {
             s = "pub";
@@ -130,7 +130,7 @@ public class DefaultTableMapper
 	}
 	
 	public String getSimpleName(Identifier identifier) {	            
-	    return translate(identifier.getName());        
+	    return translate(identifier.getContent());        
 	}
 
     public void setRootPackage(String rootPackage) {

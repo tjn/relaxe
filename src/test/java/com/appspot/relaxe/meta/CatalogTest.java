@@ -58,15 +58,15 @@ public abstract class CatalogTest<I extends Implementation<I>>
     	logger().warn("table: " + t.getQualifiedName());
     	
     	assertNotNull(t.getUnqualifiedName());		
-    	assertNotNull(t.getUnqualifiedName().getName());
-    	assertTrue(t.getQualifiedName().contains(t.getUnqualifiedName().getName()));
+    	assertNotNull(t.getUnqualifiedName().getContent());
+    	assertTrue(t.getQualifiedName().contains(t.getUnqualifiedName().getContent()));
     			
 //    	assertNotNull(t.getSchema());
     	
     	assertNotNull(t.getName());
     	assertNotNull(t.getName().getQualifier());
     	assertNotNull(t.getName().getQualifier().getSchemaName());
-    	assertNotNull(t.getName().getQualifier().getSchemaName().getName());
+    	assertNotNull(t.getName().getQualifier().getSchemaName().getContent());
     	assertNotNull(t.getQualifiedName());    	
     			
     	PrimaryKey pk = t.getPrimaryKey();	
@@ -190,8 +190,8 @@ public abstract class CatalogTest<I extends Implementation<I>>
     		
     		assertTrue(icmp.compare(b, c) != 0);
     		
-    		assertTrue(icmp.compare(b, new DelimitedIdentifier(b.getName())) == 0);
-    		assertTrue(icmp.compare(c, new DelimitedIdentifier(c.getName())) == 0);
+    		assertTrue(icmp.compare(b, new DelimitedIdentifier(b.getContent())) == 0);
+    		assertTrue(icmp.compare(c, new DelimitedIdentifier(c.getContent())) == 0);
     	}			
     }
 

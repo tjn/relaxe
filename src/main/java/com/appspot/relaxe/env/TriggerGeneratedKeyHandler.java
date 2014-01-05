@@ -83,8 +83,8 @@ public class TriggerGeneratedKeyHandler
 		logger().debug("processGeneratedKeys - enter");
 		
 		SchemaElementName n = ins.getTarget().getName();
-		String schema = n.getQualifier().getSchemaName().getName();
-		String table = n.getUnqualifiedName().getName();
+		String schema = n.getQualifier().getSchemaName().getContent();
+		String table = n.getUnqualifiedName().getContent();
 		
 		M meta = target.getMetaData();
 		

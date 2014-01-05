@@ -94,7 +94,7 @@ public class CreateTable
 			
 			if (type == null) {
 				throw new RuntimeException(
-						concat("Column ", table.getQualifiedName(), ".", col.getColumnName().getName(), 
+						concat("Column ", table.getQualifiedName(), ".", col.getColumnName().getContent(), 
 								": unsupported column type: ", t.getDataType(), " (", t.getTypeName(), ")"));  
 			}
 						

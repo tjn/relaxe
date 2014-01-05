@@ -321,8 +321,8 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
     			
     			assertNotSame(col, rcol);
     			
-    			logger().debug("ref'ing: " + col.getUnqualifiedName().getName());
-    			logger().debug("ref'ed: " + rcol.getUnqualifiedName().getName());
+    			logger().debug("ref'ing: " + col.getUnqualifiedName().getContent());
+    			logger().debug("ref'ed: " + rcol.getUnqualifiedName().getContent());
     			
     			assertNotNull(fk.getReferencing().columnMap().get(col.getUnqualifiedName()));
     			assertNotNull(fk.getReferenced().columnMap().get(rcol.getUnqualifiedName()));
