@@ -98,7 +98,7 @@ public interface EntitySession {
 		F extends EntityFactory<E, H, M, F>,		
 		M extends EntityMetaData<A, R, T, E, H, F, M>
 	>
-	E sync(E e) throws EntityException;	
+	E load(E e) throws EntityException;	
 	
 	public <
 		A extends Attribute,
@@ -124,7 +124,7 @@ public interface EntitySession {
 		M extends EntityMetaData<A, R, T, E, H, F, M>,
 	    RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>	
 	>
-	List<E> load(EntityQuery<A, R, T, E, H, F, M, RE> q, FetchOptions opts)
+	List<E> list(EntityQuery<A, R, T, E, H, F, M, RE> q, FetchOptions opts)
 			throws EntityException;
 	
 	/**

@@ -63,10 +63,10 @@ public class PagilaDataAccessSessionTest
 		Film.Query qo = new Film.Query(fq.newQueryElement());
 				
 		FetchOptions fo = new FetchOptions(20, 0);
-		List<Film> load = es.load(qo, fo);
+		List<Film> load = es.list(qo, fo);
 		
 		logger().debug("testLoad again: result set size: " + load.size());
-		es.load(qo, fo);
+		es.list(qo, fo);
 
 		
 		PagilaInspector inspector = new PagilaInspector();						
@@ -113,7 +113,7 @@ public class PagilaDataAccessSessionTest
 		{
 			Film.Query qo = new Film.Query(qeb.newQueryElement());
 			
-			List<Film> list = es.load(qo, null);
+			List<Film> list = es.list(qo, null);
 				
 			assertNotNull(list);
 			assertTrue(list.size() > 10);			
@@ -162,7 +162,7 @@ public class PagilaDataAccessSessionTest
 		
 		Film.Query q = new Film.Query(qeb.newQueryElement());
 						
-		List<Film> list = es.load(q, null);
+		List<Film> list = es.list(q, null);
 		
 		assertNotNull(list);
 		assertTrue(list.size() > 10);			

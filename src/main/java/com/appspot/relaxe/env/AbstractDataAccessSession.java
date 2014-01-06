@@ -128,7 +128,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		F extends EntityFactory<E, H, M, F>, 
 		M extends EntityMetaData<A, R, T, E, H, F, M>
 	> 
-	E sync(E e) throws EntityException {
+	E load(E e) throws EntityException {
 		try {
 			PersistenceManager<A,R,T,E,H,F,M> pm = 
 					new PersistenceManager<A,R,T,E,H,F,M>(e, getPersistenceContext(), getUnificationContext());
@@ -320,7 +320,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		M extends EntityMetaData<A, R, T, E, H, F, M>,	    
 		RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
 	> 
-	List<E> load(EntityQuery<A, R, T, E, H, F, M, RE> query, FetchOptions opts)
+	List<E> list(EntityQuery<A, R, T, E, H, F, M, RE> query, FetchOptions opts)
 			throws EntityException {
 	
 		EntityQueryResult<A, R, T, E, H, F, M, RE> qr = query(query, opts);
