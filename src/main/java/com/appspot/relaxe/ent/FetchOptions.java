@@ -31,16 +31,9 @@ public class FetchOptions
 	 * 
 	 */
 	private static final long serialVersionUID = -5894929494069252288L;
-	private long offset;
-	private Adjustment adjustment;
+	private long offset;	
 	private Integer count;
 	private boolean fetchCardinality;
-	
-	enum Adjustment {
-		NONE,
-		AUTO
-	}
-	
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -59,33 +52,27 @@ public class FetchOptions
 	 * @param offset
 	 */	
 	public FetchOptions(Integer pageSize, long offset) {
-		this(pageSize, offset, Adjustment.AUTO, true);
+		this(pageSize, offset, true);
 	}
 	
-	public FetchOptions(Integer count, long offset, Adjustment adjust, boolean cardinality) {
+	public FetchOptions(Integer count, long offset, boolean cardinality) {
 		super();
 		this.offset = offset;
-		this.count = count;
-		this.adjustment = adjust;		
+		this.count = count;				
 		this.fetchCardinality = cardinality;
 	}
 	
 	public FetchOptions(long offset) {
 		super();
 		this.offset = offset;
-		this.count = null;
-		this.adjustment = Adjustment.NONE;
+		this.count = null;		
 	}
 
 
 	public long getOffset() {
 		return this.offset;
 	}
-	
-	public Adjustment getAdjustment() {
-		return adjustment;
-	}
-	
+		
 	public Integer getCount() {
 		return count;
 	}
