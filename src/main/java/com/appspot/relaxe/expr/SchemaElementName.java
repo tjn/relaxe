@@ -92,5 +92,11 @@ public final class SchemaElementName
 		SchemaName q = this.qualifier;		
 		Identifier cn = (q == null) ? null : q.getCatalogName();		
 		return (cn == null) ? this : new SchemaElementName(null, (q == null) ? null : q.getSchemaName(), this.name);				
-	}	
+	}
+	
+	
+	@Override
+	public String toString() {	
+		return generate();
+	}
 }

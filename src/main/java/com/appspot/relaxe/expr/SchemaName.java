@@ -112,4 +112,9 @@ public final class SchemaName
     public SchemaName toRelative() {
         return (this.catalogName == null) ? this : new SchemaName(null, this.schemaName); 
     }
+    
+    @Override
+    public String toString() {
+       	return generate();
+    }
 }
