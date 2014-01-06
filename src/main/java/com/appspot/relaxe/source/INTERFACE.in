@@ -338,10 +338,13 @@ public interface {{table-interface}}
 				this(new QueryElement(attributes));
 			}
 			
-
 			public Query(QueryElement root) {
 				super(root, null);
 			}
+			
+			public Query(QueryElement root, com.appspot.relaxe.ent.query.EntityQueryPredicate qp) {
+				super(root, qp);
+			}			
 			
 			private Query(QueryElement root,
 					java.util.Collection<com.appspot.relaxe.ent.query.EntityQueryPredicate> predicates,
