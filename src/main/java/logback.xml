@@ -12,8 +12,8 @@
     <encoder>
       <pattern>%d [%t] %-5p %c - %m%n</pattern>
     </encoder>
-  </appender>
-  <root level="DEBUG">
+  </appender>  
+  <root level="INFO">
     <appender-ref ref="console"/>
   </root>
 </configuration>

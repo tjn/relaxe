@@ -78,7 +78,7 @@ public class StatementExecutor {
 		String qs = statement.generate();
 		long elapsed = System.currentTimeMillis() - start;
 		
-		logger().info("generate(): " + elapsed + "ms");		
+		logger().info("generate(): {} ms", elapsed);		
 //		logger().info("execute: qs=" + qs);
 		
 		PreparedStatement ps = null;
@@ -96,7 +96,7 @@ public class StatementExecutor {
 			
 			final long f = System.currentTimeMillis();
 			
-			logger().info("executeQuery(): " + (f - s) + "ms");
+			logger().info("ps.executeQuery(): {}ms", (f - s));
 			
 			apply(rp, rs);
 			

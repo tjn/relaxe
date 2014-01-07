@@ -110,18 +110,18 @@ public class QueryExecutor {
 			pageSize = opts.getCount();			
 		}
 				
-		logger().info("execute: oo=" + oo);
+		logger().debug("execute: oo={}", oo);
 				
 		if ((opts != null && opts.getCardinality()) || oo < 0) {			
 			SelectStatement cs = createCountQuery(qs);
 			DataObject result = sx.fetchFirst(cs, c);
 			
 			PrimitiveHolder<?, ?, ?> h = result.get(0);
-			logger().debug("execute: h=" + h);
+			logger().debug("execute: h={}", h);
 			available = h.asLongHolder().value();
 		}
 		
-		logger().info("execute: available=" + available);
+		logger().debug("execute: available={}", available);
 		
 		Limit limit = (pageSize == null) ? null : new Limit(pageSize.intValue());
 		
