@@ -242,11 +242,12 @@ public class StatementExecutor {
 			statement.traverse(null, av);
 			
 			int uc = -1;
-			long start = System.currentTimeMillis();			
+			
+//			long start = System.currentTimeMillis();			
 			
 			boolean moreResults = ps.execute();
 			
-			long elapsed = System.currentTimeMillis() - start;
+//			long elapsed = System.currentTimeMillis() - start;
 			
 			ResultSet rs = null;
 			

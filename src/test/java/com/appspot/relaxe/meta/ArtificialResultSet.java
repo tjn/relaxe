@@ -70,16 +70,16 @@ public class ArtificialResultSet
             this.javaType = javaType;
         }
         
-        public String getLabel() {
-            return label;
-        }
+//        public String getLabel() {
+//            return label;
+//        }
         private String getName() {
             return name;
         }
         
-        public int getType() {
-            return type;
-        }
+//        public int getType() {
+//            return type;
+//        }
         private Class<?> getJavaType() {
             return javaType;
         }
@@ -1235,12 +1235,6 @@ public class ArtificialResultSet
     private void throwNotImplemented() throws SQLException {
         throw notImplemented();
     }    
-    
-    private boolean throwNotImplementedInt() 
-        throws SQLException {
-        throw notImplemented();
-    }
-    
     
     private SQLException notImplemented() {
         return new SQLException("not implemented");

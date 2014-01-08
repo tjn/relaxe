@@ -119,7 +119,7 @@ public abstract class JDBCTestCase
 	    super.setUp();
 	    
 	    if (truncate) {
-	        Connection c = getConnection();
+	        getConnection();
 	        Catalog cat = getCatalog();
 	        
     	    if (cat != null) {

@@ -229,9 +229,9 @@ public abstract class AbstractPager<
 				getHandlerMap().remove(this);
 			}
 						
-			public void renew() {
-				getHandlerMap().put(this, handler);
-			}
+//			public void renew() {
+//				getHandlerMap().put(this, handler);
+//			}
 		};
 		
 		getHandlerMap().put(r, handler);

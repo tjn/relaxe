@@ -24,7 +24,6 @@ package com.appspot.relaxe.pg.pagila;
 
 import java.sql.Array;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import com.appspot.relaxe.TestContext;
@@ -40,8 +39,6 @@ public class PagilaUDTTest
 		
 		TestContext<PGImplementation> ts = getCurrent();
 		Connection c = ts.newConnection();
-		
-		DatabaseMetaData meta = c.getMetaData();
 		
 		Statement st = c.createStatement();
 		

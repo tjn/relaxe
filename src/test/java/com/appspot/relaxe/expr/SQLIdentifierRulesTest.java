@@ -22,9 +22,6 @@
  */
 package com.appspot.relaxe.expr;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.appspot.relaxe.meta.SQLIdentifierRules;
 
 import junit.framework.TestCase;

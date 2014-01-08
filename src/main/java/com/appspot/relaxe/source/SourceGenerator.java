@@ -648,12 +648,6 @@ public class SourceGenerator {
 		return v ? "true" : "false";
 	}
 
-	private String autoIncrementConstant(Column c) {
-		Boolean ai = c.isAutoIncrement();
-		return (ai == null) ? "null"
-				: literal(ai.booleanValue() ? "YES" : "NO");
-	}
-
 	private String generateNewDataType(DataType t) {
 		StringBuilder buf = new StringBuilder();
 		generateNewDataType(buf, t);

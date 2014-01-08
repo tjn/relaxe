@@ -23,6 +23,7 @@
 package com.appspot.relaxe.query;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +40,8 @@ import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.Table;
 
 
-public class DataObjectQuery {
+public class DataObjectQuery
+	implements Serializable {
 
 	/**
 	 * 

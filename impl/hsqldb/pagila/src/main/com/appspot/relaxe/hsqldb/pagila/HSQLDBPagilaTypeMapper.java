@@ -22,9 +22,6 @@ package com.appspot.relaxe.hsqldb.pagila;
  * Section 5 of the GNU Affero General Public License.
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.appspot.relaxe.DefaultTypeMapper;
 import com.appspot.relaxe.ent.value.HasVarcharArray;
 import com.appspot.relaxe.ent.value.HasVarcharArrayKey;

@@ -179,8 +179,7 @@ public class TestKeyHolder
 		
 		IntegerKey<TestKeyHolder.Attribute, TestKeyHolder> a1k = IntegerKey.get(meta, TestKeyHolder.Attribute.A1);
 			
-		IntegerHolder h = e.get(a1k);
-		
+		IntegerHolder h = e.get(a1k);		
 		
 	}
 }

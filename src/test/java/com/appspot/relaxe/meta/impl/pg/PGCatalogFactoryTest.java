@@ -32,7 +32,6 @@ import java.util.Set;
 
 import com.appspot.relaxe.StatementExecutor;
 import com.appspot.relaxe.env.util.ResultSetWriter;
-import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.query.QueryException;
 
 
@@ -92,8 +91,7 @@ public class PGCatalogFactoryTest
 	        at.close();
         }
         
-        Catalog cat = f.create(getConnection());
-                
+        f.create(getConnection());                
     }
 
     public void testGetSchemaNameFromSchemas() throws SQLException {
