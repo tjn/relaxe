@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.appspot.relaxe.ent.query.EntityQueryAttributeValueReference;
@@ -80,7 +81,7 @@ public class DefaultEntityQuery<
 		this.root = root;
 		
 		if (predicate != null) {
-			this.predicates = new ArrayList<EntityQueryPredicate>();
+			this.predicates = new LinkedList<EntityQueryPredicate>();
 			this.predicates.add(predicate);
 		}
 	}
