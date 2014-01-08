@@ -33,6 +33,8 @@
         <dependency org="org.postgresql" name="postgresql" rev="9.3-1100-jdbc4" conf="jdbc" />        
         <dependency org="mysql" name="mysql-connector-java" rev="5.1.27" conf="jdbc"/>
         <dependency org="org.hsqldb" name="hsqldb" rev="2.3.1" conf="jdbc" />
+        
+        <!-- 1.1.1 is the latest in repo, versions 1.1.3 - 1.1.5 do not work due a bug fixed in revision wlad@montyprogram.com-20130920145518-ee3ys2xsr1c5ci0x -->
         <dependency org="org.jumpmind.symmetric.jdbc" name="mariadb-java-client" rev="1.1.1" conf="jdbc"/>
 
     </dependencies>
