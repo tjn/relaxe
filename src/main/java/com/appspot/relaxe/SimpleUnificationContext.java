@@ -26,20 +26,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.appspot.relaxe.ent.ContextRegistration;
 import com.appspot.relaxe.ent.UnificationContext;
-
 
 public class SimpleUnificationContext implements UnificationContext {
 
 	private Set<ContextRegistration> registrationSet;
-	
-	// private Map<EntityMetaData<?, ?, ?, ?, ?, ?, ?>, EntityIdentityMap<Attribute, Reference, ReferenceType<A,R,T,E,H,?,M,?>, Entity<?,?,?,?,?,?,?>, ReferenceHolder<A,R,T,E,H,M,?>, EntityMetaData<A,R,T,E,H,?,M,?>>> identityMap;
-	
-	private static Logger logger = LoggerFactory.getLogger(SimpleUnificationContext.class);
 	
 	@Override
 	public void add(ContextRegistration registration) {
@@ -65,25 +57,7 @@ public class SimpleUnificationContext implements UnificationContext {
 		}
 
 		return registrationSet;
-	}
-		
-	
-//	private Buffer<ReferenceHolder<?, ?, ?, ?, ?, ?, ?>> result = new Buffer<ReferenceHolder<?, ?, ?, ?, ?, ?, ?>>();
-	
-	private static Logger logger() {
-		return SimpleUnificationContext.logger;
-	}
-	
-//	public <		
-//		T extends ReferenceType<?, ?, T, E, H, ?, M, ?>,
-//		E extends Entity<?, ?, ?, ?, ?, ?, ?>,		
-//		H extends ReferenceHolder<?, ?, T, E, H, M, ?>, 
-//		M extends EntityMetaData<?, ?, T, E, H, ?, M, ?>
-//	>	
-//	H unify(E e) {
-//		return e.getMetaData().unify(this, e);
-//	}
-
+	}	
 }	
 	
 	

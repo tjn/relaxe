@@ -31,8 +31,6 @@ import junit.framework.TestCase;
 
 public class SQLIdentifierRulesTest extends TestCase {
 	
-	private static Logger logger = LoggerFactory.getLogger(SQLIdentifierRulesTest.class);
-	
 	private SQLIdentifierRules sir = new SQLIdentifierRules();
 
 	public void testStartVisitContextIdentifier1() {
@@ -63,9 +61,5 @@ public class SQLIdentifierRulesTest extends TestCase {
 //		ident.traverse(null, g);
 //		assertEquals("\"my_table\"", buf.toString());
 //	}
-
-	private static Logger logger() {
-		return SQLIdentifierRulesTest.logger;
-	}
 
 }

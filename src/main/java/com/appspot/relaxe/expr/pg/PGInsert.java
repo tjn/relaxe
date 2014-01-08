@@ -112,8 +112,7 @@ public class PGInsert
 		}
 	
 		@Override
-		protected Element getContent() {
-	
+		protected Element getContent() {	
 			return null;
 		}
 

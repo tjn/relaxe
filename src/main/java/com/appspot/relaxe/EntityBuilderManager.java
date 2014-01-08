@@ -22,9 +22,6 @@
  */
 package com.appspot.relaxe;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.appspot.relaxe.ent.Attribute;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityBuildContext;
@@ -57,12 +54,7 @@ public class EntityBuilderManager<
 >
 	extends DataObjectProcessor<MutableEntityDataObject<E>> {
 			
-//	private EntityQuery<A, R, T, E, H, F, M, QE> query;
 	private EntityQueryExpressionBuilder<A, R, T, E, H, F, M, QE> builder;
-//	private M meta;
-	
-	private static Logger logger = LoggerFactory.getLogger(EntityBuilderManager.class);
-	
 	private UnificationContext identityContext;
 	private EntityBuildContext context;
 		
@@ -97,40 +89,23 @@ public class EntityBuilderManager<
 		}
 	}
 	
-	
-//	private int indexOf(TableReference tref) {
-//		if (indexMap == null) {
-//			indexMap = new HashMap<TableReference, Integer>();
-//		}
-//		
-//		Integer index = indexMap.get(tref);
-//		
-//		if (index == null) {
-//			index = Integer.valueOf(indexMap.size());
-//			indexMap.put(tref, index);
-//		}		
-//		
-//		return index.intValue();
-//	}
-	
 	@Override
 	protected void put(MutableEntityDataObject<E> o) {
-//		logger().debug("put - enter");				
 		H result = rootBuilder.read(o);
-
-		//		result = read(result);					
-		
 		o.setRoot(result.value());
 		process(o);
 	}
 
 	protected E read(E result) {
-				
-		
 		return result;
 	}
-
-	public void process(EntityDataObject<E> e) {		
+	
+	/**
+	 * Allows subclasses to perform some processing after entity is read.
+	 *  
+	 * @param e
+	 */
+	protected void process(EntityDataObject<E> e) {		
 	}
 
 	@Override
@@ -146,10 +121,5 @@ public class EntityBuilderManager<
 
 	public EntityQuery<A, R, T, E, H, F, M, QE> getQuery() {
 		return builder.getQuery();
-	}
-
-	
-	private static Logger logger() {
-		return EntityBuilderManager.logger;
 	}
 }

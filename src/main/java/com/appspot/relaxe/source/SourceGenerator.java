@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 import com.appspot.relaxe.build.SchemaFilter;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.im.EntityIdentityMap;
+import com.appspot.relaxe.ent.value.PrimitiveKey;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.SchemaName;
@@ -82,7 +83,6 @@ import com.appspot.relaxe.meta.Table;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
 import com.appspot.relaxe.types.PrimitiveType;
-
 import com.appspot.relaxe.io.IOHelper;
 
 public class SourceGenerator {
@@ -131,10 +131,10 @@ public class SourceGenerator {
 		TABLE_ENUM_INIT_TYPE,
 
 		INIT_COLUMN_ENUM_LIST,
-		/**
-		 * TODO: which accessors
-		 */
-		ACCESSOR_LIST,
+//		/**
+//		 * TODO: which accessors
+//		 */
+//		ACCESSOR_LIST,
 		
 		ENTITY_ATTRIBUTE_ACCESSOR_SIGNATURE_LIST,
 		
@@ -147,8 +147,17 @@ public class SourceGenerator {
 		REFERENCE_KEY_VARIABLE,
 
 		REFERENCE_KEY_LIST,
+		
+		QUERY_ELEMENT_CONSTRUCTOR_LIST,
 
-		QUERY_ELEMENT_VARIABLE_LIST, QUERY_ELEMENT_GETTER_BODY, QUERY_ELEMENT_SETTER_BODY, QUERY_ELEMENT_ASSIGNMENT_LIST, QUERY_ELEMENT_NEW_BUILDER_BODY, QUERY_ELEMENT_DEFAULT_CONSTRUCTOR_BODY, QUERY_ELEMENT_BUILDER_DEFAULT_CONSTRUCTOR_BODY, PER_TYPE_QUERY_ELEMENT_GETTER_LIST,
+		QUERY_ELEMENT_VARIABLE_LIST,
+		QUERY_ELEMENT_GETTER_BODY, 
+		QUERY_ELEMENT_SETTER_BODY, 
+		QUERY_ELEMENT_ASSIGNMENT_LIST, 
+		QUERY_ELEMENT_NEW_BUILDER_BODY, 
+		QUERY_ELEMENT_DEFAULT_CONSTRUCTOR_BODY, 
+		QUERY_ELEMENT_BUILDER_DEFAULT_CONSTRUCTOR_BODY, 
+		PER_TYPE_QUERY_ELEMENT_GETTER_LIST,
 
 		IMPLEMENTED_HAS_KEY_LIST,
 
@@ -288,10 +297,7 @@ public class SourceGenerator {
 	private File defaultSourceDir;
 	private EnumMap<Part, File> sourceDirMap;
 	private Map<Class<?>, Class<?>> wrapperMap;
-	// private Class<? extends Environment> environmentType;
 	private Environment targetEnvironment;
-
-	private boolean delimitAll = false;
 
 	@SuppressWarnings("serial")
 	private static class TypeInfo extends EnumMap<Part, JavaType> {
@@ -306,26 +312,9 @@ public class SourceGenerator {
 	}
 
 	public SourceGenerator(File defaultSourceDir, SchemaFilter sf) {
-		this(defaultSourceDir, sf, false);
-	}
-
-	public SourceGenerator(File defaultSourceDir, SchemaFilter sf,
-			boolean delimitAll) {
-		super();
 		this.defaultSourceDir = defaultSourceDir;
-		this.schemaFilter = (sf == null) ? SchemaFilter.ALL_SCHEMAS : sf;
-		this.delimitAll = delimitAll;
+		this.schemaFilter = (sf == null) ? SchemaFilter.ALL_SCHEMAS : sf;		
 	}
-
-	// private static boolean knownAbbr(String t) {
-	// return t.equals("url") || t.equals("http") || t.equals("xml");
-	// }
-	//
-	// private static boolean knownProposition(String t) {
-	// return
-	// t.equals("of") || t.equals("in") || t.equals("with") ||
-	// t.equals("at") || t.equals("for");
-	// }
 
 	private static Logger logger() {
 		return SourceGenerator.logger;
@@ -538,27 +527,6 @@ public class SourceGenerator {
 			String src = generateHasKeyInterface(hki, t, tm);
 			writeIfGenerated(getSourceDir(), hki, src, generated, gm);
 		}
-
-		List<String> il = new ArrayList<String>();
-
-		// for (JavaType t : ccil) {
-		// if (t != null) {
-		// il.add(t.getQualifiedName());
-		// }
-		// }
-
-		// {
-		// JavaType cc = tm.catalogContextType();
-		// CharSequence src = generateContext(cc, tm, il, fm);
-		// write(getSourceDir(), cc, src, generated, gm);
-		// }
-
-		// {
-		// JavaType lc = tm.literalContextType();
-		// CharSequence src = generateLiteralContext(lc, cat, tm, il, fm);
-		// logger().debug("generated lit ctx: src={" + src + "}");
-		// writeIfGenerated(getSourceDir(), lc, src, generated, gm);		
-		// }
 		
 		logger().debug("run - exit");
 
@@ -593,281 +561,7 @@ public class SourceGenerator {
 		return src;
 	}
 
-	// private CharSequence generateLiteralContext(JavaType lc, Catalog cat,
-	// TableMapper tm, List<String> il, Map<JavaType, CharSequence> fm) throws
-	// IOException {
-	//
-	// logger().debug("generateLiteralContext - enter");
-	// String src = getTemplateForLiteralCatalog();
-	//
-	// src = replaceAllWithComment(src, Tag.PACKAGE_NAME, lc.getPackageName());
-	//
-	// Environment env = cat.getEnvironment();
-	// String e = env.getClass().getName();
-	// src = replaceAllWithComment(src, Tag.NEW_ENVIRONMENT_EXPR, "new " + e +
-	// "()");
-	//
-	// {
-	// String list = generateSchemaList(cat);
-	// src = replaceAllWithComment(src, Tag.SCHEMA_ENUM_LIST, list);
-	// }
-	//
-	// {
-	// String list = generateBaseTableList(cat, tm);
-	// src = replaceAllWithComment(src, Tag.BASE_TABLE_ENUM_LIST, list);
-	// }
-	//
-	// {
-	// String list = generateViewList(cat, tm);
-	// src = replaceAllWithComment(src, Tag.VIEW_ENUM_LIST, list);
-	// }
-	//
-	// {
-	// String list = generateColumnList(cat, tm);
-	// src = replaceAllWithComment(src, Tag.COLUMN_ENUM_LIST, list);
-	// }
-	//
-	// {
-	// String list = generatePrimaryKeyList(cat, tm);
-	// src = replaceAllWithComment(src, Tag.PRIMARY_KEY_ENUM_LIST, list);
-	// }
-	//
-	// {
-	// String list = generateForeignKeyList(cat, tm);
-	// src = replaceAllWithComment(src, Tag.FOREIGN_KEY_ENUM_LIST, list);
-	// }
-	//
-	// {
-	// String list = generateMetaMapPopulation(cat, tm);
-	// src = replaceAllWithComment(src, Tag.META_MAP_POPULATION, list);
-	// }
-	//
-	// {
-	// String list = generateFactoryMethodList(fm);
-	// src = replaceAllWithComment(src, Tag.FACTORY_METHOD_LIST, list);
-	// }
-	//
-	// final String tsrc = getTemplateForLiteralInnerTable();
-	//
-	// StringBuilder buf = new StringBuilder();
-	//
-	// EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
-	// List<String> initList = new ArrayList<String>();
-	//
-	// for (Schema s : cat.schemas().values()) {
-	// if (!schemaFilter.accept(s)) {
-	// continue;
-	// }
-	//
-	// String sn = name(s.getUnqualifiedName().getName());
-	//
-	// for (Table t : s.tables().values()) {
-	// String tn = getSimpleName(t);
-	//
-	// StringBuilder ebuf = new StringBuilder();
-	// generateColumnListElements(t, ebuf, nq, tm);
-	// String cl = ebuf.toString();
-	// String tc = replaceAll(tsrc, Tag.COLUMN_ENUM_LIST, cl);
-	// tc = replaceAll(tc, Tag.SCHEMA_TYPE_NAME, sn);
-	// tc = replaceAll(tc, Tag.TABLE_INTERFACE, tn);
-	//
-	// // if inner class:
-	// tc = replaceAll(tc, Tag.PACKAGE_DECL, "");
-	// tc = replaceAll(tc, Tag.IMPORTS, "");
-	//
-	// buf.append(tc);
-	// buf.append("\n\n");
-	//
-	// JavaType tet = tm.entityType(t, Part.LITERAL_TABLE_ENUM);
-	//
-	// logger().info("generateLiteralContext: tet = " + tet + " for " +
-	// t.getQualifiedName());
-	//
-	// if (tet != null) {
-	// initList.add(tet.getQualifiedName());
-	// }
-	// }
-	// }
-	//
-	// final String tin = getTemplateForTableEnumInit();
-	// StringBuilder initCode = new StringBuilder();
-	//
-	// for (String it : initList) {
-	// initCode.append(replaceAll(tin, Tag.TABLE_ENUM_INIT_TYPE, it));
-	// }
-	//
-	// src = replaceAll(src, Tag.INIT_COLUMN_ENUM_LIST, initCode.toString());
-	//
-	// src = replaceAllWithComment(src, Tag.TABLE_COLUMN_ENUM_LIST,
-	// buf.toString());
-	//
-	// logger().debug("generateLiteralContext - exit");
-	//
-	// return src;
-	// }
-
-	private String generateMetaMapPopulation(Catalog cat, TableMapper tm) {
-		StringBuilder buf = new StringBuilder();
-
-		for (Schema s : cat.schemas().values()) {
-			if (!schemaFilter.accept(s)) {
-				continue;
-			}
-
-			for (BaseTable t : s.baseTables().values()) {
-				String tn = tableEnumeratedName(tm, t);
-
-				JavaType impl = tm.entityType(t, Part.IMPLEMENTATION);
-				JavaType intf = tm.entityType(t, Part.INTERFACE);
-
-				// add(mm, LiteralBaseTable.PERSONAL_HOUR_REPORT,
-				// com.appspot.relaxe.gen.personal.HourReportImpl.HourReportMetaData.getInstance());
-
-				buf.append("add(mm, LiteralBaseTable.");
-				buf.append(tn);
-				buf.append(", ");
-				buf.append(impl.getQualifiedName());
-				buf.append(".");
-				buf.append(intf.getUnqualifiedName());
-				buf.append("MetaData.getInstance()");
-				buf.append(");\n");
-			}
-		}
-
-		return buf.toString();
-	}
-
-	private String generateForeignKeyList(Catalog cat, TableMapper tm) {
-		StringBuilder buf = new StringBuilder();
-
-		EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
-
-		for (Schema s : cat.schemas().values()) {
-			if (!schemaFilter.accept(s)) {
-				continue;
-			}
-
-			for (BaseTable t : s.baseTables().values()) {
-				SchemaElementMap<ForeignKey> fm = t.foreignKeys();
-
-				for (ForeignKey fk : fm.values()) {
-					String n = foreignKeyEnumeratedName(tm, fk);
-					String sn = schemaEnumeratedName(s);
-					Identifier un = fk.getUnqualifiedName();
-
-					buf.append(n);
-					buf.append("(LiteralSchema.");
-					buf.append(sn);
-					buf.append(", ");
-					buf.append(literal(un));
-
-					BaseTable kt = fk.getReferencing();
-					JavaType jkt = tm.entityType(kt, Part.LITERAL_TABLE_ENUM);
-
-					BaseTable rt = fk.getReferenced();
-					JavaType jrt = tm.entityType(rt, Part.LITERAL_TABLE_ENUM);
-
-					// for (Map.Entry<Column, Column> e :
-					// fk.columns().entrySet()) {
-					// buf.append(", ");
-					// buf.append(jkt.getQualifiedName());
-					// buf.append(".");
-					// buf.append(columnEnumeratedName(kt, e.getKey(), nq));
-					// buf.append(", ");
-					// buf.append(jrt.getQualifiedName());
-					// buf.append(".");
-					// buf.append(columnEnumeratedName(rt, e.getValue(), nq));
-					// }
-
-					for (Column a : fk.getColumnMap().values()) {
-						Column b = fk.getReferenced(a);
-						buf.append(", ");
-						buf.append(jkt.getQualifiedName());
-						buf.append(".");
-						buf.append(columnEnumeratedName(kt, a, nq, tm));
-						buf.append(", ");
-						buf.append(jrt.getQualifiedName());
-						buf.append(".");
-						buf.append(columnEnumeratedName(rt, b, nq, tm));
-					}
-
-					buf.append("),\n");
-				}
-			}
-		}
-
-		return buf.toString();
-	}
-
-	private String generatePrimaryKeyList(Catalog cat, TableMapper tm) {
-		StringBuilder buf = new StringBuilder();
-
-		EnumSet<NameQualification> nq = EnumSet.of(NameQualification.COLUMN);
-
-		for (Schema s : cat.schemas().values()) {
-			if (!schemaFilter.accept(s)) {
-				continue;
-			}
-
-			for (BaseTable t : s.baseTables().values()) {
-				PrimaryKey pk = t.getPrimaryKey();
-
-				if (pk == null) {
-					logger().warn(
-							"table without primary key: "
-									+ t.getQualifiedName());
-					continue;
-				}
-
-				JavaType jt = tm.entityType(t, Part.LITERAL_TABLE_ENUM);
-
-				String n = primaryKeyEnumeratedName(tm, pk);
-				String tn = tableEnumeratedName(tm, t);
-				Identifier un = pk.getUnqualifiedName();
-
-				buf.append(n);
-				buf.append("(LiteralBaseTable.");
-				buf.append(tn);
-				buf.append(", ");
-				buf.append(literal(un));
-				buf.append("");
-
-				for (Column c : pk.getColumnMap().values()) {
-					buf.append(", ");
-					// buf.append("LiteralCatalogColumn.");
-					buf.append(jt.getQualifiedName());
-					buf.append(".");
-					buf.append(columnEnumeratedName(t, c, nq, tm));
-				}
-
-				buf.append("),\n");
-			}
-		}
-
-		return buf.toString();
-	}
-
-	// private String generateColumnList(Table t) {
-	// StringBuilder buf = new StringBuilder();
-	//
-	// Identifier sn = t.getSchema().getUnqualifiedName();
-	// Identifier tn = t.getUnqualifiedName();
-	// String ce = name(sn.getName()) + name(tn.getName());
-	//
-	// buf.append("enum ");
-	// buf.append(ce);
-	// buf.append(" {");
-	// buf.append("\n");
-	//
-	// EnumSet<NameQualification> fq = EnumSet.allOf(NameQualification.class);
-	// generateColumnListElements(t, buf, fq);
-	//
-	// buf.append("\n");
-	// buf.append("}");
-	//
-	// return buf.toString();
-	// }
-
+	
 	enum NameQualification {
 		SCHEMA, TABLE, COLUMN
 	}
@@ -879,16 +573,12 @@ public class SourceGenerator {
 
 	private void generateColumnListElements(Table t, StringBuilder buf,
 			EnumSet<NameQualification> nq, TableMapper tm) {
-		boolean b = t.isBaseTable();
-		String te = b ? "LiteralBaseTable" : "LiteralView";
-
 		Environment env = t.getEnvironment();
 
 		String et = env.getClass().getName();
 
 		for (Column c : t.getColumnMap().values()) {
 			String cn = columnEnumeratedName(t, c, nq, tm);
-			// String ten = tableEnumeratedName(tm, t);
 			Identifier un = c.getUnqualifiedName();
 
 			buf.append(cn);
@@ -964,42 +654,6 @@ public class SourceGenerator {
 				: literal(ai.booleanValue() ? "YES" : "NO");
 	}
 
-	private String generateColumnList(Catalog cat, TableMapper tm) {
-		StringBuilder buf = new StringBuilder();
-
-		for (Schema s : cat.schemas().values()) {
-			if (!schemaFilter.accept(s)) {
-				continue;
-			}
-
-			for (Table t : s.tables().values()) {
-				boolean b = t.isBaseTable();
-				String te = b ? "LiteralBaseTable" : "LiteralView";
-
-				for (Column c : t.getColumnMap().values()) {
-					String cn = columnEnumeratedName(t, c, tm);
-					String tn = tableEnumeratedName(tm, t);
-					Identifier un = c.getUnqualifiedName();
-
-					buf.append(cn);
-					buf.append("(");
-					buf.append(te);
-					buf.append(".");
-					buf.append(tn);
-					buf.append(", ");
-					buf.append(literal(un));
-					buf.append(", ");
-					generateNewDataType(buf, c.getDataType());
-					buf.append(", ");
-					buf.append(autoIncrementConstant(c));
-					buf.append(")),\n");
-				}
-			}
-		}
-
-		return buf.toString();
-	}
-
 	private String generateNewDataType(DataType t) {
 		StringBuilder buf = new StringBuilder();
 		generateNewDataType(buf, t);
@@ -1036,102 +690,8 @@ public class SourceGenerator {
 		buf.append(")");
 	}
 
-	private String generateBaseTableList(Catalog cat, TableMapper tm) {
-		StringBuilder buf = new StringBuilder();
-
-		for (Schema s : cat.schemas().values()) {
-			if (!schemaFilter.accept(s)) {
-				continue;
-			}
-
-			for (BaseTable t : s.baseTables().values()) {
-				String tn = tableEnumeratedName(tm, t);
-				String sn = schemaEnumeratedName(s);
-				Identifier un = t.getUnqualifiedName();
-
-				buf.append(tn);
-				buf.append("(LiteralSchema.");
-				buf.append(sn);
-				buf.append(", ");
-				buf.append(literal(un));
-				buf.append("),\n");
-			}
-		}
-
-		return buf.toString();
-	}
-
-	private String generateViewList(Catalog cat, TableMapper tm) {
-		logger().debug("generateViewList - enter");
-
-		StringBuilder buf = new StringBuilder();
-
-		for (Schema s : cat.schemas().values()) {
-			if (!schemaFilter.accept(s)) {
-				continue;
-			}
-
-			for (Table t : s.tables().values()) {
-				String tt = t.getTableType();
-
-				logger().debug(
-						"generateViewList: tt=" + tt + " in table "
-								+ t.getQualifiedName());
-
-				if (tt.equals(Table.VIEW) || tt.equals(Table.SYSTEM_TABLE)) {
-					String tn = tableEnumeratedName(tm, t);
-					String sn = schemaEnumeratedName(s);
-					Identifier un = t.getUnqualifiedName();
-
-					buf.append(tn);
-					buf.append("(LiteralSchema.");
-					buf.append(sn);
-					buf.append(", \"");
-					buf.append(un.getContent());
-					buf.append("\"),\n");
-				}
-			}
-		}
-
-		logger().debug("generateViewList - exit: " + buf);
-
-		return buf.toString();
-	}
-
-	private String generateSchemaList(Catalog cat) {
-		StringBuilder buf = new StringBuilder();
-
-		for (Schema s : cat.schemas().values()) {
-			if (!schemaFilter.accept(s)) {
-				continue;
-			}
-
-			Identifier un = s.getUnqualifiedName();
-			String n = un.getContent();
-			buf.append(schemaEnumeratedName(s));
-			buf.append("(\"");
-			buf.append(n);
-			buf.append("\"),\n");
-		}
-
-		return buf.toString();
-	}
-
-	private String schemaEnumeratedName(Schema s) {
-		Identifier un = s.getUnqualifiedName();
-		return un.getContent().toUpperCase();
-	}
-
 	private String tableEnumeratedName(TableMapper tm, Table t) {
 		return enumeratedName(tm, t);
-	}
-
-	private String foreignKeyEnumeratedName(TableMapper tm, ForeignKey k) {
-		return enumeratedName(tm, k);
-	}
-
-	private String primaryKeyEnumeratedName(TableMapper tm, PrimaryKey k) {
-		return enumeratedName(tm, k);
 	}
 
 	private String enumeratedName(TableMapper tm, SchemaElement e) {
@@ -1144,11 +704,6 @@ public class SourceGenerator {
 
 		String uc = buf.toString().toUpperCase();
 		return tm.toJavaIdentifier(uc);
-	}
-
-	private String columnEnumeratedName(Table t, Column c, TableMapper tm) {
-		return columnEnumeratedName(t, c,
-				EnumSet.allOf(NameQualification.class), tm);
 	}
 
 	private String columnEnumeratedName(Table t, Column c,
@@ -1181,57 +736,6 @@ public class SourceGenerator {
 	private String normalize(String n) {
 		return n.replace(' ', '_');
 	}
-
-	private CharSequence generateContext(JavaType cc, TableMapper tm,
-			Collection<String> il, Map<JavaType, CharSequence> fm)
-			throws IOException {
-
-		logger().debug("generateContext - enter");
-		String src = getTemplateForCatalogContext();
-
-		// src = replacePackageAndImports(src, cc, il);
-
-		src = replacePackageName(src, cc);
-		src = replaceAll(src, Tag.PACKAGE_NAME_LITERAL,
-				"\"" + cc.getPackageName() + "\"");
-		src = replaceImportList(src, il);
-		src = replaceAll(src, Tag.ROOT_PACKAGE_NAME_LITERAL,
-				"\"" + tm.getRootPackage() + "\"");
-		src = replaceAll(src, Tag.CATALOG_CONTEXT_PACKAGE_NAME,
-				cc.getPackageName());
-		src = replaceAll(src, Tag.CATALOG_CONTEXT_CLASS,
-				cc.getUnqualifiedName());
-
-		String list = generateFactoryMethodList(fm);
-		src = replaceAll(src, Tag.FACTORY_METHOD_LIST, list);
-
-		logger().debug("generateContext - exit");
-
-		return src;
-	}
-
-	private String generateFactoryMethodList(Map<JavaType, CharSequence> fm) {
-		StringBuilder buf = new StringBuilder();
-
-		for (Map.Entry<JavaType, CharSequence> e : fm.entrySet()) {
-			buf.append(formatSchemaFactoryMethod(e.getKey(), e.getValue()));
-		}
-		return buf.toString();
-	}
-
-	private String formatSchemaFactoryMethod(JavaType key, CharSequence value) {
-		String n = key.getUnqualifiedName();
-		String qn = key.getQualifiedName();
-		return "public " + qn + " new" + n + "() { return " + value + " } ";
-	}
-
-	private String getTemplateForCatalogContext() throws IOException {
-		return read("CATALOG_CONTEXT.in");
-	}
-
-	// private String getTemplateForLiteralCatalog() throws IOException {
-	// return read("LITERAL_CATALOG.in");
-	// }
 
 	private String getTemplateForHasKeyInterface() throws IOException {
 		return read("HAS_KEY.in");
@@ -1519,39 +1023,42 @@ public class SourceGenerator {
 			String code = contentAccessors(cat, t, tm, tym, false);
 			src = replaceAll(src, "{{abstract-accessor-list}}", code);
 		}
+		
+		{
+			String code = queryElementConstructorList(cat, t, tm, 5);
+			src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_CONSTRUCTOR_LIST, code);
+		}		
 
 		{
-			String code = queryElementVariableList(cat, t, tm, tym, false);
+			String code = queryElementVariableList(cat, t, tm, tym);
 			src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_VARIABLE_LIST, code);
 		}
 
 		{
-			String code = queryElementGetterBody(cat, t, tm, tym, false);
+			String code = queryElementGetterBody(cat, t, tm, tym);
 			src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_GETTER_BODY,
 					code);
 		}
 
 		{
-			String code = queryElementSetterBody(cat, t, tm, tym, false);
+			String code = queryElementSetterBody(cat, t, tm, tym);
 			src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_SETTER_BODY,
 					code);
 		}
 
 		{
-			String code = queryElementAssignmentList(cat, t, tm, tym, false);
-			src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_ASSIGNMENT_LIST,
-					code);
+			String code = queryElementAssignmentList(cat, t, tm, tym);
+			src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_ASSIGNMENT_LIST, code);
 		}
 
 		{
-			String code = queryElementNewBuilderBody(cat, t, tm, tym, false);
+			String code = queryElementNewBuilderBody(cat, t, tm, tym);
 			src = replaceAllWithComment(src,
 					Tag.QUERY_ELEMENT_NEW_BUILDER_BODY, code);
 		}
 
 		{
-			String code = queryElementDefaultConstructorBody(cat, t, tm, tym,
-					false);
+			String code = queryElementDefaultConstructorBody(cat, t, tm, tym);
 			src = replaceAllWithComment(src,
 					Tag.QUERY_ELEMENT_DEFAULT_CONSTRUCTOR_BODY, code);
 			// same content can applied for Builder, too
@@ -1560,9 +1067,8 @@ public class SourceGenerator {
 		}
 
 		{
-			String code = perTypeQueryElementGetterList(cat, t, tm, tym, false);
-			src = replaceAllWithComment(src,
-					Tag.PER_TYPE_QUERY_ELEMENT_GETTER_LIST, code);
+			String code = perTypeQueryElementGetterList(cat, t, tm, tym);
+			src = replaceAllWithComment(src, Tag.PER_TYPE_QUERY_ELEMENT_GETTER_LIST, code);
 		}
 
 		{
@@ -1596,8 +1102,7 @@ public class SourceGenerator {
 		return src;
 	}
 
-	private String queryElementVariableList(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym, boolean b) {
+	private String queryElementVariableList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
 		Collection<ForeignKey> fks = t.foreignKeys().values();
 
 		if (fks.isEmpty()) {
@@ -1617,13 +1122,51 @@ public class SourceGenerator {
 
 		return buf.toString();
 	}
+	
+	private String queryElementConstructorList(Catalog cat, BaseTable t, TableMapper tam, int count) {
+		StringBuilder buf = new StringBuilder();
+		
+//		Sample: 
+//		public QueryElement(
+//				PrimitiveKey<Attribute, Language, ?, ?, ?, ?> a1, 
+//				PrimitiveKey<Attribute, Language, ?, ?, ?, ?> a2) {
+//			this.attributes = new java.util.TreeSet<Attribute>();
+//			this.attributes.add(a1.name());
+//			this.attributes.add(a2.name());
+//		}
+		
+		String intf = tam.entityType(t, Part.INTERFACE).getUnqualifiedName();
+		String attr = getAttributeType();
+								
+		for (int i = 0; i < count; i++) {
+			line(buf, "public QueryElement(");
+			
+			int ac = (i + 1);
+			
+			for (int p = 0; p < ac; p++) {
+				String delim = (p < (ac - 1)) ? "," : "";
+				line(buf, PrimitiveKey.class.getCanonicalName(), 
+						"<", attr, ", ", intf, ", ?, ?, ?, ?> a", Integer.toString(p + 1), delim);
+			}
+						
+			line(buf, ") {");			
+			line(buf, "this.attributes = new java.util.TreeSet<", getAttributeType(), ">();");
+			
+			for (int p = 0; p < ac; p++) {
+				line(buf, "this.attributes.add(a", Integer.toString(p + 1), ".name());");
+			}			
+			
+			line(buf, "}");			
+		}
+
+		return buf.toString();
+	}	
 
 	protected String queryElementVariableName(ForeignKey fk) {
 		return variableName(referenceName(fk)) + "QueryElement";
 	}
 
-	private String queryElementGetterBody(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym, boolean b) {
+	private String queryElementGetterBody(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
 		Collection<ForeignKey> fks = t.foreignKeys().values();
 
 		StringBuilder buf = new StringBuilder();
@@ -1656,8 +1199,7 @@ public class SourceGenerator {
 		return buf.toString();
 	}
 
-	private String queryElementSetterBody(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym, boolean b) {
+	private String queryElementSetterBody(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
 		Collection<ForeignKey> fks = t.foreignKeys().values();
 
 		StringBuilder buf = new StringBuilder();
@@ -1688,7 +1230,7 @@ public class SourceGenerator {
 	}
 
 	private String queryElementAssignmentList(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym, boolean b) {
+			TableMapper tm, TypeMapper tym) {
 		Collection<ForeignKey> fks = t.foreignKeys().values();
 
 		if (fks.isEmpty()) {
@@ -1706,7 +1248,7 @@ public class SourceGenerator {
 	}
 
 	private String queryElementNewBuilderBody(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym, boolean b) {
+			TableMapper tm, TypeMapper tym) {
 		Collection<ForeignKey> fks = t.foreignKeys().values();
 
 		StringBuilder buf = new StringBuilder();
@@ -1726,7 +1268,7 @@ public class SourceGenerator {
 	}
 
 	private String queryElementDefaultConstructorBody(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym, boolean b) {
+			TableMapper tm, TypeMapper tym) {
 
 		PrimaryKey pk = t.getPrimaryKey();
 
@@ -1794,8 +1336,7 @@ public class SourceGenerator {
 		return buf.toString();
 	}
 
-	private String perTypeQueryElementGetterList(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym, boolean b) {
+	private String perTypeQueryElementGetterList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
 
 		Collection<ForeignKey> fks = t.foreignKeys().values();
 
@@ -2387,33 +1928,6 @@ public class SourceGenerator {
 		return src;
 	}
 
-	private CharSequence generateSchemaFactoryMethodImplementation(Schema s,
-			TableMapper tm, Collection<TypeInfo> types) throws IOException {
-
-		// JavaType intf = tm.factoryType(s, Part.INTERFACE);
-		// String src = getFactoryTemplateFor(Part.INTERFACE);
-
-		JavaType impl = tm.factoryType(s, Part.IMPLEMENTATION);
-
-		String src = " new " + impl.getQualifiedName() + "(); ";
-
-		// src = replaceAll(src, "{{schema-factory}}",
-		// intf.getUnqualifiedName());
-		//
-		// StringBuilder code = new StringBuilder();
-		//
-		// for (TypeInfo t : types) {
-		// String m = formatFactoryMethod(t, true);
-		// a(code, m, 1);
-		// }
-		//
-		// src = replaceAll(src, FACTORY_METHOD_LIST, code.toString());
-		//
-		// logger().debug("factory impl: " + src);
-
-		return src;
-	}
-
 	private JavaType getFactoryMethodReturnType(TypeInfo info) {
 		// JavaType hp = info.get(Part.HOOK);
 		// JavaType itfp = info.get(Part.INTERFACE);
@@ -2612,10 +2126,10 @@ public class SourceGenerator {
 
 		boolean qualify = hasAmbiguousSimpleNamesForReferenceKeys(t, tam);
 
-		{
-			String code = contentAccessors(cat, t, tam, tym, true);
-			src = replaceAll(src, Tag.ACCESSOR_LIST, code);
-		}
+//		{
+//			String code = contentAccessors(cat, t, tam, tym, true);
+//			src = replaceAll(src, Tag.ACCESSOR_LIST, code);
+//		}
 
 		{
 			String code = referenceKeyClassList(t, tam, qualify);
@@ -3659,8 +3173,7 @@ public class SourceGenerator {
 		return content.toString();
 	}
 
-	private String valueAccessorList(Catalog cat, BaseTable t, TableMapper tm,
-			TypeMapper tym, boolean impl) {
+	private String valueAccessorList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, boolean impl) {
 		List<Column> acl = getAttributeColumnList(cat, t, tym);
 		StringBuilder content = new StringBuilder();
 

@@ -39,8 +39,6 @@ import com.appspot.relaxe.types.VarcharArrayType;
 public class HSQLDBPagilaTypeMapper
 	extends DefaultTypeMapper {
 	
-	private static Logger logger = LoggerFactory.getLogger(HSQLDBPagilaTypeMapper.class);
-
 	public HSQLDBPagilaTypeMapper() {
 		super();
 		
@@ -55,9 +53,4 @@ public class HSQLDBPagilaTypeMapper
 		
 		register(PrimitiveType.ARRAY, "VARCHAR(1024) ARRAY", info);
 	}	
-
-	private static Logger logger() {
-		return HSQLDBPagilaTypeMapper.logger;
-	}
-	
 }

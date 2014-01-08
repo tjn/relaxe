@@ -127,22 +127,4 @@ public class ElementList<E extends Element>
 	public Symbol getDelim() {
 		return delim;
 	}
-	
-	
-	public static class Builder<E extends Element> {
-		
-		private List<E> content;
-				
-		public ElementList<E> newElementList() {
-			return null;
-		}
-		
-		public void add(E elem) {
-			if (elem == null) {
-				throw new NullPointerException("elem");
-			}
-		}
-		
-		
-	}
 }

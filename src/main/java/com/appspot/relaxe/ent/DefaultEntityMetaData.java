@@ -51,12 +51,6 @@ public abstract class DefaultEntityMetaData<
 >
 	extends AbstractEntityMetaData<A, R, T, E, H, F, M>
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8331822446687395204L;
-
-
 	private Set<A> attributes;
 	private Map<A, Column> attributeMap;
 	private Map<Column, A> columnMap;

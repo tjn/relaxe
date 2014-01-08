@@ -38,8 +38,6 @@ import com.appspot.relaxe.ent.value.PrimitiveKey;
 import com.appspot.relaxe.expr.ImmutableValueParameter;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.expr.op.Comparison.Op;
-import com.appspot.relaxe.log.DefaultLogger;
-import com.appspot.relaxe.log.Logger;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.ReferenceHolder;
@@ -225,8 +223,8 @@ public abstract class DefaultEntityQueryElement<
 	}
 	
 	
-	public Logger logger() {
-		return DefaultLogger.getLogger();
-	}
+//	public Logger logger() {
+//		return DefaultLogger.getLogger();
+//	}
 }
 

@@ -172,11 +172,9 @@ public interface {{table-interface}}
 				if (attributes != null && (!attributes.isEmpty())) {
 					this.attributes = new java.util.TreeSet<Attribute>(attributes);
 				}
-			}
+			}			
 			
-			public QueryElement(Attribute ... attributes) {
-				this((attributes == null || attributes.length == 0) ? null : java.util.Arrays.asList(attributes));
-			}
+			{{query-element-constructor-list}}
 			
 			public QueryElement self() {
 				return this;
