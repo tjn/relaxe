@@ -48,9 +48,6 @@ public interface EntityQueryElement<
 >
 	extends Request, EntityQueryElementTag
 {	
-//	DefaultTableExpression getTableExpression()
-//		throws EntityException;
-//	
 	/**
 	 * result item meta-data
 	 * @return
