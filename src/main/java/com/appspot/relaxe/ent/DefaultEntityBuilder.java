@@ -103,7 +103,7 @@ public abstract class DefaultEntityBuilder<
 		
 		int pkws = this.primaryKeyWriterList.size();
 		
-//		if (pkws > 0) {		
+		if (pkws > 0) {		
 			for (AttributeWriter<A, E> w : this.primaryKeyWriterList) {					
 				PrimitiveHolder<?, ?, ?> h = src.get(w.getIndex());
 				
@@ -112,7 +112,7 @@ public abstract class DefaultEntityBuilder<
 					return null;				
 				}
 			}
-//		}
+		}
 		
 		E ne = getMetaData().getFactory().newEntity();
 		
