@@ -55,19 +55,16 @@ public class FetchOptions
 		this(pageSize, offset, true);
 	}
 	
+	public FetchOptions(int count, boolean cardinality) {
+		this(Integer.valueOf(count), 0, cardinality);
+	}
+	
 	public FetchOptions(Integer count, long offset, boolean cardinality) {
 		super();
 		this.offset = offset;
 		this.count = count;				
 		this.fetchCardinality = cardinality;
 	}
-	
-	public FetchOptions(long offset) {
-		super();
-		this.offset = offset;
-		this.count = null;		
-	}
-
 
 	public long getOffset() {
 		return this.offset;
