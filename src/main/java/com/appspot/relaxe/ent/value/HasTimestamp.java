@@ -23,10 +23,10 @@
 package com.appspot.relaxe.ent.value;
 
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.TimestampHolder;
 
-public interface HasTimestamp<A extends Attribute, E extends HasTimestamp<A, E>> {
+public interface HasTimestamp<A extends AttributeName, E extends HasTimestamp<A, E>> {
 	TimestampHolder getTimestamp(TimestampKey<A, E> key);
 
 	void setTimestamp(TimestampKey<A, E> key, TimestampHolder newValue);

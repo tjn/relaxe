@@ -22,13 +22,13 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.Interval;
 import com.appspot.relaxe.rpc.IntervalHolder;
 import com.appspot.relaxe.types.IntervalType;
 
 public class IntervalAccessor<
-	A extends Attribute,
+	A extends AttributeName,
 	E,
 	V extends Interval<V>, 
 	P extends IntervalType<P>, 
@@ -53,7 +53,7 @@ public class IntervalAccessor<
 	}
 	
 	public static class DayTime<
-		A extends Attribute,		
+		A extends AttributeName,		
 		E extends HasInterval.DayTime<A, E>
 	>
 		extends IntervalAccessor<A, E, Interval.DayTime, IntervalType.DayTime, IntervalHolder.DayTime, IntervalKey.DayTime<A, E>> {
@@ -77,7 +77,7 @@ public class IntervalAccessor<
 	
 
 	public static class YearMonth<
-		A extends Attribute,		
+		A extends AttributeName,		
 		E extends HasInterval.YearMonth<A, E>
 	>
 		extends IntervalAccessor<A, E, Interval.YearMonth, IntervalType.YearMonth, IntervalHolder.YearMonth, IntervalKey.YearMonth<A, E>> {

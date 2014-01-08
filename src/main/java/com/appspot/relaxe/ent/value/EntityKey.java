@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
@@ -47,14 +47,14 @@ import com.appspot.relaxe.types.ReferenceType;
  * @param <K>
  */
 public interface EntityKey<
-	A extends Attribute,
+	A extends AttributeName,
 	R extends Reference,	
 	T extends ReferenceType<A, R, T, E, H, F, M>,
 	E extends Entity<A, R, T, E, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	F extends EntityFactory<E, H, M, F>,
 	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	RA extends Attribute,
+	RA extends AttributeName,
 	RR extends Reference,	
 	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
 	RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,

@@ -24,7 +24,7 @@ package com.appspot.relaxe.service;
 
 import java.util.List;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityException;
 import com.appspot.relaxe.ent.EntityFactory;
@@ -41,7 +41,7 @@ import com.appspot.relaxe.types.ReferenceType;
 public interface EntitySession {
 	
 	<
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,	
 		T extends ReferenceType<A, R, T, E, H, F, M>,
 		E extends Entity<A, R, T, E, H, F, M>,
@@ -52,7 +52,7 @@ public interface EntitySession {
 	E merge(E e) throws EntityException;
 	
 	<
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,	
 		T extends ReferenceType<A, R, T, E, H, F, M>,
 		E extends Entity<A, R, T, E, H, F, M>,
@@ -65,7 +65,7 @@ public interface EntitySession {
 	
 	
 	<
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,	
 		T extends ReferenceType<A, R, T, E, H, F, M>,
 		E extends Entity<A, R, T, E, H, F, M>,
@@ -77,7 +77,7 @@ public interface EntitySession {
 		throws EntityException;	
 	
 	<
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,	
 		T extends ReferenceType<A, R, T, E, H, F, M>,
 		E extends Entity<A, R, T, E, H, F, M>,
@@ -90,7 +90,7 @@ public interface EntitySession {
 
 	
 	<
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,	
 		T extends ReferenceType<A, R, T, E, H, F, M>,
 		E extends Entity<A, R, T, E, H, F, M>,
@@ -101,7 +101,7 @@ public interface EntitySession {
 	E load(E e) throws EntityException;	
 	
 	public <
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,	
 		T extends ReferenceType<A, R, T, E, H, F, M>,
 		E extends Entity<A, R, T, E, H, F, M>,
@@ -115,7 +115,7 @@ public interface EntitySession {
 	
 	
 	public <
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,	
 		T extends ReferenceType<A, R, T, E, H, F, M>,
 		E extends Entity<A, R, T, E, H, F, M>,
@@ -135,7 +135,7 @@ public interface EntitySession {
 
 
 	public <		
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,
 		T extends ReferenceType<A, R, T, E, H, F, M>,
 		E extends Entity<A, R, T, E, H, F, M>,

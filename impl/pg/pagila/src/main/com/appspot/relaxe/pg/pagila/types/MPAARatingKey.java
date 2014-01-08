@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.pg.pagila.types;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.value.AbstractOtherKey;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
@@ -30,7 +30,7 @@ import com.appspot.relaxe.types.OtherType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public class MPAARatingKey<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasMPAARating<A, E>	
 >
 	extends AbstractOtherKey<A, E, MPAARating, MPAARatingType, MPAARatingHolder, MPAARatingKey<A, E>>
@@ -52,7 +52,7 @@ public class MPAARatingKey<
 	}
 	
 	public static <
-		X extends Attribute,
+		X extends AttributeName,
 		T extends HasMPAARating<X, T>
 	>
 	MPAARatingKey<X, T> get(HasMPAARatingKey<X, T> meta, X a) {

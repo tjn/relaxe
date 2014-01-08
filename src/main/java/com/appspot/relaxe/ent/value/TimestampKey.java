@@ -24,7 +24,7 @@ package com.appspot.relaxe.ent.value;
 
 import java.util.Date;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.TimestampHolder;
@@ -32,7 +32,7 @@ import com.appspot.relaxe.types.TimestampType;
 
 
 public final class TimestampKey<	
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasTimestamp<A, E>
 >
 	extends AbstractPrimitiveKey<A, E, Date, TimestampType, TimestampHolder, TimestampKey<A, E>>
@@ -54,7 +54,7 @@ public final class TimestampKey<
 	}
 	
 	public static <
-		X extends Attribute,
+		X extends AttributeName,
 		T extends HasTimestamp<X, T>
 	>
 	TimestampKey<X, T> get(HasTimestampKey<X, T> meta, X a) {

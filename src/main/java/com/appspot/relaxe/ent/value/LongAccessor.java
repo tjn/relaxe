@@ -22,13 +22,13 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.rpc.LongHolder;
 import com.appspot.relaxe.types.LongType;
 
 public class LongAccessor<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasLong<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, Long, LongType, LongHolder, LongKey<A, E>> {

@@ -27,7 +27,7 @@ import java.io.Serializable;
 import com.appspot.relaxe.types.PrimitiveType;
 
 
-public interface Attribute
+public interface AttributeName
 	extends Identifiable, Serializable {
 
 	PrimitiveType<?> type();	

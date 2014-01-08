@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 import com.appspot.relaxe.SLF4JLogger;
 import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.QueryHelper;
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
@@ -341,7 +341,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	
 	
 	protected <
-		A extends Attribute, 
+		A extends AttributeName, 
 		R extends com.appspot.relaxe.ent.Reference, 
 		T extends ReferenceType<A, R, T, E, H, F, M>, 
 		E extends Entity<A, R, T, E, H, F, M>,
@@ -391,7 +391,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	}
 	
 	protected <
-		A extends Attribute, 
+		A extends AttributeName, 
 		R extends com.appspot.relaxe.ent.Reference, 
 		T extends ReferenceType<A, R, T, E, H, F, M>, 
 		E extends Entity<A, R, T, E, H, F, M>,

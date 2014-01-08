@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.rpc;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.Reference;
@@ -39,7 +39,7 @@ import com.appspot.relaxe.types.ReferenceType;
  */
 
 public abstract class ReferenceHolder<
-	A extends Attribute,
+	A extends AttributeName,
 	R extends Reference,
 	T extends ReferenceType<A, R, T, V, H, ?, M>,
 	V extends Entity<A, R, T, V, H, ?, M>,

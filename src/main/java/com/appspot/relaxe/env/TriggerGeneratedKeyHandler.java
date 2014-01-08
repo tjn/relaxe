@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import com.appspot.relaxe.QueryHelper;
 import com.appspot.relaxe.ValueExtractor;
 import com.appspot.relaxe.ValueExtractorFactory;
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.PrimitiveKey;
 import com.appspot.relaxe.expr.SchemaElementName;
@@ -71,7 +71,7 @@ public class TriggerGeneratedKeyHandler
 	
 	@Override
 	public <
-		A extends Attribute, 
+		A extends AttributeName, 
 		R extends Reference, 
 		T extends com.appspot.relaxe.types.ReferenceType<A,R,T,E,?,?,M>, 
 		E extends com.appspot.relaxe.ent.Entity<A,R,T,E,?,?,M>, 

@@ -32,7 +32,7 @@ import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.ReferenceType;
 
 public abstract class EnumMetaData<
-	A extends Enum<A> & Attribute,
+	A extends Enum<A> & AttributeName,
 	R extends Enum<R> & Reference,
 	T extends ReferenceType<A, R, T, E, H, F, M>,
 	E extends Entity<A, R, T, E, H, F, M>,

@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.StringArray;
@@ -32,7 +32,7 @@ import com.appspot.relaxe.types.VarcharType;
 
 
 public class VarcharArrayKey<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasVarcharArray<A, E>	
 >
 	extends AbstractArrayKey<A, E, String, StringArray, VarcharType, VarcharArrayType, VarcharArrayHolder, VarcharArrayKey<A,E>>
@@ -69,7 +69,7 @@ public class VarcharArrayKey<
 	}
 
 	public static <
-		X extends Attribute,
+		X extends AttributeName,
 		T extends HasVarcharArray<X, T>
 	>
 	VarcharArrayKey<X, T> get(HasVarcharArrayKey<X, T> meta, X a) {

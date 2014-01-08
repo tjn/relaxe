@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.IntegerHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
@@ -30,7 +30,7 @@ import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public final class IntegerKey<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasInteger<A, E>
 >
 	extends AbstractPrimitiveKey<A, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, E>>	
@@ -52,7 +52,7 @@ public final class IntegerKey<
 	}
 	
 	public static <
-		X extends Attribute,
+		X extends AttributeName,
 		T extends HasInteger<X, T>
 	>
 	IntegerKey<X, T> get(HasIntegerKey<X, T> meta, X a) {

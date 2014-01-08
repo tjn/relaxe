@@ -24,7 +24,7 @@ package com.appspot.relaxe.ent.value;
 
 import java.util.Date;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.TimeHolder;
 import com.appspot.relaxe.types.PrimitiveType;
@@ -32,7 +32,7 @@ import com.appspot.relaxe.types.TimeType;
 
 
 public final class TimeKey<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasTime<A, E>
 >
 	extends AbstractPrimitiveKey<A, E, Date, TimeType, TimeHolder, TimeKey<A, E>>
@@ -54,7 +54,7 @@ public final class TimeKey<
 	}
 	
 	public static <
-		X extends Attribute,
+		X extends AttributeName,
 		T extends HasTime<X, T>
 	>
 	TimeKey<X, T> get(HasTimeKey<X, T> meta, X a) {

@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.BooleanHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
@@ -30,7 +30,7 @@ import com.appspot.relaxe.types.BooleanType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public final class BooleanKey<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasBoolean<A, E>
 >
 	extends AbstractPrimitiveKey<A, E, Boolean, BooleanType, BooleanHolder, BooleanKey<A, E>>	
@@ -52,7 +52,7 @@ public final class BooleanKey<
 	}
 	
 	public static <
-		X extends Attribute,
+		X extends AttributeName,
 		T extends HasBoolean<X, T>
 	>
 	BooleanKey<X, T> get(HasBooleanKey<X, T> meta, X a) {

@@ -24,7 +24,7 @@ package com.appspot.relaxe.model.ent;
 
 import java.io.Serializable;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.value.PrimitiveKey;
@@ -35,7 +35,7 @@ import com.appspot.relaxe.types.ReferenceType;
 
 
 public interface AttributeModelMap<
-	A extends Attribute,
+	A extends AttributeName,
 	V extends Serializable,
 	P extends AbstractPrimitiveType<P>,
 	H extends AbstractPrimitiveHolder<V, P, H>,

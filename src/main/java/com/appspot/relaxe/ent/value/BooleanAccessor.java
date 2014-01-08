@@ -22,13 +22,13 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.rpc.BooleanHolder;
 import com.appspot.relaxe.types.BooleanType;
 
 public class BooleanAccessor<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasBoolean<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, Boolean, BooleanType, BooleanHolder, BooleanKey<A, E>> {

@@ -30,7 +30,7 @@ import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.meta.Column;
 
 public class EntityQueryAttributeValueReference<
-	A extends com.appspot.relaxe.ent.Attribute,
+	A extends com.appspot.relaxe.ent.AttributeName,
 	QE extends EntityQueryElement<A, ?, ?, ?, ?, ?, ?, QE>
 >
 	implements EntityQueryValueReference {

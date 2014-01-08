@@ -22,10 +22,10 @@
  */
 package com.appspot.relaxe.pg.pagila.types;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 
 public interface HasMPAARating<
-	A extends Attribute, 
+	A extends AttributeName, 
 	E extends HasMPAARating<A, E>
 > {
 

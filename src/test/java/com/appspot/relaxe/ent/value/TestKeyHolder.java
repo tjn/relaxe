@@ -66,7 +66,7 @@ public class TestKeyHolder
 	
 	private Map<TestKeyHolder.Attribute, LongHolder> longHolderMap = new TreeMap<TestKeyHolder.Attribute, LongHolder>();
 	
-	enum Attribute implements com.appspot.relaxe.ent.Attribute
+	enum Attribute implements com.appspot.relaxe.ent.AttributeName
 	{
 		A1(IntegerType.TYPE),
 		A2(IntegerType.TYPE),

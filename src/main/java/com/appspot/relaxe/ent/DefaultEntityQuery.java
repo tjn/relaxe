@@ -50,7 +50,7 @@ import com.appspot.relaxe.types.PrimitiveType;
 import com.appspot.relaxe.types.ReferenceType;
 
 public class DefaultEntityQuery<
-	A extends Attribute,
+	A extends AttributeName,
 	R extends Reference,
 	T extends ReferenceType<A, R, T, E, H, F, M>,
 	E extends Entity<A, R, T, E, H, F, M>,
@@ -120,7 +120,7 @@ public class DefaultEntityQuery<
 
 	
 	public static class Builder<
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,
 		T extends ReferenceType<A, R, T, E, H, F, M>,
 		E extends Entity<A, R, T, E, H, F, M>,
@@ -190,7 +190,7 @@ public class DefaultEntityQuery<
 		
 		public
 		<
-			XA extends com.appspot.relaxe.ent.Attribute,
+			XA extends com.appspot.relaxe.ent.AttributeName,
 			XE extends com.appspot.relaxe.ent.Entity<XA, ?, ?, XE, ?, ?, XM>,
 			XM extends com.appspot.relaxe.ent.EntityMetaData<XA, ?, ?, XE, ?, ?, XM>,
 			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, XM, XQ>,
@@ -210,7 +210,7 @@ public class DefaultEntityQuery<
 		
 		public
 		<
-			XA extends com.appspot.relaxe.ent.Attribute,
+			XA extends com.appspot.relaxe.ent.AttributeName,
 			XE extends com.appspot.relaxe.ent.Entity<XA, ?, ?, XE, ?, ?, XM>,
 			XM extends com.appspot.relaxe.ent.EntityMetaData<XA, ?, ?, XE, ?, ?, XM>,
 			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, XM, XQ>,
@@ -272,7 +272,7 @@ public class DefaultEntityQuery<
 		@Override
 		public 
 		<
-			XA extends com.appspot.relaxe.ent.Attribute,
+			XA extends com.appspot.relaxe.ent.AttributeName,
 			XE extends Entity<XA, ?, ?, XE, ?, ?, ?>,
 			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ>
 		>		
@@ -283,7 +283,7 @@ public class DefaultEntityQuery<
 		@Override
 		public 
 		<
-			XA extends com.appspot.relaxe.ent.Attribute,
+			XA extends com.appspot.relaxe.ent.AttributeName,
 			XE extends Entity<XA, ?, ?, XE, ?, ?, ?>,
 			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ>
 		>		
@@ -305,7 +305,7 @@ public class DefaultEntityQuery<
 		@Override
 		public 
 		<
-			XA extends com.appspot.relaxe.ent.Attribute,			
+			XA extends com.appspot.relaxe.ent.AttributeName,			
 			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ>
 		>		
 		void asc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute) {
@@ -315,7 +315,7 @@ public class DefaultEntityQuery<
 		@Override
 		public 
 		<
-			XA extends com.appspot.relaxe.ent.Attribute,			
+			XA extends com.appspot.relaxe.ent.AttributeName,			
 			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ>
 		>		
 		void desc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute) {

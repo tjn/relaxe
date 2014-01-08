@@ -90,7 +90,7 @@ public interface {{table-interface}}
 
 	
 	public static abstract class Key<
-		A extends com.appspot.relaxe.ent.Attribute,
+		A extends com.appspot.relaxe.ent.AttributeName,
 		R extends com.appspot.relaxe.ent.Reference,	
 		T extends ReferenceType<A, R, T, E, H, F, M>,
 		E extends Entity<A, R, T, E, H, F, M> & Has{{table-interface}}<A, R, T, E, H, F, M>,
@@ -240,7 +240,7 @@ public interface {{table-interface}}
 
 				@Override
 				public <
-					RA extends com.appspot.relaxe.ent.Attribute, 
+					RA extends com.appspot.relaxe.ent.AttributeName, 
 					RR extends com.appspot.relaxe.ent.Reference, 
 					RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>, 
 					RE extends Entity<RA, RR, RT, RE, RH, RF, RM>, 

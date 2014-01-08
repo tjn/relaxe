@@ -22,13 +22,13 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.Decimal;
 import com.appspot.relaxe.rpc.DecimalHolder;
 import com.appspot.relaxe.types.DecimalType;
 
 public class DecimalAccessor<
-	A extends Attribute,		
+	A extends AttributeName,		
 	E extends HasDecimal<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, Decimal, DecimalType, DecimalHolder, DecimalKey<A, E>> {

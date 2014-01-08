@@ -23,7 +23,7 @@
 package com.appspot.relaxe.ent.value;
 
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.Interval;
 import com.appspot.relaxe.rpc.IntervalHolder;
@@ -32,7 +32,7 @@ import com.appspot.relaxe.types.IntervalType;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 public abstract class IntervalKey<
-	A extends Attribute,	
+	A extends AttributeName,	
 	E,
 	V extends Interval<V>, 
 	P extends AbstractPrimitiveType<P>, 
@@ -58,7 +58,7 @@ public abstract class IntervalKey<
 	
 
 	public static final class YearMonth<
-		A extends Attribute,		
+		A extends AttributeName,		
 		E extends HasInterval.YearMonth<A, E>
 	>
 		extends IntervalKey<A, E, Interval.YearMonth, IntervalType.YearMonth, IntervalHolder.YearMonth, IntervalKey.YearMonth<A, E>> {
@@ -81,7 +81,7 @@ public abstract class IntervalKey<
 		}
 		
 		public static <
-			X extends Attribute,
+			X extends AttributeName,
 			T extends HasInterval.YearMonth<X, T>
 		>
 		YearMonth<X, T> get(HasIntervalKey.YearMonth<X, T> meta, X a) {
@@ -138,7 +138,7 @@ public abstract class IntervalKey<
 	}
 	
 	public static final class DayTime<
-		A extends Attribute,				
+		A extends AttributeName,				
 		E extends HasInterval.DayTime<A, E>
 	>
 		extends IntervalKey<A, E, Interval.DayTime, IntervalType.DayTime, IntervalHolder.DayTime, 
@@ -155,7 +155,7 @@ public abstract class IntervalKey<
 		}
 
 		public static <
-			X extends Attribute,
+			X extends AttributeName,
 			T extends HasInterval.DayTime<X, T>
 		>
 		IntervalKey.DayTime<X, T> get(HasIntervalKey.DayTime<X, T> meta, X a) {			

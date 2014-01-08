@@ -22,12 +22,12 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.types.VarcharType;
 
 public class VarcharAccessor<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasVarchar<A, E> & HasString<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, String, VarcharType, VarcharHolder, VarcharKey<A, E>> {

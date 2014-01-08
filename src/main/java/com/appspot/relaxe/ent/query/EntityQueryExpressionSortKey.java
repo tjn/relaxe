@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.ent.query;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQueryContext;
 import com.appspot.relaxe.ent.EntityQueryElement;
@@ -54,7 +54,7 @@ public abstract class EntityQueryExpressionSortKey
 	}	
 	
 	public <
-		A extends com.appspot.relaxe.ent.Attribute,
+		A extends com.appspot.relaxe.ent.AttributeName,
 		M extends EntityMetaData<A, ?, ?, ?, ?, ?, M>
 	>	
 	EntityQueryExpressionSortKey(EntityQueryElement<A, ?, ?, ?, ?, ?, M, ?> element, A attribute) {
@@ -105,7 +105,7 @@ public abstract class EntityQueryExpressionSortKey
 		}
 
 		public <
-			A extends Attribute, 
+			A extends AttributeName, 
 			M extends EntityMetaData<A, ?, ?, ?, ?, ?, M>
 		> 
 		Asc(
@@ -135,7 +135,7 @@ public abstract class EntityQueryExpressionSortKey
 		}
 
 		public <
-			A extends Attribute, 
+			A extends AttributeName, 
 			M extends EntityMetaData<A, ?, ?, ?, ?, ?, M>
 		> 
 		Desc(

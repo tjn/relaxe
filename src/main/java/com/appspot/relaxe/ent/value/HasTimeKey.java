@@ -22,9 +22,9 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 
-public interface HasTimeKey<A extends Attribute, E extends HasTime<A, E>> {
+public interface HasTimeKey<A extends AttributeName, E extends HasTime<A, E>> {
 
 	TimeKey<A, E> getTimeKey(A a);
 

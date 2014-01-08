@@ -22,14 +22,14 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.CharHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.CharType;
 
 public final class CharKey<
-	A extends Attribute,	
+	A extends AttributeName,	
 	E extends HasChar<A, E> & HasString<A, E>
 >
 	extends StringKey<A, E, CharType, CharHolder, CharKey<A, E>>
@@ -51,7 +51,7 @@ public final class CharKey<
 	}	
 	
 	public static <
-		X extends Attribute,
+		X extends AttributeName,
 		T extends HasChar<X, T> & HasString<X, T>
 	>
 	CharKey<X, T> get(HasCharKey<X, T> meta, X a) {

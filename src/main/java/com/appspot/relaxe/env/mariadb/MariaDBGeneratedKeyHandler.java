@@ -28,7 +28,7 @@ package com.appspot.relaxe.env.mariadb;
 import java.sql.ResultSetMetaData;
 
 import com.appspot.relaxe.ValueExtractorFactory;
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.ColumnResolver;
 import com.appspot.relaxe.ent.ConstantColumnResolver;
 import com.appspot.relaxe.ent.Entity;
@@ -50,7 +50,7 @@ public final class MariaDBGeneratedKeyHandler
 	@Override
 	protected 
 	<
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,
 		T extends ReferenceType<A, R, T, E, ?, ?, M>,
 		E extends Entity<A, R, T, E, ?, ?, M>,

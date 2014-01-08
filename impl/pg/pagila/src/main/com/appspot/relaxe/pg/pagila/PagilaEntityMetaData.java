@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.pg.pagila;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
@@ -31,7 +31,7 @@ import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.ReferenceType;
 
 public interface PagilaEntityMetaData<
-	A extends Attribute,
+	A extends AttributeName,
 	R extends Reference,
 	T extends ReferenceType<A, R, T, E, H, F, M>,	
 	E extends Entity<A, R, T, E, H, F, M>,

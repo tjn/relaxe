@@ -22,12 +22,12 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.CharHolder;
 import com.appspot.relaxe.types.CharType;
 
 public class CharAccessor<
-	A extends Attribute,	
+	A extends AttributeName,	
 	E extends HasChar<A, E> & HasString<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, String, CharType, CharHolder, CharKey<A, E>> {

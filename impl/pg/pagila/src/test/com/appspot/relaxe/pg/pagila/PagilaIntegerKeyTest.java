@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.pg.pagila;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.value.HasInteger;
 import com.appspot.relaxe.ent.value.HasIntegerKey;
 import com.appspot.relaxe.ent.value.IntegerKey;
@@ -40,7 +40,7 @@ public class PagilaIntegerKeyTest extends TestCase {
 	
 	private 
 	<
-		A extends Attribute,
+		A extends AttributeName,
 		E extends HasInteger<A, E>,
 		M extends HasIntegerKey<A, E>
 	>

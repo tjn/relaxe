@@ -22,9 +22,9 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 
-public interface HasDecimalKey<A extends Attribute, E extends HasDecimal<A, E>> {
+public interface HasDecimalKey<A extends AttributeName, E extends HasDecimal<A, E>> {
 
 	DecimalKey<A, E> getDecimalKey(A a);
 	void register(DecimalKey<A, E> key);

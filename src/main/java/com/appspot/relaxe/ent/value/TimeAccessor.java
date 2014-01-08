@@ -24,13 +24,13 @@ package com.appspot.relaxe.ent.value;
 
 import java.util.Date;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.TimeHolder;
 import com.appspot.relaxe.types.TimeType;
 
 
 public class TimeAccessor<
-	A extends Attribute,	
+	A extends AttributeName,	
 	E extends HasTime<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, Date, TimeType, TimeHolder, TimeKey<A, E>> {

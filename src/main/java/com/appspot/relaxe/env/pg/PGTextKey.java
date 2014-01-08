@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.env.pg;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.value.HasString;
 import com.appspot.relaxe.ent.value.StringKey;
@@ -30,7 +30,7 @@ import com.appspot.relaxe.rpc.PrimitiveHolder;
 
 
 public class PGTextKey<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasPGText<A, E> & HasString<A, E>	
 >
 	extends StringKey<A, E, PGTextType, PGTextHolder, PGTextKey<A, E>>
@@ -52,7 +52,7 @@ public class PGTextKey<
 	}
 	
 	public static <
-		X extends Attribute,
+		X extends AttributeName,
 		T extends HasPGText<X, T> & HasString<X, T>
 	>
 	PGTextKey<X, T> get(HasPGTextKey<X, T> meta, X a) {

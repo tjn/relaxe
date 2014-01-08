@@ -22,12 +22,12 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.StringHolder;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public interface HasString<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasString<A, E>> {
 
 	<

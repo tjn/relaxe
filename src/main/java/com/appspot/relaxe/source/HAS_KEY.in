@@ -6,7 +6,7 @@ package {{package-name}};
 // {{table-interface}}
 
 public interface {{has-key-interface}}<
-	A extends com.appspot.relaxe.ent.Attribute,
+	A extends com.appspot.relaxe.ent.AttributeName,
 	R extends com.appspot.relaxe.ent.Reference,
 	T extends com.appspot.relaxe.types.ReferenceType<A, R, T, E, H, F, M>,
 	E extends com.appspot.relaxe.ent.Entity<A, R, T, E, H, F, M> & {{has-interface}}<A, R, T, E, H, F, M>,

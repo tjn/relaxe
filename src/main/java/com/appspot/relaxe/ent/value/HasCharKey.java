@@ -22,10 +22,10 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 
 public interface HasCharKey<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasChar<A, E> & HasString<A, E>	
 >	{
 

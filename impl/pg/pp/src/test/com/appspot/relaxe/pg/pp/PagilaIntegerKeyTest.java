@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.pg.pp;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.value.HasInteger;
 import com.appspot.relaxe.ent.value.HasIntegerKey;
 import com.appspot.relaxe.ent.value.IntegerKey;

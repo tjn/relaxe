@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.ent.im;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityRuntimeException;
@@ -31,7 +31,7 @@ import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.ReferenceType;
 
 public class ReferenceIdentityMap<
-	A extends Attribute,
+	A extends AttributeName,
 	R extends Reference,
 	T extends ReferenceType<A, R, T, E, H, ?, M>,
 	E extends Entity<A, R, T, E, H, ?, M>,

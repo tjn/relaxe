@@ -24,7 +24,7 @@ package com.appspot.relaxe.ent.value;
 
 import java.io.Serializable;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
@@ -32,7 +32,7 @@ import com.appspot.relaxe.types.AbstractPrimitiveType;
 
 
 public class PrimitiveStamper<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends Entity<A, ?, ?, E, ?, ?, ?>,	
 	S extends Serializable,
 	P extends AbstractPrimitiveType<P>,

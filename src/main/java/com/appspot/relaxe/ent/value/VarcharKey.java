@@ -22,14 +22,14 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.types.VarcharType;
 
 public final class VarcharKey<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasVarchar<A, E> & HasString<A, E>
 >
 	extends StringKey<A, E, VarcharType, VarcharHolder, VarcharKey<A, E>>
@@ -51,7 +51,7 @@ public final class VarcharKey<
 	}
 	
 	public static <
-		X extends Attribute,
+		X extends AttributeName,
 		T extends HasVarchar<X, T> & HasString<X, T>
 	>
 	VarcharKey<X, T> get(HasVarcharKey<X, T> meta, X a) {

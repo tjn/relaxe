@@ -22,11 +22,11 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.LongVarBinaryHolder;
 
 public interface HasLongVarBinary<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasLongVarBinary<A, E>
 >	
 {

@@ -31,7 +31,7 @@ public interface AttributeWriterFactory {
 	 * @throws SQLException
 	 */
 	<
-		A extends Attribute,
+		A extends AttributeName,
 		E extends Entity<A, ?, ?, E, ?, ?, M>,
 		M extends EntityMetaData<A, ?, ?, E, ?, ?, M>
 	>

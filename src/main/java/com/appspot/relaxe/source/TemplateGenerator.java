@@ -45,7 +45,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityContext;
 import com.appspot.relaxe.ent.EntityFactory;
@@ -112,7 +112,7 @@ public class TemplateGenerator {
 	
 	protected 
 	<
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,
 		T extends ReferenceType<A, R, T, E, H, F, M>,	
 		E extends Entity<A, R, T, E, H, F, M>,
@@ -142,7 +142,7 @@ public class TemplateGenerator {
 
 	private 
 	<
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,
 		T extends ReferenceType<A, R, T, E, H, F, M>,	
 		E extends Entity<A, R, T, E, H, F, M>,
@@ -161,7 +161,7 @@ public class TemplateGenerator {
 	
 	private 
 	<
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,
 		T extends ReferenceType<A, R, T, E, H, F, M>,	
 		E extends Entity<A, R, T, E, H, F, M>,
@@ -312,7 +312,7 @@ public class TemplateGenerator {
 
 	private 
 	<
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,
 		T extends ReferenceType<A, R, T, E, H, F, M>,	
 		E extends Entity<A, R, T, E, H, F, M>,

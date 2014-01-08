@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.DefaultEntityQuery;
 import com.appspot.relaxe.ent.DefaultEntityQueryElement;
 import com.appspot.relaxe.ent.Entity;
@@ -85,7 +85,7 @@ import com.appspot.relaxe.types.ReferenceType;
 //import com.appspot.relaxe.ent.DefaultEntityQuery;
 
 public class PersistenceManager<
-    A extends Attribute,
+    A extends AttributeName,
     R extends Reference,
     T extends ReferenceType<A, R, T, E, H, F, M>,
     E extends Entity<A, R, T, E, H, F, M>,
@@ -365,7 +365,7 @@ public class PersistenceManager<
     private 
     <	
     	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
-		RA extends Attribute,
+		RA extends AttributeName,
 		RR extends Reference,	
 		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
 		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
@@ -589,7 +589,7 @@ public class PersistenceManager<
 
     private 
     <
-    	DA extends Attribute,
+    	DA extends AttributeName,
     	DR extends Reference,
     	DT extends ReferenceType<DA, DR, DT, DE, DH, DF, DM>,	
 		DE extends Entity<DA, DR, DT, DE, DH, DF, DM>,
@@ -765,7 +765,7 @@ public class PersistenceManager<
 	}
 	
 	private <
-		DA extends Attribute, 
+		DA extends AttributeName, 
 		DR extends com.appspot.relaxe.ent.Reference, 
 		DT extends ReferenceType<DA, DR, DT, DE, DH, DF, DM>, 
 		DE extends Entity<DA, DR, DT, DE, DH, DF, DM>,

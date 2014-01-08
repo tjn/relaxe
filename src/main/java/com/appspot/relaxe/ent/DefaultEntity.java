@@ -57,7 +57,7 @@ import com.appspot.relaxe.types.ReferenceType;
 
 
 public abstract class DefaultEntity<
-	A extends Attribute,
+	A extends AttributeName,
 	R extends Reference,
 	T extends ReferenceType<A, R, T, E, H, F, M>,	
 	E extends Entity<A, R, T, E, H, F, M>,
@@ -125,7 +125,7 @@ public abstract class DefaultEntity<
 		
 	@Override
 	public <
-		RA extends Attribute,
+		RA extends AttributeName,
 		RR extends Reference,
 		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
 		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
@@ -139,7 +139,7 @@ public abstract class DefaultEntity<
 	
 	@Override
 	public <
-		RA extends Attribute,
+		RA extends AttributeName,
 		RR extends Reference,
 		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
 		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,

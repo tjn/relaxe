@@ -37,7 +37,7 @@ import com.appspot.relaxe.types.PrimitiveType;
 import com.appspot.relaxe.types.ReferenceType;
 
 public interface EntityQueryElement<
-	A extends com.appspot.relaxe.ent.Attribute,
+	A extends com.appspot.relaxe.ent.AttributeName,
 	R extends com.appspot.relaxe.ent.Reference,
 	T extends ReferenceType<A, R, T, E, H, F, M>,
 	E extends Entity<A, R, T, E, H, F, M>,
@@ -69,7 +69,7 @@ public interface EntityQueryElement<
 	
 	
 	public interface Builder<
-		A extends com.appspot.relaxe.ent.Attribute,
+		A extends com.appspot.relaxe.ent.AttributeName,
 		R extends com.appspot.relaxe.ent.Reference,
 		T extends ReferenceType<A, R, T, E, H, F, M>,
 		E extends Entity<A, R, T, E, H, F, M>,
@@ -83,7 +83,7 @@ public interface EntityQueryElement<
 		
 		public 
 		<			
-			RA extends com.appspot.relaxe.ent.Attribute,
+			RA extends com.appspot.relaxe.ent.AttributeName,
 			RR extends com.appspot.relaxe.ent.Reference,	
 			RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
 			RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,

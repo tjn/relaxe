@@ -29,7 +29,7 @@ import com.appspot.relaxe.types.ReferenceType;
 
 
 public class EmptyEntityDiff<
-	A extends Attribute,
+	A extends AttributeName,
 	R extends Reference,
 	T extends ReferenceType<A, R, T, E, ?, ?, M>,
 	E extends Entity<A, R, T, E, ?, ?, M>,

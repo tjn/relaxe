@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import com.appspot.relaxe.ResultSetColumnResolver;
 import com.appspot.relaxe.ValueExtractor;
 import com.appspot.relaxe.ValueExtractorFactory;
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.ColumnResolver;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
@@ -56,7 +56,7 @@ public abstract class AbstractGeneratedKeyHandler
 	
 	@Override
 	public <
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,
 		T extends ReferenceType<A, R, T, E, ?, ?, M>,
 		E extends Entity<A, R, T, E, ?, ?, M>,
@@ -116,7 +116,7 @@ public abstract class AbstractGeneratedKeyHandler
 
 	protected 
 	<
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,
 		T extends ReferenceType<A, R, T, E, ?, ?, M>,
 		E extends Entity<A, R, T, E, ?, ?, M>,
@@ -130,7 +130,7 @@ public abstract class AbstractGeneratedKeyHandler
 
 
 	protected <
-		A extends Attribute,
+		A extends AttributeName,
 		E extends Entity<?, ?, ?, ?, ?, ?, ?>,
 		V extends Serializable,
 		P extends PrimitiveType<P>,

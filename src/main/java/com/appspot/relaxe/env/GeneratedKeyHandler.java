@@ -25,7 +25,7 @@ package com.appspot.relaxe.env;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityException;
 import com.appspot.relaxe.ent.EntityMetaData;
@@ -51,7 +51,7 @@ public interface GeneratedKeyHandler {
 	 * @throws EntityException
 	 */	
 	<
-	    A extends Attribute,
+	    A extends AttributeName,
 	    R extends Reference,
 	    T extends ReferenceType<A, R, T, E, ?, ?, M>,
 	    E extends Entity<A, R, T, E, ?, ?, M>,

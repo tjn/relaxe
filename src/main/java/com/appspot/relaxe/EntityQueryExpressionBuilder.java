@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityException;
 import com.appspot.relaxe.ent.EntityFactory;
@@ -64,7 +64,7 @@ import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.ReferenceType;
 
 public class EntityQueryExpressionBuilder<
-	A extends Attribute,
+	A extends AttributeName,
 	R extends Reference,
 	T extends ReferenceType<A, R, T, E, H, F, M>,
 	E extends Entity<A, R, T, E, H, F, M>,
@@ -255,7 +255,7 @@ public class EntityQueryExpressionBuilder<
 	
 	
 	private <
-		XA extends Attribute,
+		XA extends AttributeName,
 		XR extends Reference,
 		XT extends ReferenceType<XA, XR, XT, XE, XH, XF, XM>,
 		XE extends Entity<XA, XR, XT, XE, XH, XF, XM>,
@@ -305,7 +305,7 @@ public class EntityQueryExpressionBuilder<
 	}
 
 	private <
-		XA extends Attribute,
+		XA extends AttributeName,
 		XR extends Reference,
 		XT extends ReferenceType<XA, XR, XT, XE, XH, XF, XM>,
 		XE extends Entity<XA, XR, XT, XE, XH, XF, XM>,
@@ -403,7 +403,7 @@ public class EntityQueryExpressionBuilder<
 	
 	private 
 	<
-		MA extends Attribute,
+		MA extends AttributeName,
 		MR extends Reference,
 		MT extends ReferenceType<MA, MR, MT, ME, MH, MF, MM>,
 		ME extends Entity<MA, MR, MT, ME, MH, MF, MM>,
@@ -535,7 +535,7 @@ public class EntityQueryExpressionBuilder<
 	}	
 	
 	private	<
-		KA extends Attribute,
+		KA extends AttributeName,
 		KR extends Reference,
 		KT extends ReferenceType<KA, KR, KT, KE, KH, KF, KM>,
 		KE extends Entity<KA, KR, KT, KE, KH, KF, KM>,

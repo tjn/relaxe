@@ -22,13 +22,13 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.rpc.IntegerHolder;
 import com.appspot.relaxe.types.IntegerType;
 
 public class IntegerAccessor<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasInteger<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, Integer, IntegerType, IntegerHolder, IntegerKey<A, E>> {

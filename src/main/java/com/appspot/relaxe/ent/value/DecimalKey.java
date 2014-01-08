@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.Decimal;
 import com.appspot.relaxe.rpc.DecimalHolder;
@@ -30,7 +30,7 @@ import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.DecimalType;
 
 public final class DecimalKey<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasDecimal<A, E>
 >
 	extends AbstractPrimitiveKey<A, E, Decimal, DecimalType, DecimalHolder, DecimalKey<A, E>>
@@ -53,7 +53,7 @@ public final class DecimalKey<
 	}
 	
 	public static <
-		X extends Attribute,		
+		X extends AttributeName,		
 		T extends HasDecimal<X, T>
 	>
 	DecimalKey<X, T> get(HasDecimalKey<X, T> meta, X a) {

@@ -23,7 +23,7 @@
 package com.appspot.relaxe.mysql.samples;
 
 import com.appspot.relaxe.PersistenceManager;
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;

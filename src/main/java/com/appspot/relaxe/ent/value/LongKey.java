@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.LongHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
@@ -30,7 +30,7 @@ import com.appspot.relaxe.types.LongType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public final class LongKey<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasLong<A, E>
 >
 	extends AbstractPrimitiveKey<A, E, Long, LongType, LongHolder, LongKey<A, E>>	
@@ -52,7 +52,7 @@ public final class LongKey<
 	}
 	
 	public static <
-		X extends Attribute,
+		X extends AttributeName,
 		T extends HasLong<X, T>
 	>
 	LongKey<X, T> get(HasLongKey<X, T> meta, X a) {

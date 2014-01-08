@@ -28,7 +28,7 @@ package com.appspot.relaxe;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityDataObject;
 import com.appspot.relaxe.ent.EntityFactory;
@@ -42,7 +42,7 @@ import com.appspot.relaxe.types.ReferenceType;
 
 
 public class EntityReader<
-	A extends Attribute,
+	A extends AttributeName,
 	R extends Reference,
 	T extends ReferenceType<A, R, T, E, H, F, M>,
 	E extends Entity<A, R, T, E, H, F, M>,

@@ -40,7 +40,7 @@ import com.appspot.relaxe.types.ReferenceType;
  */
 
 public interface EntityDiff<
-	A extends Attribute,
+	A extends AttributeName,
 	R extends Reference,	
 	T extends ReferenceType<A, R, T, E, ?, ?, ?>,
 	E extends Entity<A, R, T, E, ?, ?, ?>>

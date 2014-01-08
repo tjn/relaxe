@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityBuildContext;
 import com.appspot.relaxe.ent.EntityBuilder;
@@ -43,7 +43,7 @@ import com.appspot.relaxe.types.ReferenceType;
 
 
 public class EntityBuilderManager<
-	A extends Attribute,
+	A extends AttributeName,
 	R extends Reference,
 	T extends ReferenceType<A, R, T, E, H, F, M>,
 	E extends Entity<A, R, T, E, H, F, M>,

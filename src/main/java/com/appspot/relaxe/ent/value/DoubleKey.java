@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.rpc.DoubleHolder;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
@@ -30,7 +30,7 @@ import com.appspot.relaxe.types.DoubleType;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public final class DoubleKey<	
-	A extends Attribute,	
+	A extends AttributeName,	
 	E extends HasDouble<A, E>
 >
 	extends AbstractPrimitiveKey<A, E, Double, DoubleType, DoubleHolder, DoubleKey<A, E>>
@@ -52,7 +52,7 @@ public final class DoubleKey<
 	}
 	
 	public static <
-		X extends Attribute,
+		X extends AttributeName,
 		T extends HasDouble<X, T>
 	>
 	DoubleKey<X, T> get(HasDoubleKey<X, T> meta, X a) {

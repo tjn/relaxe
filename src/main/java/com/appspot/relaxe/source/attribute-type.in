@@ -1,5 +1,5 @@
 
-enum {{attribute-type}} implements com.appspot.relaxe.ent.Attribute {
+enum {{attribute-type}} implements com.appspot.relaxe.ent.AttributeName {
     {{attribute-constants}}
     ;
     

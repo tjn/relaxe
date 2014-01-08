@@ -22,12 +22,12 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.PrimitiveType;
 
 public abstract class StringKey<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasString<A, E>,	
 	P extends PrimitiveType<P>,
 	H extends PrimitiveHolder<String, P, H>,

@@ -54,7 +54,7 @@ import com.appspot.relaxe.types.ReferenceType;
  * @param <RE> Type of the root element of the query
  */
 public interface EntityQuery<
-	A extends Attribute,
+	A extends AttributeName,
 	R extends Reference,
 	T extends ReferenceType<A, R, T, E, H, F, M>,
 	E extends Entity<A, R, T, E, H, F, M>,
@@ -80,7 +80,7 @@ public interface EntityQuery<
 //	TableReference getOrigin(int column);
 	
 	interface Builder<
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,
 		T extends ReferenceType<A, R, T, E, H, F, M>,
 		E extends Entity<A, R, T, E, H, F, M>,
@@ -133,7 +133,7 @@ public interface EntityQuery<
 		
 		public 
 		<
-			XA extends com.appspot.relaxe.ent.Attribute,
+			XA extends com.appspot.relaxe.ent.AttributeName,
 			XE extends Entity<XA, ?, ?, XE, ?, ?, ?>,
 			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ>
 		>		
@@ -141,7 +141,7 @@ public interface EntityQuery<
 				
 		public 
 		<
-			XA extends com.appspot.relaxe.ent.Attribute,
+			XA extends com.appspot.relaxe.ent.AttributeName,
 			XE extends Entity<XA, ?, ?, XE, ?, ?, ?>,
 			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ>
 		>		
@@ -150,14 +150,14 @@ public interface EntityQuery<
 		
 		public 
 		<
-			XA extends com.appspot.relaxe.ent.Attribute,			
+			XA extends com.appspot.relaxe.ent.AttributeName,			
 			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ>
 		>		
 		void asc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute);
 
 		public 
 		<
-			XA extends com.appspot.relaxe.ent.Attribute,			
+			XA extends com.appspot.relaxe.ent.AttributeName,			
 			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ>
 		>		
 		void desc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute);

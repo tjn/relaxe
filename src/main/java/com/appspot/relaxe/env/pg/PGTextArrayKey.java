@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.env.pg;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.value.AbstractArrayKey;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
@@ -32,7 +32,7 @@ import com.appspot.relaxe.types.VarcharType;
 
 
 public class PGTextArrayKey<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasPGTextArray<A, E>	
 >
 	extends AbstractArrayKey<A, E, String, StringArray, VarcharType, PGTextArrayType, PGTextArrayHolder, PGTextArrayKey<A, E>>
@@ -54,7 +54,7 @@ public class PGTextArrayKey<
 	}
 	
 	public static <
-		X extends Attribute,
+		X extends AttributeName,
 		T extends HasPGTextArray<X, T>
 	>
 	PGTextArrayKey<X, T> get(HasPGTextArrayKey<X, T> meta, X a) {

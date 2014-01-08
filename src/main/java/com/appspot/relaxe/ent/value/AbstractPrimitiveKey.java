@@ -24,13 +24,13 @@ package com.appspot.relaxe.ent.value;
 
 import java.io.Serializable;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.PrimitiveType;
 
 
 public abstract class AbstractPrimitiveKey<
-	A extends Attribute,
+	A extends AttributeName,
 	E,
 	V extends Serializable,
 	P extends PrimitiveType<P>,

@@ -31,7 +31,7 @@ import com.appspot.relaxe.EntityQueryExecutor;
 import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.QueryExecutor;
 import com.appspot.relaxe.StatementExecutor;
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObjectQueryResult;
 import com.appspot.relaxe.ent.Entity;
@@ -80,7 +80,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 
 	@Override
 	public <
-		A extends Attribute, 
+		A extends AttributeName, 
 		R extends Reference, 
 		T extends ReferenceType<A, R, T, E, H, F, M>, 
 		E extends Entity<A, R, T, E, H, F, M>, 
@@ -103,7 +103,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 
 	@Override
 	public <
-		A extends Attribute, 
+		A extends AttributeName, 
 		R extends Reference, 
 		T extends ReferenceType<A, R, T, E, H, F, M>, 
 		E extends Entity<A, R, T, E, H, F, M>, 
@@ -120,7 +120,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	
 	@Override
 	public <
-		A extends Attribute, 
+		A extends AttributeName, 
 		R extends Reference, 
 		T extends ReferenceType<A, R, T, E, H, F, M>, 
 		E extends Entity<A, R, T, E, H, F, M>, 
@@ -145,7 +145,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 
 	@Override
 	public <
-		A extends Attribute, 
+		A extends AttributeName, 
 		R extends Reference, 
 		T extends ReferenceType<A, R, T, E, H, F, M>, 
 		E extends Entity<A, R, T, E, H, F, M>, 
@@ -169,7 +169,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 
 	@Override
 	public <
-		A extends Attribute, 
+		A extends AttributeName, 
 		R extends Reference, 
 		T extends ReferenceType<A, R, T, E, H, F, M>, 
 		E extends Entity<A, R, T, E, H, F, M>, 
@@ -251,7 +251,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 
 	@Override
 	public <
-		A extends Attribute, 
+		A extends AttributeName, 
 		R extends Reference, 
 		T extends ReferenceType<A, R, T, E, H, F, M>, 
 		E extends Entity<A, R, T, E, H, F, M>, 
@@ -311,7 +311,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	
 	@Override
 	public <
-		A extends Attribute, 
+		A extends AttributeName, 
 		R extends Reference, 
 		T extends ReferenceType<A, R, T, E, H, F, M>, 
 		E extends Entity<A, R, T, E, H, F, M>, 
@@ -341,7 +341,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 
 	@Override
 	public <		
-		A extends Attribute,
+		A extends AttributeName,
 		R extends Reference,
 		T extends ReferenceType<A, R, T, E, H, F, M>,
 		E extends Entity<A, R, T, E, H, F, M>,

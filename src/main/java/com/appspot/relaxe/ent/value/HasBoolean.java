@@ -22,11 +22,11 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.BooleanHolder;
 
 public interface HasBoolean<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasBoolean<A, E>
 >	
 {

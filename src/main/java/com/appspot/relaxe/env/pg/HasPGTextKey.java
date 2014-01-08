@@ -22,11 +22,11 @@
  */
 package com.appspot.relaxe.env.pg;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.value.HasString;
 
 public interface HasPGTextKey<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasPGText<A, E> & HasString<A, E>
 > {
 

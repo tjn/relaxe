@@ -22,12 +22,12 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.DoubleHolder;
 import com.appspot.relaxe.types.DoubleType;
 
 public class DoubleAccessor<
-	A extends Attribute,
+	A extends AttributeName,
 	E extends HasDouble<A, E>
 >
 	extends AbstractPrimitiveAccessor<A, E, Double, DoubleType, DoubleHolder, DoubleKey<A, E>> {

@@ -22,12 +22,12 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 
 public interface HasIntervalKey	{
 		
 	interface YearMonth<
-		A extends Attribute,
+		A extends AttributeName,
 		E extends HasInterval.YearMonth<A, E>	
 	> {
 		IntervalKey.YearMonth<A, E> getYearMonthIntervalKey(A a);	
@@ -35,7 +35,7 @@ public interface HasIntervalKey	{
 	}
 
 	interface DayTime<
-		A extends Attribute,
+		A extends AttributeName,
 		E extends HasInterval.DayTime<A, E>	
 	> {
 		IntervalKey.DayTime<A, E> getDayTimeIntervalKey(A a);	

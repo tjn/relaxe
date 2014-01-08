@@ -22,9 +22,9 @@
  */
 package com.appspot.relaxe.ent.value;
 
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 
-public interface HasDoubleKey<A extends Attribute, E extends HasDouble<A, E>> {
+public interface HasDoubleKey<A extends AttributeName, E extends HasDouble<A, E>> {
 
 	DoubleKey<A, E> getDoubleKey(A a);
 	void register(DoubleKey<A, E> key);

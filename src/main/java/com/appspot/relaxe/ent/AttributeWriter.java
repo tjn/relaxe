@@ -25,7 +25,7 @@ package com.appspot.relaxe.ent;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 
 public interface AttributeWriter<
-	A extends Attribute, E 
+	A extends AttributeName, E 
 > {
 	
 	public int getIndex();

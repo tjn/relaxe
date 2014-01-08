@@ -28,7 +28,7 @@ import java.util.List;
 import com.appspot.relaxe.EntityQueryExecutor;
 import com.appspot.relaxe.EntityQueryExpressionBuilder;
 import com.appspot.relaxe.SimpleUnificationContext;
-import com.appspot.relaxe.ent.Attribute;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObjectQueryResult;
