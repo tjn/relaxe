@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="project" default="env" xmlns:ivy="antlib:org.apache.ivy.ant">
-  <description>
-  </description>
+	<description>
+	</description>
   
-  <property name="build.root.dir" location="build"/>  
-  <property name="data.root.dir" location="data"/>
+	<property name="build.root.dir" location="build"/>  
+	<property name="data.root.dir" location="data"/>
   
-  <property name="src.dir" location="src/main/java"/>
+	<property name="src.dir" location="src/main/java"/>
 	<property name="build.dir" location="${build.root.dir}/classes/main"/>
 	
 	<property name="tools.src.dir" location="src/tools"/>
 	<property name="tools.build.dir" location="${build.root.dir}/classes/tools"/>
 			
-  <property name="test.src.dir" location="src/test/java"/>
+	<property name="test.src.dir" location="src/test/java"/>
 	<property name="test.build.dir" location="${build.root.dir}/classes/test"/>
 	
+	<property name="samples.src.dir" location="src/samples/java"/>
+	<property name="samples.build.dir" location="${build.root.dir}/classes/samples"/>
+		
 	<property name="output.jar" location="${build.root.dir}/relaxe.jar"/>
 	<property name="src.output.jar" location="${build.root.dir}/relaxe-sources.jar"/>
 	
-	<property name="jdbc-config.dir" location="config"/>
+ 	<property name="jdbc-config.dir" location="config"/>
 	
 	<property name="pom.file" location="pom.xml"/>	
 						
@@ -28,6 +31,11 @@
 			<include name="*.jar" />			
 		</fileset>
 	</path>
+	
+	<path id="javadoc.sp">				
+		<fileset dir="${src.dir}"  />
+	</path>
+
 	
 	<path id="runtime.cp">
 		<path refid="compile.cp"/>
@@ -47,11 +55,19 @@
 		<fileset dir="lib/test" includes="*.jar" />
 	</path>
 	
+	<path id="samples.compile.cp">
+		<path refid="runtime.cp"/>
+		<pathelement location="${build.dir}" />
+		<pathelement location="${tools.build.dir}" />
+		<pathelement location="${build.root.dir}/impl/pg/pagila/classes" />		
+	</path>	
+	
 	<target name="init" depends="init.os">
 		<tstamp />
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${test.build.dir}" />
 		<mkdir dir="${tools.build.dir}" />
+		<mkdir dir="${samples.build.dir}" />
 		<mkdir dir="${data.root.dir}" />
 		<mkdir dir="${data.root.dir}/sakila" />
 	</target>
@@ -144,13 +160,18 @@
 				<compilerarg value="-Xlint"/>
 			</javac>
 	</target>
+	
+	<target name="compile-samples" depends="compile, compile-tools, compile.gen.pg.pagila" description="Compiles the sources for samples">
+		<javac classpathref="samples.compile.cp" destdir="${samples.build.dir}" srcdir="${samples.src.dir}" verbose="off" includeantruntime="false">
+			<compilerarg value="-Xlint"/>
+		</javac>
+	</target>	
 		
 	<target name="prepare-test" depends="retrieve-test-dependencies" description="" />	
 	
 	<!-- 
 		======== PG/Pagila ========
 	-->
-
 	<target name="compile.pg.pagila" depends="compile-tests" description="Compiles the sources for PostgreSQL/Pagila">
 		<impl.compile implementation="pg" target="pagila" driver-artifact="postgresql" />		
 	</target>
@@ -191,11 +212,11 @@
 			type-mapper="com.appspot.relaxe.hsqldb.pagila.HSQLDBPagilaTypeMapper"
 		/>		
 	</target>	
-
 	
 	<!-- no tests yet for hsqldb -->
 	<target name="test" 
 		depends="
+		    compile-samples,
 			test.gen.pg.pagila,
 			test.gen.mysql.sakila,
 			test.gen.mariadb.sakila,

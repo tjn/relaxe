@@ -20,6 +20,7 @@
 	<classpathentry excluding="gen/" kind="src" path="build/impl/hsqldb/pagila/src"/>
 	<classpathentry kind="src" path="impl/hsqldb/pagila/src/main"/>
 	<classpathentry kind="src" path="impl/mariadb/sakila/src/test"/>
+	<classpathentry kind="src" path="src/samples/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache CSV"/>
