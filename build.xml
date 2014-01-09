@@ -27,6 +27,8 @@
 	
  	<property name="jdbc-config.dir" location="config"/>
 	
+	<property name="javadoc.title" value="Relaxe ${relaxe.revision} API"/>
+	
 	<property name="pom.file" location="pom.xml"/>	
 						
 	<path id="compile.cp">
@@ -153,6 +155,24 @@
 	<target name="jar" depends="init, compile" description="Creates a jar">
 		<jar basedir="${build.dir}" destfile="${output.jar}" />
 	</target>
+	
+	
+	<target name="javadoc" depends="init, compile" description="Generates javadocs">
+		<javadoc packagenames="com.appspot.relaxe.*"		           
+				   sourcepath="${src.dir}"		           
+		           defaultexcludes="yes"
+		           destdir="build/docs/api"
+		           author="true"
+		           version="true"
+		           use="true"
+		           windowtitle="${javadoc.title}">
+		    <doctitle><![CDATA[<h1>${javadoc.title}</h1>]]></doctitle>
+		    <bottom><![CDATA[<i>Copyright &#169; 2014 Topi Nieminen. All Rights Reserved.</i>]]></bottom>		    
+		    <group title="Packages" packages="com.relaxe.*"/>			
+		    <link href="http://docs.oracle.com/javase/7/docs/api/"/>
+		  </javadoc>	
+	</target>
+	
 	
 	<target name="src.jar" depends="init, compile" description="Creates a source package">
 			<jar destfile="${src.output.jar}" >			
