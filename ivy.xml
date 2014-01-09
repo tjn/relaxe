@@ -8,7 +8,7 @@
 		<conf name="runtime"/>
 	    <conf name="test" extends="runtime"/>
 	    <conf name="jdbc" />	    
-		</configurations>
+	</configurations>
 						
     <dependencies>
 		<!-- compilation dependencies -->

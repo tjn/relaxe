@@ -366,10 +366,8 @@
 	
 	
 	<target name="makepom">
-				
-	
-			<ivy:resolve />			
-			<ivy:makepom ivyfile="ivy.xml" pomfile="${pom.file}" />			
+		<ivy:resolve />			
+		<ivy:makepom ivyfile="ivy.xml" pomfile="${pom.file}" />			
 	</target>
 
 	
@@ -442,7 +440,7 @@
 				<arg line="@{schema-opts}" />
 			</java>
    </sequential>
-	</macrodef>
+</macrodef>
 		
 
 
