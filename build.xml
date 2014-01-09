@@ -3,7 +3,10 @@
 <project name="project" default="env" xmlns:ivy="antlib:org.apache.ivy.ant">
 	<description>
 	</description>
-  
+	
+	<property file="version.properties" />
+	<property file="build.properties" />	
+	  
 	<property name="build.root.dir" location="build"/>  
 	<property name="data.root.dir" location="data"/>
   
@@ -60,16 +63,20 @@
 		<pathelement location="${build.dir}" />
 		<pathelement location="${tools.build.dir}" />
 		<pathelement location="${build.root.dir}/impl/pg/pagila/classes" />		
-	</path>	
+	</path>
 	
-	<target name="init" depends="init.os">
+	<target name="update-version-property">
+		<exec executable="./update-version.sh" />
+	</target>
+	
+	<target name="init" depends="init.os, update-version-property">
 		<tstamp />
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${test.build.dir}" />
 		<mkdir dir="${tools.build.dir}" />
 		<mkdir dir="${samples.build.dir}" />
 		<mkdir dir="${data.root.dir}" />
-		<mkdir dir="${data.root.dir}/sakila" />
+		<mkdir dir="${data.root.dir}/sakila" />		
 	</target>
 
 	<condition property="os.unix">

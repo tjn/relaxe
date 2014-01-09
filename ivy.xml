@@ -1,5 +1,5 @@
 <ivy-module version="1.0">
-    <info organisation="org.relaxe" module="relaxe" revision="snapshot" >
+    <info organisation="org.relaxe" module="relaxe" revision="${relaxe.revision}" >
     	<license name="GNU Affero General Public License, version 3" url="http://www.gnu.org/licenses/agpl-3.0.txt"/>
     </info>
     
