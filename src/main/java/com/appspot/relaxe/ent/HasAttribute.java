@@ -20,33 +20,15 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.ent.value;
+package com.appspot.relaxe.ent;
 
-import java.io.Serializable;
+import com.appspot.relaxe.ent.value.Attribute;
+import com.appspot.relaxe.types.AbstractType;
 
-import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.types.Type;
+public interface HasAttribute<			
+	V extends AbstractType<V>,
+	K extends Attribute<E, V, K>,
+	E extends HasAttribute<V, K, E>
+> {
 
-
-public interface Key<
-	E,
-	V extends Type<V>,	
-	K extends Key<E, V, K>
->
-	extends Serializable
-{
-	V type();
-	
-	void copy(E src, E dest)
-		throws EntityRuntimeException;
-	
-	/**
-	 * Assign the default value for the attribute or reference addressed by this key. 
-	 * 
-	 * @param dest
-	 */
-	void reset(E dest)
-		throws EntityRuntimeException;
-	
-	K self();
 }

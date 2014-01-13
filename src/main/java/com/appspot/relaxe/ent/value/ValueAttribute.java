@@ -38,7 +38,7 @@ public interface ValueAttribute<
 	H extends ValueHolder<V, P, H>,	
 	K extends ValueAttribute<A, E, V, P, H, K>
 >
-	extends Key<E, P, K>, Serializable
+	extends Attribute<E, P, K>, Serializable
 {
 	@Override
 	P type();

@@ -25,7 +25,7 @@ package com.appspot.relaxe.ent.value;
 import java.io.Serializable;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.ent.HasKey;
+import com.appspot.relaxe.ent.HasAttribute;
 import com.appspot.relaxe.types.AbstractValueType;
 import com.appspot.relaxe.value.AbstractPrimitiveHolder;
 
@@ -38,7 +38,7 @@ public interface HasValueAttribute<
 	K extends ValueAttribute<A, E, V, P, H, K>,
 	E extends HasValueAttribute<A, V, P, H, K, E>
 	>
-	extends HasKey<P, K, E>
+	extends HasAttribute<P, K, E>
 {
 	
 }
