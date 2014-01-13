@@ -28,7 +28,7 @@ import java.util.Set;
 
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.ent.value.HasString;
-import com.appspot.relaxe.ent.value.PrimitiveKey;
+import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.ent.value.StringKey;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
@@ -56,7 +56,7 @@ public interface Entity<
 		S extends Serializable,
 		P extends PrimitiveType<P>,
 		PH extends PrimitiveHolder<S, P, PH>,
-		K extends PrimitiveKey<A, E, S, P, PH, K>
+		K extends ValueAttribute<A, E, S, P, PH, K>
 	>
 	PH get(K k)
 		throws EntityRuntimeException;
@@ -77,7 +77,7 @@ public interface Entity<
 		S extends Serializable,
 		P extends PrimitiveType<P>,
 		RH extends PrimitiveHolder<S, P, RH>,
-		K extends PrimitiveKey<A, E, S, P, RH, K>
+		K extends ValueAttribute<A, E, S, P, RH, K>
 	>
 	void set(K k, RH newValue);
 
@@ -199,7 +199,7 @@ public interface Entity<
 		VV extends Serializable,
 		VT extends PrimitiveType<VT>,
 		VH extends PrimitiveHolder<VV, VT, VH>,
-		K extends PrimitiveKey<A, E, VV, VT, VH, K>
+		K extends ValueAttribute<A, E, VV, VT, VH, K>
 	>
 	void remove(K key);
 
@@ -240,7 +240,7 @@ public interface Entity<
 		VV extends Serializable,
 		VT extends PrimitiveType<VT>,
 		VH extends PrimitiveHolder<VV, VT, VH>,
-		K extends PrimitiveKey<A, E, VV, VT, VH, K>
+		K extends ValueAttribute<A, E, VV, VT, VH, K>
 	>
 	boolean has(K key);
 
@@ -259,7 +259,7 @@ public interface Entity<
 		VV extends Serializable,
 		VT extends PrimitiveType<VT>,
 		VH extends PrimitiveHolder<VV, VT, VH>,
-		K extends PrimitiveKey<A, E, VV, VT, VH, K>
+		K extends ValueAttribute<A, E, VV, VT, VH, K>
 	>
 	boolean match(K key, E another);
 

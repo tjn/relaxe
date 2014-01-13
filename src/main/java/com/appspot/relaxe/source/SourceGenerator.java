@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 import com.appspot.relaxe.build.SchemaFilter;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.im.EntityIdentityMap;
-import com.appspot.relaxe.ent.value.PrimitiveKey;
+import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.SchemaName;
@@ -1122,8 +1122,8 @@ public class SourceGenerator {
 		
 //		Sample: 
 //		public QueryElement(
-//				PrimitiveKey<Attribute, Language, ?, ?, ?, ?> a1, 
-//				PrimitiveKey<Attribute, Language, ?, ?, ?, ?> a2) {
+//				ValueAttribute<Attribute, Language, ?, ?, ?, ?> a1, 
+//				ValueAttribute<Attribute, Language, ?, ?, ?, ?> a2) {
 //			this.attributes = new java.util.TreeSet<Attribute>();
 //			this.attributes.add(a1.name());
 //			this.attributes.add(a2.name());
@@ -1139,7 +1139,7 @@ public class SourceGenerator {
 			
 			for (int p = 0; p < ac; p++) {
 				String delim = (p < (ac - 1)) ? "," : "";
-				line(buf, PrimitiveKey.class.getCanonicalName(), 
+				line(buf, ValueAttribute.class.getCanonicalName(), 
 						"<", attr, ", ", intf, ", ?, ?, ?, ?> a", Integer.toString(p + 1), delim);
 			}
 						

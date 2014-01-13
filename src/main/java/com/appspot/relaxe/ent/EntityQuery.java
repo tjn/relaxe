@@ -28,7 +28,7 @@ import java.util.List;
 
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
 import com.appspot.relaxe.ent.query.EntityQuerySortKey;
-import com.appspot.relaxe.ent.value.PrimitiveKey;
+import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.ent.value.StringKey;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.ValueExpression;
@@ -100,7 +100,7 @@ public interface EntityQuery<
 			V extends Serializable,
 			P extends PrimitiveType<P>,
 			W extends PrimitiveHolder<V, P, W>,
-			K extends PrimitiveKey<A, E, V, P, W, K>
+			K extends ValueAttribute<A, E, V, P, W, K>
 		>
 		void addPredicate(K key, Comparison.Op op, W value);
 		
@@ -109,7 +109,7 @@ public interface EntityQuery<
 			V extends Serializable,
 			P extends PrimitiveType<P>,
 			W extends PrimitiveHolder<V, P, W>,
-			K extends PrimitiveKey<A, E, V, P, W, K>
+			K extends ValueAttribute<A, E, V, P, W, K>
 		>
 		void addPredicate(K key, W holder);
 		
@@ -137,7 +137,7 @@ public interface EntityQuery<
 			XE extends Entity<XA, ?, ?, XE, ?, ?, ?>,
 			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ>
 		>		
-		void asc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ> element, PrimitiveKey<XA, XE, ?, ?, ?, ?> attribute);
+		void asc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ> element, ValueAttribute<XA, XE, ?, ?, ?, ?> attribute);
 				
 		public 
 		<
@@ -145,7 +145,7 @@ public interface EntityQuery<
 			XE extends Entity<XA, ?, ?, XE, ?, ?, ?>,
 			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ>
 		>		
-		void desc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ> element, PrimitiveKey<XA, XE, ?, ?, ?, ?> attribute);
+		void desc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ> element, ValueAttribute<XA, XE, ?, ?, ?, ?> attribute);
 		
 		
 		public 
@@ -162,9 +162,9 @@ public interface EntityQuery<
 		>		
 		void desc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute);
 		
-		void asc(PrimitiveKey<A, E, ?, ?, ?, ?> key);
+		void asc(ValueAttribute<A, E, ?, ?, ?, ?> key);
 		
-		void desc(PrimitiveKey<A, E, ?, ?, ?, ?> key);
+		void desc(ValueAttribute<A, E, ?, ?, ?, ?> key);
 		
 		
 		EntityQuery<A, R, T, E, H, F, M, RE> newQuery();

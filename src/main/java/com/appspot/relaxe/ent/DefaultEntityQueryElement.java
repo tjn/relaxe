@@ -34,7 +34,7 @@ import com.appspot.relaxe.ent.query.EntityQueryPredicates;
 import com.appspot.relaxe.ent.query.EntityQueryValueExpression;
 import com.appspot.relaxe.ent.query.EntityQueryValueReference;
 import com.appspot.relaxe.ent.value.EntityKey;
-import com.appspot.relaxe.ent.value.PrimitiveKey;
+import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.expr.ImmutableValueParameter;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.expr.op.Comparison.Op;
@@ -115,7 +115,7 @@ public abstract class DefaultEntityQueryElement<
 	
 	@Override
 	public <
-		K extends PrimitiveKey<A, E, ?, ?, ?, K>
+		K extends ValueAttribute<A, E, ?, ?, ?, K>
 	> 
 	EntityQueryPredicate newEquals(K key, EntityQueryValueReference rhs) {
 		EntityQueryAttributeValueReference<A, QE> lhs = new EntityQueryAttributeValueReference<A, QE>(self(), key.name());
@@ -127,7 +127,7 @@ public abstract class DefaultEntityQueryElement<
 		XV extends Serializable, 
 		XT extends PrimitiveType<XT>, 
 		XH extends PrimitiveHolder<XV, XT, XH>, 
-		K extends PrimitiveKey<A, E, XV, XT, XH, K>
+		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	> 
 	EntityQueryPredicate newNull(K key) {
 		EntityQueryAttributeValueReference<A, QE> ref = new EntityQueryAttributeValueReference<A, QE>(self(), key.name());
@@ -140,7 +140,7 @@ public abstract class DefaultEntityQueryElement<
 		XV extends Serializable, 
 		XT extends PrimitiveType<XT>, 
 		XH extends PrimitiveHolder<XV, XT, XH>, 
-		K extends PrimitiveKey<A, E, XV, XT, XH, K>
+		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	> 
 	EntityQueryPredicate newNotNull(K key) {
 		EntityQueryAttributeValueReference<A, QE> ref = new EntityQueryAttributeValueReference<A, QE>(self(), key.name());
@@ -180,7 +180,7 @@ public abstract class DefaultEntityQueryElement<
 		XV extends Serializable, 
 		XT extends PrimitiveType<XT>, 
 		XH extends PrimitiveHolder<XV, XT, XH>, 
-		K extends PrimitiveKey<A, E, XV, XT, XH, K>
+		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	> 
 	EntityQueryPredicate newEquals(K key, XH rhs) {
 		return newPredicate(key, Comparison.Op.EQ, rhs);
@@ -191,7 +191,7 @@ public abstract class DefaultEntityQueryElement<
 		XV extends Serializable, 
 		XT extends PrimitiveType<XT>, 
 		XH extends PrimitiveHolder<XV, XT, XH>, 
-		K extends PrimitiveKey<A, E, XV, XT, XH, K>
+		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newPredicate(K key, Op op, XH value) {				
 		M meta = getMetaData();
@@ -206,7 +206,7 @@ public abstract class DefaultEntityQueryElement<
 		XV extends Serializable, 
 		XT extends PrimitiveType<XT>, 
 		XH extends PrimitiveHolder<XV, XT, XH>, 
-		K extends PrimitiveKey<A, E, XV, XT, XH, K>
+		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	> 
 	EntityQueryPredicate newEquals(K key, XV value) {				
 		return newEquals(key, key.newHolder(value));
@@ -215,7 +215,7 @@ public abstract class DefaultEntityQueryElement<
 	
 	@Override
 	public <
-		K extends PrimitiveKey<A, E, ?, ?, ?, K>
+		K extends ValueAttribute<A, E, ?, ?, ?, K>
 	>
 	EntityQueryPredicate newPredicate(K key, Comparison.Op op, EntityQueryValueReference rhs) {		
 		EntityQueryAttributeValueReference<A, QE> lhs = new EntityQueryAttributeValueReference<A, QE>(self(), key.name());		

@@ -37,7 +37,7 @@ public class PrimitiveStamper<
 	S extends Serializable,
 	P extends AbstractPrimitiveType<P>,
 	H extends AbstractPrimitiveHolder<S, P, H>,	
-	K extends PrimitiveKey<A, E, S, P, H, K>
+	K extends ValueAttribute<A, E, S, P, H, K>
 	>
 	extends AbstractPrimitiveAccessor<A, E, S, P, H, K>
 	implements Mutator<A, E, S, P, H, K>

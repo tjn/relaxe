@@ -35,7 +35,7 @@ public interface PrimitiveAccessor<
 	S extends Serializable,
 	P extends AbstractPrimitiveType<P>,
 	H extends AbstractPrimitiveHolder<S, P, H>,	
-	K extends PrimitiveKey<A, E, S, P, H, K>
+	K extends ValueAttribute<A, E, S, P, H, K>
 >
 	extends Serializable
 {

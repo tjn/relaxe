@@ -29,7 +29,7 @@ import java.util.Map;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.ent.value.PrimitiveKey;
+import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.model.ChangeListener;
 import com.appspot.relaxe.model.DefaultMutableValueModel;
 import com.appspot.relaxe.model.MutableValueModel;
@@ -75,7 +75,7 @@ public abstract class DefaultAttributeModelMap<
 	
 	@Override
 	public <
-		K extends com.appspot.relaxe.ent.value.PrimitiveKey<A,E,V,P,H,K>
+		K extends com.appspot.relaxe.ent.value.ValueAttribute<A,E,V,P,H,K>
 	> 
 	MutableValueModel<H> attr(final K k) throws EntityRuntimeException {
 		if (k == null) {
@@ -104,7 +104,7 @@ public abstract class DefaultAttributeModelMap<
 	}
 
 	public <		 
-		K extends PrimitiveKey<A, E, V, P, H, K>
+		K extends ValueAttribute<A, E, V, P, H, K>
 	> 
 	MutableValueModel<H> createValueModel(K k, H initialValue) {
 		MutableValueModel<H> nm = new DefaultMutableValueModel<H>(initialValue);

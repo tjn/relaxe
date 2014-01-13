@@ -35,7 +35,7 @@ public interface HasPrimitiveAttribute<
 	V extends Serializable,
 	P extends AbstractPrimitiveType<P>,
 	H extends AbstractPrimitiveHolder<V, P, H>,	
-	K extends PrimitiveKey<A, E, V, P, H, K>,
+	K extends ValueAttribute<A, E, V, P, H, K>,
 	E extends HasPrimitiveAttribute<A, V, P, H, K, E>
 	>
 	extends HasKey<P, K, E>

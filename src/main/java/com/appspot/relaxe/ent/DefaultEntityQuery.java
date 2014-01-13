@@ -37,7 +37,7 @@ import com.appspot.relaxe.ent.query.EntityQuerySortKey;
 import com.appspot.relaxe.ent.query.EntityQueryValueExpression;
 import com.appspot.relaxe.ent.query.EntityQueryValueReference;
 import com.appspot.relaxe.ent.query.DefaultEntityQueryPredicate;
-import com.appspot.relaxe.ent.value.PrimitiveKey;
+import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.ent.value.StringKey;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.ValueExpression;
@@ -176,7 +176,7 @@ public class DefaultEntityQuery<
 			V extends Serializable,
 			P extends PrimitiveType<P>,
 			W extends PrimitiveHolder<V, P, W>,
-			K extends PrimitiveKey<A, E, V, P, W, K>
+			K extends ValueAttribute<A, E, V, P, W, K>
 		>
 		void addPredicate(K key, Comparison.Op op, W value) {
 			EntityQueryValueReference a = new EntityQueryAttributeValueReference<A, RE>(this.root, key.name());
@@ -197,7 +197,7 @@ public class DefaultEntityQuery<
 			V extends Serializable,
 			P extends PrimitiveType<P>,
 			W extends PrimitiveHolder<V, P, W>,
-			K extends PrimitiveKey<XA, XE, V, P, W, K>
+			K extends ValueAttribute<XA, XE, V, P, W, K>
 		>
 		EntityQueryPredicate newPredicate(XQ element, K key, Comparison.Op op, W value) {
 			XM meta = element.getMetaData();			
@@ -217,7 +217,7 @@ public class DefaultEntityQuery<
 			V extends Serializable,
 			P extends PrimitiveType<P>,
 			W extends PrimitiveHolder<V, P, W>,
-			K extends PrimitiveKey<XA, XE, V, P, W, K>
+			K extends ValueAttribute<XA, XE, V, P, W, K>
 		>
 		EntityQueryPredicate newPredicate(XQ element, K key, XE ent) {
 			return newPredicate(element, key, Comparison.Op.EQ, ent.get(key));
@@ -229,7 +229,7 @@ public class DefaultEntityQuery<
 			V extends Serializable,
 			P extends PrimitiveType<P>,
 			W extends PrimitiveHolder<V, P, W>,
-			K extends PrimitiveKey<A, E, V, P, W, K>
+			K extends ValueAttribute<A, E, V, P, W, K>
 		>
 		void addPredicate(K key, W holder) {
 			addPredicate(key, Comparison.Op.EQ, holder);			
@@ -276,7 +276,7 @@ public class DefaultEntityQuery<
 			XE extends Entity<XA, ?, ?, XE, ?, ?, ?>,
 			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ>
 		>		
-		void asc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ> element, PrimitiveKey<XA, XE, ?, ?, ?, ?> attribute) {
+		void asc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ> element, ValueAttribute<XA, XE, ?, ?, ?, ?> attribute) {
 			asc(element, attribute.name());
 		}
 		
@@ -287,18 +287,18 @@ public class DefaultEntityQuery<
 			XE extends Entity<XA, ?, ?, XE, ?, ?, ?>,
 			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ>
 		>		
-		void desc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ> element, PrimitiveKey<XA, XE, ?, ?, ?, ?> key) {
+		void desc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ> element, ValueAttribute<XA, XE, ?, ?, ?, ?> key) {
 			desc(element, key.name());
 		}
 		
 		
 		@Override
-		public void asc(PrimitiveKey<A, E, ?, ?, ?, ?> key) {
+		public void asc(ValueAttribute<A, E, ?, ?, ?, ?> key) {
 			asc(this.root, key);
 		}
 		
 		@Override
-		public void desc(PrimitiveKey<A, E, ?, ?, ?, ?> key) {
+		public void desc(ValueAttribute<A, E, ?, ?, ?, ?> key) {
 			desc(this.root, key);
 		}
 		

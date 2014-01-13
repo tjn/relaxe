@@ -31,7 +31,7 @@ public abstract class StringKey<
 	E extends HasString<A, E>,	
 	P extends PrimitiveType<P>,
 	H extends PrimitiveHolder<String, P, H>,
-	K extends PrimitiveKey<A, E, String, P, H, K>
+	K extends ValueAttribute<A, E, String, P, H, K>
 	>
 	extends AbstractPrimitiveKey<A, E, String, P, H, K>
 {

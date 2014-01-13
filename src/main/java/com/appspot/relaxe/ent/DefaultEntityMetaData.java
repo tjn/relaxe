@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.appspot.relaxe.ent.im.EntityIdentityMap;
-import com.appspot.relaxe.ent.value.PrimitiveKey;
+import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ForeignKey;
@@ -184,7 +184,7 @@ public abstract class DefaultEntityMetaData<
 		V extends Serializable, 
 		P extends AbstractPrimitiveType<P>,
 		PH extends AbstractPrimitiveHolder<V, P, PH>,
-		K extends PrimitiveKey<A, E, V, P, PH, K>
+		K extends ValueAttribute<A, E, V, P, PH, K>
 	>
 	K key(A name, Map<A, K> src) {
 		if (name == null) {

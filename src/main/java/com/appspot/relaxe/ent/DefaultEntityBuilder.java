@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.appspot.relaxe.ent.im.EntityIdentityMap;
 import com.appspot.relaxe.ent.im.ReferenceIdentityMap;
-import com.appspot.relaxe.ent.value.PrimitiveKey;
+import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.expr.ColumnExpr;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.TableReference;
@@ -205,7 +205,7 @@ public abstract class DefaultEntityBuilder<
 			return;
 		}
 		
-		PrimitiveKey<A, E, ?, ?, ?, ?> pk = m.getKey(attribute);
+		ValueAttribute<A, E, ?, ?, ?, ?> pk = m.getKey(attribute);
 		
 		if (pk == null) {
 			return;
@@ -225,9 +225,9 @@ public abstract class DefaultEntityBuilder<
 		V extends Serializable,
 		P extends PrimitiveType<P>,
 		VH extends PrimitiveHolder<V, P, VH>,	
-		VK extends PrimitiveKey<A, E, V, P, VH, VK>
+		VK extends ValueAttribute<A, E, V, P, VH, VK>
 	>
-	AttributeWriter<A, E> createWriter(final PrimitiveKey<A, E, V, P, VH, VK> key, final int index) {
+	AttributeWriter<A, E> createWriter(final ValueAttribute<A, E, V, P, VH, VK> key, final int index) {
 		return new AttributeWriter<A, E>() {
 			@Override
 			public PrimitiveHolder<?, ?, ?> write(DataObject src, E dest)

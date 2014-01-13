@@ -37,7 +37,7 @@ import com.appspot.relaxe.ValueExtractor;
 import com.appspot.relaxe.ValueExtractorFactory;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Reference;
-import com.appspot.relaxe.ent.value.PrimitiveKey;
+import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
@@ -122,7 +122,7 @@ public class TriggerGeneratedKeyHandler
 				String col = keys.getString(nc);
 				Column column = t.getColumnMap().get(col);
 				A a = meta.getAttribute(column);			
-				PrimitiveKey<A, E, ?, ?, ?, ?> key = meta.getKey(a);
+				ValueAttribute<A, E, ?, ?, ?, ?> key = meta.getKey(a);
 				ValueExtractor<?, ?, ?> ve = vef.createExtractor(column.getDataType(), vc);									
 				write(key.self(), ve, keys, target);			
 			}

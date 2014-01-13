@@ -35,9 +35,9 @@ public abstract class AbstractPrimitiveKey<
 	V extends Serializable,
 	P extends PrimitiveType<P>,
 	H extends PrimitiveHolder<V, P, H>,
-	K extends PrimitiveKey<A, E, V, P, H, K>
+	K extends ValueAttribute<A, E, V, P, H, K>
 >
-	implements PrimitiveKey<A, E, V, P, H, K> {
+	implements ValueAttribute<A, E, V, P, H, K> {
 	
 	/**
 	 *

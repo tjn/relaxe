@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.appspot.relaxe.ent.value.EntityKey;
-import com.appspot.relaxe.ent.value.PrimitiveKey;
+import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.ent.value.StringKey;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ForeignKey;
@@ -67,7 +67,7 @@ public abstract class AbstractEntity<
 		A a = m.getAttribute(column);
 		
 		if (a != null) {				
-			PrimitiveKey<A, E, ?, ?, ?, ?> k = m.getKey(a);
+			ValueAttribute<A, E, ?, ?, ?, ?> k = m.getKey(a);
 					
 			if (k != null) {
 				return k.get(self());			
@@ -177,7 +177,7 @@ public abstract class AbstractEntity<
 		}
 				
 		for (A a : as) {
-			PrimitiveKey<A, E, ?, ?, ?, ?> key = meta.getKey(a);
+			ValueAttribute<A, E, ?, ?, ?, ?> key = meta.getKey(a);
 			
 			if (key == null) {
 				buf.append("<no key for attribute: ");
@@ -255,7 +255,7 @@ public abstract class AbstractEntity<
 		M meta = getMetaData();
 		
 		for (A a : as) {
-			PrimitiveKey<A, E, ?, ?, ?, ?> pk = meta.getKey(a);
+			ValueAttribute<A, E, ?, ?, ?, ?> pk = meta.getKey(a);
 			pk.reset(self());
 		}		
 	}
@@ -265,7 +265,7 @@ public abstract class AbstractEntity<
 		VV extends java.io.Serializable, 
 		VT extends com.appspot.relaxe.types.PrimitiveType<VT>, 
 		VH extends com.appspot.relaxe.rpc.PrimitiveHolder<VV, VT, VH>, 
-		K extends com.appspot.relaxe.ent.value.PrimitiveKey<A, E, VV, VT, VH, K>
+		K extends com.appspot.relaxe.ent.value.ValueAttribute<A, E, VV, VT, VH, K>
 	> 
 	boolean match(K key, E another) {
 		VH a = get(key);

@@ -30,13 +30,13 @@ import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.PrimitiveType;
 
 
-public interface PrimitiveKey<
+public interface ValueAttribute<
 	A extends AttributeName,	
 	E,
 	V extends Serializable,
 	P extends PrimitiveType<P>,
 	H extends PrimitiveHolder<V, P, H>,	
-	K extends PrimitiveKey<A, E, V, P, H, K>
+	K extends ValueAttribute<A, E, V, P, H, K>
 >
 	extends Key<E, P, K>, Serializable
 {
