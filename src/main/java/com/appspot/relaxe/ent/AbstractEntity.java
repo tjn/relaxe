@@ -28,7 +28,7 @@ import java.util.Set;
 
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.ent.value.ValueAttribute;
-import com.appspot.relaxe.ent.value.StringKey;
+import com.appspot.relaxe.ent.value.StringAttribute;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.PrimaryKey;
@@ -287,7 +287,7 @@ public abstract class AbstractEntity<
 	public <
 		P extends PrimitiveType<P>,
 		SH extends StringHolder<P, SH>,
-		K extends StringKey<A, E, P, SH, K>
+		K extends StringAttribute<A, E, P, SH, K>
 	>
 	SH getString(K k) {
 		SH sh = get(k.self());
@@ -298,7 +298,7 @@ public abstract class AbstractEntity<
 	public <
 		P extends PrimitiveType<P>,
 		SH extends StringHolder<P, SH>,
-		K extends StringKey<A, E, P, SH, K>
+		K extends StringAttribute<A, E, P, SH, K>
 	>
 	void setString(K k, SH s) {		
 		set(k.self(), s);
@@ -308,7 +308,7 @@ public abstract class AbstractEntity<
 	public <
 		P extends PrimitiveType<P>,
 		SH extends StringHolder<P, SH>,
-		K extends StringKey<A, E, P, SH, K>
+		K extends StringAttribute<A, E, P, SH, K>
 	>
 	void setString(K k, String s) {		
 		set(k.self(), k.newHolder(s));

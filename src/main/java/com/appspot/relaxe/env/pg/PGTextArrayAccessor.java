@@ -32,7 +32,7 @@ public class PGTextArrayAccessor<
 	A extends AttributeName,
 	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasPGTextArray<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, StringArray, PGTextArrayType, PGTextArrayHolder, PGTextArrayKey<A, E>> {
+	extends AbstractPrimitiveAccessor<A, E, StringArray, PGTextArrayType, PGTextArrayHolder, PGTextArrayAttribute<A, E>> {
 
 	/**
 	 *
@@ -46,7 +46,7 @@ public class PGTextArrayAccessor<
 	private PGTextArrayAccessor() {
 	}
 
-	public PGTextArrayAccessor(E target, PGTextArrayKey<A, E> k) {
+	public PGTextArrayAccessor(E target, PGTextArrayAttribute<A, E> k) {
 		super(target, k);
 	}
 }

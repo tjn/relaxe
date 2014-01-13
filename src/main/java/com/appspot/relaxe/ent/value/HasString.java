@@ -33,14 +33,14 @@ public interface HasString<
 	<
 		T extends PrimitiveType<T>, 
 		H extends StringHolder<T, H>,
-		K extends StringKey<A, E, T, H, K>
+		K extends StringAttribute<A, E, T, H, K>
 	>	
 	H getString(K key);
 	
 	<
 		T extends PrimitiveType<T>, 
 		H extends StringHolder<T, H>,
-		K extends StringKey<A, E, T, H, K>
+		K extends StringAttribute<A, E, T, H, K>
 	>
 	void setString(K key, H newValue);
 

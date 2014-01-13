@@ -30,6 +30,6 @@ public interface HasChar<
 	E extends HasChar<A, E> & HasString<A, E>
 >
 {	
-	CharHolder getChar(CharKey<A, E> key);
-	void setChar(CharKey<A, E> key, CharHolder newValue);	
+	CharHolder getChar(CharAttribute<A, E> key);
+	void setChar(CharAttribute<A, E> key, CharHolder newValue);	
 }

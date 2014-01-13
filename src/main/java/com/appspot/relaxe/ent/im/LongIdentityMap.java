@@ -27,7 +27,7 @@ import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.HasLong;
-import com.appspot.relaxe.ent.value.LongKey;
+import com.appspot.relaxe.ent.value.LongAttribute;
 import com.appspot.relaxe.rpc.LongHolder;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.LongType;
@@ -41,9 +41,9 @@ public class LongIdentityMap<
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	M extends EntityMetaData<A, R, T, E, H, ?, M>
 	>
-	extends AbstractKeyIdentityMap<A, R, T, E, H, M, Long, LongType, LongHolder, LongKey<A, E>>
+	extends AbstractKeyIdentityMap<A, R, T, E, H, M, Long, LongType, LongHolder, LongAttribute<A, E>>
 {		
-	public LongIdentityMap(LongKey<A, E> key) {
+	public LongIdentityMap(LongAttribute<A, E> key) {
 		super(key);
 	}
 }

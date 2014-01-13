@@ -27,7 +27,7 @@ import java.util.Set;
 
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.ent.value.ValueAttribute;
-import com.appspot.relaxe.ent.value.StringKey;
+import com.appspot.relaxe.ent.value.StringAttribute;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.rpc.StringHolder;
@@ -80,7 +80,7 @@ public abstract class DefaultEntity<
 	public <
 		P extends PrimitiveType<P>,
 		SH extends StringHolder<P, SH>,
-		K extends StringKey<A, E, P, SH, K>
+		K extends StringAttribute<A, E, P, SH, K>
 	>
 	SH getString(K k) throws EntityRuntimeException {
 		SH sh = get(k.self());

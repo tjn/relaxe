@@ -30,6 +30,6 @@ public interface HasLong<
 	E extends HasLong<A, E>
 >	
 {	
-	LongHolder getLong(LongKey<A, E> key);
-	void setLong(LongKey<A, E> key, LongHolder newValue);	
+	LongHolder getLong(LongAttribute<A, E> key);
+	void setLong(LongAttribute<A, E> key, LongHolder newValue);	
 }

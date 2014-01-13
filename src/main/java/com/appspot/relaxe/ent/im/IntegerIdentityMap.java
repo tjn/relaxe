@@ -27,7 +27,7 @@ import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.HasInteger;
-import com.appspot.relaxe.ent.value.IntegerKey;
+import com.appspot.relaxe.ent.value.IntegerAttribute;
 import com.appspot.relaxe.rpc.IntegerHolder;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.IntegerType;
@@ -41,9 +41,9 @@ public class IntegerIdentityMap<
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	M extends EntityMetaData<A, R, T, E, H, ?, M>
 	>
-	extends AbstractKeyIdentityMap<A, R, T, E, H, M, Integer, IntegerType, IntegerHolder, IntegerKey<A, E>>
+	extends AbstractKeyIdentityMap<A, R, T, E, H, M, Integer, IntegerType, IntegerHolder, IntegerAttribute<A, E>>
 {		
-	public IntegerIdentityMap(IntegerKey<A, E> key) {
+	public IntegerIdentityMap(IntegerAttribute<A, E> key) {
 		super(key);
 	}
 }

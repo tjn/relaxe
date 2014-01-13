@@ -31,7 +31,7 @@ public class PGTextAccessor<
 	A extends AttributeName,
 	E extends Entity<A, ?, ?, E, ?, ?, ?> & HasPGText<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, String, PGTextType, PGTextHolder, PGTextKey<A, E>> {
+	extends AbstractPrimitiveAccessor<A, E, String, PGTextType, PGTextHolder, PGTextAttribute<A, E>> {
 
 	/**
 	 *
@@ -45,7 +45,7 @@ public class PGTextAccessor<
 	private PGTextAccessor() {
 	}
 
-	public PGTextAccessor(E target, PGTextKey<A, E> k) {
+	public PGTextAccessor(E target, PGTextAttribute<A, E> k) {
 		super(target, k);
 	}
 }

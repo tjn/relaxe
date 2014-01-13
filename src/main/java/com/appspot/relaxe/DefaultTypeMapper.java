@@ -31,50 +31,50 @@ import com.appspot.relaxe.ent.im.IntegerIdentityMap;
 import com.appspot.relaxe.ent.im.LongIdentityMap;
 import com.appspot.relaxe.ent.im.VarcharIdentityMap;
 import com.appspot.relaxe.ent.value.BooleanAccessor;
-import com.appspot.relaxe.ent.value.BooleanKey;
+import com.appspot.relaxe.ent.value.BooleanAttribute;
 import com.appspot.relaxe.ent.value.CharAccessor;
-import com.appspot.relaxe.ent.value.CharKey;
+import com.appspot.relaxe.ent.value.CharAttribute;
 import com.appspot.relaxe.ent.value.DateAccessor;
-import com.appspot.relaxe.ent.value.DateKey;
+import com.appspot.relaxe.ent.value.DateAttribute;
 import com.appspot.relaxe.ent.value.DecimalAccessor;
-import com.appspot.relaxe.ent.value.DecimalKey;
+import com.appspot.relaxe.ent.value.DecimalAttribute;
 import com.appspot.relaxe.ent.value.DoubleAccessor;
-import com.appspot.relaxe.ent.value.DoubleKey;
+import com.appspot.relaxe.ent.value.DoubleAttribute;
 import com.appspot.relaxe.ent.value.HasBoolean;
-import com.appspot.relaxe.ent.value.HasBooleanKey;
+import com.appspot.relaxe.ent.value.HasBooleanAttribute;
 import com.appspot.relaxe.ent.value.HasChar;
-import com.appspot.relaxe.ent.value.HasCharKey;
+import com.appspot.relaxe.ent.value.HasCharAttribute;
 import com.appspot.relaxe.ent.value.HasDate;
-import com.appspot.relaxe.ent.value.HasDateKey;
+import com.appspot.relaxe.ent.value.HasDateAttribute;
 import com.appspot.relaxe.ent.value.HasDecimal;
-import com.appspot.relaxe.ent.value.HasDecimalKey;
+import com.appspot.relaxe.ent.value.HasDecimalAttribute;
 import com.appspot.relaxe.ent.value.HasDouble;
-import com.appspot.relaxe.ent.value.HasDoubleKey;
+import com.appspot.relaxe.ent.value.HasDoubleAttribute;
 import com.appspot.relaxe.ent.value.HasInteger;
-import com.appspot.relaxe.ent.value.HasIntegerKey;
+import com.appspot.relaxe.ent.value.HasIntegerAttribute;
 import com.appspot.relaxe.ent.value.HasLong;
-import com.appspot.relaxe.ent.value.HasLongKey;
+import com.appspot.relaxe.ent.value.HasLongAttribute;
 import com.appspot.relaxe.ent.value.HasLongVarBinary;
-import com.appspot.relaxe.ent.value.HasLongVarBinaryKey;
+import com.appspot.relaxe.ent.value.HasLongVarBinaryAttribute;
 import com.appspot.relaxe.ent.value.HasTime;
-import com.appspot.relaxe.ent.value.HasTimeKey;
+import com.appspot.relaxe.ent.value.HasTimeAttribute;
 import com.appspot.relaxe.ent.value.HasTimestamp;
-import com.appspot.relaxe.ent.value.HasTimestampKey;
+import com.appspot.relaxe.ent.value.HasTimestampAttribute;
 import com.appspot.relaxe.ent.value.HasVarchar;
-import com.appspot.relaxe.ent.value.HasVarcharKey;
+import com.appspot.relaxe.ent.value.HasVarcharAttribute;
 import com.appspot.relaxe.ent.value.IntegerAccessor;
-import com.appspot.relaxe.ent.value.IntegerKey;
+import com.appspot.relaxe.ent.value.IntegerAttribute;
 import com.appspot.relaxe.ent.value.LongAccessor;
-import com.appspot.relaxe.ent.value.LongKey;
+import com.appspot.relaxe.ent.value.LongAttribute;
 import com.appspot.relaxe.ent.value.LongVarBinary;
 import com.appspot.relaxe.ent.value.LongVarBinaryAccessor;
-import com.appspot.relaxe.ent.value.LongVarBinaryKey;
+import com.appspot.relaxe.ent.value.LongVarBinaryAttribute;
 import com.appspot.relaxe.ent.value.TimeAccessor;
-import com.appspot.relaxe.ent.value.TimeKey;
+import com.appspot.relaxe.ent.value.TimeAttribute;
 import com.appspot.relaxe.ent.value.TimestampAccessor;
-import com.appspot.relaxe.ent.value.TimestampKey;
+import com.appspot.relaxe.ent.value.TimestampAttribute;
 import com.appspot.relaxe.ent.value.VarcharAccessor;
-import com.appspot.relaxe.ent.value.VarcharKey;
+import com.appspot.relaxe.ent.value.VarcharAttribute;
 import com.appspot.relaxe.map.AttributeInfo;
 import com.appspot.relaxe.map.TypeMapper;
 import com.appspot.relaxe.meta.DataType;
@@ -240,22 +240,22 @@ public class DefaultTypeMapper
 	        case Types.CHAR:
 	        	da.setValueType(String.class);
 	        	da.setHolderType(CharHolder.class);
-	        	da.setAttributeType(CharKey.class);
+	        	da.setAttributeType(CharAttribute.class);
 	        	da.setAccessorType(CharAccessor.class);
 	        	da.setPrimitiveType(CharType.TYPE);        	
 	        	da.setContainerType(HasChar.class);
-	        	da.setContainerMetaType(HasCharKey.class);
+	        	da.setContainerMetaType(HasCharAttribute.class);
 	        	break;
 	        case Types.VARCHAR:
 	        case Types.LONGVARCHAR:
 	        	da.setValueType(String.class);
 	        	da.setHolderType(VarcharHolder.class);
-	        	da.setAttributeType(VarcharKey.class);
+	        	da.setAttributeType(VarcharAttribute.class);
 	        	da.setAccessorType(VarcharAccessor.class);
 	        	da.setPrimitiveType(VarcharType.TYPE);        	
 	        	da.setIdentityMapType(VarcharIdentityMap.class);
 	        	da.setContainerType(HasVarchar.class);
-	        	da.setContainerMetaType(HasVarcharKey.class);        	
+	        	da.setContainerMetaType(HasVarcharAttribute.class);        	
 	            break;            	
 	        case Types.LONGNVARCHAR:
 	        	break;        	
@@ -264,22 +264,22 @@ public class DefaultTypeMapper
 	        case Types.TINYINT:
 	        	da.setValueType(Integer.class);
 	        	da.setHolderType(IntegerHolder.class);
-	        	da.setAttributeType(IntegerKey.class);
+	        	da.setAttributeType(IntegerAttribute.class);
 	        	da.setAccessorType(IntegerAccessor.class);
 	        	da.setPrimitiveType(IntegerType.TYPE);
 	        	da.setIdentityMapType(IntegerIdentityMap.class);
 	        	da.setContainerType(HasInteger.class);
-	        	da.setContainerMetaType(HasIntegerKey.class);
+	        	da.setContainerMetaType(HasIntegerAttribute.class);
 	            break;
 	        case Types.BIGINT:
 	        	da.setValueType(Long.class);
 	        	da.setHolderType(LongHolder.class);
-	        	da.setAttributeType(LongKey.class);
+	        	da.setAttributeType(LongAttribute.class);
 	        	da.setAccessorType(LongAccessor.class);
 	        	da.setPrimitiveType(LongType.TYPE);
 	        	da.setIdentityMapType(LongIdentityMap.class);
 	        	da.setContainerType(HasLong.class);
-	        	da.setContainerMetaType(HasLongKey.class);	        	
+	        	da.setContainerMetaType(HasLongAttribute.class);	        	
 	        	break;
 	        case Types.BIT:
 	        case Types.BOOLEAN:	        	
@@ -291,11 +291,11 @@ public class DefaultTypeMapper
 	        	
 	        	da.setValueType(Boolean.class);
 	        	da.setHolderType(BooleanHolder.class);
-	        	da.setAttributeType(BooleanKey.class);
+	        	da.setAttributeType(BooleanAttribute.class);
 	        	da.setAccessorType(BooleanAccessor.class);
 	        	da.setPrimitiveType(BooleanType.TYPE);	        	
 	        	da.setContainerType(HasBoolean.class);
-	        	da.setContainerMetaType(HasBooleanKey.class);	 
+	        	da.setContainerMetaType(HasBooleanAttribute.class);	 
 	        	break;
 	        case Types.REAL:
 	            break;
@@ -304,40 +304,40 @@ public class DefaultTypeMapper
 	        case Types.DOUBLE:
 	        	da.setValueType(Double.class);
 	        	da.setHolderType(DoubleHolder.class);
-	        	da.setAttributeType(DoubleKey.class);
+	        	da.setAttributeType(DoubleAttribute.class);
 	        	da.setAccessorType(DoubleAccessor.class);
 	        	da.setPrimitiveType(DoubleType.TYPE);
 	        	da.setContainerType(HasDouble.class);
-	        	da.setContainerMetaType(HasDoubleKey.class);       	
+	        	da.setContainerMetaType(HasDoubleAttribute.class);       	
 	            break;
 	        case Types.DECIMAL:
 	        case Types.NUMERIC:
 	        	da.setValueType(Decimal.class);
 	        	da.setHolderType(DecimalHolder.class);
-	        	da.setAttributeType(DecimalKey.class);
+	        	da.setAttributeType(DecimalAttribute.class);
 	        	da.setAccessorType(DecimalAccessor.class);
 	        	da.setPrimitiveType(DecimalType.TYPE);
 	        	da.setContainerType(HasDecimal.class);
-	        	da.setContainerMetaType(HasDecimalKey.class);
+	        	da.setContainerMetaType(HasDecimalAttribute.class);
 	            break;        	
 	        case Types.DATE:            
 	        	da.setValueType(Date.class);
 	        	da.setHolderType(DateHolder.class);
-	        	da.setAttributeType(DateKey.class);
+	        	da.setAttributeType(DateAttribute.class);
 	        	da.setAccessorType(DateAccessor.class);
 	        	da.setPrimitiveType(DateType.TYPE);
 	        	da.setContainerType(HasDate.class);
-	        	da.setContainerMetaType(HasDateKey.class);
+	        	da.setContainerMetaType(HasDateAttribute.class);
 	            break;
 	            
 	        case Types.TIME:            
 	        	da.setValueType(Date.class);
 	        	da.setHolderType(TimeHolder.class);
-	        	da.setAttributeType(TimeKey.class);
+	        	da.setAttributeType(TimeAttribute.class);
 	        	da.setAccessorType(TimeAccessor.class);
 	        	da.setPrimitiveType(TimeType.TYPE);
 	        	da.setContainerType(HasTime.class);
-	        	da.setContainerMetaType(HasTimeKey.class);        	
+	        	da.setContainerMetaType(HasTimeAttribute.class);        	
 	            break;
 	            
 	        case Types.BINARY:
@@ -345,21 +345,21 @@ public class DefaultTypeMapper
 	        case Types.LONGVARBINARY:
 	        	da.setValueType(LongVarBinary.class);
 	        	da.setHolderType(LongVarBinaryHolder.class);
-	        	da.setAttributeType(LongVarBinaryKey.class);
+	        	da.setAttributeType(LongVarBinaryAttribute.class);
 	        	da.setAccessorType(LongVarBinaryAccessor.class);
 	        	da.setPrimitiveType(LongVarBinaryType.TYPE);
 	        	da.setContainerType(HasLongVarBinary.class);
-	        	da.setContainerMetaType(HasLongVarBinaryKey.class);
+	        	da.setContainerMetaType(HasLongVarBinaryAttribute.class);
 	            break;
 	            
 	        case Types.TIMESTAMP:
 	        	da.setValueType(Date.class);
 	        	da.setHolderType(TimestampHolder.class);
-	        	da.setAttributeType(TimestampKey.class);
+	        	da.setAttributeType(TimestampAttribute.class);
 	        	da.setAccessorType(TimestampAccessor.class);
 	        	da.setPrimitiveType(TimestampType.TYPE);
 	        	da.setContainerType(HasTimestamp.class);
-	        	da.setContainerMetaType(HasTimestampKey.class);
+	        	da.setContainerMetaType(HasTimestampAttribute.class);
 	            break;	            
 	            
 	        case Types.DISTINCT:

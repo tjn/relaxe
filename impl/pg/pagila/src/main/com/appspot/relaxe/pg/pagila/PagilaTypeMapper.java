@@ -28,32 +28,32 @@ import org.slf4j.LoggerFactory;
 import com.appspot.relaxe.DefaultTypeMapper;
 import com.appspot.relaxe.ent.im.IntegerIdentityMap;
 import com.appspot.relaxe.ent.value.HasInteger;
-import com.appspot.relaxe.ent.value.HasIntegerKey;
+import com.appspot.relaxe.ent.value.HasIntegerAttribute;
 import com.appspot.relaxe.ent.value.HasInterval;
-import com.appspot.relaxe.ent.value.HasIntervalKey;
+import com.appspot.relaxe.ent.value.HasIntervalAttribute;
 import com.appspot.relaxe.ent.value.HasVarchar;
-import com.appspot.relaxe.ent.value.HasVarcharKey;
+import com.appspot.relaxe.ent.value.HasVarcharAttribute;
 import com.appspot.relaxe.ent.value.IntegerAccessor;
-import com.appspot.relaxe.ent.value.IntegerKey;
+import com.appspot.relaxe.ent.value.IntegerAttribute;
 import com.appspot.relaxe.ent.value.IntervalAccessor;
-import com.appspot.relaxe.ent.value.IntervalKey;
+import com.appspot.relaxe.ent.value.IntervalAttribute;
 import com.appspot.relaxe.ent.value.VarcharAccessor;
-import com.appspot.relaxe.ent.value.VarcharKey;
+import com.appspot.relaxe.ent.value.VarcharAttribute;
 import com.appspot.relaxe.env.pg.HasPGText;
 import com.appspot.relaxe.env.pg.HasPGTextArray;
-import com.appspot.relaxe.env.pg.HasPGTextArrayKey;
-import com.appspot.relaxe.env.pg.HasPGTextKey;
+import com.appspot.relaxe.env.pg.HasPGTextArrayAttribute;
+import com.appspot.relaxe.env.pg.HasPGTextAttribute;
 import com.appspot.relaxe.env.pg.PGTSVectorType;
 import com.appspot.relaxe.env.pg.PGTextAccessor;
 import com.appspot.relaxe.env.pg.PGTextArrayAccessor;
 import com.appspot.relaxe.env.pg.PGTextArrayHolder;
-import com.appspot.relaxe.env.pg.PGTextArrayKey;
+import com.appspot.relaxe.env.pg.PGTextArrayAttribute;
 import com.appspot.relaxe.env.pg.PGTextArrayType;
 import com.appspot.relaxe.env.pg.PGTextHolder;
-import com.appspot.relaxe.env.pg.PGTextKey;
+import com.appspot.relaxe.env.pg.PGTextAttribute;
 import com.appspot.relaxe.env.pg.PGTextType;
 import com.appspot.relaxe.pg.pagila.types.HasMPAARating;
-import com.appspot.relaxe.pg.pagila.types.HasMPAARatingKey;
+import com.appspot.relaxe.pg.pagila.types.HasMPAARatingAttribute;
 import com.appspot.relaxe.pg.pagila.types.MPAARating;
 import com.appspot.relaxe.pg.pagila.types.MPAARatingAccessor;
 import com.appspot.relaxe.pg.pagila.types.MPAARatingHolder;
@@ -88,11 +88,11 @@ public class PagilaTypeMapper
 			
         	info.setValueType(String.class);
         	info.setHolderType(PGTextHolder.class);
-        	info.setAttributeType(PGTextKey.class);
+        	info.setAttributeType(PGTextAttribute.class);
         	info.setAccessorType(PGTextAccessor.class);
         	info.setPrimitiveType(PGTextType.TYPE);
         	info.setContainerType(HasPGText.class);
-        	info.setContainerMetaType(HasPGTextKey.class);
+        	info.setContainerMetaType(HasPGTextAttribute.class);
         	        	        	
         	register(PGTextType.TYPE.getSqlType(), PGTextType.TYPE.getName(), info);
 		}
@@ -102,11 +102,11 @@ public class PagilaTypeMapper
 			
         	info.setValueType(String.class);
         	info.setHolderType(VarcharHolder.class);
-        	info.setAttributeType(VarcharKey.class);
+        	info.setAttributeType(VarcharAttribute.class);
         	info.setAccessorType(VarcharAccessor.class);
         	info.setPrimitiveType(VarcharType.TYPE);
         	info.setContainerType(HasVarchar.class);
-        	info.setContainerMetaType(HasVarcharKey.class);
+        	info.setContainerMetaType(HasVarcharAttribute.class);
         	        	        	
         	register(PGTSVectorType.TYPE, info);
 		}		
@@ -133,7 +133,7 @@ public class PagilaTypeMapper
 			info.setHolderType(MPAARatingHolder.class);
 			info.setAttributeType(MPAARatingKey.class);
 			info.setContainerType(HasMPAARating.class);
-			info.setContainerMetaType(HasMPAARatingKey.class);
+			info.setContainerMetaType(HasMPAARatingAttribute.class);
 			
 			info.setIdentityMapType(null);		
 			info.setAccessorType(MPAARatingAccessor.class);
@@ -147,9 +147,9 @@ public class PagilaTypeMapper
 			info.setPrimitiveType(IntegerType.TYPE);
 			info.setValueType(Integer.class);		
 			info.setHolderType(IntegerHolder.class);
-			info.setAttributeType(IntegerKey.class);
+			info.setAttributeType(IntegerAttribute.class);
 			info.setContainerType(HasInteger.class);
-			info.setContainerMetaType(HasIntegerKey.class);			
+			info.setContainerMetaType(HasIntegerAttribute.class);			
 			info.setIdentityMapType(IntegerIdentityMap.class);		
 			info.setAccessorType(IntegerAccessor.class);
 						
@@ -161,11 +161,11 @@ public class PagilaTypeMapper
 			
         	info.setValueType(Interval.YearMonth.class);
         	info.setHolderType(IntervalHolder.YearMonth.class);
-        	info.setAttributeType(IntervalKey.YearMonth.class);
+        	info.setAttributeType(IntervalAttribute.YearMonth.class);
         	info.setAccessorType(IntervalAccessor.YearMonth.class);
         	info.setPrimitiveType(IntervalType.YearMonth.TYPE);
         	info.setContainerType(HasInterval.YearMonth.class);
-        	info.setContainerMetaType(HasIntervalKey.YearMonth.class);
+        	info.setContainerMetaType(HasIntervalAttribute.YearMonth.class);
 						
 			registerDistinctType(YearMonthIntervalType.TYPE, info);						
 		}
@@ -177,11 +177,11 @@ public class PagilaTypeMapper
 			
         	info.setValueType(StringArray.class);
         	info.setHolderType(PGTextArrayHolder.class);
-        	info.setAttributeType(PGTextArrayKey.class);
+        	info.setAttributeType(PGTextArrayAttribute.class);
         	info.setAccessorType(PGTextArrayAccessor.class);
         	info.setPrimitiveType(PGTextArrayType.TYPE);
         	info.setContainerType(HasPGTextArray.class);
-        	info.setContainerMetaType(HasPGTextArrayKey.class);
+        	info.setContainerMetaType(HasPGTextArrayAttribute.class);
 						
 			registerArrayType(PGTextArrayType.TYPE, info);						
 		}
@@ -191,11 +191,11 @@ public class PagilaTypeMapper
 			
         	info.setValueType(String.class);
         	info.setHolderType(PGTextHolder.class);
-        	info.setAttributeType(PGTextKey.class);
+        	info.setAttributeType(PGTextAttribute.class);
         	info.setAccessorType(IntervalAccessor.YearMonth.class);
         	info.setPrimitiveType(IntervalType.YearMonth.TYPE);
         	info.setContainerType(HasInterval.YearMonth.class);
-        	info.setContainerMetaType(HasIntervalKey.YearMonth.class);
+        	info.setContainerMetaType(HasIntervalAttribute.YearMonth.class);
 						
 			registerDistinctType(YearMonthIntervalType.TYPE, info);						
 		}

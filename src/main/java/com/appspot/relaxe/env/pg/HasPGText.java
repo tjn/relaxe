@@ -30,9 +30,9 @@ public interface HasPGText<
 	E extends HasPGText<A, E> & HasString<A, E>
 > {
 
-	void setPGText(PGTextKey<A, E> k, PGTextHolder newValue);
+	void setPGText(PGTextAttribute<A, E> k, PGTextHolder newValue);
 	
-	PGTextHolder getPGText(PGTextKey<A, E> k);
+	PGTextHolder getPGText(PGTextAttribute<A, E> k);
 	
 
 }

@@ -33,7 +33,7 @@ public class TimestampAccessor<
 	A extends AttributeName,
 	E extends HasTimestamp<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, Date, TimestampType, TimestampHolder, TimestampKey<A, E>> {
+	extends AbstractPrimitiveAccessor<A, E, Date, TimestampType, TimestampHolder, TimestampAttribute<A, E>> {
 
 	/**
 	 *
@@ -47,7 +47,7 @@ public class TimestampAccessor<
 	private TimestampAccessor() {
 	}
 
-	public TimestampAccessor(E target, TimestampKey<A, E> k) {
+	public TimestampAccessor(E target, TimestampAttribute<A, E> k) {
 		super(target, k);
 	}
 }

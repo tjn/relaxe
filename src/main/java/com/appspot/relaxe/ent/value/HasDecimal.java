@@ -28,6 +28,6 @@ import com.appspot.relaxe.rpc.DecimalHolder;
 public interface HasDecimal<
 	A extends AttributeName, E extends HasDecimal<A, E>
 > {
-	DecimalHolder getDecimal(DecimalKey<A, E> key);
-	void setDecimal(DecimalKey<A, E> key, DecimalHolder newValue);
+	DecimalHolder getDecimal(DecimalAttribute<A, E> key);
+	void setDecimal(DecimalAttribute<A, E> key, DecimalHolder newValue);
 }

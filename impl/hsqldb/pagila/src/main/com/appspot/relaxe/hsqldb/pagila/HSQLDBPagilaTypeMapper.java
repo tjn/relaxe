@@ -24,9 +24,9 @@ package com.appspot.relaxe.hsqldb.pagila;
 
 import com.appspot.relaxe.DefaultTypeMapper;
 import com.appspot.relaxe.ent.value.HasVarcharArray;
-import com.appspot.relaxe.ent.value.HasVarcharArrayKey;
+import com.appspot.relaxe.ent.value.HasVarcharArrayAttribute;
 import com.appspot.relaxe.ent.value.VarcharArrayAccessor;
-import com.appspot.relaxe.ent.value.VarcharArrayKey;
+import com.appspot.relaxe.ent.value.VarcharArrayAttribute;
 import com.appspot.relaxe.rpc.StringArray;
 import com.appspot.relaxe.rpc.VarcharArrayHolder;
 import com.appspot.relaxe.source.DefaultAttributeInfo;
@@ -42,11 +42,11 @@ public class HSQLDBPagilaTypeMapper
 		DefaultAttributeInfo info = new DefaultAttributeInfo();
     	info.setValueType(StringArray.class);
     	info.setHolderType(VarcharArrayHolder.class);
-    	info.setAttributeType(VarcharArrayKey.class);
+    	info.setAttributeType(VarcharArrayAttribute.class);
     	info.setAccessorType(VarcharArrayAccessor.class);
     	info.setPrimitiveType(VarcharArrayType.TYPE);
     	info.setContainerType(HasVarcharArray.class);
-    	info.setContainerMetaType(HasVarcharArrayKey.class);
+    	info.setContainerMetaType(HasVarcharArrayAttribute.class);
 		
 		register(PrimitiveType.ARRAY, "VARCHAR(1024) ARRAY", info);
 	}	

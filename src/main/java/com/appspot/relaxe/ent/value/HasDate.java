@@ -30,6 +30,6 @@ public interface HasDate<
 	E extends HasDate<A, E>
 >	
 {	
-	DateHolder getDate(DateKey<A, E> key);
-	void setDate(DateKey<A, E> key, DateHolder newValue);	
+	DateHolder getDate(DateAttribute<A, E> key);
+	void setDate(DateAttribute<A, E> key, DateHolder newValue);	
 }

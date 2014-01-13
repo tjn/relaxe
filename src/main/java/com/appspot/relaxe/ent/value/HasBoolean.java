@@ -37,7 +37,7 @@ public interface HasBoolean<
 	 * @return The value corresponding the key.
 	 * @throws NullPointerException If <code>key</code> is <code>null</code>.
 	 */
-	BooleanHolder getBoolean(BooleanKey<A, E> key);
+	BooleanHolder getBoolean(BooleanAttribute<A, E> key);
 	
 	/**
 	 * Sets the value by the key.
@@ -46,5 +46,5 @@ public interface HasBoolean<
 	 * @param newValue May be null.
 	 * @throws NullPointerException If <code>key</code> is <code>null</code>.
 	 */
-	void setBoolean(BooleanKey<A, E> key, BooleanHolder newValue);	
+	void setBoolean(BooleanAttribute<A, E> key, BooleanHolder newValue);	
 }

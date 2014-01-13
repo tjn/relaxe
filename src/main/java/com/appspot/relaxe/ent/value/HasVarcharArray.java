@@ -30,6 +30,6 @@ public interface HasVarcharArray<
 	E extends HasVarcharArray<A, E>
 >	
 {	
-	VarcharArrayHolder getVarcharArray(VarcharArrayKey<A, E> key);
-	void setVarcharArray(VarcharArrayKey<A, E> key, VarcharArrayHolder newValue);	
+	VarcharArrayHolder getVarcharArray(VarcharArrayAttribute<A, E> key);
+	void setVarcharArray(VarcharArrayAttribute<A, E> key, VarcharArrayHolder newValue);	
 }

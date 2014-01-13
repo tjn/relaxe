@@ -29,7 +29,7 @@ import java.util.Set;
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.ent.value.HasString;
 import com.appspot.relaxe.ent.value.ValueAttribute;
-import com.appspot.relaxe.ent.value.StringKey;
+import com.appspot.relaxe.ent.value.StringAttribute;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.rpc.ReferenceHolder;
@@ -155,7 +155,7 @@ public interface Entity<
 	public <
 		P extends PrimitiveType<P>,
 		SH extends StringHolder<P, SH>,		
-		K extends StringKey<A, E, P, SH, K>
+		K extends StringAttribute<A, E, P, SH, K>
 	>
 	SH getString(K k) throws EntityRuntimeException;
 
@@ -164,14 +164,14 @@ public interface Entity<
 	public <
 		P extends PrimitiveType<P>,
 		SH extends StringHolder<P, SH>,
-		K extends StringKey<A, E, P, SH, K>
+		K extends StringAttribute<A, E, P, SH, K>
 	>
 	void setString(K k, SH s) throws EntityRuntimeException;
 
 	public <
 		P extends PrimitiveType<P>,
 		SH extends StringHolder<P, SH>,
-		K extends StringKey<A, E, P, SH, K>
+		K extends StringAttribute<A, E, P, SH, K>
 	>
 	void setString(K k, String s) throws EntityRuntimeException;
 

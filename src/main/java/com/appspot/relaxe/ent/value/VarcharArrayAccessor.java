@@ -31,7 +31,7 @@ public class VarcharArrayAccessor<
 	A extends AttributeName,
 	E extends HasVarcharArray<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, StringArray, VarcharArrayType, VarcharArrayHolder, VarcharArrayKey<A, E>> {
+	extends AbstractPrimitiveAccessor<A, E, StringArray, VarcharArrayType, VarcharArrayHolder, VarcharArrayAttribute<A, E>> {
 
 
 	/**
@@ -46,7 +46,7 @@ public class VarcharArrayAccessor<
 	private VarcharArrayAccessor() {
 	}
 
-	public VarcharArrayAccessor(E target, VarcharArrayKey<A, E> k) {
+	public VarcharArrayAccessor(E target, VarcharArrayAttribute<A, E> k) {
 		super(target, k); 
 	}
 }

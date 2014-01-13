@@ -27,7 +27,7 @@ import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.TimeHolder;
 
 public interface HasTime<A extends AttributeName, E extends HasTime<A, E>> {
-	TimeHolder getTime(TimeKey<A, E> key);
+	TimeHolder getTime(TimeAttribute<A, E> key);
 
-	void setTime(TimeKey<A, E> key, TimeHolder newValue);
+	void setTime(TimeAttribute<A, E> key, TimeHolder newValue);
 }

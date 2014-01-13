@@ -26,6 +26,6 @@ import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.rpc.DoubleHolder;
 
 public interface HasDouble<A extends AttributeName, E extends HasDouble<A, E>> {
-	DoubleHolder getDouble(DoubleKey<A, E> key);
-	void setDouble(DoubleKey<A, E> key, DoubleHolder newValue);
+	DoubleHolder getDouble(DoubleAttribute<A, E> key);
+	void setDouble(DoubleAttribute<A, E> key, DoubleHolder newValue);
 }

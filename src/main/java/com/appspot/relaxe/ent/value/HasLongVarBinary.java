@@ -37,7 +37,7 @@ public interface HasLongVarBinary<
 	 * @return The value corresponding the key.
 	 * @throws NullPointerException If <code>key</code> is <code>null</code>.
 	 */
-	LongVarBinaryHolder getLongVarBinary(LongVarBinaryKey<A, E> key);
+	LongVarBinaryHolder getLongVarBinary(LongVarBinaryAttribute<A, E> key);
 	
 	/**
 	 * Sets the value by the key.
@@ -46,5 +46,5 @@ public interface HasLongVarBinary<
 	 * @param newValue May be null.
 	 * @throws NullPointerException If <code>key</code> is <code>null</code>.
 	 */
-	void setLongVarBinary(LongVarBinaryKey<A, E> key, LongVarBinaryHolder newValue);	
+	void setLongVarBinary(LongVarBinaryAttribute<A, E> key, LongVarBinaryHolder newValue);	
 }

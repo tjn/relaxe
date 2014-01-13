@@ -30,7 +30,7 @@ public class DoubleAccessor<
 	A extends AttributeName,
 	E extends HasDouble<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, Double, DoubleType, DoubleHolder, DoubleKey<A, E>> {
+	extends AbstractPrimitiveAccessor<A, E, Double, DoubleType, DoubleHolder, DoubleAttribute<A, E>> {
 
 	/**
 	 *
@@ -44,7 +44,7 @@ public class DoubleAccessor<
 	private DoubleAccessor() {
 	}
 
-	public DoubleAccessor(E target, DoubleKey<A, E> k) {
+	public DoubleAccessor(E target, DoubleAttribute<A, E> k) {
 		super(target, k);
 	}
 }

@@ -30,6 +30,6 @@ public interface HasVarchar<
 	E extends HasVarchar<A, E> & HasString<A, E>
 >
 {	
-	VarcharHolder getVarchar(VarcharKey<A, E> key);
-	void setVarchar(VarcharKey<A, E> key, VarcharHolder newValue);	
+	VarcharHolder getVarchar(VarcharAttribute<A, E> key);
+	void setVarchar(VarcharAttribute<A, E> key, VarcharHolder newValue);	
 }

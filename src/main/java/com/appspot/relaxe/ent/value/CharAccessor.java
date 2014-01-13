@@ -30,7 +30,7 @@ public class CharAccessor<
 	A extends AttributeName,	
 	E extends HasChar<A, E> & HasString<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, String, CharType, CharHolder, CharKey<A, E>> {
+	extends AbstractPrimitiveAccessor<A, E, String, CharType, CharHolder, CharAttribute<A, E>> {
 
 	/**
 	 *
@@ -44,7 +44,7 @@ public class CharAccessor<
 	private CharAccessor() {
 	}
 
-	public CharAccessor(E target, CharKey<A, E> k) {
+	public CharAccessor(E target, CharAttribute<A, E> k) {
 		super(target, k);
 	}
 

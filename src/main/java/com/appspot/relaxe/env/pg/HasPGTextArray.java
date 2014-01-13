@@ -29,9 +29,9 @@ public interface HasPGTextArray<
 	E extends HasPGTextArray<A, E>
 > {
 
-	void setPGTextArray(PGTextArrayKey<A, E> k, PGTextArrayHolder newValue);
+	void setPGTextArray(PGTextArrayAttribute<A, E> k, PGTextArrayHolder newValue);
 	
-	PGTextArrayHolder getPGTextArray(PGTextArrayKey<A, E> k);
+	PGTextArrayHolder getPGTextArray(PGTextArrayAttribute<A, E> k);
 	
 
 }

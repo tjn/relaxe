@@ -27,10 +27,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.appspot.relaxe.ent.value.HasInteger;
-import com.appspot.relaxe.ent.value.HasIntegerKey;
+import com.appspot.relaxe.ent.value.HasIntegerAttribute;
 import com.appspot.relaxe.ent.value.HasLong;
-import com.appspot.relaxe.ent.value.IntegerKey;
-import com.appspot.relaxe.ent.value.LongKey;
+import com.appspot.relaxe.ent.value.IntegerAttribute;
+import com.appspot.relaxe.ent.value.LongAttribute;
 import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.rpc.IntegerHolder;
 import com.appspot.relaxe.rpc.LongHolder;
@@ -99,7 +99,7 @@ public class TestKeyHolder
 	}
 
 	@Override
-	public IntegerHolder getInteger(IntegerKey<Attribute, TestKeyHolder> key) {
+	public IntegerHolder getInteger(IntegerAttribute<Attribute, TestKeyHolder> key) {
 		switch (key.name()) {
 		case A1:
 			return a1;
@@ -113,7 +113,7 @@ public class TestKeyHolder
 	}
 
 	@Override
-	public void setInteger(IntegerKey<Attribute, TestKeyHolder> key, IntegerHolder newValue) {
+	public void setInteger(IntegerAttribute<Attribute, TestKeyHolder> key, IntegerHolder newValue) {
 		switch (key.name()) {
 		case A1:
 			a1 = newValue;
@@ -129,12 +129,12 @@ public class TestKeyHolder
 		
 
 	@Override
-	public LongHolder getLong(LongKey<Attribute, TestKeyHolder> key) {
+	public LongHolder getLong(LongAttribute<Attribute, TestKeyHolder> key) {
 		return longHolderMap.get(key.name());		
 	}
 
 	@Override
-	public void setLong(LongKey<Attribute, TestKeyHolder> key,
+	public void setLong(LongAttribute<Attribute, TestKeyHolder> key,
 			LongHolder newValue) {
 		longHolderMap.put(key.name(), newValue);		
 	}
@@ -143,13 +143,13 @@ public class TestKeyHolder
 	public static void main(String[] args) {
 		TestKeyHolder e = new TestKeyHolder();
 		
-		HasIntegerKey<Attribute, TestKeyHolder> meta = new HasIntegerKey<TestKeyHolder.Attribute, TestKeyHolder>() {
+		HasIntegerAttribute<Attribute, TestKeyHolder> meta = new HasIntegerAttribute<TestKeyHolder.Attribute, TestKeyHolder>() {
 
-			private IntegerKey<Attribute, TestKeyHolder> a1k = null;
-			private IntegerKey<Attribute, TestKeyHolder> a2k = null;
+			private IntegerAttribute<Attribute, TestKeyHolder> a1k = null;
+			private IntegerAttribute<Attribute, TestKeyHolder> a2k = null;
 			
 			@Override
-			public IntegerKey<Attribute, TestKeyHolder> getIntegerKey(TestKeyHolder.Attribute a) {
+			public IntegerAttribute<Attribute, TestKeyHolder> getIntegerAttribute(TestKeyHolder.Attribute a) {
 				switch (a) {
 				case A1:
 					return a1k;
@@ -163,7 +163,7 @@ public class TestKeyHolder
 			}
 
 			@Override
-			public void register(IntegerKey<Attribute, TestKeyHolder> key) {
+			public void register(IntegerAttribute<Attribute, TestKeyHolder> key) {
 				switch (key.name()) {
 				case A1:
 					a1k = key;
@@ -177,7 +177,7 @@ public class TestKeyHolder
 			}
 		};
 		
-		IntegerKey<TestKeyHolder.Attribute, TestKeyHolder> a1k = IntegerKey.get(meta, TestKeyHolder.Attribute.A1);
+		IntegerAttribute<TestKeyHolder.Attribute, TestKeyHolder> a1k = IntegerAttribute.get(meta, TestKeyHolder.Attribute.A1);
 			
 		IntegerHolder h = e.get(a1k);		
 		

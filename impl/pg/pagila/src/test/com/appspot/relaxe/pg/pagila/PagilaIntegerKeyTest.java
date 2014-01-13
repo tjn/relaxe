@@ -24,8 +24,8 @@ package com.appspot.relaxe.pg.pagila;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.value.HasInteger;
-import com.appspot.relaxe.ent.value.HasIntegerKey;
-import com.appspot.relaxe.ent.value.IntegerKey;
+import com.appspot.relaxe.ent.value.HasIntegerAttribute;
+import com.appspot.relaxe.ent.value.IntegerAttribute;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.types.IntegerType;
 
@@ -42,13 +42,13 @@ public class PagilaIntegerKeyTest extends TestCase {
 	<
 		A extends AttributeName,
 		E extends HasInteger<A, E>,
-		M extends HasIntegerKey<A, E>
+		M extends HasIntegerAttribute<A, E>
 	>
 	void test(M meta, A name) {
-		IntegerKey<A, E> ik1 = IntegerKey.get(meta, name);
+		IntegerAttribute<A, E> ik1 = IntegerAttribute.get(meta, name);
 		assertNotNull(ik1);
 		assertSame(IntegerType.TYPE, ik1.type());
-		IntegerKey<A, E> ik2 = IntegerKey.get(meta, name);
+		IntegerAttribute<A, E> ik2 = IntegerAttribute.get(meta, name);
 		assertSame(ik1, ik2);				
 	}	
 }

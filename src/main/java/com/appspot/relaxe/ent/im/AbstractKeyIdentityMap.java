@@ -29,7 +29,7 @@ import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.Reference;
-import com.appspot.relaxe.ent.value.AbstractPrimitiveKey;
+import com.appspot.relaxe.ent.value.AbstractValueAttribute;
 import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.AbstractPrimitiveType;
@@ -47,7 +47,7 @@ public class AbstractKeyIdentityMap<
 	// TODO :fix type:
 	P extends AbstractPrimitiveType<P>,
 	H extends AbstractPrimitiveHolder<V, P, H>,	
-	K extends AbstractPrimitiveKey<A, E, V, P, H, K>
+	K extends AbstractValueAttribute<A, E, V, P, H, K>
 >
 	extends AbstractIdentityMap<A, R, T, E, RH, M, V>
 {

@@ -1666,7 +1666,7 @@ public class SourceGenerator {
 
 		AttributeInfo ai = tym.getAttributeInfo(column.getDataType());
 		String n = getKeyName(ai.getAttributeType());
-		n = removeSuffix(n, "Key");
+		n = removeSuffix(n, "Attribute");
 
 		Class<?> ht = ai.getHolderType();
 
@@ -4550,7 +4550,7 @@ public class SourceGenerator {
 	private String getAccessorNameSuffix(Column column, TypeMapper typeMapper) {
 		AttributeInfo ai = typeMapper.getAttributeInfo(column.getDataType());
 		String n = getKeyName(ai.getAttributeType());
-		return removeSuffix(n, "Key");		
+		return removeSuffix(n, "Attribute");		
 	}
 
 }

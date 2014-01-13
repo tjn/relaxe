@@ -31,7 +31,7 @@ public class LongAccessor<
 	A extends AttributeName,
 	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasLong<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, Long, LongType, LongHolder, LongKey<A, E>> {
+	extends AbstractPrimitiveAccessor<A, E, Long, LongType, LongHolder, LongAttribute<A, E>> {
 
 	/**
 	 *
@@ -45,7 +45,7 @@ public class LongAccessor<
 	private LongAccessor() {
 	}
 
-	public LongAccessor(E target, LongKey<A, E> k) {
+	public LongAccessor(E target, LongAttribute<A, E> k) {
 		super(target, k);
 	}
 }

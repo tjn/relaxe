@@ -24,7 +24,7 @@ package com.appspot.relaxe.pg.pagila.types;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.ent.value.AbstractOtherKey;
+import com.appspot.relaxe.ent.value.AbstractOtherAttribute;
 import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.OtherType;
 import com.appspot.relaxe.types.PrimitiveType;
@@ -33,7 +33,7 @@ public class MPAARatingKey<
 	A extends AttributeName,
 	E extends HasMPAARating<A, E>	
 >
-	extends AbstractOtherKey<A, E, MPAARating, MPAARatingType, MPAARatingHolder, MPAARatingKey<A, E>>
+	extends AbstractOtherAttribute<A, E, MPAARating, MPAARatingType, MPAARatingHolder, MPAARatingKey<A, E>>
 {	
 	/**
 	 *
@@ -46,7 +46,7 @@ public class MPAARatingKey<
 	private MPAARatingKey() {
 	}
 	
-	private MPAARatingKey(HasMPAARatingKey<A, E> meta, A name) {
+	private MPAARatingKey(HasMPAARatingAttribute<A, E> meta, A name) {
 		super(name);
 		meta.register(this);
 	}
@@ -55,7 +55,7 @@ public class MPAARatingKey<
 		X extends AttributeName,
 		T extends HasMPAARating<X, T>
 	>
-	MPAARatingKey<X, T> get(HasMPAARatingKey<X, T> meta, X a) {
+	MPAARatingKey<X, T> get(HasMPAARatingAttribute<X, T> meta, X a) {
 		MPAARatingKey<X, T> k = meta.getMPAARatingKey(a);
 		
 		if (k == null) {

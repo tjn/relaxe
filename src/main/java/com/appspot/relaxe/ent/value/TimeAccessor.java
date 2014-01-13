@@ -33,7 +33,7 @@ public class TimeAccessor<
 	A extends AttributeName,	
 	E extends HasTime<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, Date, TimeType, TimeHolder, TimeKey<A, E>> {
+	extends AbstractPrimitiveAccessor<A, E, Date, TimeType, TimeHolder, TimeAttribute<A, E>> {
 
 	/**
 	 * 
@@ -47,7 +47,7 @@ public class TimeAccessor<
 	private TimeAccessor() {
 	}
 
-	public TimeAccessor(E target, TimeKey<A, E> k) {
+	public TimeAccessor(E target, TimeAttribute<A, E> k) {
 		super(target, k);
 	}
 }

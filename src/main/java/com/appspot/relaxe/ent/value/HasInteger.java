@@ -37,7 +37,7 @@ public interface HasInteger<
 	 * @return The value corresponding the key.
 	 * @throws NullPointerException If <code>key</code> is <code>null</code>.
 	 */
-	IntegerHolder getInteger(IntegerKey<A, E> key);
+	IntegerHolder getInteger(IntegerAttribute<A, E> key);
 	
 	/**
 	 * Sets the value by the key.
@@ -46,5 +46,5 @@ public interface HasInteger<
 	 * @param newValue May be null.
 	 * @throws NullPointerException If <code>key</code> is <code>null</code>.
 	 */
-	void setInteger(IntegerKey<A, E> key, IntegerHolder newValue);	
+	void setInteger(IntegerAttribute<A, E> key, IntegerHolder newValue);	
 }

@@ -27,7 +27,7 @@ import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.HasVarchar;
-import com.appspot.relaxe.ent.value.VarcharKey;
+import com.appspot.relaxe.ent.value.VarcharAttribute;
 import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.types.ReferenceType;
@@ -41,9 +41,9 @@ public class VarcharIdentityMap<
 	H extends ReferenceHolder<A, R, T, E, H, M>,
 	M extends EntityMetaData<A, R, T, E, H, ?, M>
 >
-	extends AbstractKeyIdentityMap<A, R, T, E, H, M, String, VarcharType, VarcharHolder, VarcharKey<A, E>>
+	extends AbstractKeyIdentityMap<A, R, T, E, H, M, String, VarcharType, VarcharHolder, VarcharAttribute<A, E>>
 {		
-	public VarcharIdentityMap(VarcharKey<A, E> key) {
+	public VarcharIdentityMap(VarcharAttribute<A, E> key) {
 		super(key);
 	}
 }

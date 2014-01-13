@@ -29,7 +29,7 @@ import java.util.List;
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
 import com.appspot.relaxe.ent.query.EntityQuerySortKey;
 import com.appspot.relaxe.ent.value.ValueAttribute;
-import com.appspot.relaxe.ent.value.StringKey;
+import com.appspot.relaxe.ent.value.StringAttribute;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.expr.op.Comparison;
@@ -116,14 +116,14 @@ public interface EntityQuery<
 		public <
 			P extends PrimitiveType<P>,
 			W extends PrimitiveHolder<String, P, W>,
-			K extends StringKey<A, E, P, W, K>
+			K extends StringAttribute<A, E, P, W, K>
 		>
 		void addPredicate(K key, String value);
 		
 		public <
 			P extends PrimitiveType<P>,
 			W extends PrimitiveHolder<String, P, W>,
-			K extends StringKey<A, E, P, W, K>
+			K extends StringAttribute<A, E, P, W, K>
 		>
 		void addPredicate(K key, Comparison.Op op, String value);			
 		
