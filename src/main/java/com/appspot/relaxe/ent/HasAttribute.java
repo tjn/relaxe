@@ -23,10 +23,10 @@
 package com.appspot.relaxe.ent;
 
 import com.appspot.relaxe.ent.value.Attribute;
-import com.appspot.relaxe.types.AbstractType;
+import com.appspot.relaxe.types.Type;
 
 public interface HasAttribute<			
-	V extends AbstractType<V>,
+	V extends Type<V>,
 	K extends Attribute<E, V, K>,
 	E extends HasAttribute<V, K, E>
 > {
