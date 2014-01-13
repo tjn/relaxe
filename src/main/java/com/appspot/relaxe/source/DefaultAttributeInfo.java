@@ -34,7 +34,7 @@ public class DefaultAttributeInfo
 	
 //	private Table table;
 //	private Column column;
-	private Class<?> attributeType;
+	private Class<?> valueType;
 	private Class<?> holderType;
 	private Class<?> keyType;
 	private Class<?> accessorType;
@@ -71,8 +71,8 @@ public class DefaultAttributeInfo
 //	}
 
 	@Override
-	public Class<?> getAttributeType() {
-		return this.attributeType;
+	public Class<?> getValueType() {
+		return this.valueType;
 	}
 
 //	private Column getColumn() {
@@ -109,8 +109,8 @@ public class DefaultAttributeInfo
 		return this.accessorType;
 	}
 
-	public void setAttributeType(Class<?> attributeType) {
-		this.attributeType = attributeType;
+	public void setValueType(Class<?> valueType) {
+		this.valueType = valueType;
 	}
 
 	public void setHolderType(Class<?> holderType) {

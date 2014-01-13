@@ -86,7 +86,7 @@ public class PagilaTypeMapper
 		{
 			DefaultAttributeInfo info = new DefaultAttributeInfo();
 			
-        	info.setAttributeType(String.class);
+        	info.setValueType(String.class);
         	info.setHolderType(PGTextHolder.class);
         	info.setKeyType(PGTextKey.class);
         	info.setAccessorType(PGTextAccessor.class);
@@ -100,7 +100,7 @@ public class PagilaTypeMapper
 		{
 			DefaultAttributeInfo info = new DefaultAttributeInfo();
 			
-        	info.setAttributeType(String.class);
+        	info.setValueType(String.class);
         	info.setHolderType(VarcharHolder.class);
         	info.setKeyType(VarcharKey.class);
         	info.setAccessorType(VarcharAccessor.class);
@@ -129,7 +129,7 @@ public class PagilaTypeMapper
 			DefaultAttributeInfo info = new DefaultAttributeInfo();
 						
 			info.setPrimitiveType(MPAARatingType.TYPE);
-			info.setAttributeType(MPAARating.class);		
+			info.setValueType(MPAARating.class);		
 			info.setHolderType(MPAARatingHolder.class);
 			info.setKeyType(MPAARatingKey.class);
 			info.setContainerType(HasMPAARating.class);
@@ -145,7 +145,7 @@ public class PagilaTypeMapper
 			DefaultAttributeInfo info = new DefaultAttributeInfo();
 			
 			info.setPrimitiveType(IntegerType.TYPE);
-			info.setAttributeType(Integer.class);		
+			info.setValueType(Integer.class);		
 			info.setHolderType(IntegerHolder.class);
 			info.setKeyType(IntegerKey.class);
 			info.setContainerType(HasInteger.class);
@@ -159,7 +159,7 @@ public class PagilaTypeMapper
 		{
 			DefaultAttributeInfo info = new DefaultAttributeInfo();
 			
-        	info.setAttributeType(Interval.YearMonth.class);
+        	info.setValueType(Interval.YearMonth.class);
         	info.setHolderType(IntervalHolder.YearMonth.class);
         	info.setKeyType(IntervalKey.YearMonth.class);
         	info.setAccessorType(IntervalAccessor.YearMonth.class);
@@ -175,7 +175,7 @@ public class PagilaTypeMapper
 		{
 			DefaultAttributeInfo info = new DefaultAttributeInfo();
 			
-        	info.setAttributeType(StringArray.class);
+        	info.setValueType(StringArray.class);
         	info.setHolderType(PGTextArrayHolder.class);
         	info.setKeyType(PGTextArrayKey.class);
         	info.setAccessorType(PGTextArrayAccessor.class);
@@ -189,7 +189,7 @@ public class PagilaTypeMapper
 		{
 			DefaultAttributeInfo info = new DefaultAttributeInfo();
 			
-        	info.setAttributeType(String.class);
+        	info.setValueType(String.class);
         	info.setHolderType(PGTextHolder.class);
         	info.setKeyType(PGTextKey.class);
         	info.setAccessorType(IntervalAccessor.YearMonth.class);

@@ -238,7 +238,7 @@ public class DefaultTypeMapper
         
         switch (type) {
 	        case Types.CHAR:
-	        	da.setAttributeType(String.class);
+	        	da.setValueType(String.class);
 	        	da.setHolderType(CharHolder.class);
 	        	da.setKeyType(CharKey.class);
 	        	da.setAccessorType(CharAccessor.class);
@@ -248,7 +248,7 @@ public class DefaultTypeMapper
 	        	break;
 	        case Types.VARCHAR:
 	        case Types.LONGVARCHAR:
-	        	da.setAttributeType(String.class);
+	        	da.setValueType(String.class);
 	        	da.setHolderType(VarcharHolder.class);
 	        	da.setKeyType(VarcharKey.class);
 	        	da.setAccessorType(VarcharAccessor.class);
@@ -262,7 +262,7 @@ public class DefaultTypeMapper
 	        case Types.SMALLINT:        	
 	        case Types.INTEGER:
 	        case Types.TINYINT:
-	        	da.setAttributeType(Integer.class);
+	        	da.setValueType(Integer.class);
 	        	da.setHolderType(IntegerHolder.class);
 	        	da.setKeyType(IntegerKey.class);
 	        	da.setAccessorType(IntegerAccessor.class);
@@ -272,7 +272,7 @@ public class DefaultTypeMapper
 	        	da.setContainerMetaType(HasIntegerKey.class);
 	            break;
 	        case Types.BIGINT:
-	        	da.setAttributeType(Long.class);
+	        	da.setValueType(Long.class);
 	        	da.setHolderType(LongHolder.class);
 	        	da.setKeyType(LongKey.class);
 	        	da.setAccessorType(LongAccessor.class);
@@ -289,7 +289,7 @@ public class DefaultTypeMapper
 	        		break;
 	        	}
 	        	
-	        	da.setAttributeType(Boolean.class);
+	        	da.setValueType(Boolean.class);
 	        	da.setHolderType(BooleanHolder.class);
 	        	da.setKeyType(BooleanKey.class);
 	        	da.setAccessorType(BooleanAccessor.class);
@@ -302,7 +302,7 @@ public class DefaultTypeMapper
 	        case Types.FLOAT:                
 	        	// The recommended Java mapping for the FLOAT type is as a Java double, fall-through
 	        case Types.DOUBLE:
-	        	da.setAttributeType(Double.class);
+	        	da.setValueType(Double.class);
 	        	da.setHolderType(DoubleHolder.class);
 	        	da.setKeyType(DoubleKey.class);
 	        	da.setAccessorType(DoubleAccessor.class);
@@ -312,7 +312,7 @@ public class DefaultTypeMapper
 	            break;
 	        case Types.DECIMAL:
 	        case Types.NUMERIC:
-	        	da.setAttributeType(Decimal.class);
+	        	da.setValueType(Decimal.class);
 	        	da.setHolderType(DecimalHolder.class);
 	        	da.setKeyType(DecimalKey.class);
 	        	da.setAccessorType(DecimalAccessor.class);
@@ -321,7 +321,7 @@ public class DefaultTypeMapper
 	        	da.setContainerMetaType(HasDecimalKey.class);
 	            break;        	
 	        case Types.DATE:            
-	        	da.setAttributeType(Date.class);
+	        	da.setValueType(Date.class);
 	        	da.setHolderType(DateHolder.class);
 	        	da.setKeyType(DateKey.class);
 	        	da.setAccessorType(DateAccessor.class);
@@ -331,7 +331,7 @@ public class DefaultTypeMapper
 	            break;
 	            
 	        case Types.TIME:            
-	        	da.setAttributeType(Date.class);
+	        	da.setValueType(Date.class);
 	        	da.setHolderType(TimeHolder.class);
 	        	da.setKeyType(TimeKey.class);
 	        	da.setAccessorType(TimeAccessor.class);
@@ -343,7 +343,7 @@ public class DefaultTypeMapper
 	        case Types.BINARY:
 	        case Types.VARBINARY:
 	        case Types.LONGVARBINARY:
-	        	da.setAttributeType(LongVarBinary.class);
+	        	da.setValueType(LongVarBinary.class);
 	        	da.setHolderType(LongVarBinaryHolder.class);
 	        	da.setKeyType(LongVarBinaryKey.class);
 	        	da.setAccessorType(LongVarBinaryAccessor.class);
@@ -353,7 +353,7 @@ public class DefaultTypeMapper
 	            break;
 	            
 	        case Types.TIMESTAMP:
-	        	da.setAttributeType(Date.class);
+	        	da.setValueType(Date.class);
 	        	da.setHolderType(TimestampHolder.class);
 	        	da.setKeyType(TimestampKey.class);
 	        	da.setAccessorType(TimestampAccessor.class);

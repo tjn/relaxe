@@ -424,8 +424,8 @@ public class SourceGenerator {
 
 		int count = 0;
 
-		if (info.getAttributeType() == null) {
-			errorList.add("no attribute type (value type)");
+		if (info.getValueType() == null) {
+			errorList.add("no value type");
 			count++;
 		}
 
@@ -3885,10 +3885,10 @@ public class SourceGenerator {
 				continue;
 			}
 
-			Class<?> at = a.getAttributeType();
+			Class<?> vt = a.getValueType();
 			Class<?> ht = a.getHolderType();
 
-			if (at != null && ht != null) {
+			if (vt != null && ht != null) {
 				String code = formatEntityAttributeAccessor(t, c, a, tam, tym, impl);
 				buf.append(code);
 			}
@@ -3899,17 +3899,17 @@ public class SourceGenerator {
 
 	private String formatEntityAttributeAccessor(Table table, Column c, AttributeInfo info, TableMapper tam, TypeMapper tym, boolean impl) {
 		// final String attributeName = attr(c);
-		Class<?> attributeType = info.getAttributeType();
+		Class<?> valueType = info.getValueType();
 		Class<?> holderType = info.getHolderType();
 		
 		String htname = holderType.getCanonicalName();
 
-		final String type = attributeType.getCanonicalName();
+		final String type = valueType.getCanonicalName();
 
 		StringBuilder nb = new StringBuilder();
 		final String n = name(c.getColumnName().getContent());
 
-		boolean b = attributeType.equals(Boolean.class);
+		boolean b = valueType.equals(Boolean.class);
 		
 		JavaType intf = tam.entityType(table, Part.INTERFACE);
 
@@ -3946,7 +3946,7 @@ public class SourceGenerator {
 			Method vom = null;
 			
 			try {
-				Method m = holderType.getMethod("valueOf", attributeType);
+				Method m = holderType.getMethod("valueOf", valueType);
 																
 				if (((m.getModifiers() & Modifier.STATIC) != Modifier.STATIC)) {
 					throw new Exception("valueOf -method is not static"); 
@@ -4030,10 +4030,10 @@ public class SourceGenerator {
 				continue;
 			}
 
-			Class<?> at = a.getAttributeType();
+			Class<?> vt = a.getValueType();
 			Class<?> ht = a.getHolderType();
 
-			if (at != null && ht != null) {
+			if (vt != null && ht != null) {
 				String code = formatContentAccessors(t, c, a, impl);
 				content.append(code);
 			}
@@ -4043,7 +4043,7 @@ public class SourceGenerator {
 	private String formatContentAccessors(Table table, Column c, AttributeInfo info,
 			boolean impl) {
 		// final String attributeName = attr(c);
-		Class<?> attributeType = info.getAttributeType();
+		Class<?> attributeType = info.getValueType();
 		Class<?> holderType = info.getHolderType();
 
 		final String type = attributeType.getCanonicalName();

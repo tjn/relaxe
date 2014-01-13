@@ -209,7 +209,7 @@ public class PagilaExportDDLTest
 			DefaultTypeMapper tym = new DefaultTypeMapper() {
 				{
 					DefaultAttributeInfo info = new DefaultAttributeInfo();
-			    	info.setAttributeType(StringArray.class);
+			    	info.setValueType(StringArray.class);
 		        	info.setHolderType(VarcharArrayHolder.class);
 		        	info.setKeyType(VarcharArrayKey.class);
 		        	info.setAccessorType(VarcharArrayAccessor.class);

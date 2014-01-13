@@ -30,7 +30,7 @@ public interface AttributeInfo {
 	Class<?> getHolderType();
 	Class<?> getKeyType();
 	Class<?> getAccessorType();
-	Class<?> getAttributeType();
+	Class<?> getValueType();
 	Class<?> getIdentityMapType();	
 	Class<?> getContainerType();
 	Class<?> getContainerMetaType();
