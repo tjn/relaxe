@@ -444,7 +444,7 @@ public class SourceGenerator {
 			count++;
 		}
 
-		if (info.getKeyType() == null) {
+		if (info.getAttributeType() == null) {
 			errorList.add("no key type");
 			count++;
 		}
@@ -1595,7 +1595,7 @@ public class SourceGenerator {
 			AttributeInfo ai = tym.getAttributeInfo(c.getDataType());
 
 			if (ai != null) {
-				Class<?> kt = ai.getKeyType();
+				Class<?> kt = ai.getAttributeType();
 
 				if (kt == null) {
 					continue;
@@ -1665,7 +1665,7 @@ public class SourceGenerator {
 		Column column = columns.get(0);
 
 		AttributeInfo ai = tym.getAttributeInfo(column.getDataType());
-		String n = getKeyName(ai.getKeyType());
+		String n = getKeyName(ai.getAttributeType());
 		n = removeSuffix(n, "Key");
 
 		Class<?> ht = ai.getHolderType();
@@ -1810,7 +1810,7 @@ public class SourceGenerator {
 			AttributeInfo ai = tym.getAttributeInfo(c.getDataType());
 
 			if (ai != null) {
-				Class<?> kt = ai.getKeyType();
+				Class<?> kt = ai.getAttributeType();
 
 				if (kt == null) {
 					continue;
@@ -2649,7 +2649,7 @@ public class SourceGenerator {
 				continue;
 			}
 
-			if (ai.getKeyType() == null) {
+			if (ai.getAttributeType() == null) {
 				logger().warn(
 						"no key type for column : "
 								+ c.getColumnName().getContent());
@@ -3193,7 +3193,7 @@ public class SourceGenerator {
 		}
 
 		Class<?> at = a.getAccessorType();
-		Class<?> kt = a.getKeyType();
+		Class<?> kt = a.getAttributeType();
 
 		if (kt == null || at == null) {
 			return "";
@@ -3283,7 +3283,7 @@ public class SourceGenerator {
 		}
 
 		Class<?> at = a.getAccessorType();
-		Class<?> kt = a.getKeyType();
+		Class<?> kt = a.getAttributeType();
 
 		if (kt == null || at == null) {
 			return "";
@@ -3361,7 +3361,7 @@ public class SourceGenerator {
 				continue;
 			}
 
-			Class<?> kt = a.getKeyType();
+			Class<?> kt = a.getAttributeType();
 
 			if (kt == null) {
 				logger().warn(
@@ -3432,7 +3432,7 @@ public class SourceGenerator {
 				continue;
 			}
 
-			Class<?> k = a.getKeyType();
+			Class<?> k = a.getAttributeType();
 
 			if (k == null) {
 				logger().warn(
@@ -3796,7 +3796,7 @@ public class SourceGenerator {
 			return "";
 		}
 
-		Class<?> kc = a.getKeyType();
+		Class<?> kc = a.getAttributeType();
 
 		if (kc == null) {
 			String msg = columnDescription("no attribute-info key type for ", t, c);
@@ -4179,7 +4179,7 @@ public class SourceGenerator {
 				continue;
 			}
 
-			if (ai.getKeyType() == null) {
+			if (ai.getAttributeType() == null) {
 				logger().warn(
 						"no key type for column : "
 								+ c.getColumnName().getContent());
@@ -4549,7 +4549,7 @@ public class SourceGenerator {
 	
 	private String getAccessorNameSuffix(Column column, TypeMapper typeMapper) {
 		AttributeInfo ai = typeMapper.getAttributeInfo(column.getDataType());
-		String n = getKeyName(ai.getKeyType());
+		String n = getKeyName(ai.getAttributeType());
 		return removeSuffix(n, "Key");		
 	}
 

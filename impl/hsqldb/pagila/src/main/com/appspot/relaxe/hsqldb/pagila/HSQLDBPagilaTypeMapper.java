@@ -42,7 +42,7 @@ public class HSQLDBPagilaTypeMapper
 		DefaultAttributeInfo info = new DefaultAttributeInfo();
     	info.setValueType(StringArray.class);
     	info.setHolderType(VarcharArrayHolder.class);
-    	info.setKeyType(VarcharArrayKey.class);
+    	info.setAttributeType(VarcharArrayKey.class);
     	info.setAccessorType(VarcharArrayAccessor.class);
     	info.setPrimitiveType(VarcharArrayType.TYPE);
     	info.setContainerType(HasVarcharArray.class);

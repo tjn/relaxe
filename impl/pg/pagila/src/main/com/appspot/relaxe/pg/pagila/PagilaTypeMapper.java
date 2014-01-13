@@ -88,7 +88,7 @@ public class PagilaTypeMapper
 			
         	info.setValueType(String.class);
         	info.setHolderType(PGTextHolder.class);
-        	info.setKeyType(PGTextKey.class);
+        	info.setAttributeType(PGTextKey.class);
         	info.setAccessorType(PGTextAccessor.class);
         	info.setPrimitiveType(PGTextType.TYPE);
         	info.setContainerType(HasPGText.class);
@@ -102,7 +102,7 @@ public class PagilaTypeMapper
 			
         	info.setValueType(String.class);
         	info.setHolderType(VarcharHolder.class);
-        	info.setKeyType(VarcharKey.class);
+        	info.setAttributeType(VarcharKey.class);
         	info.setAccessorType(VarcharAccessor.class);
         	info.setPrimitiveType(VarcharType.TYPE);
         	info.setContainerType(HasVarchar.class);
@@ -131,7 +131,7 @@ public class PagilaTypeMapper
 			info.setPrimitiveType(MPAARatingType.TYPE);
 			info.setValueType(MPAARating.class);		
 			info.setHolderType(MPAARatingHolder.class);
-			info.setKeyType(MPAARatingKey.class);
+			info.setAttributeType(MPAARatingKey.class);
 			info.setContainerType(HasMPAARating.class);
 			info.setContainerMetaType(HasMPAARatingKey.class);
 			
@@ -147,7 +147,7 @@ public class PagilaTypeMapper
 			info.setPrimitiveType(IntegerType.TYPE);
 			info.setValueType(Integer.class);		
 			info.setHolderType(IntegerHolder.class);
-			info.setKeyType(IntegerKey.class);
+			info.setAttributeType(IntegerKey.class);
 			info.setContainerType(HasInteger.class);
 			info.setContainerMetaType(HasIntegerKey.class);			
 			info.setIdentityMapType(IntegerIdentityMap.class);		
@@ -161,7 +161,7 @@ public class PagilaTypeMapper
 			
         	info.setValueType(Interval.YearMonth.class);
         	info.setHolderType(IntervalHolder.YearMonth.class);
-        	info.setKeyType(IntervalKey.YearMonth.class);
+        	info.setAttributeType(IntervalKey.YearMonth.class);
         	info.setAccessorType(IntervalAccessor.YearMonth.class);
         	info.setPrimitiveType(IntervalType.YearMonth.TYPE);
         	info.setContainerType(HasInterval.YearMonth.class);
@@ -177,7 +177,7 @@ public class PagilaTypeMapper
 			
         	info.setValueType(StringArray.class);
         	info.setHolderType(PGTextArrayHolder.class);
-        	info.setKeyType(PGTextArrayKey.class);
+        	info.setAttributeType(PGTextArrayKey.class);
         	info.setAccessorType(PGTextArrayAccessor.class);
         	info.setPrimitiveType(PGTextArrayType.TYPE);
         	info.setContainerType(HasPGTextArray.class);
@@ -191,7 +191,7 @@ public class PagilaTypeMapper
 			
         	info.setValueType(String.class);
         	info.setHolderType(PGTextHolder.class);
-        	info.setKeyType(PGTextKey.class);
+        	info.setAttributeType(PGTextKey.class);
         	info.setAccessorType(IntervalAccessor.YearMonth.class);
         	info.setPrimitiveType(IntervalType.YearMonth.TYPE);
         	info.setContainerType(HasInterval.YearMonth.class);

@@ -240,7 +240,7 @@ public class DefaultTypeMapper
 	        case Types.CHAR:
 	        	da.setValueType(String.class);
 	        	da.setHolderType(CharHolder.class);
-	        	da.setKeyType(CharKey.class);
+	        	da.setAttributeType(CharKey.class);
 	        	da.setAccessorType(CharAccessor.class);
 	        	da.setPrimitiveType(CharType.TYPE);        	
 	        	da.setContainerType(HasChar.class);
@@ -250,7 +250,7 @@ public class DefaultTypeMapper
 	        case Types.LONGVARCHAR:
 	        	da.setValueType(String.class);
 	        	da.setHolderType(VarcharHolder.class);
-	        	da.setKeyType(VarcharKey.class);
+	        	da.setAttributeType(VarcharKey.class);
 	        	da.setAccessorType(VarcharAccessor.class);
 	        	da.setPrimitiveType(VarcharType.TYPE);        	
 	        	da.setIdentityMapType(VarcharIdentityMap.class);
@@ -264,7 +264,7 @@ public class DefaultTypeMapper
 	        case Types.TINYINT:
 	        	da.setValueType(Integer.class);
 	        	da.setHolderType(IntegerHolder.class);
-	        	da.setKeyType(IntegerKey.class);
+	        	da.setAttributeType(IntegerKey.class);
 	        	da.setAccessorType(IntegerAccessor.class);
 	        	da.setPrimitiveType(IntegerType.TYPE);
 	        	da.setIdentityMapType(IntegerIdentityMap.class);
@@ -274,7 +274,7 @@ public class DefaultTypeMapper
 	        case Types.BIGINT:
 	        	da.setValueType(Long.class);
 	        	da.setHolderType(LongHolder.class);
-	        	da.setKeyType(LongKey.class);
+	        	da.setAttributeType(LongKey.class);
 	        	da.setAccessorType(LongAccessor.class);
 	        	da.setPrimitiveType(LongType.TYPE);
 	        	da.setIdentityMapType(LongIdentityMap.class);
@@ -291,7 +291,7 @@ public class DefaultTypeMapper
 	        	
 	        	da.setValueType(Boolean.class);
 	        	da.setHolderType(BooleanHolder.class);
-	        	da.setKeyType(BooleanKey.class);
+	        	da.setAttributeType(BooleanKey.class);
 	        	da.setAccessorType(BooleanAccessor.class);
 	        	da.setPrimitiveType(BooleanType.TYPE);	        	
 	        	da.setContainerType(HasBoolean.class);
@@ -304,7 +304,7 @@ public class DefaultTypeMapper
 	        case Types.DOUBLE:
 	        	da.setValueType(Double.class);
 	        	da.setHolderType(DoubleHolder.class);
-	        	da.setKeyType(DoubleKey.class);
+	        	da.setAttributeType(DoubleKey.class);
 	        	da.setAccessorType(DoubleAccessor.class);
 	        	da.setPrimitiveType(DoubleType.TYPE);
 	        	da.setContainerType(HasDouble.class);
@@ -314,7 +314,7 @@ public class DefaultTypeMapper
 	        case Types.NUMERIC:
 	        	da.setValueType(Decimal.class);
 	        	da.setHolderType(DecimalHolder.class);
-	        	da.setKeyType(DecimalKey.class);
+	        	da.setAttributeType(DecimalKey.class);
 	        	da.setAccessorType(DecimalAccessor.class);
 	        	da.setPrimitiveType(DecimalType.TYPE);
 	        	da.setContainerType(HasDecimal.class);
@@ -323,7 +323,7 @@ public class DefaultTypeMapper
 	        case Types.DATE:            
 	        	da.setValueType(Date.class);
 	        	da.setHolderType(DateHolder.class);
-	        	da.setKeyType(DateKey.class);
+	        	da.setAttributeType(DateKey.class);
 	        	da.setAccessorType(DateAccessor.class);
 	        	da.setPrimitiveType(DateType.TYPE);
 	        	da.setContainerType(HasDate.class);
@@ -333,7 +333,7 @@ public class DefaultTypeMapper
 	        case Types.TIME:            
 	        	da.setValueType(Date.class);
 	        	da.setHolderType(TimeHolder.class);
-	        	da.setKeyType(TimeKey.class);
+	        	da.setAttributeType(TimeKey.class);
 	        	da.setAccessorType(TimeAccessor.class);
 	        	da.setPrimitiveType(TimeType.TYPE);
 	        	da.setContainerType(HasTime.class);
@@ -345,7 +345,7 @@ public class DefaultTypeMapper
 	        case Types.LONGVARBINARY:
 	        	da.setValueType(LongVarBinary.class);
 	        	da.setHolderType(LongVarBinaryHolder.class);
-	        	da.setKeyType(LongVarBinaryKey.class);
+	        	da.setAttributeType(LongVarBinaryKey.class);
 	        	da.setAccessorType(LongVarBinaryAccessor.class);
 	        	da.setPrimitiveType(LongVarBinaryType.TYPE);
 	        	da.setContainerType(HasLongVarBinary.class);
@@ -355,7 +355,7 @@ public class DefaultTypeMapper
 	        case Types.TIMESTAMP:
 	        	da.setValueType(Date.class);
 	        	da.setHolderType(TimestampHolder.class);
-	        	da.setKeyType(TimestampKey.class);
+	        	da.setAttributeType(TimestampKey.class);
 	        	da.setAccessorType(TimestampAccessor.class);
 	        	da.setPrimitiveType(TimestampType.TYPE);
 	        	da.setContainerType(HasTimestamp.class);

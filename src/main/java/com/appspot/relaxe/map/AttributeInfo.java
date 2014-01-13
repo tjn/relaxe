@@ -28,7 +28,7 @@ public interface AttributeInfo {
 	
 //	DataType getColumnType();
 	Class<?> getHolderType();
-	Class<?> getKeyType();
+	Class<?> getAttributeType();
 	Class<?> getAccessorType();
 	Class<?> getValueType();
 	Class<?> getIdentityMapType();	
