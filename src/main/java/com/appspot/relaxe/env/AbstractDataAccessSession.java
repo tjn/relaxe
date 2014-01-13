@@ -54,13 +54,13 @@ import com.appspot.relaxe.expr.SelectStatement;
 import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.ddl.SQLSchemaStatement;
 import com.appspot.relaxe.query.QueryException;
-import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.service.DataAccessException;
 import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.EntitySession;
 import com.appspot.relaxe.service.QuerySession;
 import com.appspot.relaxe.service.StatementSession;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 
 public abstract class AbstractDataAccessSession<I extends Implementation<I>>

@@ -23,7 +23,7 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.LongHolder;
+import com.appspot.relaxe.value.LongHolder;
 
 public interface HasLong<
 	A extends AttributeName,

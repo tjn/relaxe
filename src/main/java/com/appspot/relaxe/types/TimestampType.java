@@ -23,7 +23,7 @@
 package com.appspot.relaxe.types;
 
 public class TimestampType
-	extends AbstractPrimitiveType<TimestampType> {
+	extends AbstractValueType<TimestampType> {
 	
 	/**
 	 * 
@@ -36,7 +36,7 @@ public class TimestampType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.TIMESTAMP;
+		return ValueType.TIMESTAMP;
 	}
 	
 	@Override

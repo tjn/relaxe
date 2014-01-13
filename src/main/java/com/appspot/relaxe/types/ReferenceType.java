@@ -27,7 +27,7 @@ import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.Reference;
-import com.appspot.relaxe.rpc.ReferenceHolder;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 public abstract class ReferenceType<
 	A extends AttributeName,

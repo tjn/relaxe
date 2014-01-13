@@ -33,16 +33,16 @@ import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.model.ChangeListener;
 import com.appspot.relaxe.model.DefaultMutableValueModel;
 import com.appspot.relaxe.model.MutableValueModel;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.AbstractPrimitiveHolder;
 
 public abstract class DefaultAttributeModelMap<
 	A extends AttributeName,
 	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
 	E extends Entity<A, ?, T, E, ?, ?, ?>,
 	V extends Serializable,
-	P extends AbstractPrimitiveType<P>,
+	P extends AbstractValueType<P>,
 	H extends AbstractPrimitiveHolder<V, P, H>,
 	D extends AttributeModelMap<A, V, P, H, T, E, D>	
 	>

@@ -33,9 +33,9 @@ import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.appspot.relaxe.rpc.Interval;
-import com.appspot.relaxe.rpc.Interval.DayTime;
-import com.appspot.relaxe.rpc.Interval.YearMonth;
+import com.appspot.relaxe.value.Interval;
+import com.appspot.relaxe.value.Interval.DayTime;
+import com.appspot.relaxe.value.Interval.YearMonth;
 
 
 public class IntervalTest extends TestCase {

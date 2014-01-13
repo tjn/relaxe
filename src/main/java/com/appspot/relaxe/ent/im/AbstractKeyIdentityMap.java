@@ -30,10 +30,10 @@ import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.AbstractValueAttribute;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
-import com.appspot.relaxe.rpc.ReferenceHolder;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 
 public class AbstractKeyIdentityMap<
@@ -45,7 +45,7 @@ public class AbstractKeyIdentityMap<
 	M extends EntityMetaData<A, R, T, E, RH, ?, M>,
 	V extends Serializable,
 	// TODO :fix type:
-	P extends AbstractPrimitiveType<P>,
+	P extends AbstractValueType<P>,
 	H extends AbstractPrimitiveHolder<V, P, H>,	
 	K extends AbstractValueAttribute<A, E, V, P, H, K>
 >

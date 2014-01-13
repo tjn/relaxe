@@ -28,10 +28,10 @@ import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.HasInteger;
 import com.appspot.relaxe.ent.value.IntegerAttribute;
-import com.appspot.relaxe.rpc.IntegerHolder;
-import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.IntegerHolder;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 public class IntegerIdentityMap<
 	A extends AttributeName,

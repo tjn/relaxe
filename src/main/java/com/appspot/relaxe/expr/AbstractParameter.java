@@ -28,8 +28,8 @@ import java.util.List;
 
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 /**
@@ -39,8 +39,8 @@ import com.appspot.relaxe.types.PrimitiveType;
  */
 public abstract class AbstractParameter<
 	V extends Serializable,
-	T extends PrimitiveType<T>, 
-	H extends PrimitiveHolder<V, T, H>
+	T extends ValueType<T>, 
+	H extends ValueHolder<V, T, H>
 >
 	extends SimpleElement
 	implements Parameter<V, T, H>, ValueExpression, SelectListElement, Token {

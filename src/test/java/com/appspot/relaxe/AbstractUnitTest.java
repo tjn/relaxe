@@ -54,12 +54,12 @@ import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.log.DefaultLogger;
-import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.service.DataAccessContext;
 import com.appspot.relaxe.service.DataAccessException;
 import com.appspot.relaxe.service.DataAccessSession;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 
 public abstract class AbstractUnitTest<I extends Implementation<I>>
@@ -257,7 +257,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 			logger().debug("ordinal   : " + i);
 			logger().debug("label     : " + label);
 			logger().debug("name      : " + name);
-			logger().debug("type      : " + type + " (" + AbstractPrimitiveType.getSQLTypeName(type) + ")");
+			logger().debug("type      : " + type + " (" + AbstractValueType.getSQLTypeName(type) + ")");
 			logger().debug("typeName  : " + typeName);
 			logger().debug("className : " + className);
 			logger().debug("content   : " + content);
@@ -267,7 +267,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 			
 			if (o != null && o instanceof java.sql.Array) {
 				Array a = (Array) o;
-				logger().debug("arrayBaseType   : " + a.getBaseType() + " (" + AbstractPrimitiveType.getSQLTypeName(a.getBaseType()) + ")");
+				logger().debug("arrayBaseType   : " + a.getBaseType() + " (" + AbstractValueType.getSQLTypeName(a.getBaseType()) + ")");
 				logger().debug("arrayBaseTypeName  : " + a.getBaseTypeName());
 			}
 			
@@ -310,7 +310,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 			logger().debug("ordinal   : " + i);
 			logger().debug("label     : " + label);
 			logger().debug("name      : " + name);
-			logger().debug("type      : " + type + " (" + AbstractPrimitiveType.getSQLTypeName(type) + ")");
+			logger().debug("type      : " + type + " (" + AbstractValueType.getSQLTypeName(type) + ")");
 			logger().debug("typeName  : " + typeName);
 			logger().debug("className : " + className);
 			

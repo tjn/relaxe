@@ -4,13 +4,13 @@ enum {{attribute-type}} implements com.appspot.relaxe.ent.AttributeName {
     ;
     
     private String identifier;
-    private PrimitiveType<?> type;
+    private com.appspot.relaxe.types.ValueType<?> type;
         
-    {{attribute-type}}(PrimitiveType<?> type) {
+    {{attribute-type}}(com.appspot.relaxe.types.ValueType<?> type) {
     	this.type = type;
     }
     
-    {{attribute-type}}(String identifier, PrimitiveType<?> type) {
+    {{attribute-type}}(String identifier, com.appspot.relaxe.types.ValueType<?> type) {
     	this(type);
         this.identifier = identifier;
     }    
@@ -20,7 +20,7 @@ enum {{attribute-type}} implements com.appspot.relaxe.ent.AttributeName {
         return (identifier == null) ? name() : identifier;
     }
 
-    public PrimitiveType<?> type() {
+    public com.appspot.relaxe.types.ValueType<?> type() {
     	return this.type;
     }    
 }    

@@ -23,14 +23,14 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.ValueHolder;
 
 public abstract class StringAttribute<
 	A extends AttributeName,
 	E extends HasString<A, E>,	
-	P extends PrimitiveType<P>,
-	H extends PrimitiveHolder<String, P, H>,
+	P extends ValueType<P>,
+	H extends ValueHolder<String, P, H>,
 	K extends ValueAttribute<A, E, String, P, H, K>
 	>
 	extends AbstractValueAttribute<A, E, String, P, H, K>

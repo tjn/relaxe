@@ -23,8 +23,8 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.CharHolder;
 import com.appspot.relaxe.types.CharType;
+import com.appspot.relaxe.value.CharHolder;
 
 public class CharAccessor<
 	A extends AttributeName,	

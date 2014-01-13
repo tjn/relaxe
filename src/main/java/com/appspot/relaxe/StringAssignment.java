@@ -26,10 +26,10 @@ package com.appspot.relaxe;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.value.AbstractPrimitiveHolder;
 
-public class StringAssignment<T extends AbstractPrimitiveType<T>, H extends AbstractPrimitiveHolder<String, T, H>>	
+public class StringAssignment<T extends AbstractValueType<T>, H extends AbstractPrimitiveHolder<String, T, H>>	
 	extends AbstractParameterAssignment<String, T, H> {
 
 	public StringAssignment(H value) {

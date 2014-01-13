@@ -23,7 +23,7 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.IntegerHolder;
+import com.appspot.relaxe.value.IntegerHolder;
 
 public interface HasInteger<
 	A extends AttributeName,

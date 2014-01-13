@@ -10,7 +10,7 @@ import com.appspot.relaxe.ent.value.AbstractEntityKey;
 import com.appspot.relaxe.expr.TableReference;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.types.*;
-import com.appspot.relaxe.rpc.ReferenceHolder;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 public interface {{table-interface}}
     extends com.appspot.relaxe.ent.Entity<

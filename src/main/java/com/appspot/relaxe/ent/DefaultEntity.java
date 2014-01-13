@@ -28,11 +28,11 @@ import java.util.Set;
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.ent.value.StringAttribute;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.rpc.ReferenceHolder;
-import com.appspot.relaxe.rpc.StringHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
+import com.appspot.relaxe.value.StringHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 /**
@@ -78,7 +78,7 @@ public abstract class DefaultEntity<
 	
 	@Override
 	public <
-		P extends PrimitiveType<P>,
+		P extends ValueType<P>,
 		SH extends StringHolder<P, SH>,
 		K extends StringAttribute<A, E, P, SH, K>
 	>
@@ -92,21 +92,21 @@ public abstract class DefaultEntity<
 	@Override
 	public <
 		S extends Serializable, 
-		P extends com.appspot.relaxe.types.PrimitiveType<P>, 
-		PH extends com.appspot.relaxe.rpc.PrimitiveHolder<S, P, PH>, 
+		P extends com.appspot.relaxe.types.ValueType<P>, 
+		PH extends com.appspot.relaxe.value.ValueHolder<S, P, PH>, 
 		K extends com.appspot.relaxe.ent.value.ValueAttribute<A, E, S, P, PH, K>
 	> 
 	void set(K k, PH newValue) throws EntityRuntimeException {
 		k.set(self(), newValue);		
 	}
 
-	public PrimitiveHolder<?, ?, ?> get(A attribute) throws EntityRuntimeException {
+	public ValueHolder<?, ?, ?> get(A attribute) throws EntityRuntimeException {
 		return getMetaData().getKey(attribute).get(self());
 	}
 
 	
 	@Override
-	public com.appspot.relaxe.rpc.PrimitiveHolder<?,?,?> value(A attribute) throws EntityRuntimeException {
+	public com.appspot.relaxe.value.ValueHolder<?,?,?> value(A attribute) throws EntityRuntimeException {
 		ValueAttribute<A, E, ?, ?, ?, ?> key = getMetaData().getKey(attribute);
 		return key.get(self());
 	}
@@ -114,8 +114,8 @@ public abstract class DefaultEntity<
 	@Override
 	public <
 		S extends Serializable, 
-		P extends com.appspot.relaxe.types.PrimitiveType<P>, 
-		PH extends com.appspot.relaxe.rpc.PrimitiveHolder<S, P, PH>, 
+		P extends com.appspot.relaxe.types.ValueType<P>, 
+		PH extends com.appspot.relaxe.value.ValueHolder<S, P, PH>, 
 		K extends com.appspot.relaxe.ent.value.ValueAttribute<A, E, S, P, PH, K>
 	> 
 	PH get(K k) throws EntityRuntimeException {
@@ -184,8 +184,8 @@ public abstract class DefaultEntity<
 	@Override
 	public <		
 		VV extends Serializable,
-		VT extends PrimitiveType<VT>,
-		VH extends PrimitiveHolder<VV, VT, VH>,	
+		VT extends ValueType<VT>,
+		VH extends ValueHolder<VV, VT, VH>,	
 		K extends ValueAttribute<A, E, VV, VT, VH, K>
 	> 
 	void remove(K key) {		
@@ -194,8 +194,8 @@ public abstract class DefaultEntity<
 	
 	public <		
 		VV extends Serializable,
-		VT extends PrimitiveType<VT>,
-		VH extends PrimitiveHolder<VV, VT, VH>,	
+		VT extends ValueType<VT>,
+		VH extends ValueHolder<VV, VT, VH>,	
 		K extends ValueAttribute<A, E, VV, VT, VH, K>
 	> 
 	void reset(K key) {
@@ -206,8 +206,8 @@ public abstract class DefaultEntity<
 	@Override
 	public <
 		VV extends Serializable, 
-		VT extends com.appspot.relaxe.types.PrimitiveType<VT>, 
-		VH extends com.appspot.relaxe.rpc.PrimitiveHolder<VV, VT, VH>, 
+		VT extends com.appspot.relaxe.types.ValueType<VT>, 
+		VH extends com.appspot.relaxe.value.ValueHolder<VV, VT, VH>, 
 		K extends ValueAttribute<A, E, VV, VT, VH, K>
 	> 
 	boolean has(K key) {		
@@ -219,7 +219,7 @@ public abstract class DefaultEntity<
 	
 	
 	@Override
-	public com.appspot.relaxe.rpc.ReferenceHolder<?,?,?,?,?,?> ref(R ref) {
+	public com.appspot.relaxe.value.ReferenceHolder<?,?,?,?,?,?> ref(R ref) {
 		EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k = getMetaData().getEntityKey(ref);
 		ReferenceHolder<?, ?, ?, ?, ?, ?> rh = getRef(k.self());
 		return rh;

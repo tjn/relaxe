@@ -28,8 +28,8 @@ package com.appspot.relaxe;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.DoubleHolder;
 import com.appspot.relaxe.types.DoubleType;
+import com.appspot.relaxe.value.DoubleHolder;
 
 
 public class DoubleExtractor

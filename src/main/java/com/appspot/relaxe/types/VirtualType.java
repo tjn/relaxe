@@ -22,8 +22,8 @@
  */
 package com.appspot.relaxe.types;
 
-public abstract class VirtualType<T extends AbstractPrimitiveType<T>, P extends AbstractPrimitiveType<P>, V extends AbstractPrimitiveType<V>>
-	extends AbstractPrimitiveType<T> {
+public abstract class VirtualType<T extends AbstractValueType<T>, P extends AbstractValueType<P>, V extends AbstractValueType<V>>
+	extends AbstractValueType<T> {
 		
 	/**
 	 * 

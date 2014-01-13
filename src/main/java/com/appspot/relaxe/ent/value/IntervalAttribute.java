@@ -25,17 +25,17 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.Interval;
-import com.appspot.relaxe.rpc.IntervalHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.IntervalType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.value.Interval;
+import com.appspot.relaxe.value.IntervalHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 public abstract class IntervalAttribute<
 	A extends AttributeName,	
 	E,
 	V extends Interval<V>, 
-	P extends AbstractPrimitiveType<P>, 
+	P extends AbstractValueType<P>, 
 	H extends IntervalHolder<V, P, H>, 
 	K extends IntervalAttribute<A, E, V, P, H, K>
 	>
@@ -97,18 +97,18 @@ public abstract class IntervalAttribute<
 		}		
 
 		@Override
-		public com.appspot.relaxe.rpc.IntervalHolder.YearMonth get(E e) {	
+		public com.appspot.relaxe.value.IntervalHolder.YearMonth get(E e) {	
 			return e.getInterval(this);
 		}
 
 		@Override
-		public com.appspot.relaxe.rpc.IntervalHolder.YearMonth newHolder(
-				com.appspot.relaxe.rpc.Interval.YearMonth newValue) {
+		public com.appspot.relaxe.value.IntervalHolder.YearMonth newHolder(
+				com.appspot.relaxe.value.Interval.YearMonth newValue) {
 			return new IntervalHolder.YearMonth(newValue);
 		}
 
 		@Override
-		public void set(E e, com.appspot.relaxe.rpc.IntervalHolder.YearMonth newValue) 
+		public void set(E e, com.appspot.relaxe.value.IntervalHolder.YearMonth newValue) 
 			throws EntityRuntimeException {
 			e.setInterval(this, newValue);	
 		}
@@ -132,7 +132,7 @@ public abstract class IntervalAttribute<
 		
 		
 		@Override
-		public com.appspot.relaxe.rpc.IntervalHolder.YearMonth as(PrimitiveHolder<?, ?, ?> holder) {
+		public com.appspot.relaxe.value.IntervalHolder.YearMonth as(ValueHolder<?, ?, ?> holder) {
 			return holder.asYearMonthIntervalHolder();
 		}
 	}
@@ -171,17 +171,17 @@ public abstract class IntervalAttribute<
 		}
 
 		@Override
-		public com.appspot.relaxe.rpc.IntervalHolder.DayTime get(E e) {
+		public com.appspot.relaxe.value.IntervalHolder.DayTime get(E e) {
 			return e.getInterval(this);
 		}
 
 		@Override
-		public com.appspot.relaxe.rpc.IntervalHolder.DayTime newHolder(com.appspot.relaxe.rpc.Interval.DayTime newValue) {
+		public com.appspot.relaxe.value.IntervalHolder.DayTime newHolder(com.appspot.relaxe.value.Interval.DayTime newValue) {
 			return new IntervalHolder.DayTime(newValue);
 		}
 
 		@Override
-		public void set(E e, com.appspot.relaxe.rpc.IntervalHolder.DayTime newValue) 
+		public void set(E e, com.appspot.relaxe.value.IntervalHolder.DayTime newValue) 
 			throws EntityRuntimeException {
 			e.setInterval(this, newValue);			
 		}
@@ -197,7 +197,7 @@ public abstract class IntervalAttribute<
 		}
 		
 		@Override
-		public com.appspot.relaxe.rpc.IntervalHolder.DayTime as(PrimitiveHolder<?, ?, ?> holder) {
+		public com.appspot.relaxe.value.IntervalHolder.DayTime as(ValueHolder<?, ?, ?> holder) {
 			return IntervalHolder.DayTime.of(holder);
 		}
 	}

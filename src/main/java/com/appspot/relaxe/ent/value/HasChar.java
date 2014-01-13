@@ -23,7 +23,7 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.CharHolder;
+import com.appspot.relaxe.value.CharHolder;
 
 public interface HasChar<
 	A extends AttributeName,

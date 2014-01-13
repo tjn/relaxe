@@ -50,9 +50,9 @@ import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ColumnMap;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.Table;
-import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.tools.CatalogTool;
 import com.appspot.relaxe.types.VarcharType;
+import com.appspot.relaxe.value.VarcharHolder;
 
 
 class CSVInsertTask

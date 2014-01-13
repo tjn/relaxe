@@ -24,7 +24,7 @@ package com.appspot.relaxe.pg.pagila;
 
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
-import com.appspot.relaxe.rpc.IntegerHolder;
+import com.appspot.relaxe.value.IntegerHolder;
 
 public class PagilaEntityAttributeTest
 	extends AbstractPagilaTestCase {

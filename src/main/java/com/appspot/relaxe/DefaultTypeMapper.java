@@ -78,18 +78,6 @@ import com.appspot.relaxe.ent.value.VarcharAttribute;
 import com.appspot.relaxe.map.AttributeInfo;
 import com.appspot.relaxe.map.TypeMapper;
 import com.appspot.relaxe.meta.DataType;
-import com.appspot.relaxe.rpc.BooleanHolder;
-import com.appspot.relaxe.rpc.CharHolder;
-import com.appspot.relaxe.rpc.DateHolder;
-import com.appspot.relaxe.rpc.Decimal;
-import com.appspot.relaxe.rpc.DecimalHolder;
-import com.appspot.relaxe.rpc.DoubleHolder;
-import com.appspot.relaxe.rpc.IntegerHolder;
-import com.appspot.relaxe.rpc.LongHolder;
-import com.appspot.relaxe.rpc.LongVarBinaryHolder;
-import com.appspot.relaxe.rpc.TimeHolder;
-import com.appspot.relaxe.rpc.TimestampHolder;
-import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.source.DefaultAttributeInfo;
 import com.appspot.relaxe.types.ArrayType;
 import com.appspot.relaxe.types.BooleanType;
@@ -102,10 +90,22 @@ import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.LongType;
 import com.appspot.relaxe.types.LongVarBinaryType;
 import com.appspot.relaxe.types.OtherType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.TimeType;
 import com.appspot.relaxe.types.TimestampType;
 import com.appspot.relaxe.types.VarcharType;
+import com.appspot.relaxe.value.BooleanHolder;
+import com.appspot.relaxe.value.CharHolder;
+import com.appspot.relaxe.value.DateHolder;
+import com.appspot.relaxe.value.Decimal;
+import com.appspot.relaxe.value.DecimalHolder;
+import com.appspot.relaxe.value.DoubleHolder;
+import com.appspot.relaxe.value.IntegerHolder;
+import com.appspot.relaxe.value.LongHolder;
+import com.appspot.relaxe.value.LongVarBinaryHolder;
+import com.appspot.relaxe.value.TimeHolder;
+import com.appspot.relaxe.value.TimestampHolder;
+import com.appspot.relaxe.value.VarcharHolder;
 
 
 
@@ -175,7 +175,7 @@ public class DefaultTypeMapper
 	
 	private Map<Key, AttributeInfo> attributeTypeMap;
 	
-	protected void register(PrimitiveType<?> type, AttributeInfo info) {
+	protected void register(ValueType<?> type, AttributeInfo info) {
 		register(type.getSqlType(), type.getName(), info);		
 	}
 	

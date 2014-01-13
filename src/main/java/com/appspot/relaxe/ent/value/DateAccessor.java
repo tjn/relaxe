@@ -25,8 +25,8 @@ package com.appspot.relaxe.ent.value;
 import java.util.Date;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.DateHolder;
 import com.appspot.relaxe.types.DateType;
+import com.appspot.relaxe.value.DateHolder;
 
 
 public class DateAccessor<

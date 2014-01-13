@@ -23,62 +23,62 @@
 package com.appspot.relaxe;
 
 import com.appspot.relaxe.meta.DataType;
-import com.appspot.relaxe.rpc.CharHolder;
-import com.appspot.relaxe.rpc.DateHolder;
-import com.appspot.relaxe.rpc.DecimalHolder;
-import com.appspot.relaxe.rpc.IntegerHolder;
-import com.appspot.relaxe.rpc.IntervalHolder;
-import com.appspot.relaxe.rpc.LongVarBinaryHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.rpc.TimeHolder;
-import com.appspot.relaxe.rpc.TimestampHolder;
-import com.appspot.relaxe.rpc.VarcharHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.CharHolder;
+import com.appspot.relaxe.value.DateHolder;
+import com.appspot.relaxe.value.DecimalHolder;
+import com.appspot.relaxe.value.IntegerHolder;
+import com.appspot.relaxe.value.IntervalHolder;
+import com.appspot.relaxe.value.LongVarBinaryHolder;
+import com.appspot.relaxe.value.TimeHolder;
+import com.appspot.relaxe.value.TimestampHolder;
+import com.appspot.relaxe.value.ValueHolder;
+import com.appspot.relaxe.value.VarcharHolder;
 
 public class DefaultValueAssignerFactory
 	implements ValueAssignerFactory {
 		
 		
 	@Override
-	public <T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T, H>> ParameterAssignment create(H holder, DataType columnType) {
+	public <T extends ValueType<T>, H extends ValueHolder<?, T, H>> ParameterAssignment create(H holder, DataType columnType) {
 		ParameterAssignment pa = null;
 				
-		PrimitiveHolder<?, ?, ?> ph = holder;
+		ValueHolder<?, ?, ?> ph = holder;
 		int t = ph.getSqlType();
 						
 		switch (t) {
-			case PrimitiveType.INTEGER:	 
+			case ValueType.INTEGER:	 
 				pa = createIntegerAssignment(ph.asIntegerHolder());
 				break;
-			case PrimitiveType.CHAR:	
+			case ValueType.CHAR:	
 				pa = createCharAssignment(ph.asCharHolder());
 				break;
-			case PrimitiveType.VARCHAR:	
+			case ValueType.VARCHAR:	
 				pa = createVarcharAssignment(ph.asVarcharHolder());
 				break;
-			case PrimitiveType.DATE:	
+			case ValueType.DATE:	
 				pa = createDateAssignment(ph.asDateHolder());
 				break;
-			case PrimitiveType.TIME:	
+			case ValueType.TIME:	
 				pa = createTimeAssignment(ph.asTimeHolder());
 				break;				
-			case PrimitiveType.TIMESTAMP:	
+			case ValueType.TIMESTAMP:	
 				pa = createTimestampAssignment(ph.asTimestampHolder());
 				break;
-			case PrimitiveType.DECIMAL:	 
-			case PrimitiveType.NUMERIC:
+			case ValueType.DECIMAL:	 
+			case ValueType.NUMERIC:
 				pa = createDecimalAssignment(ph.asDecimalHolder());
 				break;
-			case PrimitiveType.LONGVARBINARY:	
+			case ValueType.LONGVARBINARY:	
 				pa = createLongVarBinaryAssignment(ph.asLongVarBinaryHolder());
 				break;			
 				
-			case PrimitiveType.OTHER:
+			case ValueType.OTHER:
 				if ("interval_dt".equals(columnType.getTypeName())) {				
 					pa = createIntervalAssignment((IntervalHolder.DayTime) ph);
 				}
 				break;
-			case PrimitiveType.DISTINCT:	
+			case ValueType.DISTINCT:	
 				pa = createIntervalAssignment((IntervalHolder.YearMonth) ph);
 				break;								
 		default:

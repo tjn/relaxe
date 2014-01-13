@@ -27,7 +27,7 @@ import java.util.List;
 
 import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.paging.ResultPage;
-import com.appspot.relaxe.rpc.AbstractResponse;
+import com.appspot.relaxe.value.AbstractResponse;
 
 
 

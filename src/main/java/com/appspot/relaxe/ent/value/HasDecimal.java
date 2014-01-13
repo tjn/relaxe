@@ -23,7 +23,7 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.DecimalHolder;
+import com.appspot.relaxe.value.DecimalHolder;
 
 public interface HasDecimal<
 	A extends AttributeName, E extends HasDecimal<A, E>

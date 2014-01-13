@@ -24,7 +24,7 @@ package com.appspot.relaxe;
 
 import com.appspot.relaxe.SQLIntervalExtractor;
 import com.appspot.relaxe.meta.impl.pg.PGIntervalExtractor;
-import com.appspot.relaxe.rpc.IntervalHolder;
+import com.appspot.relaxe.value.IntervalHolder;
 
 import junit.framework.TestCase;
 
@@ -35,7 +35,7 @@ public class IntervalExtractorTest extends TestCase {
 		PGIntervalExtractor.YearMonth ye = new PGIntervalExtractor.YearMonth(1);
 				
 		assertTrue(IntervalHolder.YearMonth.NULL == ye.create(null));
-		com.appspot.relaxe.rpc.Interval.YearMonth ym = null; 
+		com.appspot.relaxe.value.Interval.YearMonth ym = null; 
 			
 		ym = ye.create("00:00:00").value();
 		assertNotNull(ym);
@@ -69,7 +69,7 @@ public class IntervalExtractorTest extends TestCase {
 		PGIntervalExtractor.DayTime de = new PGIntervalExtractor.DayTime(1);
 				
 		assertTrue(IntervalHolder.DayTime.NULL == de.create(null));
-		com.appspot.relaxe.rpc.Interval.DayTime ti = null; 
+		com.appspot.relaxe.value.Interval.DayTime ti = null; 
 			
 		ti = de.create("00:00:00").value();
 		assertNotNull(ti);
@@ -118,7 +118,7 @@ public class IntervalExtractorTest extends TestCase {
 		SQLIntervalExtractor.DayTime de = new SQLIntervalExtractor.DayTime(1);
 				
 		assertTrue(IntervalHolder.DayTime.NULL == de.create(null));
-		com.appspot.relaxe.rpc.Interval.DayTime ti = null; 
+		com.appspot.relaxe.value.Interval.DayTime ti = null; 
 			
 		ti = de.create("00:00:00").value();
 		assertNotNull(ti);
@@ -165,7 +165,7 @@ public class IntervalExtractorTest extends TestCase {
 	
 	public void testPatternSQLYearMonth() {
 		SQLIntervalExtractor.YearMonth de = new SQLIntervalExtractor.YearMonth(1);
-		com.appspot.relaxe.rpc.Interval.YearMonth ym = null;
+		com.appspot.relaxe.value.Interval.YearMonth ym = null;
 		
 		ym = de.create("1-4").value();
 		assertNotNull(ym);
@@ -211,7 +211,7 @@ public class IntervalExtractorTest extends TestCase {
 
 	public void testPatternSQLDayTimeFractionSign() {
 		SQLIntervalExtractor.DayTime de = new SQLIntervalExtractor.DayTime(1);
-		com.appspot.relaxe.rpc.Interval.DayTime ti = null; 
+		com.appspot.relaxe.value.Interval.DayTime ti = null; 
 
 		ti = de.create("-00:00:00.123123").value();
 		assertNotNull(ti);

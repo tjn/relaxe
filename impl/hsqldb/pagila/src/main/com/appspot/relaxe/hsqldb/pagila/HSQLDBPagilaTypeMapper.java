@@ -27,11 +27,11 @@ import com.appspot.relaxe.ent.value.HasVarcharArray;
 import com.appspot.relaxe.ent.value.HasVarcharArrayAttribute;
 import com.appspot.relaxe.ent.value.VarcharArrayAccessor;
 import com.appspot.relaxe.ent.value.VarcharArrayAttribute;
-import com.appspot.relaxe.rpc.StringArray;
-import com.appspot.relaxe.rpc.VarcharArrayHolder;
 import com.appspot.relaxe.source.DefaultAttributeInfo;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.VarcharArrayType;
+import com.appspot.relaxe.value.StringArray;
+import com.appspot.relaxe.value.VarcharArrayHolder;
 
 public class HSQLDBPagilaTypeMapper
 	extends DefaultTypeMapper {
@@ -48,6 +48,6 @@ public class HSQLDBPagilaTypeMapper
     	info.setContainerType(HasVarcharArray.class);
     	info.setContainerMetaType(HasVarcharArrayAttribute.class);
 		
-		register(PrimitiveType.ARRAY, "VARCHAR(1024) ARRAY", info);
+		register(ValueType.ARRAY, "VARCHAR(1024) ARRAY", info);
 	}	
 }

@@ -23,7 +23,7 @@
 package com.appspot.relaxe.types;
 
 public class LongType
-	extends AbstractPrimitiveType<LongType> {
+	extends AbstractValueType<LongType> {
 	
 	/**
 	 * 
@@ -36,7 +36,7 @@ public class LongType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.BIGINT;
+		return ValueType.BIGINT;
 	}
 	
 	@Override

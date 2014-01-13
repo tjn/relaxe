@@ -24,10 +24,10 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.BooleanHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.BooleanType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.BooleanHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 public final class BooleanAttribute<
 	A extends AttributeName,
@@ -59,7 +59,7 @@ public final class BooleanAttribute<
 		BooleanAttribute<X, T> k = meta.getBooleanAttribute(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = a.type();
+			ValueType<?> t = a.type();
 			
 			if (t != null && BooleanType.TYPE.equals(t)) {
 				k = new BooleanAttribute<X, T>(meta, a);
@@ -105,7 +105,7 @@ public final class BooleanAttribute<
 	}
 		
 	@Override
-	public BooleanHolder as(PrimitiveHolder<?, ?, ?> unknown) {
+	public BooleanHolder as(ValueHolder<?, ?, ?> unknown) {
 		return unknown.asBooleanHolder();
 	}
 }

@@ -29,8 +29,8 @@ import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.DateHolder;
 import com.appspot.relaxe.types.DateType;
+import com.appspot.relaxe.value.DateHolder;
 
 
 public class DateExtractor

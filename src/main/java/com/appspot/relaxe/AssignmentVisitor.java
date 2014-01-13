@@ -29,17 +29,15 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 import com.appspot.relaxe.expr.ElementVisitorAdapter;
 import com.appspot.relaxe.expr.Parameter;
 import com.appspot.relaxe.expr.VisitContext;
 import com.appspot.relaxe.expr.VisitException;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.ValueHolder;
 
 public class AssignmentVisitor extends ElementVisitorAdapter {
 	private PreparedStatement preparedStatement;
@@ -90,8 +88,8 @@ public class AssignmentVisitor extends ElementVisitorAdapter {
 	private	
 	<		
 		V extends Serializable,
-		T extends PrimitiveType<T>, 
-		H extends PrimitiveHolder<V, T, H>
+		T extends ValueType<T>, 
+		H extends ValueHolder<V, T, H>
 	>	
 	void	
 	assign(int ord, Parameter<V, T, H> param) 

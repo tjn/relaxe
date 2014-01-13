@@ -22,13 +22,13 @@
  */
 package com.appspot.relaxe.ent;
 
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 public interface AttributeWriter<
 	A extends AttributeName, E 
 > {
 	
 	public int getIndex();
-	public PrimitiveHolder<?, ?, ?> write(DataObject src, E dest) throws EntityRuntimeException;
+	public ValueHolder<?, ?, ?> write(DataObject src, E dest) throws EntityRuntimeException;
 
 }

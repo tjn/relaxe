@@ -25,7 +25,7 @@
  */
 package com.appspot.relaxe.expr;
 
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 
 public class DateLiteral	
 	extends DateTimeLiteral {
@@ -63,6 +63,6 @@ public class DateLiteral
 	
 	@Override
 	public int getType() {
-		return PrimitiveType.DATE;
+		return ValueType.DATE;
 	}
 }

@@ -27,15 +27,15 @@ import java.io.Serializable;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityException;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.value.AbstractPrimitiveHolder;
 
 
 public interface Mutator<
 	A extends AttributeName,
 	E extends Entity<?, ?, ?, ?, ?, ?, ?>,
 	S extends Serializable,
-	P extends AbstractPrimitiveType<P>,
+	P extends AbstractValueType<P>,
 	H extends AbstractPrimitiveHolder<S, P, H>,	
 	K extends ValueAttribute<A, E, S, P, H, K>
 >

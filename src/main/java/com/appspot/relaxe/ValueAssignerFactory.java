@@ -23,15 +23,15 @@
 package com.appspot.relaxe;
 
 import com.appspot.relaxe.meta.DataType;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.ValueHolder;
 
 public interface ValueAssignerFactory {
 
 	
 	<	
-		T extends PrimitiveType<T>, 
-		H extends PrimitiveHolder<?, T, H>
+		T extends ValueType<T>, 
+		H extends ValueHolder<?, T, H>
 	>
 	ParameterAssignment create(H holder, DataType columnType);
 }

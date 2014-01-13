@@ -26,15 +26,15 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 
 public abstract class AbstractParameterAssignment<
 	V extends Serializable, 
-	T extends PrimitiveType<T>, 
-	H extends PrimitiveHolder<V, T, H>
+	T extends ValueType<T>, 
+	H extends ValueHolder<V, T, H>
 >
 	implements ParameterAssignment {	
 	private H holder;

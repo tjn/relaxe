@@ -28,8 +28,8 @@ package com.appspot.relaxe;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.LongHolder;
 import com.appspot.relaxe.types.LongType;
+import com.appspot.relaxe.value.LongHolder;
 
 
 public class LongExtractor

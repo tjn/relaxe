@@ -23,7 +23,7 @@
 package com.appspot.relaxe.types;
 
 public class NumericType
-	extends AbstractPrimitiveType<NumericType> {
+	extends AbstractValueType<NumericType> {
 	
 	/**
 	 * 
@@ -36,7 +36,7 @@ public class NumericType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.NUMERIC;
+		return ValueType.NUMERIC;
 	}
 	
 	@Override

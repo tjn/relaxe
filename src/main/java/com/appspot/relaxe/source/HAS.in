@@ -11,7 +11,7 @@ public interface Has{{table-interface}}<
 	R extends com.appspot.relaxe.ent.Reference,
 	T extends com.appspot.relaxe.types.ReferenceType<A, R, T, E, H, F, M>,
 	E extends com.appspot.relaxe.ent.Entity<A, R, T, E, H, F, M> & Has{{table-interface}}<A, R, T, E, H, F, M>,
-	H extends com.appspot.relaxe.rpc.ReferenceHolder<A, R, T, E, H, M>,
+	H extends com.appspot.relaxe.value.ReferenceHolder<A, R, T, E, H, M>,
 	F extends com.appspot.relaxe.ent.EntityFactory<E, H, M, F>,
 	M extends com.appspot.relaxe.ent.EntityMetaData<A, R, T, E, H, F, M> & Has{{table-interface}}Key<A, R, T, E, H, F, M>
 	>

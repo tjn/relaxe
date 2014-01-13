@@ -31,10 +31,10 @@ import com.appspot.relaxe.ent.query.EntityQueryValueReference;
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.expr.op.Comparison;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.rpc.ReferenceHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 public interface EntityQueryElement<
 	A extends com.appspot.relaxe.ent.AttributeName,
@@ -128,16 +128,16 @@ public interface EntityQueryElement<
 	
 	<
 		XV extends Serializable,
-		XT extends PrimitiveType<XT>,
-		XH extends PrimitiveHolder<XV, XT, XH>,	
+		XT extends ValueType<XT>,
+		XH extends ValueHolder<XV, XT, XH>,	
 		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newNull(K key);
 	
 	<
 		XV extends Serializable,
-		XT extends PrimitiveType<XT>,
-		XH extends PrimitiveHolder<XV, XT, XH>,	
+		XT extends ValueType<XT>,
+		XH extends ValueHolder<XV, XT, XH>,	
 		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newNotNull(K key);
@@ -149,16 +149,16 @@ public interface EntityQueryElement<
 	
 	<
 		XV extends Serializable,
-		XT extends PrimitiveType<XT>,
-		XH extends PrimitiveHolder<XV, XT, XH>,	
+		XT extends ValueType<XT>,
+		XH extends ValueHolder<XV, XT, XH>,	
 		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newEquals(K key, XH value);
 	
 	<
 		XV extends Serializable,
-		XT extends PrimitiveType<XT>,
-		XH extends PrimitiveHolder<XV, XT, XH>,	
+		XT extends ValueType<XT>,
+		XH extends ValueHolder<XV, XT, XH>,	
 		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newEquals(K key, XV value);
@@ -170,8 +170,8 @@ public interface EntityQueryElement<
 	
 	<
 		XV extends Serializable,
-		XT extends PrimitiveType<XT>,
-		XH extends PrimitiveHolder<XV, XT, XH>,	
+		XT extends ValueType<XT>,
+		XH extends ValueHolder<XV, XT, XH>,	
 		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newPredicate(K key, Comparison.Op op, XH value);

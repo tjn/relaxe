@@ -35,7 +35,7 @@ import java.util.Map;
 
 import com.appspot.relaxe.Counter;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
-import com.appspot.relaxe.rpc.IntegerHolder;
+import com.appspot.relaxe.value.IntegerHolder;
 
 
 public class PagilaInspector {

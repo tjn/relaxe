@@ -34,7 +34,7 @@ import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.Select;
 import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.query.QueryException;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.AbstractPrimitiveHolder;
 
 
 public class MutableDataObject

@@ -23,7 +23,7 @@
 package com.appspot.relaxe.types;
 
 public class BooleanType
-	extends AbstractPrimitiveType<BooleanType> {
+	extends AbstractValueType<BooleanType> {
 		
 	/**
 	 * 
@@ -37,7 +37,7 @@ public class BooleanType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.BOOLEAN;
+		return ValueType.BOOLEAN;
 	}
 	
 	@Override

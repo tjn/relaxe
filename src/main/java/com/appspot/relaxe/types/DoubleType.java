@@ -23,7 +23,7 @@
 package com.appspot.relaxe.types;
 
 public class DoubleType
-	extends AbstractPrimitiveType<DoubleType> {
+	extends AbstractValueType<DoubleType> {
 	
 	/**
 	 * 
@@ -36,7 +36,7 @@ public class DoubleType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.DOUBLE;
+		return ValueType.DOUBLE;
 	}
 	
 	@Override

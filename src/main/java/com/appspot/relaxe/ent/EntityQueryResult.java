@@ -24,8 +24,8 @@ package com.appspot.relaxe.ent;
 
 import com.appspot.relaxe.paging.HasDataObjectQueryResult;
 import com.appspot.relaxe.paging.ResultPage;
-import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 public interface EntityQueryResult<
 	A extends AttributeName,

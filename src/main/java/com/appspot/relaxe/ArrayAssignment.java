@@ -28,15 +28,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.ArrayHolder;
-import com.appspot.relaxe.rpc.ArrayValue;
 import com.appspot.relaxe.types.ArrayType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.value.ArrayHolder;
+import com.appspot.relaxe.value.ArrayValue;
 
 
 public abstract class ArrayAssignment<
 	V extends Serializable, 
-	E extends AbstractPrimitiveType<E>, 
+	E extends AbstractValueType<E>, 
 	A extends ArrayValue<V>,
 	T extends ArrayType<T, E>, 
 	H extends ArrayHolder<V, A, E, T, H>

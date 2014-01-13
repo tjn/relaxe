@@ -30,16 +30,16 @@ import com.appspot.relaxe.ParameterAssignment;
 import com.appspot.relaxe.env.pg.PGTextArrayHolder;
 import com.appspot.relaxe.env.pg.PGTextArrayType;
 import com.appspot.relaxe.meta.DataType;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.rpc.StringArray;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.VarcharType;
+import com.appspot.relaxe.value.StringArray;
+import com.appspot.relaxe.value.ValueHolder;
 
 public class PGValueAssignerFactory 
 	extends DefaultValueAssignerFactory {
 
 	@Override
-	public <T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T, H>> ParameterAssignment create(H holder, DataType columnType) {
+	public <T extends ValueType<T>, H extends ValueHolder<?, T, H>> ParameterAssignment create(H holder, DataType columnType) {
 		ParameterAssignment pa = super.create(holder, columnType);
 		
 		if (pa == null) {			

@@ -23,8 +23,8 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.DoubleHolder;
 import com.appspot.relaxe.types.DoubleType;
+import com.appspot.relaxe.value.DoubleHolder;
 
 public class DoubleAccessor<
 	A extends AttributeName,

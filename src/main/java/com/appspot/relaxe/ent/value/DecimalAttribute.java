@@ -24,10 +24,10 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.Decimal;
-import com.appspot.relaxe.rpc.DecimalHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.DecimalType;
+import com.appspot.relaxe.value.Decimal;
+import com.appspot.relaxe.value.DecimalHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 public final class DecimalAttribute<
 	A extends AttributeName,
@@ -102,7 +102,7 @@ public final class DecimalAttribute<
 	}
 	
 	@Override
-	public DecimalHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public DecimalHolder as(ValueHolder<?, ?, ?> holder) {
 		return DecimalHolder.of(holder);
 	}
 }

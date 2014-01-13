@@ -28,10 +28,10 @@ import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.HasLong;
 import com.appspot.relaxe.ent.value.LongAttribute;
-import com.appspot.relaxe.rpc.LongHolder;
-import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.LongType;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.LongHolder;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 public class LongIdentityMap<
 	A extends AttributeName,

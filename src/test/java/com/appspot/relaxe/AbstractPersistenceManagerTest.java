@@ -38,8 +38,8 @@ import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.meta.DBMetaTestCase;
 import com.appspot.relaxe.query.QueryException;
-import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 
 public abstract class AbstractPersistenceManagerTest<I extends Implementation<I>> extends DBMetaTestCase<I>  {

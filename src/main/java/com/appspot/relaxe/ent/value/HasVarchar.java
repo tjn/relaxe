@@ -23,7 +23,7 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.VarcharHolder;
+import com.appspot.relaxe.value.VarcharHolder;
 
 public interface HasVarchar<
 	A extends AttributeName,

@@ -24,10 +24,10 @@ package com.appspot.relaxe;
 
 import java.io.Serializable;
 
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.value.AbstractPrimitiveHolder;
 
 
-public interface AssignmentFactory<V extends Serializable, T extends AbstractPrimitiveType<T>, H extends AbstractPrimitiveHolder<V, T, H>> {	
+public interface AssignmentFactory<V extends Serializable, T extends AbstractValueType<T>, H extends AbstractPrimitiveHolder<V, T, H>> {	
 	ParameterAssignment create(H holder);
 }

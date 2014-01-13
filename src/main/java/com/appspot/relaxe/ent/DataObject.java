@@ -27,13 +27,13 @@ import java.io.Serializable;
 import com.appspot.relaxe.expr.ColumnExpr;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.ValueExpression;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 public interface DataObject	
 	extends Serializable
 {	
-	PrimitiveHolder<?, ?, ?> get(int index);	
+	ValueHolder<?, ?, ?> get(int index);	
 	MetaData meta();
 	
 	public interface MetaData

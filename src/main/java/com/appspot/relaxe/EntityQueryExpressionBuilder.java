@@ -60,8 +60,8 @@ import com.appspot.relaxe.expr.Where;
 import com.appspot.relaxe.expr.op.AndPredicate;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ForeignKey;
-import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 public class EntityQueryExpressionBuilder<
 	A extends AttributeName,

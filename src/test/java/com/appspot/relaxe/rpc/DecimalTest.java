@@ -25,7 +25,7 @@ package com.appspot.relaxe.rpc;
 
 import com.appspot.relaxe.SLF4JLogger;
 import com.appspot.relaxe.log.Logger;
-import com.appspot.relaxe.rpc.Decimal;
+import com.appspot.relaxe.value.Decimal;
 
 import junit.framework.TestCase;
 

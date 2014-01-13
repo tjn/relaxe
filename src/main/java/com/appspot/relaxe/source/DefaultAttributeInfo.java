@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appspot.relaxe.map.AttributeInfo;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
 
 
 public class DefaultAttributeInfo
@@ -42,7 +42,7 @@ public class DefaultAttributeInfo
 	private Class<?> containerType;
 	private Class<?> containerMetaType;
 	
-	private AbstractPrimitiveType<?> primitiveType;
+	private AbstractValueType<?> primitiveType;
 	
 	private static Map<Class<?>, Class<?>> primitiveTypeMap = new HashMap<Class<?>, Class<?>>();
 	
@@ -126,11 +126,11 @@ public class DefaultAttributeInfo
 	}
 
 	@Override
-	public AbstractPrimitiveType<?> getPrimitiveType() {
+	public AbstractValueType<?> getPrimitiveType() {
 		return primitiveType;
 	}
 
-	public void setPrimitiveType(AbstractPrimitiveType<?> primitiveType) {
+	public void setPrimitiveType(AbstractValueType<?> primitiveType) {
 		this.primitiveType = primitiveType;
 	}
 

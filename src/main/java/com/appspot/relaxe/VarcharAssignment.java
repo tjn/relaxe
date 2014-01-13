@@ -22,8 +22,8 @@
  */
 package com.appspot.relaxe;
 
-import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.types.VarcharType;
+import com.appspot.relaxe.value.VarcharHolder;
 
 public class VarcharAssignment
 	extends StringAssignment<VarcharType, VarcharHolder> {

@@ -24,10 +24,10 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.IntegerHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.IntegerType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.IntegerHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 public final class IntegerAttribute<
 	A extends AttributeName,
@@ -59,7 +59,7 @@ public final class IntegerAttribute<
 		IntegerAttribute<X, T> k = meta.getIntegerAttribute(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = a.type();
+			ValueType<?> t = a.type();
 			
 			if (t != null && IntegerType.TYPE.equals(t)) {
 				k = new IntegerAttribute<X, T>(meta, a);
@@ -105,7 +105,7 @@ public final class IntegerAttribute<
 	}
 		
 	@Override
-	public IntegerHolder as(PrimitiveHolder<?, ?, ?> unknown) {
+	public IntegerHolder as(ValueHolder<?, ?, ?> unknown) {
 		return unknown.asIntegerHolder();
 	}
 }

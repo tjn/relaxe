@@ -32,7 +32,7 @@ import java.sql.SQLException;
 import com.appspot.relaxe.ValueExtractor;
 import com.appspot.relaxe.env.pg.PGTextArrayHolder;
 import com.appspot.relaxe.env.pg.PGTextArrayType;
-import com.appspot.relaxe.rpc.StringArray;
+import com.appspot.relaxe.value.StringArray;
 
 
 class PGTextArrayExtractor

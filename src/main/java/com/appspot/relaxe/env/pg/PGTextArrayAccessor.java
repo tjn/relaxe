@@ -25,7 +25,7 @@ package com.appspot.relaxe.env.pg;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.value.AbstractPrimitiveAccessor;
-import com.appspot.relaxe.rpc.StringArray;
+import com.appspot.relaxe.value.StringArray;
 
 
 public class PGTextArrayAccessor<

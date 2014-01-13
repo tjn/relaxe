@@ -23,10 +23,10 @@
 package com.appspot.relaxe.meta;
 
 import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 
 public interface DataTypeMap {
 
-	PrimitiveType<?> getType(DataType type);		
+	ValueType<?> getType(DataType type);		
 	SQLTypeDefinition getSQLTypeDefinition(DataType dataType);
 }

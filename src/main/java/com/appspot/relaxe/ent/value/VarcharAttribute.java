@@ -24,9 +24,9 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.types.VarcharType;
+import com.appspot.relaxe.value.ValueHolder;
+import com.appspot.relaxe.value.VarcharHolder;
 
 public final class VarcharAttribute<
 	A extends AttributeName,
@@ -100,7 +100,7 @@ public final class VarcharAttribute<
 	}
 	
 	@Override
-	public VarcharHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public VarcharHolder as(ValueHolder<?, ?, ?> holder) {
 		return VarcharHolder.of(holder);
 	}
 }

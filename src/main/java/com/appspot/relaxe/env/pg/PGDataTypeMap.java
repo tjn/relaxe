@@ -29,7 +29,7 @@ import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.DefaultDataTypeMap;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 
 public class PGDataTypeMap
 	extends DefaultDataTypeMap {
@@ -48,7 +48,7 @@ public class PGDataTypeMap
 			return PGTextTypeDefinition.DEFINITION;
 		}
 		
-		if (t.getDataType() == PrimitiveType.ARRAY && PGTextArrayTypeDefinition.NAME.equals(t.getTypeName())) {
+		if (t.getDataType() == ValueType.ARRAY && PGTextArrayTypeDefinition.NAME.equals(t.getTypeName())) {
 			return PGTextArrayTypeDefinition.DEFINITION;
 		}
 						
@@ -60,7 +60,7 @@ public class PGDataTypeMap
 	}
 	
 	@Override
-	public PrimitiveType<?> getType(DataType type) {
+	public ValueType<?> getType(DataType type) {
 		int t = type.getDataType();
 		String n = type.getTypeName();
 		
@@ -68,21 +68,21 @@ public class PGDataTypeMap
 			return PGTextType.TYPE;
 		}
 		
-		PrimitiveType<?> pt = super.getType(type);
+		ValueType<?> pt = super.getType(type);
 		
 		if (pt == null) {			
 			switch (t) {
-			case PrimitiveType.VARCHAR:
+			case ValueType.VARCHAR:
 				if (PGTextType.TYPE.getName().equals(n)) {
 					pt = PGTextType.TYPE;
 				}
 				break;			
-			case PrimitiveType.ARRAY:
+			case ValueType.ARRAY:
 				if (PGTextArrayType.TYPE.getName().equals(n)) {
 					pt = PGTextArrayType.TYPE;
 				}
 				break;
-			case PrimitiveType.OTHER:
+			case ValueType.OTHER:
 				if (PGTSVectorType.TYPE.getName().equals(n)) {
 					pt = PGTSVectorType.TYPE;
 				}

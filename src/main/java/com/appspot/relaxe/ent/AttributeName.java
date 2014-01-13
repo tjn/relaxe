@@ -24,11 +24,11 @@ package com.appspot.relaxe.ent;
 
 import java.io.Serializable;
 
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 
 
 public interface AttributeName
 	extends Identifiable, Serializable {
 
-	PrimitiveType<?> type();	
+	ValueType<?> type();	
 }

@@ -26,10 +26,10 @@ import java.util.Date;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.DateHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.DateType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.DateHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 public final class DateAttribute<	
@@ -62,7 +62,7 @@ public final class DateAttribute<
 		DateAttribute<X, T> k = meta.getDateAttribute(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = a.type();
+			ValueType<?> t = a.type();
 			
 			if (t != null && DateType.TYPE.equals(t)) {
 				k = new DateAttribute<X, T>(meta, a);
@@ -107,7 +107,7 @@ public final class DateAttribute<
 	}
 	
 	@Override
-	public DateHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public DateHolder as(ValueHolder<?, ?, ?> holder) {
 		return DateHolder.as(holder);
 	}
 }

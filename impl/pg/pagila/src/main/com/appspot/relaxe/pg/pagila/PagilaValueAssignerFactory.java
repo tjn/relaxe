@@ -29,14 +29,14 @@ import com.appspot.relaxe.meta.impl.pg.PGValueAssignerFactory;
 import com.appspot.relaxe.pg.pagila.types.MPAARating;
 import com.appspot.relaxe.pg.pagila.types.MPAARatingHolder;
 import com.appspot.relaxe.pg.pagila.types.MPAARatingType;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.ValueHolder;
 
 public class PagilaValueAssignerFactory 
 	extends PGValueAssignerFactory {
 
 	@Override
-	public <T extends PrimitiveType<T>, H extends PrimitiveHolder<?, T, H>> ParameterAssignment create(H holder, DataType columnType) {
+	public <T extends ValueType<T>, H extends ValueHolder<?, T, H>> ParameterAssignment create(H holder, DataType columnType) {
 		ParameterAssignment pa = super.create(holder, columnType);
 		
 		if (pa == null) {			

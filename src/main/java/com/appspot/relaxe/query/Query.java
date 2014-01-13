@@ -23,7 +23,7 @@
 package com.appspot.relaxe.query;
 
 import com.appspot.relaxe.expr.QueryExpression;
-import com.appspot.relaxe.rpc.AbstractRequest;
+import com.appspot.relaxe.value.AbstractRequest;
 
 public class Query
 	extends AbstractRequest {

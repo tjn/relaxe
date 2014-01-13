@@ -24,7 +24,7 @@ package com.appspot.relaxe.ent.value;
 
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.TimestampHolder;
+import com.appspot.relaxe.value.TimestampHolder;
 
 public interface HasTimestamp<A extends AttributeName, E extends HasTimestamp<A, E>> {
 	TimestampHolder getTimestamp(TimestampAttribute<A, E> key);

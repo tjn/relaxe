@@ -25,10 +25,10 @@ package com.appspot.relaxe.ent.value;
 import java.util.Date;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.rpc.TimeHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.TimeType;
+import com.appspot.relaxe.value.TimeHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 public final class TimeAttribute<
@@ -61,7 +61,7 @@ public final class TimeAttribute<
 		TimeAttribute<X, T> k = meta.getTimeAttribute(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = a.type();
+			ValueType<?> t = a.type();
 			
 			if (TimeType.TYPE.equals(t)) {
 				k = new TimeAttribute<X, T>(meta, a);
@@ -102,7 +102,7 @@ public final class TimeAttribute<
 	}
 
 	@Override
-	public TimeHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public TimeHolder as(ValueHolder<?, ?, ?> holder) {
 		return TimeHolder.of(holder);
 	}
 

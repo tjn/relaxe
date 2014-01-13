@@ -32,11 +32,11 @@ import com.appspot.relaxe.ent.value.StringAttribute;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.PrimaryKey;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.rpc.ReferenceHolder;
-import com.appspot.relaxe.rpc.StringHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
+import com.appspot.relaxe.value.StringHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 public abstract class AbstractEntity<
@@ -56,7 +56,7 @@ public abstract class AbstractEntity<
 	private static final long serialVersionUID = -1538787348338709153L;	
 
 	@Override
-	public PrimitiveHolder<?, ?, ?> get(Column column) throws NullPointerException, EntityRuntimeException {
+	public ValueHolder<?, ?, ?> get(Column column) throws NullPointerException, EntityRuntimeException {
 		
 		if (column == null) {
 			throw new NullPointerException("column");
@@ -128,17 +128,17 @@ public abstract class AbstractEntity<
 	}
 	
 	@Override
-	public Map<Column, PrimitiveHolder<?,?,?>> getPrimaryKey() {
+	public Map<Column, ValueHolder<?,?,?>> getPrimaryKey() {
 		PrimaryKey pk = getMetaData().getBaseTable().getPrimaryKey();
 		
 		if (pk == null) {
 			return null;
 		}
 		
-		Map<Column, PrimitiveHolder<?,?,?>> vm = new HashMap<Column, PrimitiveHolder<?,?,?>>(2);
+		Map<Column, ValueHolder<?,?,?>> vm = new HashMap<Column, ValueHolder<?,?,?>>(2);
 				
 		for (Column pkcol : pk.getColumnMap().values()) {
-			PrimitiveHolder<?,?,?> v = get(pkcol);
+			ValueHolder<?,?,?> v = get(pkcol);
 			
 			if ((v == null) || v.isNull()) {
 				return null;
@@ -186,7 +186,7 @@ public abstract class AbstractEntity<
 				continue;
 			}					
 			
-			PrimitiveHolder<?, ?, ?> v = null;
+			ValueHolder<?, ?, ?> v = null;
 			buf.append(key.name());
 			buf.append("=");
 			
@@ -263,8 +263,8 @@ public abstract class AbstractEntity<
 	@Override
 	public <
 		VV extends java.io.Serializable, 
-		VT extends com.appspot.relaxe.types.PrimitiveType<VT>, 
-		VH extends com.appspot.relaxe.rpc.PrimitiveHolder<VV, VT, VH>, 
+		VT extends com.appspot.relaxe.types.ValueType<VT>, 
+		VH extends com.appspot.relaxe.value.ValueHolder<VV, VT, VH>, 
 		K extends com.appspot.relaxe.ent.value.ValueAttribute<A, E, VV, VT, VH, K>
 	> 
 	boolean match(K key, E another) {
@@ -285,7 +285,7 @@ public abstract class AbstractEntity<
 	
 	@Override
 	public <
-		P extends PrimitiveType<P>,
+		P extends ValueType<P>,
 		SH extends StringHolder<P, SH>,
 		K extends StringAttribute<A, E, P, SH, K>
 	>
@@ -296,7 +296,7 @@ public abstract class AbstractEntity<
 	
 	@Override
 	public <
-		P extends PrimitiveType<P>,
+		P extends ValueType<P>,
 		SH extends StringHolder<P, SH>,
 		K extends StringAttribute<A, E, P, SH, K>
 	>
@@ -306,7 +306,7 @@ public abstract class AbstractEntity<
 	
 	@Override
 	public <
-		P extends PrimitiveType<P>,
+		P extends ValueType<P>,
 		SH extends StringHolder<P, SH>,
 		K extends StringAttribute<A, E, P, SH, K>
 	>

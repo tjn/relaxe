@@ -23,15 +23,16 @@
 package com.appspot.relaxe.expr;
 
 import java.io.Serializable;
+
 import com.appspot.relaxe.meta.Column;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 public class MutableValueParameter<
 	V extends Serializable,
-	T extends PrimitiveType<T>, 
-	H extends PrimitiveHolder<V, T, H>
+	T extends ValueType<T>, 
+	H extends ValueHolder<V, T, H>
 >
 	extends AbstractParameter<V, T, H> 
 {

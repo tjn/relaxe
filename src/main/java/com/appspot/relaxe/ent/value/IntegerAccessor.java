@@ -24,8 +24,8 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
-import com.appspot.relaxe.rpc.IntegerHolder;
 import com.appspot.relaxe.types.IntegerType;
+import com.appspot.relaxe.value.IntegerHolder;
 
 public class IntegerAccessor<
 	A extends AttributeName,

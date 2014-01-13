@@ -26,8 +26,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.appspot.relaxe.ent.value.LongVarBinary;
-import com.appspot.relaxe.rpc.LongVarBinaryHolder;
 import com.appspot.relaxe.types.LongVarBinaryType;
+import com.appspot.relaxe.value.LongVarBinaryHolder;
 
 
 public class LongVarBinaryAssignment

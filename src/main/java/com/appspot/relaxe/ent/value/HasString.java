@@ -23,22 +23,22 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.StringHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.StringHolder;
 
 public interface HasString<
 	A extends AttributeName,
 	E extends HasString<A, E>> {
 
 	<
-		T extends PrimitiveType<T>, 
+		T extends ValueType<T>, 
 		H extends StringHolder<T, H>,
 		K extends StringAttribute<A, E, T, H, K>
 	>	
 	H getString(K key);
 	
 	<
-		T extends PrimitiveType<T>, 
+		T extends ValueType<T>, 
 		H extends StringHolder<T, H>,
 		K extends StringAttribute<A, E, T, H, K>
 	>

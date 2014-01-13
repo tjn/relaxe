@@ -25,7 +25,7 @@
  */
 package com.appspot.relaxe.expr;
 
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 
 public class LongLiteral
 	extends SimpleElement
@@ -66,7 +66,7 @@ public class LongLiteral
 
 	@Override
 	public int getType() {
-		return PrimitiveType.BIGINT;
+		return ValueType.BIGINT;
 	}
 
 	@Override

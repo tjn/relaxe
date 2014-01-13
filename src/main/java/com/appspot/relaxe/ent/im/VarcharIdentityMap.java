@@ -28,10 +28,10 @@ import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.HasVarchar;
 import com.appspot.relaxe.ent.value.VarcharAttribute;
-import com.appspot.relaxe.rpc.ReferenceHolder;
-import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.types.ReferenceType;
 import com.appspot.relaxe.types.VarcharType;
+import com.appspot.relaxe.value.ReferenceHolder;
+import com.appspot.relaxe.value.VarcharHolder;
 
 public class VarcharIdentityMap<
 	A extends AttributeName,

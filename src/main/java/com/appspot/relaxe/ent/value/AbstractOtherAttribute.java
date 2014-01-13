@@ -25,15 +25,15 @@ package com.appspot.relaxe.ent.value;
 import java.io.Serializable;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.value.AbstractPrimitiveHolder;
 
 
 public abstract class AbstractOtherAttribute<
 	A extends AttributeName,
 	E,
 	V extends Serializable,
-	P extends AbstractPrimitiveType<P>,
+	P extends AbstractValueType<P>,
 	H extends AbstractPrimitiveHolder<V, P, H>,
 	K extends AbstractOtherAttribute<A, E, V, P, H, K>
 	>

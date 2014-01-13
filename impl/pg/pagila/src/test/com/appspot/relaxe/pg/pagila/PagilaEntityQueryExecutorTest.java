@@ -50,9 +50,9 @@ import com.appspot.relaxe.gen.pg.pagila.ent.pub.Language;
 import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 import com.appspot.relaxe.query.QueryResult;
-import com.appspot.relaxe.rpc.IntegerHolder;
-import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.IntegerHolder;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 public class PagilaEntityQueryExecutorTest 
 	extends AbstractPagilaTestCase {

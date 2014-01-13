@@ -74,11 +74,11 @@ import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.query.QueryResult;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.rpc.ReferenceHolder;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 //import org.slf4j.Logger;
 
@@ -222,7 +222,7 @@ public class PersistenceManager<
     		logger().debug("createInsertStatement: a=" + a);
     		
     		Column col = meta.getColumn(a);
-    		PrimitiveHolder<?, ?, ?> holder = pe.value(a);
+    		ValueHolder<?, ?, ?> holder = pe.value(a);
     		
     		if (holder == null) {
     			values.add(new Default(col));
@@ -263,7 +263,7 @@ public class PersistenceManager<
 
             if (ref == null) {
             	for (Column c : fk.getColumnMap().values()) {                	
-                	PrimitiveHolder<?, ?, ?> nh = AbstractPrimitiveType.nullHolder(c.getDataType().getDataType());
+                	ValueHolder<?, ?, ?> nh = AbstractValueType.nullHolder(c.getDataType().getDataType());
                 	
                 	ValuesListElement p = newValuesListElement(c, nh.self());                	
                 	values.add(p);
@@ -273,7 +273,7 @@ public class PersistenceManager<
             else {
             	for (Column c : fk.getColumnMap().values()) {
             		Column fc = fk.getReferenced(c);
-                    PrimitiveHolder<?, ?, ?> o = ref.get(fc);
+                    ValueHolder<?, ?, ?> o = ref.get(fc);
                     ValuesListElement p = newValuesListElement(c, o.self());
                     values.add(p);
                     names.add(c.getColumnName());            		
@@ -289,29 +289,29 @@ public class PersistenceManager<
     	return new InsertStatement(t, new ElementList<Identifier>(names), newRow);
     }
 	
-	private	ValuesListElement createValuesListElement(Column col, PrimitiveHolder<?, ?, ?> holder) {
+	private	ValuesListElement createValuesListElement(Column col, ValueHolder<?, ?, ?> holder) {
 		return newValuesListElement(col, holder.self());
 	}
 	
 	private <		
 		PV extends Serializable,
-		PT extends PrimitiveType<PT>,
-		PH extends PrimitiveHolder<PV, PT, PH>
+		PT extends ValueType<PT>,
+		PH extends ValueHolder<PV, PT, PH>
 	>
-	ImmutableValueParameter<PV, PT, PH> newValuesListElement(Column col, PrimitiveHolder<PV, PT, PH> holder) {		
+	ImmutableValueParameter<PV, PT, PH> newValuesListElement(Column col, ValueHolder<PV, PT, PH> holder) {		
 		return new ImmutableValueParameter<PV, PT, PH>(col, holder.self());
 	}
 	
-	private	ValueExpression createValueExpression(Column col, PrimitiveHolder<?, ?, ?> holder) {				
+	private	ValueExpression createValueExpression(Column col, ValueHolder<?, ?, ?> holder) {				
 		return newValueExpression(col, holder.self());
 	}
 	
 	private <
 		V extends Serializable,
-		P extends PrimitiveType<P>, 
-		PH extends PrimitiveHolder<V, P, PH>
+		P extends ValueType<P>, 
+		PH extends ValueHolder<V, P, PH>
 	>
-	ValueExpression newValueExpression(Column col, PrimitiveHolder<V, P, PH> holder) {				
+	ValueExpression newValueExpression(Column col, ValueHolder<V, P, PH> holder) {				
 		return new ImmutableValueParameter<V, P, PH>(col, holder.self());
 	}	
 
@@ -333,7 +333,7 @@ public class PersistenceManager<
 
     	for (A a : meta.attributes()) {
     		Column col = meta.getColumn(a);
-    		PrimitiveHolder<?, ?, ?> ph = pe.value(a);
+    		ValueHolder<?, ?, ?> ph = pe.value(a);
     		
     		if (ph != null) {    		    		    		
 	    		ValueExpression vp = createValueExpression(col, ph.self());    		
@@ -407,7 +407,7 @@ public class PersistenceManager<
 			  
 		      for (Column ce : fk.getColumnMap().values()) {
 		          Column fc = fk.getReferenced(ce);		          		          
-		          PrimitiveHolder<?, ?, ?> ph = re.get(fc);
+		          ValueHolder<?, ?, ?> ph = re.get(fc);
 		          
 		          logger().debug("rc: " + fc + " => " + ph);
 		          		          		          
@@ -524,11 +524,11 @@ public class PersistenceManager<
 				
 		E e = getTarget();
 				
-		Map<Column, PrimitiveHolder<?, ?, ?>> vm = e.getPrimaryKey();
+		Map<Column, ValueHolder<?, ?, ?>> vm = e.getPrimaryKey();
 		
-		for (Map.Entry<Column, PrimitiveHolder<?, ?, ?>> me : vm.entrySet()) {
+		for (Map.Entry<Column, ValueHolder<?, ?, ?>> me : vm.entrySet()) {
 			Column col = me.getKey();
-			PrimitiveHolder<?, ?, ?> val = me.getValue();			
+			ValueHolder<?, ?, ?> val = me.getValue();			
 			ValueExpression ve = createValueExpression(col, val);
 			builder.addPredicate(col.getColumnName(), Comparison.Op.EQ, ve);			
 		}		
@@ -726,7 +726,7 @@ public class PersistenceManager<
         Predicate p = null;
 
         for (Column col : pkcols) {
-            PrimitiveHolder<?, ?, ?> o = pe.get(col);
+            ValueHolder<?, ?, ?> o = pe.get(col);
 
             // to successfully create a pk predicate
             // every component must be set:

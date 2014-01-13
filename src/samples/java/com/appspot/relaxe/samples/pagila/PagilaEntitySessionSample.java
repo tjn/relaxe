@@ -34,13 +34,13 @@ import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Language;
 import com.appspot.relaxe.pg.pagila.PagilaPersistenceContext;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.rpc.StringHolder;
-import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.service.DataAccessContext;
 import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.EntitySession;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.StringHolder;
+import com.appspot.relaxe.value.ValueHolder;
+import com.appspot.relaxe.value.VarcharHolder;
 
 /**
  * A sample program to demonstrate the use of EntitySession
@@ -188,8 +188,8 @@ public class PagilaEntitySessionSample {
 		A extends AttributeName,	
 		E extends Entity<A, ?, ?, E, ?, ?, ?>,
 		V extends Serializable,
-		P extends PrimitiveType<P>,
-		H extends PrimitiveHolder<V, P, H>,	
+		P extends ValueType<P>,
+		H extends ValueHolder<V, P, H>,	
 		K extends ValueAttribute<A, E, V, P, H, K>
 	>
 	void dump(Entity<A, ?, ?, E, ?, ?, ?> entity, ValueAttribute<A, E, V, P, H, K> key) {		

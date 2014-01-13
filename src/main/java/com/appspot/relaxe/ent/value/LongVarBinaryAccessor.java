@@ -24,8 +24,8 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
-import com.appspot.relaxe.rpc.LongVarBinaryHolder;
 import com.appspot.relaxe.types.LongVarBinaryType;
+import com.appspot.relaxe.value.LongVarBinaryHolder;
 
 public class LongVarBinaryAccessor<
 	A extends AttributeName,

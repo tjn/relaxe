@@ -36,7 +36,7 @@ import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.DataTypeMap;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 
 import junit.framework.TestCase;
 
@@ -94,7 +94,7 @@ public class PagilaCreateTableTest extends TestCase {
 			assertNotNull(desc);
 			DataType type = desc.getDataType();
 			assertNotNull(type);
-			assertEquals(PrimitiveType.ARRAY, type.getDataType());			
+			assertEquals(ValueType.ARRAY, type.getDataType());			
 			assertTrue("_text".equalsIgnoreCase(type.getTypeName()));
 			
 			

@@ -35,7 +35,7 @@ import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBEnvironment;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 
 public class PagilaTypeMapTest 
 	extends AbstractPagilaTestCase {
@@ -51,7 +51,7 @@ public class PagilaTypeMapTest
 		final DataTypeMap htm = henv.getDataTypeMap();
 		final DataTypeMap dtm = new DataTypeMap() {			
 			@Override
-			public PrimitiveType<?> getType(DataType type) {
+			public ValueType<?> getType(DataType type) {
 				return htm.getType(type);
 			}
 			
@@ -64,11 +64,11 @@ public class PagilaTypeMapTest
 					
 					logger.debug("unmapped: " + dataType.getTypeName() + ": " + dataType.getDataType());
 					
-					if (t == PrimitiveType.ARRAY && dataType.getTypeName().equals("_text")) {
+					if (t == ValueType.ARRAY && dataType.getTypeName().equals("_text")) {
 						def = new SQLArrayTypeDefinition(VarcharTypeDefinition.get(null));
 					}
 					
-					if (t == PrimitiveType.BINARY && dataType.getTypeName().equals("bytea")) {
+					if (t == ValueType.BINARY && dataType.getTypeName().equals("bytea")) {
 						def = new SQLArrayTypeDefinition(VarBinaryTypeDefinition.get());
 					}
 					

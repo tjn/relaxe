@@ -49,7 +49,7 @@ import com.appspot.relaxe.expr.TableExpression;
 import com.appspot.relaxe.query.Query;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.query.QueryTime;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 public class QueryExecutor {
@@ -116,7 +116,7 @@ public class QueryExecutor {
 			SelectStatement cs = createCountQuery(qs);
 			DataObject result = sx.fetchFirst(cs, c);
 			
-			PrimitiveHolder<?, ?, ?> h = result.get(0);
+			ValueHolder<?, ?, ?> h = result.get(0);
 			logger().debug("execute: h={}", h);
 			available = h.asLongHolder().value();
 		}

@@ -30,9 +30,9 @@ import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.appspot.relaxe.rpc.Interval;
-import com.appspot.relaxe.rpc.IntervalHolder;
 import com.appspot.relaxe.types.IntervalType;
+import com.appspot.relaxe.value.Interval;
+import com.appspot.relaxe.value.IntervalHolder;
 
 
 public abstract class SQLIntervalExtractor<V extends Interval<V>, T extends IntervalType<T>>	

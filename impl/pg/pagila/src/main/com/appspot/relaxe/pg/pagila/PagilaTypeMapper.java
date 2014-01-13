@@ -61,11 +61,6 @@ import com.appspot.relaxe.pg.pagila.types.MPAARatingKey;
 import com.appspot.relaxe.pg.pagila.types.MPAARatingType;
 import com.appspot.relaxe.pg.pagila.types.YearMonthIntervalType;
 import com.appspot.relaxe.pg.pagila.types.YearType;
-import com.appspot.relaxe.rpc.IntegerHolder;
-import com.appspot.relaxe.rpc.Interval;
-import com.appspot.relaxe.rpc.IntervalHolder;
-import com.appspot.relaxe.rpc.StringArray;
-import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.source.DefaultAttributeInfo;
 import com.appspot.relaxe.types.ArrayType;
 import com.appspot.relaxe.types.DistinctType;
@@ -73,6 +68,11 @@ import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.IntervalType;
 import com.appspot.relaxe.types.OtherType;
 import com.appspot.relaxe.types.VarcharType;
+import com.appspot.relaxe.value.IntegerHolder;
+import com.appspot.relaxe.value.Interval;
+import com.appspot.relaxe.value.IntervalHolder;
+import com.appspot.relaxe.value.StringArray;
+import com.appspot.relaxe.value.VarcharHolder;
 
 
 public class PagilaTypeMapper

@@ -24,10 +24,10 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.LongVarBinaryHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.LongVarBinaryType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.LongVarBinaryHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 public final class LongVarBinaryAttribute<
 	A extends AttributeName,
@@ -59,7 +59,7 @@ public final class LongVarBinaryAttribute<
 		LongVarBinaryAttribute<X, T> k = meta.getLongVarBinaryAttribute(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = a.type();
+			ValueType<?> t = a.type();
 			
 			if (t != null && LongVarBinaryType.TYPE.equals(t)) {
 				k = new LongVarBinaryAttribute<X, T>(meta, a);
@@ -105,7 +105,7 @@ public final class LongVarBinaryAttribute<
 	}
 		
 	@Override
-	public LongVarBinaryHolder as(PrimitiveHolder<?, ?, ?> unknown) {
+	public LongVarBinaryHolder as(ValueHolder<?, ?, ?> unknown) {
 		return unknown.asLongVarBinaryHolder();
 	}
 }

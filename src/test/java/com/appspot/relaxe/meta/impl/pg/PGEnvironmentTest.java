@@ -27,7 +27,7 @@ import com.appspot.relaxe.env.pg.PGIdentifierRules;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.IllegalIdentifierException;
 import com.appspot.relaxe.expr.ddl.DefaultDefinition;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 
 public class PGEnvironmentTest
 	extends PGTestCase {
@@ -84,7 +84,7 @@ public class PGEnvironmentTest
 	
 	public void testNewDefault1() throws Exception {
 		PGEnvironment env = PGEnvironment.environment();
-		DefaultDefinition dd = env.newDefaultDefinition("now()", PrimitiveType.TIMESTAMP);
+		DefaultDefinition dd = env.newDefaultDefinition("now()", ValueType.TIMESTAMP);
 		
 		String expr = dd.generate();
 		logger().debug("expr: " + expr);
@@ -94,7 +94,7 @@ public class PGEnvironmentTest
 	
 	public void testNewDefault2() throws Exception {
 		PGEnvironment env = PGEnvironment.environment();
-		DefaultDefinition dd = env.newDefaultDefinition("('now'::text)::date", PrimitiveType.DATE);
+		DefaultDefinition dd = env.newDefaultDefinition("('now'::text)::date", ValueType.DATE);
 		
 		String expr = dd.generate();
 		logger().debug("expr: " + expr);
@@ -104,7 +104,7 @@ public class PGEnvironmentTest
 	
 	public void testNewDefault3() throws Exception {
 		PGEnvironment env = PGEnvironment.environment();
-		DefaultDefinition dd = env.newDefaultDefinition("123", PrimitiveType.INTEGER);
+		DefaultDefinition dd = env.newDefaultDefinition("123", ValueType.INTEGER);
 		
 		String expr = dd.generate();
 		logger().debug("expr: " + expr);
@@ -114,7 +114,7 @@ public class PGEnvironmentTest
 	
 	public void testNewDefault4() throws Exception {
 		PGEnvironment env = PGEnvironment.environment();
-		DefaultDefinition dd = env.newDefaultDefinition("123123123123", PrimitiveType.BIGINT);
+		DefaultDefinition dd = env.newDefaultDefinition("123123123123", ValueType.BIGINT);
 		
 		String expr = dd.generate();
 		logger().debug("expr: " + expr);
@@ -124,7 +124,7 @@ public class PGEnvironmentTest
 	
 	public void testNewDefault5() throws Exception {
 		PGEnvironment env = PGEnvironment.environment();
-		DefaultDefinition dd = env.newDefaultDefinition("'2013-01-11 12:13:14.123'::timestamp without time zone", PrimitiveType.TIMESTAMP);
+		DefaultDefinition dd = env.newDefaultDefinition("'2013-01-11 12:13:14.123'::timestamp without time zone", ValueType.TIMESTAMP);
 		
 		String expr = dd.generate();
 		logger().debug("expr: " + expr);
@@ -134,7 +134,7 @@ public class PGEnvironmentTest
 	
 	public void testNewDefault6() throws Exception {
 		PGEnvironment env = PGEnvironment.environment();
-		DefaultDefinition dd = env.newDefaultDefinition("'2013-01-11 12:13:14'::timestamp without time zone", PrimitiveType.TIMESTAMP);
+		DefaultDefinition dd = env.newDefaultDefinition("'2013-01-11 12:13:14'::timestamp without time zone", ValueType.TIMESTAMP);
 		
 		String expr = dd.generate();
 		logger().debug("expr: " + expr);
@@ -144,7 +144,7 @@ public class PGEnvironmentTest
 	
 	public void testNewDefault7() throws Exception {
 		PGEnvironment env = PGEnvironment.environment();
-		DefaultDefinition dd = env.newDefaultDefinition("'2013-01-01'::date", PrimitiveType.DATE);
+		DefaultDefinition dd = env.newDefaultDefinition("'2013-01-01'::date", ValueType.DATE);
 						
 		String expr = dd.generate();
 		logger().debug("expr: " + expr);

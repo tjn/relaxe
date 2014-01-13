@@ -26,12 +26,12 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.types.OtherType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.value.AbstractPrimitiveHolder;
 
 
-public abstract class OtherAssignment<O extends OtherType<O>, V extends Serializable, T extends AbstractPrimitiveType<T>, H extends AbstractPrimitiveHolder<V, T, H>>
+public abstract class OtherAssignment<O extends OtherType<O>, V extends Serializable, T extends AbstractValueType<T>, H extends AbstractPrimitiveHolder<V, T, H>>
 	extends AbstractParameterAssignment<V, T, H> {
 		
 	public OtherAssignment(H value) {

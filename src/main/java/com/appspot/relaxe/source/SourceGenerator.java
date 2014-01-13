@@ -81,8 +81,8 @@ import com.appspot.relaxe.meta.SchemaElement;
 import com.appspot.relaxe.meta.SchemaElementMap;
 import com.appspot.relaxe.meta.Table;
 import com.appspot.relaxe.query.QueryException;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.io.IOHelper;
 
 public class SourceGenerator {
@@ -375,7 +375,7 @@ public class SourceGenerator {
 		DataType type = c.getDataType();
 		
 		data.put("jdbc-data-type", toString(type.getDataType()));
-		data.put("jdbc-type-name", AbstractPrimitiveType.getSQLTypeName(type.getDataType()));
+		data.put("jdbc-type-name", AbstractValueType.getSQLTypeName(type.getDataType()));
 		data.put("type-name", type.getTypeName());
 		data.put("size", toString(type.getSize()));
 		data.put("char-octet-length", toString(type.getCharOctetLength()));
@@ -3846,7 +3846,7 @@ public class SourceGenerator {
 		int type = ct.getDataType();
 		
 		String cdesc = "column " + columnName(t, c) + " of type (" + type
-				+ ") (" + AbstractPrimitiveType.getSQLTypeName(type) + ") ("
+				+ ") (" + AbstractValueType.getSQLTypeName(type) + ") ("
 				+ ct.getTypeName() + ")";
 		
 		return cdesc;
@@ -4191,7 +4191,7 @@ public class SourceGenerator {
 
 			content.append(attr(c));
 			content.append("(");
-			PrimitiveType<?> pt = ai.getPrimitiveType();
+			ValueType<?> pt = ai.getPrimitiveType();
 
 			if (pt == null) {
 				content.append("null");

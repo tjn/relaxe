@@ -24,9 +24,9 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.CharHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.CharType;
+import com.appspot.relaxe.value.CharHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 public final class CharAttribute<
 	A extends AttributeName,	
@@ -101,7 +101,7 @@ public final class CharAttribute<
 	}
 	
 	@Override
-	public CharHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public CharHolder as(ValueHolder<?, ?, ?> holder) {
 		return CharHolder.of(holder);
 	}
 }

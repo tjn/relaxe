@@ -22,9 +22,9 @@
  */
 package com.appspot.relaxe.ent;
 
-import com.appspot.relaxe.rpc.AbstractResponse;
-import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.AbstractResponse;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 public class DefaultEntityQueryResult<
 	A extends AttributeName,

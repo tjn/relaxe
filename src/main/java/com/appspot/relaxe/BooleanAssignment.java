@@ -25,8 +25,8 @@ package com.appspot.relaxe;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.BooleanHolder;
 import com.appspot.relaxe.types.BooleanType;
+import com.appspot.relaxe.value.BooleanHolder;
 
 
 public class BooleanAssignment

@@ -24,10 +24,10 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.DoubleHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.DoubleType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.DoubleHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 public final class DoubleAttribute<	
 	A extends AttributeName,	
@@ -59,7 +59,7 @@ public final class DoubleAttribute<
 		DoubleAttribute<X, T> k = meta.getDoubleAttribute(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = a.type();
+			ValueType<?> t = a.type();
 			
 			if (DoubleType.TYPE.equals(t)) {
 				k = new DoubleAttribute<X, T>(meta, a);
@@ -103,7 +103,7 @@ public final class DoubleAttribute<
 	}
 	
 	@Override
-	public DoubleHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public DoubleHolder as(ValueHolder<?, ?, ?> holder) {
 		return DoubleHolder.of(holder);
 	}
 }

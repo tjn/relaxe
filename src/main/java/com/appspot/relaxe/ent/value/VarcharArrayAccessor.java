@@ -23,9 +23,9 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.StringArray;
-import com.appspot.relaxe.rpc.VarcharArrayHolder;
 import com.appspot.relaxe.types.VarcharArrayType;
+import com.appspot.relaxe.value.StringArray;
+import com.appspot.relaxe.value.VarcharArrayHolder;
 
 public class VarcharArrayAccessor<
 	A extends AttributeName,

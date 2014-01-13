@@ -22,8 +22,8 @@
  */
 package com.appspot.relaxe.env.pg;
 
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.rpc.StringHolder;
+import com.appspot.relaxe.value.StringHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 public class PGTextHolder
 	extends StringHolder<PGTextType, PGTextHolder> {
@@ -73,7 +73,7 @@ public class PGTextHolder
 		return this;
 	}
 	
-	public static PGTextHolder of(PrimitiveHolder<?, ?, ?> holder) {
+	public static PGTextHolder of(ValueHolder<?, ?, ?> holder) {
 		Object s = holder.self();
 				
 		PGTextHolder h = (PGTextHolder) s;	

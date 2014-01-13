@@ -23,7 +23,7 @@
 package com.appspot.relaxe.types;
 
 public class DateType
-	extends AbstractPrimitiveType<DateType> {
+	extends AbstractValueType<DateType> {
 	
 	/**
 	 * 
@@ -37,7 +37,7 @@ public class DateType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.DATE;
+		return ValueType.DATE;
 	}
 	
 	@Override

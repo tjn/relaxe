@@ -24,10 +24,10 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.rpc.LongHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
 import com.appspot.relaxe.types.LongType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.LongHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 public final class LongAttribute<
 	A extends AttributeName,
@@ -59,9 +59,9 @@ public final class LongAttribute<
 		LongAttribute<X, T> k = meta.getLongAttribute(a);
 		
 		if (k == null) {
-			PrimitiveType<?> t = a.type();
+			ValueType<?> t = a.type();
 			
-			if (t != null && t.getSqlType() == PrimitiveType.BIGINT) {
+			if (t != null && t.getSqlType() == ValueType.BIGINT) {
 				k = new LongAttribute<X, T>(meta, a);
 			}			
 		}
@@ -108,7 +108,7 @@ public final class LongAttribute<
 	}
 	
 	@Override
-	public LongHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public LongHolder as(ValueHolder<?, ?, ?> holder) {
 		return LongHolder.of(holder);
 	}
 }

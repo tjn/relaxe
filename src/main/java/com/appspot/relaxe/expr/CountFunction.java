@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.expr;
 
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 
 public class CountFunction
 	extends CompoundElement
@@ -67,7 +67,7 @@ public class CountFunction
 
 	@Override
 	public int getType() {
-		return PrimitiveType.BIGINT;
+		return ValueType.BIGINT;
 	}
 	
 	public boolean isDistinct() {

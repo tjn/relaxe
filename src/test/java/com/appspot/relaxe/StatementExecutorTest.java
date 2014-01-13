@@ -38,8 +38,8 @@ import com.appspot.relaxe.expr.TableReference;
 import com.appspot.relaxe.meta.DBMetaTestCase;
 import com.appspot.relaxe.meta.Table;
 import com.appspot.relaxe.query.QueryException;
-import com.appspot.relaxe.rpc.LongHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.value.LongHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 public abstract class StatementExecutorTest<I extends Implementation<I>> 
@@ -61,7 +61,7 @@ public abstract class StatementExecutorTest<I extends Implementation<I>>
 		assertNotNull(result);
 		logger().debug("testFetch: result=" + result);
 		
-		PrimitiveHolder<?, ?, ?> h = result.get(0);
+		ValueHolder<?, ?, ?> h = result.get(0);
 		logger().debug("testFetch: h=" + h);
 		LongHolder lh = h.asLongHolder();
 		assertNotNull(lh);

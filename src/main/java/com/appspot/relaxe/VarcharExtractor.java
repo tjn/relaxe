@@ -28,8 +28,8 @@ package com.appspot.relaxe;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.types.VarcharType;
+import com.appspot.relaxe.value.VarcharHolder;
 
 
 public class VarcharExtractor

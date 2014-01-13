@@ -23,9 +23,9 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.Decimal;
-import com.appspot.relaxe.rpc.DecimalHolder;
 import com.appspot.relaxe.types.DecimalType;
+import com.appspot.relaxe.value.Decimal;
+import com.appspot.relaxe.value.DecimalHolder;
 
 public class DecimalAccessor<
 	A extends AttributeName,		

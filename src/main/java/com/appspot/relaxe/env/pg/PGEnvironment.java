@@ -33,7 +33,7 @@ import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.meta.SerializableEnvironment;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 
 public class PGEnvironment
 	implements SerializableEnvironment {
@@ -95,7 +95,7 @@ public class PGEnvironment
 			
 			if (lit) {
 				def = new DefaultDefinition(
-						(t == PrimitiveType.BIGINT) ? 
+						(t == ValueType.BIGINT) ? 
 						new LongLiteral(Long.parseLong(head)) : 		
 						new IntLiteral(Integer.parseInt(head)));	
 			}
@@ -106,7 +106,7 @@ public class PGEnvironment
 			return def;
 		}
 		
-		if (t == PrimitiveType.DATE) {
+		if (t == ValueType.DATE) {
 			boolean lit = head.matches("'[0-9]{4}-[0-9]{2}-[0-9]{2}'");
 			
 			if (lit) {
@@ -126,7 +126,7 @@ public class PGEnvironment
 			return def;
 		}
 		
-		if (t == PrimitiveType.TIMESTAMP) {
+		if (t == ValueType.TIMESTAMP) {
 			boolean lit = head.matches("'[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?'");
 			
 			if (lit) {

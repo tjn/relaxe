@@ -39,10 +39,10 @@ import com.appspot.relaxe.expr.ImmutableValueParameter;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.expr.op.Comparison.Op;
 import com.appspot.relaxe.meta.Column;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.rpc.ReferenceHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 public abstract class DefaultEntityQueryElement<
 	A extends AttributeName,
@@ -125,8 +125,8 @@ public abstract class DefaultEntityQueryElement<
 	@Override
 	public <
 		XV extends Serializable, 
-		XT extends PrimitiveType<XT>, 
-		XH extends PrimitiveHolder<XV, XT, XH>, 
+		XT extends ValueType<XT>, 
+		XH extends ValueHolder<XV, XT, XH>, 
 		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	> 
 	EntityQueryPredicate newNull(K key) {
@@ -138,8 +138,8 @@ public abstract class DefaultEntityQueryElement<
 	@Override
 	public <
 		XV extends Serializable, 
-		XT extends PrimitiveType<XT>, 
-		XH extends PrimitiveHolder<XV, XT, XH>, 
+		XT extends ValueType<XT>, 
+		XH extends ValueHolder<XV, XT, XH>, 
 		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	> 
 	EntityQueryPredicate newNotNull(K key) {
@@ -178,8 +178,8 @@ public abstract class DefaultEntityQueryElement<
 	@Override
 	public <
 		XV extends Serializable, 
-		XT extends PrimitiveType<XT>, 
-		XH extends PrimitiveHolder<XV, XT, XH>, 
+		XT extends ValueType<XT>, 
+		XH extends ValueHolder<XV, XT, XH>, 
 		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	> 
 	EntityQueryPredicate newEquals(K key, XH rhs) {
@@ -189,8 +189,8 @@ public abstract class DefaultEntityQueryElement<
 	@Override
 	public <
 		XV extends Serializable, 
-		XT extends PrimitiveType<XT>, 
-		XH extends PrimitiveHolder<XV, XT, XH>, 
+		XT extends ValueType<XT>, 
+		XH extends ValueHolder<XV, XT, XH>, 
 		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newPredicate(K key, Op op, XH value) {				
@@ -204,8 +204,8 @@ public abstract class DefaultEntityQueryElement<
 	@Override
 	public <
 		XV extends Serializable, 
-		XT extends PrimitiveType<XT>, 
-		XH extends PrimitiveHolder<XV, XT, XH>, 
+		XT extends ValueType<XT>, 
+		XH extends ValueHolder<XV, XT, XH>, 
 		K extends ValueAttribute<A, E, XV, XT, XH, K>
 	> 
 	EntityQueryPredicate newEquals(K key, XV value) {				

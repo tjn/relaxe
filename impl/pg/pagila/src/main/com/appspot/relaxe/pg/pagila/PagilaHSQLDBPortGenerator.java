@@ -64,7 +64,7 @@ import com.appspot.relaxe.service.StatementSession;
 import com.appspot.relaxe.tools.CatalogTool;
 import com.appspot.relaxe.tools.ToolConfigurationException;
 import com.appspot.relaxe.tools.ToolException;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.cli.CommandLine;
 import com.appspot.relaxe.cli.Option;
 import com.appspot.relaxe.cli.Parameter;
@@ -208,7 +208,7 @@ public class PagilaHSQLDBPortGenerator
 						
 		final DataTypeMap dtm = new DataTypeMap() {			
 			@Override
-			public PrimitiveType<?> getType(DataType type) {
+			public ValueType<?> getType(DataType type) {
 				return htm.getType(type);
 			}
 			
@@ -221,11 +221,11 @@ public class PagilaHSQLDBPortGenerator
 					
 					logger.debug("unmapped: " + dataType.getTypeName() + ": " + dataType.getDataType());
 					
-					if (t == PrimitiveType.ARRAY && dataType.getTypeName().equals("_text")) {
+					if (t == ValueType.ARRAY && dataType.getTypeName().equals("_text")) {
 						def = di.getSyntax().newArrayTypeDefinition(VarcharTypeDefinition.get(1024));
 					}
 					
-					if (t == PrimitiveType.BINARY && dataType.getTypeName().equals("bytea")) {												
+					if (t == ValueType.BINARY && dataType.getTypeName().equals("bytea")) {												
 						def = VarBinaryTypeDefinition.get(dataType.getSize());
 					}
 					

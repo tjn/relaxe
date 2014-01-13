@@ -28,9 +28,9 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.appspot.relaxe.rpc.Interval;
-import com.appspot.relaxe.rpc.IntervalHolder;
 import com.appspot.relaxe.types.IntervalType;
+import com.appspot.relaxe.value.Interval;
+import com.appspot.relaxe.value.IntervalHolder;
 
 
 public abstract class IntervalAssignment<V extends Interval<V>, T extends IntervalType<T>, H extends IntervalHolder<V, T, H>>
@@ -51,7 +51,7 @@ public abstract class IntervalAssignment<V extends Interval<V>, T extends Interv
 		}
 
 		@Override
-		public void assign(PreparedStatement ps, int ordinal, com.appspot.relaxe.rpc.Interval.YearMonth ym) throws SQLException {
+		public void assign(PreparedStatement ps, int ordinal, com.appspot.relaxe.value.Interval.YearMonth ym) throws SQLException {
 			StringBuffer v = new StringBuffer();
 			
 			if (ym.signum() < 0) {
@@ -72,7 +72,7 @@ public abstract class IntervalAssignment<V extends Interval<V>, T extends Interv
 		}
 	
 		@Override
-		public void assign(PreparedStatement ps, int ordinal, com.appspot.relaxe.rpc.Interval.DayTime dt) throws SQLException {
+		public void assign(PreparedStatement ps, int ordinal, com.appspot.relaxe.value.Interval.DayTime dt) throws SQLException {
 			StringBuffer v = new StringBuffer();
 			
 			if (dt.signum() < 0) {

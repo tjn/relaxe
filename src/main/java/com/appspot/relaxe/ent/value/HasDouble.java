@@ -23,7 +23,7 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.DoubleHolder;
+import com.appspot.relaxe.value.DoubleHolder;
 
 public interface HasDouble<A extends AttributeName, E extends HasDouble<A, E>> {
 	DoubleHolder getDouble(DoubleAttribute<A, E> key);

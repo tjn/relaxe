@@ -22,10 +22,10 @@
  */
 package com.appspot.relaxe.env.pg;
 
-import com.appspot.relaxe.rpc.ArrayValue;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.rpc.StringArrayHolder;
 import com.appspot.relaxe.types.VarcharType;
+import com.appspot.relaxe.value.ArrayValue;
+import com.appspot.relaxe.value.StringArrayHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 public class PGTextArrayHolder
 	extends StringArrayHolder<VarcharType, PGTextArrayType, PGTextArrayHolder> {
@@ -63,7 +63,7 @@ public class PGTextArrayHolder
 		return new PGTextArrayHolder(newValue);
 	}
 
-	public static PGTextArrayHolder of(PrimitiveHolder<?, ?, ?> holder) {
+	public static PGTextArrayHolder of(ValueHolder<?, ?, ?> holder) {
 		Object h = holder.self();
 		PGTextArrayHolder mh = (PGTextArrayHolder) h;	
 		return mh;

@@ -44,10 +44,10 @@ import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.expr.ImmutableValueParameter;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.meta.Column;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.rpc.ReferenceHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 public class DefaultEntityQuery<
 	A extends AttributeName,
@@ -174,8 +174,8 @@ public class DefaultEntityQuery<
 		public
 		<
 			V extends Serializable,
-			P extends PrimitiveType<P>,
-			W extends PrimitiveHolder<V, P, W>,
+			P extends ValueType<P>,
+			W extends ValueHolder<V, P, W>,
 			K extends ValueAttribute<A, E, V, P, W, K>
 		>
 		void addPredicate(K key, Comparison.Op op, W value) {
@@ -195,8 +195,8 @@ public class DefaultEntityQuery<
 			XM extends com.appspot.relaxe.ent.EntityMetaData<XA, ?, ?, XE, ?, ?, XM>,
 			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, XM, XQ>,
 			V extends Serializable,
-			P extends PrimitiveType<P>,
-			W extends PrimitiveHolder<V, P, W>,
+			P extends ValueType<P>,
+			W extends ValueHolder<V, P, W>,
 			K extends ValueAttribute<XA, XE, V, P, W, K>
 		>
 		EntityQueryPredicate newPredicate(XQ element, K key, Comparison.Op op, W value) {
@@ -215,8 +215,8 @@ public class DefaultEntityQuery<
 			XM extends com.appspot.relaxe.ent.EntityMetaData<XA, ?, ?, XE, ?, ?, XM>,
 			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, XM, XQ>,
 			V extends Serializable,
-			P extends PrimitiveType<P>,
-			W extends PrimitiveHolder<V, P, W>,
+			P extends ValueType<P>,
+			W extends ValueHolder<V, P, W>,
 			K extends ValueAttribute<XA, XE, V, P, W, K>
 		>
 		EntityQueryPredicate newPredicate(XQ element, K key, XE ent) {
@@ -227,8 +227,8 @@ public class DefaultEntityQuery<
 		public
 		<
 			V extends Serializable,
-			P extends PrimitiveType<P>,
-			W extends PrimitiveHolder<V, P, W>,
+			P extends ValueType<P>,
+			W extends ValueHolder<V, P, W>,
 			K extends ValueAttribute<A, E, V, P, W, K>
 		>
 		void addPredicate(K key, W holder) {
@@ -237,8 +237,8 @@ public class DefaultEntityQuery<
 		
 		@Override
 		public <
-			P extends PrimitiveType<P>,
-			W extends PrimitiveHolder<String, P, W>,
+			P extends ValueType<P>,
+			W extends ValueHolder<String, P, W>,
 			K extends StringAttribute<A, E, P, W, K>
 		>
 		void addPredicate(K key, String value) {
@@ -247,8 +247,8 @@ public class DefaultEntityQuery<
 		
 		@Override
 		public <
-			P extends PrimitiveType<P>,
-			W extends PrimitiveHolder<String, P, W>,
+			P extends ValueType<P>,
+			W extends ValueHolder<String, P, W>,
 			K extends StringAttribute<A, E, P, W, K>
 		>
 		void addPredicate(K key, Comparison.Op op, String value) {			

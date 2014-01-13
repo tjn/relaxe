@@ -25,9 +25,9 @@ package com.appspot.relaxe;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.types.EnumType;
 import com.appspot.relaxe.types.Enumerable;
+import com.appspot.relaxe.value.AbstractPrimitiveHolder;
 
 
 public abstract class EnumAssignment<V extends Enum<V> & Enumerable, T extends EnumType<T, V>, H extends AbstractPrimitiveHolder<V, T, H>>

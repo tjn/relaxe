@@ -23,7 +23,7 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.rpc.DateHolder;
+import com.appspot.relaxe.value.DateHolder;
 
 public interface HasDate<
 	A extends AttributeName,

@@ -26,8 +26,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
 
-import com.appspot.relaxe.rpc.DateHolder;
 import com.appspot.relaxe.types.DateType;
+import com.appspot.relaxe.value.DateHolder;
 
 
 public class DateAssignment

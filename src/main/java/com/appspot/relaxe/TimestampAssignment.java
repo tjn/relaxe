@@ -26,8 +26,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
 
-import com.appspot.relaxe.rpc.TimestampHolder;
 import com.appspot.relaxe.types.TimestampType;
+import com.appspot.relaxe.value.TimestampHolder;
 
 
 public class TimestampAssignment

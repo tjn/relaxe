@@ -25,6 +25,7 @@ package com.appspot.relaxe.ent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.appspot.relaxe.ent.im.EntityIdentityMap;
 import com.appspot.relaxe.ent.im.ReferenceIdentityMap;
 import com.appspot.relaxe.ent.value.ValueAttribute;
@@ -35,11 +36,11 @@ import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.Table;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
-import com.appspot.relaxe.rpc.ReferenceHolder;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.ReferenceHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 public abstract class DefaultEntityBuilder<
@@ -105,7 +106,7 @@ public abstract class DefaultEntityBuilder<
 		
 		if (pkws > 0) {		
 			for (AttributeWriter<A, E> w : this.primaryKeyWriterList) {					
-				PrimitiveHolder<?, ?, ?> h = src.get(w.getIndex());
+				ValueHolder<?, ?, ?> h = src.get(w.getIndex());
 				
 				if (h == null || h.isNull()) {
 					// referenced primary key contained nulls => not identified
@@ -150,7 +151,7 @@ public abstract class DefaultEntityBuilder<
 	 * @param src
 	 * @param dest
 	 * @param wl List of writers to apply.
-	 * @return Number of values which were nulls according to copied {@link PrimitiveHolder}
+	 * @return Number of values which were nulls according to copied {@link ValueHolder}
 	 * @see {@link AbstractPrimitiveHolder#isNull()} 
 	 */
 	private int copy(DataObject src, E dest, List<AttributeWriter<A, E>> wl) {
@@ -223,17 +224,17 @@ public abstract class DefaultEntityBuilder<
 	
 	private <		
 		V extends Serializable,
-		P extends PrimitiveType<P>,
-		VH extends PrimitiveHolder<V, P, VH>,	
+		P extends ValueType<P>,
+		VH extends ValueHolder<V, P, VH>,	
 		VK extends ValueAttribute<A, E, V, P, VH, VK>
 	>
 	AttributeWriter<A, E> createWriter(final ValueAttribute<A, E, V, P, VH, VK> key, final int index) {
 		return new AttributeWriter<A, E>() {
 			@Override
-			public PrimitiveHolder<?, ?, ?> write(DataObject src, E dest)
+			public ValueHolder<?, ?, ?> write(DataObject src, E dest)
 					throws EntityRuntimeException {
 				
-				PrimitiveHolder<?, ?, ?> h = src.get(index);
+				ValueHolder<?, ?, ?> h = src.get(index);
 				VH vc = key.as(h);
 				key.set(dest, vc);
 				return vc;

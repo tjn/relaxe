@@ -31,9 +31,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.appspot.relaxe.rpc.StringArray;
-import com.appspot.relaxe.rpc.VarcharArrayHolder;
 import com.appspot.relaxe.types.VarcharArrayType;
+import com.appspot.relaxe.value.StringArray;
+import com.appspot.relaxe.value.VarcharArrayHolder;
 
 
 public class VarcharArrayExtractor

@@ -59,8 +59,8 @@ import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.Schema;
 import com.appspot.relaxe.meta.SchemaElementMap;
-import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 
 public class TemplateGenerator {

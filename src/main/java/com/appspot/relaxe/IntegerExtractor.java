@@ -28,8 +28,8 @@ package com.appspot.relaxe;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.IntegerHolder;
 import com.appspot.relaxe.types.IntegerType;
+import com.appspot.relaxe.value.IntegerHolder;
 
 
 public class IntegerExtractor

@@ -24,8 +24,8 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
-import com.appspot.relaxe.rpc.LongHolder;
 import com.appspot.relaxe.types.LongType;
+import com.appspot.relaxe.value.LongHolder;
 
 public class LongAccessor<
 	A extends AttributeName,

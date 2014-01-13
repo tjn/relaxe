@@ -26,9 +26,9 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.Decimal;
-import com.appspot.relaxe.rpc.DecimalHolder;
 import com.appspot.relaxe.types.DecimalType;
+import com.appspot.relaxe.value.Decimal;
+import com.appspot.relaxe.value.DecimalHolder;
 
 public class DecimalAssignment
 	extends AbstractParameterAssignment<Decimal, DecimalType, DecimalHolder> {

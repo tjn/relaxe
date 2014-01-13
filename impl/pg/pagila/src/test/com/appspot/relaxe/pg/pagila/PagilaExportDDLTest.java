@@ -70,15 +70,15 @@ import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBEnvironment;
 import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 import com.appspot.relaxe.query.QueryException;
-import com.appspot.relaxe.rpc.StringArray;
-import com.appspot.relaxe.rpc.VarcharArrayHolder;
 import com.appspot.relaxe.service.DataAccessContext;
 import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.StatementSession;
 import com.appspot.relaxe.source.DefaultAttributeInfo;
 import com.appspot.relaxe.source.SourceGenerator;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.VarcharArrayType;
+import com.appspot.relaxe.value.StringArray;
+import com.appspot.relaxe.value.VarcharArrayHolder;
 
 public class PagilaExportDDLTest 
 	extends AbstractPagilaTestCase {
@@ -97,7 +97,7 @@ public class PagilaExportDDLTest
 						
 		final DataTypeMap dtm = new DataTypeMap() {			
 			@Override
-			public PrimitiveType<?> getType(DataType type) {
+			public ValueType<?> getType(DataType type) {
 				return htm.getType(type);
 			}
 			
@@ -110,11 +110,11 @@ public class PagilaExportDDLTest
 					
 					logger.debug("unmapped: " + dataType.getTypeName() + ": " + dataType.getDataType());
 					
-					if (t == PrimitiveType.ARRAY && dataType.getTypeName().equals("_text")) {
+					if (t == ValueType.ARRAY && dataType.getTypeName().equals("_text")) {
 						def = hi.getSyntax().newArrayTypeDefinition(VarcharTypeDefinition.get(1024));
 					}
 					
-					if (t == PrimitiveType.BINARY && dataType.getTypeName().equals("bytea")) {												
+					if (t == ValueType.BINARY && dataType.getTypeName().equals("bytea")) {												
 						def = VarBinaryTypeDefinition.get(dataType.getSize());
 					}
 					
@@ -217,7 +217,7 @@ public class PagilaExportDDLTest
 		        	info.setContainerType(HasVarcharArray.class);
 		        	info.setContainerMetaType(HasVarcharArrayAttribute.class);
 					
-					register(PrimitiveType.ARRAY, "VARCHAR(1024) ARRAY", info);
+					register(ValueType.ARRAY, "VARCHAR(1024) ARRAY", info);
 				}
 			};
 			

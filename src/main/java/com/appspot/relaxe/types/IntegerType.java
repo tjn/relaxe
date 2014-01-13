@@ -23,7 +23,7 @@
 package com.appspot.relaxe.types;
 
 public class IntegerType
-	extends AbstractPrimitiveType<IntegerType> {
+	extends AbstractValueType<IntegerType> {
 	
 	/**
 	 * 
@@ -37,7 +37,7 @@ public class IntegerType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.INTEGER;
+		return ValueType.INTEGER;
 	}
 	
 	@Override

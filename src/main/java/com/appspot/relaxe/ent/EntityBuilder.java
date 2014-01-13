@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.ent;
 
-import com.appspot.relaxe.rpc.ReferenceHolder;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 public interface EntityBuilder<
 	E extends Entity<?, ?, ?, E, H, ?, ?>,

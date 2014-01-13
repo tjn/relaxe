@@ -22,8 +22,8 @@
  */
 package com.appspot.relaxe;
 
-import com.appspot.relaxe.rpc.CharHolder;
 import com.appspot.relaxe.types.CharType;
+import com.appspot.relaxe.value.CharHolder;
 
 public class CharAssignment
 	extends StringAssignment<CharType, CharHolder> {

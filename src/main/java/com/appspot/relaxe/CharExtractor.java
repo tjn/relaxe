@@ -28,8 +28,8 @@ package com.appspot.relaxe;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.CharHolder;
 import com.appspot.relaxe.types.CharType;
+import com.appspot.relaxe.value.CharHolder;
 
 
 public class CharExtractor

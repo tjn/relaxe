@@ -26,7 +26,7 @@ import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.value.HasString;
 import com.appspot.relaxe.ent.value.StringAttribute;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 public class PGTextAttribute<
@@ -103,7 +103,7 @@ public class PGTextAttribute<
 	}
 
 	@Override
-	public PGTextHolder as(PrimitiveHolder<?, ?, ?> holder) {
+	public PGTextHolder as(ValueHolder<?, ?, ?> holder) {
 		return PGTextHolder.of(holder);
 	}
 

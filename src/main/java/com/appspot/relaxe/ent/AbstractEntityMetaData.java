@@ -22,8 +22,8 @@
  */
 package com.appspot.relaxe.ent;
 
-import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 public abstract class AbstractEntityMetaData<
 	A extends AttributeName,

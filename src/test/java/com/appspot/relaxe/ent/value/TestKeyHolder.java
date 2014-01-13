@@ -32,12 +32,12 @@ import com.appspot.relaxe.ent.value.HasLong;
 import com.appspot.relaxe.ent.value.IntegerAttribute;
 import com.appspot.relaxe.ent.value.LongAttribute;
 import com.appspot.relaxe.ent.value.ValueAttribute;
-import com.appspot.relaxe.rpc.IntegerHolder;
-import com.appspot.relaxe.rpc.LongHolder;
-import com.appspot.relaxe.rpc.AbstractPrimitiveHolder;
 import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.LongType;
-import com.appspot.relaxe.types.AbstractPrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.IntegerHolder;
+import com.appspot.relaxe.value.LongHolder;
 
 
 public class TestKeyHolder
@@ -50,7 +50,7 @@ public class TestKeyHolder
 
 	<
 		S extends Serializable,
-		P extends AbstractPrimitiveType<P>,
+		P extends AbstractValueType<P>,
 		PH extends AbstractPrimitiveHolder<S, P, PH>,
 		K extends ValueAttribute<TestKeyHolder.Attribute, TestKeyHolder, S, P, PH, K>
 	>
@@ -76,13 +76,13 @@ public class TestKeyHolder
 		
 		
 	    private String identifier;
-	    private AbstractPrimitiveType<?> type;
+	    private AbstractValueType<?> type;
 	        
-	    Attribute(AbstractPrimitiveType<?> type) {
+	    Attribute(AbstractValueType<?> type) {
 	    	this.type = type;
 	    }
 	    
-	    Attribute(String identifier, AbstractPrimitiveType<?> type) {
+	    Attribute(String identifier, AbstractValueType<?> type) {
 	    	this(type);
 	        this.identifier = identifier;
 	    }    
@@ -93,7 +93,7 @@ public class TestKeyHolder
 	    }
 
 	    @Override
-		public AbstractPrimitiveType<?> type() {
+		public AbstractValueType<?> type() {
 	    	return this.type;
 	    }    
 	}

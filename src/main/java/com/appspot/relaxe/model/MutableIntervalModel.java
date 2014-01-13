@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.model;
 
-import com.appspot.relaxe.rpc.Interval;
+import com.appspot.relaxe.value.Interval;
 
 public abstract class MutableIntervalModel<T extends Interval<T>>
 	extends DefaultMutableValueModel<T> {

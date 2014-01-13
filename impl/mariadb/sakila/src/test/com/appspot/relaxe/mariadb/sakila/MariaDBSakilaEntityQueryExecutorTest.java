@@ -46,10 +46,10 @@ import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.gen.mariadb.sakila.ent.sakila.Film;
 import com.appspot.relaxe.gen.mariadb.sakila.ent.sakila.Language;
 import com.appspot.relaxe.query.QueryResult;
-import com.appspot.relaxe.rpc.IntegerHolder;
-import com.appspot.relaxe.rpc.ReferenceHolder;
-import com.appspot.relaxe.rpc.VarcharHolder;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.IntegerHolder;
+import com.appspot.relaxe.value.ReferenceHolder;
+import com.appspot.relaxe.value.VarcharHolder;
 
 public class MariaDBSakilaEntityQueryExecutorTest 
 	extends MariaDBSakilaTestCase {

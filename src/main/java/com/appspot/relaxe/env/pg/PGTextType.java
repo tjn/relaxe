@@ -22,11 +22,11 @@
  */
 package com.appspot.relaxe.env.pg;
 
-import com.appspot.relaxe.types.AbstractPrimitiveType;
-import com.appspot.relaxe.types.PrimitiveType;
+import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.types.ValueType;
 
 public class PGTextType
-	extends AbstractPrimitiveType<PGTextType> {
+	extends AbstractValueType<PGTextType> {
 	
 	public static final PGTextType TYPE = new PGTextType();
 	
@@ -48,6 +48,6 @@ public class PGTextType
 	
 	@Override
 	public int getSqlType() {
-		return PrimitiveType.VARCHAR;
+		return ValueType.VARCHAR;
 	}
 }

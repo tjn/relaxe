@@ -23,8 +23,9 @@
 package com.appspot.relaxe.ent;
 
 import java.io.Serializable;
-import com.appspot.relaxe.rpc.ReferenceHolder;
+
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 
 public interface EntityQueryTemplate<

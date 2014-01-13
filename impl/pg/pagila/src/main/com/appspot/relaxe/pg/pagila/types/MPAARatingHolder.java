@@ -24,9 +24,9 @@ package com.appspot.relaxe.pg.pagila.types;
 
 import java.util.EnumMap;
 
-import com.appspot.relaxe.rpc.EnumHolder;
-import com.appspot.relaxe.rpc.OtherHolder;
-import com.appspot.relaxe.rpc.PrimitiveHolder;
+import com.appspot.relaxe.value.EnumHolder;
+import com.appspot.relaxe.value.OtherHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 public class MPAARatingHolder
@@ -90,7 +90,7 @@ public class MPAARatingHolder
 		return getType().getName().equals(typeName) ? self() : null;
 	}
 		
-	public static MPAARatingHolder of(PrimitiveHolder<?, ?, ?> holder) {
+	public static MPAARatingHolder of(ValueHolder<?, ?, ?> holder) {
 		Object h = holder.self();
 		MPAARatingHolder mh = (MPAARatingHolder) h;	
 		return mh;

@@ -29,8 +29,8 @@ import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.rpc.TimeHolder;
 import com.appspot.relaxe.types.TimeType;
+import com.appspot.relaxe.value.TimeHolder;
 
 
 class TimeExtractor
