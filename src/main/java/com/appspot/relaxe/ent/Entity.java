@@ -101,7 +101,7 @@ public interface Entity<
 	 * Returns the value of the corresponding column.
 	 *
 	 * If the <code>column</code> directly corresponds an attribute, the value of that attribute is returned.
-	 * Otherwise, the foreign keys the <code>column</code> is a part of are searched to find an entity reference.
+	 * Otherwise, the foreign keys the <code>column</code> is part of are searched to find an entity reference.
 	 *
 	 * If there is no referenced entity, <code>null</code> is returned.
 	 *
@@ -118,20 +118,13 @@ public interface Entity<
 	ValueHolder<?, ?, ?> get(Column c) throws NullPointerException, EntityRuntimeException;
 
 	/***
-	 * Returns the value of the corresponding column.
-	 *
-	 * If the <code>column</code> directly corresponds an attribute, the value of that attribute is returned.
-	 * Otherwise, the foreign keys the <code>column</code> is a part of are searched to find an entity reference.
-	 *
+	 * Returns the reference holder by name.
+	 *  
 	 * If there is no referenced entity, <code>null</code> is returned.
 	 *
-	 * If the entity reference <code>ref</code> (referenced by foreign key <code>F</code>) is found,
-	 * <code>column</code> is mapped to the corresponding column <code>fkcol</code>
-	 * in referenced table and result of the expression <code>ref.get(fkcol)</code> is returned.
-	 *
-	 * @param column
-	 * @return Scalar value or <code>null</code>, if the value is not set
-	 * @throws NullPointerException If <code>c</code> is <code>null</code>.
+	 * @param ref
+	 * @return 
+	 * @throws NullPointerException If <code>ref</code> is <code>null</code>.
 	 */
 	ReferenceHolder<?, ?, ?, ?, ?, ?> ref(R ref);
 
