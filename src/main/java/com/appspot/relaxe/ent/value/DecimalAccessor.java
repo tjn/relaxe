@@ -31,7 +31,7 @@ public class DecimalAccessor<
 	A extends AttributeName,		
 	E extends HasDecimal<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, Decimal, DecimalType, DecimalHolder, DecimalAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, E, Decimal, DecimalType, DecimalHolder, DecimalAttribute<A, E>> {
 
 	/**
 	 * 

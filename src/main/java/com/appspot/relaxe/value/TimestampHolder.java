@@ -30,7 +30,7 @@ import com.appspot.relaxe.types.TimestampType;
 
 
 public class TimestampHolder
-	extends AbstractPrimitiveHolder<Date, TimestampType, TimestampHolder> {
+	extends AbstractValueHolder<Date, TimestampType, TimestampHolder> {
 			
 	/**
 	 * 

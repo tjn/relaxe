@@ -35,7 +35,7 @@ public class IntervalAccessor<
 	H extends IntervalHolder<V, P, H>,
 	K extends IntervalAttribute<A, E, V, P, H, K>
 >
-	extends AbstractPrimitiveAccessor<A, E, V, P, H, K> {
+	extends AbstractAttributeAccessor<A, E, V, P, H, K> {
 
 	/**
 	 *

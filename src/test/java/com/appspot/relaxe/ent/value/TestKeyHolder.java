@@ -35,7 +35,7 @@ import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.LongType;
 import com.appspot.relaxe.types.AbstractValueType;
-import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.AbstractValueHolder;
 import com.appspot.relaxe.value.IntegerHolder;
 import com.appspot.relaxe.value.LongHolder;
 
@@ -51,7 +51,7 @@ public class TestKeyHolder
 	<
 		S extends Serializable,
 		P extends AbstractValueType<P>,
-		PH extends AbstractPrimitiveHolder<S, P, PH>,
+		PH extends AbstractValueHolder<S, P, PH>,
 		K extends ValueAttribute<TestKeyHolder.Attribute, TestKeyHolder, S, P, PH, K>
 	>
 	PH get(K k) {

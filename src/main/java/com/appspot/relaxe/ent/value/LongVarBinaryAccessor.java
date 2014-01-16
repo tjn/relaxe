@@ -31,7 +31,7 @@ public class LongVarBinaryAccessor<
 	A extends AttributeName,
 	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasLongVarBinary<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, LongVarBinary, LongVarBinaryType, LongVarBinaryHolder, LongVarBinaryAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, E, LongVarBinary, LongVarBinaryType, LongVarBinaryHolder, LongVarBinaryAttribute<A, E>> {
 
 
 	/**

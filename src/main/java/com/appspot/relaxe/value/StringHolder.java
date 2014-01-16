@@ -25,7 +25,7 @@ package com.appspot.relaxe.value;
 import com.appspot.relaxe.types.ValueType;
 
 public abstract class StringHolder<T extends ValueType<T>, H extends StringHolder<T, H>>
-	extends AbstractPrimitiveHolder<String, T, H> {
+	extends AbstractValueHolder<String, T, H> {
 	
 	/**
 	 * 

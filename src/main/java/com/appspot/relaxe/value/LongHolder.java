@@ -27,7 +27,7 @@ import com.appspot.relaxe.types.ValueType;
 
 
 public class LongHolder
-	extends AbstractPrimitiveHolder<Long, LongType, LongHolder> {
+	extends AbstractValueHolder<Long, LongType, LongHolder> {
 			
 	/**
 	 * 

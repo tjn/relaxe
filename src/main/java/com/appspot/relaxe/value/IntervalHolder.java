@@ -27,7 +27,7 @@ import com.appspot.relaxe.types.AbstractValueType;
 import com.appspot.relaxe.types.ValueType;
 
 public abstract class IntervalHolder<V extends Interval<?>, T extends AbstractValueType<T>, H extends IntervalHolder<V, T, H>>
-	extends AbstractPrimitiveHolder<V, T, H> {
+	extends AbstractValueHolder<V, T, H> {
 	
 	private V value;
 
@@ -74,7 +74,7 @@ public abstract class IntervalHolder<V extends Interval<?>, T extends AbstractVa
 			return this;
 		}
 		
-		public static IntervalHolder.YearMonth of(AbstractPrimitiveHolder<?, ?, ?> holder) {
+		public static IntervalHolder.YearMonth of(AbstractValueHolder<?, ?, ?> holder) {
 			return holder.asYearMonthIntervalHolder();
 		}
 	}

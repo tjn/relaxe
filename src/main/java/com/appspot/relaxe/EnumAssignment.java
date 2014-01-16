@@ -27,10 +27,10 @@ import java.sql.SQLException;
 
 import com.appspot.relaxe.types.EnumType;
 import com.appspot.relaxe.types.Enumerable;
-import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.AbstractValueHolder;
 
 
-public abstract class EnumAssignment<V extends Enum<V> & Enumerable, T extends EnumType<T, V>, H extends AbstractPrimitiveHolder<V, T, H>>
+public abstract class EnumAssignment<V extends Enum<V> & Enumerable, T extends EnumType<T, V>, H extends AbstractValueHolder<V, T, H>>
 	extends AbstractParameterAssignment<V, T, H> {
 		
 	public EnumAssignment(H value) {

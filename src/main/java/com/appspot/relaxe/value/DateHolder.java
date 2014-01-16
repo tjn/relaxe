@@ -29,7 +29,7 @@ import com.appspot.relaxe.types.DateType;
 
 
 public class DateHolder
-	extends AbstractPrimitiveHolder<Date, DateType, DateHolder> {
+	extends AbstractValueHolder<Date, DateType, DateHolder> {
 		
 	/**
 	 * 

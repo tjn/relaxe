@@ -38,7 +38,7 @@ import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.Table;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.ReferenceType;
-import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.AbstractValueHolder;
 import com.appspot.relaxe.value.ReferenceHolder;
 import com.appspot.relaxe.value.ValueHolder;
 
@@ -152,7 +152,7 @@ public abstract class DefaultEntityBuilder<
 	 * @param dest
 	 * @param wl List of writers to apply.
 	 * @return Number of values which were nulls according to copied {@link ValueHolder}
-	 * @see {@link AbstractPrimitiveHolder#isNull()} 
+	 * @see {@link AbstractValueHolder#isNull()} 
 	 */
 	private int copy(DataObject src, E dest, List<AttributeWriter<A, E>> wl) {
 		int n = 0;

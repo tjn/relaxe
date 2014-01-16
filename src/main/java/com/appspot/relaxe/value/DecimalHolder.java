@@ -27,7 +27,7 @@ import com.appspot.relaxe.types.ValueType;
 
 
 public class DecimalHolder
-	extends AbstractPrimitiveHolder<Decimal, DecimalType, DecimalHolder> {
+	extends AbstractValueHolder<Decimal, DecimalType, DecimalHolder> {
 			
 	/**
 	 * 

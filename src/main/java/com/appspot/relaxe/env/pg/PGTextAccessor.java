@@ -24,14 +24,14 @@ package com.appspot.relaxe.env.pg;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
-import com.appspot.relaxe.ent.value.AbstractPrimitiveAccessor;
+import com.appspot.relaxe.ent.value.AbstractAttributeAccessor;
 
 
 public class PGTextAccessor<
 	A extends AttributeName,
 	E extends Entity<A, ?, ?, E, ?, ?, ?> & HasPGText<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, String, PGTextType, PGTextHolder, PGTextAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, E, String, PGTextType, PGTextHolder, PGTextAttribute<A, E>> {
 
 	/**
 	 *

@@ -44,12 +44,12 @@ public abstract class VirtualHolder<
 	S extends Serializable,
 	T extends Serializable,
 	I extends AbstractValueType<I>,
-	H extends AbstractPrimitiveHolder<T, I, H>,
+	H extends AbstractValueHolder<T, I, H>,
 	V extends AbstractValueType<V>,
 	Z extends VirtualType<Z, I, V>,
 	VH extends VirtualHolder<S, T, I, H, V, Z, VH>
 >
-	extends AbstractPrimitiveHolder<S, Z, VH> {
+	extends AbstractValueHolder<S, Z, VH> {
 
 	/**
 	 * 

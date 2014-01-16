@@ -27,9 +27,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.appspot.relaxe.types.AbstractValueType;
-import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.AbstractValueHolder;
 
-public class StringAssignment<T extends AbstractValueType<T>, H extends AbstractPrimitiveHolder<String, T, H>>	
+public class StringAssignment<T extends AbstractValueType<T>, H extends AbstractValueHolder<String, T, H>>	
 	extends AbstractParameterAssignment<String, T, H> {
 
 	public StringAssignment(H value) {

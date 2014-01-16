@@ -25,49 +25,23 @@ package com.appspot.relaxe.ent.value;
 import java.io.Serializable;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.ent.Entity;
-import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.types.AbstractValueType;
-import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.AbstractValueHolder;
 
 
-public class PrimitiveStamper<
+public interface AttributeAccessor<
 	A extends AttributeName,
-	E extends Entity<A, ?, ?, E, ?, ?, ?>,	
+	E,
 	S extends Serializable,
 	P extends AbstractValueType<P>,
-	H extends AbstractPrimitiveHolder<S, P, H>,	
+	H extends AbstractValueHolder<S, P, H>,	
 	K extends ValueAttribute<A, E, S, P, H, K>
-	>
-	extends AbstractPrimitiveAccessor<A, E, S, P, H, K>
-	implements Mutator<A, E, S, P, H, K>
+>
+	extends Serializable
 {
-
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 7060596100410117898L;
+	K key();	
+	S get();
 	
-	/**
-	 * No-argument constructor for GWT Serialization
-	 */
-	protected PrimitiveStamper() {
-	}
-
-	public PrimitiveStamper(E target, K key) {
-		super(target, key);
-	}
-
-
-	@Override
-	public void setHolder(H newHolder) 
-		throws EntityRuntimeException {
-		getTarget().set(key(), newHolder);
-	}
-
-	@Override
-	public void set(S newValue) 
-		throws EntityRuntimeException {		
-		setHolder(key().newHolder(newValue));
-	}		
+	
+	H getHolder();
 }

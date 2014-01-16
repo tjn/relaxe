@@ -27,18 +27,18 @@ import java.io.Serializable;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.types.AbstractValueType;
-import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.AbstractValueHolder;
 
 
-public abstract class AbstractPrimitiveAccessor<
+public abstract class AbstractAttributeAccessor<
 	A extends AttributeName,
 	E,
 	S extends Serializable,
 	P extends AbstractValueType<P>,
-	H extends AbstractPrimitiveHolder<S, P, H>,	
+	H extends AbstractValueHolder<S, P, H>,	
 	K extends ValueAttribute<A, E, S, P, H, K>
 	>
-	implements PrimitiveAccessor<A, E, S, P, H, K>
+	implements AttributeAccessor<A, E, S, P, H, K>
 {
 	/**
 	 *
@@ -51,10 +51,10 @@ public abstract class AbstractPrimitiveAccessor<
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected AbstractPrimitiveAccessor() {
+	protected AbstractAttributeAccessor() {
 	}
 
-	public AbstractPrimitiveAccessor(E target, K key) {
+	public AbstractAttributeAccessor(E target, K key) {
 		super();
 
 		if (target == null) {

@@ -31,7 +31,7 @@ public class BooleanAccessor<
 	A extends AttributeName,
 	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasBoolean<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, Boolean, BooleanType, BooleanHolder, BooleanAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, E, Boolean, BooleanType, BooleanHolder, BooleanAttribute<A, E>> {
 
 	
 	/**

@@ -30,7 +30,7 @@ public class CharAccessor<
 	A extends AttributeName,	
 	E extends HasChar<A, E> & HasString<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, String, CharType, CharHolder, CharAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, E, String, CharType, CharHolder, CharAttribute<A, E>> {
 
 	/**
 	 *

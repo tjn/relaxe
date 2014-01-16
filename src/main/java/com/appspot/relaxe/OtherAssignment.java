@@ -28,10 +28,10 @@ import java.sql.SQLException;
 
 import com.appspot.relaxe.types.OtherType;
 import com.appspot.relaxe.types.AbstractValueType;
-import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.AbstractValueHolder;
 
 
-public abstract class OtherAssignment<O extends OtherType<O>, V extends Serializable, T extends AbstractValueType<T>, H extends AbstractPrimitiveHolder<V, T, H>>
+public abstract class OtherAssignment<O extends OtherType<O>, V extends Serializable, T extends AbstractValueType<T>, H extends AbstractValueHolder<V, T, H>>
 	extends AbstractParameterAssignment<V, T, H> {
 		
 	public OtherAssignment(H value) {

@@ -24,7 +24,7 @@ package com.appspot.relaxe.types;
 
 import java.io.Serializable;
 
-import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.AbstractValueHolder;
 import com.appspot.relaxe.value.CharHolder;
 import com.appspot.relaxe.value.DateHolder;
 import com.appspot.relaxe.value.IntegerHolder;
@@ -98,7 +98,7 @@ public abstract class AbstractValueType<
 	}
 	
 	public static final class NullHolder<H>
-		extends AbstractPrimitiveHolder<Serializable, SerializableType, NullHolder<H>>
+		extends AbstractValueHolder<Serializable, SerializableType, NullHolder<H>>
 	{
 		/**
 		 * 

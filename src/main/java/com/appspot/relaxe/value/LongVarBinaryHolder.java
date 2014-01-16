@@ -29,7 +29,7 @@ import com.appspot.relaxe.types.ValueType;
 
 
 public class LongVarBinaryHolder
-	extends AbstractPrimitiveHolder<LongVarBinary, LongVarBinaryType, LongVarBinaryHolder> {
+	extends AbstractValueHolder<LongVarBinary, LongVarBinaryType, LongVarBinaryHolder> {
 
 	/**
 	 * 
@@ -88,7 +88,7 @@ public class LongVarBinaryHolder
 		return this;
 	}
 
-	public static LongVarBinaryHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public static LongVarBinaryHolder as(AbstractValueHolder<?, ?, ?> holder) {
 		return holder.asLongVarBinaryHolder();
 	}
 }

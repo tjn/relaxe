@@ -27,7 +27,7 @@ import java.io.Serializable;
 import com.appspot.relaxe.types.AbstractValueType;
 import com.appspot.relaxe.types.ValueType;
 
-public abstract class AbstractPrimitiveHolder<
+public abstract class AbstractValueHolder<
 	V extends Serializable, 
 	T extends ValueType<T>, 
 	H extends ValueHolder<V, T, H>

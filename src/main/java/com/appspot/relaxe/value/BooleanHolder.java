@@ -27,7 +27,7 @@ import com.appspot.relaxe.types.ValueType;
 
 
 public class BooleanHolder
-	extends AbstractPrimitiveHolder<Boolean, BooleanType, BooleanHolder> {
+	extends AbstractValueHolder<Boolean, BooleanType, BooleanHolder> {
 			
 	/**
 	 * 
@@ -81,7 +81,7 @@ public class BooleanHolder
 		return this;
 	}
 
-	public static BooleanHolder as(AbstractPrimitiveHolder<?, ?, ?> holder) {
+	public static BooleanHolder as(AbstractValueHolder<?, ?, ?> holder) {
 		return holder.asBooleanHolder();
 	}
 

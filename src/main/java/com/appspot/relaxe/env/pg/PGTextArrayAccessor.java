@@ -24,7 +24,7 @@ package com.appspot.relaxe.env.pg;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
-import com.appspot.relaxe.ent.value.AbstractPrimitiveAccessor;
+import com.appspot.relaxe.ent.value.AbstractAttributeAccessor;
 import com.appspot.relaxe.value.StringArray;
 
 
@@ -32,7 +32,7 @@ public class PGTextArrayAccessor<
 	A extends AttributeName,
 	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasPGTextArray<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, StringArray, PGTextArrayType, PGTextArrayHolder, PGTextArrayAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, E, StringArray, PGTextArrayType, PGTextArrayHolder, PGTextArrayAttribute<A, E>> {
 
 	/**
 	 *

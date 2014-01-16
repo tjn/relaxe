@@ -30,7 +30,7 @@ import com.appspot.relaxe.types.ValueType;
 
 
 public abstract class OtherHolder<V extends Serializable, T extends OtherType<T>, H extends OtherHolder<V, T, H>>
-	extends AbstractPrimitiveHolder<V, T, H> {
+	extends AbstractValueHolder<V, T, H> {
 
 	/**
 	 * 

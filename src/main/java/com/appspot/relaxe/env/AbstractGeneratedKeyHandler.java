@@ -45,7 +45,7 @@ import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.ReferenceType;
-import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.AbstractValueHolder;
 import com.appspot.relaxe.value.ValueHolder;
 
 
@@ -138,7 +138,7 @@ public abstract class AbstractGeneratedKeyHandler
 		VK extends ValueAttribute<A, E, V, P, VH, VK>
 	>
 	void write(final ValueAttribute<A, E, V, P, VH, VK> key, final ValueExtractor<?, ?, ?> ve, ResultSet src, E dest) throws SQLException {
-		AbstractPrimitiveHolder<?, ?, ?> v = ve.extractValue(src);
+		AbstractValueHolder<?, ?, ?> v = ve.extractValue(src);
 		VH vh = key.as(v);			
 		key.set(dest, vh);
 	}

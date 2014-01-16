@@ -36,7 +36,7 @@ import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.types.AbstractValueType;
 import com.appspot.relaxe.types.ReferenceType;
-import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.AbstractValueHolder;
 import com.appspot.relaxe.value.ReferenceHolder;
 
 
@@ -183,7 +183,7 @@ public abstract class DefaultEntityMetaData<
 	protected <
 		V extends Serializable, 
 		P extends AbstractValueType<P>,
-		PH extends AbstractPrimitiveHolder<V, P, PH>,
+		PH extends AbstractValueHolder<V, P, PH>,
 		K extends ValueAttribute<A, E, V, P, PH, K>
 	>
 	K key(A name, Map<A, K> src) {

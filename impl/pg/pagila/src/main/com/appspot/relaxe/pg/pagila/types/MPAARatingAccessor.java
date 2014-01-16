@@ -24,13 +24,13 @@ package com.appspot.relaxe.pg.pagila.types;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
-import com.appspot.relaxe.ent.value.AbstractPrimitiveAccessor;
+import com.appspot.relaxe.ent.value.AbstractAttributeAccessor;
 
 public class MPAARatingAccessor<
 	A extends AttributeName,
 	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasMPAARating<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, MPAARating, MPAARatingType, MPAARatingHolder, MPAARatingKey<A, E>> {
+	extends AbstractAttributeAccessor<A, E, MPAARating, MPAARatingType, MPAARatingHolder, MPAARatingKey<A, E>> {
 
 	/**
 	 *

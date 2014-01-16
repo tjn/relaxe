@@ -33,7 +33,7 @@ public class DateAccessor<
 	A extends AttributeName,
 	E extends HasDate<A, E>
 	>
-	extends AbstractPrimitiveAccessor<A, E, Date, DateType, DateHolder, DateAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, E, Date, DateType, DateHolder, DateAttribute<A, E>> {
 
 	/**
 	 *

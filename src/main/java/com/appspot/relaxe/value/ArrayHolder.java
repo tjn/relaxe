@@ -34,7 +34,7 @@ public abstract class ArrayHolder<
 	T extends ArrayType<T, E>, 
 	H extends ArrayHolder<V, A, E, T, H>
 >
-	extends AbstractPrimitiveHolder<A, T, H> {
+	extends AbstractValueHolder<A, T, H> {
 	
 
 	/**

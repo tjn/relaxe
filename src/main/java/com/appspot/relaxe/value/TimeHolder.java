@@ -29,7 +29,7 @@ import com.appspot.relaxe.types.TimeType;
 
 
 public class TimeHolder
-	extends AbstractPrimitiveHolder<Date, TimeType, TimeHolder> {
+	extends AbstractValueHolder<Date, TimeType, TimeHolder> {
 			
 	/**
 	 * 

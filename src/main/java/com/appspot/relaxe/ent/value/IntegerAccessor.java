@@ -31,7 +31,7 @@ public class IntegerAccessor<
 	A extends AttributeName,
 	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasInteger<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, Integer, IntegerType, IntegerHolder, IntegerAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, E, Integer, IntegerType, IntegerHolder, IntegerAttribute<A, E>> {
 
 	/**
 	 *

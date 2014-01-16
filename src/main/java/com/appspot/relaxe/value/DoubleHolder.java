@@ -27,7 +27,7 @@ import com.appspot.relaxe.types.ValueType;
 
 
 public class DoubleHolder
-	extends AbstractPrimitiveHolder<Double, DoubleType, DoubleHolder> {
+	extends AbstractValueHolder<Double, DoubleType, DoubleHolder> {
 			
 	/**
 	 * 

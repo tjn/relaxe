@@ -28,7 +28,7 @@ import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityException;
 import com.appspot.relaxe.types.AbstractValueType;
-import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.AbstractValueHolder;
 
 
 public interface Mutator<
@@ -36,10 +36,10 @@ public interface Mutator<
 	E extends Entity<?, ?, ?, ?, ?, ?, ?>,
 	S extends Serializable,
 	P extends AbstractValueType<P>,
-	H extends AbstractPrimitiveHolder<S, P, H>,	
+	H extends AbstractValueHolder<S, P, H>,	
 	K extends ValueAttribute<A, E, S, P, H, K>
 >
-	extends PrimitiveAccessor<A, E, S, P, H, K>
+	extends AttributeAccessor<A, E, S, P, H, K>
 {
 	void set(S newValue)
 		throws EntityException;

@@ -30,7 +30,7 @@ public class DoubleAccessor<
 	A extends AttributeName,
 	E extends HasDouble<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, Double, DoubleType, DoubleHolder, DoubleAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, E, Double, DoubleType, DoubleHolder, DoubleAttribute<A, E>> {
 
 	/**
 	 *

@@ -32,7 +32,7 @@ import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.AbstractValueAttribute;
 import com.appspot.relaxe.types.AbstractValueType;
 import com.appspot.relaxe.types.ReferenceType;
-import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.AbstractValueHolder;
 import com.appspot.relaxe.value.ReferenceHolder;
 
 
@@ -46,7 +46,7 @@ public class AbstractKeyIdentityMap<
 	V extends Serializable,
 	// TODO :fix type:
 	P extends AbstractValueType<P>,
-	H extends AbstractPrimitiveHolder<V, P, H>,	
+	H extends AbstractValueHolder<V, P, H>,	
 	K extends AbstractValueAttribute<A, E, V, P, H, K>
 >
 	extends AbstractIdentityMap<A, R, T, E, RH, M, V>

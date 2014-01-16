@@ -27,9 +27,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.appspot.relaxe.types.AbstractValueType;
-import com.appspot.relaxe.value.AbstractPrimitiveHolder;
+import com.appspot.relaxe.value.AbstractValueHolder;
 
-public abstract class AbstractDateAssignment<T extends AbstractValueType<T>, H extends AbstractPrimitiveHolder<Date, T, H>>	
+public abstract class AbstractDateAssignment<T extends AbstractValueType<T>, H extends AbstractValueHolder<Date, T, H>>	
 	extends AbstractParameterAssignment<Date, T, H> {
 
 	public AbstractDateAssignment(H value) {

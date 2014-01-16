@@ -27,7 +27,7 @@ import com.appspot.relaxe.types.ValueType;
 
 
 public class IntegerHolder
-	extends AbstractPrimitiveHolder<Integer, IntegerType, IntegerHolder> {
+	extends AbstractValueHolder<Integer, IntegerType, IntegerHolder> {
 			
 	/**
 	 * 

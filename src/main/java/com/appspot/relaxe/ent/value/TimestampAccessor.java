@@ -33,7 +33,7 @@ public class TimestampAccessor<
 	A extends AttributeName,
 	E extends HasTimestamp<A, E>
 >
-	extends AbstractPrimitiveAccessor<A, E, Date, TimestampType, TimestampHolder, TimestampAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, E, Date, TimestampType, TimestampHolder, TimestampAttribute<A, E>> {
 
 	/**
 	 *
