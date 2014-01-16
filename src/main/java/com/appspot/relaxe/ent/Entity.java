@@ -128,8 +128,6 @@ public interface Entity<
 	 */
 	ReferenceHolder<?, ?, ?, ?, ?, ?> ref(R ref);
 
-	EntityDiff<A, R, T, E> diff(E another) throws EntityRuntimeException;
-
 	Map<Column, ValueHolder<?, ?, ?>> getPrimaryKey() throws EntityRuntimeException;
 
 	/**

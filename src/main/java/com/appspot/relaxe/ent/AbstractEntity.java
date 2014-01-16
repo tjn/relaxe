@@ -115,18 +115,6 @@ public abstract class AbstractEntity<
 	@Override
 	public abstract E self();
 	
-	
-	@Override
-	public EntityDiff<A, R, T, E> diff(E another) {
-		final E self = self();
-								
-		if (this == another || another == null) {
-			return new EmptyEntityDiff<A, R, T, E, M>(self);
-		}
-		
-		return new EntitySnapshotDiff<A, R, T, E, M>(self, another);
-	}
-	
 	@Override
 	public Map<Column, ValueHolder<?,?,?>> getPrimaryKey() {
 		PrimaryKey pk = getMetaData().getBaseTable().getPrimaryKey();
@@ -313,7 +301,5 @@ public abstract class AbstractEntity<
 	void setString(K k, String s) {		
 		set(k.self(), k.newHolder(s));
 	}	
-
-
 }
  
