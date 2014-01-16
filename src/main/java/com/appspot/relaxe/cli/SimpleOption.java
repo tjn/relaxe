@@ -65,15 +65,18 @@ public class SimpleOption
         this.description = desc;
     }
     
-    public String name() {
+    @Override
+	public String name() {
         return this.name;
     }
     
-    public Parameter getParameter() {
+    @Override
+	public Parameter getParameter() {
         return this.argument;
     }
     
-    public String flag() {
+    @Override
+	public String flag() {
         return this.flag;
     }  
     
@@ -83,7 +86,8 @@ public class SimpleOption
         return name + " [" + flag + "] + " + argument;
     }
 
-    public String getDescription() {
+    @Override
+	public String getDescription() {
         return description;
     }
 

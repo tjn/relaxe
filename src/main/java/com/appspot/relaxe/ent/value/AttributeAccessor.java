@@ -25,16 +25,16 @@ package com.appspot.relaxe.ent.value;
 import java.io.Serializable;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.types.AbstractValueType;
-import com.appspot.relaxe.value.AbstractValueHolder;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 public interface AttributeAccessor<
 	A extends AttributeName,
 	E,
 	S extends Serializable,
-	P extends AbstractValueType<P>,
-	H extends AbstractValueHolder<S, P, H>,	
+	P extends ValueType<P>,
+	H extends ValueHolder<S, P, H>,	
 	K extends ValueAttribute<A, E, S, P, H, K>
 >
 	extends Serializable

@@ -30,7 +30,6 @@ import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.InsertStatement;
 import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.Symbol;
-import com.appspot.relaxe.expr.ValueElement;
 import com.appspot.relaxe.expr.ValueRow;
 import com.appspot.relaxe.expr.VisitContext;
 import com.appspot.relaxe.meta.Table;

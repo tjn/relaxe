@@ -24,7 +24,7 @@ package com.appspot.relaxe.value;
 
 import java.io.Serializable;
 
-import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.VirtualType;
 
 
@@ -43,9 +43,9 @@ import com.appspot.relaxe.types.VirtualType;
 public abstract class VirtualHolder<
 	S extends Serializable,
 	T extends Serializable,
-	I extends AbstractValueType<I>,
-	H extends AbstractValueHolder<T, I, H>,
-	V extends AbstractValueType<V>,
+	I extends ValueType<I>,
+	H extends ValueHolder<T, I, H>,
+	V extends ValueType<V>,
 	Z extends VirtualType<Z, I, V>,
 	VH extends VirtualHolder<S, T, I, H, V, Z, VH>
 >

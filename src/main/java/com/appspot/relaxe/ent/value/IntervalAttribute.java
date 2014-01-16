@@ -26,7 +26,7 @@ package com.appspot.relaxe.ent.value;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.types.IntervalType;
-import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.Interval;
 import com.appspot.relaxe.value.IntervalHolder;
 import com.appspot.relaxe.value.ValueHolder;
@@ -35,7 +35,7 @@ public abstract class IntervalAttribute<
 	A extends AttributeName,	
 	E,
 	V extends Interval<V>, 
-	P extends AbstractValueType<P>, 
+	P extends ValueType<P>, 
 	H extends IntervalHolder<V, P, H>, 
 	K extends IntervalAttribute<A, E, V, P, H, K>
 	>

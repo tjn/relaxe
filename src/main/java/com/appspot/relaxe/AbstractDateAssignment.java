@@ -26,10 +26,10 @@ package com.appspot.relaxe;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.appspot.relaxe.types.AbstractValueType;
-import com.appspot.relaxe.value.AbstractValueHolder;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.ValueHolder;
 
-public abstract class AbstractDateAssignment<T extends AbstractValueType<T>, H extends AbstractValueHolder<Date, T, H>>	
+public abstract class AbstractDateAssignment<T extends ValueType<T>, H extends ValueHolder<Date, T, H>>	
 	extends AbstractParameterAssignment<Date, T, H> {
 
 	public AbstractDateAssignment(H value) {

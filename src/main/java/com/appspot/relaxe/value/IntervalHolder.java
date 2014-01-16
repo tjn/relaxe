@@ -23,10 +23,9 @@
 package com.appspot.relaxe.value;
 
 import com.appspot.relaxe.types.IntervalType;
-import com.appspot.relaxe.types.AbstractValueType;
 import com.appspot.relaxe.types.ValueType;
 
-public abstract class IntervalHolder<V extends Interval<?>, T extends AbstractValueType<T>, H extends IntervalHolder<V, T, H>>
+public abstract class IntervalHolder<V extends Interval<?>, T extends ValueType<T>, H extends IntervalHolder<V, T, H>>
 	extends AbstractValueHolder<V, T, H> {
 	
 	private V value;

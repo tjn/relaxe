@@ -22,8 +22,6 @@
  */
 package com.appspot.relaxe.pg.pagila;
 
-import com.appspot.relaxe.env.hsqldb.AbstractHSQLDBImplementation;
-import com.appspot.relaxe.env.hsqldb.HSQLDBMemImplementation;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 
 public class PagilaTypeMapTest 

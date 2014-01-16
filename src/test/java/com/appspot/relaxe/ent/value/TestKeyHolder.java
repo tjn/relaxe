@@ -35,6 +35,7 @@ import com.appspot.relaxe.ent.value.ValueAttribute;
 import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.LongType;
 import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.AbstractValueHolder;
 import com.appspot.relaxe.value.IntegerHolder;
 import com.appspot.relaxe.value.LongHolder;
@@ -76,13 +77,13 @@ public class TestKeyHolder
 		
 		
 	    private String identifier;
-	    private AbstractValueType<?> type;
+	    private ValueType<?> type;
 	        
-	    Attribute(AbstractValueType<?> type) {
+	    Attribute(ValueType<?> type) {
 	    	this.type = type;
 	    }
 	    
-	    Attribute(String identifier, AbstractValueType<?> type) {
+	    Attribute(String identifier, ValueType<?> type) {
 	    	this(type);
 	        this.identifier = identifier;
 	    }    
@@ -93,7 +94,7 @@ public class TestKeyHolder
 	    }
 
 	    @Override
-		public AbstractValueType<?> type() {
+		public ValueType<?> type() {
 	    	return this.type;
 	    }    
 	}

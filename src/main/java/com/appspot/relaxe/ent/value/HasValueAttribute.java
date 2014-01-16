@@ -26,15 +26,15 @@ import java.io.Serializable;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.HasAttribute;
-import com.appspot.relaxe.types.AbstractValueType;
-import com.appspot.relaxe.value.AbstractValueHolder;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 public interface HasValueAttribute<
 	A extends AttributeName,
 	V extends Serializable,
-	P extends AbstractValueType<P>,
-	H extends AbstractValueHolder<V, P, H>,	
+	P extends ValueType<P>,
+	H extends ValueHolder<V, P, H>,	
 	K extends ValueAttribute<A, E, V, P, H, K>,
 	E extends HasValueAttribute<A, V, P, H, K, E>
 	>

@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.types.ArrayType;
-import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.ArrayHolder;
 import com.appspot.relaxe.value.ArrayValue;
 
@@ -36,7 +36,7 @@ public abstract class AbstractArrayAttribute<
 	E,
 	O extends Serializable,
 	V extends ArrayValue<O>,
-	C extends AbstractValueType<C>,
+	C extends ValueType<C>,
 	P extends ArrayType<P, C>,	 
 	H extends ArrayHolder<O, V, C, P, H>,
 	K extends AbstractArrayAttribute<A, E, O, V, C, P, H, K>

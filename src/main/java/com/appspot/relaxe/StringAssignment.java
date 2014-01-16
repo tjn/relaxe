@@ -26,10 +26,10 @@ package com.appspot.relaxe;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.types.AbstractValueType;
-import com.appspot.relaxe.value.AbstractValueHolder;
+import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.ValueHolder;
 
-public class StringAssignment<T extends AbstractValueType<T>, H extends AbstractValueHolder<String, T, H>>	
+public class StringAssignment<T extends ValueType<T>, H extends ValueHolder<String, T, H>>	
 	extends AbstractParameterAssignment<String, T, H> {
 
 	public StringAssignment(H value) {

@@ -29,14 +29,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.appspot.relaxe.types.ArrayType;
-import com.appspot.relaxe.types.AbstractValueType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.ArrayHolder;
 import com.appspot.relaxe.value.ArrayValue;
 
 
 public abstract class ArrayAssignment<
 	V extends Serializable, 
-	E extends AbstractValueType<E>, 
+	E extends ValueType<E>, 
 	A extends ArrayValue<V>,
 	T extends ArrayType<T, E>, 
 	H extends ArrayHolder<V, A, E, T, H>
