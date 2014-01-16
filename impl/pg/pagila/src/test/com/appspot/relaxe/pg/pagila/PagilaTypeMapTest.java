@@ -22,64 +22,52 @@
  */
 package com.appspot.relaxe.pg.pagila;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.appspot.relaxe.env.hsqldb.AbstractHSQLDBImplementation;
 import com.appspot.relaxe.env.hsqldb.HSQLDBMemImplementation;
-import com.appspot.relaxe.expr.ddl.types.VarBinaryTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
-import com.appspot.relaxe.meta.DataType;
-import com.appspot.relaxe.meta.DataTypeMap;
-import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBEnvironment;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
-import com.appspot.relaxe.types.ValueType;
 
 public class PagilaTypeMapTest 
 	extends AbstractPagilaTestCase {
 	
-	private static Logger logger = LoggerFactory.getLogger(PagilaTypeMapTest.class);	
-	
+//	private static Logger logger = LoggerFactory.getLogger(PagilaTypeMapTest.class);	
 	
 	public void testTypeMap() throws Exception {
 		
-		AbstractHSQLDBImplementation hi = new HSQLDBMemImplementation();
-		HSQLDBEnvironment henv = hi.getEnvironment();
-
-		final DataTypeMap htm = henv.getDataTypeMap();
-		final DataTypeMap dtm = new DataTypeMap() {			
-			@Override
-			public ValueType<?> getType(DataType type) {
-				return htm.getType(type);
-			}
-			
-			@Override
-			public SQLTypeDefinition getSQLTypeDefinition(DataType dataType) {
-				SQLTypeDefinition def = htm.getSQLTypeDefinition(dataType);
-				
-				if (def == null) {
-					int t = dataType.getDataType();
-					
-					logger.debug("unmapped: " + dataType.getTypeName() + ": " + dataType.getDataType());
-					
-					if (t == ValueType.ARRAY && dataType.getTypeName().equals("_text")) {
-						def = new SQLArrayTypeDefinition(VarcharTypeDefinition.get(null));
-					}
-					
-					if (t == ValueType.BINARY && dataType.getTypeName().equals("bytea")) {
-						def = new SQLArrayTypeDefinition(VarBinaryTypeDefinition.get());
-					}
-					
-					if (SQLTypeDefinition.isBinaryType(t)) {
-						def = VarBinaryTypeDefinition.get(dataType.getSize());
-					}
-				}
-				
-				return def;
-			}
-		};
+//		AbstractHSQLDBImplementation hi = new HSQLDBMemImplementation();
+//		HSQLDBEnvironment henv = hi.getEnvironment();
+//
+//		final DataTypeMap htm = henv.getDataTypeMap();
+//		final DataTypeMap dtm = new DataTypeMap() {			
+//			@Override
+//			public ValueType<?> getType(DataType type) {
+//				return htm.getType(type);
+//			}
+//			
+//			@Override
+//			public SQLTypeDefinition getSQLTypeDefinition(DataType dataType) {
+//				SQLTypeDefinition def = htm.getSQLTypeDefinition(dataType);
+//				
+//				if (def == null) {
+//					int t = dataType.getDataType();
+//					
+//					logger.debug("unmapped: " + dataType.getTypeName() + ": " + dataType.getDataType());
+//					
+//					if (t == ValueType.ARRAY && dataType.getTypeName().equals("_text")) {
+//						def = new SQLArrayTypeDefinition(VarcharTypeDefinition.get(null));
+//					}
+//					
+//					if (t == ValueType.BINARY && dataType.getTypeName().equals("bytea")) {
+//						def = new SQLArrayTypeDefinition(VarBinaryTypeDefinition.get());
+//					}
+//					
+//					if (SQLTypeDefinition.isBinaryType(t)) {
+//						def = VarBinaryTypeDefinition.get(dataType.getSize());
+//					}
+//				}
+//				
+//				return def;
+//			}
+//		};
 		
 //		{
 //			DataTypeTest.MetaData tm = DataTypeTest.Type.TYPE.getMetaData();

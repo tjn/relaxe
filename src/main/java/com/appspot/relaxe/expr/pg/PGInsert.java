@@ -106,7 +106,7 @@ public class PGInsert
 		 * 
 		 */
 		private static final long serialVersionUID = -7588547880513689368L;
-		private ValueElement e;
+//		private ValueElement e;
 	
 		public ReturningClause() {			
 		}

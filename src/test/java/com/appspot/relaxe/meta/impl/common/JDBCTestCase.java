@@ -540,9 +540,8 @@ public abstract class JDBCTestCase
 	}
 	
     public void truncate(Catalog cat) throws QueryException, SQLException {        
-        Connection c = getConnection();     
-                
-        List<Statement> statements = truncation(cat);
+//        Connection c = getConnection();
+//        List<Statement> statements = truncation(cat);
                 
         // TODO: Inherit from the base class with getPersistenceContext(); 
         fail("not implemented.");

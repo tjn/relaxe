@@ -344,6 +344,7 @@ public class DefaultCatalogFactory
 				
 				int keyseq = rs.getInt(9);
 
+				// TODO: implement rules
 				int ur = rs.getInt(10);
 				int dr = rs.getInt(11);
 				String n = rs.getString(12);
