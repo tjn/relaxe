@@ -33,7 +33,7 @@ public final class IntegerAttribute<
 	A extends AttributeName,
 	E extends HasInteger<A, E>
 >
-	extends AbstractValueAttribute<A, E, Integer, IntegerType, IntegerHolder, IntegerAttribute<A, E>>	
+	extends AbstractAttribute<A, E, Integer, IntegerType, IntegerHolder, IntegerAttribute<A, E>>	
 {	
 	/**
 	 *

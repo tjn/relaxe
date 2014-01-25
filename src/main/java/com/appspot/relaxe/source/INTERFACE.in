@@ -268,7 +268,7 @@ public interface {{table-interface}}
 					attributeSet().addAll({{table-interface}}.Type.TYPE.getMetaData().attributes());										
 				}
 				
-				public void add(com.appspot.relaxe.ent.value.ValueAttribute<{{table-interface}}.Attribute, {{table-interface}}, ?, ?, ?, ?> key) {
+				public void add(com.appspot.relaxe.ent.value.Attribute<{{table-interface}}.Attribute, {{table-interface}}, ?, ?, ?, ?> key) {
 					add(key.name());
 				}
 				
@@ -286,7 +286,7 @@ public interface {{table-interface}}
 				}
 				
 				@Override
-				public void remove(com.appspot.relaxe.ent.value.ValueAttribute<{{table-interface}}.Attribute, {{table-interface}}, ?, ?, ?, ?> key) {
+				public void remove(com.appspot.relaxe.ent.value.Attribute<{{table-interface}}.Attribute, {{table-interface}}, ?, ?, ?, ?> key) {
 					remove(key.name());
 				}
 				

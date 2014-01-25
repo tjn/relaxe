@@ -41,7 +41,7 @@ public abstract class AbstractArrayAttribute<
 	H extends ArrayHolder<O, V, C, P, H>,
 	K extends AbstractArrayAttribute<A, E, O, V, C, P, H, K>
 	>
-	extends AbstractValueAttribute<A, E, V, P, H, K>
+	extends AbstractAttribute<A, E, V, P, H, K>
 {
 	/**
 	 *

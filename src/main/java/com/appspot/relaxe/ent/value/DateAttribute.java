@@ -36,7 +36,7 @@ public final class DateAttribute<
 	A extends AttributeName,	
 	E extends HasDate<A, E>
 >
-	extends AbstractValueAttribute<A, E, Date, DateType, DateHolder, DateAttribute<A, E>>
+	extends AbstractAttribute<A, E, Date, DateType, DateHolder, DateAttribute<A, E>>
 {
 	/**
 	 *

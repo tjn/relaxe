@@ -37,7 +37,7 @@ public interface Mutator<
 	S extends Serializable,
 	P extends ValueType<P>,
 	H extends ValueHolder<S, P, H>,	
-	K extends ValueAttribute<A, E, S, P, H, K>
+	K extends Attribute<A, E, S, P, H, K>
 >
 	extends AttributeAccessor<A, E, S, P, H, K>
 {

@@ -35,7 +35,7 @@ public final class TimestampAttribute<
 	A extends AttributeName,
 	E extends HasTimestamp<A, E>
 >
-	extends AbstractValueAttribute<A, E, Date, TimestampType, TimestampHolder, TimestampAttribute<A, E>>
+	extends AbstractAttribute<A, E, Date, TimestampType, TimestampHolder, TimestampAttribute<A, E>>
 {
 	/**
 	 *

@@ -27,7 +27,7 @@ import java.io.Serializable;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityRuntimeException;
-import com.appspot.relaxe.ent.value.ValueAttribute;
+import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.model.ValueModel;
 import com.appspot.relaxe.types.ReferenceType;
 import com.appspot.relaxe.types.ValueType;
@@ -47,7 +47,7 @@ public interface AttributeModelMap<
 	D self();
 	
 	<			
-		K extends ValueAttribute<A, E, V, P, H, K>
+		K extends Attribute<A, E, V, P, H, K>
 	>	
 	ValueModel<H> attr(K k) throws EntityRuntimeException;		
 }

@@ -26,7 +26,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 import com.appspot.relaxe.ent.value.EntityKey;
-import com.appspot.relaxe.ent.value.ValueAttribute;
+import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.ent.value.StringAttribute;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.ReferenceType;
@@ -94,7 +94,7 @@ public abstract class DefaultEntity<
 		S extends Serializable, 
 		P extends com.appspot.relaxe.types.ValueType<P>, 
 		PH extends com.appspot.relaxe.value.ValueHolder<S, P, PH>, 
-		K extends com.appspot.relaxe.ent.value.ValueAttribute<A, E, S, P, PH, K>
+		K extends com.appspot.relaxe.ent.value.Attribute<A, E, S, P, PH, K>
 	> 
 	void set(K k, PH newValue) throws EntityRuntimeException {
 		k.set(self(), newValue);		
@@ -107,7 +107,7 @@ public abstract class DefaultEntity<
 	
 	@Override
 	public com.appspot.relaxe.value.ValueHolder<?,?,?> value(A attribute) throws EntityRuntimeException {
-		ValueAttribute<A, E, ?, ?, ?, ?> key = getMetaData().getKey(attribute);
+		Attribute<A, E, ?, ?, ?, ?> key = getMetaData().getKey(attribute);
 		return key.get(self());
 	}
 
@@ -116,7 +116,7 @@ public abstract class DefaultEntity<
 		S extends Serializable, 
 		P extends com.appspot.relaxe.types.ValueType<P>, 
 		PH extends com.appspot.relaxe.value.ValueHolder<S, P, PH>, 
-		K extends com.appspot.relaxe.ent.value.ValueAttribute<A, E, S, P, PH, K>
+		K extends com.appspot.relaxe.ent.value.Attribute<A, E, S, P, PH, K>
 	> 
 	PH get(K k) throws EntityRuntimeException {
 		return k.get(self());
@@ -169,7 +169,7 @@ public abstract class DefaultEntity<
 		E dest = ef.newEntity();
 		
 		for (A a : meta.attributes()) {
-			ValueAttribute<A, E, ?, ?, ?, ?> pk = meta.getKey(a);
+			Attribute<A, E, ?, ?, ?, ?> pk = meta.getKey(a);
 			pk.copy(src, dest);
 		}
 		
@@ -186,7 +186,7 @@ public abstract class DefaultEntity<
 		VV extends Serializable,
 		VT extends ValueType<VT>,
 		VH extends ValueHolder<VV, VT, VH>,	
-		K extends ValueAttribute<A, E, VV, VT, VH, K>
+		K extends Attribute<A, E, VV, VT, VH, K>
 	> 
 	void remove(K key) {		
 		set(key, null);
@@ -196,7 +196,7 @@ public abstract class DefaultEntity<
 		VV extends Serializable,
 		VT extends ValueType<VT>,
 		VH extends ValueHolder<VV, VT, VH>,	
-		K extends ValueAttribute<A, E, VV, VT, VH, K>
+		K extends Attribute<A, E, VV, VT, VH, K>
 	> 
 	void reset(K key) {
 		VH nh = key.newHolder(null);
@@ -208,7 +208,7 @@ public abstract class DefaultEntity<
 		VV extends Serializable, 
 		VT extends com.appspot.relaxe.types.ValueType<VT>, 
 		VH extends com.appspot.relaxe.value.ValueHolder<VV, VT, VH>, 
-		K extends ValueAttribute<A, E, VV, VT, VH, K>
+		K extends Attribute<A, E, VV, VT, VH, K>
 	> 
 	boolean has(K key) {		
 		return (this.get(key) != null);

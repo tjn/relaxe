@@ -26,7 +26,7 @@ import java.util.Set;
 
 import com.appspot.relaxe.ent.im.EntityIdentityMap;
 import com.appspot.relaxe.ent.value.EntityKey;
-import com.appspot.relaxe.ent.value.ValueAttribute;
+import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.expr.TableReference;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
@@ -72,7 +72,7 @@ public interface EntityMetaData<
 	A getAttribute(Column c);
 		
 	
-	ValueAttribute<A, E, ?, ?, ?, ?> getKey(A a);
+	Attribute<A, E, ?, ?, ?, ?> getKey(A a);
 		
 	EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> getEntityKey(R ref);
 

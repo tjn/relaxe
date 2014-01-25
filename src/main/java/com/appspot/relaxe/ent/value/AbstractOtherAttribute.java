@@ -37,7 +37,7 @@ public abstract class AbstractOtherAttribute<
 	H extends ValueHolder<V, P, H>,
 	K extends AbstractOtherAttribute<A, E, V, P, H, K>
 	>
-	extends AbstractValueAttribute<A, E, V, P, H, K>
+	extends AbstractAttribute<A, E, V, P, H, K>
 {
 	/**
 	 *

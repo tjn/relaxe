@@ -63,7 +63,7 @@ public interface EntityKey<
 	RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
 	K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>	
 >
-	extends Attribute<E, RT, K>
+	extends Key<E, RT, K>
 {	
 	R name();	
 	RH newHolder(RE newValue);	

@@ -31,7 +31,7 @@ import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
-import com.appspot.relaxe.ent.value.ValueAttribute;
+import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Language;
 import com.appspot.relaxe.pg.pagila.PagilaPersistenceContext;
@@ -133,7 +133,7 @@ public class PagilaEntityQuerySample {
 		System.out.println(": {");
 		
 		for (A a : meta.attributes()) {
-			ValueAttribute<A, E, ?, ?, ?, ?> key = meta.getKey(a);
+			Attribute<A, E, ?, ?, ?, ?> key = meta.getKey(a);
 			dump(e, key.self());
 		}
 		
@@ -147,9 +147,9 @@ public class PagilaEntityQuerySample {
 		V extends Serializable,
 		P extends ValueType<P>,
 		H extends ValueHolder<V, P, H>,	
-		K extends ValueAttribute<A, E, V, P, H, K>
+		K extends Attribute<A, E, V, P, H, K>
 	>
-	void dump(Entity<A, ?, ?, E, ?, ?, ?> entity, ValueAttribute<A, E, V, P, H, K> key) {		
+	void dump(Entity<A, ?, ?, E, ?, ?, ?> entity, Attribute<A, E, V, P, H, K> key) {		
 		H holder = key.get(entity.self());
 				
 		if (holder == null) {

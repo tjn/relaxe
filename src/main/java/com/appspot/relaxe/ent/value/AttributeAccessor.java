@@ -35,7 +35,7 @@ public interface AttributeAccessor<
 	S extends Serializable,
 	P extends ValueType<P>,
 	H extends ValueHolder<S, P, H>,	
-	K extends ValueAttribute<A, E, S, P, H, K>
+	K extends Attribute<A, E, S, P, H, K>
 >
 	extends Serializable
 {

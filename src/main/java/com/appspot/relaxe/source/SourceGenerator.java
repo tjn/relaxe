@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 import com.appspot.relaxe.build.SchemaFilter;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.im.EntityIdentityMap;
-import com.appspot.relaxe.ent.value.ValueAttribute;
+import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.SchemaName;
@@ -1139,7 +1139,7 @@ public class SourceGenerator {
 			
 			for (int p = 0; p < ac; p++) {
 				String delim = (p < (ac - 1)) ? "," : "";
-				line(buf, ValueAttribute.class.getCanonicalName(), 
+				line(buf, Attribute.class.getCanonicalName(), 
 						"<", attr, ", ", intf, ", ?, ?, ?, ?> a", Integer.toString(p + 1), delim);
 			}
 						

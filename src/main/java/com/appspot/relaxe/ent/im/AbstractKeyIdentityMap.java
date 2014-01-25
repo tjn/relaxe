@@ -29,7 +29,7 @@ import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.Reference;
-import com.appspot.relaxe.ent.value.ValueAttribute;
+import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.types.ReferenceType;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.ReferenceHolder;
@@ -46,7 +46,7 @@ public class AbstractKeyIdentityMap<
 	V extends Serializable,
 	P extends ValueType<P>,
 	H extends ValueHolder<V, P, H>,	
-	K extends ValueAttribute<A, E, V, P, H, K>
+	K extends Attribute<A, E, V, P, H, K>
 >
 	extends AbstractIdentityMap<A, R, T, E, RH, M, V>
 {

@@ -29,7 +29,7 @@ import java.util.Set;
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
 import com.appspot.relaxe.ent.query.EntityQueryValueReference;
 import com.appspot.relaxe.ent.value.EntityKey;
-import com.appspot.relaxe.ent.value.ValueAttribute;
+import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.ReferenceType;
@@ -100,8 +100,8 @@ public interface EntityQueryElement<
 		void add(A attribute);		
 		void remove(A attribute);
 		
-		void add(com.appspot.relaxe.ent.value.ValueAttribute<A, E, ?, ?, ?, ?> key);
-		void remove(com.appspot.relaxe.ent.value.ValueAttribute<A, E, ?, ?, ?, ?> key);
+		void add(com.appspot.relaxe.ent.value.Attribute<A, E, ?, ?, ?, ?> key);
+		void remove(com.appspot.relaxe.ent.value.Attribute<A, E, ?, ?, ?, ?> key);
 		
 		void removeAll(Collection<A> attribute);
 						
@@ -130,7 +130,7 @@ public interface EntityQueryElement<
 		XV extends Serializable,
 		XT extends ValueType<XT>,
 		XH extends ValueHolder<XV, XT, XH>,	
-		K extends ValueAttribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newNull(K key);
 	
@@ -138,12 +138,12 @@ public interface EntityQueryElement<
 		XV extends Serializable,
 		XT extends ValueType<XT>,
 		XH extends ValueHolder<XV, XT, XH>,	
-		K extends ValueAttribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newNotNull(K key);
 	
 	<
-		K extends ValueAttribute<A, E, ?, ?, ?, K>
+		K extends Attribute<A, E, ?, ?, ?, K>
 	>
 	EntityQueryPredicate newEquals(K key, EntityQueryValueReference value);
 	
@@ -151,7 +151,7 @@ public interface EntityQueryElement<
 		XV extends Serializable,
 		XT extends ValueType<XT>,
 		XH extends ValueHolder<XV, XT, XH>,	
-		K extends ValueAttribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newEquals(K key, XH value);
 	
@@ -159,12 +159,12 @@ public interface EntityQueryElement<
 		XV extends Serializable,
 		XT extends ValueType<XT>,
 		XH extends ValueHolder<XV, XT, XH>,	
-		K extends ValueAttribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newEquals(K key, XV value);
 	
 	<
-		K extends ValueAttribute<A, E, ?, ?, ?, K>
+		K extends Attribute<A, E, ?, ?, ?, K>
 	>
 	EntityQueryPredicate newPredicate(K key, Comparison.Op op, EntityQueryValueReference value);
 	
@@ -172,7 +172,7 @@ public interface EntityQueryElement<
 		XV extends Serializable,
 		XT extends ValueType<XT>,
 		XH extends ValueHolder<XV, XT, XH>,	
-		K extends ValueAttribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newPredicate(K key, Comparison.Op op, XH value);
 	

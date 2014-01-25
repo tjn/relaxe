@@ -33,7 +33,7 @@ public final class BooleanAttribute<
 	A extends AttributeName,
 	E extends HasBoolean<A, E>
 >
-	extends AbstractValueAttribute<A, E, Boolean, BooleanType, BooleanHolder, BooleanAttribute<A, E>>	
+	extends AbstractAttribute<A, E, Boolean, BooleanType, BooleanHolder, BooleanAttribute<A, E>>	
 {	
 	/**
 	 *

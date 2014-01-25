@@ -35,7 +35,7 @@ public final class TimeAttribute<
 	A extends AttributeName,
 	E extends HasTime<A, E>
 >
-	extends AbstractValueAttribute<A, E, Date, TimeType, TimeHolder, TimeAttribute<A, E>>
+	extends AbstractAttribute<A, E, Date, TimeType, TimeHolder, TimeAttribute<A, E>>
 {
 	/**
 	 *

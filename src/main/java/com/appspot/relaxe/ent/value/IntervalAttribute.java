@@ -39,7 +39,7 @@ public abstract class IntervalAttribute<
 	H extends IntervalHolder<V, P, H>, 
 	K extends IntervalAttribute<A, E, V, P, H, K>
 	>
-	extends AbstractValueAttribute<A, E, V, P, H, K>
+	extends AbstractAttribute<A, E, V, P, H, K>
 {
 	/**
 	 * 

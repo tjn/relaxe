@@ -33,7 +33,7 @@ public final class LongAttribute<
 	A extends AttributeName,
 	E extends HasLong<A, E>
 >
-	extends AbstractValueAttribute<A, E, Long, LongType, LongHolder, LongAttribute<A, E>>	
+	extends AbstractAttribute<A, E, Long, LongType, LongHolder, LongAttribute<A, E>>	
 {	
 	/**
 	 *

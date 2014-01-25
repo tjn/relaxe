@@ -22,13 +22,13 @@
  */
 package com.appspot.relaxe.ent;
 
-import com.appspot.relaxe.ent.value.Attribute;
+import com.appspot.relaxe.ent.value.Key;
 import com.appspot.relaxe.types.Type;
 
-public interface HasAttribute<			
+public interface HasKey<			
 	V extends Type<V>,
-	K extends Attribute<E, V, K>,
-	E extends HasAttribute<V, K, E>
+	K extends Key<E, V, K>,
+	E extends HasKey<V, K, E>
 > {
 
 }

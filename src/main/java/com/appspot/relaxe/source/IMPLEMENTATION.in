@@ -111,11 +111,11 @@ class {{table-impl-class}}
 			{{create-get-base-table-body}}
         }
         
-        private java.util.Map<Attribute, com.appspot.relaxe.ent.value.ValueAttribute<Attribute, {{table-interface}}, ?, ?, ?, ?>> keyMap = new java.util.HashMap<Attribute, com.appspot.relaxe.ent.value.ValueAttribute<Attribute, {{table-interface}}, ?, ?, ?, ?>>();        
-        private java.util.Map<Attribute, com.appspot.relaxe.ent.value.ValueAttribute<Attribute, {{table-interface}}, ?, ?, ?, ?>> getKeyMap() {return this.keyMap; }
+        private java.util.Map<Attribute, com.appspot.relaxe.ent.value.Attribute<Attribute, {{table-interface}}, ?, ?, ?, ?>> keyMap = new java.util.HashMap<Attribute, com.appspot.relaxe.ent.value.Attribute<Attribute, {{table-interface}}, ?, ?, ?, ?>>();        
+        private java.util.Map<Attribute, com.appspot.relaxe.ent.value.Attribute<Attribute, {{table-interface}}, ?, ?, ?, ?>> getKeyMap() {return this.keyMap; }
         
         @Override
-		public com.appspot.relaxe.ent.value.ValueAttribute<Attribute, {{table-interface}}, ?, ?, ?, ?> getKey(Attribute a) {
+		public com.appspot.relaxe.ent.value.Attribute<Attribute, {{table-interface}}, ?, ?, ?, ?> getKey(Attribute a) {
 			return getKeyMap().get(a);
 		}
                 

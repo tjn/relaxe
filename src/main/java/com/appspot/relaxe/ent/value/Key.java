@@ -24,21 +24,29 @@ package com.appspot.relaxe.ent.value;
 
 import java.io.Serializable;
 
-import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.ent.HasAttribute;
-import com.appspot.relaxe.types.ValueType;
-import com.appspot.relaxe.value.ValueHolder;
+import com.appspot.relaxe.ent.EntityRuntimeException;
+import com.appspot.relaxe.types.Type;
 
 
-public interface HasValueAttribute<
-	A extends AttributeName,
-	V extends Serializable,
-	P extends ValueType<P>,
-	H extends ValueHolder<V, P, H>,	
-	K extends ValueAttribute<A, E, V, P, H, K>,
-	E extends HasValueAttribute<A, V, P, H, K, E>
-	>
-	extends HasAttribute<P, K, E>
+public interface Key<
+	E,
+	V extends Type<V>,	
+	K extends Key<E, V, K>
+>
+	extends Serializable
 {
+	V type();
 	
+	void copy(E src, E dest)
+		throws EntityRuntimeException;
+	
+	/**
+	 * Assign the default value for the attribute or reference addressed by this key. 
+	 * 
+	 * @param dest
+	 */
+	void reset(E dest)
+		throws EntityRuntimeException;
+	
+	K self();
 }

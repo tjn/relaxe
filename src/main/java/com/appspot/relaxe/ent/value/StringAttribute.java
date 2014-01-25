@@ -31,9 +31,9 @@ public abstract class StringAttribute<
 	E extends HasString<A, E>,	
 	P extends ValueType<P>,
 	H extends ValueHolder<String, P, H>,
-	K extends ValueAttribute<A, E, String, P, H, K>
+	K extends Attribute<A, E, String, P, H, K>
 	>
-	extends AbstractValueAttribute<A, E, String, P, H, K>
+	extends AbstractAttribute<A, E, String, P, H, K>
 {
 	/**
 	 *

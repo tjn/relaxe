@@ -28,7 +28,7 @@ import java.util.Set;
 
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.ent.value.HasString;
-import com.appspot.relaxe.ent.value.ValueAttribute;
+import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.ent.value.StringAttribute;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.types.ValueType;
@@ -56,7 +56,7 @@ public interface Entity<
 		S extends Serializable,
 		P extends ValueType<P>,
 		PH extends ValueHolder<S, P, PH>,
-		K extends ValueAttribute<A, E, S, P, PH, K>
+		K extends Attribute<A, E, S, P, PH, K>
 	>
 	PH get(K k)
 		throws EntityRuntimeException;
@@ -77,7 +77,7 @@ public interface Entity<
 		S extends Serializable,
 		P extends ValueType<P>,
 		RH extends ValueHolder<S, P, RH>,
-		K extends ValueAttribute<A, E, S, P, RH, K>
+		K extends Attribute<A, E, S, P, RH, K>
 	>
 	void set(K k, RH newValue);
 
@@ -190,7 +190,7 @@ public interface Entity<
 		VV extends Serializable,
 		VT extends ValueType<VT>,
 		VH extends ValueHolder<VV, VT, VH>,
-		K extends ValueAttribute<A, E, VV, VT, VH, K>
+		K extends Attribute<A, E, VV, VT, VH, K>
 	>
 	void remove(K key);
 
@@ -231,7 +231,7 @@ public interface Entity<
 		VV extends Serializable,
 		VT extends ValueType<VT>,
 		VH extends ValueHolder<VV, VT, VH>,
-		K extends ValueAttribute<A, E, VV, VT, VH, K>
+		K extends Attribute<A, E, VV, VT, VH, K>
 	>
 	boolean has(K key);
 
@@ -250,7 +250,7 @@ public interface Entity<
 		VV extends Serializable,
 		VT extends ValueType<VT>,
 		VH extends ValueHolder<VV, VT, VH>,
-		K extends ValueAttribute<A, E, VV, VT, VH, K>
+		K extends Attribute<A, E, VV, VT, VH, K>
 	>
 	boolean match(K key, E another);
 

@@ -33,7 +33,7 @@ public final class LongVarBinaryAttribute<
 	A extends AttributeName,
 	E extends HasLongVarBinary<A, E>
 >
-	extends AbstractValueAttribute<A, E, LongVarBinary, LongVarBinaryType, LongVarBinaryHolder, LongVarBinaryAttribute<A, E>>	
+	extends AbstractAttribute<A, E, LongVarBinary, LongVarBinaryType, LongVarBinaryHolder, LongVarBinaryAttribute<A, E>>	
 {	
 	/**
 	 * 

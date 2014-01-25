@@ -29,15 +29,15 @@ import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.ValueHolder;
 
 
-public abstract class AbstractValueAttribute<
+public abstract class AbstractAttribute<
 	A extends AttributeName,
 	E,
 	V extends Serializable,
 	P extends ValueType<P>,
 	H extends ValueHolder<V, P, H>,
-	K extends ValueAttribute<A, E, V, P, H, K>
+	K extends Attribute<A, E, V, P, H, K>
 >
-	implements ValueAttribute<A, E, V, P, H, K> {
+	implements Attribute<A, E, V, P, H, K> {
 	
 	/**
 	 *
@@ -45,13 +45,13 @@ public abstract class AbstractValueAttribute<
 	private static final long serialVersionUID = -3422141375386521175L;
 	private A name;
 	
-	protected AbstractValueAttribute() {		
+	protected AbstractAttribute() {		
 	}	
 	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */	
-	protected AbstractValueAttribute(A name) {
+	protected AbstractAttribute(A name) {
 		setName(name);
 	}
 		
@@ -85,11 +85,11 @@ public abstract class AbstractValueAttribute<
 		
 		// Since getClass().equals(o.getClass()) implies t.type().getSqlType() == type().getSqlType()
 		// we only need to check the name:		
-		AbstractValueAttribute<?, ?, ?, ?, ?, ?> t = (AbstractValueAttribute<?, ?, ?, ?, ?, ?>) o;				
+		AbstractAttribute<?, ?, ?, ?, ?, ?> t = (AbstractAttribute<?, ?, ?, ?, ?, ?>) o;				
 		return nameEquals(t);
 	}
 	
-	private boolean nameEquals(AbstractValueAttribute<?, ?, ?, ?, ?, ?> pk) {		
+	private boolean nameEquals(AbstractAttribute<?, ?, ?, ?, ?, ?> pk) {		
 		return name().equals(pk.name());
 	}
 	

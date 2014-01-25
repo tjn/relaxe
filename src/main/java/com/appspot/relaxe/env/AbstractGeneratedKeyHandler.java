@@ -39,7 +39,7 @@ import com.appspot.relaxe.ent.ColumnResolver;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.Reference;
-import com.appspot.relaxe.ent.value.ValueAttribute;
+import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.expr.InsertStatement;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
@@ -97,7 +97,7 @@ public abstract class AbstractGeneratedKeyHandler
 				A a = em.getAttribute(ac);
 				
 				if (a != null) {
-					ValueAttribute<A, E, ?, ?, ?, ?> k = em.getKey(a);
+					Attribute<A, E, ?, ?, ?, ?> k = em.getKey(a);
 					logger().debug("a => k: " + (a) + " => " + k);
 					
 					// ValueExtractor<?, ?, ?> ve = vef.createExtractor(rsmd, i);
@@ -134,9 +134,9 @@ public abstract class AbstractGeneratedKeyHandler
 		V extends Serializable,
 		P extends ValueType<P>,
 		VH extends ValueHolder<V, P, VH>,	
-		VK extends ValueAttribute<A, E, V, P, VH, VK>
+		VK extends Attribute<A, E, V, P, VH, VK>
 	>
-	void write(final ValueAttribute<A, E, V, P, VH, VK> key, final ValueExtractor<?, ?, ?> ve, ResultSet src, E dest) throws SQLException {
+	void write(final Attribute<A, E, V, P, VH, VK> key, final ValueExtractor<?, ?, ?> ve, ResultSet src, E dest) throws SQLException {
 		ValueHolder<?, ?, ?> v = ve.extractValue(src);
 		VH vh = key.as(v);			
 		key.set(dest, vh);

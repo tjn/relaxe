@@ -33,7 +33,7 @@ public final class DoubleAttribute<
 	A extends AttributeName,	
 	E extends HasDouble<A, E>
 >
-	extends AbstractValueAttribute<A, E, Double, DoubleType, DoubleHolder, DoubleAttribute<A, E>>
+	extends AbstractAttribute<A, E, Double, DoubleType, DoubleHolder, DoubleAttribute<A, E>>
 {
 	/**
 	 *

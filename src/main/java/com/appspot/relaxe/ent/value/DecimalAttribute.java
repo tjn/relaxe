@@ -33,7 +33,7 @@ public final class DecimalAttribute<
 	A extends AttributeName,
 	E extends HasDecimal<A, E>
 >
-	extends AbstractValueAttribute<A, E, Decimal, DecimalType, DecimalHolder, DecimalAttribute<A, E>>
+	extends AbstractAttribute<A, E, Decimal, DecimalType, DecimalHolder, DecimalAttribute<A, E>>
 {
 
 	/**
