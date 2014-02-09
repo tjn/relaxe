@@ -27,17 +27,8 @@ import java.util.Comparator;
 
 import com.appspot.relaxe.expr.Identifier;
 
-
-/**
- * SQL Standard -compatible FoldingComparator.
- * 
- * @author Administrator
- */
-
 public abstract class AbstractIdentifierComparator
-	implements Comparator<Identifier>, Serializable
-	{
-	
+	implements Comparator<Identifier>, Serializable	{
 	
 	/**
 	 * 
