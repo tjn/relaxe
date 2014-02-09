@@ -30,9 +30,9 @@ public interface EntityBuilder<
 > {	
 	
 	/**
-	 * Attempts
-	 * @param src
+	 * Builds a entity reference holder from <code>dataObject</code> 
+	 * @param dataObject
 	 * @return
 	 */
-	H read(DataObject src);
+	H read(DataObject dataObject);
 }
