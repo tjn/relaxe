@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe.env.pg;
 
+import com.appspot.relaxe.env.SerializableEnvironment;
 import com.appspot.relaxe.expr.DateLiteral;
 import com.appspot.relaxe.expr.IntLiteral;
 import com.appspot.relaxe.expr.LongLiteral;
@@ -32,7 +33,6 @@ import com.appspot.relaxe.expr.ddl.DefaultDefinition;
 import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataTypeMap;
-import com.appspot.relaxe.meta.SerializableEnvironment;
 import com.appspot.relaxe.types.ValueType;
 
 public class PGEnvironment

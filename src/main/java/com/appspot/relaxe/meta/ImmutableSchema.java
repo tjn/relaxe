@@ -25,6 +25,7 @@ package com.appspot.relaxe.meta;
 import java.util.Comparator;
 import java.util.Map;
 
+import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.SchemaName;

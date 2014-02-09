@@ -22,13 +22,13 @@
  */
 package com.appspot.relaxe.feature;
 
+import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.ddl.AlterTableAddColumn;
 import com.appspot.relaxe.expr.ddl.types.TimestampTypeDefinition;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.Column;
-import com.appspot.relaxe.meta.Environment;
 import com.appspot.relaxe.meta.Schema;
 
 public class MetaData

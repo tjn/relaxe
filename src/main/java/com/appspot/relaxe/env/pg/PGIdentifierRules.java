@@ -24,11 +24,11 @@ package com.appspot.relaxe.env.pg;
 
 import java.util.Comparator;
 
+import com.appspot.relaxe.env.Folding;
+import com.appspot.relaxe.env.FoldingComparator;
+import com.appspot.relaxe.env.IdentifierRules;
 import com.appspot.relaxe.expr.AbstractIdentifierRules;
 import com.appspot.relaxe.expr.Identifier;
-import com.appspot.relaxe.meta.Folding;
-import com.appspot.relaxe.meta.FoldingComparator;
-import com.appspot.relaxe.meta.IdentifierRules;
 
 
 public class PGIdentifierRules

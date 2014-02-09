@@ -25,15 +25,15 @@
  */
 package com.appspot.relaxe.env.mariadb;
 
+import com.appspot.relaxe.env.AbstractIdentifierComparator;
+import com.appspot.relaxe.env.NullComparator;
+import com.appspot.relaxe.env.SerializableEnvironment;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.DefaultDefinition;
-import com.appspot.relaxe.meta.AbstractIdentifierComparator;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.meta.DefaultDataTypeMap;
-import com.appspot.relaxe.meta.NullComparator;
-import com.appspot.relaxe.meta.SerializableEnvironment;
 
 public class MariaDBEnvironment
 	implements SerializableEnvironment {

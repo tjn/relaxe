@@ -20,15 +20,23 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.meta;
+package com.appspot.relaxe.env;
 
-import com.appspot.relaxe.expr.ddl.DefaultDefinition;
-
-public interface Environment {
-
-	IdentifierRules getIdentifierRules();
-
-	DefaultDefinition newDefaultDefinition(Column col);
+public interface Folding {
 	
-	DataTypeMap getDataTypeMap();
+	public static final Folding UPPERCASE = new Folding() {
+		@Override
+		public String apply(String ordinaryIdentifier) {
+			return ordinaryIdentifier.toUpperCase();
+		}		
+	};
+	
+	public static final Folding LOWERCASE = new Folding() {
+		@Override
+		public String apply(String ordinaryIdentifier) {
+			return ordinaryIdentifier.toLowerCase();
+		}
+	};		
+
+	String apply(String ordinaryIdentifier);
 }

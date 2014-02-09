@@ -26,8 +26,8 @@ import java.util.Properties;
 
 import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.ValueExtractorFactory;
+import com.appspot.relaxe.env.SerializableEnvironment;
 import com.appspot.relaxe.expr.SQLSyntax;
-import com.appspot.relaxe.meta.SerializableEnvironment;
 
 public interface Implementation<I extends Implementation<I>> {
 

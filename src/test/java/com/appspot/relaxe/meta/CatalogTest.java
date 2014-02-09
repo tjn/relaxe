@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.HashSet;
 
+import com.appspot.relaxe.env.IdentifierRules;
 import com.appspot.relaxe.expr.DelimitedIdentifier;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.IllegalIdentifierException;
@@ -33,7 +34,6 @@ import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.Constraint;
 import com.appspot.relaxe.meta.ForeignKey;
-import com.appspot.relaxe.meta.IdentifierRules;
 import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.meta.Schema;
 import com.appspot.relaxe.meta.SchemaElementMap;

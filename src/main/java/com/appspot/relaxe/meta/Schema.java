@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe.meta;
 
+import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaName;
 

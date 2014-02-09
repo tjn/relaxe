@@ -52,7 +52,7 @@ class {{table-impl-class}}
 		private {{table-interface}}Table() {	
 		}
 
-		public {{table-interface}}Table(com.appspot.relaxe.meta.Environment env, SchemaElementName tableName) {
+		public {{table-interface}}Table(com.appspot.relaxe.env.Environment env, SchemaElementName tableName) {
 			super(env, tableName);
 			
 			com.appspot.relaxe.meta.ImmutableColumnMap.Builder cmb = new com.appspot.relaxe.meta.ImmutableColumnMap.Builder(env);
@@ -64,11 +64,11 @@ class {{table-impl-class}}
 			this.foreignKeys = createForeignKeyMap(env, columnMap);
 		}
 		
-		private PrimaryKey createPrimaryKey(com.appspot.relaxe.meta.Environment env) {
+		private PrimaryKey createPrimaryKey(com.appspot.relaxe.env.Environment env) {
 			{{create-primary-key-body}}		
 		}
 
-		private SchemaElementMap<ForeignKey> createForeignKeyMap(com.appspot.relaxe.meta.Environment env, ColumnMap columnMap) {
+		private SchemaElementMap<ForeignKey> createForeignKeyMap(com.appspot.relaxe.env.Environment env, ColumnMap columnMap) {
 			{{create-foreign-key-map-body}}
 		}
 				

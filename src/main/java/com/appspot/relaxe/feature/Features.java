@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.appspot.relaxe.QueryHelper;
+import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.Statement;
@@ -42,7 +43,6 @@ import com.appspot.relaxe.expr.ddl.DropSchema;
 import com.appspot.relaxe.expr.ddl.DropTable;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Catalog;
-import com.appspot.relaxe.meta.Environment;
 import com.appspot.relaxe.meta.Schema;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.rdbms.CatalogFactory;

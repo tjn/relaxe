@@ -20,23 +20,41 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.meta;
+package com.appspot.relaxe.env;
 
-public interface Folding {
+import java.util.Comparator;
+
+import com.appspot.relaxe.expr.AbstractIdentifierRules;
+import com.appspot.relaxe.expr.DelimitedIdentifier;
+import com.appspot.relaxe.expr.Identifier;
+import com.appspot.relaxe.expr.IllegalIdentifierException;
+
+
+public class PortableIdentifierRules
+	extends AbstractIdentifierRules
+	implements IdentifierRules {
 	
-	public static final Folding UPPERCASE = new Folding() {
-		@Override
-		public String apply(String ordinaryIdentifier) {
-			return ordinaryIdentifier.toUpperCase();
-		}		
-	};
-	
-	public static final Folding LOWERCASE = new Folding() {
-		@Override
-		public String apply(String ordinaryIdentifier) {
-			return ordinaryIdentifier.toLowerCase();
+	private static final FoldingComparator comparator = FoldingComparator.LOWERCASE;
+		
+	@Override
+	public Comparator<Identifier> comparator() {		
+		return comparator;
+	}
+
+	@Override
+	public DelimitedIdentifier toDelimitedIdentifier(String name)
+			throws IllegalIdentifierException {
+		if (name == null) {
+			return null;
 		}
-	};		
+								
+		return new DelimitedIdentifier(name);
+	}
 
-	String apply(String ordinaryIdentifier);
+	@Override
+	public Identifier toIdentifier(String name)
+			throws IllegalIdentifierException {				
+		return toDelimitedIdentifier(name);		
+	}	
+	
 }

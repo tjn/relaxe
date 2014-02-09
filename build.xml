@@ -332,7 +332,7 @@
 			ported="pagila"
 			jdbc.url="jdbc:postgresql:pagila"
 			env="com.appspot.relaxe.rdbms.pg.PGImplementation" 
-			environment-implementation="com.appspot.relaxe.meta.PortableEnvironment" 			
+			environment-implementation="com.appspot.relaxe.env.PortableEnvironment" 			
 			type-mapper="com.appspot.relaxe.pg.pagila.PagilaTypeMapper"
 		/>		
 	</target>
@@ -390,7 +390,7 @@
 		<attribute name="target" />
 		<attribute name="env" />
 		<attribute name="jdbc.url" />		
-		<attribute name="environment-implementation" default="com.appspot.relaxe.meta.PortableEnvironment"/>				
+		<attribute name="environment-implementation" default="com.appspot.relaxe.env.PortableEnvironment"/>				
 	  	<attribute name="type-mapper" default="com.appspot.relaxe.DefaultTypeMapper"/>
 		<attribute name="jdbc.config" default="${jdbc-config.dir}/@{implementation}/@{target}.properties"/>
 		<attribute name="out.dir" default="${build.root.dir}/impl/@{implementation}/@{target}/src/gen"/>

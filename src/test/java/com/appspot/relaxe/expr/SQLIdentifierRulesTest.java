@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.expr;
 
-import com.appspot.relaxe.meta.SQLIdentifierRules;
+import com.appspot.relaxe.env.SQLIdentifierRules;
 
 import junit.framework.TestCase;
 

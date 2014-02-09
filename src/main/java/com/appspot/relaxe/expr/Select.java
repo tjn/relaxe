@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.appspot.relaxe.meta.IdentifierRules;
+import com.appspot.relaxe.env.IdentifierRules;
 
 
 public class Select

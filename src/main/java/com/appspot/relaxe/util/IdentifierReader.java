@@ -26,9 +26,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
+import com.appspot.relaxe.env.IdentifierRules;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.IllegalIdentifierException;
-import com.appspot.relaxe.meta.IdentifierRules;
 
 
 public class IdentifierReader extends AbstractQueryProcessor {

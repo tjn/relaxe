@@ -20,41 +20,11 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.meta;
+package com.appspot.relaxe.env;
 
-import java.util.Comparator;
+import java.io.Serializable;
 
-import com.appspot.relaxe.expr.AbstractIdentifierRules;
-import com.appspot.relaxe.expr.DelimitedIdentifier;
-import com.appspot.relaxe.expr.Identifier;
-import com.appspot.relaxe.expr.IllegalIdentifierException;
+public interface SerializableEnvironment
+	extends Environment, Serializable {
 
-
-public class PortableIdentifierRules
-	extends AbstractIdentifierRules
-	implements IdentifierRules {
-	
-	private static final FoldingComparator comparator = FoldingComparator.LOWERCASE;
-		
-	@Override
-	public Comparator<Identifier> comparator() {		
-		return comparator;
-	}
-
-	@Override
-	public DelimitedIdentifier toDelimitedIdentifier(String name)
-			throws IllegalIdentifierException {
-		if (name == null) {
-			return null;
-		}
-								
-		return new DelimitedIdentifier(name);
-	}
-
-	@Override
-	public Identifier toIdentifier(String name)
-			throws IllegalIdentifierException {				
-		return toDelimitedIdentifier(name);		
-	}	
-	
 }

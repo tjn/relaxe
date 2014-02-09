@@ -24,9 +24,9 @@ package com.appspot.relaxe.expr;
 
 import java.util.Comparator;
 
-import com.appspot.relaxe.meta.Folding;
-import com.appspot.relaxe.meta.FoldingComparator;
-import com.appspot.relaxe.meta.IdentifierRules;
+import com.appspot.relaxe.env.Folding;
+import com.appspot.relaxe.env.FoldingComparator;
+import com.appspot.relaxe.env.IdentifierRules;
 
 
 public class AbstractIdentifierRules

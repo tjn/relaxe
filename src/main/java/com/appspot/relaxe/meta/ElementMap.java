@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 
+import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.Identifier;
 
 

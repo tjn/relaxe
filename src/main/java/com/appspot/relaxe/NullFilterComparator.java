@@ -24,7 +24,7 @@ package com.appspot.relaxe;
 
 import java.util.Comparator;
 
-import com.appspot.relaxe.meta.NullComparator;
+import com.appspot.relaxe.env.NullComparator;
 
 
 public class NullFilterComparator<T>

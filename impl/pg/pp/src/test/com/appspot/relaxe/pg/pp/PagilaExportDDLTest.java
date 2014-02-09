@@ -64,7 +64,7 @@ import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.meta.ForeignKey;
-import com.appspot.relaxe.meta.IdentifierRules;
+import com.appspot.relaxe.env.IdentifierRules;
 import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.meta.Schema;
 import com.appspot.relaxe.env.hsqldb.HSQLDBEnvironment;

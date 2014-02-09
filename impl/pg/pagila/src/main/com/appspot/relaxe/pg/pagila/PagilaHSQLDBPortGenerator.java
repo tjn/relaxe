@@ -31,6 +31,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.appspot.relaxe.env.Environment;
+import com.appspot.relaxe.env.IdentifierRules;
 import com.appspot.relaxe.env.hsqldb.expr.Shutdown;
 import com.appspot.relaxe.exec.QueryProcessor;
 import com.appspot.relaxe.exec.QueryProcessorAdapter;
@@ -49,9 +51,7 @@ import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.DataTypeMap;
-import com.appspot.relaxe.meta.Environment;
 import com.appspot.relaxe.meta.ForeignKey;
-import com.appspot.relaxe.meta.IdentifierRules;
 import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.meta.Schema;
 import com.appspot.relaxe.query.QueryException;

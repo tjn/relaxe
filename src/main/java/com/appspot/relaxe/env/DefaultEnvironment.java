@@ -20,12 +20,16 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.meta;
+package com.appspot.relaxe.env;
 
 import java.util.Comparator;
 
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.ddl.DefaultDefinition;
+import com.appspot.relaxe.meta.Column;
+import com.appspot.relaxe.meta.EmptyForeignKeyMap;
+import com.appspot.relaxe.meta.ForeignKey;
+import com.appspot.relaxe.meta.SchemaElementMap;
 
 
 public abstract class DefaultEnvironment 

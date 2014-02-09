@@ -10,7 +10,7 @@
 		private {{table-interface}}ForeignKeyMap() {		
 		}
 		
-		private {{table-interface}}ForeignKeyMap(com.appspot.relaxe.meta.Environment environment, java.util.Map<com.appspot.relaxe.expr.Identifier, ForeignKey> content) {
+		private {{table-interface}}ForeignKeyMap(com.appspot.relaxe.env.Environment environment, java.util.Map<com.appspot.relaxe.expr.Identifier, ForeignKey> content) {
 			super(environment, content);
 		}
 	}

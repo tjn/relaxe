@@ -23,10 +23,10 @@
 package com.appspot.relaxe.rdbms.pg;
 
 import com.appspot.relaxe.DefaultValueExtractorFactory;
+import com.appspot.relaxe.env.SerializableEnvironment;
 import com.appspot.relaxe.env.pg.PGEnvironment;
 import com.appspot.relaxe.expr.DefaultSQLSyntax;
 import com.appspot.relaxe.expr.SQLSyntax;
-import com.appspot.relaxe.meta.SerializableEnvironment;
 import com.appspot.relaxe.rdbms.CatalogFactory;
 import com.appspot.relaxe.rdbms.DefaultImplementation;
 

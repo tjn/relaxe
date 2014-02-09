@@ -25,7 +25,7 @@ package com.appspot.relaxe.expr;
 import java.util.Collections;
 import java.util.List;
 
-import com.appspot.relaxe.meta.IdentifierRules;
+import com.appspot.relaxe.env.IdentifierRules;
 
 /**
  * Represents scalar-valued select-list-element.

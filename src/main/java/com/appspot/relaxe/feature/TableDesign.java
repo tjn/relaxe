@@ -25,6 +25,7 @@
  */
 package com.appspot.relaxe.feature;
 
+import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.BaseTableElement;
@@ -32,7 +33,6 @@ import com.appspot.relaxe.expr.ddl.ColumnDefinition;
 import com.appspot.relaxe.expr.ddl.CreateTable;
 import com.appspot.relaxe.expr.ddl.types.IntTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
-import com.appspot.relaxe.meta.Environment;
 
 /***
  * Helper class for creating table CreateTable -statements programmatically.

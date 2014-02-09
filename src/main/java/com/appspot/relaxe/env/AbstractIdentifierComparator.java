@@ -20,9 +20,13 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.meta;
+package com.appspot.relaxe.env;
+
+import java.io.Serializable;
+import java.util.Comparator;
 
 import com.appspot.relaxe.expr.Identifier;
+
 
 /**
  * SQL Standard -compatible FoldingComparator.
@@ -30,59 +34,28 @@ import com.appspot.relaxe.expr.Identifier;
  * @author Administrator
  */
 
-public abstract class FoldingComparator
-	extends AbstractIdentifierComparator {
-		
+public abstract class AbstractIdentifierComparator
+	implements Comparator<Identifier>, Serializable
+	{
+	
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6545832196162079657L;	
-	private static final NullComparator.String nameComparator = new NullComparator.String();
-		
-	public static final FoldingComparator UPPERCASE = new FoldingComparator() {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 8134439617694820125L;
-
-		@Override
-		public Folding getFolding() {
-			return Folding.UPPERCASE;
-		}
-	};
+			
 	
-	public static final FoldingComparator LOWERCASE = new FoldingComparator() {
-		private static final long serialVersionUID = 8134439617694820125L;
-
-		@Override
-		public Folding getFolding() {
-			return Folding.LOWERCASE;
-		}
-	};
 	
-	public abstract Folding getFolding();
-
-	public FoldingComparator() {
+	public AbstractIdentifierComparator() {
 		super();
 	}
 
-		
 	@Override
-	protected int compare(String n1, String n2) {
-		return nameComparator.compare(n1, n2);
+	public int compare(Identifier o1, Identifier o2) {				
+		return compare(name(o1), name(o2));
 	}
 	
-	protected String fold(String ordinaryIdentifier) {
-		return getFolding().apply(ordinaryIdentifier);
-	}
-	
-	@Override
-	protected String name(Identifier ident) {
-		if (ident == null) {
-			return null;
-		}
-		
-		String n = ident.getContent();
-		return ident.isOrdinary() ? fold(n) : n; 
-	}
+	protected abstract int compare(String n1, String n2);
+			
+	protected abstract String name(Identifier ident);
 }

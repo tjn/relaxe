@@ -25,10 +25,10 @@
  */
 package com.appspot.relaxe.env.hsqldb;
 
+import com.appspot.relaxe.env.DefaultEnvironment;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.meta.DefaultDataTypeMap;
-import com.appspot.relaxe.meta.DefaultEnvironment;
 
 public class HSQLDBEnvironment 
 	extends DefaultEnvironment {

@@ -20,10 +20,13 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.meta;
+package com.appspot.relaxe.env;
 
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.DefaultDefinition;
+import com.appspot.relaxe.meta.Column;
+import com.appspot.relaxe.meta.DataTypeMap;
+import com.appspot.relaxe.meta.DefaultDataTypeMap;
 
 public class PortableEnvironment
 	implements SerializableEnvironment {

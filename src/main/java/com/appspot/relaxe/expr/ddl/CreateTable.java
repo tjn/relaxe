@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.ElementList;
 import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.Identifier;
@@ -41,7 +42,6 @@ import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ColumnMap;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.DataTypeMap;
-import com.appspot.relaxe.meta.Environment;
 import com.appspot.relaxe.meta.PrimaryKey;
 
 public class CreateTable

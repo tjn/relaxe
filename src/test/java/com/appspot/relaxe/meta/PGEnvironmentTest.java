@@ -22,9 +22,9 @@
  */
 package com.appspot.relaxe.meta;
 
+import com.appspot.relaxe.env.IdentifierRules;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.IllegalIdentifierException;
-import com.appspot.relaxe.meta.IdentifierRules;
 import com.appspot.relaxe.meta.impl.pg.PGTestCase;
 import com.appspot.relaxe.rdbms.pg.PGImplementation;
 

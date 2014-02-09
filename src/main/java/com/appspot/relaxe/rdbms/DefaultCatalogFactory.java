@@ -36,9 +36,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.SchemaName;
@@ -46,7 +48,6 @@ import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataTypeImpl;
-import com.appspot.relaxe.meta.Environment;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.ImmutableBaseTable;
 import com.appspot.relaxe.meta.ImmutableCatalog;

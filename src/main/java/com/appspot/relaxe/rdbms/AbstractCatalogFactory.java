@@ -30,9 +30,9 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaName;
-import com.appspot.relaxe.meta.Environment;
 
 
 public abstract class AbstractCatalogFactory

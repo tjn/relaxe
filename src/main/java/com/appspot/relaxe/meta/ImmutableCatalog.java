@@ -25,6 +25,7 @@ package com.appspot.relaxe.meta;
 import java.io.Serializable;
 import java.util.Map;
 
+import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.Identifier;
 
 public class ImmutableCatalog

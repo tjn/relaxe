@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.Identifier;
 
 
