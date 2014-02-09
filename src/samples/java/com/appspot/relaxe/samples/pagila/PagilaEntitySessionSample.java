@@ -123,8 +123,11 @@ public class PagilaEntitySessionSample {
 //						Language.NAME
 //				);
 				
-//				The following does not compile either:				
+//				The following does not compile either.
+//				An attribute of Film -entity can only be used with Film.QueryElement
+//				not with Language.QueryElement:				
 //				EntityQueryPredicate fp = qe.newEquals(Film.TITLE, "English");
+								
 												
 				List<Language> results = es.list(lq, null);
 				
