@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.mysql.sakila;
 
-import com.appspot.relaxe.env.mysql.MySQLPersistenceContext;
+import com.appspot.relaxe.rdbms.mysql.MySQLPersistenceContext;
 
 public class SakilaPersistenceContext
 	extends MySQLPersistenceContext {

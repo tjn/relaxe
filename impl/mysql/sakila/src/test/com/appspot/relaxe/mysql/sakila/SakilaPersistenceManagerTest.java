@@ -29,8 +29,6 @@ import com.appspot.relaxe.AbstractPersistenceManagerTest;
 import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.SimpleUnificationContext;
 import com.appspot.relaxe.ent.UnificationContext;
-import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.mysql.MySQLImplementation;
 import com.appspot.relaxe.gen.mysql.sakila.ent.sakila.Actor;
 import com.appspot.relaxe.gen.mysql.sakila.ent.sakila.Film;
 import com.appspot.relaxe.gen.mysql.sakila.ent.sakila.FilmActor;
@@ -40,6 +38,8 @@ import com.appspot.relaxe.gen.mysql.sakila.ent.sakila.Actor.Holder;
 import com.appspot.relaxe.gen.mysql.sakila.ent.sakila.Actor.MetaData;
 import com.appspot.relaxe.gen.mysql.sakila.ent.sakila.Actor.Reference;
 import com.appspot.relaxe.gen.mysql.sakila.ent.sakila.Actor.Type;
+import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.mysql.MySQLImplementation;
 
 
 public class SakilaPersistenceManagerTest

@@ -32,12 +32,11 @@ import java.util.List;
 import java.util.Properties;
 
 import com.appspot.relaxe.QueryHelper;
-import com.appspot.relaxe.env.CatalogFactory;
-import com.appspot.relaxe.env.DefaultResolver;
-import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.query.QueryException;
-
+import com.appspot.relaxe.rdbms.CatalogFactory;
+import com.appspot.relaxe.rdbms.DefaultResolver;
+import com.appspot.relaxe.rdbms.Implementation;
 import com.appspot.relaxe.cli.Parameter;
 import com.appspot.relaxe.cli.CommandLine;
 import com.appspot.relaxe.cli.Option;

@@ -27,9 +27,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 import com.appspot.relaxe.AbstractUnitTest;
-import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.mariadb.MariaDBImplementation;
-import com.appspot.relaxe.env.mariadb.MariaDBPersistenceContext;
+import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.mariadb.MariaDBImplementation;
+import com.appspot.relaxe.rdbms.mariadb.MariaDBPersistenceContext;
 
 
 public abstract class AbstractMariaDBTestCase

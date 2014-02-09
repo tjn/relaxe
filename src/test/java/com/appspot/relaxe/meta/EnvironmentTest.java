@@ -22,11 +22,11 @@
  */
 package com.appspot.relaxe.meta;
 
-import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.IllegalIdentifierException;
 import com.appspot.relaxe.meta.DBMetaTestCase;
 import com.appspot.relaxe.meta.IdentifierRules;
+import com.appspot.relaxe.rdbms.Implementation;
 
 
 public abstract class EnvironmentTest<I extends Implementation<I>> 

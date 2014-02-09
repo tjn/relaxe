@@ -30,11 +30,11 @@ import com.appspot.relaxe.IntegerExtractor;
 import com.appspot.relaxe.ValueExtractor;
 import com.appspot.relaxe.VarcharExtractor;
 import com.appspot.relaxe.env.pg.PGTSVectorType;
-import com.appspot.relaxe.meta.impl.pg.PGValueExtractorFactory;
 import com.appspot.relaxe.pg.pagila.types.MPAARating;
 import com.appspot.relaxe.pg.pagila.types.MPAARatingHolder;
 import com.appspot.relaxe.pg.pagila.types.MPAARatingType;
 import com.appspot.relaxe.pg.pagila.types.YearType;
+import com.appspot.relaxe.rdbms.pg.PGValueExtractorFactory;
 
 
 public class PagilaValueExtractorFactory extends PGValueExtractorFactory {

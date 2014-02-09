@@ -27,9 +27,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 import com.appspot.relaxe.AbstractUnitTest;
-import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.mysql.MySQLImplementation;
-import com.appspot.relaxe.env.mysql.MySQLPersistenceContext;
+import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.mysql.MySQLImplementation;
+import com.appspot.relaxe.rdbms.mysql.MySQLPersistenceContext;
 
 
 public abstract class AbstractMySQLTestCase

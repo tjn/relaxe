@@ -26,8 +26,8 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 
-import com.appspot.relaxe.env.util.ResultSetWriter;
 import com.appspot.relaxe.mysql.sakila.AbstractMySQLSakilaTestCase;
+import com.appspot.relaxe.util.ResultSetWriter;
 
 
 public class SakilaForeignKeyTest

@@ -209,7 +209,7 @@
 			driver-artifact="postgresql"
 			target="pagila"
 			jdbc.url="jdbc:postgresql:pagila"
-			env="com.appspot.relaxe.meta.impl.pg.PGImplementation" 
+			env="com.appspot.relaxe.rdbms.pg.PGImplementation" 
 			environment-implementation="com.appspot.relaxe.env.pg.PGEnvironment" 
 			type-mapper="com.appspot.relaxe.pg.pagila.PagilaTypeMapper"
 		/>		
@@ -234,8 +234,8 @@
 			driver-artifact="hsqldb"
 			target="pagila"
 			jdbc.url="jdbc:hsqldb:file:build/data/pg-hsqldb/pagila"
-			env="com.appspot.relaxe.env.hsqldb.HSQLDBFileImplementation" 
-			environment-implementation="com.appspot.relaxe.meta.impl.hsqldb.HSQLDBEnvironment" 
+			env="com.appspot.relaxe.rdbms.hsqldb.HSQLDBFileImplementation" 
+			environment-implementation="com.appspot.relaxe.env.hsqldb.HSQLDBEnvironment" 
 			type-mapper="com.appspot.relaxe.hsqldb.pagila.HSQLDBPagilaTypeMapper"
 		/>		
 	</target>	
@@ -264,8 +264,8 @@
 			driver-artifact="mysql-connector-java"			
 			target="sakila"
 			jdbc.url="jdbc:mysql://127.0.0.1/sakila"
-			env="com.appspot.relaxe.env.mysql.MySQLImplementation" 
-			environment-implementation="com.appspot.relaxe.meta.impl.mysql.MySQLEnvironment" 
+			env="com.appspot.relaxe.rdbms.mysql.MySQLImplementation" 
+			environment-implementation="com.appspot.relaxe.env.mysql.MySQLEnvironment" 
 			schema-opts="--schema sakila -o sakila"
 		/>		
 	</target>		
@@ -293,8 +293,8 @@
 			driver-artifact="mariadb-java-client"			
 			target="sakila"
 			jdbc.url="jdbc:mariadb://127.0.0.1/sakila"
-			env="com.appspot.relaxe.env.mariadb.MariaDBImplementation" 
-			environment-implementation="com.appspot.relaxe.meta.impl.mariadb.MariaDBEnvironment" 
+			env="com.appspot.relaxe.rdbms.mariadb.MariaDBImplementation" 
+			environment-implementation="com.appspot.relaxe.env.mariadb.MariaDBEnvironment" 
 			schema-opts="--schema sakila -o sakila"
 		/>		
 	</target>		
@@ -319,7 +319,7 @@
 			dest.driver-artifact="hsqldb"
 			dest.jdbc.url="jdbc:hsqldb:file:build/data/pg-hsqldb/pagila"
 			dest.jdbc.config="config/hsqldb/pagila.properties"
-			dest.persistence-context.class="com.appspot.relaxe.env.hsqldb.HSQLDBPersistenceContext"
+			dest.persistence-context.class="com.appspot.relaxe.rdbms.hsqldb.HSQLDBPersistenceContext"
 			transformer.class="com.appspot.relaxe.pg.pagila.PagilaHSQLDBPortGenerator" />
 	</target>
 		
@@ -331,7 +331,7 @@
 			target="pp"
 			ported="pagila"
 			jdbc.url="jdbc:postgresql:pagila"
-			env="com.appspot.relaxe.meta.impl.pg.PGImplementation" 
+			env="com.appspot.relaxe.rdbms.pg.PGImplementation" 
 			environment-implementation="com.appspot.relaxe.meta.PortableEnvironment" 			
 			type-mapper="com.appspot.relaxe.pg.pagila.PagilaTypeMapper"
 		/>		

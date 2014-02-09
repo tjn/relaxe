@@ -29,7 +29,6 @@ import com.appspot.relaxe.AbstractPersistenceManagerTest;
 import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.SimpleUnificationContext;
 import com.appspot.relaxe.ent.UnificationContext;
-import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor.Attribute;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
@@ -40,8 +39,9 @@ import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor.Holder;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor.MetaData;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor.Reference;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor.Type;
-import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 import com.appspot.relaxe.pg.pagila.PagilaPersistenceContext;
+import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.pg.PGImplementation;
 
 
 public class PagilaPersistenceManagerTest

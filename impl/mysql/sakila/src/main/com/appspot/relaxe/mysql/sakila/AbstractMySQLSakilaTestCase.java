@@ -22,9 +22,9 @@
  */
 package com.appspot.relaxe.mysql.sakila;
 
-import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.mysql.MySQLImplementation;
 import com.appspot.relaxe.mysql.AbstractMySQLTestCase;
+import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.mysql.MySQLImplementation;
 
 
 public abstract class AbstractMySQLSakilaTestCase

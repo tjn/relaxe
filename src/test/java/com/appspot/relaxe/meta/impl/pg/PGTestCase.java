@@ -22,8 +22,10 @@
  */
 package com.appspot.relaxe.meta.impl.pg;
 
-import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.meta.DBMetaTestCase;
+import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.pg.PGImplementation;
+import com.appspot.relaxe.rdbms.pg.PGPersistenceContext;
 
 
 public class PGTestCase

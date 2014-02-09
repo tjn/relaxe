@@ -25,10 +25,10 @@ package com.appspot.relaxe.pg.pagila;
 import com.appspot.relaxe.EnumAssignment;
 import com.appspot.relaxe.ParameterAssignment;
 import com.appspot.relaxe.meta.DataType;
-import com.appspot.relaxe.meta.impl.pg.PGValueAssignerFactory;
 import com.appspot.relaxe.pg.pagila.types.MPAARating;
 import com.appspot.relaxe.pg.pagila.types.MPAARatingHolder;
 import com.appspot.relaxe.pg.pagila.types.MPAARatingType;
+import com.appspot.relaxe.rdbms.pg.PGValueAssignerFactory;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.ValueHolder;
 

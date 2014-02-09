@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 import com.appspot.relaxe.AbstractUnitTest;
-import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.hsqldb.HSQLDBImplementation;
-import com.appspot.relaxe.env.hsqldb.HSQLDBPersistenceContext;
+import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.hsqldb.HSQLDBImplementation;
+import com.appspot.relaxe.rdbms.hsqldb.HSQLDBPersistenceContext;
 
 
 public abstract class AbstractHSQLDBTestCase

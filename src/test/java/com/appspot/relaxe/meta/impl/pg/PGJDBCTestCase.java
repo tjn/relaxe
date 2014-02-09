@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.env.CatalogFactory;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.IllegalIdentifierException;
 import com.appspot.relaxe.meta.BaseTable;
@@ -37,6 +36,8 @@ import com.appspot.relaxe.meta.Schema;
 import com.appspot.relaxe.meta.SchemaMap;
 import com.appspot.relaxe.meta.impl.common.JDBCTestCase;
 import com.appspot.relaxe.query.QueryException;
+import com.appspot.relaxe.rdbms.CatalogFactory;
+import com.appspot.relaxe.rdbms.pg.PGImplementation;
 import com.appspot.relaxe.tools.pg.PGRestore;
 
 

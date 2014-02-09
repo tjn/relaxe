@@ -32,12 +32,12 @@ import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityContext;
 import com.appspot.relaxe.ent.EntityException;
 import com.appspot.relaxe.ent.EntityMetaData;
-import com.appspot.relaxe.env.util.CatalogTraversal;
 import com.appspot.relaxe.map.JavaType;
 import com.appspot.relaxe.map.TableMapper;
 import com.appspot.relaxe.map.TableMapper.Part;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Catalog;
+import com.appspot.relaxe.util.CatalogTraversal;
 
 
 public class DefaultEntityContext

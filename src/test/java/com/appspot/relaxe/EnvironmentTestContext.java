@@ -26,9 +26,9 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 
-import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.query.QueryException;
+import com.appspot.relaxe.rdbms.Implementation;
 
 
 public interface EnvironmentTestContext {

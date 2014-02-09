@@ -22,9 +22,9 @@
  */
 package com.appspot.relaxe;
 
-import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.model.DefaultMutableValueModel;
 import com.appspot.relaxe.model.ValueModel;
+import com.appspot.relaxe.rdbms.Implementation;
 
 public abstract class DefaultContextModel
 	<I extends Implementation<I>>

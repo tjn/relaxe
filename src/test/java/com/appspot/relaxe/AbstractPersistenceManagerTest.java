@@ -34,10 +34,10 @@ import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQuery;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.UnificationContext;
-import com.appspot.relaxe.env.Implementation;
-import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.meta.DBMetaTestCase;
 import com.appspot.relaxe.query.QueryException;
+import com.appspot.relaxe.rdbms.Implementation;
+import com.appspot.relaxe.rdbms.PersistenceContext;
 import com.appspot.relaxe.types.ReferenceType;
 import com.appspot.relaxe.value.ReferenceHolder;
 

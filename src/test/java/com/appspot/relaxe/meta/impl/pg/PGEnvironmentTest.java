@@ -27,6 +27,7 @@ import com.appspot.relaxe.env.pg.PGIdentifierRules;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.IllegalIdentifierException;
 import com.appspot.relaxe.expr.ddl.DefaultDefinition;
+import com.appspot.relaxe.rdbms.pg.PGImplementation;
 import com.appspot.relaxe.types.ValueType;
 
 public class PGEnvironmentTest

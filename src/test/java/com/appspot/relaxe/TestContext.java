@@ -26,10 +26,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import com.appspot.relaxe.env.Implementation;
-import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.query.QueryException;
+import com.appspot.relaxe.rdbms.Implementation;
+import com.appspot.relaxe.rdbms.PersistenceContext;
 
 
 public interface TestContext<I extends Implementation<I>> {

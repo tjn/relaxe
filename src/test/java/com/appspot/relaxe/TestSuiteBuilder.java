@@ -30,7 +30,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Driver;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,11 +46,10 @@ import org.slf4j.LoggerFactory;
 import com.appspot.relaxe.DefaultEntityContext;
 import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.build.Builder;
-import com.appspot.relaxe.env.CatalogFactory;
-import com.appspot.relaxe.env.Implementation;
-
 import com.appspot.relaxe.io.FileProcessor;
 import com.appspot.relaxe.io.IOHelper;
+import com.appspot.relaxe.rdbms.CatalogFactory;
+import com.appspot.relaxe.rdbms.Implementation;
 
 public class TestSuiteBuilder
     extends TestCase {      

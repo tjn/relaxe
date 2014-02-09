@@ -23,7 +23,7 @@
 package com.appspot.relaxe;
 
 import com.appspot.relaxe.SQLIntervalExtractor;
-import com.appspot.relaxe.meta.impl.pg.PGIntervalExtractor;
+import com.appspot.relaxe.rdbms.pg.PGIntervalExtractor;
 import com.appspot.relaxe.value.IntervalHolder;
 
 import junit.framework.TestCase;

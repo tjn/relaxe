@@ -28,7 +28,6 @@ import java.sql.SQLException;
 import com.appspot.relaxe.StatementExecutor;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.EntityException;
-import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.expr.CountFunction;
 import com.appspot.relaxe.expr.DefaultTableExpression;
 import com.appspot.relaxe.expr.From;
@@ -38,6 +37,7 @@ import com.appspot.relaxe.expr.TableReference;
 import com.appspot.relaxe.meta.DBMetaTestCase;
 import com.appspot.relaxe.meta.Table;
 import com.appspot.relaxe.query.QueryException;
+import com.appspot.relaxe.rdbms.Implementation;
 import com.appspot.relaxe.value.LongHolder;
 import com.appspot.relaxe.value.ValueHolder;
 

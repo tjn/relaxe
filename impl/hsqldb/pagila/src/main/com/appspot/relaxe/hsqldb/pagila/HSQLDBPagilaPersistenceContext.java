@@ -22,7 +22,7 @@
  */
 package com.appspot.relaxe.hsqldb.pagila;
 
-import com.appspot.relaxe.env.hsqldb.HSQLDBPersistenceContext;
+import com.appspot.relaxe.rdbms.hsqldb.HSQLDBPersistenceContext;
 
 public class HSQLDBPagilaPersistenceContext
 	extends HSQLDBPersistenceContext {

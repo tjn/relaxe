@@ -27,11 +27,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import com.appspot.relaxe.env.CatalogFactory;
-import com.appspot.relaxe.env.Implementation;
-import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.query.QueryException;
+import com.appspot.relaxe.rdbms.CatalogFactory;
+import com.appspot.relaxe.rdbms.Implementation;
+import com.appspot.relaxe.rdbms.PersistenceContext;
 
 
 public class DefaultTestContext<I extends Implementation<I>>

@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
 public class AllTests {
 
     public static Test suite() {
-        TestSuite suite = new TestSuite("Test for com.appspot.relaxe.meta.impl.pg");
+        TestSuite suite = new TestSuite("Test for com.appspot.relaxe.rdbms.pg");
         //$JUnit-BEGIN$
         suite.addTestSuite(PGEnvironmentTest.class);
 //        suite.addTestSuite(PGDumpMetaTest.class);

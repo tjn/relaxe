@@ -26,13 +26,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.appspot.relaxe.TestContext;
-import com.appspot.relaxe.env.hsqldb.AbstractHSQLDBImplementation;
-import com.appspot.relaxe.env.hsqldb.HSQLDBFileImplementation;
-import com.appspot.relaxe.env.hsqldb.HSQLDBPersistenceContext;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBTest;
-import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
+import com.appspot.relaxe.rdbms.hsqldb.AbstractHSQLDBImplementation;
+import com.appspot.relaxe.rdbms.hsqldb.HSQLDBFileImplementation;
+import com.appspot.relaxe.rdbms.hsqldb.HSQLDBPersistenceContext;
+import com.appspot.relaxe.rdbms.pg.PGImplementation;
 
 public class PagilaHSQLDBPortGeneratorTest
 	extends AbstractPagilaTestCase {

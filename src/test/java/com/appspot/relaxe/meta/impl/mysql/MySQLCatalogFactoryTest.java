@@ -29,17 +29,17 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.appspot.relaxe.env.CatalogFactory;
-import com.appspot.relaxe.env.DefaultCatalogFactory;
-import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.mysql.MySQLCatalogFactory;
-import com.appspot.relaxe.env.mysql.MySQLImplementation;
-import com.appspot.relaxe.env.mysql.MySQLPersistenceContext;
+import com.appspot.relaxe.env.mysql.MySQLEnvironment;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.DBMetaTestCase;
-import com.appspot.relaxe.meta.impl.mysql.MySQLEnvironment;
 import com.appspot.relaxe.query.QueryException;
+import com.appspot.relaxe.rdbms.CatalogFactory;
+import com.appspot.relaxe.rdbms.DefaultCatalogFactory;
+import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.mysql.MySQLCatalogFactory;
+import com.appspot.relaxe.rdbms.mysql.MySQLImplementation;
+import com.appspot.relaxe.rdbms.mysql.MySQLPersistenceContext;
 
 
 public class MySQLCatalogFactoryTest extends DBMetaTestCase<MySQLImplementation> {

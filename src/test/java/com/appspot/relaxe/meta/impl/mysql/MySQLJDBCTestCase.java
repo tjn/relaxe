@@ -30,9 +30,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.appspot.relaxe.env.CatalogFactory;
-import com.appspot.relaxe.env.Implementation;
-import com.appspot.relaxe.env.mysql.MySQLImplementation;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.IllegalIdentifierException;
 import com.appspot.relaxe.meta.BaseTable;
@@ -41,7 +38,9 @@ import com.appspot.relaxe.meta.Schema;
 import com.appspot.relaxe.meta.SchemaMap;
 import com.appspot.relaxe.meta.impl.common.JDBCTestCase;
 import com.appspot.relaxe.query.QueryException;
-
+import com.appspot.relaxe.rdbms.CatalogFactory;
+import com.appspot.relaxe.rdbms.Implementation;
+import com.appspot.relaxe.rdbms.mysql.MySQLImplementation;
 import com.appspot.relaxe.io.Pipe;
 
 public abstract class MySQLJDBCTestCase

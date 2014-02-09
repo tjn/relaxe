@@ -23,9 +23,9 @@
 
 package com.appspot.relaxe.mysql.samples;
 
-import com.appspot.relaxe.env.GeneratedKeyHandler;
-import com.appspot.relaxe.env.TriggerGeneratedKeyHandler;
-import com.appspot.relaxe.env.mysql.MySQLPersistenceContext;
+import com.appspot.relaxe.rdbms.GeneratedKeyHandler;
+import com.appspot.relaxe.rdbms.TriggerGeneratedKeyHandler;
+import com.appspot.relaxe.rdbms.mysql.MySQLPersistenceContext;
 
 public class MySQLSamplesTriggerTestPersistenceContext
 	extends MySQLPersistenceContext {

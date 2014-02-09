@@ -28,8 +28,8 @@ import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.Schema;
-import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
+import com.appspot.relaxe.rdbms.pg.PGImplementation;
 
 public class PagilaCreateCatalogTest 
 	extends AbstractPagilaTestCase {

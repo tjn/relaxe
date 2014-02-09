@@ -23,7 +23,7 @@
 package com.appspot.relaxe.mariadb.sakila;
 
 
-import com.appspot.relaxe.env.mariadb.MariaDBPersistenceContext;
+import com.appspot.relaxe.rdbms.mariadb.MariaDBPersistenceContext;
 
 public class SakilaPersistenceContext
 	extends MariaDBPersistenceContext {

@@ -4,7 +4,7 @@ SET JARDIR=%ROOT%\lib
 
 SET JDBC_CONFIG=%ROOT%\mysql.properties
 SET JDBC_URL=jdbc:mysql://127.0.0.1/mysql
-SET ENV=com.appspot.relaxe.env.mysql.MySQLEnvironment
+SET ENV=com.appspot.relaxe.rdbms.mysql.MySQLEnvironment
 
 REM Build java classpath:
 SET META_GEN_CP=%ROOT%\classes

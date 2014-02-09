@@ -31,8 +31,6 @@ import com.appspot.relaxe.QueryExecutor;
 import com.appspot.relaxe.SynchronousDataObjectFetcher;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObjectQueryResult;
-import com.appspot.relaxe.env.Implementation;
-import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.model.ValueModel;
 import com.appspot.relaxe.paging.DefaultDataObjectPager;
@@ -40,6 +38,8 @@ import com.appspot.relaxe.paging.DefaultPagerModel;
 import com.appspot.relaxe.paging.SimplePagerModel;
 import com.appspot.relaxe.paging.SimplePagerModel.Command;
 import com.appspot.relaxe.query.DataObjectQuery;
+import com.appspot.relaxe.rdbms.Implementation;
+import com.appspot.relaxe.rdbms.PersistenceContext;
 import com.appspot.relaxe.ui.action.Action;
 
 

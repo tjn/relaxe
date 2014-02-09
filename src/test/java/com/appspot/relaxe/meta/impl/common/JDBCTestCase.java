@@ -36,10 +36,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.appspot.relaxe.env.Implementation;
-import com.appspot.relaxe.env.util.ResultSetWriter;
-import com.appspot.relaxe.env.util.SimpleQueryProcessor;
-import com.appspot.relaxe.env.util.StringListReader;
 import com.appspot.relaxe.exec.QueryProcessor;
 import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.ddl.AlterTableDropConstraint;
@@ -51,7 +47,10 @@ import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.meta.Schema;
 import com.appspot.relaxe.meta.Table;
 import com.appspot.relaxe.query.QueryException;
-
+import com.appspot.relaxe.rdbms.Implementation;
+import com.appspot.relaxe.util.ResultSetWriter;
+import com.appspot.relaxe.util.SimpleQueryProcessor;
+import com.appspot.relaxe.util.StringListReader;
 import com.appspot.relaxe.io.Launcher;
 import com.appspot.relaxe.io.RunResult;
 
@@ -222,7 +221,7 @@ public abstract class JDBCTestCase
 				
 		DatabaseMetaData meta = c.getMetaData();
 		
-		com.appspot.relaxe.env.util.ResultSetWriter rw = new ResultSetWriter(System.out, false);		
+		com.appspot.relaxe.util.ResultSetWriter rw = new ResultSetWriter(System.out, false);		
 		
 //		final int jdbcMajor = meta.getJDBCMajorVersion();
 		

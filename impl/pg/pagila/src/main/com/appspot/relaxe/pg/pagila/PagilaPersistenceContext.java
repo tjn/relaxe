@@ -24,8 +24,8 @@ package com.appspot.relaxe.pg.pagila;
 
 import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.ValueExtractorFactory;
-import com.appspot.relaxe.meta.impl.pg.PGImplementation;
-import com.appspot.relaxe.meta.impl.pg.PGPersistenceContext;
+import com.appspot.relaxe.rdbms.pg.PGImplementation;
+import com.appspot.relaxe.rdbms.pg.PGPersistenceContext;
 
 public class PagilaPersistenceContext
 	extends PGPersistenceContext {

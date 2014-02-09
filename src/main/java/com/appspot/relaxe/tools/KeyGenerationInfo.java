@@ -29,12 +29,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import com.appspot.relaxe.env.util.ResultSetWriter;
-
 import com.appspot.relaxe.cli.CommandLine;
 import com.appspot.relaxe.cli.Parameter;
 import com.appspot.relaxe.cli.Parser;
 import com.appspot.relaxe.io.IOHelper;
+import com.appspot.relaxe.util.ResultSetWriter;
 
 public class KeyGenerationInfo
     extends CatalogTool {

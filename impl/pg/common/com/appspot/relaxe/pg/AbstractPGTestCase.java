@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 import com.appspot.relaxe.AbstractUnitTest;
-import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.meta.impl.pg.PGImplementation;
-import com.appspot.relaxe.meta.impl.pg.PGPersistenceContext;
+import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.pg.PGImplementation;
+import com.appspot.relaxe.rdbms.pg.PGPersistenceContext;
 
 
 public abstract class AbstractPGTestCase

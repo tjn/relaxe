@@ -28,11 +28,11 @@ import com.appspot.relaxe.QueryExecutor;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObjectQueryResult;
 import com.appspot.relaxe.ent.FetchOptions;
-import com.appspot.relaxe.env.Implementation;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.meta.Table;
 import com.appspot.relaxe.query.DataObjectQuery;
 import com.appspot.relaxe.query.QueryTime;
+import com.appspot.relaxe.rdbms.Implementation;
 
 public abstract class QueryExecutorTest<I extends Implementation<I>>
 	extends AbstractUnitTest<I> {

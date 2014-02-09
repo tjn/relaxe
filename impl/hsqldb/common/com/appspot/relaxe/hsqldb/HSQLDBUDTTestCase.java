@@ -26,7 +26,8 @@ import java.io.BufferedOutputStream;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.Types;
-import com.appspot.relaxe.env.util.ResultSetWriter;
+
+import com.appspot.relaxe.util.ResultSetWriter;
 
 
 public class HSQLDBUDTTestCase
@@ -49,7 +50,7 @@ public class HSQLDBUDTTestCase
 		
 		BufferedOutputStream out = new BufferedOutputStream(System.out, 64 * 1024);
 		
-		com.appspot.relaxe.env.util.ResultSetWriter rw = new ResultSetWriter(out, false);		
+		com.appspot.relaxe.util.ResultSetWriter rw = new ResultSetWriter(out, false);		
 		
 		rw.header("JavaType Info");
 		rw.apply(meta.getTypeInfo());

@@ -26,9 +26,10 @@ import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
 import com.appspot.relaxe.TestContext;
-import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
+import com.appspot.relaxe.rdbms.pg.PGImplementation;
 
 
 public class PagilaUDTTest 

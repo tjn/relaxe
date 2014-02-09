@@ -23,10 +23,10 @@
 package com.appspot.relaxe.mariadb.sakila;
 
 
-import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.mariadb.MariaDBImplementation;
 import com.appspot.relaxe.mariadb.AbstractMariaDBTestCase;
 import com.appspot.relaxe.mariadb.sakila.SakilaPersistenceContext;
+import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.mariadb.MariaDBImplementation;
 
 
 public abstract class MariaDBSakilaTestCase

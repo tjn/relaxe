@@ -23,10 +23,10 @@
 package com.appspot.relaxe.pg.pagila;
 
 import com.appspot.relaxe.StatementExecutorTest;
-import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor;
 import com.appspot.relaxe.meta.BaseTable;
-import com.appspot.relaxe.meta.impl.pg.PGImplementation;
+import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.pg.PGImplementation;
 
 
 public class PagilaStatementExecutorTest

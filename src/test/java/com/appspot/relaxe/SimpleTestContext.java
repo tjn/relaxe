@@ -33,10 +33,10 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.appspot.relaxe.env.Implementation;
-import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.query.QueryException;
+import com.appspot.relaxe.rdbms.Implementation;
+import com.appspot.relaxe.rdbms.PersistenceContext;
 
 
 /**

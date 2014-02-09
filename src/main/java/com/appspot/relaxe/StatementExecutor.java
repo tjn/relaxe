@@ -26,10 +26,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.appspot.relaxe.ent.DataObject;
-import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.exec.QueryProcessor;
 import com.appspot.relaxe.exec.ResultSetProcessor;
 import com.appspot.relaxe.exec.UpdateProcessor;
@@ -40,6 +41,7 @@ import com.appspot.relaxe.expr.Statement.Name;
 import com.appspot.relaxe.expr.ddl.SQLSchemaStatement;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.query.QueryTime;
+import com.appspot.relaxe.rdbms.PersistenceContext;
 
 public class StatementExecutor {
 

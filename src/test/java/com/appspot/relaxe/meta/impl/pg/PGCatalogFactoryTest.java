@@ -31,8 +31,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.appspot.relaxe.StatementExecutor;
-import com.appspot.relaxe.env.util.ResultSetWriter;
 import com.appspot.relaxe.query.QueryException;
+import com.appspot.relaxe.rdbms.pg.PGCatalogFactory;
+import com.appspot.relaxe.rdbms.pg.PGImplementation;
+import com.appspot.relaxe.util.ResultSetWriter;
 
 
 public class PGCatalogFactoryTest 

@@ -3,7 +3,7 @@
 SET ROOT=%~dp0..
 SET IMPTAG=pg
 SET JDBC_CONFIG=%ROOT%\config\%IMPTAG%\%TARGET%.properties
-SET ENV=com.appspot.relaxe.meta.impl.pg.PGImplementation
+SET ENV=com.appspot.relaxe.rdbms.pg.PGImplementation
 
 echo %TARGET%
 

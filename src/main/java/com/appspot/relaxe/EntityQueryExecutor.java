@@ -45,12 +45,12 @@ import com.appspot.relaxe.ent.EntityQueryResult;
 import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
-import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.SelectStatement;
 import com.appspot.relaxe.query.Query;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.query.QueryTime;
+import com.appspot.relaxe.rdbms.PersistenceContext;
 import com.appspot.relaxe.types.ReferenceType;
 import com.appspot.relaxe.value.ReferenceHolder;
 

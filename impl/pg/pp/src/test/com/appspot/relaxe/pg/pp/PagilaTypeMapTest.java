@@ -25,7 +25,7 @@ package com.appspot.relaxe.pg.pp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.appspot.relaxe.env.hsqldb.HSQLDBImplementation;
+import com.appspot.relaxe.rdbms.hsqldb.HSQLDBImplementation;
 import com.appspot.relaxe.expr.IntLiteral;
 import com.appspot.relaxe.expr.ddl.types.AbstractCharacterTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.VarBinaryTypeDefinition;
@@ -36,7 +36,7 @@ import com.appspot.relaxe.gen.pg.pp.ent.pub.DataTypeTest;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.DataTypeMap;
-import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBEnvironment;
+import com.appspot.relaxe.env.hsqldb.HSQLDBEnvironment;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 import com.appspot.relaxe.types.PrimitiveType;
 

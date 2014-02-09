@@ -25,9 +25,9 @@ package com.appspot.relaxe.meta.impl.hsqldb;
 
 import com.appspot.relaxe.AbstractUnitTest;
 import com.appspot.relaxe.TestContext;
-import com.appspot.relaxe.env.PersistenceContext;
-import com.appspot.relaxe.env.hsqldb.HSQLDBImplementation;
-import com.appspot.relaxe.env.hsqldb.HSQLDBPersistenceContext;
+import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.hsqldb.HSQLDBImplementation;
+import com.appspot.relaxe.rdbms.hsqldb.HSQLDBPersistenceContext;
 
 
 public class HSQLDBTest

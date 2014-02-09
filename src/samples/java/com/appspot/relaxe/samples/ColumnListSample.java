@@ -26,15 +26,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
 
-import com.appspot.relaxe.env.CatalogFactory;
-import com.appspot.relaxe.env.DefaultResolver;
-import com.appspot.relaxe.env.Implementation;
-import com.appspot.relaxe.env.ImplementationResolver;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.Schema;
+import com.appspot.relaxe.rdbms.CatalogFactory;
+import com.appspot.relaxe.rdbms.DefaultResolver;
+import com.appspot.relaxe.rdbms.Implementation;
+import com.appspot.relaxe.rdbms.ImplementationResolver;
 
 public class ColumnListSample {
 

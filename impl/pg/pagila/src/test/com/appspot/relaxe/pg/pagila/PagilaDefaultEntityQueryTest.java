@@ -32,8 +32,6 @@ import com.appspot.relaxe.StatementExecutor;
 import com.appspot.relaxe.ValueExtractorFactory;
 import com.appspot.relaxe.ent.EntityDataObject;
 import com.appspot.relaxe.ent.UnificationContext;
-import com.appspot.relaxe.env.Implementation;
-import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.SelectStatement;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor;
@@ -48,9 +46,11 @@ import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.QueryElement;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Reference;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Type;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmCategory;
-import com.appspot.relaxe.meta.impl.pg.PGCatalogFactory;
-import com.appspot.relaxe.meta.impl.pg.PGImplementation;
 import com.appspot.relaxe.meta.impl.pg.PGTestCase;
+import com.appspot.relaxe.rdbms.Implementation;
+import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.pg.PGCatalogFactory;
+import com.appspot.relaxe.rdbms.pg.PGImplementation;
 
 
 public class PagilaDefaultEntityQueryTest 

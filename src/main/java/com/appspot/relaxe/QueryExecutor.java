@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObjectQueryResult;
 import com.appspot.relaxe.ent.FetchOptions;
-import com.appspot.relaxe.env.PersistenceContext;
 import com.appspot.relaxe.expr.CountFunction;
 import com.appspot.relaxe.expr.DefaultTableExpression;
 import com.appspot.relaxe.expr.From;
@@ -49,6 +48,7 @@ import com.appspot.relaxe.expr.TableExpression;
 import com.appspot.relaxe.query.Query;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.query.QueryTime;
+import com.appspot.relaxe.rdbms.PersistenceContext;
 import com.appspot.relaxe.value.ValueHolder;
 
 

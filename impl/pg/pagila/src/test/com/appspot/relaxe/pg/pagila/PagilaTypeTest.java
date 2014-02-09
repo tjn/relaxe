@@ -27,8 +27,8 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.Types;
 
-import com.appspot.relaxe.env.util.ResultSetWriter;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
+import com.appspot.relaxe.util.ResultSetWriter;
 
 public class PagilaTypeTest extends AbstractPagilaTestCase {
 	
@@ -36,7 +36,7 @@ public class PagilaTypeTest extends AbstractPagilaTestCase {
 		Connection c = getCurrent().newConnection();	
 		DatabaseMetaData meta = c.getMetaData();		
 		BufferedOutputStream out = new BufferedOutputStream(System.out, 64 * 1024);		
-		com.appspot.relaxe.env.util.ResultSetWriter rw = new ResultSetWriter(out, false);		
+		com.appspot.relaxe.util.ResultSetWriter rw = new ResultSetWriter(out, false);		
 		
 //		rw.header("JavaType Info");
 //		rw.apply(meta.getTypeInfo());
@@ -49,7 +49,7 @@ public class PagilaTypeTest extends AbstractPagilaTestCase {
 		Connection c = getCurrent().newConnection();	
 		DatabaseMetaData meta = c.getMetaData();		
 		BufferedOutputStream out = new BufferedOutputStream(System.out, 64 * 1024);		
-		com.appspot.relaxe.env.util.ResultSetWriter rw = new ResultSetWriter(out, false);		
+		com.appspot.relaxe.util.ResultSetWriter rw = new ResultSetWriter(out, false);		
 		
 //		rw.header("JavaType Info");
 //		rw.apply(meta.getTypeInfo());
@@ -65,7 +65,7 @@ public class PagilaTypeTest extends AbstractPagilaTestCase {
 		
 		BufferedOutputStream out = new BufferedOutputStream(System.out, 64 * 1024);
 		
-		com.appspot.relaxe.env.util.ResultSetWriter rw = new ResultSetWriter(out, false);		
+		com.appspot.relaxe.util.ResultSetWriter rw = new ResultSetWriter(out, false);		
 		
 		rw.header("JavaType Info");
 		rw.apply(meta.getTypeInfo());
