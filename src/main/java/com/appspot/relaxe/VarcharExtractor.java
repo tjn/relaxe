@@ -40,7 +40,7 @@ public class VarcharExtractor
 	}
 	
 	@Override
-	public VarcharHolder extractValue(ResultSet rs) throws SQLException {
+	public VarcharHolder extract(ResultSet rs) throws SQLException {
 		String s = rs.getString(getColumn());
 		return VarcharHolder.valueOf(s);
 	}

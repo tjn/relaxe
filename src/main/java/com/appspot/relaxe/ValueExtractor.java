@@ -47,6 +47,6 @@ public abstract class ValueExtractor
 		return column;
 	}
 
-	public abstract H extractValue(ResultSet rs)
+	public abstract H extract(ResultSet rs)
 		throws SQLException;	
 }

@@ -45,7 +45,7 @@ public class VarcharArrayExtractor
 	}
 
 	@Override
-	public VarcharArrayHolder extractValue(ResultSet rs) throws SQLException {
+	public VarcharArrayHolder extract(ResultSet rs) throws SQLException {
 		Array array = rs.getArray(getColumn());
 		
 		if (array == null) {

@@ -41,7 +41,7 @@ public class LongVarBinaryExtractor
 	}
 
 	@Override
-	public LongVarBinaryHolder extractValue(ResultSet rs) throws SQLException {
+	public LongVarBinaryHolder extract(ResultSet rs) throws SQLException {
 		byte[] content = rs.getBytes(getColumn());
 		
 		if (content == null) {

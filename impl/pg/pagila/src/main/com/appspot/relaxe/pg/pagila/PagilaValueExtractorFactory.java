@@ -79,7 +79,7 @@ public class PagilaValueExtractorFactory extends PGValueExtractorFactory {
 		}
 
 		@Override
-		public MPAARatingHolder extractValue(ResultSet rs) throws SQLException {
+		public MPAARatingHolder extract(ResultSet rs) throws SQLException {
 			String v = rs.getString(getColumn());
 			return MPAARatingHolder.valueOf(v);
 		}

@@ -40,7 +40,7 @@ public class DoubleExtractor
 	}
 
 	@Override
-	public DoubleHolder extractValue(ResultSet rs) throws SQLException {
+	public DoubleHolder extract(ResultSet rs) throws SQLException {
 		double v = rs.getDouble(getColumn());
 		return rs.wasNull() ? DoubleHolder.NULL_HOLDER : DoubleHolder.valueOf(v);			
 	}

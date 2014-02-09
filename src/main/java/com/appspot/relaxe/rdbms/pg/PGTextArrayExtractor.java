@@ -43,7 +43,7 @@ class PGTextArrayExtractor
 	}
 
 	@Override
-	public PGTextArrayHolder extractValue(ResultSet rs) throws SQLException {
+	public PGTextArrayHolder extract(ResultSet rs) throws SQLException {
 		Array a = rs.getArray(getColumn());
 		
 		if (a == null) {

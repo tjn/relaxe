@@ -54,7 +54,7 @@ public class IntegerExtractor
 	}
 
 	@Override
-	public IntegerHolder extractValue(ResultSet rs) throws SQLException {
+	public IntegerHolder extract(ResultSet rs) throws SQLException {
 		int v = rs.getInt(getColumn());
 		return rs.wasNull() ? IntegerHolder.NULL_HOLDER : IntegerHolder.valueOf(v);			
 	}

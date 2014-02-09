@@ -38,7 +38,7 @@ public abstract class IntervalExtractor<V extends Interval<V>, T extends Interva
 	}
 
 	@Override
-	public abstract H extractValue(ResultSet rs) throws SQLException;
+	public abstract H extract(ResultSet rs) throws SQLException;
 	
 	public static abstract class YearMonth
 		extends IntervalExtractor<Interval.YearMonth, IntervalType.YearMonth, IntervalHolder.YearMonth> {

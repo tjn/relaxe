@@ -42,7 +42,7 @@ public class DecimalExtractor
 	}
 
 	@Override
-	public DecimalHolder extractValue(ResultSet rs) throws SQLException {
+	public DecimalHolder extract(ResultSet rs) throws SQLException {
 		BigDecimal v = rs.getBigDecimal(getColumn());
 		
 		if (v == null) {

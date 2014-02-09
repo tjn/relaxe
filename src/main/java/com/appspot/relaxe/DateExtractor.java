@@ -41,7 +41,7 @@ public class DateExtractor
 	}
 	
 	@Override
-	public DateHolder extractValue(ResultSet rs) throws SQLException {
+	public DateHolder extract(ResultSet rs) throws SQLException {
 		Date date = rs.getDate(getColumn());
 		return (date == null) ? DateHolder.NULL_HOLDER : new DateHolder(date);
 	}

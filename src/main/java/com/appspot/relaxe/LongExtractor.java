@@ -40,7 +40,7 @@ public class LongExtractor
 	}
 
 	@Override
-	public LongHolder extractValue(ResultSet rs) throws SQLException {
+	public LongHolder extract(ResultSet rs) throws SQLException {
 		long v = rs.getLong(getColumn());
 		return rs.wasNull() ? LongHolder.NULL_HOLDER : LongHolder.valueOf(v);			
 	}	

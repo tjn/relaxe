@@ -137,7 +137,7 @@ public abstract class AbstractGeneratedKeyHandler
 		VK extends Attribute<A, E, V, P, VH, VK>
 	>
 	void write(final Attribute<A, E, V, P, VH, VK> key, final ValueExtractor<?, ?, ?> ve, ResultSet src, E dest) throws SQLException {
-		ValueHolder<?, ?, ?> v = ve.extractValue(src);
+		ValueHolder<?, ?, ?> v = ve.extract(src);
 		VH vh = key.as(v);			
 		key.set(dest, vh);
 	}

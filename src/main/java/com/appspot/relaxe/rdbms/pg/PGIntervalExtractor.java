@@ -54,7 +54,7 @@ public abstract class PGIntervalExtractor<V extends Interval<V>, T extends Inter
 		}
 		 
 		@Override
-		public IntervalHolder.YearMonth extractValue(
+		public IntervalHolder.YearMonth extract(
 				ResultSet rs) throws SQLException {
 			String s = rs.getString(getColumn());
 			return create(s);
@@ -94,7 +94,7 @@ public abstract class PGIntervalExtractor<V extends Interval<V>, T extends Inter
 		}
 	 
 		@Override
-		public IntervalHolder.DayTime extractValue(
+		public IntervalHolder.DayTime extract(
 				ResultSet rs) throws SQLException {
 			String s = rs.getString(getColumn());
 			return create(s);

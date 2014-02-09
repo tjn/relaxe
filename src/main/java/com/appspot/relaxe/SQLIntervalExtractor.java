@@ -51,7 +51,7 @@ public abstract class SQLIntervalExtractor<V extends Interval<V>, T extends Inte
 		}
 		 
 		@Override
-		public IntervalHolder.YearMonth extractValue(
+		public IntervalHolder.YearMonth extract(
 				ResultSet rs) throws SQLException {
 			String s = rs.getString(getColumn());
 			return create(s);
@@ -98,7 +98,7 @@ public abstract class SQLIntervalExtractor<V extends Interval<V>, T extends Inte
 		}
 	 
 		@Override
-		public IntervalHolder.DayTime extractValue(
+		public IntervalHolder.DayTime extract(
 				ResultSet rs) throws SQLException {
 			String s = rs.getString(getColumn());
 			return create(s);

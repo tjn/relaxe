@@ -98,7 +98,7 @@ public abstract class DataObjectProcessor<O extends MutableDataObject>
 			
 			for (int i = 0; i < count; i++) {
 				ValueExtractor<?, ?, ?> ve = this.extractors[i];					
-				o.set(i, ve.extractValue(rs));
+				o.set(i, ve.extract(rs));
 			}			
 			
 			put(o);

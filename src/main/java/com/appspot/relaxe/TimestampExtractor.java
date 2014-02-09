@@ -41,7 +41,7 @@ public class TimestampExtractor
 	}
 	
 	@Override
-	public TimestampHolder extractValue(ResultSet rs) throws SQLException {
+	public TimestampHolder extract(ResultSet rs) throws SQLException {
 		Date date = rs.getDate(getColumn());
 		return (date == null) ? TimestampHolder.NULL_HOLDER : new TimestampHolder(date);
 	}

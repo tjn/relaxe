@@ -40,7 +40,7 @@ public class PGTextExtractor
 	}
 
 	@Override
-	public PGTextHolder extractValue(ResultSet rs) throws SQLException {
+	public PGTextHolder extract(ResultSet rs) throws SQLException {
 		String s = rs.getString(getColumn());
 		return PGTextHolder.valueOf(s);
 	}

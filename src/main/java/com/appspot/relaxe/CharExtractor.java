@@ -40,7 +40,7 @@ public class CharExtractor
 	}
 	
 	@Override
-	public CharHolder extractValue(ResultSet rs) throws SQLException {
+	public CharHolder extract(ResultSet rs) throws SQLException {
 		String s = rs.getString(getColumn());
 		return CharHolder.valueOf(s);
 	}
