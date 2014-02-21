@@ -108,11 +108,11 @@ public class AbstractIdentifierRules
 		
 		int mlen = getMaxLength();
 		
-		if (len > mlen) {
-			throw new IllegalIdentifierException(
-					String.format(
-							"length of the identifier %s exceeds the maximum length %s", 
-							identifier.length(), mlen));
+		if (len > mlen) {			
+			StringBuilder buf = new StringBuilder();
+			buf.append("length of the identifier ").append(identifier.length());
+			buf.append(" exceeds the maximum length ").append(mlen);			
+			throw new IllegalIdentifierException(buf.toString());
 		}
 	}
 	
