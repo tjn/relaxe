@@ -126,4 +126,9 @@ public class SelectStatement
 	public TableExpression getTableExpr() {
 		return this.tableExpression;
 	}
+	
+	@Override
+	public SelectStatement asSelectStatement() {
+		return this;
+	}
 }

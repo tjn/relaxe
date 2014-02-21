@@ -22,6 +22,8 @@
  */
 package com.appspot.relaxe.query;
 
+import com.appspot.relaxe.service.DataAccessException;
+
 public class QueryException extends Exception {
 
 	/**

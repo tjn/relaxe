@@ -31,11 +31,14 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.appspot.relaxe.ent.DataObject;
+import com.appspot.relaxe.ent.DataObjectQueryResult;
 import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.env.IdentifierRules;
 import com.appspot.relaxe.env.hsqldb.expr.Shutdown;
 import com.appspot.relaxe.exec.QueryProcessor;
 import com.appspot.relaxe.exec.QueryProcessorAdapter;
+import com.appspot.relaxe.expr.SelectStatement;
 import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.ddl.AlterTableAddForeignKey;
 import com.appspot.relaxe.expr.ddl.AlterTableAddPrimaryKey;
@@ -58,8 +61,11 @@ import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.rdbms.DefaultResolver;
 import com.appspot.relaxe.rdbms.Implementation;
 import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.StatementExecutionSession;
 import com.appspot.relaxe.service.DataAccessContext;
+import com.appspot.relaxe.service.DataAccessException;
 import com.appspot.relaxe.service.DataAccessSession;
+import com.appspot.relaxe.service.Receiver;
 import com.appspot.relaxe.service.StatementSession;
 import com.appspot.relaxe.tools.CatalogTool;
 import com.appspot.relaxe.tools.ToolConfigurationException;
@@ -260,8 +266,6 @@ public class PagilaHSQLDBPortGenerator
 			sl.add(def);
 		}
 		
-		 
-		
 			
 		addCreateTableStatements(dtm, sc, sl);
 		addPrimaryKeyStatements(sc, sl);
@@ -288,13 +292,23 @@ public class PagilaHSQLDBPortGenerator
 							
 										
 		DataAccessSession das = hctx.newSession();				
-		StatementSession ss = das.asStatementSession();
+		StatementSession ss = das.asStatementSession();		
 								
-		QueryProcessor qp = new QueryProcessorAdapter();
-		IdentifierRules hid = destctx.getImplementation().environment().getIdentifierRules();	
-		createDomains(ss, qp, hid);		
+		Receiver receiver = new Receiver() {			
+			@Override
+			public void updated(Statement statement, int updateCount) {
+			}
+			
+			@Override
+			public void received(SelectStatement statement, DataObjectQueryResult<DataObject> result) {
+			}
+		};
 		
-		executeAll(ss, qp, sl);
+		
+		IdentifierRules hid = destctx.getImplementation().environment().getIdentifierRules();	
+		createDomains(ss, receiver, hid);		
+		
+		executeAll(ss, receiver, sl);
 		
 		das.commit();
 		
@@ -341,21 +355,21 @@ public class PagilaHSQLDBPortGenerator
 		
 			
 		logger().info("add foreign keys...");
-		executeAll(ss, qp, addfks);		
+		executeAll(ss, receiver, addfks);		
 		das.commit();		
 
 				
 		logger.debug("shutdown: " + Shutdown.STATEMENT.generate());
-		ss.execute(Shutdown.STATEMENT, qp);		
+		ss.execute(Shutdown.STATEMENT, receiver);
 					
 		das.close();
 	}
 
-	private void executeAll(StatementSession ss, QueryProcessor qp, List<Statement> statements) throws QueryException {
+	private void executeAll(StatementSession ss, Receiver receiver, List<Statement> statements) throws DataAccessException {
 		for (Statement st : statements) {
 			String stmt = st.generate();
 			logger.debug("executing: {}", stmt);
-			ss.execute(st, qp);
+			ss.execute(st, receiver);
 			logger.debug("executed: {}", stmt);
 		}
 	}
@@ -403,8 +417,8 @@ public class PagilaHSQLDBPortGenerator
 		}
 	}
 
-	protected void createDomains(StatementSession ss, QueryProcessor qp,
-			IdentifierRules hid) throws QueryException {
+	protected void createDomains(StatementSession ss, Receiver qp,
+			IdentifierRules hid) throws DataAccessException {
 		{
 			CreateDomain cd = new CreateDomain(hid.newName("year"), IntTypeDefinition.DEFINITION);
 			ss.execute(cd, qp);

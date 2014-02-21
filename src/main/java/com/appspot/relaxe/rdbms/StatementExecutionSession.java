@@ -20,8 +20,24 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.service;
+package com.appspot.relaxe.rdbms;
 
-public interface StatementService {
-	StatementSession newStatementSession();
+import com.appspot.relaxe.exec.QueryProcessor;
+import com.appspot.relaxe.exec.ResultSetProcessor;
+import com.appspot.relaxe.exec.UpdateProcessor;
+import com.appspot.relaxe.expr.SQLDataChangeStatement;
+import com.appspot.relaxe.expr.SelectStatement;
+import com.appspot.relaxe.expr.Statement;
+import com.appspot.relaxe.query.QueryException;
+
+public interface StatementExecutionSession {
+
+	void execute(Statement statement, QueryProcessor qp)
+			throws QueryException;
+	
+	void executeSelect(SelectStatement statement, ResultSetProcessor qp)
+			throws QueryException;	
+	
+	void executeUpdate(SQLDataChangeStatement statement, UpdateProcessor qp)
+			throws QueryException;
 }

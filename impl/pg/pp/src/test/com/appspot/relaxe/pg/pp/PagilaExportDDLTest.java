@@ -75,7 +75,7 @@ import com.appspot.relaxe.rpc.StringArray;
 import com.appspot.relaxe.rpc.VarcharArrayHolder;
 import com.appspot.relaxe.service.DataAccessContext;
 import com.appspot.relaxe.service.DataAccessSession;
-import com.appspot.relaxe.service.StatementSession;
+import com.appspot.relaxe.rdbms.StatementExecutionSession;
 import com.appspot.relaxe.source.DefaultAttributeInfo;
 import com.appspot.relaxe.source.SourceGenerator;
 import com.appspot.relaxe.types.PrimitiveType;

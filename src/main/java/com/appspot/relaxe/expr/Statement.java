@@ -145,6 +145,11 @@ public abstract class Statement
 	    
 	    return new SchemaElementName(n.getQualifier().toRelative(), n.getUnqualifiedName());
 	}
+	
+	
+	public SelectStatement asSelectStatement() {
+		return null;
+	}
             
 
 }

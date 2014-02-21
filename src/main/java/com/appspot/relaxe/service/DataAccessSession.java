@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe.service;
 
+
 public interface DataAccessSession {
 	void commit()
 		throws DataAccessException;

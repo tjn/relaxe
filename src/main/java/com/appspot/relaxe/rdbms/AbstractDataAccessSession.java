@@ -23,6 +23,8 @@
 package com.appspot.relaxe.rdbms;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +48,7 @@ import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.exec.QueryProcessor;
+import com.appspot.relaxe.exec.QueryProcessorAdapter;
 import com.appspot.relaxe.exec.ResultSetProcessor;
 import com.appspot.relaxe.exec.UpdateProcessor;
 import com.appspot.relaxe.expr.QueryExpression;
@@ -57,14 +60,17 @@ import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.service.DataAccessException;
 import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.EntitySession;
+import com.appspot.relaxe.service.QueryResultReceiver;
 import com.appspot.relaxe.service.QuerySession;
+import com.appspot.relaxe.service.Receiver;
 import com.appspot.relaxe.service.StatementSession;
+import com.appspot.relaxe.service.UpdateReceiver;
 import com.appspot.relaxe.types.ReferenceType;
 import com.appspot.relaxe.value.ReferenceHolder;
 
 
 public abstract class AbstractDataAccessSession<I extends Implementation<I>>
-	implements DataAccessSession, EntitySession, QuerySession, StatementSession {
+	implements DataAccessSession, EntitySession, QuerySession, StatementSession, StatementExecutionSession {
 	
 	private Connection connection;
 	
@@ -307,7 +313,9 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		return this;
 	}
 	
-	
+	public StatementExecutionSession asStatementExecutionSession() {
+		return this;
+	}
 	
 	@Override
 	public <
@@ -379,6 +387,55 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 			throw new QueryException(e.getMessage());
 		}		
 	}
+	
+	@Override
+	public void execute(final Statement statement, final Receiver receiver) 
+			throws DataAccessException {
+		SelectStatement ss = statement.asSelectStatement();
+		
+		if (ss != null) {
+			executeSelect(ss, receiver);
+		}
+		else {
+			try {			
+				QueryProcessor qp = new QueryProcessorAdapter() {
+					@Override
+					public void updated(int count) {
+						receiver.updated(statement, count);
+					}				
+				};
+				
+				execute(statement, qp);
+			}
+			catch (QueryException e) {
+				throw new DataAccessException(e.getMessage());
+			}
+		}		
+	}
+	
+	
+	@Override
+	public void executeSelect(SelectStatement statement, QueryResultReceiver receiver) throws DataAccessException {
+		try {
+			QuerySession qs = this;
+			DataObjectQueryResult<DataObject> result = qs.execute(statement, null);
+			receiver.received(statement, result);
+		}
+		catch (QueryException e) {
+			throw new DataAccessException(e.getMessage());
+		}
+	}
+	
+	
+	@Override
+	public void executeUpdate(SQLDataChangeStatement statement, UpdateReceiver ur) throws DataAccessException {
+		try {
+			executeUpdate(statement, new UpdateCount(statement, ur));
+		}
+		catch (QueryException e) {
+			throw new DataAccessException(e.getMessage());
+		}
+	}
 
 	@Override
 	public void executeUpdate(SQLDataChangeStatement statement, UpdateProcessor qp)
@@ -391,16 +448,46 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 			throw new QueryException(e.getMessage());
 		}				
 	}
-
+	
 	@Override
-	public void execute(SQLSchemaStatement statement) throws QueryException {
+	public void execute(SQLSchemaStatement statement) throws DataAccessException {
 		try {
 			StatementExecutor se = new StatementExecutor(getPersistenceContext());
 			se.execute(statement, getConnection());
 		}
 		catch (SQLException e) {
-			throw new QueryException(e.getMessage());
+			throw new DataAccessException(e.getMessage());
 		}					
+		catch (QueryException e) {
+			throw new DataAccessException(e.getMessage());
+		}		
+	}	
+	
+	
+	private static class UpdateCount
+		implements UpdateProcessor {
+		
+		
+		private Statement statement;
+		private UpdateReceiver receiver;
+		
+		public UpdateCount(Statement statement, UpdateReceiver ur) {
+			this.statement = statement;
+			this.receiver = ur;
+		}
+
+		@Override
+		public void prepare() throws QueryException {
+		}
+
+		@Override
+		public void finish() {
+		}
+
+		@Override
+		public void updated(int count) {
+			this.receiver.updated(this.statement, count);			
+		}
 	}
 	
 }

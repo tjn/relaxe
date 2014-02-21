@@ -66,12 +66,16 @@ import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.rdbms.CatalogFactory;
 import com.appspot.relaxe.rdbms.DefaultDataAccessContext;
 import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.StatementExecutionSession;
 import com.appspot.relaxe.rdbms.hsqldb.HSQLDBFileImplementation;
 import com.appspot.relaxe.rdbms.hsqldb.HSQLDBImplementation;
 import com.appspot.relaxe.rdbms.hsqldb.HSQLDBPersistenceContext;
 import com.appspot.relaxe.rdbms.pg.PGImplementation;
 import com.appspot.relaxe.service.DataAccessContext;
+import com.appspot.relaxe.service.DataAccessException;
 import com.appspot.relaxe.service.DataAccessSession;
+import com.appspot.relaxe.service.Receiver;
+import com.appspot.relaxe.service.ReceiverAdapter;
 import com.appspot.relaxe.service.StatementSession;
 import com.appspot.relaxe.source.DefaultAttributeInfo;
 import com.appspot.relaxe.source.SourceGenerator;
@@ -178,7 +182,9 @@ public class PagilaExportDDLTest
 		DataAccessSession das = hctx.newSession();				
 		StatementSession ss = das.asStatementSession();
 								
-		QueryProcessor qp = new QueryProcessorAdapter();
+		// QueryProcessor qp = new QueryProcessorAdapter();
+		Receiver qp = new ReceiverAdapter();
+		
 		IdentifierRules hid = hi.getEnvironment().getIdentifierRules();	
 		createDomains(ss, qp, hid);
 		
@@ -273,8 +279,7 @@ public class PagilaExportDDLTest
 		}
 	}
 
-	protected void createDomains(StatementSession ss, QueryProcessor qp,
-			IdentifierRules hid) throws QueryException {
+	protected void createDomains(StatementSession ss, Receiver qp, IdentifierRules hid) throws DataAccessException {
 		{
 			CreateDomain cd = new CreateDomain(hid.newName("year"), IntTypeDefinition.DEFINITION);
 			ss.execute(cd, qp);
