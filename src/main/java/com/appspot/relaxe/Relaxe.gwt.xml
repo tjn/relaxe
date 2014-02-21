@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.3.0//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.3.0/distro-source/core/src/gwt-module.dtd">
+<module>
+	<inherits name="com.google.gwt.user.User" />
+	
+	<source path="ent" />	
+	<source path="env" />
+	<source path="expr" />
+	<source path="log" />
+	<source path="map" />
+	<source path="meta" />
+	<source path="model" />
+	<source path="paging" />
+	<source path="query" />
+	<source path="rpc" />
+	<source path="types" />
+	<source path="ui" />	
+	<source path="service" />	
+	<source path="value" />
+	<!--<source path="test" />-->
+</module>
