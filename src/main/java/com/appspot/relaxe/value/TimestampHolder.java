@@ -83,4 +83,8 @@ public class TimestampHolder
 	public static TimestampHolder of(ValueHolder<?, ?, ?> holder) {
 		return holder.asTimestampHolder();
 	}
+	
+	public static TimestampHolder currentTimestamp() {
+		return new TimestampHolder(new Date());
+	}
 }
