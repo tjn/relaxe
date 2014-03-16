@@ -364,6 +364,10 @@ public class EntityQueryExpressionBuilder<
 			build(false);
 		}
 		
+		if (referencing == null) {
+			return null;
+		}
+		
 		JoinKey jk = new JoinKey(referencing, fk);		
 		TableReference referenced = getReferenceMap().get(jk);		
 		return referenced;
