@@ -42,7 +42,7 @@ public abstract class AbstractSchemaElementMap<E extends SchemaElement>
 	protected AbstractSchemaElementMap() {
 	}
 	
-	protected AbstractSchemaElementMap(Environment environment, Map<Identifier, E> content) {
-		super(environment, content);
+	protected AbstractSchemaElementMap(Map<Identifier, E> content) {
+		super(content);
 	}
 }

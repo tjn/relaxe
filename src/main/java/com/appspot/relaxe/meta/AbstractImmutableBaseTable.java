@@ -40,8 +40,8 @@ public abstract class AbstractImmutableBaseTable
 	protected AbstractImmutableBaseTable() {
 	}
 		
-	protected AbstractImmutableBaseTable(Environment environment, SchemaElementName tableName) {
-		super(environment, tableName);
+	protected AbstractImmutableBaseTable(SchemaElementName tableName) {
+		super(tableName);
 	}
 
 	@Override

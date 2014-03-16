@@ -22,76 +22,30 @@
  */
 package com.appspot.relaxe.meta;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 
 import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.Identifier;
 
-
-public abstract class AbstractMetaObjectMap<E extends MetaObject>
-	implements ElementMap<E> {
-		
-	private Map<Identifier, E> content;
+public abstract class DefaultSchemaElementMap<E extends SchemaElement>
+	extends AbstractSchemaElementMap<E>  {
 	
+	
+	private Environment environment; 
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected AbstractMetaObjectMap() {
+	protected DefaultSchemaElementMap() {
 	}
 	
-	protected AbstractMetaObjectMap(Map<Identifier, E> content) {
-		super();		 
-		this.content = content;
-	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6186221907668223202L;
-
-	@Override
-	public boolean contains(Identifier name) {
-		return this.content.containsKey(name);
-	}
-
-	@Override
-	public E get(Identifier name) {
-		return this.content.get(name);
-	}
-
-	@Override
-	public E get(String name) {
-		if (name == null) {
-			return null;
-		}
-		
-		Identifier identifier = getEnvironment().getIdentifierRules().toIdentifier(name);				
-		return this.content.get(identifier);
-	}
-
-	@Override
-	public abstract Environment getEnvironment();
-
-	@Override
-	public Set<Identifier> keySet() {		
-		return Collections.unmodifiableSet(this.content.keySet());
-	}
-
-	@Override
-	public int size() {
-		return this.content.size();
+	protected DefaultSchemaElementMap(Environment env, Map<Identifier, E> content) {
+		super(content);
+		this.environment = env;
 	}
 	
 	@Override
-	public boolean isEmpty() {
-		return (this.content == null) || this.content.isEmpty();
-	}
-
-	@Override
-	public Collection<E> values() {
-		return Collections.unmodifiableCollection(this.content.values());
+	public Environment getEnvironment() {
+		return environment;
 	}
 }
+

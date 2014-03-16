@@ -43,8 +43,8 @@ public abstract class ImmutableTable
 	protected ImmutableTable() {
 	}
 		
-	protected ImmutableTable(Environment environment, SchemaElementName name, ColumnMap columnMap) {
-		super(environment, name);
+	protected ImmutableTable(SchemaElementName name, ColumnMap columnMap) {
+		super(name);		
 		this.columnMap = columnMap;	
 	}
 
@@ -109,7 +109,5 @@ public abstract class ImmutableTable
 	public ColumnMap getColumnMap() {
 		return this.columnMap;
 	}
-	
-	@Override
-	public abstract boolean isBaseTable();
+
 }

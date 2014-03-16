@@ -135,6 +135,8 @@ public class ImmutableCatalog
 		 * 
 		 */
 		private static final long serialVersionUID = -5479661203587222276L;
+		
+		private Environment environment; 
 
 		/**
 		 * 	No-argument constructor for GWT Serialization
@@ -144,7 +146,13 @@ public class ImmutableCatalog
 		}
 		
 		public ImmutableSchemaMap(Environment environment, Map<Identifier, Schema> content) {
-			super(environment, content);		
+			super(content);
+			this.environment = environment;
+		}
+		
+		@Override
+		public Environment getEnvironment() {
+			return environment;
 		}
 	}
 }

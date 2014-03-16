@@ -44,8 +44,8 @@ public class PGEnvironment
 	private static final long serialVersionUID = 6323320738822722962L;
 	
 	private static PGEnvironment environment = new PGEnvironment();
-	private final PGIdentifierRules identifierRules = new PGIdentifierRules();
-	private DataTypeMap dataTypeMap = new PGDataTypeMap();
+	private transient PGIdentifierRules identifierRules;
+	private transient DataTypeMap dataTypeMap;
 	
 	public static PGEnvironment environment() {
 		return PGEnvironment.environment;
@@ -56,6 +56,11 @@ public class PGEnvironment
 	
 	@Override
 	public PGIdentifierRules getIdentifierRules() {
+		if (identifierRules == null) {
+			identifierRules = new PGIdentifierRules();
+			
+		}
+		
 		return identifierRules;
 	}
 	
@@ -166,6 +171,10 @@ public class PGEnvironment
 
 	@Override
 	public DataTypeMap getDataTypeMap() {
+		if (dataTypeMap == null) {
+			dataTypeMap = new PGDataTypeMap();			
+		}
+		
 		return dataTypeMap;
 	}
 }

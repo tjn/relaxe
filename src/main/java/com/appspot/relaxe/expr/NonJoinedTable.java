@@ -36,11 +36,16 @@ public abstract class NonJoinedTable
 	private static final long serialVersionUID = -5713534855741377091L;
 	private CorrelationClause correlationClause;
 	private SelectListElement all;
+	
+	public NonJoinedTable() {		
+	}
 
 	@Override
 	public OrdinaryIdentifier getCorrelationName(QueryContext qctx) {
 		return qctx.correlationName(this);
 	}
+	
+	
 	
 	@Override
 	public ElementList<? extends Identifier> getColumnNameList() {		 		

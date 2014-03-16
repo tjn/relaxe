@@ -33,7 +33,7 @@ public class TableReference
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3388366557843780574L;
+	private static final long serialVersionUID = -4199484355138071562L;
 	private Table table;	
 	private ElementList<Identifier> columnNameList;
 	

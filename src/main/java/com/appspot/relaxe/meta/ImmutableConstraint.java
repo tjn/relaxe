@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe.meta;
 
+import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaElementName;
 
@@ -48,8 +49,13 @@ public abstract class ImmutableConstraint
 	}	
 	
 	protected ImmutableConstraint(BaseTable table, Identifier name) {
-		super(table.getEnvironment(), new SchemaElementName(table.getName().getQualifier(), name));
+		super(new SchemaElementName(table.getName().getQualifier(), name));
 		this.table = table;
+	}
+	
+	@Override
+	public Environment getEnvironment() {
+		return this.table.getEnvironment();
 	}
 	
 	public static abstract class Builder<C extends Constraint>

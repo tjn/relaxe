@@ -25,7 +25,9 @@
  */
 package com.appspot.relaxe.expr;
 
+import java.io.Serializable;
 import java.util.List;
+
 import com.appspot.relaxe.expr.op.AndPredicate;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.meta.Column;
@@ -39,7 +41,13 @@ public class CompoundJoinCondition
 	 */
 	private static final long serialVersionUID = -4566688892782028829L;
 	
-	public static class Component {
+	public static class Component
+		implements  Serializable { 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		
 		private TableReference referencing;
 		private TableReference referenced;
 		private ForeignKey key;
@@ -70,8 +78,6 @@ public class CompoundJoinCondition
 			return key;
 		}
 	}
-	
-//	private Map<ForeignKey, TableReference> foreignKeyReferenceMap;
 	
 	private List<Component> componentList;	
 				

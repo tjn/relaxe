@@ -32,7 +32,7 @@ class {{table-impl-class}}
 	
 	{{foreign-key-implementation}}
 	
-	private static class {{table-interface}}Table
+	public static class {{table-interface}}Table
 		extends com.appspot.relaxe.meta.AbstractImmutableBaseTable {
 		
 		/**
@@ -52,8 +52,10 @@ class {{table-impl-class}}
 		private {{table-interface}}Table() {	
 		}
 
-		public {{table-interface}}Table(com.appspot.relaxe.env.Environment env, SchemaElementName tableName) {
-			super(env, tableName);
+		public {{table-interface}}Table(SchemaElementName tableName) {
+			super(tableName);			
+			
+			com.appspot.relaxe.env.Environment env = getEnvironment();
 			
 			com.appspot.relaxe.meta.ImmutableColumnMap.Builder cmb = new com.appspot.relaxe.meta.ImmutableColumnMap.Builder(env);
 			
@@ -62,6 +64,11 @@ class {{table-impl-class}}
 			this.columnMap = cmb.newColumnMap();
 			this.primaryKey = createPrimaryKey(env);
 			this.foreignKeys = createForeignKeyMap(env, columnMap);
+		}
+		
+		@Override
+		public com.appspot.relaxe.env.Environment getEnvironment() {
+			{{get-environment-body}}
 		}
 		
 		private PrimaryKey createPrimaryKey(com.appspot.relaxe.env.Environment env) {

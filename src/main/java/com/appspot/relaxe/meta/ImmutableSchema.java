@@ -73,19 +73,19 @@ public class ImmutableSchema
 	
 	
 	public static class ForeignKeyMap
-		extends AbstractSchemaElementMap<ForeignKey> {				
+		extends DefaultSchemaElementMap<ForeignKey> {				
 		private static final long serialVersionUID = 9178531908351998296L;
 
 		private ForeignKeyMap() {		
 		}
 		
-		private ForeignKeyMap(Environment environment, Map<Identifier, ForeignKey> content) {
-			super(environment, content);
+		private ForeignKeyMap(Environment env, Map<Identifier, ForeignKey> content) {
+			super(env, content);
 		}
 	}
 	
 	public static class ConstraintMap
-		extends AbstractSchemaElementMap<Constraint> {				
+		extends DefaultSchemaElementMap<Constraint> {				
 	
 		/**
 		 * 
@@ -95,13 +95,13 @@ public class ImmutableSchema
 		private ConstraintMap() {		
 		}
 		
-		private ConstraintMap(Environment environment, Map<Identifier, Constraint> content) {
-			super(environment, content);
+		private ConstraintMap(Environment env, Map<Identifier, Constraint> content) {
+			super(env, content);
 		}
 	}
 	
 	public static class PrimaryKeyMap
-		extends AbstractSchemaElementMap<PrimaryKey> {				
+		extends DefaultSchemaElementMap<PrimaryKey> {				
 		
 		private static final long serialVersionUID = 2113585775686760605L;
 
@@ -114,7 +114,7 @@ public class ImmutableSchema
 	}
 	
 	public static class TableMap
-		extends AbstractSchemaElementMap<Table> {				
+		extends DefaultSchemaElementMap<Table> {				
 			
 		/**
 		 * 
@@ -130,7 +130,7 @@ public class ImmutableSchema
 	}
 	
 	public static class BaseTableMap
-		extends AbstractSchemaElementMap<BaseTable> {				
+		extends DefaultSchemaElementMap<BaseTable> {				
 				
 		/**
 		 * 

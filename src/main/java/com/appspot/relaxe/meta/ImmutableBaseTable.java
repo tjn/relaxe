@@ -40,20 +40,28 @@ public class ImmutableBaseTable
 	private SchemaElementMap<ForeignKey> foreignKeyMap;
 	private ColumnMap columnMap;
 	
+	private transient Environment environment; 
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
 	protected ImmutableBaseTable() {
 	}
 		
-	private ImmutableBaseTable(Environment environment, SchemaElementName tableName, ColumnMap columnMap) {
-		super(environment, tableName);
+	private ImmutableBaseTable(Environment env, SchemaElementName tableName, ColumnMap columnMap) {
+		super(tableName);
+		this.environment = env;
 		this.columnMap = columnMap;
+	}
+	
+	@Override
+	public Environment getEnvironment() {
+		return this.environment;
 	}
 	
 	
 	private static class ForeignKeyMap
-		extends AbstractSchemaElementMap<ForeignKey> {
+		extends DefaultSchemaElementMap<ForeignKey> {
 		
 		/**
 		 * 

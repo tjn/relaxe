@@ -22,11 +22,14 @@
  */
 package com.appspot.relaxe.env;
 
+import java.io.Serializable;
+
 import com.appspot.relaxe.expr.ddl.DefaultDefinition;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataTypeMap;
 
-public interface Environment {
+public interface Environment
+	extends Serializable {
 
 	IdentifierRules getIdentifierRules();
 

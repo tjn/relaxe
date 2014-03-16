@@ -1,5 +1,5 @@
 
-	private static class {{table-interface}}ForeignKeyMap
+	public static class {{table-interface}}ForeignKeyMap
 		extends com.appspot.relaxe.meta.AbstractSchemaElementMap<ForeignKey> {
 		
 		private static final long serialVersionUID = 1L;
@@ -10,12 +10,16 @@
 		private {{table-interface}}ForeignKeyMap() {		
 		}
 		
-		private {{table-interface}}ForeignKeyMap(com.appspot.relaxe.env.Environment environment, java.util.Map<com.appspot.relaxe.expr.Identifier, ForeignKey> content) {
-			super(environment, content);
+		private {{table-interface}}ForeignKeyMap(java.util.Map<com.appspot.relaxe.expr.Identifier, ForeignKey> content) {
+			super(content);
+		}
+		
+		public com.appspot.relaxe.env.Environment getEnvironment() {
+			{{get-environment-body}}
 		}
 	}
 	
-	private static class {{table-interface}}ForeignKey
+	public static class {{table-interface}}ForeignKey
 		extends com.appspot.relaxe.ent.EntityTableForeignKey {
 		
 		private static final long serialVersionUID = -621396725083384123L;

@@ -42,7 +42,11 @@ public abstract class DefaultEnvironment
 	
 	// private DefaultDataTypeMap dataTypeMap = new DefaultDataTypeMap(); 
 	
-	private final SchemaElementMap<ForeignKey> emptyForeignKeyMap = new EmptyForeignKeyMap(this); 
+	private final SchemaElementMap<ForeignKey> emptyForeignKeyMap = new EmptyForeignKeyMap(this);
+	
+	
+	public DefaultEnvironment() {
+	}
 				
 	protected Comparator<Identifier> createIdentifierComparator() {
 		return FoldingComparator.UPPERCASE;

@@ -39,26 +39,42 @@ public abstract class FoldingComparator
 	private static final long serialVersionUID = 6545832196162079657L;	
 	private static final NullComparator.String nameComparator = new NullComparator.String();
 		
-	public static final FoldingComparator UPPERCASE = new FoldingComparator() {
+	public static final FoldingComparator UPPERCASE = new UpperCaseComparator();	
+	public static final FoldingComparator LOWERCASE = new LowerCaseComparator();
+	
+	public static final class UpperCaseComparator
+		extends FoldingComparator {
+	
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 8134439617694820125L;
-
+		private static final long serialVersionUID = 1L;
+	
+		public UpperCaseComparator() {
+		}
+	
 		@Override
 		public Folding getFolding() {
 			return Folding.UPPERCASE;
-		}
-	};
+		}		
+	}	
 	
-	public static final FoldingComparator LOWERCASE = new FoldingComparator() {
-		private static final long serialVersionUID = 8134439617694820125L;
+	public static final class LowerCaseComparator
+		extends FoldingComparator {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public LowerCaseComparator() {
+		}
 
 		@Override
 		public Folding getFolding() {
 			return Folding.LOWERCASE;
-		}
-	};
+		}		
+	}
 	
 	public abstract Folding getFolding();
 

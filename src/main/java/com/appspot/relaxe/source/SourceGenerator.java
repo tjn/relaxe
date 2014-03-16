@@ -85,8 +85,9 @@ import com.appspot.relaxe.types.AbstractValueType;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.io.IOHelper;
 
-public class SourceGenerator {
 
+public class SourceGenerator {
+	
 	public enum Tag {
 		/**
 		 * Pattern which is replaced with the simple name of the table interface
@@ -245,12 +246,19 @@ public class SourceGenerator {
 
 		FACTORY_METHOD_LIST,
 
-		BASE_TABLE_COLUMN_VARIABLE_LIST, POPULATE_COLUMN_MAP_BLOCK, CREATE_GET_BASE_TABLE_BODY, CREATE_PRIMARY_KEY_BODY, CREATE_FOREIGN_KEYS_BODY, CREATE_FOREIGN_KEY_MAP_BODY,
+		BASE_TABLE_COLUMN_VARIABLE_LIST, 
+		POPULATE_COLUMN_MAP_BLOCK, 
+		CREATE_GET_BASE_TABLE_BODY,
+		GET_ENVIRONMENT_BODY,
+		CREATE_PRIMARY_KEY_BODY, 
+		CREATE_FOREIGN_KEYS_BODY, 
+		CREATE_FOREIGN_KEY_MAP_BODY,
 
 		/**
 		 * Generated imports
 		 */
-		IMPORTS, NEW_ENVIRONMENT_EXPR, SCHEMA_ENUM_LIST, BASE_TABLE_ENUM_LIST, VIEW_ENUM_LIST, COLUMN_ENUM_LIST, SCHEMA_TYPE_NAME, FOREIGN_KEY_ENUM_LIST, PRIMARY_KEY_ENUM_LIST, META_MAP_POPULATION, TABLE_COLUMN_ENUM_LIST,
+		IMPORTS, NEW_ENVIRONMENT_EXPR, SCHEMA_ENUM_LIST, BASE_TABLE_ENUM_LIST, VIEW_ENUM_LIST, COLUMN_ENUM_LIST, SCHEMA_TYPE_NAME, 
+		FOREIGN_KEY_ENUM_LIST, PRIMARY_KEY_ENUM_LIST, META_MAP_POPULATION, TABLE_COLUMN_ENUM_LIST,
 
 		/**
 		 * Pattern which is replaced package declaration using the package name
@@ -2104,6 +2112,13 @@ public class SourceGenerator {
 		Tag tag = null;
 
 		src = replacePackageAndImports(src, impl, il);
+		
+		{
+			src = t.foreignKeys().isEmpty() ? replaceAllWithComment(src,
+					Tag.FOREIGN_KEY_IMPLEMENTATION, "") : readAndReplace(src,
+					Tag.FOREIGN_KEY_IMPLEMENTATION, false);
+		}
+		
 
 		tag = Tag.BASE_TABLE_COLUMN_VARIABLE_LIST;
 		src = replaceAll(src, tag,
@@ -2113,6 +2128,8 @@ public class SourceGenerator {
 				generatePopulateColumnMapBlock(t, tam));
 		src = replaceAll(src, Tag.CREATE_GET_BASE_TABLE_BODY,
 				generateGetBaseTableBody(t, tam));
+		src = replaceAll(src, Tag.GET_ENVIRONMENT_BODY,
+				generateGetEnvironmentBody(t, tam));		
 		src = replaceAll(src, Tag.CREATE_PRIMARY_KEY_BODY,
 				generateCreatePrimaryKeyBody(t, tam));
 		src = replaceAll(src, Tag.CREATE_FOREIGN_KEY_MAP_BODY,
@@ -2147,12 +2164,6 @@ public class SourceGenerator {
 			String code = referenceKeyMapList(t, tam, qualify);
 			logger().debug("generateImplementation: code=" + code);
 			src = replaceAll(src, Tag.REFERENCE_KEY_MAP_LIST, code);
-		}
-
-		{
-			src = t.foreignKeys().isEmpty() ? replaceAllWithComment(src,
-					Tag.FOREIGN_KEY_IMPLEMENTATION, "") : readAndReplace(src,
-					Tag.FOREIGN_KEY_IMPLEMENTATION, false);
 		}
 
 		{
@@ -2219,6 +2230,14 @@ public class SourceGenerator {
 		src = replaceAll(src, Tag.LITERAL_TABLE_ENUM, lt);
 
 		return src;
+	}
+
+	private String generateGetEnvironmentBody(BaseTable t, TableMapper tam) {
+
+		Environment te = getTargetEnvironment(t.getEnvironment());		
+		StringBuilder buf = new StringBuilder();		
+		line(buf, " return ", generateEnvironmentExpression(te), ";");		
+		return buf.toString();
 	}
 
 	protected String readAndReplace(String src, Tag tag, boolean withComment)
@@ -2349,7 +2368,7 @@ public class SourceGenerator {
 		line(buf, snt, " schemaName = new ", snt, "(c, s);");
 		line(buf, ent, " sen = new ", ent, "(schemaName, t);");
 		line(buf, "this.table = new ", intf.getUnqualifiedName(),
-				"Table(env, sen);");
+				"Table(sen);");
 
 		line(buf, "}", 2);
 
@@ -2389,7 +2408,7 @@ public class SourceGenerator {
 			}
 
 			line(buf, "return new ", intf.getUnqualifiedName(),
-					"ForeignKeyMap(env, fkmap);");
+					"ForeignKeyMap(fkmap);");
 		}
 
 		return buf.toString();
@@ -2429,7 +2448,7 @@ public class SourceGenerator {
 		// }
 
 		line(buf, "{");
-
+		
 		Environment te = getTargetEnvironment(t.getEnvironment());
 		line(buf,
 				identifierDeclaration("constraintName",

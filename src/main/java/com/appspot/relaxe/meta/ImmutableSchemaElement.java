@@ -26,14 +26,13 @@ import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaElementName;
 
-public class ImmutableSchemaElement
+public abstract class ImmutableSchemaElement
 	implements SchemaElement
 {	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5769270673777439062L;
-	private Environment environment;
 	private SchemaElementName name;
 	
 	/**
@@ -42,16 +41,13 @@ public class ImmutableSchemaElement
 	protected ImmutableSchemaElement() {
 	}
 		
-	protected ImmutableSchemaElement(Environment environment, SchemaElementName name) {
+	protected ImmutableSchemaElement(SchemaElementName name) {
 		super();
-		this.environment = environment;		
-		this.name = name;
+		this.name = name;		
 	}
 
 	@Override
-	public Environment getEnvironment() {
-		return this.environment;
-	}
+	public abstract Environment getEnvironment();
 
 	@Override
 	public SchemaElementName getName() {
