@@ -35,6 +35,10 @@ public class EmptyForeignKeyMap
 
 	private Environment environment;
 	
+	@SuppressWarnings("unused")
+	private EmptyForeignKeyMap() {		
+	}
+	
 	public EmptyForeignKeyMap(Environment environment) {
 		super();
 		this.environment = environment;
