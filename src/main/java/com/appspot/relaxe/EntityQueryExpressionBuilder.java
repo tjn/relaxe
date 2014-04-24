@@ -314,7 +314,9 @@ public class EntityQueryExpressionBuilder<
 		XM extends EntityMetaData<XA, XR, XT, XE, XH, XF, XM>,
 		XRE extends EntityQueryElement<XA, XR, XT, XE, XH, XF, XM, XRE>
 	>	
-	int addAttributes(EntityQueryElement<XA, XR, XT, XE, XH, XF, XM, XRE> element, TableReference tref, Select.Builder selectBuilder, int column) {
+	int addAttributes(EntityQueryElement<XA, XR, XT, XE, XH, XF, XM, XRE> element, TableReference tref, Select.Builder selectBuilder, final int column) {
+				
+		int added = 0;
 		
 		Set<XA> as = element.attributes();
 		
@@ -330,14 +332,14 @@ public class EntityQueryExpressionBuilder<
 				
 				Column col = meta.getColumn(xa);
 				ColumnReference cref = new ColumnReference(tref, col);
-				column++;
+				added++;
 								
-				om.put(Integer.valueOf(column), tref);
+				om.put(Integer.valueOf(column + added), tref);
 				selectBuilder.add(cref);
 			}
 		}
 		
-		return column;
+		return added;
 	}
 	
 	private Map<JoinKey, TableReference> getReferenceMap() {
