@@ -27,7 +27,7 @@ import java.io.Serializable;
 import com.appspot.relaxe.ent.EntityQueryContext;
 import com.appspot.relaxe.expr.ValueExpression;
 
-public interface EntityQueryValueReference
+public interface EntityQueryValue
 	extends Serializable {
 	
 	ValueExpression expression(EntityQueryContext c);

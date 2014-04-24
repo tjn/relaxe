@@ -31,7 +31,7 @@ import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.meta.Column;
 
 public class EntityQueryColumnReference
-	implements EntityQueryValueReference {
+	implements EntityQueryValue {
 	
 	/**
 	 * 

@@ -27,7 +27,8 @@ import java.util.Collection;
 import java.util.Set;
 
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
-import com.appspot.relaxe.ent.query.EntityQueryValueReference;
+import com.appspot.relaxe.ent.query.EntityQuerySortKey;
+import com.appspot.relaxe.ent.query.EntityQueryValue;
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.expr.op.Comparison;
@@ -145,7 +146,7 @@ public interface EntityQueryElement<
 	<
 		K extends Attribute<A, E, ?, ?, ?, K>
 	>
-	EntityQueryPredicate newEquals(K key, EntityQueryValueReference value);
+	EntityQueryPredicate newEquals(K key, EntityQueryValue value);
 	
 	<
 		XV extends Serializable,
@@ -166,7 +167,7 @@ public interface EntityQueryElement<
 	<
 		K extends Attribute<A, E, ?, ?, ?, K>
 	>
-	EntityQueryPredicate newPredicate(K key, Comparison.Op op, EntityQueryValueReference value);
+	EntityQueryPredicate newPredicate(K key, Comparison.Op op, EntityQueryValue value);
 	
 	<
 		XV extends Serializable,
@@ -175,5 +176,14 @@ public interface EntityQueryElement<
 		K extends Attribute<A, E, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newPredicate(K key, Comparison.Op op, XH value);
+
+	<
+		XV extends Serializable,
+		XT extends ValueType<XT>,
+		XH extends ValueHolder<XV, XT, XH>,	
+		K extends Attribute<A, E, XV, XT, XH, K>
+	>
+	EntityQuerySortKey newSortKey(K key, boolean ascending);
+			
 	
 }

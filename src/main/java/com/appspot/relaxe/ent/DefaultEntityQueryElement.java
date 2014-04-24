@@ -29,13 +29,16 @@ import java.util.Set;
 
 import com.appspot.relaxe.ent.query.DefaultEntityQueryPredicate;
 import com.appspot.relaxe.ent.query.EntityQueryAttributeValueReference;
+import com.appspot.relaxe.ent.query.EntityQueryExpressionSortKey;
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
 import com.appspot.relaxe.ent.query.EntityQueryPredicates;
+import com.appspot.relaxe.ent.query.EntityQuerySortKey;
 import com.appspot.relaxe.ent.query.EntityQueryValueExpression;
-import com.appspot.relaxe.ent.query.EntityQueryValueReference;
+import com.appspot.relaxe.ent.query.EntityQueryValue;
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.expr.ImmutableValueParameter;
+import com.appspot.relaxe.expr.OrderBy.Order;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.expr.op.Comparison.Op;
 import com.appspot.relaxe.meta.Column;
@@ -117,7 +120,7 @@ public abstract class DefaultEntityQueryElement<
 	public <
 		K extends Attribute<A, E, ?, ?, ?, K>
 	> 
-	EntityQueryPredicate newEquals(K key, EntityQueryValueReference rhs) {
+	EntityQueryPredicate newEquals(K key, EntityQueryValue rhs) {
 		EntityQueryAttributeValueReference<A, QE> lhs = new EntityQueryAttributeValueReference<A, QE>(self(), key.name());
 		return new DefaultEntityQueryPredicate(Comparison.Op.EQ, lhs, rhs);
 	}
@@ -154,7 +157,7 @@ public abstract class DefaultEntityQueryElement<
 //		XH extends PrimitiveHolder<XV, XT, XH>, 
 //		K extends PrimitiveKey<A, E, XV, XT, XH, K>
 //	> 
-//	EntityQueryPredicate newPredicate(K key, Op op, EntityQueryValueReference rhs) {
+//	EntityQueryPredicate newPredicate(K key, Op op, EntityQueryValue rhs) {
 //		EntityQueryAttributeValueReference<A, QE> lhs = new EntityQueryAttributeValueReference<A, QE>(self(), key.name());
 //		return new DefaultEntityQueryPredicate(op, lhs, rhs);
 //	}
@@ -217,10 +220,24 @@ public abstract class DefaultEntityQueryElement<
 	public <
 		K extends Attribute<A, E, ?, ?, ?, K>
 	>
-	EntityQueryPredicate newPredicate(K key, Comparison.Op op, EntityQueryValueReference rhs) {		
+	EntityQueryPredicate newPredicate(K key, Comparison.Op op, EntityQueryValue rhs) {		
 		EntityQueryAttributeValueReference<A, QE> lhs = new EntityQueryAttributeValueReference<A, QE>(self(), key.name());		
 		return new DefaultEntityQueryPredicate(op, lhs, rhs);
 	}
+	
+	@Override
+	public <
+		XV extends Serializable, 
+		XT extends ValueType<XT>, 
+		XH extends ValueHolder<XV, XT, XH>, 
+		K extends Attribute<A, E, XV, XT, XH, K>
+	> 
+	EntityQuerySortKey newSortKey(K key, boolean ascending) {		
+		return ascending ? 
+				new EntityQueryExpressionSortKey.Asc(self(), key.name()) : 
+				new EntityQueryExpressionSortKey.Desc(self(), key.name());
+	}
+
 	
 	
 //	public Logger logger() {

@@ -26,15 +26,25 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
+import com.appspot.relaxe.ent.EntityQueryResult;
 import com.appspot.relaxe.ent.FetchOptions;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film.Attribute;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Factory;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Holder;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.MetaData;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Query;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.QueryElement;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Reference;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Type;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Language;
 import com.appspot.relaxe.meta.Column;
+import com.appspot.relaxe.paging.ResultPage;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.EntitySession;
-
 
 public class PagilaDataAccessSessionTest 
 	extends AbstractPagilaTestCase {
@@ -175,6 +185,40 @@ public class PagilaDataAccessSessionTest
 			
 			assertEquals(meta.attributes(), film.attributes());
 		}
+	}
+	
+	
+	public void testQuery() throws Exception {
+		
+		logger().debug("testQuery");
+
+		DataAccessSession das = newSession();		
+		
+		EntitySession es = das.asEntitySession();
+		
+		FilmActor.QueryElement.Builder eb = new FilmActor.QueryElement.Builder();
+		eb.addAllAttributes();
+		
+		Film.QueryElement.Builder le = new Film.QueryElement.Builder();
+		le.add(Film.FILM_ID);
+		le.add(Film.TITLE);
+		le.add(Film.LAST_UPDATE);
+		
+		le.setQueryElement(Film.LANGUAGE, new Language.QueryElement(Language.LANGUAGE_ID, Language.LAST_UPDATE));
+		
+		Actor.QueryElement ae = new Actor.QueryElement();
+					
+		eb.setQueryElement(FilmActor.ACTOR, ae);
+		eb.setQueryElement(FilmActor.FILM, le.newQueryElement());
+						
+		
+		FilmActor.QueryElement qe = eb.newQueryElement();
+		FilmActor.Query.Builder qb = new FilmActor.Query.Builder(qe);
+		qb.addPredicate(ae.newEquals(Actor.ACTOR_ID, new Integer(1)));
+		
+		ResultPage rp = es.query(qb.newQuery(), null);
+		assertNotNull(rp);			
+		
 	}
 		
 }

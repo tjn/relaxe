@@ -33,7 +33,7 @@ public class EntityQueryAttributeValueReference<
 	A extends com.appspot.relaxe.ent.AttributeName,
 	QE extends EntityQueryElement<A, ?, ?, ?, ?, ?, ?, QE>
 >
-	implements EntityQueryValueReference {
+	implements EntityQueryValue {
 	
 	/**
 	 * 

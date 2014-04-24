@@ -42,7 +42,7 @@ public class EntityQueryPredicates {
 		 */
 		private static final long serialVersionUID = 1798695033991850362L;
 		
-		private EntityQueryValueReference value;
+		private EntityQueryValue value;
 		
 		/**
 		 * No-argument constructor for GWT Serialization
@@ -51,7 +51,7 @@ public class EntityQueryPredicates {
 		private IsNull() {
 		}
 		
-		public IsNull(EntityQueryValueReference value) {
+		public IsNull(EntityQueryValue value) {
 			super();
 			
 			if (value == null) {
@@ -108,7 +108,7 @@ public class EntityQueryPredicates {
 		 * 
 		 */
 		private static final long serialVersionUID = 3714022645688851659L;
-		private EntityQueryValueReference value;
+		private EntityQueryValue value;
 			
 		/**
 		 * No-argument constructor for GWT Serialization
@@ -117,7 +117,7 @@ public class EntityQueryPredicates {
 		private IsNotNull() {
 		}
 		
-		public IsNotNull(EntityQueryValueReference value) {
+		public IsNotNull(EntityQueryValue value) {
 			super();
 			
 			if (value == null) {

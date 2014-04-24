@@ -35,7 +35,7 @@ import com.appspot.relaxe.ent.query.EntityQueryExpressionSortKey;
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
 import com.appspot.relaxe.ent.query.EntityQuerySortKey;
 import com.appspot.relaxe.ent.query.EntityQueryValueExpression;
-import com.appspot.relaxe.ent.query.EntityQueryValueReference;
+import com.appspot.relaxe.ent.query.EntityQueryValue;
 import com.appspot.relaxe.ent.query.DefaultEntityQueryPredicate;
 import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.ent.value.StringAttribute;
@@ -154,14 +154,14 @@ public class DefaultEntityQuery<
 		}
 				
 		public void addPredicate(A attribute, Comparison.Op op, ValueExpression v) {
-			EntityQueryValueReference a = new EntityQueryAttributeValueReference<A, RE>(this.root, attribute);
+			EntityQueryValue a = new EntityQueryAttributeValueReference<A, RE>(this.root, attribute);
 			EntityQueryValueExpression b = new EntityQueryValueExpression(v);			
 			addPredicate(new DefaultEntityQueryPredicate(op, a, b));			
 		}
 		
 		@Override
 		public void addPredicate(Identifier column, Comparison.Op op, ValueExpression v) {
-			EntityQueryValueReference a = new EntityQueryColumnReference(this.root, column);
+			EntityQueryValue a = new EntityQueryColumnReference(this.root, column);
 			EntityQueryValueExpression b = new EntityQueryValueExpression(v);
 			addPredicate(new DefaultEntityQueryPredicate(op, a, b));
 		}
@@ -179,7 +179,7 @@ public class DefaultEntityQuery<
 			K extends Attribute<A, E, V, P, W, K>
 		>
 		void addPredicate(K key, Comparison.Op op, W value) {
-			EntityQueryValueReference a = new EntityQueryAttributeValueReference<A, RE>(this.root, key.name());
+			EntityQueryValue a = new EntityQueryAttributeValueReference<A, RE>(this.root, key.name());
 			
 			M meta = this.root.getMetaData();
 			Column column = meta.getColumn(key.name());
@@ -202,7 +202,7 @@ public class DefaultEntityQuery<
 		EntityQueryPredicate newPredicate(XQ element, K key, Comparison.Op op, W value) {
 			XM meta = element.getMetaData();			
 			Column column = meta.getColumn(key.name());									
-			EntityQueryValueReference a = new EntityQueryAttributeValueReference<XA, XQ>(element, key.name());			
+			EntityQueryValue a = new EntityQueryAttributeValueReference<XA, XQ>(element, key.name());			
 			ImmutableValueParameter<V, P, W> vp = new ImmutableValueParameter<V, P, W>(column, value);
 			EntityQueryValueExpression b = new EntityQueryValueExpression(vp);
 			return new DefaultEntityQueryPredicate(op, a, b);			

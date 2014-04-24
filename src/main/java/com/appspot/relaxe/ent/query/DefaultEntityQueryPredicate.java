@@ -36,16 +36,16 @@ public class DefaultEntityQueryPredicate
 	private static final long serialVersionUID = -9214275181479579908L;
 	
 	private Comparison.Op op;
-	private EntityQueryValueReference left;	
-	private EntityQueryValueReference right;
+	private EntityQueryValue left;	
+	private EntityQueryValue right;
 	
-	public DefaultEntityQueryPredicate(EntityQueryValueReference left,
-			EntityQueryValueReference right) {
+	public DefaultEntityQueryPredicate(EntityQueryValue left,
+			EntityQueryValue right) {
 		this(Comparison.Op.EQ, left, right);
 	}
 	
-	public DefaultEntityQueryPredicate(Comparison.Op op, EntityQueryValueReference left,
-			EntityQueryValueReference right) {
+	public DefaultEntityQueryPredicate(Comparison.Op op, EntityQueryValue left,
+			EntityQueryValue right) {
 		super();
 		this.op = op;
 		this.left = left;

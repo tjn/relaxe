@@ -41,9 +41,9 @@ public abstract class EntityQueryExpressionSortKey
 	 */
 	private static final long serialVersionUID = -6187737730779858706L;
 	
-	private EntityQueryValueReference value;
+	private EntityQueryValue value;
 	
-	public EntityQueryExpressionSortKey(EntityQueryValueReference value) {
+	public EntityQueryExpressionSortKey(EntityQueryValue value) {
 		super();
 		
 		if (value == null) {

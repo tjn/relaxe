@@ -26,7 +26,7 @@ import com.appspot.relaxe.ent.EntityQueryContext;
 import com.appspot.relaxe.expr.ValueExpression;
 
 public class EntityQueryValueExpression
-	implements EntityQueryValueReference {
+	implements EntityQueryValue {
 	
 	/**
 	 * 
