@@ -28,6 +28,7 @@ package com.appspot.relaxe;
 import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import com.appspot.relaxe.types.TimestampType;
 import com.appspot.relaxe.value.TimestampHolder;
@@ -42,7 +43,7 @@ public class TimestampExtractor
 	
 	@Override
 	public TimestampHolder extract(ResultSet rs) throws SQLException {
-		Date date = rs.getDate(getColumn());
-		return (date == null) ? TimestampHolder.NULL_HOLDER : new TimestampHolder(date);
+		Timestamp ts = rs.getTimestamp(getColumn());
+		return (ts == null) ? TimestampHolder.NULL_HOLDER : new TimestampHolder(ts);
 	}
 }
