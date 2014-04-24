@@ -23,9 +23,9 @@
 package com.appspot.relaxe.paging;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.model.Registration;
@@ -43,11 +43,13 @@ public abstract class AbstractPager<
 	private R currentPage;
 		
 	private Map<Registration, PagerEventHandler<G>> handlerMap;
-		
+	
+	
 	private final PagerEvent<G> INDEX = new PagerEvent<G>(self(), Flags.INDEX);  
 	private final PagerEvent<G> LOAD_STATE = new PagerEvent<G>(self(), Flags.LOAD_STATE);
 	private final PagerEvent<G> LOAD_FAILURE = new PagerEvent<G>(self(), Flags.LOAD_STATE, Flags.LOAD_FAILURE);
 	private final PagerEvent<G> ALL = new PagerEvent<G>(self(), Flags.INDEX, Flags.PAGE, Flags.LOAD_STATE);
+	private final PagerEvent<G> EOF = new PagerEvent<G>(self(), Flags.EOF);
 		
 	private int pageSize;	
 	private Q query;
@@ -91,6 +93,10 @@ public abstract class AbstractPager<
 //	}
 	
 	public AbstractPager(Fetcher<Q, R, PageReceiver<R>> fetcher, int pageSize, R currentPage) {
+		this(fetcher, pageSize, currentPage, -1);
+	}
+	
+	public AbstractPager(Fetcher<Q, R, PageReceiver<R>> fetcher, int pageSize, R currentPage, int index) {
 		super();		
 		setFetcher(fetcher);
 		
@@ -100,10 +106,12 @@ public abstract class AbstractPager<
 		
 		this.pageSize = pageSize;
 		this.currentPage = currentPage;
+		
+		select(index);
 	}
 	
 	public AbstractPager(Fetcher<Q, R, PageReceiver<R>> fetcher, int pageSize, Q query, R currentPage) {
-		this(fetcher, pageSize, currentPage);
+		this(fetcher, pageSize, currentPage, -1);
 		setQuery(query);		
 	}
 
@@ -337,7 +345,9 @@ public abstract class AbstractPager<
 			return false;
 		}
 		
-		if (index().intValue() == index) {
+		Integer cx = index();
+		
+		if (cx != null && cx.intValue() == index) {
 			return false;
 		}
 		
@@ -350,7 +360,7 @@ public abstract class AbstractPager<
 
 	private Map<Registration, PagerEventHandler<G>> getHandlerMap() {
 		if (handlerMap == null) {
-			handlerMap = new TreeMap<Registration, PagerEventHandler<G>>();			
+			handlerMap = new HashMap<Registration, PagerEventHandler<G>>();			
 		}
 
 		return handlerMap;
@@ -375,17 +385,24 @@ public abstract class AbstractPager<
 	
 	private void received(R result, int nextIndex) {
 		List<E> content = result.getContent();
-		int cs = content.size();
-		
-		if (nextIndex >= cs) {
-			nextIndex = cs - 1;
+				
+		if (content.isEmpty()) {
+			fireEvent(null, EOF);
+			this.lastError = null;	
 		}
-				
-		setIndex((nextIndex < 0) ? null : Integer.valueOf(nextIndex));		
-		setCurrentPage(result);
-				
-		this.lastError = null;
-		fireEvent(null, ALL);
+		else {
+			int cs = content.size();
+			
+			if (nextIndex >= cs) {
+				nextIndex = cs - 1;
+			}
+					
+			setIndex((nextIndex < 0) ? null : Integer.valueOf(nextIndex));		
+			setCurrentPage(result);
+					
+			this.lastError = null;
+			fireEvent(null, ALL);
+		}
 	}
 	
 	
@@ -408,9 +425,8 @@ public abstract class AbstractPager<
 		
 		received(result, 0);		
 	}
-	
-	
-	private long offset() {
+		
+	public long offset() {
 		R cp = getCurrentPage();		
 		return (cp == null) ? 0 : cp.offset();
 	}

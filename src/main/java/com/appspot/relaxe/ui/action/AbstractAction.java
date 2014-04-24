@@ -30,7 +30,7 @@ import com.appspot.relaxe.model.ValueModel;
 public abstract class AbstractAction
 	implements Action {
 	
-	private BooleanModel enablement;
+	private ValueModel<Boolean> enablement;
 	private ValueModel<String> displayName;
 	
 	private static final ValueModel<String> UNNAMED = DefaultConstantValueModel.valueOf("<unnamed action>");
@@ -47,16 +47,16 @@ public abstract class AbstractAction
 		this(null, name);		
 	}
 	
-	public AbstractAction(BooleanModel em, String name) {
+	public AbstractAction(ValueModel<Boolean> em, String name) {
 		this(em, DefaultConstantValueModel.valueOf(name));
 	}
 	
-	public AbstractAction(BooleanModel em, ValueModel<String> nameModel) {
+	public AbstractAction(ValueModel<Boolean> em, ValueModel<String> nameModel) {
 		init(nameModel, em);
 	}
 	
 	
-	protected final void init(ValueModel<String> nameModel, BooleanModel enablement) {
+	protected final void init(ValueModel<String> nameModel, ValueModel<Boolean> enablement) {
 		if (nameModel == null) {
 			nameModel = UNNAMED;
 		}
@@ -71,7 +71,7 @@ public abstract class AbstractAction
 
 
 	@Override
-	public BooleanModel enablement() {
+	public ValueModel<Boolean> enablement() {
 		return this.enablement;
 	}
 	

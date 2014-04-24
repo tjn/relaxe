@@ -22,7 +22,6 @@
  */
 package com.appspot.relaxe.ui.action;
 
-import com.appspot.relaxe.model.BooleanModel;
 import com.appspot.relaxe.model.ValueModel;
 import com.appspot.relaxe.ui.HasDisplayName;
 import com.appspot.relaxe.ui.HasEnablement;
@@ -33,7 +32,7 @@ public interface Action
 	@Override
 	ValueModel<String> displayName();
 	@Override
-	BooleanModel enablement();
+	ValueModel<Boolean> enablement();
 	
 	/**
 	 * Performs some action if and only if this action is currently enabled according <code>isEnabled()</code>.

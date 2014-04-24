@@ -68,6 +68,8 @@ public interface Pager<
 	P getCurrentPage();
 	State getState();
 	
+	long offset();
+	
 	void setQuery(Q query);
 	Q getQuery();
 	
@@ -75,9 +77,10 @@ public interface Pager<
 	
 	enum Flags {
 		LOAD_STATE,		
-		LOAD_FAILURE,
+		LOAD_FAILURE,		
 		INDEX,
 		PAGE,
+		EOF,
 	}	
 	
 	/**
