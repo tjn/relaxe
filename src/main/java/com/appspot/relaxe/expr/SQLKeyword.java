@@ -120,6 +120,7 @@ public enum SQLKeyword
 	FOREIGN,
 	KEY,
 	REFERENCES,
+	TO
 	;
 	
 	private static Map<String, SQLKeyword> keywordMap = new TreeMap<String, SQLKeyword>(String.CASE_INSENSITIVE_ORDER); 
