@@ -72,9 +72,7 @@ public class StatementExecutor {
 			throws SQLException, QueryException {
 
 	    QueryTime qt = null;
-	        	    
-		rp.prepare();
-		
+	    
 		long start = System.currentTimeMillis();
 		
 		String qs = statement.generate();
@@ -82,6 +80,8 @@ public class StatementExecutor {
 		
 		logger().info("statement.generate(): {} ms", elapsed);
 		logger().info("statement: {}", qs);
+		
+		rp.prepare();
 		
 		PreparedStatement ps = null;
 		

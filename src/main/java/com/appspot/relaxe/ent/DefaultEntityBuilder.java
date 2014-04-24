@@ -182,7 +182,32 @@ public abstract class DefaultEntityBuilder<
 		final Column col = table.getColumnMap().get(cn);
 		
 		if (col == null) {
-			throw new NullPointerException("unresolved column for cn: " + cn.getContent() + " in table " + table.getQualifiedName());
+			StringBuilder buf = new StringBuilder();
+			
+			int cc = ctx.getInputMetaData().getColumnCount();
+			
+			append(buf, 
+					"unresolved column", 
+					": cn: ", (cn == null ) ? null : cn.getContent(), 
+					", table: ", (table == null ) ? null : table.getQualifiedName(),
+					", index: ", Integer.toString(index),
+					", cc: ", Integer.toString(cc),
+					", col.map: ", (fk == null) ? null : fk.getColumnMap().toString()
+			);
+			
+			
+			for (int co = 1; co <= cc; co++) {
+				TableReference tref = ctx.getQueryContext().getOrigin(co);
+				String tn = tref.getTable().getQualifiedName();
+								
+				append(buf,
+						"\n",
+						"co: ", Integer.toString(co), 
+						", tn: ", tn);
+			}
+			
+			
+			throw new NullPointerException(buf.toString());
 		}		
 		
 		final Column resolved = (fk == null) ? col : fk.getReferenced(col);
@@ -247,6 +272,13 @@ public abstract class DefaultEntityBuilder<
 		};
 	}
 	
+	private StringBuilder append(StringBuilder buf, String ... elems) {
+		for (int i = 0; i < elems.length; i++) {			
+			buf.append(elems[i]);
+		}
+		
+		return buf;
+	}	
 
 //	private static Logger logger() {
 //		return DefaultEntityBuilder.logger;
