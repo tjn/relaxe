@@ -31,8 +31,7 @@ package com.appspot.relaxe.model;
 public abstract class AbstractTransformationModel<V, S>
 	extends AbstractValueModel<V> {
 	
-	 private ValueModel<S> source;
-//	private MutableValueModel<V> result;
+	private ValueModel<S> source;
 	
 	public AbstractTransformationModel(final ValueModel<S> source) {
 		source.addChangeHandler(new ChangeListener<S>() {
