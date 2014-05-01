@@ -5,7 +5,7 @@
 	</description>
 	
 	<property file="version.properties" />
-	<property file="build.properties" />	
+	<property file="build.properties" />
 	  
 	<property name="build.root.dir" location="build"/>  
 	<property name="data.root.dir" location="data"/>
@@ -66,9 +66,10 @@
 		<pathelement location="${tools.build.dir}" />
 		<pathelement location="${build.root.dir}/impl/pg/pagila/classes" />		
 	</path>
-	
-	<target name="update-version-property">
-		<exec executable="./update-version.sh" />
+
+	<target name="update-version-property" depends="init.os" >	
+		<fail unless="update-version.bin" message="Property update-version.bin is not set" />
+		<exec executable="${update-version.bin}" />	
 	</target>
 	
 	<target name="init" depends="init.os, update-version-property">
@@ -101,11 +102,11 @@
 	<target name="init.os" depends="init.os.unix, init.os.windows, init.os.other" />
 	
 	<target name="init.os.unix" if="os.unix">
-		<property name="exec.ext" value="" />
+		<property file="os.unix.properties" />
 	</target>
 	
-	<target name="init.os.windows" if="os.windows">		
-		<property name="exec.ext" value=".exe" />
+	<target name="init.os.windows" if="os.windows">				
+		<property file="os.win.properties" />
 	</target>
 	
 	<target name="init.os.other" if="os.other">		
