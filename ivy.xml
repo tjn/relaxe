@@ -3,10 +3,11 @@
     	<license name="GNU Affero General Public License, version 3" url="http://www.gnu.org/licenses/agpl-3.0.txt"/>
     </info>
     
-    <configurations defaultconfmapping="compile->default;runtime->default;test->default;jdbc->default">
+    <configurations defaultconfmapping="compile->default;runtime->default;test->default;jdbc->default;gwt->default">
 		<conf name="compile" />
 		<conf name="runtime"/>
 	    <conf name="test" extends="runtime"/>
+	    <conf name="gwt"/>
 	    <conf name="jdbc" />	    
 	</configurations>
 						
@@ -27,7 +28,10 @@
         <!-- testing dependencies -->
         <dependency org="junit" name="junit" rev="4.11" conf="test"/>
         <dependency org="org.mortbay.jetty" name="jetty" rev="6.1H.22" conf="test" />
-        <dependency org="com.google.gwt" name="gwt-user" rev="2.5.1" conf="test"/>
+                
+        <dependency org="com.google.gwt" name="gwt-user" rev="2.5.1" conf="gwt"/>
+        <dependency org="com.google.gwt" name="gwt-dev" rev="2.5.1" conf="gwt"/>
+        <dependency org="com.google.gwt" name="gwt-servlet" rev="2.5.1" conf="gwt"/>
         
         <!-- JDBC drivers -->
         <dependency org="org.postgresql" name="postgresql" rev="9.3-1100-jdbc4" conf="jdbc" />        

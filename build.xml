@@ -47,6 +47,13 @@
 		<pathelement location="${jdbc-config.dir}" />
 		<fileset dir="lib/runtime" includes="*.jar" />
 	</path>
+	
+	<path id="gwt.compile.cp">
+		<pathelement location="${src.dir}" />						
+		<fileset dir="lib/gwt" >
+			<include name="*.jar" />			
+		</fileset>		
+	</path>	
 
 	<path id="tools.compile.cp">
 		<path refid="compile.cp"/>
@@ -136,7 +143,8 @@
 	</target>
 
 	<target name="compile" depends="init, retrieve-compilation-dependencies, copy-resources" description="Compiles the sources">
-			<javac classpathref="compile.cp" destdir="${build.dir}" srcdir="${src.dir}" verbose="off" includeantruntime="false">        	
+			<javac classpathref="compile.cp" destdir="${build.dir}" srcdir="${src.dir}" verbose="off" includeantruntime="false"
+				debug="true" debuglevel="lines,vars,source">        	
 				<compilerarg value="-Xlint:all"/>
 			</javac>
 	</target>
@@ -148,7 +156,8 @@
 	</target>
 	
 	<target name="compile-tools" depends="compile" description="Compiles the sources for tools">
-			<javac classpathref="tools.compile.cp" destdir="${tools.build.dir}" srcdir="${tools.src.dir}" verbose="off" includeantruntime="false">
+			<javac classpathref="tools.compile.cp" destdir="${tools.build.dir}" srcdir="${tools.src.dir}" verbose="off" includeantruntime="false"
+					debug="true" debuglevel="lines,vars,source">
 				<compilerarg value="-Xlint"/>
 			</javac>
 	</target>
@@ -184,7 +193,8 @@
 	
 
 	<target name="compile-tests" depends="compile, retrieve-test-dependencies, compile-tools" description="Compiles the sources for tests">
-			<javac classpathref="test.compile.cp" destdir="${test.build.dir}" srcdir="${test.src.dir}" verbose="off" includeantruntime="false">
+			<javac classpathref="test.compile.cp" destdir="${test.build.dir}" srcdir="${test.src.dir}" verbose="off" includeantruntime="false"
+					debug="true" debuglevel="lines,vars,source">
 				<compilerarg value="-Xlint"/>
 			</javac>
 	</target>
@@ -358,6 +368,7 @@
 		<ivy:retrieve pattern="lib/[conf]/[artifact]-[revision].[ext]" conf="runtime"/>		
 		<ivy:retrieve pattern="lib/[conf]/[artifact]-[revision].[ext]" conf="test"/>		
 		<ivy:retrieve pattern="lib/[conf]/[artifact]/[artifact]-[revision].[ext]" conf="jdbc"/>
+		<ivy:retrieve pattern="lib/[conf]/[artifact]-[revision].[ext]" conf="gwt"/>
 	</target>	
 	
 	<target name="deliver">
@@ -369,6 +380,21 @@
 	<target name="makepom">
 		<ivy:resolve />			
 		<ivy:makepom ivyfile="ivy.xml" pomfile="${pom.file}" />			
+	</target>
+	
+	<target name="gwt-compile-dir" depends="init" description="Creates a directory for GWT compilation">
+		<mkdir dir="${gwt.compilation.dir}" />
+		<mkdir dir="build/war"/>		
+	</target>
+	
+	<target name="gwt-compile" depends="compile, retrieve-test-dependencies, gwt-compile-dir" description="Compiles the GWT module">
+		<java classpathref="gwt.compile.cp" classname="com.google.gwt.dev.Compiler" fork="true">
+			<arg value="-workDir"/>
+			<arg value="${gwt.compilation.dir}"/>			
+			<arg value="-war"/>			
+			<arg value="build/war"/>
+			<arg value="com.appspot.relaxe.Relaxe"/>
+		</java>
 	</target>
 
 	
@@ -472,7 +498,8 @@
 					classpathref="@{implementation}.@{target}.cp" 
 					destdir="@{destdir}" 
 					srcdir="impl/@{implementation}/common:@{impl.src.dir}" 
-					verbose="off" includeantruntime="false">				
+					verbose="off" includeantruntime="false"
+					debug="true" debuglevel="lines,vars,source">				
 				<compilerarg value="-Xlint"/>
 			</javac>			
    		</sequential>
@@ -592,7 +619,8 @@
 					classpathref="@{implementation}.test.cp" 
 					destdir="@{target.base.dir}/classes" 
 					srcdir="@{impl.src.dir}:@{target.src.dir}:@{target.test.src.dir}:@{target.base.dir}/src/gen"
-					verbose="off" includeantruntime="false">				
+					verbose="off" includeantruntime="false"
+					debug="true" debuglevel="lines,vars,source">				
 				<compilerarg value="-Xlint"/>
 			</javac>			
    </sequential>
