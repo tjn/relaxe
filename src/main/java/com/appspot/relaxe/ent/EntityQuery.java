@@ -70,15 +70,7 @@ public interface EntityQuery<
 	
 	Collection<EntityQueryPredicate> predicates();	
 	List<EntityQuerySortKey> sortKeys();
-	
-//	/**
-//	 * Returns the table reference the value in the <code>column</code> originated from. 
-//	 * 
-//	 * @param column
-//	 * @return
-//	 */
-//	TableReference getOrigin(int column);
-	
+		
 	interface Builder<
 		A extends AttributeName,
 		R extends Reference,
