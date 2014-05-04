@@ -82,6 +82,8 @@ public class EntityQueryExpressionBuilder<
 	private Map<EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?>, TableReference> tableReferenceMap;
 	private Map<EntityQueryElementTag, Entry> entryMap;
 	private Map<JoinKey, TableReference> referenceMap;
+		
+	private EntityQueryContext parent;
 	
 	private static final class Entry {				
 		private Map<ForeignKey, TableReference> referenceMap;
@@ -100,13 +102,18 @@ public class EntityQueryExpressionBuilder<
 	}	
 	
 	public EntityQueryExpressionBuilder(EntityQuery<A, R, T, E, H, F, M, RE> query) {
+		this(null, query);
+		
+	}
+	public EntityQueryExpressionBuilder(EntityQueryContext parent, EntityQuery<A, R, T, E, H, F, M, RE> query) {
 		super();
+		this.parent = parent;
 		this.query = query;
 	}
 
 	public QueryExpression getQueryExpression() {
 		if (this.result == null) {
-			build(false);	
+			build(false);
 		}		
 		
 		return result;
@@ -357,7 +364,13 @@ public class EntityQueryExpressionBuilder<
 			build(false);	
 		}				
 				 
-		return tableReferenceMap.get(tag);
+		TableReference tref = tableReferenceMap.get(tag);
+				
+		if (tref == null && parent != null) {
+			tref = parent.getTableRef(tag);
+		}
+		
+		return tref;
 	}
 
 	@Override

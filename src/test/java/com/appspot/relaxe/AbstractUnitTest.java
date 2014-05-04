@@ -30,7 +30,13 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 import junit.framework.TestCase;
 
@@ -46,6 +52,9 @@ import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQuery;
 import com.appspot.relaxe.ent.EntityQueryElement;
+import com.appspot.relaxe.ent.Reference;
+import com.appspot.relaxe.ent.value.HasInteger;
+import com.appspot.relaxe.ent.value.IntegerAttribute;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.log.DefaultLogger;
 import com.appspot.relaxe.rdbms.ConnectionManager;
@@ -57,8 +66,10 @@ import com.appspot.relaxe.rdbms.PersistenceContext;
 import com.appspot.relaxe.service.DataAccessContext;
 import com.appspot.relaxe.service.DataAccessException;
 import com.appspot.relaxe.service.DataAccessSession;
+import com.appspot.relaxe.service.EntitySession;
 import com.appspot.relaxe.types.AbstractValueType;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.IntegerHolder;
 import com.appspot.relaxe.value.ReferenceHolder;
 
 
@@ -403,5 +414,130 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	QueryExpression toQueryExpression(EntityQuery<A, R, T, E, H, F, M, RE> qo) {
 		EntityQueryExpressionBuilder<A, R, T, E, H, F, M, RE> eqb = new EntityQueryExpressionBuilder<A, R, T, E, H, F, M, RE>(qo);
 		return eqb.getQueryExpression();
+	}
+	
+	
+	protected Set<Integer> intSet(String query) throws Exception {
+		return ints(query, new HashSet<Integer>(), 1);		
+	}
+	
+	protected <C extends Collection<Integer>> C ints(String query, C dest, int column) throws Exception {		
+		Connection c = newConnection();
+		Statement st = null;
+		ResultSet rs = null;
+		
+		try {		
+			st = c.createStatement();
+			rs = st.executeQuery(query);
+			
+			while (rs.next()) {
+				int v = rs.getInt(column);
+				dest.add(rs.wasNull() ? null : Integer.valueOf(v)); 
+			}
+		
+			return dest;
+		}
+		finally {
+			close(rs);
+			close(st);
+			close(c);
+		}
+	}
+	
+	protected <
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M>
+	>
+	void ints(List<E> src, Collection<Integer> dest, IntegerAttribute<A, E> key) throws Exception {
+		for (E e : src) {						
+			IntegerHolder h = e.getInteger(key);
+			dest.add(h.value());
+		}
+	}
+	
+	protected <
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
+	>	
+	void assertResultEquals(EntityQuery<A, R, T, E, H, F, M, QE> q, IntegerAttribute<A, E> key, String query, boolean ordered) throws Exception {
+		DataAccessSession das = newSession();
+		EntitySession es = das.asEntitySession();
+		
+		List<E> actual = es.list(q, null);
+		
+		if (ordered) {
+			assertListEquals(actual, key, query);				
+		}
+		else {
+			assertSetEquals(actual, key, query);
+		}
+	}
+	
+	protected <
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
+	>	
+	void assertSetEquals(EntityQuery<A, R, T, E, H, F, M, QE> q, IntegerAttribute<A, E> key, String query) throws Exception {
+		assertResultEquals(q, key, query, false);
+	}			
+	
+	protected <
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M>
+	>	
+	void assertListEquals(List<E> src, IntegerAttribute<A, E> key, String query) throws Exception {
+		
+		List<Integer> expected = new ArrayList<Integer>();		
+		ints(query, expected, 1);
+		
+		List<Integer> actual = new ArrayList<Integer>();		
+		ints(src, actual, key);
+		
+		assertEquals(expected, actual);
+	}
+	
+	
+	protected <
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M>
+	>	
+	void assertSetEquals(List<E> src, IntegerAttribute<A, E> key, String query) throws Exception {
+		
+		Set<Integer> expected = new TreeSet<Integer>();		
+		ints(query, expected, 1);
+		
+		Set<Integer> actual = new TreeSet<Integer>();		
+		ints(src, actual, key);
+		
+		assertEquals("Duplicate elements in list", src.size(), actual.size());		
+		
+		assertEquals(expected, actual);
 	}
 }

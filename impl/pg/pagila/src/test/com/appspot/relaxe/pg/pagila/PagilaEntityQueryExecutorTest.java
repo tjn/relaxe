@@ -40,16 +40,26 @@ import com.appspot.relaxe.ent.EntityQueryResult;
 import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
+import com.appspot.relaxe.ent.query.EntityQueryExistsPredicate;
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
+import com.appspot.relaxe.ent.query.EntityQueryPredicates;
+import com.appspot.relaxe.ent.query.EntityQueryPredicates.And;
+import com.appspot.relaxe.ent.query.EntityQueryPredicates.Not;
+import com.appspot.relaxe.ent.query.EntityQueryValue;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.ValueExpression;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film.Query;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film.QueryElement;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Language;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 import com.appspot.relaxe.query.QueryResult;
 import com.appspot.relaxe.rdbms.PersistenceContext;
 import com.appspot.relaxe.rdbms.pg.PGImplementation;
+import com.appspot.relaxe.service.DataAccessSession;
+import com.appspot.relaxe.service.EntitySession;
 import com.appspot.relaxe.types.ReferenceType;
 import com.appspot.relaxe.value.IntegerHolder;
 import com.appspot.relaxe.value.ReferenceHolder;
@@ -581,6 +591,59 @@ public class PagilaEntityQueryExecutorTest
 		
 	private UnificationContext getIdentityContext(){
 		return new SimpleUnificationContext();
+	}
+		
+	public void testExistsPredicate1() throws Exception {		
+		Film.QueryElement.Builder fb = new Film.QueryElement.Builder();
+		fb.addAllAttributes();
+						
+		Film.QueryElement qe = fb.newQueryElement();
+		
+		EntityQueryValue pfid = qe.value(Film.FILM_ID);
+				
+		FilmActor.QueryElement e2 = new FilmActor.QueryElement();		
+		Film.QueryElement fe = e2.getQueryElement(FilmActor.FILM);
+		EntityQueryPredicate qp = fe.newEquals(Film.FILM_ID, pfid);
+				
+		FilmActor.Query sub = new FilmActor.Query(e2, qp);
+		
+		EntityQueryExistsPredicate ep = new EntityQueryExistsPredicate(sub);	
+				
+		assertResultEquals(new Film.Query(qe), Film.FILM_ID, "SELECT film_id FROM public.film", false);
+		
+		Film.Query fq1 = new Film.Query(qe, ep);
+		
+		assertSetEquals(fq1, Film.FILM_ID, 
+				"SELECT film_id FROM film f WHERE EXISTS (SELECT * FROM public.film_actor fa WHERE fa.film_id = f.film_id)");
+		
+		Film.Query fq2 = new Film.Query(qe, new EntityQueryPredicates.Not(ep));
+
+		assertSetEquals(fq2, Film.FILM_ID, 
+				"SELECT film_id FROM film f WHERE NOT EXISTS (SELECT * FROM public.film_actor fa WHERE fa.film_id = f.film_id)");
+	}
+	
+	
+	public void testExistsPredicate2() throws Exception {		
+		Film.QueryElement.Builder fb = new Film.QueryElement.Builder();
+		fb.addAllAttributes();
+						
+		Film.QueryElement qe = fb.newQueryElement();
+		
+		EntityQueryValue pfid = qe.value(Film.FILM_ID);
+				
+		FilmActor.QueryElement e2 = new FilmActor.QueryElement();		
+		Film.QueryElement fe = e2.getQueryElement(FilmActor.FILM);
+		EntityQueryPredicate qp = fe.newEquals(Film.FILM_ID, pfid);
+				
+		FilmActor.Query sub = new FilmActor.Query(e2, qp);
+		
+		EntityQueryPredicate ep = new EntityQueryExistsPredicate(sub);
+		EntityQueryPredicate np = new EntityQueryPredicates.Not(ep);
+				
+		Film.Query fq = new Film.Query(qe, new EntityQueryPredicates.And(ep, np));
+		
+		assertSetEquals(fq, Film.FILM_ID, 
+				"SELECT film_id FROM film f WHERE 1 = 0");
 	}
 
 }
