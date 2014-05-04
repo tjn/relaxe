@@ -1,1 +1,13 @@
+
 version.properties
+
+build/classes/
+build/impl/
+build/data/
+build/war/
+build/tmp/
+build/gwt-unitCache/
+
+lib/
+
+
