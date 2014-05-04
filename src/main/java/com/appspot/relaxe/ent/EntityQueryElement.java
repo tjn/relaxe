@@ -126,6 +126,18 @@ public interface EntityQueryElement<
 //		throws EntityException;
 //	
 //	QT getTemplate();
+
+
+	public <
+		XV extends Serializable, 
+		XT extends ValueType<XT>, 
+		XH extends ValueHolder<XV, XT, XH>, 
+		K extends Attribute<A, E, XV, XT, XH, K>
+	> 
+	EntityQueryValue value(K key);
+	
+	EntityQueryValue value(A name);
+
 	
 	<
 		XV extends Serializable,
@@ -184,6 +196,8 @@ public interface EntityQueryElement<
 		K extends Attribute<A, E, XV, XT, XH, K>
 	>
 	EntityQuerySortKey newSortKey(K key, boolean ascending);
+
+
 			
 	
 }

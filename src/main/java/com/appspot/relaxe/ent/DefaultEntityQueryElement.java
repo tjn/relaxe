@@ -238,7 +238,24 @@ public abstract class DefaultEntityQueryElement<
 				new EntityQueryExpressionSortKey.Desc(self(), key.name());
 	}
 
+
 	
+	
+	@Override
+	public <
+		XV extends Serializable, 
+		XT extends ValueType<XT>, 
+		XH extends ValueHolder<XV, XT, XH>, 
+		K extends Attribute<A, E, XV, XT, XH, K>
+	> 
+	EntityQueryValue value(K key) {
+		return new EntityQueryAttributeValueReference<A, QE>(self(), key.name());
+	}
+	
+	@Override
+	public EntityQueryValue value(A name) {
+		return new EntityQueryAttributeValueReference<A, QE>(self(), name);
+	}	
 	
 //	public Logger logger() {
 //		return DefaultLogger.getLogger();
