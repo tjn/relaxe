@@ -22,18 +22,17 @@
  */
 package com.appspot.relaxe.expr;
 
+import com.appspot.relaxe.expr.ddl.ColumnDataType;
+
 
 
 /**
- * Syntactical element of SQL.
- * 
- *  
- *  
+ * Syntactical element of SQL representing either predefined data type or user defined type. 
  * 
  * @author Topi Nieminen <topi.nieminen@gmail.com>
  */
-public interface TypeDefinition	
-	extends Element {
-	
+public interface Type
+	extends Element, ColumnDataType {
+		
 	
 }

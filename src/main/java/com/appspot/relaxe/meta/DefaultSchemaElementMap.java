@@ -30,11 +30,16 @@ import com.appspot.relaxe.expr.Identifier;
 public abstract class DefaultSchemaElementMap<E extends SchemaElement>
 	extends AbstractSchemaElementMap<E>  {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8730294499669136793L;
 	
 	private Environment environment; 
+	
 	/**
 	 * No-argument constructor for GWT Serialization
-	 */
+	 */	
 	protected DefaultSchemaElementMap() {
 	}
 	

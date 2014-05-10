@@ -24,7 +24,6 @@ package com.appspot.relaxe.meta;
 
 import java.util.Map;
 
-import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.expr.Identifier;
 
 public abstract class AbstractSchemaElementMap<E extends SchemaElement>

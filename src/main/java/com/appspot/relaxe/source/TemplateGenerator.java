@@ -51,7 +51,7 @@ import com.appspot.relaxe.ent.EntityContext;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.Reference;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLDataType;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.Column;
@@ -197,7 +197,7 @@ public class TemplateGenerator {
 		for (Column c : cl) {		
 			DataType ct = c.getDataType();
 			
-			if (SQLTypeDefinition.isTextType(ct.getDataType())) {
+			if (SQLDataType.isTextType(ct.getDataType())) {
 				tc = c;
 				break;
 			}

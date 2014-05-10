@@ -42,18 +42,16 @@ import com.appspot.relaxe.ent.value.VarcharArrayAttribute;
 import com.appspot.relaxe.env.IdentifierRules;
 import com.appspot.relaxe.env.hsqldb.HSQLDBEnvironment;
 import com.appspot.relaxe.env.hsqldb.expr.Shutdown;
-import com.appspot.relaxe.exec.QueryProcessor;
-import com.appspot.relaxe.exec.QueryProcessorAdapter;
 import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.ddl.AlterTableAddForeignKey;
 import com.appspot.relaxe.expr.ddl.AlterTableAddPrimaryKey;
 import com.appspot.relaxe.expr.ddl.CreateDomain;
 import com.appspot.relaxe.expr.ddl.CreateSchema;
 import com.appspot.relaxe.expr.ddl.CreateTable;
-import com.appspot.relaxe.expr.ddl.types.IntTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.VarBinaryTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLDataType;
+import com.appspot.relaxe.expr.ddl.types.SQLIntType;
+import com.appspot.relaxe.expr.ddl.types.SQLVarBinaryType;
+import com.appspot.relaxe.expr.ddl.types.SQLVarcharType;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.DataType;
@@ -62,11 +60,9 @@ import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.meta.Schema;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
-import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.rdbms.CatalogFactory;
 import com.appspot.relaxe.rdbms.DefaultDataAccessContext;
 import com.appspot.relaxe.rdbms.PersistenceContext;
-import com.appspot.relaxe.rdbms.StatementExecutionSession;
 import com.appspot.relaxe.rdbms.hsqldb.HSQLDBFileImplementation;
 import com.appspot.relaxe.rdbms.hsqldb.HSQLDBImplementation;
 import com.appspot.relaxe.rdbms.hsqldb.HSQLDBPersistenceContext;
@@ -106,8 +102,8 @@ public class PagilaExportDDLTest
 			}
 			
 			@Override
-			public SQLTypeDefinition getSQLTypeDefinition(DataType dataType) {
-				SQLTypeDefinition def = htm.getSQLTypeDefinition(dataType);
+			public SQLDataType getSQLType(DataType dataType) {
+				SQLDataType def = htm.getSQLType(dataType);
 				
 				if (def == null) {
 					int t = dataType.getDataType();
@@ -115,15 +111,15 @@ public class PagilaExportDDLTest
 					logger.debug("unmapped: " + dataType.getTypeName() + ": " + dataType.getDataType());
 					
 					if (t == ValueType.ARRAY && dataType.getTypeName().equals("_text")) {
-						def = hi.getSyntax().newArrayTypeDefinition(VarcharTypeDefinition.get(1024));
+						def = hi.getSyntax().newArrayTypeDefinition(SQLVarcharType.get(1024));
 					}
 					
 					if (t == ValueType.BINARY && dataType.getTypeName().equals("bytea")) {												
-						def = VarBinaryTypeDefinition.get(dataType.getSize());
+						def = SQLVarBinaryType.get(dataType.getSize());
 					}
 					
-					if (SQLTypeDefinition.isBinaryType(t)) {
-						def = VarBinaryTypeDefinition.get(dataType.getSize());
+					if (SQLDataType.isBinaryType(t)) {
+						def = SQLVarBinaryType.get(dataType.getSize());
 					}
 				}
 				
@@ -137,8 +133,8 @@ public class PagilaExportDDLTest
 //			Column col = tm.getColumn(DataTypeTest.Attribute.CV);			
 //			DataType t = col.getDataType();
 //			
-//			SQLTypeDefinition def = dtm.getSQLTypeDefinition(t);
-//			AbstractCharacterTypeDefinition cd = (AbstractCharacterTypeDefinition) def;
+//			SQLPredefinedDataType def = dtm.getSQLTypeDefinition(t);
+//			AbstractSQLCharacterType cd = (AbstractSQLCharacterType) def;
 //			IntLiteral len = cd.getLength();
 //			assertNotNull(len);
 //		}
@@ -281,17 +277,17 @@ public class PagilaExportDDLTest
 
 	protected void createDomains(StatementSession ss, Receiver qp, IdentifierRules hid) throws DataAccessException {
 		{
-			CreateDomain cd = new CreateDomain(hid.newName("year"), IntTypeDefinition.DEFINITION);
+			CreateDomain cd = new CreateDomain(hid.newName("year"), SQLIntType.get());
 			ss.execute(cd, qp);
 		}
 		
 		{	
-			CreateDomain cd = new CreateDomain(hid.newName("mpaa_rating"), VarcharTypeDefinition.get(20));
+			CreateDomain cd = new CreateDomain(hid.newName("mpaa_rating"), SQLVarcharType.get(20));
 			ss.execute(cd, qp);
 		}
 		
 		{	
-			CreateDomain cd = new CreateDomain(hid.newName("tsvector"), VarcharTypeDefinition.get(1024));
+			CreateDomain cd = new CreateDomain(hid.newName("tsvector"), SQLVarcharType.get(1024));
 			ss.execute(cd, qp);
 		}
 	}

@@ -22,38 +22,44 @@
  */
 package com.appspot.relaxe.expr.ddl.types;
 
+import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.SQLKeyword;
+import com.appspot.relaxe.expr.VisitContext;
 
-public final class SmallIntTypeDefinition
-	extends AbstractIntegalNumberDefinition {
-	
+public class SQLDecimalType
+    extends AbstractFixedPrecisionType {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4142797245840237139L;
-	public static final SmallIntTypeDefinition DEFINITION = new SmallIntTypeDefinition();
+	private static final long serialVersionUID = 3542857951379437870L;
 	
-
-	/**
-	 * No-argument constructor for GWT Serialization
-	 */
-	protected SmallIntTypeDefinition() {
+	public SQLDecimalType() {
+		super();
 	}
 
-
-	public SmallIntTypeDefinition(Integer precision) {
-		super(precision);	
+	public SQLDecimalType(int precision, int scale) {
+		this(Integer.valueOf(precision), Integer.valueOf(scale));
+	}
+	
+	public SQLDecimalType(Integer precision, Integer scale) {
+		super(precision, scale);
 	}
 
-	public SmallIntTypeDefinition(int precision) {
-		super(Integer.valueOf(precision));
+	public SQLDecimalType(int precision) {
+		super(precision);
 	}
-
-	public static SmallIntTypeDefinition get(Integer precision) {		
-		return (precision == null) ? DEFINITION : new SmallIntTypeDefinition(precision);
+	
+	public static SQLDecimalType get(int precision, int scale) {
+		return new SQLDecimalType(precision, scale);
 	}
-
+	
+	public static SQLDecimalType get(Integer precision, Integer scale) {
+		return new SQLDecimalType(precision, scale);
+	}
+		
 	@Override
-	public SQLTypeDefinition.Name getSQLTypeName() {
-		return SQLTypeDefinition.Name.SMALLINT;
+	protected final void traverseName(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.DECIMAL.traverse(vc, v);
 	}
 }

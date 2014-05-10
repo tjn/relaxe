@@ -36,8 +36,6 @@ import com.appspot.relaxe.ent.DataObjectQueryResult;
 import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.env.IdentifierRules;
 import com.appspot.relaxe.env.hsqldb.expr.Shutdown;
-import com.appspot.relaxe.exec.QueryProcessor;
-import com.appspot.relaxe.exec.QueryProcessorAdapter;
 import com.appspot.relaxe.expr.SelectStatement;
 import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.ddl.AlterTableAddForeignKey;
@@ -46,10 +44,10 @@ import com.appspot.relaxe.expr.ddl.AlterTableDropConstraint;
 import com.appspot.relaxe.expr.ddl.CreateDomain;
 import com.appspot.relaxe.expr.ddl.CreateSchema;
 import com.appspot.relaxe.expr.ddl.CreateTable;
-import com.appspot.relaxe.expr.ddl.types.IntTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.VarBinaryTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLDataType;
+import com.appspot.relaxe.expr.ddl.types.SQLIntType;
+import com.appspot.relaxe.expr.ddl.types.SQLVarBinaryType;
+import com.appspot.relaxe.expr.ddl.types.SQLVarcharType;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.DataType;
@@ -57,11 +55,9 @@ import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.meta.Schema;
-import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.rdbms.DefaultResolver;
 import com.appspot.relaxe.rdbms.Implementation;
 import com.appspot.relaxe.rdbms.PersistenceContext;
-import com.appspot.relaxe.rdbms.StatementExecutionSession;
 import com.appspot.relaxe.service.DataAccessContext;
 import com.appspot.relaxe.service.DataAccessException;
 import com.appspot.relaxe.service.DataAccessSession;
@@ -219,8 +215,8 @@ public class PagilaHSQLDBPortGenerator
 			}
 			
 			@Override
-			public SQLTypeDefinition getSQLTypeDefinition(DataType dataType) {
-				SQLTypeDefinition def = htm.getSQLTypeDefinition(dataType);
+			public SQLDataType getSQLType(DataType dataType) {
+				SQLDataType def = htm.getSQLType(dataType);
 				
 				if (def == null) {
 					int t = dataType.getDataType();
@@ -228,15 +224,15 @@ public class PagilaHSQLDBPortGenerator
 					logger.debug("unmapped: " + dataType.getTypeName() + ": " + dataType.getDataType());
 					
 					if (t == ValueType.ARRAY && dataType.getTypeName().equals("_text")) {
-						def = di.getSyntax().newArrayTypeDefinition(VarcharTypeDefinition.get(1024));
+						def = di.getSyntax().newArrayTypeDefinition(SQLVarcharType.get(1024));
 					}
 					
 					if (t == ValueType.BINARY && dataType.getTypeName().equals("bytea")) {												
-						def = VarBinaryTypeDefinition.get(dataType.getSize());
+						def = SQLVarBinaryType.get(dataType.getSize());
 					}
 					
-					if (SQLTypeDefinition.isBinaryType(t)) {
-						def = VarBinaryTypeDefinition.get(dataType.getSize());
+					if (SQLDataType.isBinaryType(t)) {
+						def = SQLVarBinaryType.get(dataType.getSize());
 					}
 				}
 				
@@ -420,17 +416,18 @@ public class PagilaHSQLDBPortGenerator
 	protected void createDomains(StatementSession ss, Receiver qp,
 			IdentifierRules hid) throws DataAccessException {
 		{
-			CreateDomain cd = new CreateDomain(hid.newName("year"), IntTypeDefinition.DEFINITION);
+			
+			CreateDomain cd = new CreateDomain(hid.toIdentifier("year"), SQLIntType.get());
 			ss.execute(cd, qp);
 		}
 		
 		{	
-			CreateDomain cd = new CreateDomain(hid.newName("mpaa_rating"), VarcharTypeDefinition.get(20));
+			CreateDomain cd = new CreateDomain(hid.newName("mpaa_rating"), SQLVarcharType.get(20));
 			ss.execute(cd, qp);
 		}
 		
 		{	
-			CreateDomain cd = new CreateDomain(hid.newName("tsvector"), VarcharTypeDefinition.get(1024));
+			CreateDomain cd = new CreateDomain(hid.newName("tsvector"), SQLVarcharType.get(1024));
 			ss.execute(cd, qp);
 		}
 	}

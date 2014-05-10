@@ -27,14 +27,14 @@ import com.appspot.relaxe.expr.Symbol;
 import com.appspot.relaxe.expr.VisitContext;
 
 public class SQLArrayTypeDefinition
-    extends SQLTypeDefinition {
+    extends SQLDataType {
        	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4432919211852344906L;
-	private SQLTypeDefinition elementType;
 
+	private SQLDataType elementType;
 
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -43,15 +43,9 @@ public class SQLArrayTypeDefinition
 	private SQLArrayTypeDefinition() {
 	}
 	
-	public SQLArrayTypeDefinition(SQLTypeDefinition elementType) {
+	public SQLArrayTypeDefinition(SQLDataType elementType) {
 		this.elementType = elementType;
 	}
-	
-	@Override
-	public Name getSQLTypeName() {
-		return SQLTypeDefinition.Name.ARRAY;
-	}
-	
 
     @Override
     public void traverse(VisitContext vc, ElementVisitor v) {
@@ -62,7 +56,7 @@ public class SQLArrayTypeDefinition
     	v.end(this);
     }
     
-    public SQLTypeDefinition getElementType() {
+    public SQLDataType getElementType() {
 		return elementType;
 	}
 }

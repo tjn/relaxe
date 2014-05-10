@@ -30,7 +30,7 @@ import com.appspot.relaxe.expr.NiladicFunction;
 import com.appspot.relaxe.expr.StringLiteral;
 import com.appspot.relaxe.expr.TimestampLiteral;
 import com.appspot.relaxe.expr.ddl.DefaultDefinition;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLDataType;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.types.ValueType;
@@ -82,7 +82,7 @@ public class PGEnvironment
 		
 		int t = type;
 		
-		if (SQLTypeDefinition.isTextType(t)) {
+		if (SQLDataType.isTextType(t)) {
 			boolean lit = (head.length() > 0) && (head.charAt(0) == '\'');
 
 			if (lit) {
@@ -95,7 +95,7 @@ public class PGEnvironment
 			return def;
 		}
 		
-		if (SQLTypeDefinition.isIntegralType(t)) {
+		if (SQLDataType.isBinaryIntegerType(t)) {
 			boolean lit = head.matches("[+-]?[0-9]+");
 			
 			if (lit) {

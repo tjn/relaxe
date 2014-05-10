@@ -26,10 +26,10 @@ import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.IntLiteral;
 import com.appspot.relaxe.expr.Symbol;
 import com.appspot.relaxe.expr.VisitContext;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLDataType;
 
 public class HSQLDBArrayTypeDefinition
-    extends SQLTypeDefinition {
+    extends SQLDataType {
 
 	
 	/**
@@ -37,7 +37,7 @@ public class HSQLDBArrayTypeDefinition
 	 */
 	private static final long serialVersionUID = -3676886379250567100L;
 	
-	private SQLTypeDefinition elementType;
+	private SQLDataType elementType;
 	private IntLiteral size;
 	
 	/**
@@ -47,16 +47,14 @@ public class HSQLDBArrayTypeDefinition
 	private HSQLDBArrayTypeDefinition() {
 	}
 	
-    public HSQLDBArrayTypeDefinition(SQLTypeDefinition elementType, Integer size) {
+    public HSQLDBArrayTypeDefinition(SQLDataType elementType, Integer size) {
 		super();
 		this.elementType = elementType;
 		this.size = (size == null) ? null : IntLiteral.valueOf(size.intValue());
 	}
 
 	@Override
-	public void traverse(VisitContext vc, ElementVisitor v) {
-        v.start(vc, this);
-    
+	protected void traverseContent(VisitContext vc, ElementVisitor v) {
         this.elementType.traverse(vc, v);
         HSQLDBKeyword.ARRAY.traverse(vc, v);
         
@@ -65,12 +63,5 @@ public class HSQLDBArrayTypeDefinition
         	this.size.traverse(vc, v);
         	Symbol.BRACKET_RIGHT.traverse(vc, v);
         }        
-        
-        v.end(this);        
-    }
-
-	@Override
-	public Name getSQLTypeName() {
-		return null;
-	}
+    }	
 }

@@ -24,23 +24,23 @@ package com.appspot.relaxe.meta;
 
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.BigIntTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.BooleanTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.CharTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.DateTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.DecimalTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.DoubleTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.FloatTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.IntTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.LongVarcharTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.NumericTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLBooleanType;
+import com.appspot.relaxe.expr.ddl.types.SQLDoublePrecisionType;
+import com.appspot.relaxe.expr.ddl.types.SQLDateType;
+import com.appspot.relaxe.expr.ddl.types.SQLDataType;
+import com.appspot.relaxe.expr.ddl.types.SQLCharType;
+import com.appspot.relaxe.expr.ddl.types.SQLDecimalType;
+import com.appspot.relaxe.expr.ddl.types.SQLFloatType;
+import com.appspot.relaxe.expr.ddl.types.SQLIntType;
+import com.appspot.relaxe.expr.ddl.types.SQLLongVarcharType;
+import com.appspot.relaxe.expr.ddl.types.SQLNumericType;
 import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.SmallIntTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.TimeTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.TimestampTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.TinyIntTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.TypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLSmallIntType;
+import com.appspot.relaxe.expr.ddl.types.SQLTimeType;
+import com.appspot.relaxe.expr.ddl.types.SQLTimestampType;
+import com.appspot.relaxe.expr.ddl.types.SQLTinyIntType;
+import com.appspot.relaxe.expr.ddl.types.UserDefinedType;
+import com.appspot.relaxe.expr.ddl.types.SQLVarcharType;
 import com.appspot.relaxe.types.BooleanType;
 import com.appspot.relaxe.types.CharType;
 import com.appspot.relaxe.types.DateType;
@@ -100,64 +100,64 @@ public abstract class DefaultDataTypeMap
 	}
 	
 	@Override
-	public SQLTypeDefinition getSQLTypeDefinition(DataType dataType) {
+	public SQLDataType getSQLType(DataType dataType) {
 		int t = dataType.getDataType();
 		Integer s = getSize(dataType);
 		
-		SQLTypeDefinition def = null;
+		SQLDataType def = null;
 						
 		switch (t) {
 		case ValueType.INTEGER:
-			def = IntTypeDefinition.get(null);
+			def = SQLIntType.get(null);
 			break;
 		case ValueType.BIGINT:
 			def = BigIntTypeDefinition.get(null);	
 			break;							
 		case ValueType.SMALLINT:
-			def = SmallIntTypeDefinition.get(null);
+			def = SQLSmallIntType.get(null);
 			break;										
 		case ValueType.TINYINT:
-			def = TinyIntTypeDefinition.get(null);
+			def = SQLTinyIntType.get(null);
 			break;
 		case ValueType.VARCHAR:			
-			def = VarcharTypeDefinition.get(getCharOctetLength(dataType));
+			def = SQLVarcharType.get(getCharOctetLength(dataType));
 			break;
 		case ValueType.LONGVARCHAR:
-			def = LongVarcharTypeDefinition.get(getCharOctetLength(dataType));
+			def = SQLLongVarcharType.get(getCharOctetLength(dataType));
 			break;
 		case ValueType.CHAR:			
-			def = CharTypeDefinition.get(getCharOctetLength(dataType));
+			def = SQLCharType.get(getCharOctetLength(dataType));
 			break;
 		case ValueType.NUMERIC:			
-			def = NumericTypeDefinition.get(s, Integer.valueOf(dataType.getDecimalDigits()));
+			def = SQLNumericType.get(s, Integer.valueOf(dataType.getDecimalDigits()));
 			break;
 		case ValueType.DECIMAL:			
-			def = DecimalTypeDefinition.get(s, Integer.valueOf(dataType.getDecimalDigits()));
+			def = SQLDecimalType.get(s, Integer.valueOf(dataType.getDecimalDigits()));
 			break;
 		case ValueType.TIMESTAMP:			
-			def = TimestampTypeDefinition.get();
+			def = SQLTimestampType.get();
 			break;
 		case ValueType.DATE:			
-			def = DateTypeDefinition.get();
+			def = SQLDateType.get();
 			break;
 		case ValueType.TIME:			
-			def = TimeTypeDefinition.get();
+			def = SQLTimeType.get();
 			break;
 		case ValueType.BOOLEAN:
 			// fall-through
 		case ValueType.BIT:			
-			def = BooleanTypeDefinition.get();
+			def = SQLBooleanType.get();
 			break;
 		case ValueType.DOUBLE:			
-			def = DoubleTypeDefinition.DEFINITION;
+			def = SQLDoublePrecisionType.get();
 			break;
 		case ValueType.FLOAT:			
-			def = FloatTypeDefinition.DEFINITION;
+			def = SQLFloatType.get();
 			break;			
 		case ValueType.DISTINCT:			
 		case ValueType.OTHER:
 			SchemaElementName name = newName(dataType.getTypeName());
-			def = new TypeDefinition(name);
+			def = new UserDefinedType(name);
 			break;
 		case ValueType.ARRAY:			
 			ValueType<?> pt = getType(dataType);
@@ -166,7 +166,7 @@ public abstract class DefaultDataTypeMap
 				com.appspot.relaxe.types.ArrayType<?, ?> at = pt.asArrayType();			
 				ValueType<?> et = at.getElementType();			
 				DataTypeImpl dti = new DataTypeImpl(et.getSqlType(), et.getName());
-				SQLTypeDefinition idef = getSQLTypeDefinition(dti);
+				SQLDataType idef = getSQLType(dti);
 				def = new SQLArrayTypeDefinition(idef);
 			}
 			break;

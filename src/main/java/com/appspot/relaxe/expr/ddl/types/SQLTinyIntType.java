@@ -26,32 +26,43 @@ import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.VisitContext;
 
-public class DoubleTypeDefinition
-    extends FloatingPointDefinition {
-    
+
+public final class SQLTinyIntType
+	extends AbstractIntegalNumberType {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -269346141333155275L;
-
-	public static final DoubleTypeDefinition DEFINITION = new DoubleTypeDefinition();
+	private static final long serialVersionUID = -4142797245840237139L;
 	
+	private static final SQLTinyIntType TYPE = new SQLTinyIntType();
+	
+	public static SQLTinyIntType type() {
+		return TYPE;
+	}
+	
+
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	private DoubleTypeDefinition() {		
+	protected SQLTinyIntType() {
 	}
-	
-    @Override
-    public SQLTypeDefinition.Name getSQLTypeName() {
-    	return SQLTypeDefinition.Name.DOUBLE;
-    }
-            
-    @Override
-    public void traverse(VisitContext vc, ElementVisitor v) {
-    	v.start(vc, this);
-    	SQLKeyword.DOUBLE.traverse(vc, v);
-    	SQLKeyword.PRECISION.traverse(vc, v);
-    	v.end(this);
-    }
+
+
+	public SQLTinyIntType(Integer precision) {
+		super(precision);	
+	}
+
+	public SQLTinyIntType(int precision) {
+		super(Integer.valueOf(precision));
+	}
+
+	public static SQLTinyIntType get(Integer precision) {		
+		return (precision == null) ? TYPE : new SQLTinyIntType(precision);
+	}
+
+	@Override
+	protected void traverseName(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.TINYINT.traverse(vc, v);		
+	}
 }

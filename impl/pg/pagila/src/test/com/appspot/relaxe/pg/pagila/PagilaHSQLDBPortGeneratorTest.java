@@ -52,6 +52,7 @@ public class PagilaHSQLDBPortGeneratorTest
 		} 
 		catch (Exception e) {
 			logger.error(e.getMessage(), e);
+			throw e;
 		}
 		finally {
 			logger.debug("testTransform - exit");

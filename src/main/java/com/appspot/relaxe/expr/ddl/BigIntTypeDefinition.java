@@ -22,11 +22,13 @@
  */
 package com.appspot.relaxe.expr.ddl;
 
-import com.appspot.relaxe.expr.ddl.types.AbstractIntegalNumberDefinition;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
+import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.SQLKeyword;
+import com.appspot.relaxe.expr.VisitContext;
+import com.appspot.relaxe.expr.ddl.types.AbstractIntegalNumberType;
 
 public final class BigIntTypeDefinition
-	extends AbstractIntegalNumberDefinition {
+	extends AbstractIntegalNumberType {
 	
 	/**
 	 * 
@@ -54,9 +56,9 @@ public final class BigIntTypeDefinition
 	public static BigIntTypeDefinition get(Integer precision) {		
 		return (precision == null) ? DEFINITION : new BigIntTypeDefinition(precision);
 	}
-
+		
 	@Override
-	public SQLTypeDefinition.Name getSQLTypeName() {
-		return SQLTypeDefinition.Name.BIGINT;
+	protected void traverseName(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.BIGINT.traverse(vc, v);
 	}
 }

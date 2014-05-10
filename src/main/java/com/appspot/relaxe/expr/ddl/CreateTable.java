@@ -34,9 +34,9 @@ import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.Symbol;
 import com.appspot.relaxe.expr.VisitContext;
-import com.appspot.relaxe.expr.ddl.types.CharTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.IntTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLCharType;
+import com.appspot.relaxe.expr.ddl.types.SQLIntType;
+import com.appspot.relaxe.expr.ddl.types.SQLVarcharType;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ColumnMap;
@@ -90,7 +90,7 @@ public class CreateTable
 				
 		for (Column col : cm.values()) {
 			DataType t = col.getDataType();	
-			ColumnDataType type = tm.getSQLTypeDefinition(t);
+			ColumnDataType type = tm.getSQLType(t);
 			
 			if (type == null) {
 				throw new RuntimeException(
@@ -180,7 +180,7 @@ public class CreateTable
 		}
 		
 		public void addInteger(Identifier name, boolean nullable) {			
-            add(new ColumnDefinition(name, IntTypeDefinition.DEFINITION));
+            add(new ColumnDefinition(name, SQLIntType.get()));
         }
 		
 		public void add(Identifier name, ColumnDataType type, boolean nullable) {			
@@ -188,11 +188,11 @@ public class CreateTable
         }
 
 		public void addVarchar(Identifier name, int charOctetSize, boolean nullable) {			
-            add(name, VarcharTypeDefinition.get(charOctetSize), nullable);
+            add(name, SQLVarcharType.get(charOctetSize), nullable);
         }
 		
 		public void addChar(Identifier name, int charOctetSize, boolean nullable) {			
-            add(name, CharTypeDefinition.get(charOctetSize), nullable);
+            add(name, SQLCharType.get(charOctetSize), nullable);
         }
 	}
 	

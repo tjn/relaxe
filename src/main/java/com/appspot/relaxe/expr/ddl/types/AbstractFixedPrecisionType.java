@@ -27,8 +27,8 @@ import com.appspot.relaxe.expr.IntLiteral;
 import com.appspot.relaxe.expr.Symbol;
 import com.appspot.relaxe.expr.VisitContext;
 
-public abstract class FixedPrecisionDefinition
-    extends AbstractNumericTypeDefinition {
+public abstract class AbstractFixedPrecisionType
+    extends AbstractNumericType {
     
 	/**
 	 * 
@@ -41,31 +41,31 @@ public abstract class FixedPrecisionDefinition
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	public FixedPrecisionDefinition() {		
+	public AbstractFixedPrecisionType() {		
 	}
 	
-	public FixedPrecisionDefinition(int precision) {
+	public AbstractFixedPrecisionType(int precision) {
 		this.precision = IntLiteral.valueOf(precision);		 
 	}
 	    
-    public FixedPrecisionDefinition(int precision, int scale, SQLTypeDefinition.Name type) {
-    	this(Integer.valueOf(precision), Integer.valueOf(scale), type);
+    public AbstractFixedPrecisionType(int precision, int scale) {
+    	this(Integer.valueOf(precision), Integer.valueOf(scale));
     }
     
-    protected FixedPrecisionDefinition(Integer precision, Integer scale, SQLTypeDefinition.Name type) {
+    protected AbstractFixedPrecisionType(Integer precision, Integer scale) {
     	if (precision != null) {    		
         	this.precision = IntLiteral.valueOf(precision);
         	
         	if (precision.intValue() < 1) {
         		throw new IllegalArgumentException(
-        				type + " precision (" + precision + ") must be > 0");        		
+        				" precision (" + precision + ") must be > 0");        		
         	}
         	
         	
         	if (scale != null) {
         		if (scale < 0 || scale > precision) {
             		throw new IllegalArgumentException(
-            				type + " scale (" + scale + ") must be between 0 and precision " + precision);
+            				" scale (" + scale + ") must be between 0 and precision " + precision);
             	}
         		
         		this.scale = IntLiteral.valueOf(scale);	
@@ -73,9 +73,6 @@ public abstract class FixedPrecisionDefinition
     	}
     }
     
-    @Override
-    public abstract SQLTypeDefinition.Name getSQLTypeName();
-
 	@Override
 	public final boolean isExact() {
 		return true;
@@ -84,7 +81,7 @@ public abstract class FixedPrecisionDefinition
 	
 	@Override
 	protected void traverseContent(VisitContext vc, ElementVisitor v) {
-		getSQLTypeName().traverse(vc, v);
+		traverseName(vc, v);
 		
 		if (this.precision != null) {
 			Symbol.PAREN_LEFT.traverse(vc, v);
@@ -99,5 +96,6 @@ public abstract class FixedPrecisionDefinition
 		}
 	}
 	
+	protected abstract void traverseName(VisitContext vc, ElementVisitor v);
 	
 }

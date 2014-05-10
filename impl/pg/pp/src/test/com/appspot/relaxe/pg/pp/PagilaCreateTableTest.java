@@ -30,7 +30,7 @@ import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.SchemaName;
 import com.appspot.relaxe.expr.ddl.CreateTable;
 import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLPredefinedDataType;
 import com.appspot.relaxe.gen.pg.pp.ent.pub.Film;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;

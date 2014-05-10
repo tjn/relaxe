@@ -22,28 +22,33 @@
  */
 package com.appspot.relaxe.expr.ddl.types;
 
-
-import com.appspot.relaxe.expr.CompoundElement;
-import com.appspot.relaxe.expr.Element;
 import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.VisitContext;
-import com.appspot.relaxe.expr.ddl.ColumnDataType;
 
-public abstract class DataTypeDefinition
-    extends CompoundElement 
-    implements ColumnDataType {
-    
+public class SQLTimestampType
+    extends SQLDataType {
+        
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -8759055758167527360L;
+	private static final long serialVersionUID = 779228554708816888L;
+	
+	private static final SQLTimestampType TYPE = new SQLTimestampType();
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */	
+	private SQLTimestampType() {
+	}
+		
+	public static SQLTimestampType get() {
+        return TYPE;
+    }   
     
-    public abstract Element getTypeName();
-    
-    @Override
-    public void traverse(VisitContext vc, ElementVisitor v) {
-        v.start(vc, this);
-        traverseNonEmpty(getTypeName(), vc, v);
-        v.end(this);
-    }
+	
+	@Override
+	protected void traverseContent(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.TIMESTAMP.traverse(vc, v);
+	}
 }

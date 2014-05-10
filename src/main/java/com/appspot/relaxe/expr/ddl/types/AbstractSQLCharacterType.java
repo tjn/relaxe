@@ -22,35 +22,50 @@
  */
 package com.appspot.relaxe.expr.ddl.types;
 
+import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.IntLiteral;
+import com.appspot.relaxe.expr.Symbol;
+import com.appspot.relaxe.expr.VisitContext;
 
-public class VarBinaryTypeDefinition
-    extends AbstractBinaryTypeDefinition {
+public abstract class AbstractSQLCharacterType
+    extends SQLDataType {
     
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -2495916308822328263L;
-
-	/**
+	private static final long serialVersionUID = 7291068267695357641L;
+	private IntLiteral length = null;
+    
+    /**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected VarBinaryTypeDefinition() {
+	protected AbstractSQLCharacterType() {
 	}
-	    
-    public VarBinaryTypeDefinition(Integer length) {
-        super(length);
+    
+    protected AbstractSQLCharacterType(Integer length) {                        
+        if (length != null && length.intValue() < 1) {
+            throw new IllegalArgumentException("illegal varchar length: " + length);
+        }
+        
+        this.length = (length == null) ? null : IntLiteral.valueOf(length.intValue());
     }    
     
-    public static VarBinaryTypeDefinition get(Integer length) {
-        return new VarBinaryTypeDefinition(length);
-    }
-    
-    public static VarBinaryTypeDefinition get() {
-        return new VarBinaryTypeDefinition(null);
-    }
-    
     @Override
-    public SQLTypeDefinition.Name getSQLTypeName() {
-        return SQLTypeDefinition.Name.VARBINARY;
+    protected final void traverseContent(VisitContext vc, ElementVisitor v) {
+        traverseName(vc, v);
+        
+        if (this.length != null) {
+	        Symbol.PAREN_LEFT.traverse(vc, v);
+	        this.length.traverse(vc, v);        
+	        Symbol.PAREN_RIGHT.traverse(vc, v);
+        }
     }
+    
+    protected abstract void traverseName(VisitContext vc, ElementVisitor v);
+
+	public IntLiteral getLength() {
+    	return this.length;
+    }
+    
+    
 }

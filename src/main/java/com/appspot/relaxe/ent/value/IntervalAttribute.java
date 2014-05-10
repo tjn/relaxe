@@ -201,49 +201,4 @@ public abstract class IntervalAttribute<
 			return IntervalHolder.DayTime.of(holder);
 		}
 	}
-
-	
-	
-//	public static <
-//		X extends Attribute,
-//		T extends Entity<X, ?, ?, T>
-//	>
-//	IntervalKey<X, T> get(EntityMetaData<X, ?, ?, T> meta, X a) {
-//		IntervalKey<X, T> k = meta.getTimestampKey(a);
-//		
-//		if (k == null) {
-//			AbstractPrimitiveType<?> t = meta.getAttributeType(a);
-//			
-//			if (t != null && t.getSqlType() == AbstractPrimitiveType.TIMESTAMP) {
-//				k = new IntervalKey<X, T>(meta, a);
-//			}			
-//		}
-//				
-//		return k;
-//	}
-
-//	@Override
-//	public TimestampType type() {
-//		return TimestampType.TYPE;
-//	}
-//
-//	public void set(E e, TimestampHolder newValue) {
-//		e.setTimestamp(this, newValue);
-//	}
-//	
-//	public TimestampHolder get(E e) {
-//		return e.getTimestamp(this);
-//	}
-//	
-//	@Override
-//	public TimestampHolder newHolder(Date newValue) {
-//		return TimestampHolder.valueOf(newValue);
-//	}
-//	
-//	@Override
-//	public IntervalKey<A, E> normalize(EntityMetaData<A, ?, ?, E> meta) {
-//		return meta.getTimestampKey(name());
-//	}
-
-
 }

@@ -31,8 +31,8 @@ import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.BaseTableElement;
 import com.appspot.relaxe.expr.ddl.ColumnDefinition;
 import com.appspot.relaxe.expr.ddl.CreateTable;
-import com.appspot.relaxe.expr.ddl.types.IntTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLIntType;
+import com.appspot.relaxe.expr.ddl.types.SQLVarcharType;
 
 /***
  * Helper class for creating table CreateTable -statements programmatically.
@@ -78,7 +78,7 @@ public class TableDesign {
         }
         
         public void varchar(String name, int len, boolean nullable) {
-            add(new ColumnDefinition(name(name), VarcharTypeDefinition.get(len)));
+            add(new ColumnDefinition(name(name), SQLVarcharType.get(len)));
         }
         
         public void serial(String name) {
@@ -96,7 +96,7 @@ public class TableDesign {
         }
         
         public void integer(String name, boolean nullable) {
-            add(new ColumnDefinition(name(name), IntTypeDefinition.DEFINITION));
+            add(new ColumnDefinition(name(name), SQLIntType.get()));
         }
         
         public void integer(String name) {

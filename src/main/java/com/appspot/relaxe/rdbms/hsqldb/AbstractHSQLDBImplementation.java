@@ -27,7 +27,7 @@ import com.appspot.relaxe.env.hsqldb.HSQLDBEnvironment;
 import com.appspot.relaxe.env.hsqldb.expr.HSQLDBArrayTypeDefinition;
 import com.appspot.relaxe.expr.DefaultSQLSyntax;
 import com.appspot.relaxe.expr.SQLSyntax;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLDataType;
 import com.appspot.relaxe.rdbms.CatalogFactory;
 import com.appspot.relaxe.rdbms.DefaultImplementation;
 
@@ -63,7 +63,7 @@ public abstract class AbstractHSQLDBImplementation
         extends DefaultSQLSyntax {
     	
     	@Override
-    	public SQLTypeDefinition newArrayTypeDefinition(SQLTypeDefinition elementType) {
+    	public SQLDataType newArrayTypeDefinition(SQLDataType elementType) {
     		return new HSQLDBArrayTypeDefinition(elementType, null);
     	}
     }

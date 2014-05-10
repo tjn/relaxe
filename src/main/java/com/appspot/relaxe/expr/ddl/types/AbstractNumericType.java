@@ -22,27 +22,18 @@
  */
 package com.appspot.relaxe.expr.ddl.types;
 
-public class DateTypeDefinition
-    extends SQLTypeDefinition {
-       	
-	/**
+
+public abstract class AbstractNumericType
+	extends SQLDataType {            
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -4432919211852344906L;
-	private static final DateTypeDefinition TYPE = new DateTypeDefinition();
-	
+	private static final long serialVersionUID = -2780564179649802147L;
+
 	/**
-	 * No-argument constructor for GWT Serialization
-	 */	
-	private DateTypeDefinition() {
-	}
-		
-	public static DateTypeDefinition get() {
-        return TYPE;
-    }   
+     * True is numeric data type is exact, false if it's approximate. 
+     * @return
+     */
+    public abstract boolean isExact();
     
-    @Override
-    public SQLTypeDefinition.Name getSQLTypeName() {     
-        return SQLTypeDefinition.Name.DATE;
-    }
 }

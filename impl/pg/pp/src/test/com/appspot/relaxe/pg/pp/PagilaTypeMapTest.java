@@ -27,11 +27,11 @@ import org.slf4j.LoggerFactory;
 
 import com.appspot.relaxe.rdbms.hsqldb.HSQLDBImplementation;
 import com.appspot.relaxe.expr.IntLiteral;
-import com.appspot.relaxe.expr.ddl.types.AbstractCharacterTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.VarBinaryTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.AbstractSQLCharacterType;
+import com.appspot.relaxe.expr.ddl.types.SQLVarBinaryType;
 import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.VarcharTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLPredefinedDataType;
+import com.appspot.relaxe.expr.ddl.types.SQLVarcharType;
 import com.appspot.relaxe.gen.pg.pp.ent.pub.DataTypeTest;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;

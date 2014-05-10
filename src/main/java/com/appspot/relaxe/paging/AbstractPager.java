@@ -426,6 +426,7 @@ public abstract class AbstractPager<
 		received(result, 0);		
 	}
 		
+	@Override
 	public long offset() {
 		R cp = getCurrentPage();		
 		return (cp == null) ? 0 : cp.offset();

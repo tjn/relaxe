@@ -42,8 +42,8 @@ public class PagilaTypeMapTest
 //			}
 //			
 //			@Override
-//			public SQLTypeDefinition getSQLTypeDefinition(DataType dataType) {
-//				SQLTypeDefinition def = htm.getSQLTypeDefinition(dataType);
+//			public SQLPredefinedDataType getSQLTypeDefinition(DataType dataType) {
+//				SQLPredefinedDataType def = htm.getSQLTypeDefinition(dataType);
 //				
 //				if (def == null) {
 //					int t = dataType.getDataType();
@@ -51,15 +51,15 @@ public class PagilaTypeMapTest
 //					logger.debug("unmapped: " + dataType.getTypeName() + ": " + dataType.getDataType());
 //					
 //					if (t == ValueType.ARRAY && dataType.getTypeName().equals("_text")) {
-//						def = new SQLArrayTypeDefinition(VarcharTypeDefinition.get(null));
+//						def = new SQLArrayTypeDefinition(SQLVarcharType.get(null));
 //					}
 //					
 //					if (t == ValueType.BINARY && dataType.getTypeName().equals("bytea")) {
-//						def = new SQLArrayTypeDefinition(VarBinaryTypeDefinition.get());
+//						def = new SQLArrayTypeDefinition(SQLVarBinaryType.get());
 //					}
 //					
-//					if (SQLTypeDefinition.isBinaryType(t)) {
-//						def = VarBinaryTypeDefinition.get(dataType.getSize());
+//					if (SQLPredefinedDataType.isBinaryType(t)) {
+//						def = SQLVarBinaryType.get(dataType.getSize());
 //					}
 //				}
 //				
@@ -73,8 +73,8 @@ public class PagilaTypeMapTest
 //			Column col = tm.getColumn(DataTypeTest.Attribute.CV);			
 //			DataType t = col.getDataType();
 //			
-//			SQLTypeDefinition def = dtm.getSQLTypeDefinition(t);
-//			AbstractCharacterTypeDefinition cd = (AbstractCharacterTypeDefinition) def;
+//			SQLPredefinedDataType def = dtm.getSQLTypeDefinition(t);
+//			AbstractSQLCharacterType cd = (AbstractSQLCharacterType) def;
 //			IntLiteral len = cd.getLength();
 //			assertNotNull(len);
 //		}

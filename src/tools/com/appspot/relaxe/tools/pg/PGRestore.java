@@ -50,11 +50,11 @@ public class PGRestore
 //            String p = "password";
 //            String d = "dbmeta_test";
 //            
-//            System.out.println("restoring database: " + d + ": " + new Date());
+//            System.out.println("restoring database: " + d + ": " + new SQLDateType());
 //            File dump = PGTestCase.dump();            
 //            PGRestore pg = new PGRestore(u, p, d);
 //            pg.restore(dump);
-//            System.out.println("database restored: " + d + ": " + new Date());
+//            System.out.println("database restored: " + d + ": " + new SQLDateType());
 //        }
 //        catch (Exception e) {
 //            e.printStackTrace();

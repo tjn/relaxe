@@ -31,8 +31,7 @@ import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.VisitContext;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
-
+import com.appspot.relaxe.expr.ddl.types.SQLDataType;
 
 /**
  * 
@@ -47,7 +46,7 @@ public class CreateDomain
 	private static final long serialVersionUID = -6135477541858193752L;
 	
 	private SchemaElementName domainName;
-	private SQLTypeDefinition baseType;
+	private SQLDataType baseType;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -55,11 +54,11 @@ public class CreateDomain
 	protected CreateDomain() {
 	}
 	
-	public CreateDomain(Identifier domainName, SQLTypeDefinition baseType) {
-		this(new SchemaElementName(null,  null, domainName), baseType);
+	public CreateDomain(Identifier domainName, SQLDataType baseType) {
+		this(new SchemaElementName(null, domainName), baseType);
 	}
 	
-	public CreateDomain(SchemaElementName domainName, SQLTypeDefinition baseType) {
+	public CreateDomain(SchemaElementName domainName, SQLDataType baseType) {
 		super(Statement.Name.CREATE_DOMAIN);
 		this.domainName = domainName;
 		this.baseType = baseType;
@@ -74,7 +73,7 @@ public class CreateDomain
 		this.baseType.traverse(vc, v);
 	}    
 		
-	public SQLTypeDefinition getBaseType() {
+	public SQLDataType getBaseType() {
 		return baseType;
 	}
 	

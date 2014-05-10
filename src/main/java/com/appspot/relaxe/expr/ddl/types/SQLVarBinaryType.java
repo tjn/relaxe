@@ -22,27 +22,39 @@
  */
 package com.appspot.relaxe.expr.ddl.types;
 
-public class TimeTypeDefinition
-    extends SQLTypeDefinition {
-       	
+import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.SQLKeyword;
+import com.appspot.relaxe.expr.VisitContext;
+
+
+public class SQLVarBinaryType
+    extends AbstractSQLBinaryType {
+    
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4432919211852344906L;
-	private static final TimeTypeDefinition TYPE = new TimeTypeDefinition();
-	
+	private static final long serialVersionUID = -2495916308822328263L;
+
 	/**
 	 * No-argument constructor for GWT Serialization
-	 */	
-	private TimeTypeDefinition() {
+	 */
+	protected SQLVarBinaryType() {
 	}
-		
-	public static TimeTypeDefinition get() {
-        return TYPE;
-    }   
+	    
+    public SQLVarBinaryType(Integer length) {
+        super(length);
+    }    
+    
+    public static SQLVarBinaryType get(Integer length) {
+        return new SQLVarBinaryType(length);
+    }
+    
+    public static SQLVarBinaryType get() {
+        return new SQLVarBinaryType(null);
+    }
     
     @Override
-    public SQLTypeDefinition.Name getSQLTypeName() {     
-        return SQLTypeDefinition.Name.TIME;
+    protected void traverseName(VisitContext vc, ElementVisitor v) {
+    	SQLKeyword.VARBINARY.traverse(vc, v);
     }
 }

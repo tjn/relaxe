@@ -22,26 +22,53 @@
  */
 package com.appspot.relaxe.expr.ddl.types;
 
-public abstract class FloatingPointDefinition
-    extends AbstractNumericTypeDefinition {
-    
+import com.appspot.relaxe.expr.Element;
+import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.Identifier;
+import com.appspot.relaxe.expr.SchemaElementName;
+import com.appspot.relaxe.expr.VisitContext;
+
+/**
+ * Use defined type
+ * 
+ * @author Topi Nieminen <topi.nieminen@gmail.com>
+ */
+public class UserDefinedType
+	extends SQLDataType {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2301149943314207588L;
-
+	private static final long serialVersionUID = -6588251307620934502L;
+	
+	private Element name;
+	
 	/**
 	 * No-argument constructor for GWT Serialization
-	 */
-	public FloatingPointDefinition() {		
+	 */	
+	protected UserDefinedType() {
 	}
 	
-    @Override
-    public abstract SQLTypeDefinition.Name getSQLTypeName();
+	private UserDefinedType(Element name) {
+		if (name == null) {
+			throw new NullPointerException("name");
+		}
+		
+		this.name = name;		
+	}
+	
+	public UserDefinedType(SchemaElementName name) {
+		this((Element) name);		
+	}
+
+	public UserDefinedType(Identifier name) {
+		this((Element) name);
+	}
 
 	@Override
-	public final boolean isExact() {
-		return false;
+	public void traverse(VisitContext vc, ElementVisitor v) {
+		v.start(vc, this);
+		this.name.traverse(vc, v);
+		v.end(this);
 	}
-	
 }

@@ -22,7 +22,6 @@
  */
 package com.appspot.relaxe.ui;
 
-import com.appspot.relaxe.model.BooleanModel;
 import com.appspot.relaxe.model.ValueModel;
 
 public interface HasEnablement {

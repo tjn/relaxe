@@ -231,7 +231,7 @@ public class DefaultTableMapper
 //        	a.setPrimitiveType(DecimalType.TYPE);
 //            break;        	
 //        case Types.DATE:            
-//        	a.setAttributeType(Date.class);
+//        	a.setAttributeType(SQLDateType.class);
 //        	a.setHolderType(DateHolder.class);
 //        	a.setKeyType(DateKey.class);
 //        	a.setAccessorType(DateAccessor.class);
@@ -239,7 +239,7 @@ public class DefaultTableMapper
 //            break;
 //            
 //        case Types.TIME:            
-//        	a.setAttributeType(Date.class);
+//        	a.setAttributeType(SQLDateType.class);
 //        	a.setHolderType(TimeHolder.class);
 //        	a.setKeyType(TimeKey.class);
 //        	a.setAccessorType(TimeAccessor.class);
@@ -247,7 +247,7 @@ public class DefaultTableMapper
 //            break;
 //            
 //        case Types.TIMESTAMP:
-//        	a.setAttributeType(Date.class);
+//        	a.setAttributeType(SQLDateType.class);
 //        	a.setHolderType(TimestampHolder.class);
 //        	a.setKeyType(TimestampKey.class);
 //        	a.setAccessorType(TimestampAccessor.class);
@@ -418,7 +418,7 @@ public class DefaultTableMapper
 //                break;
 //            case Types.DATE:                
 //            case Types.TIMESTAMP:
-//                jtype = Date.class;
+//                jtype = SQLDateType.class;
 //                break;                
 //            default:            	
 ////                jtype = Object.class;

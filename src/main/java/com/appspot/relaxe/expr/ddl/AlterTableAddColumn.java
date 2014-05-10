@@ -28,7 +28,7 @@ import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.VisitContext;
-import com.appspot.relaxe.expr.ddl.types.DataTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLDataType;
 
 public class AlterTableAddColumn
 	extends SQLSchemaStatement {
@@ -38,7 +38,7 @@ public class AlterTableAddColumn
 	private static final long serialVersionUID = 3990587941677143525L;
 	private SchemaElementName tableName;	
 	private Identifier columnName;
-	private DataTypeDefinition dataType;
+	private SQLDataType dataType;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -46,7 +46,7 @@ public class AlterTableAddColumn
 	protected AlterTableAddColumn() {
 	}
 		
-	public AlterTableAddColumn(SchemaElementName tableName, Identifier columnName, DataTypeDefinition dataType) {
+	public AlterTableAddColumn(SchemaElementName tableName, Identifier columnName, SQLDataType dataType) {
 		super(Name.ALTER_TABLE);
 		
 		if (tableName == null) {

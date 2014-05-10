@@ -95,8 +95,8 @@ public class PersistenceManagerTest2 extends TestCase  {
 //        
 ////        p.setFirstName("a");
 ////        p.setLastName("b");
-////        p.setDateOfBirth(new Date());        
-////        p.createdAt().set(new Date());        
+////        p.setDateOfBirth(new SQLDateType());        
+////        p.createdAt().set(new SQLDateType());        
 ////        p.averageNaptime().set(new Interval.DayTime(1, 30, 0));
 //                                       
 //        pm.merge(c);
@@ -124,8 +124,8 @@ public class PersistenceManagerTest2 extends TestCase  {
 //        assertNotNull(hrc.reportDate().get());
 //        assertNotNull(hrc.getReportDate());
 //        hrc.setComment("asdfasd");
-//        hrc.setStartedAt(new Date());
-//        hrc.setFinishedAt(new Date());
+//        hrc.setStartedAt(new SQLDateType());
+//        hrc.setFinishedAt(new SQLDateType());
 //        
 //        Organization.Content oc = org.getContent();
 //        org.setRef(Organization.FK_COMPANY_CEO, p.ref());
@@ -184,8 +184,8 @@ public class PersistenceManagerTest2 extends TestCase  {
 //	    assertNotNull(hrc.reportDate().get());
 //	    assertNotNull(hrc.getReportDate());
 //	    hrc.setComment("asdfasd");
-//	    hrc.setStartedAt(new Date());
-//	    hrc.setFinishedAt(new Date());
+//	    hrc.setStartedAt(new SQLDateType());
+//	    hrc.setFinishedAt(new SQLDateType());
 //	    
 //	    String suffix = Integer.toString((int) (Math.random() * 1000));
 //    	
@@ -243,9 +243,9 @@ public class PersistenceManagerTest2 extends TestCase  {
 //    	HourReport.Content hrc = hr.getContent();
 //    	
 //    	hrc.setComment("My Comment");
-//    	hrc.setReportDate(new Date());
-//    	hrc.setStartedAt(new Date());
-//    	hrc.setFinishedAt(new Date());
+//    	hrc.setReportDate(new SQLDateType());
+//    	hrc.setStartedAt(new SQLDateType());
+//    	hrc.setFinishedAt(new SQLDateType());
 //    	
 //    	long ms = System.currentTimeMillis();
 //    	
@@ -283,8 +283,8 @@ public class PersistenceManagerTest2 extends TestCase  {
 //        c.commit();
 //                       
 //        hrc.id().setHolder(IntegerHolder.NULL_HOLDER);        
-//    	hrc.setStartedAt(new Date());
-//    	hrc.setFinishedAt(new Date());
+//    	hrc.setStartedAt(new SQLDateType());
+//    	hrc.setFinishedAt(new SQLDateType());
 //    	hm.merge(c);
 //        c.commit();
 //        

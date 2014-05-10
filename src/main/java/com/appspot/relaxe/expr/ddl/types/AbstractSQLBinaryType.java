@@ -23,52 +23,45 @@
 package com.appspot.relaxe.expr.ddl.types;
 
 import com.appspot.relaxe.expr.ElementVisitor;
-import com.appspot.relaxe.expr.SchemaElementName;
+import com.appspot.relaxe.expr.IntLiteral;
+import com.appspot.relaxe.expr.Symbol;
 import com.appspot.relaxe.expr.VisitContext;
-import com.appspot.relaxe.expr.ddl.ColumnDataType;
 
-/**
- * Simple type name.
- * 
- * @author Topi Nieminen <topi.nieminen@gmail.com>
- */
-
-public class TypeDefinition
-	extends SQLTypeDefinition
-	implements ColumnDataType {
-	
-	/**
+public abstract class AbstractSQLBinaryType
+    extends SQLDataType {
+    
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -6588251307620934502L;
-	
-	private SchemaElementName name;
-	
-	/**
+	private static final long serialVersionUID = 7291068267695357641L;
+	private IntLiteral length = null;
+    
+    /**
 	 * No-argument constructor for GWT Serialization
-	 */	
-	protected TypeDefinition() {
+	 */
+	protected AbstractSQLBinaryType() {
 	}
+    
+    protected AbstractSQLBinaryType(Integer length) {                        
+        if (length != null && length.intValue() < 1) {
+            throw new IllegalArgumentException("illegal varchar length: " + length);
+        }
+        
+        this.length = (length == null) ? null : IntLiteral.valueOf(length.intValue());
+    }    
+    
+    @Override
+    protected void traverseContent(VisitContext vc, ElementVisitor v) {
+        traverseName(vc, v);
+        
+        if (this.length != null) {
+	        Symbol.PAREN_LEFT.traverse(vc, v);
+	        this.length.traverse(vc, v);        
+	        Symbol.PAREN_RIGHT.traverse(vc, v);
+        }
+    }
 
-	public TypeDefinition(SchemaElementName name) {
-		super();
-		
-		if (name == null) {
-			throw new NullPointerException("name");
-		}
-		
-		this.name = name;
-	}
-
-	@Override
-	public void traverse(VisitContext vc, ElementVisitor v) {
-		v.start(vc, this);
-		this.name.traverse(vc, v);
-		v.end(this);
-	}
-
-	@Override
-	public SQLTypeDefinition.Name getSQLTypeName() {
-		return null;
-	}
+	protected abstract void traverseName(VisitContext vc, ElementVisitor v);
+    
+    
 }

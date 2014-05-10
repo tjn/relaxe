@@ -26,7 +26,7 @@ import com.appspot.relaxe.env.pg.expr.PGByteArrayTypeDefinition;
 import com.appspot.relaxe.env.pg.expr.PGTextArrayTypeDefinition;
 import com.appspot.relaxe.env.pg.expr.PGTextTypeDefinition;
 import com.appspot.relaxe.expr.SchemaElementName;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLDataType;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.DefaultDataTypeMap;
 import com.appspot.relaxe.types.ValueType;
@@ -38,13 +38,9 @@ public class PGDataTypeMap
 	}
 	
 	@Override
-	public SQLTypeDefinition getSQLTypeDefinition(DataType t) {
+	public SQLDataType getSQLType(DataType t) {
 		
-//		if (t.getDataType() == PrimitiveType.VARCHAR && t.getCharOctetLength()) {
-//			return PGTextTypeDefinition.DEFINITION;
-//		}
-		
-		if (SQLTypeDefinition.isTextType(t.getDataType()) && PGTextTypeDefinition.NAME.equals(t.getTypeName())) {
+		if (SQLDataType.isTextType(t.getDataType()) && PGTextTypeDefinition.NAME.equals(t.getTypeName())) {
 			return PGTextTypeDefinition.DEFINITION;
 		}
 		
@@ -52,11 +48,11 @@ public class PGDataTypeMap
 			return PGTextArrayTypeDefinition.DEFINITION;
 		}
 						
-		if (SQLTypeDefinition.isBinaryType(t.getDataType()) && PGByteArrayTypeDefinition.NAME.equals(t.getTypeName())) {
+		if (SQLDataType.isBinaryType(t.getDataType()) && PGByteArrayTypeDefinition.NAME.equals(t.getTypeName())) {
 			return PGByteArrayTypeDefinition.DEFINITION;
 		}
 		
-		return super.getSQLTypeDefinition(t);
+		return super.getSQLType(t);
 	}
 	
 	@Override
@@ -97,7 +93,7 @@ public class PGDataTypeMap
 	
 	@Override
 	protected Integer getSize(DataType dataType) {
-		if (SQLTypeDefinition.isIntegralType(dataType.getDataType())) {
+		if (SQLDataType.isBinaryIntegerType(dataType.getDataType())) {
 			return null;
 		}		
 		

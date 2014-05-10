@@ -46,6 +46,6 @@ public class DoubleType
 	
 	@Override
 	public String getName() {
-		return "DOUBLE";
+		return "DOUBLE PRECISION";
 	}
 }

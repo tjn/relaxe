@@ -24,49 +24,63 @@ package com.appspot.relaxe.expr.ddl.types;
 
 import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.IntLiteral;
+import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.Symbol;
 import com.appspot.relaxe.expr.VisitContext;
 
-public abstract class AbstractIntegalNumberDefinition
-    extends AbstractNumericTypeDefinition {
+public class SQLFloatType
+    extends ApproximateNumericType {
     
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2776206428444898457L;
-	private Integer precision;
+	private static final long serialVersionUID = -269346141333155275L;
 
-    protected AbstractIntegalNumberDefinition() {      
-        this(null);
-    }
-    
-    protected AbstractIntegalNumberDefinition(Integer precision) {
+	private static final SQLFloatType TYPE = new SQLFloatType();
+	
+	private Integer precision;
+	
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	private SQLFloatType() {		
+	}
+	
+	public static SQLFloatType get() {
+		return TYPE;
+	}
+	
+
+    protected SQLFloatType(Integer precision) {
         this.precision = precision;
     }
-    
-    @Override
-    public boolean isExact() {     
-        return true;
-    }
-    
+        
     public Integer getPrecision() {
 		return precision;
 	}
-    
+            
     @Override
-    public void traverse(VisitContext vc, ElementVisitor v) {
-    	v.start(vc, this);
-    	getSQLTypeName().traverse(vc, v);
+    public void traverseContent(VisitContext vc, ElementVisitor v) {
+    	traverseName(vc, v);
     	
     	Integer p = getPrecision();
     	IntLiteral pe = (p == null) ? null : IntLiteral.valueOf(p.intValue());
     	
     	if (pe != null) {
     		Symbol.PAREN_LEFT.traverse(vc, v);
-    		pe.traverse(vc, v);    		
+    		pe.traverse(vc, v);
     		Symbol.PAREN_RIGHT.traverse(vc, v);
     	}    	
-    	
-    	v.end(this);    	
-    }
+    }	
+    
+	
+	@Override
+	protected void traverseName(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.FLOAT.traverse(vc, v);
+	}
+	
+	public static SQLFloatType get(Integer precision) {		
+		return (precision == null) ? SQLFloatType.get() : new SQLFloatType(precision);
+	}	
+	
 }

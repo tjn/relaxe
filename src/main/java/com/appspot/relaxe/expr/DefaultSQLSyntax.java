@@ -23,8 +23,8 @@
 package com.appspot.relaxe.expr;
 
 import com.appspot.relaxe.expr.ddl.AlterTableDropConstraint;
+import com.appspot.relaxe.expr.ddl.types.SQLDataType;
 import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.PrimaryKey;
 
@@ -50,7 +50,7 @@ public class DefaultSQLSyntax
 	
 	
 	@Override
-	public SQLTypeDefinition newArrayTypeDefinition(SQLTypeDefinition elementType) {
+	public SQLDataType newArrayTypeDefinition(SQLDataType elementType) {
 		return new SQLArrayTypeDefinition(elementType);
 	}
     

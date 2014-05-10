@@ -31,7 +31,6 @@ import com.appspot.relaxe.ent.value.HasIntegerAttribute;
 import com.appspot.relaxe.ent.value.HasLong;
 import com.appspot.relaxe.ent.value.IntegerAttribute;
 import com.appspot.relaxe.ent.value.LongAttribute;
-import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.LongType;
 import com.appspot.relaxe.types.AbstractValueType;

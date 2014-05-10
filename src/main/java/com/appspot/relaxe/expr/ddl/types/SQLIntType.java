@@ -22,24 +22,48 @@
  */
 package com.appspot.relaxe.expr.ddl.types;
 
-public class FloatTypeDefinition
-    extends FloatingPointDefinition {
-    
+import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.SQLKeyword;
+import com.appspot.relaxe.expr.VisitContext;
+
+
+public final class SQLIntType
+	extends AbstractIntegalNumberType {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -269346141333155275L;
-
-	public static final FloatTypeDefinition DEFINITION = new FloatTypeDefinition();
+	private static final long serialVersionUID = -6177212680749147403L;
 	
+	
+	private static final SQLIntType TYPE = new SQLIntType();
+	
+
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	private FloatTypeDefinition() {		
+	protected SQLIntType() {
 	}
+
+
+	public SQLIntType(Integer precision) {
+		super(precision);	
+	}
+
+	public SQLIntType(int precision) {
+		super(Integer.valueOf(precision));
+	}
+
+	public static SQLIntType get(Integer precision) {		
+		return (precision == null) ? TYPE : new SQLIntType(precision);
+	}	
 	
-    @Override
-    public SQLTypeDefinition.Name getSQLTypeName() {
-    	return SQLTypeDefinition.Name.FLOAT;
-    }
+	public static SQLIntType get() {
+		return get(null);
+	}
+		
+	@Override
+	protected void traverseName(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.INT.traverse(vc, v);
+	}
 }

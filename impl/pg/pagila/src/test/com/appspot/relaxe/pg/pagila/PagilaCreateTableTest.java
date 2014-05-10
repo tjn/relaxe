@@ -29,8 +29,8 @@ import com.appspot.relaxe.env.pg.PGEnvironment;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.SchemaName;
 import com.appspot.relaxe.expr.ddl.CreateTable;
+import com.appspot.relaxe.expr.ddl.types.SQLDataType;
 import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
-import com.appspot.relaxe.expr.ddl.types.SQLTypeDefinition;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
@@ -99,12 +99,12 @@ public class PagilaCreateTableTest extends TestCase {
 			
 			
 			DataTypeMap dm = PGEnvironment.environment().getDataTypeMap();
-			SQLTypeDefinition def = dm.getSQLTypeDefinition(type);
+			SQLDataType def = dm.getSQLType(type);
 			assertNotNull(def);
 			logger.debug(def.toString());
 			assertTrue(def instanceof SQLArrayTypeDefinition);
 			SQLArrayTypeDefinition adef = (SQLArrayTypeDefinition) def;
-			SQLTypeDefinition edef = adef.getElementType();
+			SQLDataType edef = adef.getElementType();
 			logger.debug(edef.toString());
 		}
 		

@@ -22,18 +22,31 @@
  */
 package com.appspot.relaxe.expr.ddl.types;
 
+import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.SQLKeyword;
+import com.appspot.relaxe.expr.VisitContext;
 
-public abstract class AbstractNumericTypeDefinition
-    extends SQLTypeDefinition {            
-    /**
+public class SQLTimeType
+    extends SQLDataType {
+       	
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2780564179649802147L;
-
+	private static final long serialVersionUID = -4432919211852344906L;
+	private static final SQLTimeType TYPE = new SQLTimeType();
+	
 	/**
-     * True is numeric data type is exact, false if it's approximate. 
-     * @return
-     */
-    public abstract boolean isExact();
-    
+	 * No-argument constructor for GWT Serialization
+	 */	
+	private SQLTimeType() {
+	}
+		
+	public static SQLTimeType get() {
+        return TYPE;
+    }   
+    	
+	@Override
+	protected void traverseContent(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.TIME.traverse(vc, v);
+	}	
 }

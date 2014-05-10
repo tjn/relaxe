@@ -22,7 +22,6 @@
  */
 package com.appspot.relaxe.ui.action;
 
-import com.appspot.relaxe.model.BooleanModel;
 import com.appspot.relaxe.model.ConstantBooleanModel;
 import com.appspot.relaxe.model.DefaultConstantValueModel;
 import com.appspot.relaxe.model.ValueModel;

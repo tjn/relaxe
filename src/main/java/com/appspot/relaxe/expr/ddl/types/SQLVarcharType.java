@@ -22,31 +22,47 @@
  */
 package com.appspot.relaxe.expr.ddl.types;
 
+import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.SQLKeyword;
+import com.appspot.relaxe.expr.VisitContext;
 
-public class LongVarcharTypeDefinition
-    extends AbstractCharacterTypeDefinition {
+
+public class SQLVarcharType
+    extends AbstractSQLCharacterType {
     
+//    public static final Varchar VARCHAR_10 = new Varchar(10);
+//    public static final Varchar VARCHAR_20 = new Varchar(20);
+//    public static final Varchar VARCHAR_30 = new Varchar(30);
+//    public static final Varchar VARCHAR_40 = new Varchar(40);
+//    public static final Varchar VARCHAR_50 = new Varchar(50);
+//    public static final Varchar VARCHAR_100 = new Varchar(100);	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2495916308822328263L;
+	private static final long serialVersionUID = 2301149943314207588L;
 
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected LongVarcharTypeDefinition() {
+	protected SQLVarcharType() {
+		
 	}
 	
-    public LongVarcharTypeDefinition(int length) {
-        super(Integer.valueOf(length));
+    public static SQLVarcharType get(int length) {
+        return SQLVarcharType.get(Integer.valueOf(length));
     }
     
-    public static LongVarcharTypeDefinition get(int length) {
-        return new LongVarcharTypeDefinition(length);
+    public static SQLVarcharType get(Integer length) {
+        return new SQLVarcharType(length);
     }
+    
+    public SQLVarcharType(Integer length) {
+        super(length);
+    }
+    
     
     @Override
-    public SQLTypeDefinition.Name getSQLTypeName() {
-        return SQLTypeDefinition.Name.LONGVARCHAR;
-    }
+	protected void traverseName(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.VARCHAR.traverse(vc, v);		
+	}    
 }

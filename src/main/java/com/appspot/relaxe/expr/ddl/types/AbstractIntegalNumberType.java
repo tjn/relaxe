@@ -27,37 +27,49 @@ import com.appspot.relaxe.expr.IntLiteral;
 import com.appspot.relaxe.expr.Symbol;
 import com.appspot.relaxe.expr.VisitContext;
 
-public abstract class AbstractBinaryTypeDefinition
-    extends SQLTypeDefinition {
+public abstract class AbstractIntegalNumberType
+    extends AbstractNumericType {
     
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 7291068267695357641L;
-	private IntLiteral length = null;
+	private static final long serialVersionUID = 2776206428444898457L;
+	private Integer precision;
+
+    protected AbstractIntegalNumberType() {      
+        this(null);
+    }
     
-    /**
-	 * No-argument constructor for GWT Serialization
-	 */
-	protected AbstractBinaryTypeDefinition() {
-	}
-    
-    protected AbstractBinaryTypeDefinition(Integer length) {                        
-        if (length != null && length.intValue() < 1) {
-            throw new IllegalArgumentException("illegal varchar length: " + length);
-        }
-        
-        this.length = (length == null) ? null : IntLiteral.valueOf(length.intValue());
-    }    
+    protected AbstractIntegalNumberType(Integer precision) {
+        this.precision = precision;
+    }
     
     @Override
-    public void traverse(VisitContext vc, ElementVisitor v) {
-        getTypeName().traverse(vc, v);
-        
-        if (this.length != null) {
-	        Symbol.PAREN_LEFT.traverse(vc, v);
-	        this.length.traverse(vc, v);        
-	        Symbol.PAREN_RIGHT.traverse(vc, v);
-        }
+    public boolean isExact() {     
+        return true;
     }
+    
+    public Integer getPrecision() {
+		return precision;
+	}
+            
+    @Override
+    public void traverse(VisitContext vc, ElementVisitor v) {
+    	v.start(vc, this);
+    	
+    	traverseName(vc, v);
+    	
+    	Integer p = getPrecision();
+    	IntLiteral pe = (p == null) ? null : IntLiteral.valueOf(p.intValue());
+    	
+    	if (pe != null) {
+    		Symbol.PAREN_LEFT.traverse(vc, v);
+    		pe.traverse(vc, v);
+    		Symbol.PAREN_RIGHT.traverse(vc, v);
+    	}    	
+    	
+    	v.end(this);    	
+    }	
+    
+	protected abstract void traverseName(VisitContext vc, ElementVisitor v);
 }

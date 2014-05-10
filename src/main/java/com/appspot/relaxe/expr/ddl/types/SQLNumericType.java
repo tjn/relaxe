@@ -22,28 +22,50 @@
  */
 package com.appspot.relaxe.expr.ddl.types;
 
-public class TimestampTypeDefinition
-    extends SQLTypeDefinition {
-        
-    /**
+import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.SQLKeyword;
+import com.appspot.relaxe.expr.VisitContext;
+
+public class SQLNumericType
+    extends AbstractFixedPrecisionType {
+
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 779228554708816888L;
+	private static final long serialVersionUID = -5794913835887942942L;
 	
-	private static final TimestampTypeDefinition TYPE = new TimestampTypeDefinition();
-	
-	/**
-	 * No-argument constructor for GWT Serialization
-	 */	
-	private TimestampTypeDefinition() {
+	private static final SQLNumericType TYPE = new SQLNumericType();
+
+	public static SQLNumericType type() {
+		return TYPE;
 	}
-		
-	public static TimestampTypeDefinition get() {
-        return TYPE;
-    }   
-    
-    @Override
-    public SQLTypeDefinition.Name getSQLTypeName() {     
-        return SQLTypeDefinition.Name.TIMESTAMP;
-    }
+
+	public SQLNumericType() {
+		super();
+	}
+	
+	public SQLNumericType(int precision, int scale) {
+		this(Integer.valueOf(precision), Integer.valueOf(scale));
+	}
+	
+	public SQLNumericType(Integer precision, Integer scale) {
+		super(precision, scale);
+	}	
+	
+	public SQLNumericType(int precision) {
+		super(precision);
+	}
+	
+	public static SQLNumericType get(int precision, int scale) {
+		return new SQLNumericType(precision, scale);
+	}
+	
+	public static SQLNumericType get(Integer precision, Integer scale) {
+		return new SQLNumericType(precision, scale);
+	}
+	
+	@Override
+	protected final void traverseName(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.NUMERIC.traverse(vc, v);
+	}
 }

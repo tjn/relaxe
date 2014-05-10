@@ -38,7 +38,6 @@ import com.appspot.relaxe.ent.query.EntityQueryValue;
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.expr.ImmutableValueParameter;
-import com.appspot.relaxe.expr.OrderBy.Order;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.expr.op.Comparison.Op;
 import com.appspot.relaxe.meta.Column;

@@ -22,38 +22,39 @@
  */
 package com.appspot.relaxe.expr.ddl.types;
 
+import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.SQLKeyword;
+import com.appspot.relaxe.expr.VisitContext;
 
-public final class TinyIntTypeDefinition
-	extends AbstractIntegalNumberDefinition {
-	
+
+public final class SQLCharType
+    extends AbstractSQLCharacterType {
+    
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4142797245840237139L;
-	public static final TinyIntTypeDefinition DEFINITION = new TinyIntTypeDefinition();
-	
+	private static final long serialVersionUID = -2495916308822328263L;
 
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected TinyIntTypeDefinition() {
+	protected SQLCharType() {
 	}
-
-
-	public TinyIntTypeDefinition(Integer precision) {
-		super(precision);	
-	}
-
-	public TinyIntTypeDefinition(int precision) {
-		super(Integer.valueOf(precision));
-	}
-
-	public static TinyIntTypeDefinition get(Integer precision) {		
-		return (precision == null) ? DEFINITION : new TinyIntTypeDefinition(precision);
-	}
-
-	@Override
-	public SQLTypeDefinition.Name getSQLTypeName() {
-		return SQLTypeDefinition.Name.TINYINT;
-	}
+	
+    public SQLCharType(int length) {
+        super(Integer.valueOf(length));
+    }
+    
+    public static SQLCharType get(int length) {
+        return new SQLCharType(length);
+    }
+    
+    public static SQLCharType get(Integer charOctetLength) {
+    	return new SQLCharType(charOctetLength);
+    }
+    
+    @Override
+    protected void traverseName(VisitContext vc, ElementVisitor v) {
+    	SQLKeyword.CHAR.traverse(vc, v);
+    }    
 }
