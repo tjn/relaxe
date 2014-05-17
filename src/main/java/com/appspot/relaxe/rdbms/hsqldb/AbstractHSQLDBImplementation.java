@@ -24,10 +24,8 @@ package com.appspot.relaxe.rdbms.hsqldb;
 
 import com.appspot.relaxe.env.SerializableEnvironment;
 import com.appspot.relaxe.env.hsqldb.HSQLDBEnvironment;
-import com.appspot.relaxe.env.hsqldb.expr.HSQLDBArrayTypeDefinition;
-import com.appspot.relaxe.expr.DefaultSQLSyntax;
+import com.appspot.relaxe.env.hsqldb.HSQLDBSyntax;
 import com.appspot.relaxe.expr.SQLSyntax;
-import com.appspot.relaxe.expr.ddl.types.SQLDataType;
 import com.appspot.relaxe.rdbms.CatalogFactory;
 import com.appspot.relaxe.rdbms.DefaultImplementation;
 
@@ -57,15 +55,6 @@ public abstract class AbstractHSQLDBImplementation
     @Override
     public String defaultDriverClassName() {
         return "org.hsqldb.jdbcDriver";
-    }
-
-    public static class HSQLDBSyntax
-        extends DefaultSQLSyntax {
-    	
-    	@Override
-    	public SQLDataType newArrayTypeDefinition(SQLDataType elementType) {
-    		return new HSQLDBArrayTypeDefinition(elementType, null);
-    	}
     }
 
     @Override

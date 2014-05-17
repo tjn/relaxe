@@ -22,8 +22,6 @@
  */
 package com.appspot.relaxe.expr;
 
-import com.appspot.relaxe.meta.Table;
-
 public class From extends AbstractClause {
 	/**
 	 * 

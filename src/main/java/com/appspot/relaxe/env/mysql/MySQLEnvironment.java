@@ -28,7 +28,6 @@ package com.appspot.relaxe.env.mysql;
 import com.appspot.relaxe.env.SerializableEnvironment;
 import com.appspot.relaxe.expr.ddl.DefaultDefinition;
 import com.appspot.relaxe.meta.Column;
-import com.appspot.relaxe.meta.DataTypeMap;
 
 public class MySQLEnvironment
 	implements SerializableEnvironment {

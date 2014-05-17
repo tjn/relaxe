@@ -91,7 +91,7 @@ public class PagilaExportDDLTest
 		Catalog cat = ctx.getCatalog();
 		
 		final HSQLDBImplementation hi = new HSQLDBFileImplementation();
-		HSQLDBPersistenceContext hpc = new HSQLDBPersistenceContext(hi);		
+		final HSQLDBPersistenceContext hpc = new HSQLDBPersistenceContext(hi);		
 		HSQLDBEnvironment henv = hi.getEnvironment();
 		final DataTypeMap htm = hpc.getDataTypeMap();
 						
@@ -111,7 +111,7 @@ public class PagilaExportDDLTest
 					logger.debug("unmapped: " + dataType.getTypeName() + ": " + dataType.getDataType());
 					
 					if (t == ValueType.ARRAY && dataType.getTypeName().equals("_text")) {
-						def = hi.getSyntax().newArrayTypeDefinition(SQLVarcharType.get(1024));
+						def = hi.getSyntax().newArrayType(SQLVarcharType.get(1024));
 					}
 					
 					if (t == ValueType.BINARY && dataType.getTypeName().equals("bytea")) {												

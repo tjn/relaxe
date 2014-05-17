@@ -50,7 +50,7 @@ public class DefaultSQLSyntax
 	
 	
 	@Override
-	public SQLDataType newArrayTypeDefinition(SQLDataType elementType) {
+	public SQLDataType newArrayType(SQLDataType elementType) {
 		return new SQLArrayType(elementType);
 	}
     

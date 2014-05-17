@@ -32,7 +32,6 @@ import com.appspot.relaxe.common.pagila.types.YearType;
 import com.appspot.relaxe.env.IdentifierRules;
 import com.appspot.relaxe.env.hsqldb.HSQLDBTextArrayHolder;
 import com.appspot.relaxe.env.hsqldb.HSQLDBTextArrayType;
-import com.appspot.relaxe.env.pg.PGTextArrayType;
 import com.appspot.relaxe.env.pg.PGTextType;
 import com.appspot.relaxe.expr.ddl.types.SQLDataType;
 import com.appspot.relaxe.expr.ddl.types.SQLVarBinaryType;
@@ -42,7 +41,6 @@ import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.meta.DefaultDataTypeMap;
 import com.appspot.relaxe.rdbms.hsqldb.HSQLDBImplementation;
 import com.appspot.relaxe.rdbms.hsqldb.HSQLDBPersistenceContext;
-import com.appspot.relaxe.types.ArrayType;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.VarcharType;
 import com.appspot.relaxe.value.ArrayHolder;
@@ -63,9 +61,8 @@ public class HSQLDBPagilaPersistenceContext
 	@Override
 	protected DataTypeMap newDataTypeMap() {
 		final DataTypeMap tm = super.newDataTypeMap();
-		final HSQLDBImplementation imp = getImplementation();
-								
-		final DataTypeMap ptm = new HSQDBPagilaDataTypeMap(tm, imp);		
+		final HSQLDBImplementation imp = getImplementation();								
+		final DataTypeMap ptm = new HSQDBPagilaDataTypeMap(tm, imp);	
 		
 		return ptm;
 	}
@@ -119,7 +116,7 @@ public class HSQLDBPagilaPersistenceContext
 				int t = type.getDataType();
 				
 				if (t == ValueType.ARRAY && type.getTypeName().equals("_text")) {
-					def = imp.getSyntax().newArrayTypeDefinition(SQLVarcharType.get(1024));
+					def = imp.getSyntax().newArrayType(SQLVarcharType.get(1024));
 				}
 				
 				if (t == ValueType.BINARY && type.getTypeName().equals("bytea")) {												

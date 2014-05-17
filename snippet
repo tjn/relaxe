@@ -1,0 +1,18 @@
+
+
+		case ValueType.DISTINCT:
+		case ValueType.OTHER:
+			SchemaElementName name = newName(dataType.getTypeName());
+			def = new UserDefinedType(name);
+			break;
+		case ValueType.ARRAY:			
+			ValueType<?> pt = getType(dataType);
+			
+			if (pt != null) {
+				com.appspot.relaxe.types.ArrayType<?, ?> at = pt.asArrayType();			
+				ValueType<?> et = at.getElementType();			
+				DataTypeImpl dti = new DataTypeImpl(et.getSqlType(), et.getName());
+				SQLDataType idef = getSQLType(dti);
+				def = new SQLArrayTypeDefinition(idef);
+			}
+			break;

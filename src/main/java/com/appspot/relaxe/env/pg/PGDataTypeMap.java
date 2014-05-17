@@ -25,7 +25,6 @@ package com.appspot.relaxe.env.pg;
 import com.appspot.relaxe.env.pg.expr.PGByteArrayTypeDefinition;
 import com.appspot.relaxe.env.pg.expr.PGTextArrayTypeDefinition;
 import com.appspot.relaxe.env.pg.expr.PGTextTypeDefinition;
-import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.types.SQLDataType;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.DefaultDataTypeMap;
