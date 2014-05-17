@@ -127,7 +127,7 @@ public abstract class AbstractValueHolder<
 	}
 	
 	@Override
-	public ArrayHolder<?, ?, ?, ?, ?> asArrayHolder(String typeName) {
+	public ArrayHolder<?, ?, ?, ?, ?> asArrayHolder() {
 		return null;
 	}
 	
@@ -151,10 +151,5 @@ public abstract class AbstractValueHolder<
 	public IntervalHolder.YearMonth asYearMonthIntervalHolder() {
 		return null;
 	}
-	
 
-	@Override
-	public VarcharArrayHolder asVarcharArrayHolder() {
-		return null;
-	}
 }

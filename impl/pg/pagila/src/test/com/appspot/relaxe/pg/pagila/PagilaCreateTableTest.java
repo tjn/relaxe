@@ -25,17 +25,17 @@ package com.appspot.relaxe.pg.pagila;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.appspot.relaxe.env.pg.PGEnvironment;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.SchemaName;
 import com.appspot.relaxe.expr.ddl.CreateTable;
 import com.appspot.relaxe.expr.ddl.types.SQLDataType;
-import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLArrayType;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.meta.DataTypeMap;
+import com.appspot.relaxe.pg.pagila.types.PagilaDataTypeMap;
 import com.appspot.relaxe.types.ValueType;
 
 import junit.framework.TestCase;
@@ -89,6 +89,8 @@ public class PagilaCreateTableTest extends TestCase {
 			logger.debug("char-octet-length: " + type.getCharOctetLength());
 		}
 		
+		DataTypeMap tm = new PagilaDataTypeMap();
+		
 		{
 			Column desc = table.getColumnMap().get("special_features");
 			assertNotNull(desc);
@@ -97,21 +99,20 @@ public class PagilaCreateTableTest extends TestCase {
 			assertEquals(ValueType.ARRAY, type.getDataType());			
 			assertTrue("_text".equalsIgnoreCase(type.getTypeName()));
 			
-			
-			DataTypeMap dm = PGEnvironment.environment().getDataTypeMap();
-			SQLDataType def = dm.getSQLType(type);
+									
+			SQLDataType def = tm.getSQLType(type);
 			assertNotNull(def);
 			logger.debug(def.toString());
-			assertTrue(def instanceof SQLArrayTypeDefinition);
-			SQLArrayTypeDefinition adef = (SQLArrayTypeDefinition) def;
+			assertTrue(def instanceof SQLArrayType);
+			SQLArrayType adef = (SQLArrayType) def;
 			SQLDataType edef = adef.getElementType();
 			logger.debug(edef.toString());
 		}
 		
-		CreateTable ct = new CreateTable(table);		
+		CreateTable ct = new CreateTable(tm, table);		
 		String ddl = ct.generate();
 		
-		logger().debug("ddl: " + ddl);
+		logger().info("ddl: " + ddl);
 	}
 
 	

@@ -51,11 +51,11 @@ public class PagilaTypeMapTest
 //					logger.debug("unmapped: " + dataType.getTypeName() + ": " + dataType.getDataType());
 //					
 //					if (t == ValueType.ARRAY && dataType.getTypeName().equals("_text")) {
-//						def = new SQLArrayTypeDefinition(SQLVarcharType.get(null));
+//						def = new SQLArrayType(SQLVarcharType.get(null));
 //					}
 //					
 //					if (t == ValueType.BINARY && dataType.getTypeName().equals("bytea")) {
-//						def = new SQLArrayTypeDefinition(SQLVarBinaryType.get());
+//						def = new SQLArrayType(SQLVarBinaryType.get());
 //					}
 //					
 //					if (SQLPredefinedDataType.isBinaryType(t)) {

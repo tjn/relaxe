@@ -134,6 +134,8 @@ public abstract class CatalogTool {
         } 
         catch (ToolConfigurationException e) {
             System.err.println(e.getMessage());
+            e.printStackTrace();
+            
             System.err.println();
             System.err.println(p.usage(getClass()));
             

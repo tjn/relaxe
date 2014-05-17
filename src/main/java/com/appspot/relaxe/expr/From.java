@@ -22,6 +22,8 @@
  */
 package com.appspot.relaxe.expr;
 
+import com.appspot.relaxe.meta.Table;
+
 public class From extends AbstractClause {
 	/**
 	 * 
@@ -33,6 +35,10 @@ public class From extends AbstractClause {
 	 * No-argument constructor for GWT Serialization
 	 */	
 	protected From() {
+	}
+	
+	public From(TableReference tref) {
+		this(new SimpleTableRefList(tref));
 	}
 	
 	public From(TableRefList from) {

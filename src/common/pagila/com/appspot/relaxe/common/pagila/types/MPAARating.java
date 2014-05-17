@@ -20,30 +20,32 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.pg.pagila.types;
+package com.appspot.relaxe.common.pagila.types;
 
-import com.appspot.relaxe.types.DistinctType;
+import com.appspot.relaxe.types.Enumerable;
 
-public class YearMonthIntervalType
-	extends DistinctType<YearMonthIntervalType> {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4915976457434883692L;
-	public static final YearMonthIntervalType TYPE = new YearMonthIntervalType();
-	
-	private YearMonthIntervalType() {
-		super();
-	}
+public enum MPAARating
+	implements Enumerable {
+	G,
+	PG,
+	PG_13,
+	R,
+	NC_17
+	;
 
 	@Override
-	public String getName() {
-		return "interval_ym";
+	public String value() {
+		return toString().replace('_', '-');
 	}
+//    'G',
+//    'PG',
+//    'PG-13',
+//    'R',
+//    'NC-17'
+
 	
-	@Override
-	public YearMonthIntervalType self() {
-		return this;
+	public static MPAARating parse(String s) {
+		String n = s.replace('-', '_');
+		return MPAARating.valueOf(n);
 	}
 }

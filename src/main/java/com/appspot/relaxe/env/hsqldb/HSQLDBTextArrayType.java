@@ -20,31 +20,39 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.pg.pagila.types;
+package com.appspot.relaxe.env.hsqldb;
 
-import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.ent.Entity;
-import com.appspot.relaxe.ent.value.AbstractAttributeAccessor;
+import com.appspot.relaxe.types.ArrayType;
+import com.appspot.relaxe.types.VarcharType;
 
-public class MPAARatingAccessor<
-	A extends AttributeName,
-	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasMPAARating<A, E>
->
-	extends AbstractAttributeAccessor<A, E, MPAARating, MPAARatingType, MPAARatingHolder, MPAARatingKey<A, E>> {
+public class HSQLDBTextArrayType
+	extends ArrayType<HSQLDBTextArrayType, VarcharType> {
 
+	
+	public static final HSQLDBTextArrayType TYPE = new HSQLDBTextArrayType();
+	
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = -2731889274638406123L;
+	private static final long serialVersionUID = 7152862866657378339L;
 
-	/**
-	 * No-argument constructor for GWT Serialization
-	 */
-	@SuppressWarnings("unused")
-	private MPAARatingAccessor() {
+	@Override
+	public VarcharType getElementType() {
+		return VarcharType.TYPE;
+	}
+	
+	@Override
+	public String getName() {
+		return "()";
 	}
 
-	public MPAARatingAccessor(E target, MPAARatingKey<A, E> k) {
-		super(target, k);
+	@Override
+	public HSQLDBTextArrayType self() {
+		return this;
+	}
+	
+	@Override
+	public ArrayType<? extends HSQLDBTextArrayType, ?> asArrayType() {
+		return this;
 	}
 }

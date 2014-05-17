@@ -57,8 +57,8 @@ public abstract class ArrayHolder<
 		return this.value;
 	}
 	
-	
-	
-	
-	
+	@Override
+	public ArrayHolder<?, ?, ?, ?, ?> asArrayHolder() {
+		return this;
+	}	
 }

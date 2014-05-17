@@ -22,6 +22,8 @@
  */
 package com.appspot.relaxe.rdbms.pg;
 
+import com.appspot.relaxe.env.pg.PGDataTypeMap;
+import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.rdbms.DefaultPersistenceContext;
 import com.appspot.relaxe.rdbms.GeneratedKeyHandler;
 
@@ -29,7 +31,7 @@ public class PGPersistenceContext
 	extends DefaultPersistenceContext<PGImplementation> {
 	
 	private PGGeneratedKeyHandler generatedKeyHandler;
-		
+			
 	public PGPersistenceContext() {
 		this(new PGImplementation());
 	}
@@ -45,5 +47,10 @@ public class PGPersistenceContext
 		}
 
 		return generatedKeyHandler;
-	}	
+	}
+	
+	@Override
+	protected DataTypeMap newDataTypeMap() {
+		return new PGDataTypeMap();
+	}
 }

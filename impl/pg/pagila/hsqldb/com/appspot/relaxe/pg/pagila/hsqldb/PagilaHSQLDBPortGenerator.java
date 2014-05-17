@@ -20,9 +20,10 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.pg.pagila;
+package com.appspot.relaxe.pg.pagila.hsqldb;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -55,7 +56,12 @@ import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.meta.Schema;
+import com.appspot.relaxe.pg.pagila.Copy;
+import com.appspot.relaxe.pg.pagila.PagilaPersistenceContext;
+import com.appspot.relaxe.rdbms.CatalogFactory;
+import com.appspot.relaxe.rdbms.DefaultDataAccessContext;
 import com.appspot.relaxe.rdbms.DefaultResolver;
+import com.appspot.relaxe.rdbms.DriverManagerConnectionFactory;
 import com.appspot.relaxe.rdbms.Implementation;
 import com.appspot.relaxe.rdbms.PersistenceContext;
 import com.appspot.relaxe.service.DataAccessContext;
@@ -105,6 +111,10 @@ public class PagilaHSQLDBPortGenerator
                 "Fully qualified name of the class which implements '" + 
                 PersistenceContext.class.getName() + "'. " +
                "Implementation must have a no-arg public constructor.");
+    
+    public static final Option OPTION_COPY_DATA = 
+            new SimpleOption("copy-data", null, 
+                new Parameter(false), "Copies the data");    
 
     
 	public PagilaHSQLDBPortGenerator() {		
@@ -114,24 +124,29 @@ public class PagilaHSQLDBPortGenerator
 			  CatalogTool.OPTION_JDBC_CONFIG,			  
 			  PagilaHSQLDBPortGenerator.OPTION_DESTINATION_JDBC_URL,
 			  PagilaHSQLDBPortGenerator.OPTION_DESTINATION_JDBC_CONFIG,
-			  PagilaHSQLDBPortGenerator.OPTION_DESTINATION_PERSISTENCE_CONTEXT);
+			  PagilaHSQLDBPortGenerator.OPTION_DESTINATION_PERSISTENCE_CONTEXT,
+			  PagilaHSQLDBPortGenerator.OPTION_COPY_DATA);
 	}
 	
 	
 	private PersistenceContext<?> destinationPersistenceContext;
 	private String destinationJdbcUrl;
 	private Properties destinationJdbcConfig;
+	private boolean copyData;
 	
 	public PagilaHSQLDBPortGenerator(
 			String jdbcUrl, Properties jdbcConfig, 
 			PersistenceContext<?> destinationPersistenceContext, 
-			String destinationJdbcUrl, Properties destinationJdbcConfig) {
+			String destinationJdbcUrl, 
+			Properties destinationJdbcConfig, 
+			boolean copyData) {
 		super();
 		setJdbcURL(jdbcUrl);
 		setJdbcConfig(jdbcConfig);
 		this.destinationJdbcUrl = destinationJdbcUrl;
 		this.destinationPersistenceContext = destinationPersistenceContext;
 		this.destinationJdbcConfig = destinationJdbcConfig;
+		this.copyData = copyData;
 	}
 		
 	
@@ -145,12 +160,19 @@ public class PagilaHSQLDBPortGenerator
 			String destConfigPath = cl.value(OPTION_DESTINATION_JDBC_CONFIG);					
 			this.destinationJdbcConfig = (destConfigPath == null) ? null : IOHelper.doLoad(destConfigPath);
 			
+			String cs = cl.value(OPTION_COPY_DATA);						
+			this.copyData = (cs == null) ? false : Boolean.parseBoolean(cs);
+						
 			initPersistenceContext(cl);
 		}
         catch (IOException e) {
             e.printStackTrace();
             throw new ToolException(e.getMessage(), e);
         }
+		catch (ToolConfigurationException e) {
+			logger.error(e.getMessage(), e);
+			throw e;
+		}
 	}
 
 
@@ -171,7 +193,7 @@ public class PagilaHSQLDBPortGenerator
 			try {
 				this.destinationPersistenceContext = (PersistenceContext<?>) instantiate(pctype);
 			} 
-			catch (Exception e) {
+			catch (Exception e) {				
 				throw new ToolConfigurationException(e.getMessage(), e);
 			}									
 		}
@@ -203,47 +225,15 @@ public class PagilaHSQLDBPortGenerator
 			Class.forName(tdc);		
 		}		
 		
-							
-		Environment henv = di.environment();
-		
-		final DataTypeMap htm = henv.getDataTypeMap();
-						
-		final DataTypeMap dtm = new DataTypeMap() {			
-			@Override
-			public ValueType<?> getType(DataType type) {
-				return htm.getType(type);
-			}
-			
-			@Override
-			public SQLDataType getSQLType(DataType dataType) {
-				SQLDataType def = htm.getSQLType(dataType);
-				
-				if (def == null) {
-					int t = dataType.getDataType();
-					
-					logger.debug("unmapped: " + dataType.getTypeName() + ": " + dataType.getDataType());
-					
-					if (t == ValueType.ARRAY && dataType.getTypeName().equals("_text")) {
-						def = di.getSyntax().newArrayTypeDefinition(SQLVarcharType.get(1024));
-					}
-					
-					if (t == ValueType.BINARY && dataType.getTypeName().equals("bytea")) {												
-						def = SQLVarBinaryType.get(dataType.getSize());
-					}
-					
-					if (SQLDataType.isBinaryType(t)) {
-						def = SQLVarBinaryType.get(dataType.getSize());
-					}
-				}
-				
-				return def;
-			}
-		};
+		logger.info("destination-persistent-context: {}", destinationPersistenceContext.getClass());
+									
+		final DataTypeMap dtm = destinationPersistenceContext.getDataTypeMap();
 						
 		Collection<Schema> sc = new ArrayList<Schema>(); 
 		
 		List<Statement> sl = new ArrayList<Statement>();
-			
+		
+					
 		for (Schema s : cat.schemas().values()) {
 			String name = s.getUnqualifiedName().getContent();
 			
@@ -261,6 +251,9 @@ public class PagilaHSQLDBPortGenerator
 			CreateSchema def = new CreateSchema(s.getUnqualifiedName());
 			sl.add(def);
 		}
+		
+						
+		logger.info("dtm: {}", dtm);
 		
 			
 		addCreateTableStatements(dtm, sc, sl);
@@ -282,13 +275,11 @@ public class PagilaHSQLDBPortGenerator
 		
 		logger().info("target url: {}", url);
 		
-		PersistenceContext<?> destctx = this.destinationPersistenceContext;
-		
+		PersistenceContext<?> destctx = this.destinationPersistenceContext;		
 		DataAccessContext hctx = destctx.newDataAccessContext(getDestinationJdbcUrl(), getDestinationJdbcConfig());
-							
 										
-		DataAccessSession das = hctx.newSession();				
-		StatementSession ss = das.asStatementSession();		
+		DataAccessSession ddas = hctx.newSession();				
+		StatementSession ss = ddas.asStatementSession();		
 								
 		Receiver receiver = new Receiver() {			
 			@Override
@@ -306,59 +297,49 @@ public class PagilaHSQLDBPortGenerator
 		
 		executeAll(ss, receiver, sl);
 		
-		das.commit();
+		ddas.commit();
+				
+		// PagilaPersistenceContext ppc = new PagilaPersistenceContext();
 		
-//				
-//		logger().info("dropping foreign keys temporarily...");
-//		List<Statement> dropfks = new ArrayList<Statement>();
-//		dropForeignKeyStatements(sc, dropfks);
-//		executeAll(ss, qp, dropfks);		
-//		das.commit();						
-//		
-//		for (Schema s : sc) {
-//			SchemaElementMap<BaseTable> tm = s.baseTables();
-//			
-//			final Schema ts = hcat.schemas().get(s.getUnqualifiedName());
-//			List<Identifier> nl = new ArrayList<Identifier>();
-//			
-//			for (BaseTable src : tm.values()) {
-//				BaseTable dest = ts.baseTables().get(src.getUnqualifiedName());
-//												
-//				nl.clear();
-//				
-//				for(Column col : src.columnMap().values()) {
-//					String n = col.getColumnName().getName();
-//					Column tcol = dest.columnMap().get(n);
-//					nl.add(tcol.getColumnName());
-//				}				
-//							
-//				ElementList<Identifier> names = new ElementList<Identifier>(nl);
-//				
-//				List<ValueRow> rows = new ArrayList<ValueRow>();
-//								
-////				new ElementList<ValuesListElement>(elems);
-////				new MutableValueParameter<>(column, null);
-//											
-//				InsertStatement ins = new InsertStatement(dest, names, rows);
-//				ins.generate();
-//				
-//			}
-//			
-//		}
-		
+		if (this.copyData) {		
+			Implementation<?> imp = destctx.getImplementation();
+					
+			DriverManagerConnectionFactory dcf = new DriverManagerConnectionFactory();
+			Connection c = dcf.newConnection(getDestinationJdbcUrl(), getDestinationJdbcConfig());
+			
+			CatalogFactory cf = imp.catalogFactory();		
+			Catalog destcat = cf.create(c);		
+					
+			PagilaPersistenceContext ppc = new PagilaPersistenceContext();
+			DataAccessContext sctx = ppc.newDataAccessContext(getJdbcURL(), getJdbcConfig());
+			DataAccessSession sdas = sctx.newSession();		
+					
+			for (Schema sourceSchema : sc) {
+				Schema ds = destcat.schemas().get(sourceSchema.getUnqualifiedName().toString());
+				
+				if (ds == null) {
+					continue;
+				}
+				
+				Copy copy = new Copy(sourceSchema, ds, sdas, ddas);
+				copy.run();
+				ddas.commit();
+			}
+		}		
+				
 		List<Statement> addfks = new ArrayList<Statement>();
 		addForeignKeyStatements(sc, addfks);
 		
 			
 		logger().info("add foreign keys...");
 		executeAll(ss, receiver, addfks);		
-		das.commit();		
+		ddas.commit();		
 
 				
 		logger.debug("shutdown: " + Shutdown.STATEMENT.generate());
 		ss.execute(Shutdown.STATEMENT, receiver);
 					
-		das.close();
+		ddas.close();
 	}
 
 	private void executeAll(StatementSession ss, Receiver receiver, List<Statement> statements) throws DataAccessException {
@@ -415,8 +396,7 @@ public class PagilaHSQLDBPortGenerator
 
 	protected void createDomains(StatementSession ss, Receiver qp,
 			IdentifierRules hid) throws DataAccessException {
-		{
-			
+		{	
 			CreateDomain cd = new CreateDomain(hid.toIdentifier("year"), SQLIntType.get());
 			ss.execute(cd, qp);
 		}
@@ -427,7 +407,7 @@ public class PagilaHSQLDBPortGenerator
 		}
 		
 		{	
-			CreateDomain cd = new CreateDomain(hid.newName("tsvector"), SQLVarcharType.get(1024));
+			CreateDomain cd = new CreateDomain(hid.newName("tsvector"), SQLVarcharType.get(4 * 1024));
 			ss.execute(cd, qp);
 		}
 	}

@@ -23,8 +23,10 @@
 package com.appspot.relaxe.rdbms;
 
 import java.sql.Connection;
+
 import com.appspot.relaxe.SimpleUnificationContext;
 import com.appspot.relaxe.ent.UnificationContext;
+import com.appspot.relaxe.meta.DataTypeMap;
 
 
 public abstract class DefaultDataAccessSession<I extends Implementation<I>>
@@ -33,9 +35,9 @@ public abstract class DefaultDataAccessSession<I extends Implementation<I>>
 	private PersistenceContext<I> persistenceContext;
 	private UnificationContext unificationContext;
 	
-	public DefaultDataAccessSession(PersistenceContext<I> implementation, Connection connection) {
+	public DefaultDataAccessSession(PersistenceContext<I> context, Connection connection) {
 		super(connection);
-		this.persistenceContext = implementation;
+		this.persistenceContext = context;
 		this.unificationContext = new SimpleUnificationContext();
 	}
 	
@@ -47,6 +49,11 @@ public abstract class DefaultDataAccessSession<I extends Implementation<I>>
 	@Override
 	protected UnificationContext getUnificationContext() {
 		return this.unificationContext;
+	}
+	
+	@Override
+	public DataTypeMap getDataTypeMap() {
+		return this.persistenceContext.getDataTypeMap();
 	}
 	
 }

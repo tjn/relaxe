@@ -20,33 +20,30 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.pg.pagila.types;
+package com.appspot.relaxe.common.pagila.types;
 
-import com.appspot.relaxe.env.pg.PGEnvironment;
-import com.appspot.relaxe.meta.DataTypeMap;
+import com.appspot.relaxe.types.DistinctType;
 
-public class PagilaEnvironment
-	extends PGEnvironment {
-
+public class YearType
+	extends DistinctType<YearType> {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2500799350338943593L;
+	private static final long serialVersionUID = -4915976457434883692L;
+	public static final YearType TYPE = new YearType();
 	
-	private static PagilaEnvironment environment = new PagilaEnvironment();
-	
-	private DataTypeMap dataTypeMap = new PagilaDataTypeMap();	
-		
-	public static PGEnvironment environment() {
-		return PagilaEnvironment.environment;
+	private YearType() {
+		super();
 	}
-	
+
 	@Override
-	public DataTypeMap getDataTypeMap() {
-		return dataTypeMap;
+	public String getName() {
+		return "year";
 	}
-	
-	
-	
-	
+
+	@Override
+	public YearType self() {
+		return this;
+	}
 }

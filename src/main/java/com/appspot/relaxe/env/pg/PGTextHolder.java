@@ -64,11 +64,6 @@ public class PGTextHolder
 	}
 	
 	@Override
-	public PGTextHolder asStringHolder() {		
-		return this;
-	}
-
-	@Override
 	public PGTextHolder self() {
 		return this;
 	}

@@ -22,7 +22,8 @@
  */
 package com.appspot.relaxe.meta;
 
-import com.appspot.relaxe.expr.SchemaElementName;
+import com.appspot.relaxe.env.IdentifierRules;
+import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.ddl.BigIntTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.SQLBooleanType;
 import com.appspot.relaxe.expr.ddl.types.SQLDoublePrecisionType;
@@ -32,21 +33,22 @@ import com.appspot.relaxe.expr.ddl.types.SQLCharType;
 import com.appspot.relaxe.expr.ddl.types.SQLDecimalType;
 import com.appspot.relaxe.expr.ddl.types.SQLFloatType;
 import com.appspot.relaxe.expr.ddl.types.SQLIntType;
+import com.appspot.relaxe.expr.ddl.types.SQLLongVarBinaryType;
 import com.appspot.relaxe.expr.ddl.types.SQLLongVarcharType;
 import com.appspot.relaxe.expr.ddl.types.SQLNumericType;
-import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
 import com.appspot.relaxe.expr.ddl.types.SQLSmallIntType;
 import com.appspot.relaxe.expr.ddl.types.SQLTimeType;
 import com.appspot.relaxe.expr.ddl.types.SQLTimestampType;
 import com.appspot.relaxe.expr.ddl.types.SQLTinyIntType;
-import com.appspot.relaxe.expr.ddl.types.UserDefinedType;
 import com.appspot.relaxe.expr.ddl.types.SQLVarcharType;
+import com.appspot.relaxe.expr.ddl.types.UserDefinedType;
 import com.appspot.relaxe.types.BooleanType;
 import com.appspot.relaxe.types.CharType;
 import com.appspot.relaxe.types.DateType;
 import com.appspot.relaxe.types.DecimalType;
 import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.LongType;
+import com.appspot.relaxe.types.LongVarBinaryType;
 import com.appspot.relaxe.types.LongVarcharType;
 import com.appspot.relaxe.types.NumericType;
 import com.appspot.relaxe.types.ValueType;
@@ -68,7 +70,12 @@ public abstract class DefaultDataTypeMap
 			case ValueType.INTEGER:
 				return IntegerType.TYPE;
 			case ValueType.BIGINT:
-				return LongType.TYPE;	
+				return LongType.TYPE;
+			case ValueType.BIT:
+				if (treatBitAsBoolean(type)) {
+					return BooleanType.TYPE;
+				}
+				break;
 			case ValueType.BOOLEAN:
 				return BooleanType.TYPE;
 			case ValueType.VARCHAR:
@@ -87,9 +94,13 @@ public abstract class DefaultDataTypeMap
 				return DateType.TYPE;		
 			case ValueType.TIME:			
 				return TimeType.TYPE;
+			case ValueType.BINARY:				
+			case ValueType.VARBINARY:
+			case ValueType.LONGVARBINARY:
+				return LongVarBinaryType.TYPE;				
+			case ValueType.DISTINCT:
 				
-			// Implementation for the following three 
-			case ValueType.DISTINCT:			
+				break;
 			case ValueType.OTHER:					
 			case ValueType.ARRAY:					
 			default:
@@ -99,6 +110,11 @@ public abstract class DefaultDataTypeMap
 		return null;
 	}
 	
+	private boolean treatBitAsBoolean(DataType type) {		
+		Integer sz = type.getSize();
+		return (sz == null) || (sz.intValue() == 1);
+	}
+
 	@Override
 	public SQLDataType getSQLType(DataType dataType) {
 		int t = dataType.getDataType();
@@ -144,32 +160,24 @@ public abstract class DefaultDataTypeMap
 			def = SQLTimeType.get();
 			break;
 		case ValueType.BOOLEAN:
-			// fall-through
-		case ValueType.BIT:			
 			def = SQLBooleanType.get();
+			break;
+		case ValueType.BIT:			
+			if (treatBitAsBoolean(dataType)) {			
+				def = SQLBooleanType.get();
+			}
 			break;
 		case ValueType.DOUBLE:			
 			def = SQLDoublePrecisionType.get();
 			break;
 		case ValueType.FLOAT:			
 			def = SQLFloatType.get();
-			break;			
-		case ValueType.DISTINCT:			
-		case ValueType.OTHER:
-			SchemaElementName name = newName(dataType.getTypeName());
-			def = new UserDefinedType(name);
 			break;
-		case ValueType.ARRAY:			
-			ValueType<?> pt = getType(dataType);
-			
-			if (pt != null) {
-				com.appspot.relaxe.types.ArrayType<?, ?> at = pt.asArrayType();			
-				ValueType<?> et = at.getElementType();			
-				DataTypeImpl dti = new DataTypeImpl(et.getSqlType(), et.getName());
-				SQLDataType idef = getSQLType(dti);
-				def = new SQLArrayTypeDefinition(idef);
-			}
-			break;
+		case ValueType.BINARY:
+		case ValueType.VARBINARY:
+		case ValueType.LONGVARBINARY:
+			def = SQLLongVarBinaryType.get(s.intValue());
+			break;					
 		default:
 			break;
 		}
@@ -201,7 +209,14 @@ public abstract class DefaultDataTypeMap
 		}
 		
 		return size;
-	}
+	}	
 
-	protected abstract SchemaElementName newName(String typeName);
+	protected final SQLDataType newUserDefinedType(IdentifierRules ir, DataType dataType) {
+		Identifier identifier = ir.toIdentifier(dataType.getTypeName());
+		SQLDataType t = new UserDefinedType(identifier);
+		return t;
+	}
+	
+
+//	protected abstract SchemaElementName newName(String typeName);
 }

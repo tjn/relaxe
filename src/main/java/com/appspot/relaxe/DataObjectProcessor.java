@@ -91,20 +91,37 @@ public abstract class DataObjectProcessor<O extends MutableDataObject>
 			
 	@Override
 	public void process(ResultSet rs, long ordinal) throws QueryException {
+		
+		
+		ValueExtractor<?, ?, ?> ve = null;
+		
 		try {
 			O o = get();			
 			
 			int count = this.extractors.length;
 			
 			for (int i = 0; i < count; i++) {
-				ValueExtractor<?, ?, ?> ve = this.extractors[i];					
+				ve = this.extractors[i];					
 				o.set(i, ve.extract(rs));
 			}			
 			
 			put(o);
 		}
-		catch (Throwable e) {
-			logger().error(e.getMessage(), e);
+		catch (SQLException e) {
+			StringBuilder buf = new StringBuilder();
+			
+			buf.append(" col: ").append(ve.getColumn());
+			buf.append(" ordinal: ").append(ordinal);
+			
+			try {
+				buf.append(" value: ").append(rs.getObject(ve.getColumn()));
+			}
+			catch (SQLException ie) {				
+			}			
+						
+			buf.append(e.getMessage());			
+			
+			logger().error(buf.toString(), e);
 			throw new QueryException(e.getMessage(), e);
 		}
 	}

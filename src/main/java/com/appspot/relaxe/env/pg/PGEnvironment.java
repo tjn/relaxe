@@ -45,7 +45,6 @@ public class PGEnvironment
 	
 	private static PGEnvironment environment = new PGEnvironment();
 	private transient PGIdentifierRules identifierRules;
-	private transient DataTypeMap dataTypeMap;
 	
 	public static PGEnvironment environment() {
 		return PGEnvironment.environment;
@@ -167,14 +166,5 @@ public class PGEnvironment
 		}
 		
 		return null;
-	}
-
-	@Override
-	public DataTypeMap getDataTypeMap() {
-		if (dataTypeMap == null) {
-			dataTypeMap = new PGDataTypeMap();			
-		}
-		
-		return dataTypeMap;
 	}
 }

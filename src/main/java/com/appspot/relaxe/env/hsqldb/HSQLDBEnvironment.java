@@ -26,9 +26,6 @@
 package com.appspot.relaxe.env.hsqldb;
 
 import com.appspot.relaxe.env.DefaultEnvironment;
-import com.appspot.relaxe.expr.SchemaElementName;
-import com.appspot.relaxe.meta.DataTypeMap;
-import com.appspot.relaxe.meta.DefaultDataTypeMap;
 
 public class HSQLDBEnvironment 
 	extends DefaultEnvironment {
@@ -39,7 +36,7 @@ public class HSQLDBEnvironment
 	private static final long serialVersionUID = 1541050975229495155L;
 	
 	private static HSQLDBEnvironment environment = new HSQLDBEnvironment();	
-	private DataTypeMap dataTypeMap = new HSQLDBDataTypeMap();
+	// private DataTypeMap dataTypeMap = new HSQLDBDataTypeMap();
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -51,22 +48,4 @@ public class HSQLDBEnvironment
 		return HSQLDBEnvironment.environment;
 	}	
 
-	@Override
-	public DataTypeMap getDataTypeMap() {
-		return dataTypeMap;
-	}
-
-	private static class HSQLDBDataTypeMap
-		extends DefaultDataTypeMap {
-		
-		
-		
-		
-
-		@Override
-		protected SchemaElementName newName(String typeName) {
-			return HSQLDBEnvironment.environment().getIdentifierRules().newName(typeName);
-		}		
-	}
-	
 }

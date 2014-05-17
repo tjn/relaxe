@@ -69,13 +69,11 @@ public interface ValueHolder<
 
 	OtherHolder<?, ?, ?> asOtherHolder(String typeName);
 	
-	ArrayHolder<?, ?, ?, ?, ?> asArrayHolder(String typeName);
+	ArrayHolder<?, ?, ?, ?, ?> asArrayHolder();
 	
 	LongVarBinaryHolder asLongVarBinaryHolder();
 	
 	IntervalHolder.DayTime asDayTimeIntervalHolder();
 	
 	IntervalHolder.YearMonth asYearMonthIntervalHolder();
-	
-	VarcharArrayHolder asVarcharArrayHolder();
 }

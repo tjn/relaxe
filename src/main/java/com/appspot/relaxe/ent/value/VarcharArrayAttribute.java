@@ -26,6 +26,7 @@ import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.types.VarcharArrayType;
 import com.appspot.relaxe.types.VarcharType;
+import com.appspot.relaxe.value.ArrayHolder;
 import com.appspot.relaxe.value.StringArray;
 import com.appspot.relaxe.value.ValueHolder;
 import com.appspot.relaxe.value.VarcharArrayHolder;
@@ -84,17 +85,6 @@ public class VarcharArrayAttribute<
 		return k;
 	}
 
-//	@Override
-//	public void set(E e, VarcharArrayHolder newValue)
-//			throws EntityRuntimeException {
-//		e.setVarcharArray(this, newValue);
-//	}
-	
-	@Override
-	public VarcharArrayHolder as(ValueHolder<?, ?, ?> holder) {
-		return holder.asVarcharArrayHolder();
-	}
-
 	@Override
 	public VarcharArrayHolder get(E e) throws EntityRuntimeException {
 		return e.getVarcharArray(this);
@@ -104,5 +94,20 @@ public class VarcharArrayAttribute<
 	public void set(E e, VarcharArrayHolder newValue)
 			throws EntityRuntimeException {
 		e.setVarcharArray(this, newValue);
+	}
+
+	@Override
+	public VarcharArrayHolder as(ValueHolder<?, ?, ?> holder) {
+		ArrayHolder<?, ?, ?, ?, ?> ah = holder.asArrayHolder();
+		
+		if (ah == null) {
+			return null;
+		}
+		
+		if (ah instanceof VarcharArrayHolder) {
+			return (VarcharArrayHolder) ah;
+		}
+		
+		return null;
 	}
 }

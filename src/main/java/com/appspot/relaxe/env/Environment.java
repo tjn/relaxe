@@ -35,5 +35,5 @@ public interface Environment
 
 	DefaultDefinition newDefaultDefinition(Column col);
 	
-	DataTypeMap getDataTypeMap();
+//	DataTypeMap getDataTypeMap();
 }

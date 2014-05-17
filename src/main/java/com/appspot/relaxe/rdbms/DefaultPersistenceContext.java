@@ -26,6 +26,7 @@ import java.util.Properties;
 
 import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.ValueExtractorFactory;
+import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.service.DataAccessContext;
 
 /**
@@ -37,6 +38,7 @@ public abstract class DefaultPersistenceContext<I extends Implementation<I>>
 	implements PersistenceContext<I> {
 	
 	private I implementation;
+	private DataTypeMap dataTypeMap;
 	
 	protected DefaultPersistenceContext() {
 	}
@@ -55,7 +57,7 @@ public abstract class DefaultPersistenceContext<I extends Implementation<I>>
 	public ValueAssignerFactory getValueAssignerFactory() {
 		return getImplementation().getValueAssignerFactory();
 	}
-
+	
 	@Override
 	public ValueExtractorFactory getValueExtractorFactory() {
 		return getImplementation().getValueExtractorFactory();		
@@ -71,5 +73,15 @@ public abstract class DefaultPersistenceContext<I extends Implementation<I>>
 		return new DefaultDataAccessContext<I>(this, jdbcURL, jdbcConfig);
 	}
 
+	
+	@Override
+	public DataTypeMap getDataTypeMap() {
+		if (dataTypeMap == null) {
+			dataTypeMap = newDataTypeMap();			
+		}
+		
+		return dataTypeMap;
+	}
 
+	protected abstract DataTypeMap newDataTypeMap();
 }

@@ -29,7 +29,7 @@ import com.appspot.relaxe.env.pg.PGEnvironment;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.SchemaName;
 import com.appspot.relaxe.expr.ddl.CreateTable;
-import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLArrayType;
 import com.appspot.relaxe.expr.ddl.types.SQLPredefinedDataType;
 import com.appspot.relaxe.gen.pg.pp.ent.pub.Film;
 import com.appspot.relaxe.meta.BaseTable;
@@ -102,8 +102,8 @@ public class PagilaCreateTableTest extends TestCase {
 			SQLTypeDefinition def = dm.getSQLTypeDefinition(type);
 			assertNotNull(def);
 			logger.debug(def.toString());
-			assertTrue(def instanceof SQLArrayTypeDefinition);
-			SQLArrayTypeDefinition adef = (SQLArrayTypeDefinition) def;
+			assertTrue(def instanceof SQLArrayType);
+			SQLArrayType adef = (SQLArrayType) def;
 			SQLTypeDefinition edef = adef.getElementType();
 			logger.debug(edef.toString());
 		}

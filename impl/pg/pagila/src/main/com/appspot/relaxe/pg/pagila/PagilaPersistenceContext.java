@@ -24,6 +24,8 @@ package com.appspot.relaxe.pg.pagila;
 
 import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.ValueExtractorFactory;
+import com.appspot.relaxe.meta.DataTypeMap;
+import com.appspot.relaxe.pg.pagila.types.PagilaDataTypeMap;
 import com.appspot.relaxe.rdbms.pg.PGImplementation;
 import com.appspot.relaxe.rdbms.pg.PGPersistenceContext;
 
@@ -49,5 +51,10 @@ public class PagilaPersistenceContext
 	@Override
 	public ValueExtractorFactory getValueExtractorFactory() {
 		return this.extractorFactory;
+	}
+	
+	@Override	
+	protected DataTypeMap newDataTypeMap() {
+		return new PagilaDataTypeMap();
 	}
 }

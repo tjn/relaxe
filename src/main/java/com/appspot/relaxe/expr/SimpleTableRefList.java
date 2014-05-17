@@ -36,8 +36,7 @@ public class SimpleTableRefList
 	}
 	
 	public SimpleTableRefList(AbstractTableReference tref) {
-		this();
-		getContent().add(tref);
+		super(tref);		
 	}
 
 	@Override

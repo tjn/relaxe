@@ -34,25 +34,32 @@ import com.appspot.relaxe.types.ValueType;
 public class PGDataTypeMap
 	extends DefaultDataTypeMap {
     
-	protected PGDataTypeMap() {
+	public PGDataTypeMap() {
 	}
 	
 	@Override
-	public SQLDataType getSQLType(DataType t) {
+	public SQLDataType getSQLType(DataType type) {
 		
-		if (SQLDataType.isTextType(t.getDataType()) && PGTextTypeDefinition.NAME.equals(t.getTypeName())) {
+		final int t = type.getDataType();
+		
+		if (SQLDataType.isTextType(t) && PGTextTypeDefinition.NAME.equals(type.getTypeName())) {
 			return PGTextTypeDefinition.DEFINITION;
 		}
 		
-		if (t.getDataType() == ValueType.ARRAY && PGTextArrayTypeDefinition.NAME.equals(t.getTypeName())) {
+		if (t == ValueType.ARRAY && PGTextArrayTypeDefinition.NAME.equals(type.getTypeName())) {
 			return PGTextArrayTypeDefinition.DEFINITION;
 		}
 						
-		if (SQLDataType.isBinaryType(t.getDataType()) && PGByteArrayTypeDefinition.NAME.equals(t.getTypeName())) {
+		if (SQLDataType.isBinaryType(t) && PGByteArrayTypeDefinition.NAME.equals(type.getTypeName())) {
 			return PGByteArrayTypeDefinition.DEFINITION;
 		}
 		
-		return super.getSQLType(t);
+		if ((t == ValueType.DISTINCT) || (t == ValueType.OTHER)) {
+			PGIdentifierRules ir = PGEnvironment.environment().getIdentifierRules();
+			return newUserDefinedType(ir, type);
+		}		
+		
+		return super.getSQLType(type);
 	}
 	
 	@Override
@@ -100,9 +107,4 @@ public class PGDataTypeMap
 		return super.getSize(dataType);
 	}
 
-	@Override
-	public SchemaElementName newName(String typeName) {
-		return PGEnvironment.environment().getIdentifierRules().newName(typeName);
-	}
-	
 }

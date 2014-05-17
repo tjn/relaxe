@@ -26,11 +26,9 @@
 package com.appspot.relaxe.env.mysql;
 
 import com.appspot.relaxe.env.SerializableEnvironment;
-import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.DefaultDefinition;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataTypeMap;
-import com.appspot.relaxe.meta.DefaultDataTypeMap;
 
 public class MySQLEnvironment
 	implements SerializableEnvironment {
@@ -42,7 +40,6 @@ public class MySQLEnvironment
 		
 	private static MySQLEnvironment instance;
 	private final transient MySQLIdentifierRules identifierRules = new MySQLIdentifierRules();
-	private MySQLDataTypeMap dataTypeMap = new MySQLDataTypeMap();
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -66,19 +63,5 @@ public class MySQLEnvironment
 	@Override
 	public DefaultDefinition newDefaultDefinition(Column col) {
 		return null;
-	}
-	
-	@Override
-	public DataTypeMap getDataTypeMap() {
-		return this.dataTypeMap;
-	}
-	
-	private static class MySQLDataTypeMap
-		extends DefaultDataTypeMap {
-
-		@Override
-		protected SchemaElementName newName(String typeName) {
-			return environment().getIdentifierRules().newName(typeName);
-		}		
-	}
+	}	
 }

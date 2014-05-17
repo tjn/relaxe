@@ -22,6 +22,8 @@
  */
 package com.appspot.relaxe.service;
 
+import com.appspot.relaxe.meta.DataTypeMap;
+
 
 public interface DataAccessSession {
 	void commit()
@@ -36,4 +38,6 @@ public interface DataAccessSession {
 	EntitySession asEntitySession();
 	QuerySession asQuerySession();
 	StatementSession asStatementSession();
+	
+	DataTypeMap getDataTypeMap();
 }

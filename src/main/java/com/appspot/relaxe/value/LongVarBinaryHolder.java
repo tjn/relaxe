@@ -72,7 +72,7 @@ public class LongVarBinaryHolder
 
 	@Override
 	public int getSqlType() {
-		return ValueType.BLOB;
+		return ValueType.LONGVARBINARY;
 	}
 	
 	/**

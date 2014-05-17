@@ -26,7 +26,7 @@ import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.Symbol;
 import com.appspot.relaxe.expr.VisitContext;
 
-public class SQLArrayTypeDefinition
+public class SQLArrayType
     extends SQLDataType {
        	
 	/**
@@ -40,10 +40,10 @@ public class SQLArrayTypeDefinition
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
-	private SQLArrayTypeDefinition() {
+	private SQLArrayType() {
 	}
 	
-	public SQLArrayTypeDefinition(SQLDataType elementType) {
+	public SQLArrayType(SQLDataType elementType) {
 		this.elementType = elementType;
 	}
 

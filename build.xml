@@ -238,8 +238,9 @@
 	<target name="compile.hsqldb.pagila" depends="compile-tests" description="Compiles the sources for HSQLDB/Pagila">
 		<impl.compile implementation="hsqldb" target="pagila" driver-artifact="hsqldb" />		
 	</target>
-		
-	<target name="generate.hsqldb.pagila" depends="compile.hsqldb.pagila, generate.hsqldb.data" description="Generates the sources for HSQLDB/Pagila">
+	
+	
+	<target name="generate.hsqldb.pagila" depends="compile.hsqldb.pagila, generate.hsqldb.schema" description="Generates the sources for HSQLDB/Pagila">
 		<generate 
 			implementation="hsqldb"
 			driver-artifact="hsqldb"
@@ -249,7 +250,18 @@
 			environment-implementation="com.appspot.relaxe.env.hsqldb.HSQLDBEnvironment" 
 			type-mapper="com.appspot.relaxe.hsqldb.pagila.HSQLDBPagilaTypeMapper"
 		/>		
-	</target>	
+	</target>
+	
+	
+	
+	<target name="generate-and-compile-all" 
+			depends="			    
+				compile.gen.pg.pagila,
+				compile.gen.mysql.sakila,
+				compile.gen.mariadb.sakila,
+				generate.hsqldb.pagila" 	
+			description="Generates and compiles the sources for all the implementations" />
+	
 	
 	<!-- no tests yet for hsqldb -->
 	<target name="test" 
@@ -258,7 +270,8 @@
 			test.gen.pg.pagila,
 			test.gen.mysql.sakila,
 			test.gen.mariadb.sakila,
-			generate.hsqldb.pagila" 	
+			generate.hsqldb.pagila, 
+		    test.hsqldb.copy-data"
 		description="Generates sources, compiles and runs the tests for all implementations" />
 	
 	<!-- 
@@ -318,9 +331,13 @@
 			<impl.test implementation="mariadb" driver-artifact="mariadb-java-client" target="sakila" />		
 	</target>
 	
+	<target name="compile.pg.pagila.hsqldb.port" depends="compile-tests, compile.pg.pagila, compile.hsqldb.pagila" >
+		<compile.port source.impl="pg" dest.impl="hsqldb" target="pagila"/>
+	</target>
 	
-	<target name="generate.hsqldb.data" depends="compile-tests, compile.pg.pagila" description="Ports Pagila database from postgres to HSQLDB">
-		<impl.port.data
+	
+	<target name="generate.hsqldb.schema" depends="compile.pg.pagila.hsqldb.port" description="Ports Pagila database from postgres to HSQLDB">
+		<impl.port
 			source.implementation="pg" 
 			source.driver-artifact="postgresql"
 			source.target="pagila"
@@ -328,10 +345,27 @@
 			source.jdbc.config="config/pg/pagila.properties"
 			dest.implementation="hsqldb"
 			dest.driver-artifact="hsqldb"
-			dest.jdbc.url="jdbc:hsqldb:file:build/data/pg-hsqldb/pagila"
+			dest.jdbc.url="jdbc:hsqldb:mem:build/data/pg-hsqldb/pagila"
 			dest.jdbc.config="config/hsqldb/pagila.properties"
-			dest.persistence-context.class="com.appspot.relaxe.rdbms.hsqldb.HSQLDBPersistenceContext"
-			transformer.class="com.appspot.relaxe.pg.pagila.PagilaHSQLDBPortGenerator" />
+			dest.persistence-context.class="com.appspot.relaxe.hsqldb.pagila.HSQLDBPagilaPersistenceContext"
+			copy-data="false"
+			transformer.class="com.appspot.relaxe.pg.pagila.hsqldb.PagilaHSQLDBPortGenerator" />
+	</target>
+	
+	<target name="test.hsqldb.copy-data" depends="generate.hsqldb.schema" description="Ports Pagila database from PostgreSQL to HSQLDB">
+		<impl.port
+			source.implementation="pg" 
+			source.driver-artifact="postgresql"
+			source.target="pagila"
+			source.jdbc.url="jdbc:postgresql:pagila"
+			source.jdbc.config="config/pg/pagila.properties"
+			dest.implementation="hsqldb"
+			dest.driver-artifact="hsqldb"
+			dest.jdbc.url="jdbc:hsqldb:mem:hsqldb-pagila"
+			dest.jdbc.config="config/hsqldb/pagila.properties"
+			dest.persistence-context.class="com.appspot.relaxe.hsqldb.pagila.HSQLDBPagilaPersistenceContext"
+			copy-data="true"
+			transformer.class="com.appspot.relaxe.pg.pagila.hsqldb.PagilaHSQLDBPortGenerator" />
 	</target>
 		
 
@@ -477,6 +511,7 @@
 		<attribute name="target" />
 		<attribute name="destdir" default="${build.root.dir}/impl/@{implementation}/@{target}/classes"/>
 		<attribute name="impl.src.dir" default="impl/@{implementation}/@{target}/src/main"/>
+		<attribute name="target.src.dir" default="src/common/@{target}"/>
 		
 		<sequential>
 			<path id="@{implementation}.@{target}.cp">
@@ -497,13 +532,54 @@
 			<javac 
 					classpathref="@{implementation}.@{target}.cp" 
 					destdir="@{destdir}" 
-					srcdir="impl/@{implementation}/common:@{impl.src.dir}" 
+					srcdir="impl/@{implementation}/common:@{impl.src.dir}:@{target.src.dir}" 
 					verbose="off" includeantruntime="false"
 					debug="true" debuglevel="lines,vars,source">				
 				<compilerarg value="-Xlint"/>
 			</javac>			
    		</sequential>
 	</macrodef>
+	
+	<macrodef name="compile.port">
+		<attribute name="source.impl" />
+		<attribute name="dest.impl" />				
+		<attribute name="target" />
+		
+		<attribute name="destdir" default="${build.root.dir}/port/@{source.impl}/@{target}/@{dest.impl}/classes"/>
+		<attribute name="port.src.dir" default="impl/@{source.impl}/@{target}/@{dest.impl}"/>
+		<attribute name="target.src.dir" default="src/common/@{target}"/>
+		
+		<sequential>
+			<path id="@{implementation}.@{target}.cp">
+				<path refid="test.compile.cp"/>
+				<pathelement location="${build.dir}" />
+				<pathelement location="${test.build.dir}" />
+				<pathelement location="${build.root.dir}/impl/@{source.impl}/@{target}/classes}" />
+				<pathelement location="${build.root.dir}/impl/@{dest.impl}/@{target}/classes}" />
+			</path>
+									
+			<mkdir dir="@{destdir}" />
+						 
+			<mkdir dir="impl/@{source.impl}/@{target}/src/main" />
+			<mkdir dir="impl/@{dest.impl}/@{target}/src/main" />
+			
+							
+			<javac 
+					classpathref="@{implementation}.@{target}.cp" 
+					destdir="@{destdir}" 
+					srcdir="
+				        src/common/@{target}:
+				        impl/@{source.impl}/common:
+						impl/@{source.impl}/@{target}/src/main:
+						impl/@{dest.impl}/common:
+						impl/@{dest.impl}/@{target}/src/main:
+						@{port.src.dir}" 
+					verbose="off" includeantruntime="false"
+					debug="true" debuglevel="lines,vars,source">				
+				<compilerarg value="-Xlint"/>
+			</javac>			
+   		</sequential>
+	</macrodef>	
 	
 	
 	<macrodef name="impl.test" description="Runs the test suite for impl/target">
@@ -534,7 +610,7 @@
 	</macrodef>
 	
 	
-	<macrodef name="impl.port.data" description="Ports database from an implementation to another">
+	<macrodef name="impl.port" description="Ports database from an implementation to another">
 		<attribute name="source.implementation" />
 		<attribute name="source.driver-artifact" />
 		<attribute name="source.jdbc.url" />
@@ -546,20 +622,25 @@
 		<attribute name="dest.jdbc.url" />
 		<attribute name="dest.jdbc.config" />
 		<attribute name="dest.persistence-context.class" />
+		<attribute name="copy-data" default="false"/>
 	
 		<attribute name="transformer.class" />		
 		<attribute name="source.base.dir" default="${build.root.dir}/impl/@{source.implementation}/@{source.target}"/>
 		
 		<attribute name="dest.data.dir" default="${build.root.dir}/data/@{source.implementation}-@{dest.implementation}"/>
 		<attribute name="cpid" default="@{source.implementation}-@{dest.implementation}.runtest.cp" />
-		
+		 		
 		<sequential>
+			<echo message="cp: ${build.root.dir}/port/@{source.implementation}/@{target}/@{dest.implementation}/classes" />
+			
 			<path id="@{cpid}">
 				<path refid="test.compile.cp"/>
 				<pathelement location="${build.dir}" />
 				<pathelement location="${test.build.dir}" />
 				<pathelement location="${build.root.dir}/impl/@{source.implementation}/@{source.target}/classes" />
-				
+				<pathelement location="${build.root.dir}/impl/@{dest.implementation}/@{source.target}/classes" />				
+				<pathelement location="${build.root.dir}/port/@{source.implementation}/@{source.target}/@{dest.implementation}/classes" />
+												
 				<fileset dir="lib/jdbc/@{source.driver-artifact}" >
 					<include name="*.jar" />			
 				</fileset>
@@ -586,6 +667,8 @@
 				<arg value="@{dest.jdbc.config}"/>
 				<arg value="--destination-persistence-context"/>
 				<arg value="@{dest.persistence-context.class}"/>				
+				<arg value="--copy-data"/>
+				<arg value="@{copy-data}"/>
 			</java>			
 	   </sequential>	
 	</macrodef>	

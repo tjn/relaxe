@@ -22,10 +22,24 @@
  */
 package com.appspot.relaxe.pg.pagila.types;
 
+import com.appspot.relaxe.common.pagila.types.YearType;
 import com.appspot.relaxe.env.pg.PGDataTypeMap;
+import com.appspot.relaxe.meta.DataType;
+import com.appspot.relaxe.types.ValueType;
 
 public class PagilaDataTypeMap
 	extends PGDataTypeMap {
 	
-	
+	@Override
+	public ValueType<?> getType(DataType type) {
+		int dataType = type.getDataType();
+		
+		if (dataType == ValueType.DISTINCT) {
+			if ("year".equals(type.getTypeName())) {
+				return YearType.TYPE;
+			}
+		}
+		
+		return super.getType(type);
+	}
 }

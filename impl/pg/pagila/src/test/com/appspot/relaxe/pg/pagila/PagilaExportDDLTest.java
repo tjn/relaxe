@@ -93,7 +93,7 @@ public class PagilaExportDDLTest
 		final HSQLDBImplementation hi = new HSQLDBFileImplementation();
 		HSQLDBPersistenceContext hpc = new HSQLDBPersistenceContext(hi);		
 		HSQLDBEnvironment henv = hi.getEnvironment();
-		final DataTypeMap htm = henv.getDataTypeMap();
+		final DataTypeMap htm = hpc.getDataTypeMap();
 						
 		final DataTypeMap dtm = new DataTypeMap() {			
 			@Override

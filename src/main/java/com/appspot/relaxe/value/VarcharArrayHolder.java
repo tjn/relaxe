@@ -64,8 +64,4 @@ public class VarcharArrayHolder
 		return VarcharArrayType.TYPE;
 	}
 	
-	@Override
-	public VarcharArrayHolder asVarcharArrayHolder() {
-		return this;
-	}	
 }

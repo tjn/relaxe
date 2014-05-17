@@ -29,11 +29,9 @@ import com.appspot.relaxe.env.AbstractIdentifierComparator;
 import com.appspot.relaxe.env.NullComparator;
 import com.appspot.relaxe.env.SerializableEnvironment;
 import com.appspot.relaxe.expr.Identifier;
-import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.ddl.DefaultDefinition;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataTypeMap;
-import com.appspot.relaxe.meta.DefaultDataTypeMap;
 
 public class MariaDBEnvironment
 	implements SerializableEnvironment {
@@ -45,7 +43,6 @@ public class MariaDBEnvironment
 		
 	private static MariaDBEnvironment instance;
 	private final transient MariaDBIdentifierRules identifierRules = new MariaDBIdentifierRules();
-	private MariaDBDataTypeMap dataTypeMap = new MariaDBDataTypeMap();
 	
 	public static class IdentifierComparator
 		extends AbstractIdentifierComparator {
@@ -96,19 +93,5 @@ public class MariaDBEnvironment
 	@Override
 	public DefaultDefinition newDefaultDefinition(Column col) {
 		return null;
-	}
-	
-	@Override
-	public DataTypeMap getDataTypeMap() {
-		return this.dataTypeMap;
-	}
-	
-	private static class MariaDBDataTypeMap
-		extends DefaultDataTypeMap {
-
-		@Override
-		protected SchemaElementName newName(String typeName) {
-			return environment().getIdentifierRules().newName(typeName);
-		}		
 	}
 }

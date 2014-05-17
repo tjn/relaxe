@@ -69,9 +69,9 @@ public class AssignmentVisitor extends ElementVisitorAdapter {
 
 	@Override
 	public VisitContext start(VisitContext vc, Parameter<?, ?, ?> p) {								
-		try {			
-			assign(ordinal, p);
+		try {
 			logger().debug(ordinal + ": " + p.getName() + " =>"+ ((p.getValue() == null) ? "<null>" : p.getValue()));
+			assign(ordinal, p);			
 			
 //			preparedStatement.setObject(ordinal, h.value(), p.getType());
 			ordinal++;

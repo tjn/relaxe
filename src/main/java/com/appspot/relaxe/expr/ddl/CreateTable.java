@@ -62,12 +62,8 @@ public class CreateTable
 	protected CreateTable() {
 	}
 	
-	public CreateTable(BaseTable table) {
-		this(null, table, true, false);
-	}
-	
-	public CreateTable(BaseTable table, boolean primaryKey) {
-		this(null, table, true, primaryKey);
+	public CreateTable(DataTypeMap tm, BaseTable table) {
+		this(tm, table, true, false);
 	}
 	
 	public CreateTable(DataTypeMap tm, BaseTable table, boolean relative, boolean primaryKey) {
@@ -75,6 +71,10 @@ public class CreateTable
 		
 		if (table == null) {
 			throw new NullPointerException("table");
+		}
+		
+		if (tm == null) {
+			throw new NullPointerException("tm");
 		}
 						
 		List<BaseTableElement> elements = new ArrayList<BaseTableElement>();
@@ -84,10 +84,6 @@ public class CreateTable
 		ElementList<ColumnConstraint> nnc = new ElementList<ColumnConstraint>(Collections.singleton(NotNull.NOT_NULL));
 		Environment env = table.getEnvironment();
 		
-		if (tm == null) {			
-			tm = env.getDataTypeMap();	
-		}		
-				
 		for (Column col : cm.values()) {
 			DataType t = col.getDataType();	
 			ColumnDataType type = tm.getSQLType(t);

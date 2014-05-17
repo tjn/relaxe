@@ -22,10 +22,10 @@
  */
 package com.appspot.relaxe.env.pg.expr;
 
-import com.appspot.relaxe.expr.ddl.types.SQLArrayTypeDefinition;
+import com.appspot.relaxe.expr.ddl.types.SQLArrayType;
 
 public class PGByteArrayTypeDefinition
-	extends SQLArrayTypeDefinition {
+	extends SQLArrayType {
 	
 	public static final PGByteArrayTypeDefinition DEFINITION = new PGByteArrayTypeDefinition();
 	

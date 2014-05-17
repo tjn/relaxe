@@ -151,6 +151,23 @@ public class DataTypeImpl
 //	public void setSize(int size) {
 //		this.size = size;
 //	}
+	
+	@Override
+	public String toString() {
+		StringBuilder buf = new StringBuilder(140);
+		buf.append(super.toString());
+		buf.append(":");
+		buf.append("{" );
+		buf.append(", dataType: ").append(dataType);
+		buf.append(", typeName: ").append(typeName);
+		buf.append(", size: ").append(size);
+		buf.append(", charOctetLength: ").append(charOctetLength);
+		buf.append(", numPrecRadix: ").append(numPrecRadix);
+		buf.append(", decimalDigits: ").append(decimalDigits);
+		buf.append("}");
+				
+		return buf.toString();
+	}
 		
 	
 //	@Override

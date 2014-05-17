@@ -20,7 +20,7 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.pg.pagila.types;
+package com.appspot.relaxe.common.pagila.types;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;

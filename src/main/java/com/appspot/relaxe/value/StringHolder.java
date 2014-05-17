@@ -46,7 +46,7 @@ public abstract class StringHolder<T extends ValueType<T>, H extends StringHolde
 	}
 	
 	@Override
-	public StringHolder<?, ?> asStringHolder() {
+	public final StringHolder<?, ?> asStringHolder() {
 		return this;
 	}
 }

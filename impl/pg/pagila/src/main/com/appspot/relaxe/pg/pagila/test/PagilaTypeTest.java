@@ -31,12 +31,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 
-import org.postgresql.util.PGobject;
+//import org.postgresql.util.PGobject;
 
 import com.appspot.relaxe.QueryHelper;
+import com.appspot.relaxe.common.pagila.types.MPAARating;
 import com.appspot.relaxe.meta.impl.pg.PGTest;
 // import com.appspot.relaxe.pg.pagila.MPAARating;
-import com.appspot.relaxe.pg.pagila.types.MPAARating;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.types.AbstractValueType;
 
@@ -166,13 +166,13 @@ public class PagilaTypeTest
 				logger().debug("testFullText: fulltext=" + fulltext);
 				logger().debug("testFullText: fulltext-type=" + ((fulltext == null) ? null : fulltext.getClass()));
 				
-				PGobject pgo = (PGobject) fulltext;
-				logger().debug("testFullText: pgo.getType()=" + pgo.getType());
-				logger().debug("testFullText: pgo.getValue()=" + pgo.getValue());
-				
-				
-				String fts = rs.getString(2);
-				logger().debug("testFullText: fts=" + fts);
+//				PGobject pgo = (PGobject) fulltext;
+//				logger().debug("testFullText: pgo.getType()=" + pgo.getType());
+//				logger().debug("testFullText: pgo.getValue()=" + pgo.getValue());
+//				
+//				
+//				String fts = rs.getString(2);
+//				logger().debug("testFullText: fts=" + fts);
 				
 				
 				

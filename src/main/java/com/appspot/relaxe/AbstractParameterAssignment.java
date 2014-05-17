@@ -39,9 +39,14 @@ public abstract class AbstractParameterAssignment<
 	implements ParameterAssignment {	
 	private H holder;
 	
-	public AbstractParameterAssignment(H value) {
+	public AbstractParameterAssignment(H holder) {
 		super();
-		this.holder = value;
+		
+		if (holder == null) {
+			throw new NullPointerException("holder");
+		}
+		
+		this.holder = holder;
 	}
 	
 	protected H holder() {
@@ -51,8 +56,7 @@ public abstract class AbstractParameterAssignment<
 	@Override
 	public void assign(PreparedStatement ps, int ordinal) 
 		throws SQLException {
-		
-				
+								
 		V v = holder.value();
 						
 		if (v == null) {

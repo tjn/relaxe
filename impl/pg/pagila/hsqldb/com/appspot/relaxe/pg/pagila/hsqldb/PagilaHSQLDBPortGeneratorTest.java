@@ -20,18 +20,19 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.pg.pagila;
+package com.appspot.relaxe.pg.pagila.hsqldb;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.appspot.relaxe.TestContext;
+import com.appspot.relaxe.hsqldb.pagila.HSQLDBPagilaPersistenceContext;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.impl.hsqldb.HSQLDBTest;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 import com.appspot.relaxe.rdbms.hsqldb.AbstractHSQLDBImplementation;
-import com.appspot.relaxe.rdbms.hsqldb.HSQLDBFileImplementation;
-import com.appspot.relaxe.rdbms.hsqldb.HSQLDBPersistenceContext;
+// import com.appspot.relaxe.rdbms.hsqldb.HSQLDBFileImplementation;
+import com.appspot.relaxe.rdbms.hsqldb.HSQLDBMemImplementation;
 import com.appspot.relaxe.rdbms.pg.PGImplementation;
 
 public class PagilaHSQLDBPortGeneratorTest
@@ -60,27 +61,28 @@ public class PagilaHSQLDBPortGeneratorTest
 	}
 	
 	
-	public void transform(Catalog cat) throws Exception {			
+	public void transform(Catalog cat) throws Exception {
 		
-		final AbstractHSQLDBImplementation hi = new HSQLDBFileImplementation();
+//		final AbstractHSQLDBImplementation hi = new HSQLDBFileImplementation();
+		final AbstractHSQLDBImplementation hi = new HSQLDBMemImplementation();
 		String tdc = hi.defaultDriverClassName();
 		
 		if (tdc != null) {
 			Class.forName(tdc);
 		}				
 		
-		HSQLDBPersistenceContext hpc = new HSQLDBPersistenceContext(hi);
+		HSQLDBPagilaPersistenceContext hpc = new HSQLDBPagilaPersistenceContext();
 		
 		TestContext<PGImplementation> tc = getCurrent();
 		
 		HSQLDBTest ht = new HSQLDBTest();
 				
-		String dataDir = ht.getDatabase();
-		
+		String dataDir = ht.getDatabase();		
 		String destUrl = hi.createJdbcUrl(dataDir);
+		boolean copyData = true;
 				
 		PagilaHSQLDBPortGenerator gen = new PagilaHSQLDBPortGenerator(
-				tc.getJdbcURL(), tc.getJdbcConfig(), hpc, destUrl, hi.getProperties());
+				tc.getJdbcURL(), tc.getJdbcConfig(), hpc, destUrl, hi.getProperties(), copyData);
 						
 		gen.transform(cat);
 	}	

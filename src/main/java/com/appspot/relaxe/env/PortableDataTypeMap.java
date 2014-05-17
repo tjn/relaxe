@@ -20,32 +20,13 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.pg.pagila.types;
+package com.appspot.relaxe.env;
 
-import com.appspot.relaxe.types.Enumerable;
+import com.appspot.relaxe.meta.DefaultDataTypeMap;
 
-public enum MPAARating
-	implements Enumerable {
-	G,
-	PG,
-	PG_13,
-	R,
-	NC_17
-	;
+public class PortableDataTypeMap
+	extends DefaultDataTypeMap {
 
-	@Override
-	public String value() {
-		return toString().replace('_', '-');
-	}
-//    'G',
-//    'PG',
-//    'PG-13',
-//    'R',
-//    'NC-17'
-
-	
-	public static MPAARating parse(String s) {
-		String n = s.replace('-', '_');
-		return MPAARating.valueOf(n);
+	public PortableDataTypeMap() {	
 	}
 }

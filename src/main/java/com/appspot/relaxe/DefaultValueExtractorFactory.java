@@ -58,7 +58,7 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 		
 		ValueExtractor<?, ?, ?> e = null;
 	
-		switch (sqltype) {
+		switch (sqltype) {			
 			case Types.INTEGER:					
 			case Types.SMALLINT:
 			case Types.TINYINT:
@@ -97,6 +97,9 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 			case Types.VARBINARY:				
 			case Types.LONGVARBINARY:
 				e = createLongVarBinaryExtractor(col);
+				break;
+			case Types.BIT:
+				e = createBooleanExtractor(col);
 				break;
 			default:
 				logger().info("createExtractor: type=" + sqltype);
@@ -152,6 +155,10 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 	
 	public LongVarBinaryExtractor createLongVarBinaryExtractor(int col) {
 		return new LongVarBinaryExtractor(col);
+	}
+	
+	public BooleanExtractor createBooleanExtractor(int col) {
+		return new BooleanExtractor(col);
 	}
 	
 		

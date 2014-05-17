@@ -22,6 +22,8 @@
  */
 package com.appspot.relaxe.rdbms.mysql;
 
+import com.appspot.relaxe.env.mysql.MySQLDataTypeMap;
+import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.rdbms.DefaultPersistenceContext;
 import com.appspot.relaxe.rdbms.GeneratedKeyHandler;
 
@@ -45,5 +47,10 @@ public class MySQLPersistenceContext
 		}
 
 		return generatedKeyHandler;
-	}	
+	}
+	
+	@Override
+	protected DataTypeMap newDataTypeMap() {
+		return new MySQLDataTypeMap();
+	}
 }

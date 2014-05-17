@@ -20,15 +20,14 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.pg.pagila.types;
+package com.appspot.relaxe.env.hsqldb;
 
-import com.appspot.relaxe.ent.AttributeName;
+import com.appspot.relaxe.meta.DefaultDataTypeMap;
 
-public interface HasMPAARatingAttribute<
-	A extends AttributeName,
-	E extends HasMPAARating<A, E>	
->	{
+public class HSQLDBDataTypeMap
+	extends DefaultDataTypeMap {
 
-	MPAARatingKey<A, E> getMPAARatingKey(A a);	
-	void register(MPAARatingKey<A, E> key);
+	public HSQLDBDataTypeMap() {
+		super();	
+	}	
 }

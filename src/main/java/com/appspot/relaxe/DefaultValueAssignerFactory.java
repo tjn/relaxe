@@ -24,12 +24,14 @@ package com.appspot.relaxe;
 
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.types.ValueType;
+import com.appspot.relaxe.value.BooleanHolder;
 import com.appspot.relaxe.value.CharHolder;
 import com.appspot.relaxe.value.DateHolder;
 import com.appspot.relaxe.value.DecimalHolder;
 import com.appspot.relaxe.value.IntegerHolder;
 import com.appspot.relaxe.value.IntervalHolder;
 import com.appspot.relaxe.value.LongVarBinaryHolder;
+import com.appspot.relaxe.value.StringHolder;
 import com.appspot.relaxe.value.TimeHolder;
 import com.appspot.relaxe.value.TimestampHolder;
 import com.appspot.relaxe.value.ValueHolder;
@@ -53,9 +55,18 @@ public class DefaultValueAssignerFactory
 			case ValueType.CHAR:	
 				pa = createCharAssignment(ph.asCharHolder());
 				break;
-			case ValueType.VARCHAR:	
-				pa = createVarcharAssignment(ph.asVarcharHolder());
+			case ValueType.VARCHAR:
+			{
+				VarcharHolder vh = (ph == null) ? null : ph.asVarcharHolder();
+				
+				if (vh == null) {
+					StringHolder<?, ?> sh = ph.asStringHolder();			
+					vh = (sh == null) ? null : VarcharHolder.valueOf(sh.value());
+				}
+				
+				pa = (vh == null) ? null : createVarcharAssignment(vh);
 				break;
+			}
 			case ValueType.DATE:	
 				pa = createDateAssignment(ph.asDateHolder());
 				break;
@@ -69,10 +80,18 @@ public class DefaultValueAssignerFactory
 			case ValueType.NUMERIC:
 				pa = createDecimalAssignment(ph.asDecimalHolder());
 				break;
+			case ValueType.BINARY:
+			case ValueType.VARBINARY:
 			case ValueType.LONGVARBINARY:	
 				pa = createLongVarBinaryAssignment(ph.asLongVarBinaryHolder());
-				break;			
-				
+				break;
+			case ValueType.BIT:	 
+			case ValueType.BOOLEAN:
+			{
+				BooleanHolder h = ph.asBooleanHolder();
+				pa = (h == null) ? null : createBooleanAssignment(h);
+				break;
+			}
 			case ValueType.OTHER:
 				if ("interval_dt".equals(columnType.getTypeName())) {				
 					pa = createIntervalAssignment((IntervalHolder.DayTime) ph);
@@ -87,6 +106,11 @@ public class DefaultValueAssignerFactory
 				
 		return pa;
 	}
+	
+	protected ParameterAssignment createBooleanAssignment(BooleanHolder h) {
+		return new BooleanAssignment(h);
+	}
+
 
 
 //	protected ParameterAssignment createArrayAssignment(ArrayHolder h) {
@@ -244,6 +268,4 @@ public class DefaultValueAssignerFactory
 	protected ParameterAssignment createVarcharAssignment(VarcharHolder h) {
 		return new VarcharAssignment(h);
 	}
-
-
 }

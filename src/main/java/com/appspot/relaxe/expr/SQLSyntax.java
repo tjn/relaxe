@@ -34,6 +34,11 @@ public interface SQLSyntax {
     AlterTableDropConstraint newAlterTableDropForeignKey(ForeignKey fk);    
     AlterTableDropConstraint newAlterTableDropPrimaryKey(PrimaryKey pk);
     
+    /**
+     * TODO rename me
+     * @param elementType
+     * @return
+     */
     SQLDataType newArrayTypeDefinition(SQLDataType elementType);
 
 }

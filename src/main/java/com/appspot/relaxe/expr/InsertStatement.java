@@ -113,7 +113,8 @@ public class InsertStatement
 	public void traverseContent(VisitContext vc, ElementVisitor v) {		
 		SQLKeyword.INSERT.traverse(vc, v);
 		SQLKeyword.INTO.traverse(vc, v);
-			
+		
+						
 		getTableName().traverse(vc, v);
 		
 		ElementList<Identifier> cl = getColumnNameList();
@@ -146,9 +147,7 @@ public class InsertStatement
 		
 	protected SchemaElementName getTableName() {
 		if (tableName == null) {
-			SchemaElementName sen = this.target.getName();			
-//			tableName = new SchemaElementName(this.target);
-			tableName = sen;
+			tableName = this.target.getName().withoutCatalog();
 		}
 
 		return tableName;

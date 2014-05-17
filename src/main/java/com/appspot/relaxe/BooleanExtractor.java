@@ -20,38 +20,27 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.pg.pagila.types;
+/**
+ * 
+ */
+package com.appspot.relaxe;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-import com.appspot.relaxe.types.EnumType;
+import com.appspot.relaxe.types.BooleanType;
+import com.appspot.relaxe.value.BooleanHolder;
 
-public class MPAARatingType
-	extends EnumType<MPAARatingType, MPAARating> {
-
-	public static final MPAARatingType TYPE = new MPAARatingType();
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -973907139465998994L;
-	
-	private MPAARatingType() {		
+public class BooleanExtractor
+	extends ValueExtractor<Boolean, BooleanType, BooleanHolder>
+{
+	public BooleanExtractor(int column) {
+		super(column);			
 	}
 
 	@Override
-	public String getName() {
-		return "mpaa_rating";
+	public BooleanHolder extract(ResultSet rs) throws SQLException {
+		boolean value = rs.getBoolean(getColumn());
+		return rs.wasNull() ? BooleanHolder.NULL_HOLDER : BooleanHolder.valueOf(value);
 	}
-
-	@Override
-	public MPAARatingType self() {
-		return this;
-	}
-
-	@Override
-	public Class<MPAARating> getValueType() {		
-		return MPAARating.class;
-	}	
-	
-	
 }

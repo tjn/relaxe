@@ -22,6 +22,8 @@
  */
 package com.appspot.relaxe.rdbms.mariadb;
 
+import com.appspot.relaxe.env.mariadb.MariaDBDataTypeMap;
+import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.rdbms.DefaultPersistenceContext;
 import com.appspot.relaxe.rdbms.GeneratedKeyHandler;
 
@@ -45,5 +47,10 @@ public class MariaDBPersistenceContext
 		}
 
 		return generatedKeyHandler;
-	}	
+	}
+	
+	@Override
+	protected DataTypeMap newDataTypeMap() {
+		return new MariaDBDataTypeMap();
+	}
 }
