@@ -48,14 +48,6 @@ Relaxe can currently be used with the following RDBMSs:
    to not work with Relaxe
 
 
-Author
------------------------------------------------------------------------
-
-Topi Nieminen
-
-<topi.nieminen@gmail.com>
-
-
 License
 -----------------------------------------------------------------------
 
