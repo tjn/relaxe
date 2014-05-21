@@ -27,13 +27,13 @@ Samples
 
 Database metadata:
 
-  [ColumnListSample.java] (src/samples/java/com/appspot/relaxe/samples/ColumnListSample.java)
-  [ForeignKeyListSample.java] (src/samples/java/com/appspot/relaxe/samples/ForeignKeyListSample.java)
+  * [ColumnListSample] (src/samples/java/com/appspot/relaxe/samples/ColumnListSample.java)
+  * [ForeignKeyListSample] (src/samples/java/com/appspot/relaxe/samples/ForeignKeyListSample.java)
 
 Data Access API:
 
-  [PagilaEntityQuerySample.java] (src/samples/java/com/appspot/relaxe/samples/pagila/PagilaEntityQuerySample.java)
-  [PagilaEntitySessionSample.java] (src/samples/java/com/appspot/relaxe/samples/pagila/PagilaEntitySessionSample.java)
+  * [Session] (src/samples/java/com/appspot/relaxe/samples/pagila/PagilaEntitySessionSample.java)
+  * [Queries] (src/samples/java/com/appspot/relaxe/samples/pagila/PagilaEntityQuerySample.java)
 
 
 Dependencies
