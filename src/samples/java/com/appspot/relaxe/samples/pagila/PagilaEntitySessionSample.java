@@ -91,7 +91,7 @@ public class PagilaEntitySessionSample {
 				// film.set(Film.TITLE, IntegerHolder.valueOf(123));
 				
 								
-				// But because entities are sparse, getters return holders, not wrapped values.
+				// Entities are sparse: getters return holders, not wrapped values.
 				StringHolder<?, ?> holder = film.getTitle();
 				
 				boolean valueNotPresent = (holder == null);
@@ -104,7 +104,7 @@ public class PagilaEntitySessionSample {
 				System.out.println("value present and not null ? " + valuePresentAndNotNull);
 												
 							
-	//			Entities can also manipulated via bean-like interface:				
+	//			Entities can manipulated via bean-like interface as well:				
 				film.setTitle("Terminator II");
 											
 				dumpEntity(film);
@@ -117,14 +117,14 @@ public class PagilaEntitySessionSample {
 				EntityQueryPredicate lp = qe.newEquals(Language.NAME, "English");																
 				Language.Query lq = new Language.Query(qe, lp);
 														
-				// query elements also provide some type-safety - the following would not compile:
+				// Query elements also provide some type-safety - the following would not compile:
 //				Language.QueryElement qe = new Language.QueryElement(
 //						Film.FILM_ID,
 //						Language.NAME
 //				);
 				
 //				The following does not compile either.
-//				An attribute of Film -entity can only be used with Film.QueryElement
+//				An attribute of Film -entity can only be used with Film.QueryElement -
 //				not with Language.QueryElement:				
 //				EntityQueryPredicate fp = qe.newEquals(Film.TITLE, "English");
 								
