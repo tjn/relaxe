@@ -55,8 +55,6 @@ public interface EntityQueryElement<
 	 */
 	M getMetaData();
 	
-	// TableReference getTableRef();
-	
 	public int getElementCount();
 		
 	public Set<A> attributes();
