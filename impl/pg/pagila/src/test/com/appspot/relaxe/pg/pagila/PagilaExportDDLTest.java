@@ -73,7 +73,7 @@ import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.Receiver;
 import com.appspot.relaxe.service.ReceiverAdapter;
 import com.appspot.relaxe.service.StatementSession;
-import com.appspot.relaxe.source.DefaultAttributeInfo;
+import com.appspot.relaxe.source.DefaultAttributeDescriptor;
 import com.appspot.relaxe.source.SourceGenerator;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.VarcharArrayType;
@@ -210,7 +210,7 @@ public class PagilaExportDDLTest
 			
 			DefaultTypeMapper tym = new DefaultTypeMapper() {
 				{
-					DefaultAttributeInfo info = new DefaultAttributeInfo();
+					DefaultAttributeDescriptor info = new DefaultAttributeDescriptor();
 			    	info.setValueType(StringArray.class);
 		        	info.setHolderType(VarcharArrayHolder.class);
 		        	info.setAttributeType(VarcharArrayAttribute.class);

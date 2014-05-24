@@ -60,10 +60,10 @@ import com.appspot.relaxe.env.IdentifierRules;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.expr.SchemaName;
-import com.appspot.relaxe.map.AttributeInfo;
+import com.appspot.relaxe.map.AttributeDescriptor;
 import com.appspot.relaxe.map.JavaType;
 import com.appspot.relaxe.map.TableMapper;
-import com.appspot.relaxe.map.TypeMapper;
+import com.appspot.relaxe.map.AttributeTypeMap;
 import com.appspot.relaxe.map.TableMapper.Part;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Catalog;
@@ -328,7 +328,7 @@ public class SourceGenerator {
 		return SourceGenerator.logger;
 	}
 
-	public int check(Catalog cat, TypeMapper tm, StringBuilder buf) {
+	public int check(Catalog cat, AttributeTypeMap tm, StringBuilder buf) {
 
 		List<String> errorList = new ArrayList<String>();
 
@@ -367,7 +367,7 @@ public class SourceGenerator {
 	 * @param errorList
 	 * @return
 	 */
-	private String formatColumnMappingError(BaseTable table, Column c, TypeMapper tm, 
+	private String formatColumnMappingError(BaseTable table, Column c, AttributeTypeMap tm, 
 			List<String> errorList) {
 
 		StringBuilder buf = new StringBuilder();
@@ -421,9 +421,9 @@ public class SourceGenerator {
 	}
 
 	private int processAttributeInfo(Table table, Column column,
-			TypeMapper mapper, List<String> errorList) {
+			AttributeTypeMap mapper, List<String> errorList) {
 
-		AttributeInfo info = mapper.getAttributeInfo(column.getDataType());
+		AttributeDescriptor info = mapper.getAttributeDescriptor(column.getDataType());
 
 		if (info == null) {
 			errorList.add("no attribute info");
@@ -491,7 +491,7 @@ public class SourceGenerator {
 	 * @throws QueryException
 	 * @throws IOException
 	 */
-	public Properties run(Catalog cat, TableMapper tm, TypeMapper typeMapper,
+	public Properties run(Catalog cat, TableMapper tm, AttributeTypeMap typeMapper,
 			Environment targetEnvironment) throws QueryException, IOException {
 		
 		logger().debug("run - enter");
@@ -769,7 +769,7 @@ public class SourceGenerator {
 	// }
 
 	private void process(Catalog cat, Schema s, final TableMapper tm,
-			TypeMapper tym, Collection<JavaType> ccil,
+			AttributeTypeMap tym, Collection<JavaType> ccil,
 			Map<JavaType, CharSequence> factories, Properties generated,
 			Map<File, String> gm) throws IOException {
 
@@ -962,7 +962,7 @@ public class SourceGenerator {
 	}
 
 	public CharSequence generateInterface(Catalog cat, BaseTable t,
-			JavaType mt, TableMapper tm, TypeMapper tym) throws IOException {
+			JavaType mt, TableMapper tm, AttributeTypeMap tym) throws IOException {
 
 		String src = getTemplateFor(Part.INTERFACE);
 
@@ -1104,7 +1104,7 @@ public class SourceGenerator {
 		return src;
 	}
 
-	private String queryElementVariableList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
+	private String queryElementVariableList(Catalog cat, BaseTable t, TableMapper tm, AttributeTypeMap tym) {
 		Collection<ForeignKey> fks = t.foreignKeys().values();
 
 		if (fks.isEmpty()) {
@@ -1168,7 +1168,7 @@ public class SourceGenerator {
 		return variableName(referenceName(fk)) + "QueryElement";
 	}
 
-	private String queryElementGetterBody(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
+	private String queryElementGetterBody(Catalog cat, BaseTable t, TableMapper tm, AttributeTypeMap tym) {
 		Collection<ForeignKey> fks = t.foreignKeys().values();
 
 		StringBuilder buf = new StringBuilder();
@@ -1201,7 +1201,7 @@ public class SourceGenerator {
 		return buf.toString();
 	}
 
-	private String queryElementSetterBody(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
+	private String queryElementSetterBody(Catalog cat, BaseTable t, TableMapper tm, AttributeTypeMap tym) {
 		Collection<ForeignKey> fks = t.foreignKeys().values();
 
 		StringBuilder buf = new StringBuilder();
@@ -1232,7 +1232,7 @@ public class SourceGenerator {
 	}
 
 	private String queryElementAssignmentList(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym) {
+			TableMapper tm, AttributeTypeMap tym) {
 		Collection<ForeignKey> fks = t.foreignKeys().values();
 
 		if (fks.isEmpty()) {
@@ -1250,7 +1250,7 @@ public class SourceGenerator {
 	}
 
 	private String queryElementNewBuilderBody(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym) {
+			TableMapper tm, AttributeTypeMap tym) {
 		Collection<ForeignKey> fks = t.foreignKeys().values();
 
 		StringBuilder buf = new StringBuilder();
@@ -1270,7 +1270,7 @@ public class SourceGenerator {
 	}
 
 	private String queryElementDefaultConstructorBody(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym) {
+			TableMapper tm, AttributeTypeMap tym) {
 
 		PrimaryKey pk = t.getPrimaryKey();
 
@@ -1291,7 +1291,7 @@ public class SourceGenerator {
 
 		for (Column ac : acols) {
 			if (pkcm.contains(ac.getUnqualifiedName())) {								
-				AttributeInfo ai = tym.getAttributeInfo(ac.getDataType());
+				AttributeDescriptor ai = tym.getAttributeDescriptor(ac.getDataType());
 
 				if (ai == null) {
 					throw new NullPointerException(
@@ -1338,7 +1338,7 @@ public class SourceGenerator {
 		return buf.toString();
 	}
 
-	private String perTypeQueryElementGetterList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym) {
+	private String perTypeQueryElementGetterList(Catalog cat, BaseTable t, TableMapper tm, AttributeTypeMap tym) {
 
 		Collection<ForeignKey> fks = t.foreignKeys().values();
 
@@ -1484,7 +1484,7 @@ public class SourceGenerator {
 	 */
 
 	private String attributeContainerInterfaceList(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym) {
+			TableMapper tm, AttributeTypeMap tym) {
 		StringBuilder buf = new StringBuilder();
 
 		Set<Class<?>> implemented = new LinkedHashSet<Class<?>>();
@@ -1492,7 +1492,7 @@ public class SourceGenerator {
 		List<Column> cl = getAttributeColumnList(cat, t, tym);
 
 		for (Column c : cl) {
-			AttributeInfo ai = tym.getAttributeInfo(c.getDataType());
+			AttributeDescriptor ai = tym.getAttributeDescriptor(c.getDataType());
 
 			if (ai != null) {
 				Class<?> ct = ai.getContainerType();
@@ -1538,7 +1538,7 @@ public class SourceGenerator {
 	 */
 
 	private String attributeKeyContainerInterfaceList(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym) {
+			TableMapper tm, AttributeTypeMap tym) {
 		StringBuilder buf = new StringBuilder();
 
 		Set<Class<?>> implemented = new LinkedHashSet<Class<?>>();
@@ -1546,7 +1546,7 @@ public class SourceGenerator {
 		List<Column> cl = getAttributeColumnList(cat, t, tym);
 
 		for (Column c : cl) {
-			AttributeInfo ai = tym.getAttributeInfo(c.getDataType());
+			AttributeDescriptor ai = tym.getAttributeDescriptor(c.getDataType());
 
 			if (ai != null) {
 				Class<?> ct = ai.getContainerMetaType();
@@ -1592,7 +1592,7 @@ public class SourceGenerator {
 	 */
 
 	private String attributeContainerImplementation(Catalog cat, BaseTable t,
-			TableMapper tam, TypeMapper tym) {
+			TableMapper tam, AttributeTypeMap tym) {
 		StringBuilder buf = new StringBuilder();
 
 		Map<Class<?>, List<Column>> attributeTypeMap = new HashMap<Class<?>, List<Column>>();
@@ -1600,7 +1600,7 @@ public class SourceGenerator {
 		List<Column> cl = getAttributeColumnList(cat, t, tym);
 
 		for (Column c : cl) {
-			AttributeInfo ai = tym.getAttributeInfo(c.getDataType());
+			AttributeDescriptor ai = tym.getAttributeDescriptor(c.getDataType());
 
 			if (ai != null) {
 				Class<?> kt = ai.getAttributeType();
@@ -1631,7 +1631,7 @@ public class SourceGenerator {
 
 	private void formatAttributeHolderAccessors(Catalog cat, Class<?> kt,
 			BaseTable table, List<Column> columns, TableMapper tam,
-			TypeMapper tym, StringBuilder buf) {
+			AttributeTypeMap tym, StringBuilder buf) {
 
 		// Sample output: "private IntegerHolder a = null;"
 		// Sample output: "private IntegerHolder b = null;, etc..."
@@ -1642,7 +1642,7 @@ public class SourceGenerator {
 
 		for (Column ac : cols) {
 
-			AttributeInfo info = tym.getAttributeInfo(ac.getDataType());
+			AttributeDescriptor info = tym.getAttributeDescriptor(ac.getDataType());
 
 			if (info == null) {
 				continue;
@@ -1672,7 +1672,7 @@ public class SourceGenerator {
 		// first:
 		Column column = columns.get(0);
 
-		AttributeInfo ai = tym.getAttributeInfo(column.getDataType());
+		AttributeDescriptor ai = tym.getAttributeDescriptor(column.getDataType());
 		String n = getKeyName(ai.getAttributeType());
 		n = removeSuffix(n, "Attribute");
 
@@ -1805,7 +1805,7 @@ public class SourceGenerator {
 	 */
 
 	private String attributeKeyContainerImplementation(Catalog cat,
-			BaseTable t, TableMapper tam, TypeMapper tym) throws IOException {
+			BaseTable t, TableMapper tam, AttributeTypeMap tym) throws IOException {
 		StringBuilder buf = new StringBuilder();
 
 		buf.append("\n// attributeKeyContainerImplementation() - enter\n");
@@ -1815,7 +1815,7 @@ public class SourceGenerator {
 		List<Column> cl = getAttributeColumnList(cat, t, tym);
 
 		for (Column c : cl) {
-			AttributeInfo ai = tym.getAttributeInfo(c.getDataType());
+			AttributeDescriptor ai = tym.getAttributeDescriptor(c.getDataType());
 
 			if (ai != null) {
 				Class<?> kt = ai.getAttributeType();
@@ -1906,7 +1906,7 @@ public class SourceGenerator {
 	}
 
 	public CharSequence generateFactoryInterface(Schema s,
-			JavaType factoryType, TableMapper tm, TypeMapper typeMapper,
+			JavaType factoryType, TableMapper tm, AttributeTypeMap typeMapper,
 			Collection<TypeInfo> types) throws IOException {
 
 		String src = getFactoryTemplateFor(Part.INTERFACE);
@@ -2092,7 +2092,7 @@ public class SourceGenerator {
 	}
 
 	private CharSequence generateImplementation(Catalog cat, BaseTable t,
-			JavaType impl, TableMapper tam, TypeMapper tym) throws IOException {
+			JavaType impl, TableMapper tam, AttributeTypeMap tym) throws IOException {
 
 		String src = getTemplateFor(Part.IMPLEMENTATION);
 
@@ -2649,7 +2649,7 @@ public class SourceGenerator {
 	}
 
 	private String attributesMethodStatementList(Catalog cat, BaseTable t,
-			TableMapper tam, TypeMapper tym) {
+			TableMapper tam, AttributeTypeMap tym) {
 		StringBuilder buf = new StringBuilder();
 
 		buf.append("\n// attributesMethodStatementList() - enter\n");
@@ -2660,7 +2660,7 @@ public class SourceGenerator {
 		List<Column> cols = getAttributeColumnList(cat, t, tym);
 
 		for (Column c : cols) {
-			AttributeInfo ai = tym.getAttributeInfo(c.getDataType());
+			AttributeDescriptor ai = tym.getAttributeDescriptor(c.getDataType());
 
 			if (ai == null) {
 				logger().warn(
@@ -2730,7 +2730,7 @@ public class SourceGenerator {
 	}
 
 	private String generateCreateIdentityMapMethod(BaseTable t,
-			TableMapper tam, TypeMapper tm) {
+			TableMapper tam, AttributeTypeMap tm) {
 		PrimaryKey pk = t.getPrimaryKey();
 
 		StringBuilder buf = new StringBuilder();
@@ -2741,7 +2741,7 @@ public class SourceGenerator {
 
 			if (cm.size() == 1) {
 				Column col = cm.get(0);
-				AttributeInfo ai = tm.getAttributeInfo(col.getDataType());
+				AttributeDescriptor ai = tm.getAttributeDescriptor(col.getDataType());
 
 				// Sample output:
 				// @Override
@@ -3174,7 +3174,7 @@ public class SourceGenerator {
 	}
 
 	private String valueVariableList(Catalog cat, BaseTable t, TableMapper tm,
-			TypeMapper tym) {
+			AttributeTypeMap tym) {
 		List<Column> acl = getAttributeColumnList(cat, t, tym);
 		StringBuilder content = new StringBuilder();
 
@@ -3186,7 +3186,7 @@ public class SourceGenerator {
 		return content.toString();
 	}
 
-	private String valueAccessorList(Catalog cat, BaseTable t, TableMapper tm, TypeMapper tym, boolean impl) {
+	private String valueAccessorList(Catalog cat, BaseTable t, TableMapper tm, AttributeTypeMap tym, boolean impl) {
 		List<Column> acl = getAttributeColumnList(cat, t, tym);
 		StringBuilder content = new StringBuilder();
 
@@ -3199,13 +3199,13 @@ public class SourceGenerator {
 	}
 
 	private String formatValueVariable(BaseTable t, Column c, TableMapper tm,
-			TypeMapper tym) {
+			AttributeTypeMap tym) {
 
 		// private transient VarcharValue<Person.Attribute, Person> lastName;
 
 		StringBuilder buf = new StringBuilder();
 
-		AttributeInfo a = tym.getAttributeInfo(c.getDataType());
+		AttributeDescriptor a = tym.getAttributeDescriptor(c.getDataType());
 
 		if (a == null) {
 			return "";
@@ -3280,7 +3280,7 @@ public class SourceGenerator {
 	}
 
 	private String formatValueAccessor(BaseTable t, Column c, TableMapper tm,
-			TypeMapper tym, boolean impl) {
+			AttributeTypeMap tym, boolean impl) {
 
 		// // output example:
 		// public VarcharValue<Attribute, Person> lastName() {
@@ -3295,7 +3295,7 @@ public class SourceGenerator {
 
 		StringBuilder buf = new StringBuilder();
 
-		AttributeInfo a = tym.getAttributeInfo(c.getDataType());
+		AttributeDescriptor a = tym.getAttributeDescriptor(c.getDataType());
 
 		if (a == null) {
 			return "";
@@ -3361,7 +3361,7 @@ public class SourceGenerator {
 	}
 
 	private String metaDataInitialization(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym, boolean qualify) {
+			TableMapper tm, AttributeTypeMap tym, boolean qualify) {
 		StringBuilder buf = new StringBuilder();
 		buf.append(attributeKeyInitialization(cat, t, tm, tym));
 		buf.append(referenceKeyInitialization(cat, t, tm, qualify));
@@ -3369,12 +3369,12 @@ public class SourceGenerator {
 	}
 
 	private String attributeKeyInitialization(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym) {
+			TableMapper tm, AttributeTypeMap tym) {
 		List<Column> acl = getAttributeColumnList(cat, t, tym);
 		StringBuilder content = new StringBuilder();
 
 		for (Column c : acl) {
-			AttributeInfo a = tym.getAttributeInfo(c.getDataType());
+			AttributeDescriptor a = tym.getAttributeDescriptor(c.getDataType());
 
 			if (a == null) {
 				continue;
@@ -3397,7 +3397,7 @@ public class SourceGenerator {
 	}
 
 	private String attributeKeyMapList(Catalog cat, BaseTable t,
-			TableMapper tm, TypeMapper tym) {
+			TableMapper tm, AttributeTypeMap tym) {
 		StringBuilder buf = new StringBuilder();
 		Map<Class<?>, Integer> tom = keyTypeOccurenceMap(cat, t, tm, tym);
 		// Map<Integer, Class<?>> ktm = typeKeyMap(t, tm);
@@ -3438,14 +3438,14 @@ public class SourceGenerator {
 	}
 
 	private Map<Class<?>, Integer> keyTypeOccurenceMap(Catalog cat,
-			BaseTable t, TableMapper tm, TypeMapper tym) {
+			BaseTable t, TableMapper tm, AttributeTypeMap tym) {
 		List<Column> acl = getAttributeColumnList(cat, t, tym);
 
 		// key -type => occurences:
 		Map<Class<?>, Integer> tom = new HashMap<Class<?>, Integer>();
 
 		for (Column c : acl) {
-			AttributeInfo a = tym.getAttributeInfo(c.getDataType());
+			AttributeDescriptor a = tym.getAttributeDescriptor(c.getDataType());
 
 			if (a == null) {
 				continue;
@@ -3477,7 +3477,7 @@ public class SourceGenerator {
 	// but atomically with ref -methods
 
 	private List<Column> getAttributeColumnList(Catalog cat, BaseTable t,
-			TypeMapper tym) {
+			AttributeTypeMap tym) {
 		Set<Identifier> fkcols = foreignKeyColumnMap(cat, t).keySet();
 		List<Column> attrs = new ArrayList<Column>();
 
@@ -3491,7 +3491,7 @@ public class SourceGenerator {
 	}
 
 	private String attributeKeyList(Catalog cat, BaseTable t, TableMapper tm,
-			TypeMapper tym) {
+			AttributeTypeMap tym) {
 		List<Column> acl = getAttributeColumnList(cat, t, tym);
 		StringBuilder content = new StringBuilder();
 
@@ -3803,10 +3803,10 @@ public class SourceGenerator {
 	}
 
 	private String formatAttributeKey(BaseTable t, Column c, TableMapper tm,
-			TypeMapper tym) {
+			AttributeTypeMap tym) {
 		StringBuilder buf = new StringBuilder();
 
-		AttributeInfo a = tym.getAttributeInfo(c.getDataType());
+		AttributeDescriptor a = tym.getAttributeDescriptor(c.getDataType());
 
 				
 		if (a == null) {
@@ -3891,14 +3891,14 @@ public class SourceGenerator {
 		return columnEnumeratedName(t, c, EnumSet.of(nq), tm);
 	}
 	
-	private String entityAttributeAccessorList(Catalog cat, BaseTable t, TableMapper tam, TypeMapper tym, boolean impl) {
+	private String entityAttributeAccessorList(Catalog cat, BaseTable t, TableMapper tam, AttributeTypeMap tym, boolean impl) {
 		
 		StringBuilder buf = new StringBuilder();
 		
 		List<Column> cols = getAttributeColumnList(cat, t, tym);
 
 		for (Column c : cols) {
-			AttributeInfo a = tym.getAttributeInfo(c.getDataType());
+			AttributeDescriptor a = tym.getAttributeDescriptor(c.getDataType());
 
 			if (a == null) {
 				continue;
@@ -3916,7 +3916,7 @@ public class SourceGenerator {
 		return buf.toString();
 	}
 
-	private String formatEntityAttributeAccessor(Table table, Column c, AttributeInfo info, TableMapper tam, TypeMapper tym, boolean impl) {
+	private String formatEntityAttributeAccessor(Table table, Column c, AttributeDescriptor info, TableMapper tam, AttributeTypeMap tym, boolean impl) {
 		// final String attributeName = attr(c);
 		Class<?> valueType = info.getValueType();
 		Class<?> holderType = info.getHolderType();
@@ -4032,18 +4032,18 @@ public class SourceGenerator {
 	}	
 
 	private String contentAccessors(Catalog cat, BaseTable t, TableMapper tm,
-			TypeMapper tym, boolean impl) {
+			AttributeTypeMap tym, boolean impl) {
 		StringBuilder content = new StringBuilder();
 		contentAccessors(cat, t, content, tm, tym, impl);
 		return content.toString();
 	}
 
 	private void contentAccessors(Catalog cat, BaseTable t, StringBuilder content,
-			TableMapper tm, TypeMapper tym, boolean impl) {
+			TableMapper tm, AttributeTypeMap tym, boolean impl) {
 		List<Column> cols = getAttributeColumnList(cat, t, tym);
 
 		for (Column c : cols) {
-			AttributeInfo a = tym.getAttributeInfo(c.getDataType());
+			AttributeDescriptor a = tym.getAttributeDescriptor(c.getDataType());
 
 			if (a == null) {
 				continue;
@@ -4059,7 +4059,7 @@ public class SourceGenerator {
 		}
 	}
 
-	private String formatContentAccessors(Table table, Column c, AttributeInfo info,
+	private String formatContentAccessors(Table table, Column c, AttributeDescriptor info,
 			boolean impl) {
 		// final String attributeName = attr(c);
 		Class<?> attributeType = info.getValueType();
@@ -4169,7 +4169,7 @@ public class SourceGenerator {
 	}
 
 	private String attrs(Catalog cat, BaseTable t, TableMapper tm,
-			TypeMapper tym) {
+			AttributeTypeMap tym) {
 		StringBuilder buf = new StringBuilder();
 		attrs(cat, t, tm, tym, buf);
 		return buf.toString();
@@ -4186,11 +4186,11 @@ public class SourceGenerator {
 	}
 
 	private void attrs(Catalog cat, BaseTable t, TableMapper tm,
-			TypeMapper tym, StringBuilder content) {
+			AttributeTypeMap tym, StringBuilder content) {
 		List<Column> cols = getAttributeColumnList(cat, t, tym);
 
 		for (Column c : cols) {
-			AttributeInfo ai = tym.getAttributeInfo(c.getDataType());
+			AttributeDescriptor ai = tym.getAttributeDescriptor(c.getDataType());
 
 			if (ai == null) {
 				logger().warn(
@@ -4566,8 +4566,8 @@ public class SourceGenerator {
 	
 	
 	
-	private String getAccessorNameSuffix(Column column, TypeMapper typeMapper) {
-		AttributeInfo ai = typeMapper.getAttributeInfo(column.getDataType());
+	private String getAccessorNameSuffix(Column column, AttributeTypeMap typeMapper) {
+		AttributeDescriptor ai = typeMapper.getAttributeDescriptor(column.getDataType());
 		String n = getKeyName(ai.getAttributeType());
 		return removeSuffix(n, "Attribute");		
 	}

@@ -25,15 +25,13 @@ package com.appspot.relaxe.source;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.appspot.relaxe.map.AttributeInfo;
+import com.appspot.relaxe.map.AttributeDescriptor;
 import com.appspot.relaxe.types.ValueType;
 
 
-public class DefaultAttributeInfo
-	implements AttributeInfo {
+public class DefaultAttributeDescriptor
+	implements AttributeDescriptor {
 	
-//	private Table table;
-//	private Column column;
 	private Class<?> valueType;
 	private Class<?> holderType;
 	private Class<?> attributeType;
@@ -56,36 +54,12 @@ public class DefaultAttributeInfo
 		primitiveTypeMap.put(Short.class, Short.TYPE);		
 	}
 	
-	
-//	public DefaultAttributeInfo(Table table, Column column) {
-//		super();
-//		this.table = table;
-//		this.column = column;
-//	}
-	
-	
-	
-//	@Override
-//	public Class<?> getPrimitiveType() {
-//		return primitiveTypeMap.get(getAttributeType());
-//	}
-
 	@Override
 	public Class<?> getValueType() {
 		return this.valueType;
 	}
 
-//	private Column getColumn() {
-//		return this.column;
-//	}
-	
-//	@Override
-//	public DataType getColumnType() {
-//		return getColumn().getDataType();
-//	}
-	
-
-	public DefaultAttributeInfo() {
+	public DefaultAttributeDescriptor() {
 		super();
 	}
 
@@ -98,11 +72,6 @@ public class DefaultAttributeInfo
 	public Class<?> getAttributeType() {
 		return this.attributeType;
 	}
-
-//	@Override
-//	public Table getTable() {
-//		return this.table;
-//	}
 
 	@Override
 	public Class<?> getAccessorType() {

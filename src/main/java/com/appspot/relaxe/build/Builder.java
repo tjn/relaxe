@@ -45,7 +45,7 @@ import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.feature.Features;
 import com.appspot.relaxe.feature.SQLGenerationException;
 import com.appspot.relaxe.map.TableMapper;
-import com.appspot.relaxe.map.TypeMapper;
+import com.appspot.relaxe.map.AttributeTypeMap;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.Schema;
 import com.appspot.relaxe.query.QueryException;
@@ -74,7 +74,7 @@ public class Builder
     private Environment targetEnvironment = null;
     
     private transient TableMapper tableMapper;
-    private transient TypeMapper typeMapper;
+    private transient AttributeTypeMap typeMapper;
     
     private SchemaFilter schemaFilter;
     
@@ -139,7 +139,7 @@ public class Builder
         String tmi = cl.value(OPTION_TYPE_MAPPER_IMPLEMENTATION);
         String eim = cl.value(OPTION_ENVIRONMENT_IMPLEMENTATION);
                 
-        TypeMapper tym = null;
+        AttributeTypeMap tym = null;
         
         
         if (tmi == null) {
@@ -150,7 +150,7 @@ public class Builder
         		logger().debug("loading type mapper -class: " + tmi);
         		Class<?> tmc = Class.forName(tmi);
         		logger().debug("instantiating type mapper...");        		
-        		tym = (TypeMapper) tmc.newInstance();
+        		tym = (AttributeTypeMap) tmc.newInstance();
         		logger().debug("type mapper instantiated");
         	}
         	catch (Exception e) {
@@ -525,11 +525,11 @@ public class Builder
 		this.schemaFilter = schemaFilter;
 	}
 
-	public TypeMapper getTypeMapper() {
+	public AttributeTypeMap getTypeMapper() {
 		return typeMapper;
 	}
 
-	public void setTypeMapper(TypeMapper typeMapper) {
+	public void setTypeMapper(AttributeTypeMap typeMapper) {
 		this.typeMapper = typeMapper;
 	}
 

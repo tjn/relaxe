@@ -75,10 +75,10 @@ import com.appspot.relaxe.ent.value.TimestampAccessor;
 import com.appspot.relaxe.ent.value.TimestampAttribute;
 import com.appspot.relaxe.ent.value.VarcharAccessor;
 import com.appspot.relaxe.ent.value.VarcharAttribute;
-import com.appspot.relaxe.map.AttributeInfo;
-import com.appspot.relaxe.map.TypeMapper;
+import com.appspot.relaxe.map.AttributeDescriptor;
+import com.appspot.relaxe.map.AttributeTypeMap;
 import com.appspot.relaxe.meta.DataType;
-import com.appspot.relaxe.source.DefaultAttributeInfo;
+import com.appspot.relaxe.source.DefaultAttributeDescriptor;
 import com.appspot.relaxe.types.ArrayType;
 import com.appspot.relaxe.types.BooleanType;
 import com.appspot.relaxe.types.CharType;
@@ -110,7 +110,7 @@ import com.appspot.relaxe.value.VarcharHolder;
 
 
 public class DefaultTypeMapper
-	implements TypeMapper {
+	implements AttributeTypeMap {
 	
 	
 	public static class Key
@@ -169,21 +169,21 @@ public class DefaultTypeMapper
 	
 	
 	
-	private Map<String, AttributeInfo> otherAttributeTypeMap;
-	private Map<String, AttributeInfo> distinctAttributeTypeMap;
-	private Map<String, AttributeInfo> arrayAttributeTypeMap;
+	private Map<String, AttributeDescriptor> otherAttributeTypeMap;
+	private Map<String, AttributeDescriptor> distinctAttributeTypeMap;
+	private Map<String, AttributeDescriptor> arrayAttributeTypeMap;
 	
-	private Map<Key, AttributeInfo> attributeTypeMap;
+	private Map<Key, AttributeDescriptor> attributeTypeMap;
 	
-	protected void register(ValueType<?> type, AttributeInfo info) {
+	protected void register(ValueType<?> type, AttributeDescriptor info) {
 		register(type.getSqlType(), type.getName(), info);		
 	}
 	
-	protected void register(int type, String name, AttributeInfo info) {
+	protected void register(int type, String name, AttributeDescriptor info) {
 		getAttributeTypeMap().put(new Key(type, name), info);
 	}
 		
-	protected void register(OtherType<?> otherType, AttributeInfo info) {		
+	protected void register(OtherType<?> otherType, AttributeDescriptor info) {		
 		String name = otherType.getName();
 						
 //		if (!otherType.equals(info.getPrimitiveType())) {
@@ -196,44 +196,44 @@ public class DefaultTypeMapper
 		getOtherAttributeTypeMap().put(name, info);				
 	}
 	
-	protected void register(DistinctType<?> distinctType, AttributeInfo info) {		
+	protected void register(DistinctType<?> distinctType, AttributeDescriptor info) {		
 		String name = distinctType.getName();
 		getDistinctAttributeTypeMap().put(name, info);				
 	}
 
-	protected void register(ArrayType<?, ?> arrayType, AttributeInfo info) {		
+	protected void register(ArrayType<?, ?> arrayType, AttributeDescriptor info) {		
 		String name = arrayType.getName();
 		getArrayAttributeTypeMap().put(name, info);				
 	}
 	
 
-	protected AttributeInfo getOtherAttributeInfo(DataType dataType) {
+	protected AttributeDescriptor getOtherAttributeInfo(DataType dataType) {
 		return getOtherAttributeTypeMap().get(dataType.getTypeName());
 	}
 	
-	protected AttributeInfo getDistinctAttributeInfo(DataType dataType) {
+	protected AttributeDescriptor getDistinctAttributeInfo(DataType dataType) {
 		return getDistinctAttributeTypeMap().get(dataType.getTypeName());
 	}
 	
-	protected AttributeInfo getArrayAttributeInfo(DataType dataType) {
+	protected AttributeDescriptor getArrayAttributeInfo(DataType dataType) {
 		return getArrayAttributeTypeMap().get(dataType.getTypeName());
 	}
 	    
     @Override
-	public AttributeInfo getAttributeInfo(DataType dataType) {
+	public AttributeDescriptor getAttributeDescriptor(DataType dataType) {
     	            	
         int type = dataType.getDataType();
                 
-        Map<Key, AttributeInfo> am = getAttributeTypeMap();
+        Map<Key, AttributeDescriptor> am = getAttributeTypeMap();
         
                 
-        AttributeInfo ai = am.isEmpty() ? null : am.get(new Key(dataType.getDataType(), dataType.getTypeName()));
+        AttributeDescriptor ai = am.isEmpty() ? null : am.get(new Key(dataType.getDataType(), dataType.getTypeName()));
         	
         if (ai != null) {        	
         	return ai;
         }
         
-        DefaultAttributeInfo da = new DefaultAttributeInfo();
+        DefaultAttributeDescriptor da = new DefaultAttributeDescriptor();
         
         
         switch (type) {
@@ -383,34 +383,34 @@ public class DefaultTypeMapper
     }
     
     
-    private Map<String, AttributeInfo> getOtherAttributeTypeMap() {
+    private Map<String, AttributeDescriptor> getOtherAttributeTypeMap() {
 		if (otherAttributeTypeMap == null) {
-			otherAttributeTypeMap = new TreeMap<String, AttributeInfo>();			
+			otherAttributeTypeMap = new TreeMap<String, AttributeDescriptor>();			
 		}
 
 		return otherAttributeTypeMap;
 	}
     
-    private Map<String, AttributeInfo> getDistinctAttributeTypeMap() {
+    private Map<String, AttributeDescriptor> getDistinctAttributeTypeMap() {
 		if (distinctAttributeTypeMap == null) {
-			distinctAttributeTypeMap = new TreeMap<String, AttributeInfo>();
+			distinctAttributeTypeMap = new TreeMap<String, AttributeDescriptor>();
 			
 		}
 
 		return distinctAttributeTypeMap;
 	}
     
-    public Map<String, AttributeInfo> getArrayAttributeTypeMap() {
+    public Map<String, AttributeDescriptor> getArrayAttributeTypeMap() {
 		if (arrayAttributeTypeMap == null) {
-			arrayAttributeTypeMap = new TreeMap<String, AttributeInfo>();
+			arrayAttributeTypeMap = new TreeMap<String, AttributeDescriptor>();
 		}
 
 		return arrayAttributeTypeMap;		
 	}
     
-    private Map<Key, AttributeInfo> getAttributeTypeMap() {
+    private Map<Key, AttributeDescriptor> getAttributeTypeMap() {
 		if (attributeTypeMap == null) {
-			attributeTypeMap = new TreeMap<Key, AttributeInfo>();			
+			attributeTypeMap = new TreeMap<Key, AttributeDescriptor>();			
 		}
 
 		return attributeTypeMap;

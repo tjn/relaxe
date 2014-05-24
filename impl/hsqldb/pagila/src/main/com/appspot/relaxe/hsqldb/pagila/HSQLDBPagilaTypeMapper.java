@@ -27,7 +27,7 @@ import com.appspot.relaxe.ent.value.HasVarcharArray;
 import com.appspot.relaxe.ent.value.HasVarcharArrayAttribute;
 import com.appspot.relaxe.ent.value.VarcharArrayAccessor;
 import com.appspot.relaxe.ent.value.VarcharArrayAttribute;
-import com.appspot.relaxe.source.DefaultAttributeInfo;
+import com.appspot.relaxe.source.DefaultAttributeDescriptor;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.VarcharArrayType;
 import com.appspot.relaxe.value.StringArray;
@@ -39,7 +39,7 @@ public class HSQLDBPagilaTypeMapper
 	public HSQLDBPagilaTypeMapper() {
 		super();
 		
-		DefaultAttributeInfo info = new DefaultAttributeInfo();
+		DefaultAttributeDescriptor info = new DefaultAttributeDescriptor();
     	info.setValueType(StringArray.class);
     	info.setHolderType(VarcharArrayHolder.class);
     	info.setAttributeType(VarcharArrayAttribute.class);

@@ -22,9 +22,17 @@
  */
 package com.appspot.relaxe.map;
 
-import com.appspot.relaxe.meta.DataType;
+import com.appspot.relaxe.types.ValueType;
 
-public interface TypeMapper {
+public interface AttributeDescriptor {
+
+	Class<?> getHolderType();
+	Class<?> getAttributeType();
+	Class<?> getAccessorType();
+	Class<?> getValueType();
+	Class<?> getIdentityMapType();	
+	Class<?> getContainerType();
+	Class<?> getContainerMetaType();
 	
-	AttributeInfo getAttributeInfo(DataType dataType);
+	ValueType<?> getPrimitiveType();	
 }

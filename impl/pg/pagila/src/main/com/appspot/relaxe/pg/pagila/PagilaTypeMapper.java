@@ -61,7 +61,7 @@ import com.appspot.relaxe.env.pg.PGTextArrayType;
 import com.appspot.relaxe.env.pg.PGTextAttribute;
 import com.appspot.relaxe.env.pg.PGTextHolder;
 import com.appspot.relaxe.env.pg.PGTextType;
-import com.appspot.relaxe.source.DefaultAttributeInfo;
+import com.appspot.relaxe.source.DefaultAttributeDescriptor;
 import com.appspot.relaxe.types.ArrayType;
 import com.appspot.relaxe.types.DistinctType;
 import com.appspot.relaxe.types.IntegerType;
@@ -84,7 +84,7 @@ public class PagilaTypeMapper
 		super();
 		
 		{
-			DefaultAttributeInfo info = new DefaultAttributeInfo();
+			DefaultAttributeDescriptor info = new DefaultAttributeDescriptor();
 			
         	info.setValueType(String.class);
         	info.setHolderType(PGTextHolder.class);
@@ -98,7 +98,7 @@ public class PagilaTypeMapper
 		}
 		
 		{
-			DefaultAttributeInfo info = new DefaultAttributeInfo();
+			DefaultAttributeDescriptor info = new DefaultAttributeDescriptor();
 			
         	info.setValueType(String.class);
         	info.setHolderType(VarcharHolder.class);
@@ -126,7 +126,7 @@ public class PagilaTypeMapper
 //		}				
 		
 		{
-			DefaultAttributeInfo info = new DefaultAttributeInfo();
+			DefaultAttributeDescriptor info = new DefaultAttributeDescriptor();
 						
 			info.setPrimitiveType(MPAARatingType.TYPE);
 			info.setValueType(MPAARating.class);		
@@ -142,7 +142,7 @@ public class PagilaTypeMapper
 		}
 		
 		{
-			DefaultAttributeInfo info = new DefaultAttributeInfo();
+			DefaultAttributeDescriptor info = new DefaultAttributeDescriptor();
 			
 			info.setPrimitiveType(IntegerType.TYPE);
 			info.setValueType(Integer.class);		
@@ -157,7 +157,7 @@ public class PagilaTypeMapper
 		}
 		
 		{
-			DefaultAttributeInfo info = new DefaultAttributeInfo();
+			DefaultAttributeDescriptor info = new DefaultAttributeDescriptor();
 			
         	info.setValueType(Interval.YearMonth.class);
         	info.setHolderType(IntervalHolder.YearMonth.class);
@@ -173,7 +173,7 @@ public class PagilaTypeMapper
 		
 		
 		{
-			DefaultAttributeInfo info = new DefaultAttributeInfo();
+			DefaultAttributeDescriptor info = new DefaultAttributeDescriptor();
 			
         	info.setValueType(StringArray.class);
         	info.setHolderType(PGTextArrayHolder.class);
@@ -187,7 +187,7 @@ public class PagilaTypeMapper
 		}
 		
 		{
-			DefaultAttributeInfo info = new DefaultAttributeInfo();
+			DefaultAttributeDescriptor info = new DefaultAttributeDescriptor();
 			
         	info.setValueType(String.class);
         	info.setHolderType(PGTextHolder.class);
@@ -234,21 +234,21 @@ public class PagilaTypeMapper
 	}
 	
 	
-	private void registerOtherType(OtherType<?> t, DefaultAttributeInfo info) {
+	private void registerOtherType(OtherType<?> t, DefaultAttributeDescriptor info) {
 //		info.setPrimitiveType(t);
 		logger().debug("primitive-type 1: " + t);
 		logger().debug("primitive-type 2: " + info.getPrimitiveType());
 		register(t, info);
 	}
 	
-	private void registerDistinctType(DistinctType<?> t, DefaultAttributeInfo info) {
+	private void registerDistinctType(DistinctType<?> t, DefaultAttributeDescriptor info) {
 //		info.setPrimitiveType(t);
 		logger().debug("primitive-type 1: " + t);
 		logger().debug("primitive-type 2: " + info.getPrimitiveType());
 		register(t, info);
 	}
 	
-	private void registerArrayType(ArrayType<?, ?> t, DefaultAttributeInfo info) {
+	private void registerArrayType(ArrayType<?, ?> t, DefaultAttributeDescriptor info) {
 //		info.setPrimitiveType(t);
 		logger().debug("primitive-type 1: " + t);
 		logger().debug("primitive-type 2: " + info.getPrimitiveType());
