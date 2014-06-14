@@ -28,9 +28,7 @@ import com.appspot.relaxe.expr.Element;
 import com.appspot.relaxe.expr.ElementList;
 import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.InsertStatement;
-import com.appspot.relaxe.expr.SQLKeyword;
-import com.appspot.relaxe.expr.Symbol;
-import com.appspot.relaxe.expr.ValueRow;
+import com.appspot.relaxe.expr.RowValueConstructor;
 import com.appspot.relaxe.expr.VisitContext;
 import com.appspot.relaxe.meta.Table;
 
@@ -47,41 +45,14 @@ public class PGInsert
 		super();
 	}
 	
-	public PGInsert(Table target) {
-		super(target);
-	}
-
-	public PGInsert(Table target, ElementList<Identifier> columnNameList, ValueRow valueRow) {
+	public PGInsert(Table target, ElementList<Identifier> columnNameList, RowValueConstructor valueRow) {
 		super(target, columnNameList, valueRow);
 	}
 
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
-
-		SQLKeyword.INSERT.traverse(vc, v);
-		SQLKeyword.INTO.traverse(vc, v);
-			
-		getTableName().traverse(vc, v);		
-		
-		ElementList<Identifier> cl = getColumnNameList();
-		
-		if (cl != null) {
-			Symbol.PAREN_LEFT.traverse(vc, v);	
-			cl.traverse(vc, v);
-			Symbol.PAREN_RIGHT.traverse(vc, v);
-		}
-		
-		ElementList<ValueRow> vr = getValues();
-		
-		if (vr.isEmpty()) {
-			SQLKeyword.DEFAULT.traverse(vc, v);
-			SQLKeyword.VALUES.traverse(vc, v);
-		}
-		else {
-			SQLKeyword.VALUES.traverse(vc, v);		
-			getValues().traverse(vc, v);			
-		}		
+		super.traverseContent(vc, v);
 		
 		ReturningClause rc = getReturning();
 		

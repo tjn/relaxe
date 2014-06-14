@@ -39,12 +39,13 @@ import org.apache.commons.csv.CSVStrategy;
 import com.appspot.relaxe.AssignmentVisitor;
 import com.appspot.relaxe.QueryHelper;
 import com.appspot.relaxe.ValueAssignerFactory;
+import com.appspot.relaxe.expr.AbstractRowValueConstructor;
 import com.appspot.relaxe.expr.ElementList;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.InsertStatement;
 import com.appspot.relaxe.expr.MutableValueParameter;
-import com.appspot.relaxe.expr.ValueRow;
-import com.appspot.relaxe.expr.ValuesListElement;
+import com.appspot.relaxe.expr.RowValueConstructor;
+import com.appspot.relaxe.expr.RowValueConstructorElement;
 import com.appspot.relaxe.expr.ddl.types.SQLDataType;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ColumnMap;
@@ -114,6 +115,9 @@ class CSVInsertTask
             if (names.isEmpty()) {
                 throw new IllegalStateException("no column names available"); 
             }        
+            
+            ElementList<Identifier> nel = ElementList.newElementList(names);
+            
     
             final int expectedColumnCount = line.length;
 //            int recno = 0;        
@@ -137,7 +141,7 @@ class CSVInsertTask
                            
                 if (ps == null) {
                 	
-                	List<ValuesListElement> vl = new ArrayList<ValuesListElement>(params.length);
+                	List<RowValueConstructorElement> vl = new ArrayList<RowValueConstructorElement>(params.length);
                 	
                     for (int i = 0; i < params.length; i++) {                      
                         Column column = columnList.get(i);
@@ -147,9 +151,9 @@ class CSVInsertTask
                         params[i] = param;
                         vl.add(param);
                     }
-                                        
-                    ValueRow vr = new ValueRow(vl);                    
-                    ins = new InsertStatement(table, new ElementList<Identifier>(names), vr);
+                    
+                    RowValueConstructor rvc = AbstractRowValueConstructor.of(vl);                    
+                    ins = new InsertStatement(table, nel, rvc);
                     
                     String q = ins.generate();
                     ps = connection.prepareStatement(q);

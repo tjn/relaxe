@@ -101,7 +101,7 @@ public abstract class AbstractParameter<
 	}
 
 	@Override
-	public List<? extends Identifier> getColumnNames() {
+	public List<Identifier> getColumnNames() {
 		return Collections.singletonList(this.columnName);
 	}
 	
@@ -126,13 +126,30 @@ public abstract class AbstractParameter<
 		return this.columnType;
 	}
 	
-	@Override
-	public ColumnExpr getTableColumnExpr(int column) {
-		if (column != 1) {
-			throw new IndexOutOfBoundsException(Integer.toString(column));
-		}
+	
+	
 		
+//	@Override
+//	public ColumnExpr getTableColumnExpr(int column) {
+//		if (column != 1) {
+//			throw new IndexOutOfBoundsException(Integer.toString(column));
+//		}
+//		
+//		return null;
+//	}
+	
+	@Override
+	public SQLKeyword asDefaultSpecification() {
 		return null;
 	}
-
+	
+	@Override
+	public SQLKeyword asNullSpecification() {
+		return null;
+	}
+	
+	@Override
+	public ValueExpression asValueExpression() {
+		return this;
+	}	
 }

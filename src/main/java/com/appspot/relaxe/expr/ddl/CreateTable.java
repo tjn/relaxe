@@ -23,7 +23,6 @@
 package com.appspot.relaxe.expr.ddl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.appspot.relaxe.env.Environment;
@@ -81,7 +80,7 @@ public class CreateTable
 		
 		ColumnMap cm = table.getColumnMap();
 		
-		ElementList<ColumnConstraint> nnc = new ElementList<ColumnConstraint>(Collections.singleton(NotNull.NOT_NULL));
+		ElementList<ColumnConstraint> nnc = ElementList.newElementList(NotNull.NOT_NULL);
 		Environment env = table.getEnvironment();
 		
 		for (Column col : cm.values()) {
@@ -110,7 +109,7 @@ public class CreateTable
 		}
 				
 		this.tableName = relative ? table.getName().withoutCatalog() : table.getName();		
-		this.elementList = new ElementList<BaseTableElement>(elements);
+		this.elementList = ElementList.newElementList(elements);
 	}
 	
 		
@@ -171,7 +170,7 @@ public class CreateTable
 		}		
 
 		public CreateTable newCreateTable() {
-			ElementList<BaseTableElement> el = new ElementList<BaseTableElement>(getElementList());
+			ElementList<BaseTableElement> el = ElementList.newElementList(getElementList());
 			return new CreateTable(tableName, el);			
 		}
 		
@@ -200,7 +199,7 @@ public class CreateTable
 		SQLKeyword.TABLE.traverse(vc, v);
 		getTableName().traverse(vc, v);		
 		Symbol.PAREN_LEFT.traverse(vc, v);
-		getElementList().traverseContent(vc, v);
+		getElementList().traverse(vc, v);		
 		Symbol.PAREN_RIGHT.traverse(vc, v);
 	}
 

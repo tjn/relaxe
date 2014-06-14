@@ -111,7 +111,7 @@ public class ValueElement
 	}
 
 	@Override
-	public List<? extends Identifier> getColumnNames() {				
+	public List<Identifier> getColumnNames() {				
 		return Collections.singletonList(getColumnName());
 	}
 
@@ -128,14 +128,14 @@ public class ValueElement
 		return getValue();
 	}
 	
-	@Override
-	public ColumnExpr getTableColumnExpr(int column) {
-		if (column != 1) {
-			throw new IndexOutOfBoundsException(Integer.toString(column));
-		}
-						
-		return null;
-	}
+//	@Override
+//	public ColumnExpr getTableColumnExpr(int column) {
+//		if (column != 1) {
+//			throw new IndexOutOfBoundsException(Integer.toString(column));
+//		}
+//						
+//		return null;
+//	}
 	
 //	public static Logger logger() {
 //        return ValueElement.logger;

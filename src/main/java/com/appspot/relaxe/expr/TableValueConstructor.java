@@ -20,25 +20,61 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.expr.op;
+package com.appspot.relaxe.expr;
 
-import com.appspot.relaxe.expr.TableExpression;
 
-public class GroupedRelation
-	extends Parenthesis<TableExpression> {
-	
+public class TableValueConstructor<E extends Element>
+	extends CompoundElement
+		implements TableExpression {
+		
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1172889989852534036L;
-
+	private static final long serialVersionUID = -4615610962973762991L;
+	private E content;
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
-	protected GroupedRelation() {
+	private TableValueConstructor() {
 	}
-
-	public GroupedRelation(TableExpression expression) {
-		super(expression);
+	
+	private TableValueConstructor(E content) {		
+		this.content = content;
 	}
+		
+	public static TableValueConstructor<RowValueConstructor> of(RowValueConstructor row) {
+		return new TableValueConstructor<RowValueConstructor>(row);
+	}
+	
+	public static TableValueConstructor<ElementList<RowValueConstructor>> of(ElementList<RowValueConstructor> rows) {
+		return new TableValueConstructor<ElementList<RowValueConstructor>>(rows);
+	}
+	
+	
+	@Override
+	protected void traverseContent(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.VALUES.traverse(vc, v);
+		this.content.traverse(vc, v);		
+	}
+	
+	@Override
+	public Select getSelect() {
+		return null;
+	}
+	
+	@Override
+	public From getFrom() {
+		return null;
+	}
+	
+	@Override
+	public Where getWhere() {
+		return null;
+	}
+		
+	@Override
+	public GroupBy getGroupBy() {
+		return null;
+	}	
 }

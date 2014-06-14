@@ -27,7 +27,7 @@ import java.util.Collection;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.ElementList;
 import com.appspot.relaxe.expr.InsertStatement;
-import com.appspot.relaxe.expr.ValueRow;
+import com.appspot.relaxe.expr.RowValueConstructor;
 import com.appspot.relaxe.meta.Table;
 
 public class PGInsertStatement
@@ -46,11 +46,11 @@ public class PGInsertStatement
 	}
 
 	public PGInsertStatement(Table target,
-			ElementList<Identifier> columnNameList, Collection<ValueRow> rows) {
+			ElementList<Identifier> columnNameList, Collection<RowValueConstructor> rows) {
 		super(target, columnNameList, rows);
 	}
 
-	public PGInsertStatement(Table target, ElementList<Identifier> columnNameList, ValueRow valueRow) {
+	public PGInsertStatement(Table target, ElementList<Identifier> columnNameList, RowValueConstructor valueRow) {
 		super(target, columnNameList, valueRow);
 	}
 

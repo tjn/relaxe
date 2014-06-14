@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObjectQueryResult;
 import com.appspot.relaxe.env.Environment;
+import com.appspot.relaxe.expr.AbstractRowValueConstructor;
 import com.appspot.relaxe.expr.ColumnReference;
 import com.appspot.relaxe.expr.DefaultTableExpression;
 import com.appspot.relaxe.expr.ElementList;
@@ -41,11 +42,11 @@ import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.ImmutableValueParameter;
 import com.appspot.relaxe.expr.InsertStatement;
 import com.appspot.relaxe.expr.Parameter;
+import com.appspot.relaxe.expr.RowValueConstructor;
+import com.appspot.relaxe.expr.RowValueConstructorElement;
 import com.appspot.relaxe.expr.Select;
 import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.TableReference;
-import com.appspot.relaxe.expr.ValueRow;
-import com.appspot.relaxe.expr.ValuesListElement;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.DataTypeMap;
@@ -155,14 +156,14 @@ public class Copy {
 			
 						
 			DefaultTableExpression e = new DefaultTableExpression(b.newSelect(), new From(tref));
-			List<ValueRow> rows = new ArrayList<ValueRow>();
+			List<RowValueConstructor> rows = new ArrayList<RowValueConstructor>();
 			
 			DataObjectQueryResult<DataObject> results = qs.execute(e, null);
 															
 			for (DataObject o : results.getContent()) {				
 				int i = 0;
 				
-				List<ValuesListElement> elems = new ArrayList<ValuesListElement>();
+				List<RowValueConstructorElement> elems = new ArrayList<RowValueConstructorElement>();
 				
 				for (Column col : cc) {
 					ValueHolder<?, ?, ?> h = o.get(i);
@@ -170,17 +171,16 @@ public class Copy {
 					elems.add(p);
 					i++;
 				}
-				
-				rows.add(new ValueRow(elems));
-			}
-			
+								
+				rows.add(AbstractRowValueConstructor.of(elems));
+			}			
 			
 			if (rows.isEmpty()) {
 				logger.debug("no data to copy");
 			}
 			else {
 				logger.debug("inserting all..");
-				InsertStatement ins = new InsertStatement(tt, new ElementList<Identifier>(tcl), rows);
+				InsertStatement ins = new InsertStatement(tt, ElementList.newElementList(tcl), rows);
 				ss.executeUpdate(ins, ur);		
 				logger.debug("inserted");
 			}			

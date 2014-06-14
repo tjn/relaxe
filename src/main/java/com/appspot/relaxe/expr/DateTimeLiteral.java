@@ -26,7 +26,7 @@
 package com.appspot.relaxe.expr;
 
 public abstract class DateTimeLiteral	
-	implements Token, ValueExpression {
+	extends AbstractLiteral {
 	
 	public static final int DEFAULT_TIME_PRECISION = 6;
 

@@ -25,8 +25,7 @@ package com.appspot.relaxe.expr;
 import com.appspot.relaxe.types.ValueType;
 
 public class CountFunction
-	extends CompoundElement
-	implements ValueExpression {
+	extends SetFunction {
 
 	/**
 	 * 

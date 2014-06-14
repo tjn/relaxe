@@ -22,7 +22,8 @@
  */
 package com.appspot.relaxe.expr;
 
-public interface ValuesListElement
-	extends Expression {
+
+public interface RowValueConstructor
+	extends Element {
 
 }

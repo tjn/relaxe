@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe.expr;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.appspot.relaxe.meta.ForeignKey;
@@ -126,21 +127,31 @@ public class JoinedTable
 	}
 
 	@Override
-	public ElementList<? extends Identifier> getUncorrelatedColumnNameList() {
-		ElementList<Identifier> names = new ElementList<Identifier>();
+	public ElementList<Identifier> getUncorrelatedColumnNameList() {
+		List<Identifier> nl = new ArrayList<Identifier>();
 		
-		copyColumnNameList(getLeft(), names);
-		copyColumnNameList(getRight(), names);
+		copyColumnNameList(getLeft(), nl);
+		copyColumnNameList(getRight(), nl);
+				
+		if (nl.isEmpty()) {
+			return null;
+		}
+		
+		ElementList<Identifier> names = ElementList.newElementList(nl);
 				
 		return names;
 	}
 	
-	private void copyColumnNameList(AbstractTableReference src, ElementList<Identifier> dest) {
+	private void copyColumnNameList(AbstractTableReference src, List<Identifier> dest) {
 		if (src != null) {
 			ElementList<? extends Identifier> nl = src.getUncorrelatedColumnNameList();
 			
-			if (!nl.isEmpty()) {
-				dest.getContent().addAll(nl.getContent());
+			if (nl != null) {				
+				int elems = nl.size();
+				
+				for (int i = 0; i < elems; i++) {
+					dest.add(nl.get(i));	
+				}
 			}
 		}
 	}
@@ -167,7 +178,7 @@ public class JoinedTable
 	}
 
 	@Override
-	public ElementList<? extends Identifier> getColumnNameList() {
+	public ElementList<Identifier> getColumnNameList() {
 		return getUncorrelatedColumnNameList();
 	}
 

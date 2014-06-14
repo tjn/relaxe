@@ -29,32 +29,38 @@ import com.appspot.relaxe.meta.Column;
 
 
 public class ColumnReference
-	extends ColumnExpr 
-	implements ValueExpression {
+	extends CompoundElement 
+	implements ValueExpression, SelectListElement {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1430117431795245443L;
 	
-	private Column column;
+	private AbstractTableReference table;	
+	private Identifier columnName;
+	private int dataType; 
 	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
 	public ColumnReference() {
 	}
-		
+	
 	public ColumnReference(AbstractTableReference table, Column column) {
-		super(table, column.getColumnName());
+		this(table, column.getColumnName(), column.getDataType().getDataType());
+	}
 		
-		this.column = column;
+	public ColumnReference(AbstractTableReference table, Identifier column, int dataType) {
+		this.table = table;
+		this.columnName = column;
+		this.dataType = dataType;
 //		logger().debug("table-col-expr column-name: " + column.getColumnName().getName());
 	}
 	
 	@Override
 	public int getType() {				
-		return getColumn().getDataType().getDataType();
+		return dataType;
 	}
 
 	@Override
@@ -75,13 +81,58 @@ public class ColumnReference
 	}
 	
 	
-	public Column getColumn() {		
-		return this.column;
+	@Override
+	public ValueExpression getColumnExpr(int column) {
+//		return getTableColumnExpr(column);
+		
+		if (column != 1) {
+			throw new IndexOutOfBoundsException(Integer.toString(column));
+		}
+	
+		return this;		
+	}
+
+//	@Override
+//	public ColumnExpr getTableColumnExpr(int column) {
+//		if (column != 1) {
+//			throw new IndexOutOfBoundsException(Integer.toString(column));
+//		}
+//
+//		return this;
+//	}
+
+	
+	@Override
+	public List<Identifier> getColumnNames() {		
+		return Collections.singletonList(getColumnName());
+	}
+	
+	public AbstractTableReference getTable() {
+		return this.table;
 	}
 	
 	@Override
-	public List<? extends Identifier> getColumnNames() {		
-		return Collections.singletonList(getColumnName());
+	public Identifier getColumnName() {
+		return columnName;
+	}
+
+	@Override
+	public int getColumnCount() {	
+		return 1;
+	}
+		
+	@Override
+	public ValueExpression asValueExpression() {
+		return this;
+	}
+	@Override
+	public SQLKeyword asDefaultSpecification() {
+		return null;
+	}
+	
+	@Override
+	public SQLKeyword asNullSpecification() {
+		return null;
 	}
 
 }

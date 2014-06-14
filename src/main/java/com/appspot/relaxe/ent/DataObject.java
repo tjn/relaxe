@@ -24,7 +24,7 @@ package com.appspot.relaxe.ent;
 
 import java.io.Serializable;
 
-import com.appspot.relaxe.expr.ColumnExpr;
+import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.value.ValueHolder;
@@ -41,7 +41,7 @@ public interface DataObject
 		public int getColumnCount();
 		public QueryExpression getQueryExpression();
 		
-		public ColumnExpr column(int index);
+		public Identifier identifier(int index);
 		public ValueExpression expr(int index);
 	}
 }

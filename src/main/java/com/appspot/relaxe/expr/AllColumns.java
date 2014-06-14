@@ -39,7 +39,7 @@ public abstract class AllColumns
 	}
 
 	@Override
-	public List<? extends Identifier> getColumnNames() {
+	public List<Identifier> getColumnNames() {
 		TableRefList refs = getTableRefs(); 
 		
 		if (refs == null) {
@@ -48,14 +48,14 @@ public abstract class AllColumns
 		
 		int rc = refs.getCount();
 		
-		if (rc == 1) {
-			return refs.getItem(0).getColumnNameList().getContent();
-		}
-		
 		List<Identifier> nl = new ArrayList<Identifier>();
 		
 		for (int i = 0; i < rc; i++) {
-			nl.addAll(refs.getItem(i).getColumnNameList().getContent());
+			ElementList<Identifier> el = refs.getItem(i).getColumnNameList();
+			
+			for (Identifier n : el) {
+				nl.add(n);
+			}
 		}
 		
 		return nl;
@@ -96,14 +96,9 @@ public abstract class AllColumns
 	
 	@Override
 	public ValueExpression getColumnExpr(final int column) {
-		return getTableColumnExpr(column);
-	}
-	
-	
-	@Override
-	public ColumnExpr getTableColumnExpr(final int column) {
 		int c = 0;	
-		ColumnExpr e = null;
+//		ColumnExpr e = null;
+		ValueExpression e = null;
 		
 		int index = column - 1;
 		
@@ -120,13 +115,41 @@ public abstract class AllColumns
 			
 			if (column <= c) {
 				int pos = c - column;				
-				e = tref.getAllColumns().getTableColumnExpr(pos);
+				e = tref.getAllColumns().getColumnExpr(pos);
 				break;
 			}
 		}
 		
-		return e;	
-	}
+		return e;				
+	}	
+	
+//	@Override
+//	public ColumnExpr getTableColumnExpr(final int column) {
+//		int c = 0;	
+//		ColumnExpr e = null;
+//		
+//		int index = column - 1;
+//		
+//		if (index < 0 || index >= getColumnCount()) {
+//			throw new IndexOutOfBoundsException("column=" + column);
+//		}
+//		
+//		TableRefList refs = getTableRefs();				
+//		int rc = refs.getCount();
+//		
+//		for (int i = 0; i < rc; i++) {
+//			AbstractTableReference tref = refs.getItem(i);
+//			c += tref.getColumnCount();
+//			
+//			if (column <= c) {
+//				int pos = c - column;				
+//				e = tref.getAllColumns().getTableColumnExpr(pos);
+//				break;
+//			}
+//		}
+//		
+//		return e;	
+//	}
 
 	protected abstract TableRefList getTableRefs();
 }

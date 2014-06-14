@@ -57,12 +57,12 @@ public class NestedJoin
 	}
 		
 	@Override
-	public ElementList<? extends Identifier> getUncorrelatedColumnNameList() {
+	public ElementList<Identifier> getUncorrelatedColumnNameList() {
 		return content.getUncorrelatedColumnNameList();
 	}
 	
 	@Override
-	public ElementList<? extends Identifier> getColumnNameList() {
+	public ElementList<Identifier> getColumnNameList() {
 		return getUncorrelatedColumnNameList();
 	}
 

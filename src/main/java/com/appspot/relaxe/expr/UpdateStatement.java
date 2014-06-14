@@ -72,10 +72,6 @@ public class UpdateStatement
 	}	
 	
 	public ElementList<Assignment> getAssignmentList() {
-		if (assignmentClause == null) {
-			assignmentClause = new ElementList<Assignment>();			
-		}
-
 		return assignmentClause;
 	}
 

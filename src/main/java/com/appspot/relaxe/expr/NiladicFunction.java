@@ -95,5 +95,19 @@ public class NiladicFunction
         this.name.traverse(vc, v);
     }
     
+    @Override
+    public ValueExpression asValueExpression() {
+    	return this;
+    }
+    
+    @Override
+    public SQLKeyword asNullSpecification() {
+       	return null;
+    }
+    
+    @Override
+    public SQLKeyword asDefaultSpecification() {
+       	return null;
+    }
     
 }

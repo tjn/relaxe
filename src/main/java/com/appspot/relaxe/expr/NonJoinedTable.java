@@ -22,11 +22,6 @@
  */
 package com.appspot.relaxe.expr;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public abstract class NonJoinedTable
 	extends AbstractTableReference {
 	
@@ -48,13 +43,16 @@ public abstract class NonJoinedTable
 	
 	
 	@Override
-	public ElementList<? extends Identifier> getColumnNameList() {		 		
-		if ((correlationClause == null) || 
-				(!correlationClause.altersColumnNames())) {
+	public ElementList<Identifier> getColumnNameList() {
+		CorrelationClause cc = getCorrelationClause();
+		ElementList<Identifier> nl = (cc == null) ? null : cc.getDerivedColumnList();
+		
+		
+		if (nl == null) { 
 			return getUncorrelatedColumnNameList();
 		}
 		
-		return getCorrelationClause().getNames(); 		
+		return nl;
 	}
 
 	public static class CorrelationClause
@@ -65,13 +63,13 @@ public abstract class NonJoinedTable
 		 * 
 		 */
 		private static final long serialVersionUID = 3876482034646951163L;
-		private ElementList<Identifier> names;
+		private ElementList<Identifier> derivedColumnList;
 		private NonJoinedTable nonJoinedTable;
 		
-		/**
-		 * 
-		 */		
-		private Map<Identifier, Identifier> columnNameMap;
+//		/**
+//		 * 
+//		 */		
+//		private Map<Identifier, Identifier> columnNameMap;
 		
 		/**
 		 * No-argument constructor for GWT Serialization
@@ -79,17 +77,22 @@ public abstract class NonJoinedTable
 		public CorrelationClause() {	
 		}
 			
-		public CorrelationClause(NonJoinedTable nonJoinedTable) {
+		public CorrelationClause(NonJoinedTable nonJoinedTable, ElementList<Identifier> derivedColumnList) {
 			super();
 			this.nonJoinedTable = nonJoinedTable;
+			this.derivedColumnList = derivedColumnList;
 		}
 		
-		boolean altersColumnNames() {
-			if ((columnNameMap == null) || columnNameMap.isEmpty()) {
-				return false;
-			}
-			
-			return true;
+//		boolean altersColumnNames() {
+//			if ((columnNameMap == null) || columnNameMap.isEmpty()) {
+//				return false;
+//			}
+//			
+//			return true;
+//		}
+		
+		public ElementList<Identifier> getDerivedColumnList() {
+			return derivedColumnList;
 		}
 				
 		@Override
@@ -100,11 +103,12 @@ public abstract class NonJoinedTable
 			
 			Identifier cn = nonJoinedTable.getCorrelationName(v.getContext());
 			cn.traverse(vc, v);
-
 			
-			if (altersColumnNames()) {
+			ElementList<Identifier> dcl = getDerivedColumnList();
+			
+			if (dcl != null) {
 				Symbol.PAREN_LEFT.traverse(vc, v);
-				getNames().traverse(vc, v);
+				dcl.traverse(vc, v);
 				Symbol.PAREN_RIGHT.traverse(vc, v);
 			}
 			
@@ -112,50 +116,50 @@ public abstract class NonJoinedTable
 		}
 		
 		
-		private ElementList<Identifier> getNames() {
-			if (!altersColumnNames()) {
-				return null;				
-			}
-			
-			if (names == null) {
-				names = new ElementList<Identifier>();
-			}
-			else {
-				names.getContent().clear();
-			}
-			
-			// ElementList<SelectListElement> elems = new ElementList<SelectListElement>();				
-			List<SelectListElement> elems = new ArrayList<SelectListElement>();
-			nonJoinedTable.addAll(elems);
-			
-			List<Identifier> nl = this.names.getContent();			
-			
-			for (SelectListElement e : elems) {
-				for (Identifier n : e.getColumnNames()) {
-					nl.add(getColumnName(n));
-				}
-			}
-
-			return names;
-		}		
+//		private ElementList<Identifier> getNames() {
+//			if (!altersColumnNames()) {
+//				return null;				
+//			}
+//			
+//			if (names == null) {
+//				names = new ElementList<Identifier>();
+//			}
+//			else {
+//				names.getContent().clear();
+//			}
+//			
+//			// ElementList<SelectListElement> elems = new ElementList<SelectListElement>();				
+//			List<SelectListElement> elems = new ArrayList<SelectListElement>();
+//			nonJoinedTable.addAll(elems);
+//			
+//			List<Identifier> nl = this.names.getContent();			
+//			
+//			for (SelectListElement e : elems) {
+//				for (Identifier n : e.getColumnNames()) {
+//					nl.add(getColumnName(n));
+//				}
+//			}
+//
+//			return names;
+//		}		
 	
-		public Map<Identifier, Identifier> getColumnNameMap() {
-			if (columnNameMap == null) {
-				columnNameMap = new HashMap<Identifier, Identifier>();				
-			}
-	
-			return columnNameMap;
-		}
+//		public Map<Identifier, Identifier> getColumnNameMap() {
+//			if (columnNameMap == null) {
+//				columnNameMap = new HashMap<Identifier, Identifier>();				
+//			}
+//	
+//			return columnNameMap;
+//		}
 		
-		private Identifier getColumnName(Identifier n) {
-			Identifier cn = getColumnNameMap().get(n);			
-			return (cn == null) ? n : cn;
-		}
+//		private Identifier getColumnName(Identifier n) {
+//			Identifier cn = getColumnNameMap().get(n);			
+//			return (cn == null) ? n : cn;
+//		}
 	}
 
 	public CorrelationClause getCorrelationClause() {
 		if (correlationClause == null) {
-			correlationClause = new CorrelationClause(this);			
+			correlationClause = new CorrelationClause(this, null);			
 		}
 
 		return correlationClause;		
@@ -163,7 +167,7 @@ public abstract class NonJoinedTable
 	
 	@Override	
 	protected abstract void traverseContent(VisitContext vc, ElementVisitor v);
-
+	
 	@Override
 	public SelectListElement getAllColumns() {
 		if (all == null) {

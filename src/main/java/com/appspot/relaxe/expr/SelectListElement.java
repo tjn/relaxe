@@ -35,19 +35,21 @@ public interface SelectListElement
 	 * be better? 
 	 * @return
 	 */	
-	List<? extends Identifier> getColumnNames();
+	List<Identifier> getColumnNames();
 	
 	/** 
+	 * 
+	 * TODO rename
 	 * @param column 1-based index
 	 * @return
 	 */
 	ValueExpression getColumnExpr(int column);
 	
-	/** 
-	 * @param column 1-based index
-	 * @return
-	 */	
-	ColumnExpr getTableColumnExpr(int column);	
+//	/** 
+//	 * @param column 1-based index
+//	 * @return
+//	 */	
+//	ColumnExpr getTableColumnExpr(int column);	
 	
 
 	/** Gets the column count.

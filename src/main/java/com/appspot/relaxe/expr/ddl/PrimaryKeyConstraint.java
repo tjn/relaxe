@@ -57,7 +57,7 @@ public class PrimaryKeyConstraint
 	
 	public PrimaryKeyConstraint(Identifier constraintName, List<Identifier> columnList) {
 		this.constraintName = constraintName;		
-		this.columnList = new ElementList<Identifier>(columnList);
+		this.columnList = ElementList.newElementList(columnList);
 	}
 	
 	public PrimaryKeyConstraint(PrimaryKey key) {
@@ -72,7 +72,7 @@ public class PrimaryKeyConstraint
 			nl.add(cm.get(i).getUnqualifiedName());
 		}
 				
-		this.columnList = new ElementList<Identifier>(nl);
+		this.columnList = ElementList.newElementList(nl);
 	}	
 	
 	@Override

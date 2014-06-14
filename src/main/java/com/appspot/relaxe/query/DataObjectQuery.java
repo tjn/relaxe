@@ -72,7 +72,7 @@ public class DataObjectQuery
 				el.add(new ColumnReference(tr, c));
 			}
 			
-			ElementList<SelectListElement> sel = new ElementList<SelectListElement>(el);			
+			ElementList<SelectListElement> sel = ElementList.newElementList(el);			
 			Select s = new Select(sel);
 			DefaultTableExpression e = new DefaultTableExpression(s, f);
 			

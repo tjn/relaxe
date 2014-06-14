@@ -22,31 +22,17 @@
  */
 package com.appspot.relaxe.expr;
 
-import java.util.List;
+import com.appspot.relaxe.expr.op.Null;
 
-public class ValueRow
-	extends ElementList<ValuesListElement> {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4622202673145576700L;
-
-	/**
-	 * No-argument constructor for GWT Serialization
-	 */
-	@SuppressWarnings("unused")
-	private ValueRow() {
-	}
-
-	public ValueRow(List<ValuesListElement> elems) {
-		super(elems);
-	}
-
-	@Override
-	public void traverse(VisitContext vc, ElementVisitor v) {
-		Symbol.PAREN_LEFT.traverse(vc, v);
-		super.traverseContent(vc, v);
-		Symbol.PAREN_RIGHT.traverse(vc, v);
-	}
+public interface RowValueConstructorElement
+	extends Element {
+	
+	RowValueConstructorElement NULL = new Null();
+	RowValueConstructorElement DEFAULT = new Default();
+	
+	
+	ValueExpression asValueExpression();	
+	Element asNullSpecification();	
+	Element asDefaultSpecification();
+	
 }

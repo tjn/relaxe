@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe.expr;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,8 +56,16 @@ public class TableColumns
 	}
 
 	@Override
-	public List<? extends Identifier> getColumnNames() {	
-		return tableRef.getColumnNameList().getContent();
+	public List<Identifier> getColumnNames() {	
+		ElementList<Identifier> names = tableRef.getColumnNameList();
+		
+		List<Identifier> nl = new ArrayList<Identifier>(names.size());
+		
+		for (Identifier n : names) {
+			nl.add(n);
+		}
+		
+		return nl;
 	}
 	
 	@Override
@@ -73,16 +82,13 @@ public class TableColumns
 
 	@Override
 	public int getColumnCount() {
-		return tableRef.getColumnNameList().getContent().size();
+//		return tableRef.getColumnNameList().getContent().size();
+		return tableRef.getColumnNameList().size();
 	}
 	
 	@Override
-	public ValueExpression getColumnExpr(int column) {
-		return getTableColumnExpr(column);
-	}
-
-	@Override
-	public ColumnExpr getTableColumnExpr(int column) {
+	public ValueExpression getColumnExpr(int column) {		
+//		return getTableColumnExpr(column);
 		int cc = getColumnCount();
 		int index = column - 1;
 		
@@ -90,6 +96,18 @@ public class TableColumns
 			throw new IndexOutOfBoundsException(Integer.toString(column));
 		}
 			 
-		return tableRef.getAllColumns().getTableColumnExpr(column);
-	}		
+		return tableRef.getAllColumns().getColumnExpr(column);				
+	}
+
+//	@Override
+//	public ColumnExpr getTableColumnExpr(int column) {
+//		int cc = getColumnCount();
+//		int index = column - 1;
+//		
+//		if (index < 0 || index >= cc) {
+//			throw new IndexOutOfBoundsException(Integer.toString(column));
+//		}
+//			 
+//		return tableRef.getAllColumns().getTableColumnExpr(column);
+//	}		
 }

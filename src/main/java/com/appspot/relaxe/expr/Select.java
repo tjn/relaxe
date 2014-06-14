@@ -23,7 +23,6 @@
 package com.appspot.relaxe.expr;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.appspot.relaxe.env.IdentifierRules;
@@ -39,7 +38,6 @@ public class Select
 	
 	private ElementList<SelectListElement> selectList;	
 	private boolean distinct;	
-	
 
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -54,7 +52,7 @@ public class Select
 	
 	public Select(SelectListElement elem) {
 		this.distinct = false;
-		this.selectList = new ElementList<SelectListElement>(Collections.singleton(elem));  
+		this.selectList = ElementList.newElementList(elem);  
 	}
 	
 	public Select(ElementList<SelectListElement> elements, boolean distinct) {
@@ -78,7 +76,7 @@ public class Select
 	public int getColumnCount() {
 		int cc = 0;
 		
-		for(SelectListElement e : getSelectList().getContent()) {
+		for(SelectListElement e : getSelectList()) {
 			cc += e.getColumnCount();
 		}
 		
@@ -88,7 +86,7 @@ public class Select
 	public List<ValueExpression> expandValueExprList() {
 		ArrayList<ValueExpression> el = new ArrayList<ValueExpression>();
 		
-		for(SelectListElement e : getSelectList().getContent()) {
+		for(SelectListElement e : getSelectList()) {
 			int cc = e.getColumnCount();
 			
 			for (int i = 1; i <= cc; i++) {
@@ -99,25 +97,43 @@ public class Select
 		return el;
 	}
 	
+//	/**
+//	 * NOTE: selected list contains <code>null</code> element
+//	 * for each column which is not a column reference.  
+//	 * 
+//	 * @return
+//	 */	
+//	public List<ColumnExpr> expandColumnExprList() {
+//		ArrayList<ColumnExpr> el = new ArrayList<ColumnExpr>();
+//		
+//		for(SelectListElement e : getSelectList()) {
+//			int cc = e.getColumnCount();
+//			
+//			for (int i = 1; i <= cc; i++) {								
+//				el.add(e.getTableColumnExpr(i));
+//			}
+//		}		
+//		
+//		return el;
+//	}
+	
 	/**
 	 * NOTE: selected list contains <code>null</code> element
-	 * for each column which is not a column reference.  
+	 * for each column for without an identifier  
 	 * 
 	 * @return
 	 */	
-	public List<ColumnExpr> expandColumnExprList() {
-		ArrayList<ColumnExpr> el = new ArrayList<ColumnExpr>();
+	public List<Identifier> expandColumnExprList() {
+		List<Identifier> el = new ArrayList<Identifier>();
 		
-		for(SelectListElement e : getSelectList().getContent()) {
-			int cc = e.getColumnCount();
-			
-			for (int i = 1; i <= cc; i++) {								
-				el.add(e.getTableColumnExpr(i));
-			}
+		for(SelectListElement e : getSelectList()) {
+			List<Identifier> names = e.getColumnNames();
+			el.addAll(names);			
 		}		
 		
 		return el;
 	}
+	
 
 //	public void setDistinct(boolean distinct) {
 //		this.distinct = distinct;
@@ -137,22 +153,15 @@ public class Select
 //	}
 	
 	
-	
-	
+	public ElementList<Identifier> getColumnNameList() {
+		ElementList<SelectListElement> p = getSelectList();		
+		List<Identifier> nl = new ArrayList<Identifier>();
 		
-	public ElementList<? extends Identifier> getColumnNameList() {		
-		ElementList<Identifier> cl = null;
-		ElementList<SelectListElement> p = getSelectList();
-		
-		if (!p.isEmpty()) {
-			cl = new ElementList<Identifier>();
-			
-			for (SelectListElement e : p.getContent()) {
-				cl.getContent().addAll(e.getColumnNames());				
-			}
+		for (SelectListElement se : p) {
+			nl.addAll(se.getColumnNames());
 		}
-		
-		return cl;
+				
+		return ElementList.newElementList(nl);
 	}
 	
 	@Override
@@ -227,7 +236,7 @@ public static class Builder {
 		}	
 		
 		public Select newSelect() {
-			return new Select(new ElementList<SelectListElement>(getElementList()), isDistinct());			
+			return new Select(ElementList.newElementList(getElementList()), isDistinct());			
 		}
 	}
 	

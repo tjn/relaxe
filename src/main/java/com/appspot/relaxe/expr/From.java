@@ -27,7 +27,8 @@ public class From extends AbstractClause {
 	 * 
 	 */
 	private static final long serialVersionUID = -3675394470595921573L;
-	private TableRefList tableReferenceList;
+	// private TableRefList tableReferenceList;
+	private ElementList<AbstractTableReference> tableReferenceList;  
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -35,11 +36,11 @@ public class From extends AbstractClause {
 	protected From() {
 	}
 	
-	public From(TableReference tref) {
-		this(new SimpleTableRefList(tref));
+	public From(AbstractTableReference tref) {
+		this(ElementList.newElementList(tref));
 	}
 	
-	public From(TableRefList from) {
+	public From(ElementList<AbstractTableReference> from) {
 		if (from == null) {
 			throw new NullPointerException("'from' must not be null");
 		}
@@ -47,19 +48,10 @@ public class From extends AbstractClause {
 		tableReferenceList = from;
 	}
 
-//	@Override
-//	public void generate(SimpleQueryContext qc, StringBuffer dest) {
-//		dest.append("FROM ");
-//		getTableReferenceList().generate(qc, dest);
-//	}
-
-	public TableRefList getTableReferenceList() {
+	public ElementList<AbstractTableReference> getTableReferenceList() {
 		return tableReferenceList;
 	}
 
-//	public void setTableReferenceList(TableRefList tableReferenceList) {
-//		this.tableReferenceList = tableReferenceList;
-//	}
 
 	@Override
 	protected Element getContent() {		

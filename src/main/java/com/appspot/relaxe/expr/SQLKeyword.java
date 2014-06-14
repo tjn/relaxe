@@ -122,7 +122,10 @@ public enum SQLKeyword
 	KEY,
 	REFERENCES,
 	TO, 
-	ZONE
+	ZONE,
+	INITIALLY,
+	DEFERRED,
+	IMMEDIATE
 	;
 	
 	private static Map<String, SQLKeyword> keywordMap = new TreeMap<String, SQLKeyword>(String.CASE_INSENSITIVE_ORDER); 

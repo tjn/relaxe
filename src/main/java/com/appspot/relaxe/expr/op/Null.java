@@ -20,57 +20,62 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.expr;
+package com.appspot.relaxe.expr.op;
 
-public abstract class ColumnExpr 
-	extends CompoundElement 
-	implements ValueExpression, SelectListElement {
+import com.appspot.relaxe.expr.CompoundElement;
+import com.appspot.relaxe.expr.Element;
+import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.RowValueConstructorElement;
+import com.appspot.relaxe.expr.SQLKeyword;
+import com.appspot.relaxe.expr.ValueExpression;
+import com.appspot.relaxe.expr.VisitContext;
 
+/**
+ * Represents the SQL NULL expression in 
+ * VALUES -clause of the INSERT -statement and the right-hand side of the assignment in UPDATE -statement.
+ * 
+ * <sql>
+ * 	INSERT INTO T VALUES (NULL, NULL)
+ * </sql>
+ * 
+ *<sql>
+ * 	UPDATE T SET NAME = NULL
+ * </sql>
+ * 
+ * @author Topi Nieminen <topi.nieminen@gmail.com>
+ */
+public class Null
+	extends CompoundElement
+	implements RowValueConstructorElement {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6471819124970538933L;
-	private AbstractTableReference table;	
-	private Identifier columnName;
-	
+	private static final long serialVersionUID = 5908751449877328237L;
+
 	/**
 	 * No-argument constructor for GWT Serialization
-	 */
-	protected ColumnExpr() {
-	}
-
-	public ColumnExpr(AbstractTableReference table, Identifier columnName) {
-		super();
-		this.table = table;		
-		this.columnName = columnName;
-	}
-
-	public AbstractTableReference getTable() {
-		return this.table;
-	}
-	
-	@Override
-	public Identifier getColumnName() {
-		return columnName;
+	 */		
+	public Null() {
 	}
 
 	@Override
-	public int getColumnCount() {	
-		return 1;
+	protected void traverseContent(VisitContext vc, ElementVisitor v) {
+		SQLKeyword.NULL.traverse(vc, v);
+	}		
+
+	@Override
+	public ValueExpression asValueExpression() {
+		return null;
 	}
 
 	@Override
-	public ValueExpression getColumnExpr(int column) {
-		return getTableColumnExpr(column);
-	}
-
-	@Override
-	public ColumnExpr getTableColumnExpr(int column) {
-		if (column != 1) {
-			throw new IndexOutOfBoundsException(Integer.toString(column));
-		}
-
+	public Element asNullSpecification() {
 		return this;
 	}
-	
+
+	@Override
+	public Element asDefaultSpecification() {
+		return null;
+	}
 }

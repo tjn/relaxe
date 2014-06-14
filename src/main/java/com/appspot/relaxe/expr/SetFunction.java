@@ -20,44 +20,33 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.expr.op;
+package com.appspot.relaxe.expr;
 
-import com.appspot.relaxe.expr.Identifier;
-import com.appspot.relaxe.expr.ValueExpression;
+public abstract class SetFunction
+	extends CompoundElement
+		implements ValueExpression {
 
-/**
- * Represents parenthesized value expression.
- *  
- * @author Administrator
- */
-
-public class GroupExpression
-	extends Parenthesis<ValueExpression>
-	implements ValueExpression
-{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2831127865632365200L;
-
-	/**
-	 * No-argument constructor for GWT Serialization
-	 */
-	protected GroupExpression() {
+	private static final long serialVersionUID = 2703386474861730771L;
+	
+	
+	
+	
+	@Override
+	public ValueExpression asValueExpression() {
+		return this;
 	}
 	
-	public GroupExpression(ValueExpression inner) {
-		super(inner);		
-	}
-
 	@Override
-	public int getType() {
-		return getContent().getType();
-	}
-
-	@Override
-	public Identifier getColumnName() {		
-		return getContent().getColumnName();
+	public SQLKeyword asDefaultSpecification() {
+		return null;
 	}
 	
+	@Override
+	public SQLKeyword asNullSpecification() {
+		return null;
+	}
+
 }

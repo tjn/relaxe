@@ -22,7 +22,6 @@
  */
 package com.appspot.relaxe.expr;
 
-import com.appspot.relaxe.meta.Column;
 
 /**
  * Represents the SQL DEFAULT -value expression in 
@@ -40,39 +39,38 @@ import com.appspot.relaxe.meta.Column;
  */
 
 public class Default
-	implements ValuesListElement {
+	extends CompoundElement
+	implements RowValueConstructorElement {
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7419094016483767270L;
-	private Column column;
-	
+	private static final long serialVersionUID = 1791929423714072637L;
+
 	/**
 	 * No-argument constructor for GWT Serialization
-	 */	
-	protected Default() {
-	}
-
-	public Default(Column col) {
-		super();
-		this.column = col;
+	 */		
+	public Default() {		
 	}
 
 	@Override
-	public String getTerminalSymbol() {
-		return null;
-	}
-	
-	public Column getColumn() {
-		return column;
-	}
-
-	@Override
-	public void traverse(VisitContext vc, ElementVisitor v) {		
+	protected void traverseContent(VisitContext vc, ElementVisitor v) {
 		SQLKeyword.DEFAULT.traverse(vc, v);
 	}
 	
-	
-	
-}
+
+	@Override
+	public ValueExpression asValueExpression() {
+		return null;
+	}
+
+	@Override
+	public Element asNullSpecification() {
+		return null;
+	}
+
+	@Override
+	public Element asDefaultSpecification() {
+		return this;
+	}
+}	

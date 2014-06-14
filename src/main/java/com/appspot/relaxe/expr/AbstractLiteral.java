@@ -22,32 +22,33 @@
  */
 package com.appspot.relaxe.expr;
 
-public class SimpleTableRefList 
-	extends ElementList<AbstractTableReference>
-	implements Element, TableRefList
-{
+public abstract class AbstractLiteral
+	implements Token, ValueExpression {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1541318396941005713L;
+	private static final long serialVersionUID = 8662728688611577702L;
 
-	public SimpleTableRefList() {
+	public AbstractLiteral() {
 		super();
 	}
 	
-	public SimpleTableRefList(AbstractTableReference tref) {
-		super(tref);		
-	}
-
 	@Override
-	public int getCount() {
-		return getContent().size();
+	public ValueExpression asValueExpression() {
+		return this;
 	}
 	
 	@Override
-	public AbstractTableReference getItem(int i) {		
-		return getContent().get(i);
+	public SQLKeyword asDefaultSpecification() {
+		return null;
 	}
+	
+	@Override
+	public SQLKeyword asNullSpecification() {
+		return null;
+	}
+	
 	
 	
 }

@@ -24,20 +24,17 @@ package com.appspot.relaxe.expr;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
-public class ElementList<E extends Element>
-	extends CompoundElement {
+public abstract class ElementList<E extends Element>
+	extends CompoundElement implements Iterable<E> {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -9070139545586143988L;
-	private Symbol delim;
-	private List<E> content;
-	private transient List<E> immutableContent = null;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -45,86 +42,184 @@ public class ElementList<E extends Element>
 	protected ElementList() {
 	}
 	
-	public ElementList(E e) {
-		this(Symbol.COMMA, Collections.singleton(e));
+	public abstract int size();	
+	public abstract E get(int index);
+	
+	public static <E extends Element> ElementList<E> newElementList(E element) {
+		return new OneElementList<E>(element);		
 	}
-				
-	public ElementList(Symbol delim, Collection<E> elems) {
-		super();
-		
-		if (delim == null) {
-			throw new NullPointerException("delim");
+	
+	public static <E extends Element> ElementList<E> newElementList(Collection<E> elements) {
+		return newElementList(Symbol.COMMA, elements);
+	}
+	
+	public static <E extends Element> ElementList<E> newElementList(Symbol delim, Collection<? extends E> elements) {
+		if (elements == null) {
+			throw new NullPointerException("values");
 		}
 		
-		if (elems == null) {
-			throw new NullPointerException("elems");
-		}
-		
-		if (elems.isEmpty()) {
+		if (elements.isEmpty()) {
 			throw new IllegalArgumentException("element list must not be empty");
 		}
 		
-		this.delim = delim;
-		this.content = new ArrayList<E>(elems);
+		return new ListElementList<E>(delim, elements);		
 	}
 	
-	public ElementList(Collection<E> elems) {
-		this(Symbol.COMMA, elems);
-	}
 	
-	public List<E> getContent() {
-		if (immutableContent == null) {
-			immutableContent = Collections.unmodifiableList(this.content);			
+	private static class ElementListIterator<E extends Element>
+		implements Iterator<E> {
+		
+		private int index;		
+		private ElementList<E> elementList;		
+		
+		public ElementListIterator(ElementList<E> elementList) {
+			this.elementList = elementList;
 		}
 
-		return immutableContent;
-	}
+		@Override
+		public boolean hasNext() {
+			return (this.index < elementList.size());
+		}
 
-//	public boolean add(E e) {
-//		return getContent().add(e);
-//	}
-//		
-//	public void set(E e) {
-//		if (e == null) {
-//			throw new NullPointerException("'e' must not be null");
-//		}
-//		
-//		getContent().clear();
-//		add(e);
-//	}
-	
-	public boolean isEmpty() {
-		return (this.content == null) || this.content.isEmpty();  
+		@Override
+		public E next()
+			throws NoSuchElementException {						
+			if (this.index >= elementList.size()) {				
+				throw new NoSuchElementException();
+			}	
+			E next = elementList.get(index);			
+			this.index++;
+			
+			return next;			
+		}
+
+		@Override
+		public void remove() {
+			 throw new UnsupportedOperationException();			
+		}	
+		
 	}
 	
-//	public void copyTo(ElementList<E> dest) {
-//		if (!isEmpty()) {
-//			List<E> el = dest.getContent();
-//			
-//			for (E e : this.content) {
-//				el.add(e);
-//			}
-//		}
-//	}
 	
 	@Override
-	public void traverseContent(VisitContext vc, ElementVisitor v) {
-		Iterator<E> ei = getContent().iterator();
-		
-		Symbol p = getDelim();
-		
-		while (ei.hasNext()) {
-			E e = ei.next();
-			
-			e.traverse(vc, v);
-			
-			if (p != null && ei.hasNext()) {
-				p.traverse(vc, v);
-			}
-		}			
+	public Iterator<E> iterator() {
+		return new ElementListIterator<E>(this);
 	}
+	
+	
+	public static class OneElementList<E extends Element>
+		extends ElementList<E> {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1844583016467280335L;
+		/**
+		 * 
+		 */
+		private E element;
+			
+		/**
+		 * No-argument constructor for GWT Serialization
+		 */
+		@SuppressWarnings("unused")
+		private OneElementList() {
+			super();		
+		}
+		
+		public OneElementList(E element) {			
+			if (element == null) {
+				throw new NullPointerException("element");
+			}
+			
+			this.element = element;
+		}
 
-	public Symbol getDelim() {
-		return delim;
+		@Override
+		public int size() {
+			return 1;			
+		}
+
+		@Override
+		public E get(int index) {
+			if (index != 0) {
+				throw new IndexOutOfBoundsException(Integer.toString(index));
+			}
+			
+			return element;
+		}
+		
+		@Override
+		protected void traverseContent(VisitContext vc, ElementVisitor v) {
+			this.element.traverse(vc, v);
+		}
+	}
+	
+	
+	
+	
+	public static class ListElementList<E extends Element>
+		extends ElementList<E> {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2475653227870417408L;
+		
+		private Symbol delim;
+		private List<E> content;
+		
+		protected ListElementList(Collection<? extends E> elems) {
+			this(Symbol.COMMA, elems);
+		}
+		
+		protected ListElementList(Symbol delim, Collection<? extends E> elems) {
+			if (delim == null) {
+				throw new NullPointerException("delim");
+			}
+			
+			if (elems == null) {
+				throw new NullPointerException("elems");
+			}
+			
+			if (elems.isEmpty()) {
+				throw new IllegalArgumentException("element list must not be empty");
+			}
+			
+			this.delim = delim;
+			this.content = new ArrayList<E>(elems);
+		}
+		
+
+		private Symbol getDelim() {
+			return delim;
+		}
+		
+		@Override
+		public void traverseContent(VisitContext vc, ElementVisitor v) {
+			Iterator<E> ei = content.iterator();
+			
+			Symbol p = getDelim();
+			
+			while (ei.hasNext()) {
+				E e = ei.next();
+				
+				e.traverse(vc, v);
+				
+				if (p != null && ei.hasNext()) {
+					p.traverse(vc, v);
+				}
+			}			
+		}
+
+		@Override
+		public int size() {
+			return this.content.size();
+		}
+
+		@Override
+		public E get(int index) {
+			return this.content.get(index);
+		}
 	}
 }

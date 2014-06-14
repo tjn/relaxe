@@ -22,8 +22,9 @@
  */
 package com.appspot.relaxe.expr;
 
+
 public interface ValueExpression 
-	extends Expression, ValuesListElement {
+	extends Expression, RowValueConstructorElement {
 	/**
 	 * SQL JavaType of the expression
 	 * 

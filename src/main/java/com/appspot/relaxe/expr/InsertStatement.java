@@ -23,7 +23,6 @@
 package com.appspot.relaxe.expr;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import com.appspot.relaxe.meta.Table;
 
@@ -36,10 +35,8 @@ public class InsertStatement
 	private static final long serialVersionUID = 1598811041382537945L;
 
 	private Table target;
-	
-	private ElementList<ValueRow> values;	
 	private ElementList<Identifier> columnNameList;
-	
+	private TableExpression source;
 	private SchemaElementName tableName;
 	
 	public int getTargetColumnCount() {
@@ -47,7 +44,7 @@ public class InsertStatement
 			return getTarget().getColumnMap().size();
 		}
 		
-		return columnNameList.getContent().size();
+		return columnNameList.size();
 	}
 	
 	/**
@@ -60,15 +57,30 @@ public class InsertStatement
 //	    this(target, columnNameList, null);	    
 //	}
 
-	protected InsertStatement(Table target) {
+	private InsertStatement(Table target, ElementList<Identifier> columnNameList) {
 		super(Name.INSERT);
 		
 		if (target == null) {
 			throw new NullPointerException("'target' must not be null");
 		}
 		
-		this.target = target;
+		this.target = target;		
+		this.columnNameList = columnNameList;
 	}
+	
+	
+	/**
+	 * Constructs a new  
+	 * 
+	 * @param target Target table to insert rows into.
+	 * @param columnNameList Must not be null.
+	 * @param valueRow May me null.
+	 */
+	public InsertStatement(Table target, ElementList<Identifier> columnNameList, TableExpression source) {
+		this(target, columnNameList);
+		this.source = source;
+	}
+	
 
 	
 	/**
@@ -78,35 +90,16 @@ public class InsertStatement
 	 * @param columnNameList Must not be null.
 	 * @param valueRow May me null.
 	 */
-	public InsertStatement(Table target, ElementList<Identifier> columnNameList, ValueRow valueRow) {
-		this(target);
+	public InsertStatement(Table target, ElementList<Identifier> columnNameList, RowValueConstructor valueRow) {
+		this(target, columnNameList, TableValueConstructor.of(valueRow));
+	}
 		
-		if (columnNameList == null) {
-			throw new NullPointerException("'columnNameList' must not be null");
-		}
-		
-		this.target = target;
-		this.columnNameList = columnNameList;		
-		this.values = new ElementList<ValueRow>(Collections.singletonList(valueRow));	
-		
+	public InsertStatement(Table target, ElementList<Identifier> columnNameList, Collection<RowValueConstructor> rows) {
+		this(target, columnNameList, ElementList.newElementList(rows));
 	}
 	
-	
-	public InsertStatement(Table target, ElementList<Identifier> columnNameList, Collection<ValueRow> rows) {
-		this(target);
-		
-		if (columnNameList == null) {
-			throw new NullPointerException("'columnNameList' must not be null");
-		}
-		
-		if (rows == null) {
-			throw new NullPointerException("rows");
-		}		
-		
-		this.target = target;
-		this.columnNameList = columnNameList;		
-		this.values = new ElementList<ValueRow>(rows);	
-		
+	public InsertStatement(Table target, ElementList<Identifier> columnNameList, ElementList<RowValueConstructor> rows) {
+		this(target, columnNameList, TableValueConstructor.of(rows));
 	}
 	
 	@Override
@@ -125,20 +118,15 @@ public class InsertStatement
 			Symbol.PAREN_RIGHT.traverse(vc, v);
 		}
 		
-		SQLKeyword.VALUES.traverse(vc, v);		
-		getValues().traverse(vc, v);
+		this.source.traverse(vc, v);
 	}
 
 	public Table getTarget() {
 		return target;
 	}
 
-	public ElementList<ValueRow> getValues() {
-		if (values == null) {
-			values = new ElementList<ValueRow>();					
-		}
-
-		return values;
+	public TableExpression getSource() {
+		return source;
 	}
 	
 //	void add(ValueRow r) {

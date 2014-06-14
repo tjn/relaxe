@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.appspot.relaxe.expr.ColumnExpr;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.Select;
@@ -57,7 +56,8 @@ public class MutableDataObject
 		
 		private int columnCount;
 		private List<ValueExpression> valueList;
-		private List<ColumnExpr> columnList;
+//		private List<ColumnExpr> columnList;
+		private List<Identifier> columnList;
 		private Map<Identifier, Integer> columnIndexMap;
 		private QueryExpression queryExpression;
 		
@@ -76,7 +76,8 @@ public class MutableDataObject
 			final int cc = s.getColumnCount();			
 			this.columnCount = cc;
 			this.valueList = new ArrayList<ValueExpression>(s.expandValueExprList());
-			this.columnList = new ArrayList<ColumnExpr>(s.expandColumnExprList());
+			// this.columnList = new ArrayList<ColumnExpr>(s.expandColumnExprList());
+			this.columnList = new ArrayList<Identifier>(s.expandColumnExprList());
 			
 			Map<Identifier, Integer> xm = this.columnIndexMap = new HashMap<Identifier, Integer>();
 			
@@ -96,11 +97,16 @@ public class MutableDataObject
 		private int index(Identifier n) {
 			return this.columnIndexMap.get(n).intValue();
 		}
-
+		
 		@Override
-		public ColumnExpr column(int index) {
-			return this.columnList.get(index); 
+		public Identifier identifier(int index) {
+			return this.columnList.get(index);
 		}
+
+//		@Override
+//		public ColumnExpr column(int index) {
+//			return this.columnList.get(index); 
+//		}
 
 		@Override
 		public ValueExpression expr(int index) {

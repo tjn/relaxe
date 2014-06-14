@@ -207,7 +207,7 @@ public class OrderBy
 			throw new NullPointerException("sortKey");
 		}
 		
-		this.sortKeyList = new ElementList<SortKey>(sortKey);
+		this.sortKeyList = ElementList.newElementList(sortKey);
 	}
 
 	public static OrderBy.SortKey newSortKey(ColumnReference c, Order o) {
@@ -256,7 +256,7 @@ public class OrderBy
 //		}
 		
 		public OrderBy newOrderBy() {
-			ElementList<SortKey> el = new ElementList<OrderBy.SortKey>(getContent());			
+			ElementList<SortKey> el = ElementList.newElementList(getContent());			
 			return new OrderBy(el);
 		}		
 	}

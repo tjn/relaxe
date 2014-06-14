@@ -51,7 +51,7 @@ public class GroupBy extends AbstractClause {
 	}
 	
 	public GroupBy(Collection<ValueExpression> expressionList) {
-		this(new ElementList<ValueExpression>(expressionList));
+		this(ElementList.newElementList(expressionList));
 	}
 		
 	
@@ -66,17 +66,12 @@ public class GroupBy extends AbstractClause {
 //	}
 
 	public ElementList<ValueExpression> getGroupingExprList() {
-		if (groupingExprList == null) {
-			groupingExprList = new ElementList<ValueExpression>();			
-		}
-
 		return groupingExprList;
 	}
 	
 	@Override
 	protected Element getContent() {		
-		ElementList<ValueExpression> gl = getGroupingExprList();
-		return gl.isEmpty() ? null : gl;
+		return getGroupingExprList();
 	}
 	
 	@Override

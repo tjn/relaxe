@@ -71,10 +71,8 @@ public class ForeignKeyJoinCondition
 			
 			for (Column a : cm.values()) {				
 				Column b = foreignKey.getReferenced(a);
-
-				jp = AndPredicate.newAnd(jp, Comparison.eq(
-						new ColumnReference(referencing, a),
-						new ColumnReference(referenced,  b)));				
+				Comparison p = Comparison.eq(new ColumnReference(referencing, a), new ColumnReference(referenced,  b));
+				jp = AndPredicate.newAnd(jp, p);				
 			}
 			
 			
@@ -93,5 +91,8 @@ public class ForeignKeyJoinCondition
 
 		return this.condition;		
 	}
+	
+	
+	
 	
 }

@@ -26,7 +26,7 @@ public interface TableExpression
 	extends Expression {
 	
 	/**
-	 * Returns the SELECT -clause for this table expression or <code>null</code> if such clause is not currently set.   
+	 * Returns the SELECT -clause for this table expression or <code>null</code>  if there is not such clause.   
 	 *  
 	 * @return
 	 */

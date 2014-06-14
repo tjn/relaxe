@@ -49,21 +49,21 @@ import com.appspot.relaxe.ent.EntityQueryResult;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.ent.value.EntityKey;
+import com.appspot.relaxe.expr.AbstractRowValueConstructor;
 import com.appspot.relaxe.expr.Assignment;
 import com.appspot.relaxe.expr.ColumnReference;
-import com.appspot.relaxe.expr.Default;
 import com.appspot.relaxe.expr.DeleteStatement;
 import com.appspot.relaxe.expr.ElementList;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.InsertStatement;
 import com.appspot.relaxe.expr.Predicate;
+import com.appspot.relaxe.expr.RowValueConstructor;
+import com.appspot.relaxe.expr.RowValueConstructorElement;
 import com.appspot.relaxe.expr.SQLSyntax;
 import com.appspot.relaxe.expr.TableReference;
 import com.appspot.relaxe.expr.UpdateStatement;
 import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.expr.ImmutableValueParameter;
-import com.appspot.relaxe.expr.ValueRow;
-import com.appspot.relaxe.expr.ValuesListElement;
 import com.appspot.relaxe.expr.op.AndPredicate;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.log.Logger;
@@ -205,7 +205,8 @@ public class PersistenceManager<
         
         logger().debug("createInsertStatement: pe=" + pe);        
     	// ValueRow newRow = new ValueRow();
-    	List<ValuesListElement> values = new ArrayList<ValuesListElement>();
+//    	List<ValuesListElement> values = new ArrayList<ValuesListElement>();
+    	List<RowValueConstructorElement> values = new ArrayList<RowValueConstructorElement>();
 
     	final M meta = pe.getMetaData();
     	BaseTable t = meta.getBaseTable();
@@ -225,7 +226,7 @@ public class PersistenceManager<
     		ValueHolder<?, ?, ?> holder = pe.value(a);
     		
     		if (holder == null) {
-    			values.add(new Default(col));
+    			values.add(RowValueConstructorElement.DEFAULT);
     			names.add(col.getColumnName());
     			continue;
     		}
@@ -238,12 +239,14 @@ public class PersistenceManager<
 //    		does not currently work so well for LiteralColumns:
     		    		
     		if (holder.isNull() && pks.contains(col.getColumnName())) {
-    			values.add(new Default(col));
+    			values.add(RowValueConstructorElement.DEFAULT);
     			names.add(col.getColumnName());
     			continue;    			
     		}
     		    		
-    		ValuesListElement elem = createValuesListElement(col, holder);
+//    		ValuesListElement elem = createValuesListElement(col, holder);
+    		RowValueConstructorElement elem = createRowValueConstructorElement(col, holder);
+    		
     		values.add(elem);
     		names.add(col.getColumnName());
     	}
@@ -265,7 +268,7 @@ public class PersistenceManager<
             	for (Column c : fk.getColumnMap().values()) {                	
                 	ValueHolder<?, ?, ?> nh = AbstractValueType.nullHolder(c.getDataType().getDataType());
                 	
-                	ValuesListElement p = newValuesListElement(c, nh.self());                	
+                	RowValueConstructorElement p = newRowValueConstructorElement(c, nh.self());                	
                 	values.add(p);
                     names.add(c.getColumnName());
                 }
@@ -274,7 +277,7 @@ public class PersistenceManager<
             	for (Column c : fk.getColumnMap().values()) {
             		Column fc = fk.getReferenced(c);
                     ValueHolder<?, ?, ?> o = ref.get(fc);
-                    ValuesListElement p = newValuesListElement(c, o.self());
+                    RowValueConstructorElement p = newRowValueConstructorElement(c, o.self());
                     values.add(p);
                     names.add(c.getColumnName());            		
             	}
@@ -282,15 +285,17 @@ public class PersistenceManager<
         }
     	
     	
-    	ValueRow newRow = new ValueRow(values);
+    	// ValueRow newRow = new ValueRow(values);
+    	
+    	RowValueConstructor rvc = AbstractRowValueConstructor.of(ElementList.newElementList(values));
     	
     	logger().debug("createInsertStatement: has-names=" + (!names.isEmpty()));
-
-    	return new InsertStatement(t, new ElementList<Identifier>(names), newRow);
+    	
+    	return new InsertStatement(t, ElementList.newElementList(names), rvc);    	
     }
 	
-	private	ValuesListElement createValuesListElement(Column col, ValueHolder<?, ?, ?> holder) {
-		return newValuesListElement(col, holder.self());
+	private	RowValueConstructorElement createRowValueConstructorElement(Column col, ValueHolder<?, ?, ?> holder) {
+		return newRowValueConstructorElement(col, holder.self());
 	}
 	
 	private <		
@@ -298,7 +303,7 @@ public class PersistenceManager<
 		PT extends ValueType<PT>,
 		PH extends ValueHolder<PV, PT, PH>
 	>
-	ImmutableValueParameter<PV, PT, PH> newValuesListElement(Column col, ValueHolder<PV, PT, PH> holder) {		
+	ImmutableValueParameter<PV, PT, PH> newRowValueConstructorElement(Column col, ValueHolder<PV, PT, PH> holder) {		
 		return new ImmutableValueParameter<PV, PT, PH>(col, holder.self());
 	}
 	
@@ -357,9 +362,11 @@ public class PersistenceManager<
 			}
 			
 			al.add(a);    	
-    	}    	
-    	    	
-    	return new UpdateStatement(tref, new ElementList<Assignment>(al), pkp);
+    	}
+    	
+    	ElementList<Assignment> ael = ElementList.newElementList(al);
+    	    	    	
+    	return new UpdateStatement(tref, ael, pkp);
     }
 
     private 
@@ -483,6 +490,8 @@ public class PersistenceManager<
 			q.traverse(null, createAssignmentVisitor(ps));
 
 			logger().debug("q: " + qs);
+			logger().debug("ps: " + ps.toString());
+			
 			int ins = ps.executeUpdate();
 			logger().debug("inserted: " + ins);
 			

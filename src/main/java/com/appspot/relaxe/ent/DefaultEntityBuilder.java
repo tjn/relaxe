@@ -29,7 +29,6 @@ import java.util.List;
 import com.appspot.relaxe.ent.im.EntityIdentityMap;
 import com.appspot.relaxe.ent.im.ReferenceIdentityMap;
 import com.appspot.relaxe.ent.value.Attribute;
-import com.appspot.relaxe.expr.ColumnExpr;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.TableReference;
 import com.appspot.relaxe.meta.BaseTable;
@@ -176,8 +175,11 @@ public abstract class DefaultEntityBuilder<
 	private void addWriter(ForeignKey fk, int index, EntityBuildContext ctx) {
 		Table table = this.tableRef.getTable();
 						
-		ColumnExpr ce = ctx.getInputMetaData().column(index);
-		Identifier cn = ce.getColumnName();
+//		ColumnExpr ce = ctx.getInputMetaData().column(index);		
+//		Identifier cn = ce.getColumnName();
+
+		Identifier cn = ctx.getInputMetaData().identifier(index);
+		
 						
 		final Column col = table.getColumnMap().get(cn);
 		

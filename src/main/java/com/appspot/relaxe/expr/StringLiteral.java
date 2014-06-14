@@ -28,7 +28,7 @@ package com.appspot.relaxe.expr;
 import com.appspot.relaxe.types.ValueType;
 
 public class StringLiteral	
-	implements Token, ValueExpression {
+	extends AbstractLiteral {
 
 	/**
 	 * 

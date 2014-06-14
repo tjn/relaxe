@@ -46,5 +46,4 @@ public abstract class JoinCondition
 	public AbstractTableReference getRight() {
 		return right;
 	}
-		
 }

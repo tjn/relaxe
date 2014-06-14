@@ -21,6 +21,7 @@
  * Section 5 of the GNU Affero General Public License.
  */
 package com.appspot.relaxe.expr;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.appspot.relaxe.meta.Column;
@@ -66,15 +67,18 @@ public class TableReference
 	}
 
 	@Override
-	public ElementList<? extends Identifier> getUncorrelatedColumnNameList() {
+	public ElementList<Identifier> getUncorrelatedColumnNameList() {
 		if (columnNameList == null) {
-			this.columnNameList = new ElementList<Identifier>();
+			// this.columnNameList = new ElementList<Identifier>();
 			
-			List<Identifier> nl = this.columnNameList.getContent();
+			// List<Identifier> nl = this.columnNameList.getContent();
+			List<Identifier> nl = new ArrayList<Identifier>();
 			
 			for (final Column c : getTable().getColumnMap().values()) {
-				nl.add(c.getColumnName());
+				nl.add(c.getColumnName());				
 			}
+			
+			this.columnNameList = ElementList.newElementList(nl);
 		}
 		
 		return columnNameList;

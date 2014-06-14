@@ -23,6 +23,7 @@
 package com.appspot.relaxe.expr.op;
 
 import com.appspot.relaxe.expr.Identifier;
+import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.ValueExpression;
 
 public class ParenthesizedValueExpression
@@ -54,5 +55,20 @@ public class ParenthesizedValueExpression
 	@Override
 	public Identifier getColumnName() {
 		return getContent().getColumnName();
+	}
+	
+	@Override
+	public ValueExpression asValueExpression() {
+		return this;
+	}
+	
+	@Override
+	public SQLKeyword asDefaultSpecification() {
+		return null;
+	}
+	
+	@Override
+	public SQLKeyword asNullSpecification() {
+		return null;
 	}
 }

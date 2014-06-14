@@ -22,50 +22,69 @@
  */
 package com.appspot.relaxe.expr.op;
 
-import java.util.Collection;
-
 import com.appspot.relaxe.expr.CompoundElement;
-import com.appspot.relaxe.expr.ElementList;
+import com.appspot.relaxe.expr.Element;
 import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.Predicate;
+import com.appspot.relaxe.expr.RowValueConstructor;
+import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.Symbol;
-import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.expr.VisitContext;
 
-public class RowConstructor
-	extends CompoundElement {
 
+/**
+ * 
+ */
+public class AbstractInPredicate<I extends Element>
+	extends CompoundElement
+	implements Predicate {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2415272956499443256L;
+	private static final long serialVersionUID = 4384506983416435234L;
+	private RowValueConstructor value;
+	private I in;
+		
+	/**
+	 * No-argument constructor for GWT Serialization
+	 */
+	protected AbstractInPredicate() {
+	}
 
-	/**
-	 * No-argument constructor for GWT Serialization
-	 */
-	@SuppressWarnings("unused")
-	private RowConstructor() {
+	protected AbstractInPredicate(RowValueConstructor value, I in) {
+		super();
+		this.value = value;				
+		this.in = in;				
 	}
+
+//	
+//	public In(RowValueConstructor left, Collection<RowValueConstructor> values) {
+//		this.left = left;				
+//		this.value = new ElementList<RowValueConstructor>(Symbol.COMMA, values);
+//	}
+//	
+//	public In(ValueExpression left, QueryExpression subquery) {
+//		super();
+//		this.left = left;
+//		this.value = subquery;
+//	}
 	
-	private ElementList<ValueExpression> elements;
-	
-	/**
-	 * No-argument constructor for GWT Serialization
-	 */
-	protected RowConstructor(ElementList<ValueExpression> elements) {
-		this.elements = elements;
-	}
-	
-	public RowConstructor(Collection<ValueExpression> values) {
-		super();						
-		this.elements = new ElementList<ValueExpression>(Symbol.COMMA, values);
-	}
 	
 	@Override
 	protected void traverseContent(VisitContext vc, ElementVisitor v) {
-		this.elements.traverse(vc, v);
+		this.value.traverse(vc, v);				
+		SQLKeyword.IN.traverse(vc, v);
+		Symbol.PAREN_LEFT.traverse(vc, v);
+		this.in.traverse(vc, v);
+		Symbol.PAREN_RIGHT.traverse(vc, v);		
+	}
+		
+	public RowValueConstructor getValue() {
+		return value;
 	}
 	
-	
-	
-	
+	public I getIn() {
+		return in;
+	}
 }
