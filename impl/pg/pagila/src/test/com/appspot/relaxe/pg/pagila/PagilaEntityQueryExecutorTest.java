@@ -597,8 +597,7 @@ public class PagilaEntityQueryExecutorTest
 				
 		FilmActor.QueryElement e2 = new FilmActor.QueryElement();		
 		Film.QueryElement fe = e2.getQueryElement(FilmActor.FILM);
-		EntityQueryPredicate qp = fe.newEquals(Film.FILM_ID, pfid);
-				
+		EntityQueryPredicate qp = fe.newEquals(Film.FILM_ID, pfid);				
 		FilmActor.Query sub = new FilmActor.Query(e2, qp);
 		
 		EntityQueryExistsPredicate ep = new EntityQueryExistsPredicate(sub);	

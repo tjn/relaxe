@@ -53,17 +53,18 @@ public abstract class AbstractHolder<
 	
 	/**
 	 * 
-	 * @param another
+	 * @param holder (must not be null)
+	 * 
 	 * @return
 	 */
 	@Override
-	public boolean contentEquals(Holder<?, ?, ?> another) {
-		if (another == this) {
+	public boolean contentEquals(Holder<?, ?, ?> holder) {
+		if (holder == this) {
 			return true;
 		}
 		
 		V a = value();
-		Object b = another.value();
+		Object b = holder.value();
 					
 		
 		boolean result = 

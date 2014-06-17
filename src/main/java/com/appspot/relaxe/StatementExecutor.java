@@ -99,7 +99,7 @@ public class StatementExecutor {
 			
 			final long f = System.currentTimeMillis();
 			
-			logger().debug("ps.executeQuery(): {}ms", (f - s));
+			logger().info("ps.executeQuery(): {}ms : {}", (f - s), ps.toString());
 			
 			apply(rp, rs);
 			

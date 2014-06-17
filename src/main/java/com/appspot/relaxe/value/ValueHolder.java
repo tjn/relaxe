@@ -31,7 +31,7 @@ public interface ValueHolder<
 	T extends ValueType<T>, 
 	H extends ValueHolder<V, T, H>
 > 
-	extends Holder<V, T, H>
+	extends Holder<V, T, H>, Serializable
 	{
 		
 	public int getSqlType();

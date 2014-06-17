@@ -24,13 +24,22 @@ package com.appspot.relaxe.ent.query;
 
 import java.util.Collection;
 
+import com.appspot.relaxe.ent.AttributeName;
+import com.appspot.relaxe.ent.Entity;
+import com.appspot.relaxe.ent.EntityFactory;
+import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQueryContext;
+import com.appspot.relaxe.ent.EntityQueryElement;
+import com.appspot.relaxe.ent.Reference;
+import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.expr.Predicate;
 import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.expr.op.AndPredicate;
 import com.appspot.relaxe.expr.op.NotPredicate;
 import com.appspot.relaxe.expr.op.OrPredicate;
 import com.appspot.relaxe.expr.op.ParenthesizedPredicate;
+import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 public class EntityQueryPredicates {
 	
@@ -281,4 +290,108 @@ public class EntityQueryPredicates {
 			return new AndPredicate(a, b);
 		}
 	}
+	
+	
+	public static <
+		A extends AttributeName,
+		R extends Reference,	
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>,
+		RA extends AttributeName,
+		RR extends Reference,	
+		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
+		K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>
+	>	
+	EntityQueryPredicate newIn(QE left, K key, Collection<RE> entities) {
+		EntityQueryPredicate inp = new EntityQueryInPredicate.Referenced<A, R, T, E, H, F, M, QE, RA, RR, RT, RE, RH, RF, RM, K>(left, key, entities);
+		return inp;
+	}
+	
+	
+	public static <
+		A extends AttributeName,
+		R extends Reference,	
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M>,		
+		RA extends AttributeName,
+		RR extends Reference,	
+		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
+		QE extends EntityQueryElement<RA, RR, RT, RE, RH, RF, RM, QE>,
+		K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>
+	>	
+	EntityQueryPredicate newInReferencing(QE left, K key, Collection<E> entities) {
+		EntityQueryPredicate inp = new EntityQueryInPredicate.Referencing<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, QE, K>(
+				left, key, entities);
+		
+		return inp;
+	}
+	
+	public static <
+		A extends AttributeName,
+		R extends Reference,	
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
+	>	
+	EntityQueryPredicate newIn(QE left, Collection<E> entities) {				
+		EntityQueryPredicate inp = new EntityQueryInValuesPredicate<A, R, T, E, H, F, M, QE>(left, entities);
+		return inp;
+	}	
+		
+	public static EntityQueryPredicate newNot(EntityQueryPredicate inner) {
+		return new EntityQueryPredicates.Not(inner);
+	}
+	
+	public static EntityQueryPredicate newAnd(EntityQueryPredicate a, EntityQueryPredicate b) {
+		if (a == null) {
+			return b;
+		}
+		
+		if (b == null) {
+			return a;
+		}		
+		
+		return new EntityQueryPredicates.And(a, b);
+	}
+	
+	public static EntityQueryPredicate newOr(EntityQueryPredicate a, EntityQueryPredicate b) {
+		if (a == null) {
+			return b;
+		}
+		
+		if (b == null) {
+			return a;
+		}		
+		
+		return new EntityQueryPredicates.Or(a, b);
+	}
+	
+	
+	public static EntityQueryPredicate newIsNull(EntityQueryValue v) {
+		return new EntityQueryPredicates.IsNull(v);
+	}	
+	
+	public static EntityQueryPredicate newNotNull(EntityQueryValue v) {
+		return new EntityQueryPredicates.IsNotNull(v);
+	}	
+	
+	
 }

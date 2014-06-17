@@ -29,14 +29,31 @@ public class EntityRuntimeException
 	 * 
 	 */
 	private static final long serialVersionUID = 6858541793942629046L;
+		
+	private Entity<?, ?, ?, ?, ?, ?, ?> entity;
 	
 	public EntityRuntimeException() {
 		super();
 	}
+	
+	public EntityRuntimeException(String msg, Entity<?, ?, ?, ?, ?, ?, ?> entity) {
+		this(msg, entity, null);		
+	}
+	
 	public EntityRuntimeException(String msg) {
 		super(msg);
 	}
+	
 	public EntityRuntimeException(String message, Throwable cause) {
+		this(message, null, cause);	
+	}
+	
+	public EntityRuntimeException(String message, Entity<?, ?, ?, ?, ?, ?, ?> entity, Throwable cause) {
 		super(message, cause);	
-	}	
+		this.entity = entity;
+	}
+	
+	public Entity<?, ?, ?, ?, ?, ?, ?> getEntity() {
+		return entity;
+	}
 }

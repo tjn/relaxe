@@ -42,7 +42,6 @@ public abstract class AbstractParameter<
 	T extends ValueType<T>, 
 	H extends ValueHolder<V, T, H>
 >
-	extends SimpleElement
 	implements Parameter<V, T, H>, ValueExpression, SelectListElement, Token {
 	
 	/**
@@ -62,9 +61,6 @@ public abstract class AbstractParameter<
 	public AbstractParameter(Column column) {
 		this.columnName = column.getColumnName();
 		this.columnType = column.getDataType();
-//		this.dataType = this.columnType.getDataType();
-//		this.typeName = column.getDataType().getTypeName();		
-//		this.type = column.getDataType().getDataType();
 	}
 
 	@Override

@@ -161,8 +161,8 @@ public abstract class AbstractEntityDiff<
 	private
 	<P extends Entity<?, ?, ?, ?, ?, ?, ?>>
 	boolean primaryKeyDiffers(P o, P m) throws EntityRuntimeException {
-		Map<Column, ValueHolder<?,?,?>> a = o.getPrimaryKey();
-		Map<Column, ValueHolder<?,?,?>> b = m.getPrimaryKey();
+		Tuple<ValueHolder<?,?,?>> a = o.getPrimaryKey();
+		Tuple<ValueHolder<?,?,?>> b = m.getPrimaryKey();
 
 		if (a == null || b == null) {
 			return a != b;

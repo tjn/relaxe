@@ -22,12 +22,41 @@
  */
 package com.appspot.relaxe.expr;
 
+
+/**
+ * Represents query expression SQL construct.
+ * 
+ * <code><query-expression> ::= <table-expression> [ <order-by-clause [ limit-clause ] [ limit-clause ] ]</code>
+ */
 public interface QueryExpression
 	extends Expression {
 
+	/**
+	 * The table expression of the query expression. 
+	 * 
+	 * @return
+	 */	
 	public TableExpression getTableExpr();
+	
+	/**
+	 * The <code>ORDER BY</code> clause of this query expression or <code>null</code> 
+	 * 
+	 * @return
+	 */	
 	public OrderBy getOrderBy();
+	
+	/**
+	 * The <code>LIMIT</code> clause of this query expression or <code>null</code> 
+	 * 
+	 * @return
+	 */	
 	public Limit getLimit();
+	
+	/**
+	 * The <code>OFFSET</code> clause of this query expression or <code>null</code> 
+	 * 
+	 * @return
+	 */		
 	public Offset getOffset();
 
 	String generate();

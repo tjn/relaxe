@@ -22,6 +22,8 @@
  */
 package com.appspot.relaxe.meta;
 
+import com.appspot.relaxe.expr.Identifier;
+
 
 public interface ColumnMap
 	extends ElementMap<Column> {
@@ -33,4 +35,6 @@ public interface ColumnMap
 	 * @return
 	 */
 	Column get(int index);
+	
+	int indexOf(Identifier columnName);
 }

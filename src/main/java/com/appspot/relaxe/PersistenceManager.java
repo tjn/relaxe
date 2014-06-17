@@ -47,6 +47,7 @@ import com.appspot.relaxe.ent.EntityQuery;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityQueryResult;
 import com.appspot.relaxe.ent.Reference;
+import com.appspot.relaxe.ent.Tuple;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.expr.AbstractRowValueConstructor;
@@ -69,6 +70,7 @@ import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.log.Logger;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
+import com.appspot.relaxe.meta.ColumnMap;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.query.QueryResult;
@@ -533,14 +535,23 @@ public class PersistenceManager<
 				
 		E e = getTarget();
 				
-		Map<Column, ValueHolder<?, ?, ?>> vm = e.getPrimaryKey();
+		// Map<Column, ValueHolder<?, ?, ?>> vm = e.getPrimaryKey();
+		Tuple<ValueHolder<?, ?, ?>> t = e.getPrimaryKey();
+		ColumnMap cm = e.getMetaData().getBaseTable().getPrimaryKey().getColumnMap();
 		
-		for (Map.Entry<Column, ValueHolder<?, ?, ?>> me : vm.entrySet()) {
-			Column col = me.getKey();
-			ValueHolder<?, ?, ?> val = me.getValue();			
+		for (int i = 0; i < t.size(); i++) {
+			Column col = cm.get(i);
+			ValueHolder<?, ?, ?> val = t.get(i);
 			ValueExpression ve = createValueExpression(col, val);
-			builder.addPredicate(col.getColumnName(), Comparison.Op.EQ, ve);			
-		}		
+			builder.addPredicate(col.getColumnName(), Comparison.Op.EQ, ve);
+		}
+		
+//		for (Map.Entry<Column, ValueHolder<?, ?, ?>> me : vm.entrySet()) {
+//			Column col = me.getKey();
+//			ValueHolder<?, ?, ?> val = me.getValue();			
+//			ValueExpression ve = createValueExpression(col, val);
+//			builder.addPredicate(col.getColumnName(), Comparison.Op.EQ, ve);			
+//		}		
 		
 		
 		EntityQuery<A, R, T, E, H, F, M, PMElement> query = builder.newQuery();

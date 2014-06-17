@@ -23,7 +23,6 @@
 package com.appspot.relaxe.ent;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.Set;
 
 import com.appspot.relaxe.ent.value.EntityKey;
@@ -127,11 +126,25 @@ public interface Entity<
 	 * @throws NullPointerException If <code>ref</code> is <code>null</code>.
 	 */
 	ReferenceHolder<?, ?, ?, ?, ?, ?> ref(R ref);
-
-	Map<Column, ValueHolder<?, ?, ?>> getPrimaryKey() throws EntityRuntimeException;
+	
+	
+	/**
+	 * Returns a tuple which contains the values of primary key columns or <code>null</code> if the value of any column of the primary key is absent or <code>null</code>. 
+	 * 
+	 * The value of a primary key column <code>null</code> is absent or <code>null</code> if the following is true: 
+	 * <code>
+	 * get(c) == null || get(c).isNull()  
+	 * </code>
+	 * 
+	 * The order of the tuple elements corresponds the order columns than primary key columns.
+	 * 
+	 * @return
+	 */
+	Tuple<ValueHolder<?, ?, ?>> getPrimaryKey();
 
 	/**
 	 * Returns the meta-data object which describes the structure of this object.
+	 * 
 	 * @return
 	 */
 	M getMetaData();
@@ -170,6 +183,9 @@ public interface Entity<
 	public E copy();
 
 	boolean isIdentified() throws EntityRuntimeException;
+	
+		
+//	E identity();
 
 
 	/**
@@ -194,25 +210,6 @@ public interface Entity<
 	>
 	void remove(K key);
 
-//	/**
-//	 * Replaces the current value of the attribute addressed by <code>key</code> with null-valued holder.
-//	 *
-//	 *
-//	 *
-//	 * @param <VV>
-//	 * @param <VT>
-//	 * @param <VH>
-//	 * @param <K>
-//	 * @param key
-//	 */
-//	public <
-//		VV extends Serializable,
-//		VT extends PrimitiveType<VT>,
-//		VH extends PrimitiveHolder<VV, VT>,
-//		K extends PrimitiveKey<A, T, E, VV, VT, VH, K>
-//	>
-//	void reset(K key);
-
 	/**
 	 * * Resets the specified attributes.
 	 */
@@ -235,8 +232,6 @@ public interface Entity<
 	>
 	boolean has(K key);
 
-
-
 	/**
 	 *
 	 *
@@ -254,14 +249,4 @@ public interface Entity<
 	>
 	boolean match(K key, E another);
 
-//	/**
-//	 * Returns true if and only if this entity has currently the value holder set for the reference named by <code>r</code>.
-//	 *
-//	 * @param <VV>
-//	 * @param <VT>
-//	 * @param <VH>
-//	 * @param <K>
-//	 * @param key
-//	 */
-//	boolean has(R r);
 }

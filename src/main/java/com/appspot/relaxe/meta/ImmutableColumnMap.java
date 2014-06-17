@@ -26,11 +26,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.appspot.relaxe.env.Environment;
+import com.appspot.relaxe.env.IdentifierRules;
 import com.appspot.relaxe.expr.Identifier;
 
 public class ImmutableColumnMap
@@ -135,6 +137,20 @@ public class ImmutableColumnMap
 			this.content = null;
 			this.columnList.clear();			
 		}
+	}
+	
+	public int indexOf(Identifier columnName) {
+		Comparator<Identifier> cmp = getEnvironment().getIdentifierRules().comparator();
+		
+		for (int i = 0; i < this.columnList.length; i++) {
+			Column col = this.columnList[i];
+			
+			if (cmp.compare(col.getColumnName(), columnName) == 0) {
+				return i;
+			}
+		}
+		
+		return -1;
 	}
 	
 

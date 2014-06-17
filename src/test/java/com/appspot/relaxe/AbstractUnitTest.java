@@ -84,8 +84,6 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	 * Context variables:
 	 */
 	private PersistenceContext<I> persistenceContext;
-	// private I implementation;
-	// private String host;
 						
 	public TestContext<I> getCurrent() {
 		return current;
@@ -418,7 +416,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	
 	
 	protected Set<Integer> intSet(String query) throws Exception {
-		return ints(query, new HashSet<Integer>(), 1);		
+		return ints(query, new HashSet<Integer>(), 1);
 	}
 	
 	protected <C extends Collection<Integer>> C ints(String query, C dest, int column) throws Exception {		
@@ -451,14 +449,90 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
 		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>
+		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		C extends Collection<Integer>
 	>
-	void ints(List<E> src, Collection<Integer> dest, IntegerAttribute<A, E> key) throws Exception {
+	C ints(List<E> src, C dest, IntegerAttribute<A, E> key) throws Exception {
 		for (E e : src) {						
 			IntegerHolder h = e.getInteger(key);
 			dest.add(h.value());
 		}
+		
+		return dest;
 	}
+	
+	 public <
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M>
+	>
+	List<E> range(T type, IntegerAttribute<A, E> key, int count) throws Exception {
+		 return range(type, new ArrayList<E>(), key, count);		
+	}
+	
+	public <
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		C extends Collection<E>
+	>
+	C range(T type, C dest, IntegerAttribute<A, E> key, int count) throws Exception {
+		return range(type, dest, key, 1, count + 1);		
+	}
+	
+	protected <
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, H, F, M>,
+		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		C extends Collection<E>
+	>
+	C range(T type, C dest, IntegerAttribute<A, E> key, int from, int to) throws Exception {
+		F ef = type.getMetaData().getFactory();
+		
+		for (int i = from; i < to; i++) {
+			E e = ef.newEntity();
+			e.set(key, IntegerHolder.valueOf(i));
+			dest.add(e);
+		}
+		
+		return dest;
+	}
+	
+	protected <
+	A extends AttributeName,
+	R extends Reference,
+	T extends ReferenceType<A, R, T, E, H, F, M>,
+	E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, H, F, M>
+>
+void range(T type, Collection<E> dest, IntegerAttribute<A, E> key1, int count1, IntegerAttribute<A, E> key2, int count2) throws Exception {
+	F ef = type.getMetaData().getFactory();
+	
+	for (int i = 0; i < count1; i++) {
+		for (int j = 0; i < count2; j++) {
+			E e = ef.newEntity();
+			e.set(key1, IntegerHolder.valueOf(i));
+			e.set(key2, IntegerHolder.valueOf(j));
+			dest.add(e);
+		}
+	}
+	
+}
+	
 	
 	protected <
 		A extends AttributeName,

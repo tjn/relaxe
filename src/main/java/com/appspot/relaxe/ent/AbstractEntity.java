@@ -30,6 +30,7 @@ import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.ent.value.StringAttribute;
 import com.appspot.relaxe.meta.Column;
+import com.appspot.relaxe.meta.ColumnMap;
 import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.types.ValueType;
@@ -56,7 +57,7 @@ public abstract class AbstractEntity<
 	private static final long serialVersionUID = -1538787348338709153L;	
 
 	@Override
-	public ValueHolder<?, ?, ?> get(Column column) throws NullPointerException, EntityRuntimeException {
+	public ValueHolder<?, ?, ?> get(Column column) {
 		
 		if (column == null) {
 			throw new NullPointerException("column");
@@ -104,8 +105,9 @@ public abstract class AbstractEntity<
 		
 		ForeignKey fk = m.getForeignKey(r);
 		Column fkcol = fk.getReferenced(column);
+		
 		return ref.get(fkcol);
-	}	
+	}
 
 	/**
 	 * Returns a type-safe self-reference. Implementation must return <code>this</code>.
@@ -116,26 +118,44 @@ public abstract class AbstractEntity<
 	public abstract E self();
 	
 	@Override
-	public Map<Column, ValueHolder<?,?,?>> getPrimaryKey() {
+	public Tuple<ValueHolder<?,?,?>> getPrimaryKey() {
 		PrimaryKey pk = getMetaData().getBaseTable().getPrimaryKey();
 		
 		if (pk == null) {
 			return null;
 		}
 		
-		Map<Column, ValueHolder<?,?,?>> vm = new HashMap<Column, ValueHolder<?,?,?>>(2);
-				
-		for (Column pkcol : pk.getColumnMap().values()) {
+//		Map<Column, ValueHolder<?,?,?>> vm = new HashMap<Column, ValueHolder<?,?,?>>(2);
+		
+		ColumnMap cm = pk.getColumnMap();
+		
+		int size = cm.size();
+		ValueHolder<?,?,?>[] ha = new ValueHolder<?,?,?>[size];
+		
+		for (int i = 0; i < size; i++) {
+			Column pkcol = cm.get(i);
 			ValueHolder<?,?,?> v = get(pkcol);
 			
 			if ((v == null) || v.isNull()) {
 				return null;
 			}
 			
-			vm.put(pkcol, v);
-		}
+			ha[i] = v;
+		}		
 		
-		return vm;
+		return Tuples.of(ha);
+//				
+//		for (Column pkcol : pk.getColumnMap().values()) {
+//			ValueHolder<?,?,?> v = get(pkcol);
+//			
+//			if ((v == null) || v.isNull()) {
+//				return null;
+//			}
+//			
+//			vm.put(pkcol, v);
+//		}
+//		
+//		return vm;
 	}
 	
 	@Override
