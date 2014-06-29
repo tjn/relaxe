@@ -25,6 +25,7 @@ package com.appspot.relaxe.ent.im;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.HasInteger;
 import com.appspot.relaxe.ent.value.IntegerAttribute;
@@ -36,14 +37,15 @@ import com.appspot.relaxe.value.ReferenceHolder;
 public class IntegerIdentityMap<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, ?, M>,
-	E extends Entity<A, R, T, E, H, ?, M> & HasInteger<A, E>,
+	T extends ReferenceType<A, R, T, E, B, H, ?, M>,
+	E extends Entity<A, R, T, E, B, H, ?, M> & HasInteger.Read<A, E, B>,
+	B extends MutableEntity<A, R, T, E, B, H, ?, M> & HasInteger.Write<A, E, B>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	M extends EntityMetaData<A, R, T, E, H, ?, M>
+	M extends EntityMetaData<A, R, T, E, B, H, ?, M>
 	>
-	extends AbstractKeyIdentityMap<A, R, T, E, H, M, Integer, IntegerType, IntegerHolder, IntegerAttribute<A, E>>
+	extends AbstractKeyIdentityMap<A, R, T, E, B, H, M, Integer, IntegerType, IntegerHolder, IntegerAttribute<A, E, B>>
 {		
-	public IntegerIdentityMap(IntegerAttribute<A, E> key) {
+	public IntegerIdentityMap(IntegerAttribute<A, E, B> key) {
 		super(key);
 	}
 }

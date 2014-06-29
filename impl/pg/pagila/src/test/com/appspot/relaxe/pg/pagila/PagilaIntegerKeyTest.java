@@ -34,21 +34,21 @@ import junit.framework.TestCase;
 public class PagilaIntegerKeyTest extends TestCase {
 
 	public void testEquals() {		
-//		LiteralCatalog litcat = LiteralCatalog.getInstance();		
 		test(Film.Type.TYPE.getMetaData(), Film.Attribute.FILM_ID);
 	}
 	
 	private 
 	<
 		A extends AttributeName,
-		E extends HasInteger<A, E>,
-		M extends HasIntegerAttribute<A, E>
+		E extends HasInteger.Read<A, E, B>,
+		B extends HasInteger.Write<A, E, B>,
+		M extends HasIntegerAttribute<A, E, B>
 	>
 	void test(M meta, A name) {
-		IntegerAttribute<A, E> ik1 = IntegerAttribute.get(meta, name);
+		IntegerAttribute<A, E, B> ik1 = IntegerAttribute.get(meta, name);
 		assertNotNull(ik1);
 		assertSame(IntegerType.TYPE, ik1.type());
-		IntegerAttribute<A, E> ik2 = IntegerAttribute.get(meta, name);
+		IntegerAttribute<A, E, B> ik2 = IntegerAttribute.get(meta, name);
 		assertSame(ik1, ik2);				
 	}	
 }

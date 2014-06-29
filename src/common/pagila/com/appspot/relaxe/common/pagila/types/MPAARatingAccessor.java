@@ -23,14 +23,14 @@
 package com.appspot.relaxe.common.pagila.types;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.value.AbstractAttributeAccessor;
 
 public class MPAARatingAccessor<
 	A extends AttributeName,
-	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasMPAARating<A, E>
+	R extends HasMPAARating.Read<A, R, RW>,
+	RW extends HasMPAARating.Read<A, R, RW> & HasMPAARating.Write<A, R, RW>
 >
-	extends AbstractAttributeAccessor<A, E, MPAARating, MPAARatingType, MPAARatingHolder, MPAARatingKey<A, E>> {
+	extends AbstractAttributeAccessor<A, R, RW, MPAARating, MPAARatingType, MPAARatingHolder, MPAARatingAttribute<A, R, RW>> {
 
 	/**
 	 *
@@ -44,7 +44,12 @@ public class MPAARatingAccessor<
 	private MPAARatingAccessor() {
 	}
 
-	public MPAARatingAccessor(E target, MPAARatingKey<A, E> k) {
+	public MPAARatingAccessor(RW target, MPAARatingAttribute<A, R, RW> k) {
 		super(target, k);
+	}
+	
+	@Override
+	public MPAARatingHolder getHolder() {		
+		return getTarget().getMPAARating(key());
 	}
 }

@@ -242,8 +242,9 @@ public class DefaultTypeMapper
 	        	da.setHolderType(CharHolder.class);
 	        	da.setAttributeType(CharAttribute.class);
 	        	da.setAccessorType(CharAccessor.class);
-	        	da.setPrimitiveType(CharType.TYPE);        	
-	        	da.setContainerType(HasChar.class);
+	        	da.setPrimitiveType(CharType.TYPE);
+	        	da.setReadableContainerType(HasChar.Read.class);
+	        	da.setWritableContainerType(HasChar.Write.class);	        	
 	        	da.setContainerMetaType(HasCharAttribute.class);
 	        	break;
 	        case Types.VARCHAR:
@@ -253,8 +254,9 @@ public class DefaultTypeMapper
 	        	da.setAttributeType(VarcharAttribute.class);
 	        	da.setAccessorType(VarcharAccessor.class);
 	        	da.setPrimitiveType(VarcharType.TYPE);        	
-	        	da.setIdentityMapType(VarcharIdentityMap.class);
-	        	da.setContainerType(HasVarchar.class);
+	        	da.setIdentityMapType(VarcharIdentityMap.class);	        	
+	        	da.setReadableContainerType(HasVarchar.Read.class);
+	        	da.setWritableContainerType(HasVarchar.Write.class);
 	        	da.setContainerMetaType(HasVarcharAttribute.class);        	
 	            break;            	
 	        case Types.LONGNVARCHAR:
@@ -267,8 +269,9 @@ public class DefaultTypeMapper
 	        	da.setAttributeType(IntegerAttribute.class);
 	        	da.setAccessorType(IntegerAccessor.class);
 	        	da.setPrimitiveType(IntegerType.TYPE);
-	        	da.setIdentityMapType(IntegerIdentityMap.class);
-	        	da.setContainerType(HasInteger.class);
+	        	da.setIdentityMapType(IntegerIdentityMap.class);	        	
+	        	da.setReadableContainerType(HasInteger.Read.class);
+	        	da.setWritableContainerType(HasInteger.Write.class);
 	        	da.setContainerMetaType(HasIntegerAttribute.class);
 	            break;
 	        case Types.BIGINT:
@@ -278,7 +281,8 @@ public class DefaultTypeMapper
 	        	da.setAccessorType(LongAccessor.class);
 	        	da.setPrimitiveType(LongType.TYPE);
 	        	da.setIdentityMapType(LongIdentityMap.class);
-	        	da.setContainerType(HasLong.class);
+	        	da.setReadableContainerType(HasLong.Read.class);
+	        	da.setWritableContainerType(HasLong.Write.class);
 	        	da.setContainerMetaType(HasLongAttribute.class);	        	
 	        	break;
 	        case Types.BIT:
@@ -294,7 +298,8 @@ public class DefaultTypeMapper
 	        	da.setAttributeType(BooleanAttribute.class);
 	        	da.setAccessorType(BooleanAccessor.class);
 	        	da.setPrimitiveType(BooleanType.TYPE);	        	
-	        	da.setContainerType(HasBoolean.class);
+	        	da.setReadableContainerType(HasBoolean.Read.class);
+	        	da.setWritableContainerType(HasBoolean.Write.class);
 	        	da.setContainerMetaType(HasBooleanAttribute.class);	 
 	        	break;
 	        case Types.REAL:
@@ -306,8 +311,9 @@ public class DefaultTypeMapper
 	        	da.setHolderType(DoubleHolder.class);
 	        	da.setAttributeType(DoubleAttribute.class);
 	        	da.setAccessorType(DoubleAccessor.class);
-	        	da.setPrimitiveType(DoubleType.TYPE);
-	        	da.setContainerType(HasDouble.class);
+	        	da.setPrimitiveType(DoubleType.TYPE);	        	
+	        	da.setReadableContainerType(HasDouble.Read.class);
+	        	da.setWritableContainerType(HasDouble.Write.class);	        	
 	        	da.setContainerMetaType(HasDoubleAttribute.class);       	
 	            break;
 	        case Types.DECIMAL:
@@ -316,8 +322,9 @@ public class DefaultTypeMapper
 	        	da.setHolderType(DecimalHolder.class);
 	        	da.setAttributeType(DecimalAttribute.class);
 	        	da.setAccessorType(DecimalAccessor.class);
-	        	da.setPrimitiveType(DecimalType.TYPE);
-	        	da.setContainerType(HasDecimal.class);
+	        	da.setPrimitiveType(DecimalType.TYPE);	        	
+	        	da.setReadableContainerType(HasDecimal.Read.class);
+	        	da.setWritableContainerType(HasDecimal.Write.class);
 	        	da.setContainerMetaType(HasDecimalAttribute.class);
 	            break;        	
 	        case Types.DATE:            
@@ -325,8 +332,9 @@ public class DefaultTypeMapper
 	        	da.setHolderType(DateHolder.class);
 	        	da.setAttributeType(DateAttribute.class);
 	        	da.setAccessorType(DateAccessor.class);
-	        	da.setPrimitiveType(DateType.TYPE);
-	        	da.setContainerType(HasDate.class);
+	        	da.setPrimitiveType(DateType.TYPE);	        	
+	        	da.setReadableContainerType(HasDate.Read.class);
+	        	da.setWritableContainerType(HasDate.Write.class);
 	        	da.setContainerMetaType(HasDateAttribute.class);
 	            break;
 	            
@@ -335,8 +343,9 @@ public class DefaultTypeMapper
 	        	da.setHolderType(TimeHolder.class);
 	        	da.setAttributeType(TimeAttribute.class);
 	        	da.setAccessorType(TimeAccessor.class);
-	        	da.setPrimitiveType(TimeType.TYPE);
-	        	da.setContainerType(HasTime.class);
+	        	da.setPrimitiveType(TimeType.TYPE);	        	
+	        	da.setReadableContainerType(HasTime.Read.class);
+	        	da.setWritableContainerType(HasTime.Write.class);
 	        	da.setContainerMetaType(HasTimeAttribute.class);        	
 	            break;
 	            
@@ -347,8 +356,9 @@ public class DefaultTypeMapper
 	        	da.setHolderType(LongVarBinaryHolder.class);
 	        	da.setAttributeType(LongVarBinaryAttribute.class);
 	        	da.setAccessorType(LongVarBinaryAccessor.class);
-	        	da.setPrimitiveType(LongVarBinaryType.TYPE);
-	        	da.setContainerType(HasLongVarBinary.class);
+	        	da.setPrimitiveType(LongVarBinaryType.TYPE);	        	
+	        	da.setReadableContainerType(HasLongVarBinary.Read.class);
+	        	da.setWritableContainerType(HasLongVarBinary.Write.class);	        	
 	        	da.setContainerMetaType(HasLongVarBinaryAttribute.class);
 	            break;
 	            
@@ -357,8 +367,9 @@ public class DefaultTypeMapper
 	        	da.setHolderType(TimestampHolder.class);
 	        	da.setAttributeType(TimestampAttribute.class);
 	        	da.setAccessorType(TimestampAccessor.class);
-	        	da.setPrimitiveType(TimestampType.TYPE);
-	        	da.setContainerType(HasTimestamp.class);
+	        	da.setPrimitiveType(TimestampType.TYPE);	        	
+	        	da.setReadableContainerType(HasTimestamp.Read.class);
+	        	da.setWritableContainerType(HasTimestamp.Write.class);
 	        	da.setContainerMetaType(HasTimestampAttribute.class);
 	            break;	            
 	            

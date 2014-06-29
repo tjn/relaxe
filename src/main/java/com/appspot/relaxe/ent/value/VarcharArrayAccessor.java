@@ -24,29 +24,34 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.types.VarcharArrayType;
-import com.appspot.relaxe.value.StringArray;
 import com.appspot.relaxe.value.VarcharArrayHolder;
+import com.appspot.relaxe.value.StringArray;
 
 public class VarcharArrayAccessor<
 	A extends AttributeName,
-	E extends HasVarcharArray<A, E>
+	R extends HasVarcharArray.Read<A, R, RW>,
+	RW extends HasVarcharArray.Read<A, R, RW> & HasVarcharArray.Write<A, R, RW>
 >
-	extends AbstractAttributeAccessor<A, E, StringArray, VarcharArrayType, VarcharArrayHolder, VarcharArrayAttribute<A, E>> {
-
-
+	extends AbstractAttributeAccessor<A, R, RW, StringArray, VarcharArrayType, VarcharArrayHolder, VarcharArrayAttribute<A, R, RW>> {
+	
 	/**
-	 * 
+	 *
 	 */
-	private static final long serialVersionUID = -4859792482539290356L;
-
+	private static final long serialVersionUID = -2731889274638406123L;
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
 	private VarcharArrayAccessor() {
 	}
-
-	public VarcharArrayAccessor(E target, VarcharArrayAttribute<A, E> k) {
-		super(target, k); 
+	
+	public VarcharArrayAccessor(RW target, VarcharArrayAttribute<A, R, RW> k) {
+		super(target, k);
+	}
+	
+	@Override
+	public VarcharArrayHolder getHolder() {
+		return getTarget().getVarcharArray(key());
 	}
 }

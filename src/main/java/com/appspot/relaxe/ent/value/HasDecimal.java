@@ -26,8 +26,43 @@ import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.value.DecimalHolder;
 
 public interface HasDecimal<
-	A extends AttributeName, E extends HasDecimal<A, E>
-> {
-	DecimalHolder getDecimal(DecimalAttribute<A, E> key);
-	void setDecimal(DecimalAttribute<A, E> key, DecimalHolder newValue);
+	A extends AttributeName,
+	R extends HasDecimal.Read<A, R, W>,
+	W extends HasDecimal.Write<A, R, W>
+>
+{	
+	R asRead();	
+	W asWrite();	
+	
+	public interface Read<
+		A extends AttributeName,
+		R extends HasDecimal.Read<A, R, W>,
+		W extends HasDecimal.Write<A, R, W>
+	>
+		extends HasDecimal<A, R, W> {
+		/**
+		 * Returns the value by the key or <code>null</code> if the value is not currently present.
+		 * 
+		 * @param key
+		 * @return The value corresponding the key.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		DecimalHolder getDecimal(DecimalAttribute<A, R, W> key);		
+	}
+	
+	public interface Write<
+		A extends AttributeName,
+		R extends HasDecimal.Read<A, R, W>,
+		W extends HasDecimal.Write<A, R, W>
+	> extends HasDecimal<A, R, W> {
+	
+		/**
+		 * Sets the value by the key.
+		 * 
+		 * @param key
+		 * @param newValue May be null.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		void setDecimal(DecimalAttribute<A, R, W> key, DecimalHolder newValue);
+	}
 }

@@ -30,9 +30,10 @@ import com.appspot.relaxe.value.ValueHolder;
 
 public final class CharAttribute<
 	A extends AttributeName,	
-	E extends HasChar<A, E> & HasString<A, E>
+	E extends HasChar.Read<A, E, W> & HasString.Read<A, E, W>,
+	W extends HasChar.Write<A, E, W> & HasString.Write<A, E, W>
 >
-	extends StringAttribute<A, E, CharType, CharHolder, CharAttribute<A, E>>
+	extends StringAttribute<A, E, W, CharType, CharHolder, CharAttribute<A, E, W>>
 {
 	/**
 	 *
@@ -45,21 +46,23 @@ public final class CharAttribute<
 	private CharAttribute() {
 	}
 	
-	private CharAttribute(HasCharAttribute<A, E> meta, A name) {
+	private CharAttribute(A name) {
 		super(name);
-		meta.register(this);
+		
 	}	
 	
 	public static <
 		X extends AttributeName,
-		T extends HasChar<X, T> & HasString<X, T>
+		T extends HasChar.Read<X, T, S> & HasString.Read<X, T, S>,
+		S extends HasChar.Write<X, T, S> & HasString.Write<X, T, S>
 	>
-	CharAttribute<X, T> get(HasCharAttribute<X, T> meta, X a) {
-		CharAttribute<X, T> k = meta.getCharAttribute(a);
+	CharAttribute<X, T, S> get(HasCharAttribute<X, T, S> meta, X a) {
+		CharAttribute<X, T, S> k = meta.getCharAttribute(a);
 		
 		if (k == null) {
 			if (CharType.TYPE.equals(a.type())) {
-				k = new CharAttribute<X, T>(meta, a);
+				k = new CharAttribute<X, T, S>(a);
+				meta.register(k);
 			}
 		}
 				
@@ -73,9 +76,8 @@ public final class CharAttribute<
 	}
 	
 	@Override
-	public void set(E e, CharHolder newValue)
-		throws EntityRuntimeException {
-		e.setChar(this, newValue);
+	public void set(W e, CharHolder newValue) {
+		 e.setChar(this, newValue);
 	}
 	
 	@Override
@@ -90,13 +92,12 @@ public final class CharAttribute<
 	}
 
 	@Override
-	public void copy(E src, E dest)
-		throws EntityRuntimeException {
+	public void copy(E src, W dest) {
 		dest.setChar(this, src.getChar(this));
 	}
 	
 	@Override
-	public CharAttribute<A, E> self() {	
+	public CharAttribute<A, E, W> self() {	
 		return this;
 	}
 	

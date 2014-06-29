@@ -30,7 +30,7 @@ import java.sql.SQLException;
 
 import com.appspot.relaxe.rdbms.PersistenceContext;
 import com.appspot.relaxe.rdbms.mysql.MySQLImplementation;
-import com.appspot.relaxe.rdbms.util.ResultSetWriter;
+import com.appspot.relaxe.util.ResultSetWriter;
 import com.appspot.relaxe.mysql.AbstractMySQLTestCase;
 import com.appspot.relaxe.query.QueryException;
 

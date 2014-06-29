@@ -74,7 +74,7 @@ public class PagilaDefaultEntityQueryTest
     	
     	FilmActor.Query faq = new FilmActor.Query(fae);
     	    	
-    	EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, QueryElement> qxb = newQueryExpressionBuilder(faq);    	
+    	EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, FilmActor.Mutable, Holder, Factory, MetaData, QueryElement> qxb = newQueryExpressionBuilder(faq);    	
     	    	
     	logger().debug("testQuery1: qxb: {}" + qxb);
     	
@@ -89,8 +89,8 @@ public class PagilaDefaultEntityQueryTest
     	
     	ValueExtractorFactory vef = pc.getValueExtractorFactory();
     	    	    	    	
-    	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement> er
-    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement>(vef, qxb, ic);
+    	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Mutable, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement> er
+    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Mutable, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement>(vef, qxb, ic);
     	    	
     	StatementExecutor se = new StatementExecutor(pc);
     	    	    	
@@ -128,9 +128,9 @@ public class PagilaDefaultEntityQueryTest
 		}
     }
 
-	protected EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, QueryElement> newQueryExpressionBuilder(
+	protected EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, FilmActor.Mutable, Holder, Factory, MetaData, QueryElement> newQueryExpressionBuilder(
 			FilmActor.Query faq) {
-		EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, QueryElement> qeb = new EntityQueryExpressionBuilder<>(faq);
+		EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, FilmActor.Mutable, Holder, Factory, MetaData, QueryElement> qeb = new EntityQueryExpressionBuilder<>(faq);
 		return qeb;
 	}
     
@@ -144,14 +144,14 @@ public class PagilaDefaultEntityQueryTest
     	    	
     	Film film = newEntity(Film.Type.TYPE);
     	
-    	Category category = newEntity(Category.Type.TYPE);
+    	Category.Mutable category = newEntity(Category.Type.TYPE);
     	category.setName("project name");
     	
-    	Actor actor = newEntity(Actor.Type.TYPE);    	
+    	Actor.Mutable actor = newEntity(Actor.Type.TYPE);    	
     	actor.setFirstName("Emilio");
     	actor.setLastName("Bullock");
     	    	
-    	FilmCategory fc = newEntity(FilmCategory.Type.TYPE);
+    	FilmCategory.Mutable fc = newEntity(FilmCategory.Type.TYPE);
     	fc.setFilm(FilmCategory.FILM, film.ref());
     	fc.setCategory(FilmCategory.CATEGORY, category.ref());
     	
@@ -161,7 +161,7 @@ public class PagilaDefaultEntityQueryTest
     	    	    	
     	FilmActor.Query qo = new FilmActor.Query(faq);
     	
-    	EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, Holder, Factory, MetaData, QueryElement> qxb = 
+    	EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, FilmActor.Mutable, Holder, Factory, MetaData, QueryElement> qxb = 
     			newQueryExpressionBuilder(qo);
     	
     	String qs = qxb.getQueryExpression().generate();
@@ -172,8 +172,8 @@ public class PagilaDefaultEntityQueryTest
     	UnificationContext ic = new SimpleUnificationContext();
     	ValueExtractorFactory vef = imp.getValueExtractorFactory();
     	    	    	    	
-    	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement> eb
-    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement>(vef, qxb, ic);
+    	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Mutable, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement> eb
+    		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Mutable, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement>(vef, qxb, ic);
     	   	
     	StatementExecutor se = new StatementExecutor(getPersistenceContext());
     	

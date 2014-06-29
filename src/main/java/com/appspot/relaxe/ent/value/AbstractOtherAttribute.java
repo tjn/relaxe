@@ -32,12 +32,13 @@ import com.appspot.relaxe.value.ValueHolder;
 public abstract class AbstractOtherAttribute<
 	A extends AttributeName,
 	E,
+	W,
 	V extends Serializable,
 	P extends ValueType<P>,
 	H extends ValueHolder<V, P, H>,
-	K extends AbstractOtherAttribute<A, E, V, P, H, K>
+	K extends AbstractOtherAttribute<A, E, W, V, P, H, K>
 	>
-	extends AbstractAttribute<A, E, V, P, H, K>
+	extends AbstractAttribute<A, E, W, V, P, H, K>
 {
 	/**
 	 *

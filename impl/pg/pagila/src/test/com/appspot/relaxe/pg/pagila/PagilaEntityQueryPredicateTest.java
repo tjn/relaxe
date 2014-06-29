@@ -166,7 +166,7 @@ public class PagilaEntityQueryPredicateTest
 						
 		for (Film f : fl) {
 			for (Actor a : al) {
-				FilmActor fa = ef.newEntity();
+				FilmActor.Mutable fa = ef.newEntity();
 				fa.setFilm(FilmActor.FILM, f.ref());
 				fa.setActor(FilmActor.ACTOR, a.ref());
 				fas.add(fa);

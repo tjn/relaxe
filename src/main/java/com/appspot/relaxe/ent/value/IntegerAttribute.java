@@ -31,9 +31,10 @@ import com.appspot.relaxe.value.ValueHolder;
 
 public final class IntegerAttribute<
 	A extends AttributeName,
-	E extends HasInteger<A, E>
+	E extends HasInteger.Read<A, E, B>,
+	B extends HasInteger.Write<A, E, B>
 >
-	extends AbstractAttribute<A, E, Integer, IntegerType, IntegerHolder, IntegerAttribute<A, E>>	
+	extends AbstractAttribute<A, E, B, Integer, IntegerType, IntegerHolder, IntegerAttribute<A, E, B>>	
 {	
 	/**
 	 *
@@ -46,23 +47,24 @@ public final class IntegerAttribute<
 	private IntegerAttribute() {
 	}
 
-	private IntegerAttribute(HasIntegerAttribute<A, E> meta, A name) {
-		super(name);
-		meta.register(this);
+	private IntegerAttribute(A name) {
+		super(name);		
 	}
 	
 	public static <
 		X extends AttributeName,
-		T extends HasInteger<X, T>
+		T extends HasInteger.Read<X, T, S>,
+		S extends HasInteger.Write<X, T, S>
 	>
-	IntegerAttribute<X, T> get(HasIntegerAttribute<X, T> meta, X a) {
-		IntegerAttribute<X, T> k = meta.getIntegerAttribute(a);
+	IntegerAttribute<X, T, S> get(HasIntegerAttribute<X, T, S> meta, X a) {
+		IntegerAttribute<X, T, S> k = meta.getIntegerAttribute(a);
 		
 		if (k == null) {
 			ValueType<?> t = a.type();
 			
 			if (t != null && IntegerType.TYPE.equals(t)) {
-				k = new IntegerAttribute<X, T>(meta, a);
+				k = new IntegerAttribute<X, T, S>(a);
+				meta.register(k);
 			}
 		}
 				
@@ -75,7 +77,7 @@ public final class IntegerAttribute<
 	}
 	
 	@Override
-	public void set(E e, IntegerHolder newValue) {
+	public void set(B e, IntegerHolder newValue) {
 		e.setInteger(this, newValue);
 	}
 	
@@ -90,17 +92,17 @@ public final class IntegerAttribute<
 	}
 
 	@Override
-	public void copy(E src, E dest) {
+	public void copy(E src, B dest) {
 		dest.setInteger(this, src.getInteger(this));
 	}
 
 	@Override
-	public IntegerAttribute<A, E> self() {
+	public IntegerAttribute<A, E, B> self() {
 		return this;
 	}
 
 	@Override
-	public void reset(E dest) throws EntityRuntimeException {
+	public void reset(B dest) throws EntityRuntimeException {
 		dest.setInteger(this, IntegerHolder.NULL_HOLDER);
 	}
 		

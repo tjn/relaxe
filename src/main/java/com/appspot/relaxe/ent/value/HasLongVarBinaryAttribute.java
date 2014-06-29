@@ -26,9 +26,10 @@ import com.appspot.relaxe.ent.AttributeName;
 
 public interface HasLongVarBinaryAttribute<
 	A extends AttributeName,
-	E extends HasLongVarBinary<A, E>	
->	{
+	E extends HasLongVarBinary.Read<A, E, B>,	
+	B extends HasLongVarBinary.Write<A, E, B>
+> {
 
-	LongVarBinaryAttribute<A, E> getLongVarBinaryAttribute(A a);	
-	void register(LongVarBinaryAttribute<A, E> key);
+	LongVarBinaryAttribute<A, E, B> getLongVarBinaryAttribute(A a);	
+	void register(LongVarBinaryAttribute<A, E, B> key);
 }

@@ -26,9 +26,10 @@ import com.appspot.relaxe.ent.AttributeName;
 
 public interface HasIntegerAttribute<
 	A extends AttributeName,
-	E extends HasInteger<A, E>	
->	{
+	R extends HasInteger.Read<A, R, W>,	
+	W extends HasInteger.Write<A, R, W>
+> {
 
-	IntegerAttribute<A, E> getIntegerAttribute(A a);	
-	void register(IntegerAttribute<A, E> key);
+	IntegerAttribute<A, R, W> getIntegerAttribute(A a);	
+	void register(IntegerAttribute<A, R, W> key);
 }

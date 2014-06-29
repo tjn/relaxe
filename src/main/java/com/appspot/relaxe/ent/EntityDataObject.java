@@ -23,7 +23,7 @@
 package com.appspot.relaxe.ent;
 
 public abstract class EntityDataObject<
-	E extends Entity<?, ?, ?, ?, ?, ?, ?>	
+	E extends Entity<?, ?, ?, ?, ?, ?, ?, ?>	
 >
 	extends MutableDataObject {
 

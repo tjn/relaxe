@@ -23,29 +23,39 @@
 package com.appspot.relaxe.env.pg;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.value.AbstractAttributeAccessor;
-
+import com.appspot.relaxe.ent.value.HasString;
 
 public class PGTextAccessor<
 	A extends AttributeName,
-	E extends Entity<A, ?, ?, E, ?, ?, ?> & HasPGText<A, E>
+	R extends HasPGText.Read<A, R, RW> & HasString.Read<A, R, RW>,
+	RW extends HasPGText.Read<A, R, RW> & HasPGText.Write<A, R, RW> & HasString.Write<A, R, RW>
 >
-	extends AbstractAttributeAccessor<A, E, String, PGTextType, PGTextHolder, PGTextAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, R, RW, String, PGTextType, PGTextHolder, PGTextAttribute<A, R, RW>> {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -2731889274638406123L;
-
+	private static final long serialVersionUID = -3149610573030307419L;
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
 	private PGTextAccessor() {
 	}
-
-	public PGTextAccessor(E target, PGTextAttribute<A, E> k) {
+	
+	public PGTextAccessor(RW target, PGTextAttribute<A, R, RW> k) {
 		super(target, k);
+	}
+	
+	@Override
+	public void setHolder(PGTextHolder newHolder) {
+		getTarget().setPGText(key(), newHolder);
+	}
+	
+	@Override
+	public PGTextHolder getHolder() {
+		return getTarget().getPGText(key());
 	}
 }

@@ -27,9 +27,42 @@ import com.appspot.relaxe.value.DateHolder;
 
 public interface HasDate<
 	A extends AttributeName,
-	E extends HasDate<A, E>
->	
+	R extends HasDate.Read<A, R, W>,
+	W extends HasDate.Write<A, R, W>
+>
 {	
-	DateHolder getDate(DateAttribute<A, E> key);
-	void setDate(DateAttribute<A, E> key, DateHolder newValue);	
+	R asRead();	
+	W asWrite();	
+	
+	public interface Read<
+		A extends AttributeName,
+		R extends HasDate.Read<A, R, W>,
+		W extends HasDate.Write<A, R, W>
+	>
+		extends HasDate<A, R, W> {
+		/**
+		 * Returns the value by the key or <code>null</code> if the value is not currently present.
+		 * 
+		 * @param key
+		 * @return The value corresponding the key.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		DateHolder getDate(DateAttribute<A, R, W> key);		
+	}
+	
+	public interface Write<
+		A extends AttributeName,
+		R extends HasDate.Read<A, R, W>,
+		W extends HasDate.Write<A, R, W>
+	> extends HasDate<A, R, W> {
+	
+		/**
+		 * Sets the value by the key.
+		 * 
+		 * @param key
+		 * @param newValue May be null.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		void setDate(DateAttribute<A, R, W> key, DateHolder newValue);
+	}
 }

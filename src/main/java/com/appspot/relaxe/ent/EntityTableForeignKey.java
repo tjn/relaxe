@@ -39,7 +39,7 @@ public class EntityTableForeignKey
 	 */
 	private static final long serialVersionUID = 8843482411504972590L;
 	
-	private ReferenceType<?, ?, ?, ?, ?, ?, ?> type;
+	private ReferenceType<?, ?, ?, ?, ?, ?, ?, ?> type;
 	
 	
 	/**
@@ -49,7 +49,7 @@ public class EntityTableForeignKey
 	}
 		
 	
-	protected EntityTableForeignKey(BaseTable table, Identifier name, ColumnMap columnMap, Map<Identifier, Identifier> columnPairMap, ReferenceType<?, ?, ?, ?, ?, ?, ?> type) {
+	protected EntityTableForeignKey(BaseTable table, Identifier name, ColumnMap columnMap, Map<Identifier, Identifier> columnPairMap, ReferenceType<?, ?, ?, ?, ?, ?, ?, ?> type) {
 		super(table, name, columnMap, columnPairMap);
 		this.type = type;
 	}

@@ -26,8 +26,44 @@ package com.appspot.relaxe.ent.value;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.value.TimeHolder;
 
-public interface HasTime<A extends AttributeName, E extends HasTime<A, E>> {
-	TimeHolder getTime(TimeAttribute<A, E> key);
-
-	void setTime(TimeAttribute<A, E> key, TimeHolder newValue);
+public interface HasTime<
+	A extends AttributeName,
+	R extends HasTime.Read<A, R, W>,
+	W extends HasTime.Write<A, R, W>
+>
+{	
+	R asRead();	
+	W asWrite();	
+	
+	public interface Read<
+		A extends AttributeName,
+		R extends HasTime.Read<A, R, W>,
+		W extends HasTime.Write<A, R, W>
+	>
+		extends HasTime<A, R, W> {
+		/**
+	 * Returns the value by the key or <code>null</code> if the value is not currently present.
+	 * 
+	 * @param key
+	 * @return The value corresponding the key.
+	 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+	 */
+		TimeHolder getTime(TimeAttribute<A, R, W> key);		
+	}
+	
+	public interface Write<
+		A extends AttributeName,
+		R extends HasTime.Read<A, R, W>,
+		W extends HasTime.Write<A, R, W>
+	> extends HasTime<A, R, W> {
+	
+		/**
+	 * Sets the value by the key.
+	 * 
+	 * @param key
+	 * @param newValue May be null.
+	 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+	 */
+		void setTime(TimeAttribute<A, R, W> key, TimeHolder newValue);
+	}
 }

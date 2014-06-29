@@ -29,6 +29,7 @@ import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQuery;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityQueryResult;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.types.ReferenceType;
 import com.appspot.relaxe.value.ReferenceHolder;
@@ -36,17 +37,18 @@ import com.appspot.relaxe.value.ReferenceHolder;
 public interface EntityFetcher<
 	A extends AttributeName,
 	R extends Reference,	
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+	RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
 > 
 	extends Fetcher<
-		EntityQuery<A, R, T, E, H, F, M, RE>, 
-		EntityQueryResult<A, R, T, E, H, F, M, RE>, 
-		PageReceiver<EntityQueryResult<A, R, T, E, H, F, M, RE>
+		EntityQuery<A, R, T, E, B, H, F, M, RE>, 
+		EntityQueryResult<A, R, T, E, B, H, F, M, RE>, 
+		PageReceiver<EntityQueryResult<A, R, T, E, B, H, F, M, RE>
 	>
 >
 {	

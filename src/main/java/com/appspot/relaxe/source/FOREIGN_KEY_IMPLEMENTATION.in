@@ -10,7 +10,7 @@
 		private {{table-interface}}ForeignKeyMap() {		
 		}
 		
-		private {{table-interface}}ForeignKeyMap(java.util.Map<com.appspot.relaxe.expr.Identifier, ForeignKey> content) {
+		private {{table-interface}}ForeignKeyMap(java.util.Map<com.appspot.relaxe.expr.Identifier, com.appspot.relaxe.meta.ForeignKey> content) {
 			super(content);
 		}
 		
@@ -31,8 +31,8 @@
 		}
 		
 		private {{table-interface}}ForeignKey(BaseTable table, com.appspot.relaxe.expr.Identifier name,
-				ColumnMap columnMap, java.util.Map<com.appspot.relaxe.expr.Identifier, com.appspot.relaxe.expr.Identifier> columnPairMap,
-				com.appspot.relaxe.types.ReferenceType<?, ?, ?, ?, ?, ?, ?> type) {
+				com.appspot.relaxe.meta.ColumnMap columnMap, java.util.Map<com.appspot.relaxe.expr.Identifier, com.appspot.relaxe.expr.Identifier> columnPairMap,
+				com.appspot.relaxe.types.ReferenceType<?, ?, ?, ?, ?, ?, ?, ?> type) {
 			super(table, name, columnMap, columnPairMap, type);		
 		}
 	}

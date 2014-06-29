@@ -34,6 +34,7 @@ import com.appspot.relaxe.ent.EntityDataObject;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQueryElement;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.query.QueryException;
@@ -44,23 +45,24 @@ import com.appspot.relaxe.value.ReferenceHolder;
 public class EntityReader<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+	QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
 >
-	extends EntityBuilderManager<A, R, T, E, H, F, M, QE> {
+	extends EntityBuilderManager<A, R, T, E, B, H, F, M, QE> {
 
 	private List<EntityDataObject<E>> content;
 
-	public EntityReader(ValueExtractorFactory vef, EntityQueryExpressionBuilder<A, R, T, E, H, F, M, QE> builder, UnificationContext unificationContext)
+	public EntityReader(ValueExtractorFactory vef, EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, QE> builder, UnificationContext unificationContext)
 		throws QueryException {
 		this(vef, builder, new ArrayList<EntityDataObject<E>>(), unificationContext);
 	}
 
-	public EntityReader(ValueExtractorFactory vef, EntityQueryExpressionBuilder<A, R, T, E, H, F, M, QE> builder, List<EntityDataObject<E>> result, UnificationContext identityContext)
+	public EntityReader(ValueExtractorFactory vef, EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, QE> builder, List<EntityDataObject<E>> result, UnificationContext identityContext)
 		throws QueryException {
 		super(vef, builder, identityContext);
 

@@ -52,14 +52,15 @@ import com.appspot.relaxe.value.ValueHolder;
 public class DefaultEntityQuery<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,	
-	RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>,	
+	RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
 > 
-	implements EntityQuery<A, R, T, E, H, F, M, RE>	
+	implements EntityQuery<A, R, T, E, B, H, F, M, RE>	
 {
 	
 	/**
@@ -122,14 +123,15 @@ public class DefaultEntityQuery<
 	public static class Builder<
 		A extends AttributeName,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>,	
-		RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,	
+		RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
 	>
-		implements EntityQuery.Builder<A, R, T, E, H, F, M, RE> {
+		implements EntityQuery.Builder<A, R, T, E, B, H, F, M, RE> {
 		
 		private Collection<EntityQueryPredicate> predicates;
 		private List<EntityQuerySortKey> sortKeys;		
@@ -176,7 +178,7 @@ public class DefaultEntityQuery<
 			V extends Serializable,
 			P extends ValueType<P>,
 			W extends ValueHolder<V, P, W>,
-			K extends Attribute<A, E, V, P, W, K>
+			K extends Attribute<A, E, ?, V, P, W, K>
 		>
 		void addPredicate(K key, Comparison.Op op, W value) {
 			EntityQueryValue a = new EntityQueryAttributeValueReference<A, RE>(this.root, key.name());
@@ -191,13 +193,13 @@ public class DefaultEntityQuery<
 		public
 		<
 			XA extends com.appspot.relaxe.ent.AttributeName,
-			XE extends com.appspot.relaxe.ent.Entity<XA, ?, ?, XE, ?, ?, XM>,
-			XM extends com.appspot.relaxe.ent.EntityMetaData<XA, ?, ?, XE, ?, ?, XM>,
-			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, XM, XQ>,
+			XE extends com.appspot.relaxe.ent.Entity<XA, ?, ?, XE, ?, ?, ?, XM>,
+			XM extends com.appspot.relaxe.ent.EntityMetaData<XA, ?, ?, XE, ?, ?, ?, XM>,
+			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XM, XQ>,
 			V extends Serializable,
 			P extends ValueType<P>,
 			W extends ValueHolder<V, P, W>,
-			K extends Attribute<XA, XE, V, P, W, K>
+			K extends Attribute<XA, XE, ?, V, P, W, K>
 		>
 		EntityQueryPredicate newPredicate(XQ element, K key, Comparison.Op op, W value) {
 			XM meta = element.getMetaData();			
@@ -211,16 +213,16 @@ public class DefaultEntityQuery<
 		public
 		<
 			XA extends com.appspot.relaxe.ent.AttributeName,
-			XE extends com.appspot.relaxe.ent.Entity<XA, ?, ?, XE, ?, ?, XM>,
-			XM extends com.appspot.relaxe.ent.EntityMetaData<XA, ?, ?, XE, ?, ?, XM>,
-			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, XM, XQ>,
+			XE extends com.appspot.relaxe.ent.Entity<XA, ?, ?, XE, ?, ?, ?, XM>,
+			XM extends com.appspot.relaxe.ent.EntityMetaData<XA, ?, ?, XE, ?, ?, ?, XM>,
+			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XM, XQ>,
 			V extends Serializable,
 			P extends ValueType<P>,
 			W extends ValueHolder<V, P, W>,
-			K extends Attribute<XA, XE, V, P, W, K>
+			K extends Attribute<XA, XE, ?, V, P, W, K>
 		>
-		EntityQueryPredicate newPredicate(XQ element, K key, XE ent) {
-			return newPredicate(element, key, Comparison.Op.EQ, ent.get(key));
+		EntityQueryPredicate newPredicate(XQ element, K key, XE ent) {			
+			return newPredicate(element, key, Comparison.Op.EQ, key.get(ent));
 		}
 		
 		@Override
@@ -229,7 +231,7 @@ public class DefaultEntityQuery<
 			V extends Serializable,
 			P extends ValueType<P>,
 			W extends ValueHolder<V, P, W>,
-			K extends Attribute<A, E, V, P, W, K>
+			K extends Attribute<A, E, ?, V, P, W, K>
 		>
 		void addPredicate(K key, W holder) {
 			addPredicate(key, Comparison.Op.EQ, holder);			
@@ -239,7 +241,7 @@ public class DefaultEntityQuery<
 		public <
 			P extends ValueType<P>,
 			W extends ValueHolder<String, P, W>,
-			K extends StringAttribute<A, E, P, W, K>
+			K extends StringAttribute<A, E, ?, P, W, K>
 		>
 		void addPredicate(K key, String value) {
 			addPredicate(key, Comparison.Op.EQ, value);
@@ -249,7 +251,7 @@ public class DefaultEntityQuery<
 		public <
 			P extends ValueType<P>,
 			W extends ValueHolder<String, P, W>,
-			K extends StringAttribute<A, E, P, W, K>
+			K extends StringAttribute<A, E, ?, P, W, K>
 		>
 		void addPredicate(K key, Comparison.Op op, String value) {			
 			addPredicate(key, op, key.newHolder(value));			
@@ -273,10 +275,10 @@ public class DefaultEntityQuery<
 		public 
 		<
 			XA extends com.appspot.relaxe.ent.AttributeName,
-			XE extends Entity<XA, ?, ?, XE, ?, ?, ?>,
-			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ>
+			XE extends Entity<XA, ?, ?, XE, ?, ?, ?, ?>,
+			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, ?, XQ>
 		>		
-		void asc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ> element, Attribute<XA, XE, ?, ?, ?, ?> attribute) {
+		void asc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, ?, XQ> element, Attribute<XA, XE, ?, ?, ?, ?, ?> attribute) {
 			asc(element, attribute.name());
 		}
 		
@@ -284,21 +286,21 @@ public class DefaultEntityQuery<
 		public 
 		<
 			XA extends com.appspot.relaxe.ent.AttributeName,
-			XE extends Entity<XA, ?, ?, XE, ?, ?, ?>,
-			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ>
+			XE extends Entity<XA, ?, ?, XE, ?, ?, ?, ?>,
+			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, ?, XQ>
 		>		
-		void desc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ> element, Attribute<XA, XE, ?, ?, ?, ?> key) {
+		void desc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, ?, XQ> element, Attribute<XA, XE, ?, ?, ?, ?, ?> key) {
 			desc(element, key.name());
 		}
 		
 		
 		@Override
-		public void asc(Attribute<A, E, ?, ?, ?, ?> key) {
+		public void asc(Attribute<A, E, ?, ?, ?, ?, ?> key) {
 			asc(this.root, key);
 		}
 		
 		@Override
-		public void desc(Attribute<A, E, ?, ?, ?, ?> key) {
+		public void desc(Attribute<A, E, ?, ?, ?, ?, ?> key) {
 			desc(this.root, key);
 		}
 		
@@ -306,9 +308,9 @@ public class DefaultEntityQuery<
 		public 
 		<
 			XA extends com.appspot.relaxe.ent.AttributeName,			
-			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ>
+			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, ?, XQ>
 		>		
-		void asc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute) {
+		void asc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute) {
 			addSortKey(new EntityQueryExpressionSortKey.Asc(element, attribute));			
 		}
 		
@@ -316,9 +318,9 @@ public class DefaultEntityQuery<
 		public 
 		<
 			XA extends com.appspot.relaxe.ent.AttributeName,			
-			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ>
+			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, ?, XQ>
 		>		
-		void desc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute) {
+		void desc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute) {
 			addSortKey(new EntityQueryExpressionSortKey.Desc(element, attribute));			
 		}
 		
@@ -344,8 +346,8 @@ public class DefaultEntityQuery<
 		}
 
 		@Override
-		public EntityQuery<A, R, T, E, H, F, M, RE> newQuery() {						
-			return new DefaultEntityQuery<A, R, T, E, H, F, M, RE>(
+		public EntityQuery<A, R, T, E, B, H, F, M, RE> newQuery() {						
+			return new DefaultEntityQuery<A, R, T, E, B, H, F, M, RE>(
 					getRootElement(), this.predicates, this.sortKeys);
 		}		
 		
@@ -364,7 +366,7 @@ public class DefaultEntityQuery<
 //		
 //	private transient List<Predicate> predicateList;
 //
-//	private transient Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> metaDataMap;
+//	private transient Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> metaDataMap;
 //	
 //	private transient LinkedHashMap<Integer, TableReference> originMap;	
 //	private transient Map<JoinKey, TableReference> referenceMap;
@@ -942,7 +944,7 @@ public class DefaultEntityQuery<
 ////	}
 //
 //	@Override
-//	public EntityMetaData<?, ?, ?, ?, ?, ?, ?> getMetaData(TableReference tref) 
+//	public EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> getMetaData(TableReference tref) 
 //		throws EntityRuntimeException {
 //		if (tref == null) {
 //			throw new NullPointerException("tref");
@@ -979,7 +981,7 @@ public class DefaultEntityQuery<
 //		return null;
 //	}
 //
-//	private Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?>> getMetaDataMap() {
+//	private Map<TableReference, EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?>> getMetaDataMap() {
 //		if (metaDataMap == null) {
 //			metaDataMap = new HashMap<TableReference, EntityMetaData<?,?,?,?,?,?,?,?>>();			
 //		}

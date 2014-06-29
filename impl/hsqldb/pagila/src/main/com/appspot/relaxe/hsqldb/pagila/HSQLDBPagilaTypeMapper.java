@@ -45,7 +45,8 @@ public class HSQLDBPagilaTypeMapper
     	info.setAttributeType(VarcharArrayAttribute.class);
     	info.setAccessorType(VarcharArrayAccessor.class);
     	info.setPrimitiveType(VarcharArrayType.TYPE);
-    	info.setContainerType(HasVarcharArray.class);
+    	info.setReadableContainerType(HasVarcharArray.Read.class);
+    	info.setWritableContainerType(HasVarcharArray.Write.class);
     	info.setContainerMetaType(HasVarcharArrayAttribute.class);
 		
 		register(ValueType.ARRAY, "VARCHAR(1024) ARRAY", info);

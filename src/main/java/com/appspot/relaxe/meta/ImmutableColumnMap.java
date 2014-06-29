@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.appspot.relaxe.env.Environment;
-import com.appspot.relaxe.env.IdentifierRules;
 import com.appspot.relaxe.expr.Identifier;
 
 public class ImmutableColumnMap
@@ -139,6 +138,7 @@ public class ImmutableColumnMap
 		}
 	}
 	
+	@Override
 	public int indexOf(Identifier columnName) {
 		Comparator<Identifier> cmp = getEnvironment().getIdentifierRules().comparator();
 		

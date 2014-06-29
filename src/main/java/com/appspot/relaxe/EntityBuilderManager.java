@@ -33,6 +33,7 @@ import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQuery;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityRuntimeException;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.MutableEntityDataObject;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
@@ -45,22 +46,23 @@ import com.appspot.relaxe.value.ReferenceHolder;
 public class EntityBuilderManager<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+	QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
 >
 	extends DataObjectProcessor<MutableEntityDataObject<E>> {
 			
-	private EntityQueryExpressionBuilder<A, R, T, E, H, F, M, QE> builder;
+	private EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, QE> builder;
 	private UnificationContext identityContext;
 	private EntityBuildContext context;
 		
-	private EntityBuilder<E, H> rootBuilder;
+	private EntityBuilder<E, B, H> rootBuilder;
 						
-	public EntityBuilderManager(ValueExtractorFactory vef, EntityQueryExpressionBuilder<A, R, T, E, H, F, M, QE> builder, UnificationContext unificationContext) 
+	public EntityBuilderManager(ValueExtractorFactory vef, EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, QE> builder, UnificationContext unificationContext) 
 		throws QueryException {
 		super(vef, builder.getQueryExpression());		
 		this.builder = builder;
@@ -119,7 +121,7 @@ public class EntityBuilderManager<
 		return identityContext;
 	}
 
-	public EntityQuery<A, R, T, E, H, F, M, QE> getQuery() {
+	public EntityQuery<A, R, T, E, B, H, F, M, QE> getQuery() {
 		return builder.getQuery();
 	}
 }

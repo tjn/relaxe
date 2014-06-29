@@ -31,84 +31,83 @@ import com.appspot.relaxe.value.ValueHolder;
 
 public final class LongAttribute<
 	A extends AttributeName,
-	E extends HasLong<A, E>
+	E extends HasLong.Read<A, E, B>,
+	B extends HasLong.Write<A, E, B>
 >
-	extends AbstractAttribute<A, E, Long, LongType, LongHolder, LongAttribute<A, E>>	
+extends AbstractAttribute<A, E, B, Long, LongType, LongHolder, LongAttribute<A, E, B>>	
 {	
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 3465654564903987460L;
-	
-	/**
-	 * No-argument constructor for GWT Serialization
-	 */	
-	private LongAttribute() {
-	}
+/**
+ *
+ */
+private static final long serialVersionUID = 3465654564903987460L;
 
-	private LongAttribute(HasLongAttribute<A, E> meta, A name) {
-		super(name);
-		meta.register(this);
-	}
+/**
+ * No-argument constructor for GWT Serialization
+ */	
+private LongAttribute() {
+}
+
+private LongAttribute(A name) {
+	super(name);		
+}
+
+public static <
+	X extends AttributeName,
+	T extends HasLong.Read<X, T, S>,
+	S extends HasLong.Write<X, T, S>
+>
+LongAttribute<X, T, S> get(HasLongAttribute<X, T, S> meta, X a) {
+	LongAttribute<X, T, S> k = meta.getLongAttribute(a);
 	
-	public static <
-		X extends AttributeName,
-		T extends HasLong<X, T>
-	>
-	LongAttribute<X, T> get(HasLongAttribute<X, T> meta, X a) {
-		LongAttribute<X, T> k = meta.getLongAttribute(a);
+	if (k == null) {
+		ValueType<?> t = a.type();
 		
-		if (k == null) {
-			ValueType<?> t = a.type();
-			
-			if (t != null && t.getSqlType() == ValueType.BIGINT) {
-				k = new LongAttribute<X, T>(meta, a);
-			}			
+		if (t != null && LongType.TYPE.equals(t)) {
+			k = new LongAttribute<X, T, S>(a);
+			meta.register(k);
 		}
-				
-		return k;
 	}
-		
-	@Override
-	public LongType type() {
-		return LongType.TYPE;
-	}
+			
+	return k;
+}
 	
-	@Override
-	public void set(E e, LongHolder newValue) 
-		throws EntityRuntimeException {
-		e.setLong(this, newValue);
-	}
-	
-	@Override
-	public LongHolder get(E e) 
-		throws EntityRuntimeException {
-		return e.getLong(self());
-	}
-	
-	@Override
-	public LongHolder newHolder(Long newValue) {
-		return LongHolder.valueOf(newValue);
-	}
+@Override
+public LongType type() {
+	return LongType.TYPE;
+}
 
-	@Override
-	public void copy(E src, E dest) 
-		throws EntityRuntimeException {
-		dest.setLong(this, src.getLong(this));
-	}
+@Override
+public void set(B e, LongHolder newValue) {
+	e.setLong(this, newValue);
+}
 
-	@Override
-	public LongAttribute<A, E> self() {
-		return this;
-	}
+@Override
+public LongHolder get(E e) {
+	return e.getLong(self());
+}
 
-	@Override
-	public void reset(E dest) throws EntityRuntimeException {
-		dest.setLong(this, LongHolder.NULL_HOLDER);
-	}
+@Override
+public LongHolder newHolder(Long newValue) {
+	return LongHolder.valueOf(newValue);
+}
+
+@Override
+public void copy(E src, B dest) {
+	dest.setLong(this, src.getLong(this));
+}
+
+@Override
+public LongAttribute<A, E, B> self() {
+	return this;
+}
+
+@Override
+public void reset(B dest) throws EntityRuntimeException {
+	dest.setLong(this, LongHolder.NULL_HOLDER);
+}
 	
-	@Override
-	public LongHolder as(ValueHolder<?, ?, ?> holder) {
-		return LongHolder.of(holder);
-	}
+@Override
+public LongHolder as(ValueHolder<?, ?, ?> unknown) {
+	return unknown.asLongHolder();
+}
 }

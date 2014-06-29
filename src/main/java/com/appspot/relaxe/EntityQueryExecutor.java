@@ -43,6 +43,7 @@ import com.appspot.relaxe.ent.EntityQuery;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityQueryResult;
 import com.appspot.relaxe.ent.FetchOptions;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.expr.QueryExpression;
@@ -58,12 +59,13 @@ import com.appspot.relaxe.value.ReferenceHolder;
 public class EntityQueryExecutor<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+	RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
 > 	
 {	
 	private static Logger logger = LoggerFactory.getLogger(EntityQueryExecutor.class);
@@ -77,7 +79,7 @@ public class EntityQueryExecutor<
 		this.unificationContext = unificationContext;
 	}
 
-	public EntityQueryResult<A, R, T, E, H, F, M, RE> execute(EntityQuery<A, R, T, E, H, F, M, RE> query, FetchOptions opts, Connection c) 
+	public EntityQueryResult<A, R, T, E, B, H, F, M, RE> execute(EntityQuery<A, R, T, E, B, H, F, M, RE> query, FetchOptions opts, Connection c) 
 		throws SQLException, QueryException, EntityException {
 		
 		logger().debug("execute: query: " + query);
@@ -89,11 +91,11 @@ public class EntityQueryExecutor<
 				
 		logger().debug("execute: create reader...");
 		
-		EntityQueryExpressionBuilder<A, R, T, E, H, F, M, RE> eqb = newBuilder(query);
+		EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, RE> eqb = newBuilder(query);
 		QueryExpression qe = eqb.getQueryExpression();		
 		
-		EntityReader<?, ?, ?, ?, ?, ?, ?, ?> eb = 
-				new EntityReader<A, R, T, E, H, F, M, RE>(pc.getValueExtractorFactory(), eqb, content, this.unificationContext);
+		EntityReader<?, ?, ?, ?, ?, ?, ?, ?, ?> eb = 
+				new EntityReader<A, R, T, E, B, H, F, M, RE>(pc.getValueExtractorFactory(), eqb, content, this.unificationContext);
 								
 		QueryExecutor.SliceStatement sb = se.createStatement(qe, opts, c);
 						
@@ -112,17 +114,17 @@ public class EntityQueryExecutor<
 		
 		result.setAvailable(sb.getAvailable());
 		
-		DefaultEntityQueryResult<A, R, T, E, H, F, M, RE> eqres = 
-				new DefaultEntityQueryResult<A, R, T, E, H, F, M, RE>(query, result);
+		DefaultEntityQueryResult<A, R, T, E, B, H, F, M, RE> eqres = 
+				new DefaultEntityQueryResult<A, R, T, E, B, H, F, M, RE>(query, result);
 		
 		return eqres;
 	}
 	
 	
-	public EntityQueryExpressionBuilder<A, R, T, E, H, F, M, RE> newBuilder(EntityQuery<A, R, T, E, H, F, M, RE> query) 
+	public EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, RE> newBuilder(EntityQuery<A, R, T, E, B, H, F, M, RE> query) 
 			throws QueryException, EntityException {
 			
-		EntityQueryExpressionBuilder<A, R, T, E, H, F, M, RE> xb = new EntityQueryExpressionBuilder<A, R, T, E, H, F, M, RE>(query);
+		EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, RE> xb = new EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, RE>(query);
 				
 		return xb;
 	}

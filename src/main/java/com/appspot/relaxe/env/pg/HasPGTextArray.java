@@ -25,13 +25,42 @@ package com.appspot.relaxe.env.pg;
 import com.appspot.relaxe.ent.AttributeName;
 
 public interface HasPGTextArray<
-	A extends AttributeName, 
-	E extends HasPGTextArray<A, E>
-> {
-
-	void setPGTextArray(PGTextArrayAttribute<A, E> k, PGTextArrayHolder newValue);
+	A extends AttributeName,
+	R extends HasPGTextArray.Read<A, R, W>,
+	W extends HasPGTextArray.Write<A, R, W>
+> {	
+	R asRead();	
+	W asWrite();	
 	
-	PGTextArrayHolder getPGTextArray(PGTextArrayAttribute<A, E> k);
+	public interface Read<
+		A extends AttributeName,
+		R extends HasPGTextArray.Read<A, R, W>,
+		W extends HasPGTextArray.Write<A, R, W>
+	>
+		extends HasPGTextArray<A, R, W> {
+		/**
+		 * Returns the value by the key or <code>null</code> if the value is not currently present.
+		 * 
+		 * @param key
+		 * @return The value corresponding the key.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		PGTextArrayHolder getPGTextArray(PGTextArrayAttribute<A, R, W> key);		
+	}
 	
-
+	public interface Write<
+		A extends AttributeName,
+		R extends HasPGTextArray.Read<A, R, W>,
+		W extends HasPGTextArray.Write<A, R, W>
+	> extends HasPGTextArray<A, R, W> {
+	
+		/**
+		 * Sets the value by the key.
+		 * 
+		 * @param key
+		 * @param newValue May be null.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		void setPGTextArray(PGTextArrayAttribute<A, R, W> key, PGTextArrayHolder newValue);
+	}
 }

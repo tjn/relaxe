@@ -28,13 +28,14 @@ import com.appspot.relaxe.value.ReferenceHolder;
 public abstract class EnumEntity<
 	A extends Enum<A> & AttributeName,
 	R extends Enum<R> & Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>
 >
-	extends DefaultEntity<A, R, T, E, H, F, M>
+	extends DefaultEntity<A, R, T, E, B, H, F, M>
 {
 	
 	/**

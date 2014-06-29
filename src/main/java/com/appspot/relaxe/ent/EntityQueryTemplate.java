@@ -31,17 +31,18 @@ import com.appspot.relaxe.value.ReferenceHolder;
 public interface EntityQueryTemplate<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+	RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
 > 
 	extends	Serializable
 {	
 	M getMetaData();
-	EntityQuery<A, R, T, E, H, F, M, RE> newQuery();
+	EntityQuery<A, R, T, E, B, H, F, M, RE> newQuery();
 	
 	// public void addPredicate(EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> q, EntityQueryPredicate<?> p);
 }

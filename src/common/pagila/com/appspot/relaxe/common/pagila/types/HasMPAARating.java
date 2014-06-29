@@ -22,16 +22,49 @@
  */
 package com.appspot.relaxe.common.pagila.types;
 
+import com.appspot.relaxe.common.pagila.types.MPAARatingAttribute;
+import com.appspot.relaxe.common.pagila.types.MPAARatingHolder;
 import com.appspot.relaxe.ent.AttributeName;
 
+
 public interface HasMPAARating<
-	A extends AttributeName, 
-	E extends HasMPAARating<A, E>
-> {
-
-	void setMPAARating(MPAARatingKey<A, E> k, MPAARatingHolder newValue);
+	A extends AttributeName,
+	R extends HasMPAARating.Read<A, R, W>,
+	W extends HasMPAARating.Write<A, R, W>
+>
+{	
+	R asRead();	
+	W asWrite();	
 	
-	MPAARatingHolder getMPAARating(MPAARatingKey<A, E> k);
+	public interface Read<
+		A extends AttributeName,
+		R extends HasMPAARating.Read<A, R, W>,
+		W extends HasMPAARating.Write<A, R, W>
+	>
+		extends HasMPAARating<A, R, W> {
+		/**
+		 * Returns the value by the key or <code>null</code> if the value is not currently present.
+		 * 
+		 * @param key
+		 * @return The value corresponding the key.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		MPAARatingHolder getMPAARating(MPAARatingAttribute<A, R, W> key);		
+	}
 	
-
+	public interface Write<
+		A extends AttributeName,
+		R extends HasMPAARating.Read<A, R, W>,
+		W extends HasMPAARating.Write<A, R, W>
+	> extends HasMPAARating<A, R, W> {
+	
+		/**
+		 * Sets the value by the key.
+		 * 
+		 * @param key
+		 * @param newValue May be null.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		void setMPAARating(MPAARatingAttribute<A, R, W> key, MPAARatingHolder newValue);
+	}
 }

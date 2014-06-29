@@ -31,9 +31,10 @@ import com.appspot.relaxe.value.DateHolder;
 
 public class DateAccessor<
 	A extends AttributeName,
-	E extends HasDate<A, E>
-	>
-	extends AbstractAttributeAccessor<A, E, Date, DateType, DateHolder, DateAttribute<A, E>> {
+	R extends HasDate.Read<A, R, RW>,
+	RW extends HasDate.Write<A, R, RW> & HasDate.Read<A, R, RW> 
+>
+	extends AbstractAttributeAccessor<A, R, RW, Date, DateType, DateHolder, DateAttribute<A, R, RW>> {
 
 	/**
 	 *
@@ -47,12 +48,12 @@ public class DateAccessor<
 	private DateAccessor() {
 	}
 
-	public DateAccessor(E target, DateAttribute<A, E> k) {
+	public DateAccessor(RW target, DateAttribute<A, R, RW> k) {
 		super(target, k);
 	}
 
 	@Override
-	public void setHolder(DateHolder newHolder) {
-		getTarget().setDate(key(), newHolder);
-	}
+	public DateHolder getHolder() {
+		return getTarget().getDate(key());
+	}	
 }

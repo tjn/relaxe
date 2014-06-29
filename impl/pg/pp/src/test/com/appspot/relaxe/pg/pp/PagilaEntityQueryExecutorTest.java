@@ -129,7 +129,7 @@ public class PagilaEntityQueryExecutorTest
 		A extends Attribute,
 		R extends Reference,
 		T extends ReferenceType<A, R, T, E, H, F, M, C>,
-		E extends Entity<?, ?, ?, ?, ?, ?, ?>,
+		E extends Entity<?, ?, ?, ?, ?, ?, ?, ?>,
 		H extends ReferenceHolder<A, R, T, E, H, M, C>,
 		F extends EntityFactory<E, H, M, F, C>,
 		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
@@ -528,7 +528,7 @@ public class PagilaEntityQueryExecutorTest
 
 			assertSame(oh, lh);
 
-			Entity<?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.ORIGINAL_LANGUAGE.name());
+			Entity<?, ?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.ORIGINAL_LANGUAGE.name());
 			assertNotNull(e);
 		}
 	}
@@ -577,7 +577,7 @@ public class PagilaEntityQueryExecutorTest
 
 			assertSame(oh, lh);
 
-			Entity<?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.ORIGINAL_LANGUAGE.name());
+			Entity<?, ?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.ORIGINAL_LANGUAGE.name());
 			assertNotNull(e);
 		}
 	}

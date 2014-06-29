@@ -28,23 +28,34 @@ import com.appspot.relaxe.value.VarcharHolder;
 
 public class VarcharAccessor<
 	A extends AttributeName,
-	E extends HasVarchar<A, E> & HasString<A, E>
+	R extends HasVarchar.Read<A, R, RW> & HasString.Read<A, R, RW>,
+	RW extends HasVarchar.Read<A, R, RW> & HasVarchar.Write<A, R, RW> & HasString.Write<A, R, RW>
 >
-	extends AbstractAttributeAccessor<A, E, String, VarcharType, VarcharHolder, VarcharAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, R, RW, String, VarcharType, VarcharHolder, VarcharAttribute<A, R, RW>> {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -4034249028279108750L;
-
+	private static final long serialVersionUID = -3149610573030307419L;
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
 	private VarcharAccessor() {
 	}
-
-	public VarcharAccessor(E target, VarcharAttribute<A, E> k) {
-		super(target, k); 
+	
+	public VarcharAccessor(RW target, VarcharAttribute<A, R, RW> k) {
+		super(target, k);
+	}
+	
+	@Override
+	public void setHolder(VarcharHolder newHolder) {
+		getTarget().setVarchar(key(), newHolder);
+	}
+	
+	@Override
+	public VarcharHolder getHolder() {
+		return getTarget().getVarchar(key());
 	}
 }

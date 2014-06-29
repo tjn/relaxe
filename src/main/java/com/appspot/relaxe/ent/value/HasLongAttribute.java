@@ -26,9 +26,10 @@ import com.appspot.relaxe.ent.AttributeName;
 
 public interface HasLongAttribute<
 	A extends AttributeName,
-	E extends HasLong<A, E>	
->	{
+	E extends HasLong.Read<A, E, B>,	
+	B extends HasLong.Write<A, E, B>
+> {
 
-	LongAttribute<A, E> getLongAttribute(A a);	
-	void register(LongAttribute<A, E> key);
+	LongAttribute<A, E, B> getLongAttribute(A a);	
+	void register(LongAttribute<A, E, B> key);
 }

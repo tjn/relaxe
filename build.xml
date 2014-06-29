@@ -228,12 +228,15 @@
 
 	<target name="compile.gen.pg.pagila" depends="generate.pg.pagila" description="Compiles the sources generated for PostgreSQL/Pagila">
 			<impl.compile.gen implementation="pg" driver-artifact="postgresql" target="pagila" />		
-	</target>	
+	</target>
+		
+	<target name="compile.test.gen.pg.pagila" depends="compile.gen.pg.pagila" description="Compiles the test for classes generated for PostgreSQL/Pagila">
+			<impl.compile.test.gen implementation="pg" driver-artifact="postgresql" target="pagila" />		
+	</target>
 	
-	<target name="test.gen.pg.pagila" depends="compile.gen.pg.pagila, prepare-test" description="Run tests for PostgreSQL/Pagila">
+	<target name="test.gen.pg.pagila" depends="compile.test.gen.pg.pagila, prepare-test" description="Run tests for PostgreSQL/Pagila">
 			<impl.test implementation="pg" driver-artifact="postgresql" target="pagila" />		
-	</target>	
-
+	</target>
 	
 	<target name="compile.hsqldb.pagila" depends="compile-tests" description="Compiles the sources for HSQLDB/Pagila">
 		<impl.compile implementation="hsqldb" target="pagila" driver-artifact="hsqldb" />		
@@ -295,10 +298,14 @@
 	</target>		
 	
 	<target name="compile.gen.mysql.sakila" depends="generate.mysql.sakila" description="Compiles the sources generated for MySQL/Sakila">
-			<impl.compile.gen implementation="mysql" driver-artifact="mysql-connector-java" target="sakila" />		
-	</target>	
+		<impl.compile.gen implementation="mysql" driver-artifact="mysql-connector-java" target="sakila" />		
+	</target>
 	
-	<target name="test.gen.mysql.sakila" depends="compile.gen.mysql.sakila, prepare-test" description="Run tests for MySQL/Sakila">
+	<target name="compile.test.gen.mysql.sakila" depends="compile.gen.mysql.sakila" description="Compiles the tests for classes generated for MySQL/Sakila">
+		<impl.compile.test.gen implementation="mysql" driver-artifact="mysql-connector-java" target="sakila" />		
+	</target>
+		
+	<target name="test.gen.mysql.sakila" depends="compile.test.gen.mysql.sakila, prepare-test" description="Run tests for MySQL/Sakila">
 			<impl.test implementation="mysql" driver-artifact="mysql-connector-java" target="sakila" />		
 	</target>		
 
@@ -325,9 +332,13 @@
 	
 	<target name="compile.gen.mariadb.sakila" depends="generate.mariadb.sakila" description="Compiles the sources generated for MariaDB/Sakila">
 			<impl.compile.gen implementation="mariadb" driver-artifact="mariadb-java-client" target="sakila" />		
-	</target>	
+	</target>
+
+	<target name="compile.test.gen.mariadb.sakila" depends="compile.gen.mariadb.sakila" description="Compiles the tests for classes generated for MariaDB/Sakila">
+		<impl.compile.test.gen implementation="mariadb" driver-artifact="mariadb-java-client" target="sakila" />		
+	</target>
 	
-	<target name="test.gen.mariadb.sakila" depends="compile.gen.mariadb.sakila, prepare-test" description="Run tests for MariaDB/Sakila">
+	<target name="test.gen.mariadb.sakila" depends="compile.test.gen.mariadb.sakila, prepare-test" description="Run tests for MariaDB/Sakila">
 			<impl.test implementation="mariadb" driver-artifact="mariadb-java-client" target="sakila" />		
 	</target>
 	
@@ -701,12 +712,49 @@
 			<javac 
 					classpathref="@{implementation}.test.cp" 
 					destdir="@{target.base.dir}/classes" 
-					srcdir="@{impl.src.dir}:@{target.src.dir}:@{target.test.src.dir}:@{target.base.dir}/src/gen"
+					srcdir="@{impl.src.dir}:@{target.src.dir}:@{target.base.dir}/src/gen"
 					verbose="off" includeantruntime="false"
 					debug="true" debuglevel="lines,vars,source">				
 				<compilerarg value="-Xlint"/>
 			</javac>			
-   </sequential>
+   		</sequential>
+	</macrodef>
+	
+	<macrodef name="impl.compile.test.gen" description="Compiles the sources for the test cases based on generated classes for impl/target">
+		<attribute name="implementation" />
+		<attribute name="driver-artifact" />				
+		<attribute name="target" />
+		<attribute name="target.base.dir" default="${build.root.dir}/impl/@{implementation}/@{target}"/>
+		
+		<attribute name="impl.src.dir" default="impl/@{implementation}/common"/>
+		<!--<attribute name="target.src.dir" default="impl/@{implementation}/@{target}/src/main"/>-->
+		<attribute name="target.test.src.dir" default="impl/@{implementation}/@{target}/src/test"/>
+		
+		<sequential>
+			<path id="@{implementation}.test.cp">
+				<path refid="test.compile.cp" />
+				<pathelement location="${build.dir}" />				
+				<pathelement location="${test.build.dir}" />
+				<pathelement location="@{target.base.dir}/classes" />
+				<fileset dir="lib/jdbc/@{driver-artifact}" >
+					<include name="*.jar" />			
+				</fileset>
+			</path>
+			
+			<mkdir dir="@{target.base.dir}/classes" />
+			<mkdir dir="@{impl.src.dir}" />
+			<mkdir dir="@{target.test.src.dir}" />
+							
+			<javac 
+					classpathref="@{implementation}.test.cp" 
+					destdir="@{target.base.dir}/classes"
+					srcdir="@{impl.src.dir}:@{target.test.src.dir}"
+					verbose="off" includeantruntime="false"
+					debug="true" debuglevel="lines,vars,source">				
+				<compilerarg value="-Xlint"/>
+			</javac>			
+	   </sequential>
 	</macrodef>	
+	
 
 </project>

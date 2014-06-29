@@ -23,16 +23,15 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.types.BooleanType;
 import com.appspot.relaxe.value.BooleanHolder;
 
 public class BooleanAccessor<
 	A extends AttributeName,
-	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasBoolean<A, E>
+	R extends HasBoolean.Read<A, R, RW>,
+	RW extends HasBoolean.Read<A, R, RW> & HasBoolean.Write<A, R, RW>
 >
-	extends AbstractAttributeAccessor<A, E, Boolean, BooleanType, BooleanHolder, BooleanAttribute<A, E>> {
-
+	extends AbstractAttributeAccessor<A, R, RW, Boolean, BooleanType, BooleanHolder, BooleanAttribute<A, R, RW>> {
 	
 	/**
 	 * 
@@ -46,7 +45,12 @@ public class BooleanAccessor<
 	private BooleanAccessor() {
 	}
 
-	public BooleanAccessor(E target, BooleanAttribute<A, E> k) {
+	public BooleanAccessor(RW target, BooleanAttribute<A, R, RW> k) {
 		super(target, k);
+	}
+	
+	@Override
+	public BooleanHolder getHolder() {		
+		return getTarget().getBoolean(key());		
 	}
 }

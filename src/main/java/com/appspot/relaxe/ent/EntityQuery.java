@@ -56,12 +56,13 @@ import com.appspot.relaxe.value.ValueHolder;
 public interface EntityQuery<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+	RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
 >
 	extends Request {
 	
@@ -74,12 +75,13 @@ public interface EntityQuery<
 	interface Builder<
 		A extends AttributeName,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>,
-		RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+		RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
 	> {
 		void setRootElement(RE root);		
 		RE getRootElement();
@@ -92,7 +94,7 @@ public interface EntityQuery<
 			V extends Serializable,
 			P extends ValueType<P>,
 			W extends ValueHolder<V, P, W>,
-			K extends Attribute<A, E, V, P, W, K>
+			K extends Attribute<A, E, ?, V, P, W, K>
 		>
 		void addPredicate(K key, Comparison.Op op, W value);
 		
@@ -101,21 +103,21 @@ public interface EntityQuery<
 			V extends Serializable,
 			P extends ValueType<P>,
 			W extends ValueHolder<V, P, W>,
-			K extends Attribute<A, E, V, P, W, K>
+			K extends Attribute<A, E, ?, V, P, W, K>
 		>
 		void addPredicate(K key, W holder);
 		
 		public <
 			P extends ValueType<P>,
 			W extends ValueHolder<String, P, W>,
-			K extends StringAttribute<A, E, P, W, K>
+			K extends StringAttribute<A, E, ?, P, W, K>
 		>
 		void addPredicate(K key, String value);
 		
 		public <
 			P extends ValueType<P>,
 			W extends ValueHolder<String, P, W>,
-			K extends StringAttribute<A, E, P, W, K>
+			K extends StringAttribute<A, E, ?, P, W, K>
 		>
 		void addPredicate(K key, Comparison.Op op, String value);			
 		
@@ -126,39 +128,39 @@ public interface EntityQuery<
 		public 
 		<
 			XA extends com.appspot.relaxe.ent.AttributeName,
-			XE extends Entity<XA, ?, ?, XE, ?, ?, ?>,
-			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ>
+			XE extends Entity<XA, ?, ?, XE, ?, ?, ?, ?>,
+			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, ?, XQ>
 		>		
-		void asc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ> element, Attribute<XA, XE, ?, ?, ?, ?> attribute);
+		void asc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, ?, XQ> element, Attribute<XA, XE, ?, ?, ?, ?, ?> attribute);
 				
 		public 
 		<
 			XA extends com.appspot.relaxe.ent.AttributeName,
-			XE extends Entity<XA, ?, ?, XE, ?, ?, ?>,
-			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ>
+			XE extends Entity<XA, ?, ?, XE, ?, ?, ?, ?>,
+			XQ extends EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, ?, XQ>
 		>		
-		void desc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, XQ> element, Attribute<XA, XE, ?, ?, ?, ?> attribute);
+		void desc(EntityQueryElement<XA, ?, ?, XE, ?, ?, ?, ?, XQ> element, Attribute<XA, XE, ?, ?, ?, ?, ?> attribute);
 		
 		
 		public 
 		<
 			XA extends com.appspot.relaxe.ent.AttributeName,			
-			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ>
+			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, ?, XQ>
 		>		
-		void asc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute);
+		void asc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute);
 
 		public 
 		<
 			XA extends com.appspot.relaxe.ent.AttributeName,			
-			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ>
+			XQ extends EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, ?, XQ>
 		>		
-		void desc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute);
+		void desc(EntityQueryElement<XA, ?, ?, ?, ?, ?, ?, ?, XQ> element, XA attribute);
 		
-		void asc(Attribute<A, E, ?, ?, ?, ?> key);
+		void asc(Attribute<A, E, ?, ?, ?, ?, ?> key);
 		
-		void desc(Attribute<A, E, ?, ?, ?, ?> key);
+		void desc(Attribute<A, E, ?, ?, ?, ?, ?> key);
 		
 		
-		EntityQuery<A, R, T, E, H, F, M, RE> newQuery();
+		EntityQuery<A, R, T, E, B, H, F, M, RE> newQuery();
 	}
 }

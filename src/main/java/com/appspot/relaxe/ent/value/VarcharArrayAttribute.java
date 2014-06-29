@@ -34,9 +34,10 @@ import com.appspot.relaxe.value.VarcharArrayHolder;
 
 public class VarcharArrayAttribute<
 	A extends AttributeName,
-	E extends HasVarcharArray<A, E>	
+	R extends HasVarcharArray.Read<A, R, W>,
+	W extends HasVarcharArray.Write<A, R, W>
 >
-	extends AbstractArrayAttribute<A, E, String, StringArray, VarcharType, VarcharArrayType, VarcharArrayHolder, VarcharArrayAttribute<A,E>>
+	extends AbstractArrayAttribute<A, R, W, String, StringArray, VarcharType, VarcharArrayType, VarcharArrayHolder, VarcharArrayAttribute<A, R, W>>
 {
 	/**
 	 *
@@ -49,13 +50,12 @@ public class VarcharArrayAttribute<
 	protected VarcharArrayAttribute() {
 	}
 		
-	private VarcharArrayAttribute(HasVarcharArrayAttribute<A, E> meta, A name) {
+	private VarcharArrayAttribute(A name) {
 		super(name);
-		meta.register(this);
 	}
 	
 	@Override
-	public VarcharArrayAttribute<A, E> self() {
+	public VarcharArrayAttribute<A, R, W> self() {
 		return this;
 	}
 
@@ -71,14 +71,16 @@ public class VarcharArrayAttribute<
 
 	public static <
 		X extends AttributeName,
-		T extends HasVarcharArray<X, T>
+		T extends HasVarcharArray.Read<X, T, S>,
+		S extends HasVarcharArray.Write<X, T, S>
 	>
-	VarcharArrayAttribute<X, T> get(HasVarcharArrayAttribute<X, T> meta, X a) {
-		VarcharArrayAttribute<X, T> k = meta.getVarcharArrayAttribute(a);
+	VarcharArrayAttribute<X, T, S> get(HasVarcharArrayAttribute<X, T, S> meta, X a) {
+		VarcharArrayAttribute<X, T, S> k = meta.getVarcharArrayAttribute(a);
 		
 		if (k == null) {						
 			if (VarcharArrayType.TYPE.equals(a.type())) {
-				k = new VarcharArrayAttribute<X, T>(meta, a);
+				k = new VarcharArrayAttribute<X, T, S>(a);
+				meta.register(k);
 			}			
 		}
 				
@@ -86,12 +88,12 @@ public class VarcharArrayAttribute<
 	}
 
 	@Override
-	public VarcharArrayHolder get(E e) throws EntityRuntimeException {
+	public VarcharArrayHolder get(R e) throws EntityRuntimeException {
 		return e.getVarcharArray(this);
 	}
 
 	@Override
-	public void set(E e, VarcharArrayHolder newValue)
+	public void set(W e, VarcharArrayHolder newValue)
 			throws EntityRuntimeException {
 		e.setVarcharArray(this, newValue);
 	}

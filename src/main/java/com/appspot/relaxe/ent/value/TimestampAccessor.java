@@ -31,23 +31,29 @@ import com.appspot.relaxe.value.TimestampHolder;
 
 public class TimestampAccessor<
 	A extends AttributeName,
-	E extends HasTimestamp<A, E>
+	R extends HasTimestamp.Read<A, R, RW>,
+	RW extends HasTimestamp.Read<A, R, RW> & HasTimestamp.Write<A, R, RW>
 >
-	extends AbstractAttributeAccessor<A, E, Date, TimestampType, TimestampHolder, TimestampAttribute<A, E>> {
-
+	extends AbstractAttributeAccessor<A, R, RW, Date, TimestampType, TimestampHolder, TimestampAttribute<A, R, RW>> {
+	
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = -7871095796458117502L;
-
+	private static final long serialVersionUID = -7412092659898638958L;
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
 	private TimestampAccessor() {
 	}
-
-	public TimestampAccessor(E target, TimestampAttribute<A, E> k) {
+	
+	public TimestampAccessor(RW target, TimestampAttribute<A, R, RW> k) {
 		super(target, k);
+	}
+	
+	@Override
+	public TimestampHolder getHolder() {
+		return getTarget().getTimestamp(key());
 	}
 }

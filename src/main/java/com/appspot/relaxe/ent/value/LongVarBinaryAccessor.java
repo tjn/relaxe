@@ -23,30 +23,35 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.types.LongVarBinaryType;
 import com.appspot.relaxe.value.LongVarBinaryHolder;
 
 public class LongVarBinaryAccessor<
 	A extends AttributeName,
-	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasLongVarBinary<A, E>
->
-	extends AbstractAttributeAccessor<A, E, LongVarBinary, LongVarBinaryType, LongVarBinaryHolder, LongVarBinaryAttribute<A, E>> {
-
-
+	R extends HasLongVarBinary.Read<A, R, RW>,
+	RW extends HasLongVarBinary.Read<A, R, RW> & HasLongVarBinary.Write<A, R, RW>
+	
+	>
+	extends AbstractAttributeAccessor<A, R, RW, LongVarBinary, LongVarBinaryType, LongVarBinaryHolder, LongVarBinaryAttribute<A, R, RW>> {
+	
 	/**
-	 * 
+	 *
 	 */
-	private static final long serialVersionUID = -1725602690923907736L;
-
+	private static final long serialVersionUID = -2731889274638406123L;
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
 	private LongVarBinaryAccessor() {
 	}
-
-	public LongVarBinaryAccessor(E target, LongVarBinaryAttribute<A, E> k) {
+	
+	public LongVarBinaryAccessor(RW target, LongVarBinaryAttribute<A, R, RW> k) {
 		super(target, k);
+	}
+	
+	@Override
+	public LongVarBinaryHolder getHolder() {
+		return getTarget().getLongVarBinary(key());
 	}
 }

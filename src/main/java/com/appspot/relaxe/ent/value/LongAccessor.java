@@ -23,29 +23,34 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.types.LongType;
 import com.appspot.relaxe.value.LongHolder;
 
 public class LongAccessor<
 	A extends AttributeName,
-	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasLong<A, E>
+	R extends HasLong.Read<A, R, RW>,
+	RW extends HasLong.Read<A, R, RW> & HasLong.Write<A, R, RW>
 >
-	extends AbstractAttributeAccessor<A, E, Long, LongType, LongHolder, LongAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, R, RW, Long, LongType, LongHolder, LongAttribute<A, R, RW>> {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = -2731889274638406123L;
-
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
 	private LongAccessor() {
 	}
-
-	public LongAccessor(E target, LongAttribute<A, E> k) {
+	
+	public LongAccessor(RW target, LongAttribute<A, R, RW> k) {
 		super(target, k);
+	}
+	
+	@Override
+	public LongHolder getHolder() {
+		return getTarget().getLong(key());
 	}
 }

@@ -31,13 +31,14 @@ import com.appspot.relaxe.value.ValueHolder;
 
 public abstract class AbstractAttribute<
 	A extends AttributeName,
-	E,
+	R,
+	W,
 	V extends Serializable,
 	P extends ValueType<P>,
 	H extends ValueHolder<V, P, H>,
-	K extends Attribute<A, E, V, P, H, K>
+	K extends Attribute<A, R, W, V, P, H, K>
 >
-	implements Attribute<A, E, V, P, H, K> {
+	implements Attribute<A, R, W, V, P, H, K> {
 	
 	/**
 	 *
@@ -85,21 +86,21 @@ public abstract class AbstractAttribute<
 		
 		// Since getClass().equals(o.getClass()) implies t.type().getSqlType() == type().getSqlType()
 		// we only need to check the name:		
-		AbstractAttribute<?, ?, ?, ?, ?, ?> t = (AbstractAttribute<?, ?, ?, ?, ?, ?>) o;				
+		AbstractAttribute<?, ?, ?, ?, ?, ?, ?> t = (AbstractAttribute<?, ?, ?, ?, ?, ?, ?>) o;				
 		return nameEquals(t);
 	}
 	
-	private boolean nameEquals(AbstractAttribute<?, ?, ?, ?, ?, ?> pk) {		
+	private boolean nameEquals(AbstractAttribute<?, ?, ?, ?, ?, ?, ?> pk) {		
 		return name().equals(pk.name());
 	}
 	
 	@Override
-	public void copy(E src, E dest) {		
+	public void copy(R src, W dest) {		
 		set(dest, get(src));		
 	}
 	
 	@Override
-	public void reset(E dest) {
+	public void reset(W dest) {
 		set(dest, newHolder(null));		
 	}
 }

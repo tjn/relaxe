@@ -23,47 +23,49 @@
 package com.appspot.relaxe.common.pagila.types;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.value.AbstractOtherAttribute;
 import com.appspot.relaxe.types.OtherType;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.ValueHolder;
 
-public class MPAARatingKey<
+
+public class MPAARatingAttribute<
 	A extends AttributeName,
-	E extends HasMPAARating<A, E>	
+	R extends HasMPAARating.Read<A, R, W>,	
+	W extends HasMPAARating.Write<A, R, W>
 >
-	extends AbstractOtherAttribute<A, E, MPAARating, MPAARatingType, MPAARatingHolder, MPAARatingKey<A, E>>
+	extends AbstractOtherAttribute<A, R, W, MPAARating, MPAARatingType, MPAARatingHolder, MPAARatingAttribute<A, R, W>>
 {	
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 3465654564903987460L;
-	
+	private static final long serialVersionUID = -572611877782044774L;
+
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */	
-	private MPAARatingKey() {
+	private MPAARatingAttribute() {
 	}
 	
-	private MPAARatingKey(HasMPAARatingAttribute<A, E> meta, A name) {
-		super(name);
-		meta.register(this);
+	private MPAARatingAttribute(A name) {
+		super(name);		
 	}
 	
 	public static <
 		X extends AttributeName,
-		T extends HasMPAARating<X, T>
+		T extends HasMPAARating.Read<X, T, S>,
+		S extends HasMPAARating.Write<X, T, S>		
 	>
-	MPAARatingKey<X, T> get(HasMPAARatingAttribute<X, T> meta, X a) {
-		MPAARatingKey<X, T> k = meta.getMPAARatingKey(a);
+	MPAARatingAttribute<X, T, S> get(HasMPAARatingAttribute<X, T, S> meta, X a) {
+		MPAARatingAttribute<X, T, S> k = meta.getMPAARatingAttribute(a);
 		
 		if (k == null) {
 			MPAARatingType kt = MPAARatingType.TYPE;
 			OtherType<?> t = a.type().asOtherType();
 			
 			if (t != null && t.getSqlType() == ValueType.OTHER && kt.getName().equals(t.getName())) {
-				k = new MPAARatingKey<X, T>(meta, a);
+				k = new MPAARatingAttribute<X, T, S>(a);
+				meta.register(k);
 			}			
 		}
 				
@@ -77,14 +79,12 @@ public class MPAARatingKey<
 	}
 	
 	@Override
-	public void set(E e, MPAARatingHolder newValue) 
-		throws EntityRuntimeException {
+	public void set(W e, MPAARatingHolder newValue) {
 		e.setMPAARating(this, newValue);
 	}
 	
 	@Override
-	public MPAARatingHolder get(E e) 
-		throws EntityRuntimeException {
+	public MPAARatingHolder get(R e) {
 		return e.getMPAARating(this);
 	}
 	
@@ -94,12 +94,12 @@ public class MPAARatingKey<
 	}
 
 	@Override
-	public void copy(E src, E dest) {
+	public void copy(R src, W dest) {
 		dest.setMPAARating(this, src.getMPAARating(this));
 	}
 
 	@Override
-	public MPAARatingKey<A, E> self() {
+	public MPAARatingAttribute<A, R, W> self() {
 		return this;
 	}
 

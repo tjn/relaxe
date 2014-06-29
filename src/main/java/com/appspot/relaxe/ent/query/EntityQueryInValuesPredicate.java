@@ -34,9 +34,9 @@ import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQueryContext;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityRuntimeException;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.Tuple;
-import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.expr.AbstractRowValueConstructor;
 import com.appspot.relaxe.expr.ColumnReference;
 import com.appspot.relaxe.expr.ElementList;
@@ -48,7 +48,6 @@ import com.appspot.relaxe.expr.TableReference;
 import com.appspot.relaxe.expr.op.In;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.meta.ColumnMap;
-import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.types.ReferenceType;
 import com.appspot.relaxe.types.ValueType;
@@ -58,12 +57,13 @@ import com.appspot.relaxe.value.ValueHolder;
 public class EntityQueryInValuesPredicate<
 	A extends AttributeName,
 	R extends Reference,	
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,		
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+	QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
 >
 	implements EntityQueryPredicate {
 	

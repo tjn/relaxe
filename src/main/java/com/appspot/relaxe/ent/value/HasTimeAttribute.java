@@ -24,9 +24,11 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 
-public interface HasTimeAttribute<A extends AttributeName, E extends HasTime<A, E>> {
-
-	TimeAttribute<A, E> getTimeAttribute(A a);
-
-	void register(TimeAttribute<A, E> key);
+public interface HasTimeAttribute<
+	A extends AttributeName,
+	E extends HasTime.Read<A, E, B>,	
+	B extends HasTime.Write<A, E, B>
+> {
+	TimeAttribute<A, E, B> getTimeAttribute(A a);	
+	void register(TimeAttribute<A, E, B> key);
 }

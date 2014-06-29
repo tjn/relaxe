@@ -30,6 +30,7 @@ import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQueryContext;
 import com.appspot.relaxe.ent.EntityQueryElement;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.expr.Predicate;
@@ -295,23 +296,25 @@ public class EntityQueryPredicates {
 	public static <
 		A extends AttributeName,
 		R extends Reference,	
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,		
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>,
-		QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>,
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+		QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>,
 		RA extends AttributeName,
 		RR extends Reference,	
-		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
-		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RT extends ReferenceType<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RB extends MutableEntity<RA, RR, RT, RE, RB, RH, RF, RM>,
 		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
-		RF extends EntityFactory<RE, RH, RM, RF>,
-		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
-		K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>
+		RF extends EntityFactory<RE, RB, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>,
+		K extends EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, K>
 	>	
 	EntityQueryPredicate newIn(QE left, K key, Collection<RE> entities) {
-		EntityQueryPredicate inp = new EntityQueryInPredicate.Referenced<A, R, T, E, H, F, M, QE, RA, RR, RT, RE, RH, RF, RM, K>(left, key, entities);
+		EntityQueryPredicate inp = new EntityQueryInPredicate.Referenced<A, R, T, E, B, H, F, M, QE, RA, RR, RT, RE, RB, RH, RF, RM, K>(left, key, entities);
 		return inp;
 	}
 	
@@ -319,23 +322,25 @@ public class EntityQueryPredicates {
 	public static <
 		A extends AttributeName,
 		R extends Reference,	
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,		
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>,		
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,	
 		RA extends AttributeName,
 		RR extends Reference,	
-		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
-		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+		RT extends ReferenceType<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RB extends MutableEntity<RA, RR, RT, RE, RB, RH, RF, RM>,
 		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
-		RF extends EntityFactory<RE, RH, RM, RF>,
-		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
-		QE extends EntityQueryElement<RA, RR, RT, RE, RH, RF, RM, QE>,
-		K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>
+		RF extends EntityFactory<RE, RB, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>,
+		QE extends EntityQueryElement<RA, RR, RT, RE, RB, RH, RF, RM, QE>,
+		K extends EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, K>
 	>	
 	EntityQueryPredicate newInReferencing(QE left, K key, Collection<E> entities) {
-		EntityQueryPredicate inp = new EntityQueryInPredicate.Referencing<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, QE, K>(
+		EntityQueryPredicate inp = new EntityQueryInPredicate.Referencing<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, QE, K>(
 				left, key, entities);
 		
 		return inp;
@@ -344,15 +349,16 @@ public class EntityQueryPredicates {
 	public static <
 		A extends AttributeName,
 		R extends Reference,	
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,		
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>,
-		QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,	
+		QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
 	>	
 	EntityQueryPredicate newIn(QE left, Collection<E> entities) {				
-		EntityQueryPredicate inp = new EntityQueryInValuesPredicate<A, R, T, E, H, F, M, QE>(left, entities);
+		EntityQueryPredicate inp = new EntityQueryInValuesPredicate<A, R, T, E, B, H, F, M, QE>(left, entities);
 		return inp;
 	}	
 		

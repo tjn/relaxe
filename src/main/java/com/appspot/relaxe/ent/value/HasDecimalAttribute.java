@@ -24,8 +24,12 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 
-public interface HasDecimalAttribute<A extends AttributeName, E extends HasDecimal<A, E>> {
+public interface HasDecimalAttribute<
+	A extends AttributeName,
+	E extends HasDecimal.Read<A, E, B>,	
+	B extends HasDecimal.Write<A, E, B>
+> {
 
-	DecimalAttribute<A, E> getDecimalAttribute(A a);
-	void register(DecimalAttribute<A, E> key);
+	DecimalAttribute<A, E, B> getDecimalAttribute(A a);	
+	void register(DecimalAttribute<A, E, B> key);
 }

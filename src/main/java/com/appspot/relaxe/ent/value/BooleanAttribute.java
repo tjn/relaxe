@@ -31,9 +31,10 @@ import com.appspot.relaxe.value.ValueHolder;
 
 public final class BooleanAttribute<
 	A extends AttributeName,
-	E extends HasBoolean<A, E>
+	R extends HasBoolean.Read<A, R, W>,
+	W extends HasBoolean.Write<A, R, W>
 >
-	extends AbstractAttribute<A, E, Boolean, BooleanType, BooleanHolder, BooleanAttribute<A, E>>	
+	extends AbstractAttribute<A, R, W, Boolean, BooleanType, BooleanHolder, BooleanAttribute<A, R, W>>	
 {	
 	/**
 	 *
@@ -46,23 +47,24 @@ public final class BooleanAttribute<
 	private BooleanAttribute() {
 	}
 
-	private BooleanAttribute(HasBooleanAttribute<A, E> meta, A name) {
+	private BooleanAttribute(HasBooleanAttribute<A, R, W> meta, A name) {
 		super(name);
 		meta.register(this);
 	}
 	
 	public static <
 		X extends AttributeName,
-		T extends HasBoolean<X, T>
+		T extends HasBoolean.Read<X, T, S>,
+		S extends HasBoolean.Write<X, T, S>
 	>
-	BooleanAttribute<X, T> get(HasBooleanAttribute<X, T> meta, X a) {
-		BooleanAttribute<X, T> k = meta.getBooleanAttribute(a);
+	BooleanAttribute<X, T, S> get(HasBooleanAttribute<X, T, S> meta, X a) {
+		BooleanAttribute<X, T, S> k = meta.getBooleanAttribute(a);
 		
 		if (k == null) {
 			ValueType<?> t = a.type();
 			
 			if (t != null && BooleanType.TYPE.equals(t)) {
-				k = new BooleanAttribute<X, T>(meta, a);
+				k = new BooleanAttribute<X, T, S>(meta, a);
 			}
 		}
 				
@@ -75,12 +77,12 @@ public final class BooleanAttribute<
 	}
 	
 	@Override
-	public void set(E e, BooleanHolder newValue) {
+	public void set(W e, BooleanHolder newValue) {
 		e.setBoolean(this, newValue);
 	}
 	
 	@Override
-	public BooleanHolder get(E e) {
+	public BooleanHolder get(R e) {
 		return e.getBoolean(self());
 	}
 	
@@ -90,17 +92,17 @@ public final class BooleanAttribute<
 	}
 
 	@Override
-	public void copy(E src, E dest) {
+	public void copy(R src, W dest) {
 		dest.setBoolean(this, src.getBoolean(this));
 	}
 
 	@Override
-	public BooleanAttribute<A, E> self() {
+	public BooleanAttribute<A, R, W> self() {
 		return this;
 	}
 
 	@Override
-	public void reset(E dest) throws EntityRuntimeException {
+	public void reset(W dest) throws EntityRuntimeException {
 		dest.setBoolean(this, BooleanHolder.NULL_HOLDER);
 	}
 		

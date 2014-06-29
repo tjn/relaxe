@@ -30,10 +30,11 @@ import com.appspot.relaxe.value.TimeHolder;
 
 
 public class TimeAccessor<
-	A extends AttributeName,	
-	E extends HasTime<A, E>
+	A extends AttributeName,
+	R extends HasTime.Read<A, R, RW>,
+	RW extends HasTime.Read<A, R, RW> & HasTime.Write<A, R, RW>
 >
-	extends AbstractAttributeAccessor<A, E, Date, TimeType, TimeHolder, TimeAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, R, RW, Date, TimeType, TimeHolder, TimeAttribute<A, R, RW>> {
 
 	/**
 	 * 
@@ -47,7 +48,12 @@ public class TimeAccessor<
 	private TimeAccessor() {
 	}
 
-	public TimeAccessor(E target, TimeAttribute<A, E> k) {
+	public TimeAccessor(RW target, TimeAttribute<A, R, RW> k) {
 		super(target, k);
+	}
+	
+	@Override
+	public TimeHolder getHolder() {
+		return getTarget().getTime(key());
 	}
 }

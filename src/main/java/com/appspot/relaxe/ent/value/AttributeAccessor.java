@@ -31,17 +31,16 @@ import com.appspot.relaxe.value.ValueHolder;
 
 public interface AttributeAccessor<
 	A extends AttributeName,
-	E,
+	R,
+	W,
 	S extends Serializable,
 	P extends ValueType<P>,
 	H extends ValueHolder<S, P, H>,	
-	K extends Attribute<A, E, S, P, H, K>
+	K extends Attribute<A, R, W, S, P, H, K>
 >
 	extends Serializable
 {
 	K key();	
 	S get();
-	
-	
 	H getHolder();
 }

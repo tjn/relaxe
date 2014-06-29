@@ -29,6 +29,7 @@ import java.util.Map;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityRuntimeException;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.model.ChangeListener;
 import com.appspot.relaxe.model.DefaultMutableValueModel;
@@ -39,14 +40,15 @@ import com.appspot.relaxe.value.ValueHolder;
 
 public abstract class DefaultAttributeModelMap<
 	A extends AttributeName,
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?>,
+	T extends ReferenceType<A, ?, T, E, B, ?, ?, ?>,
+	E extends Entity<A, ?, T, E, B, ?, ?, ?>,
+	B extends MutableEntity<A, ?, T, E, B, ?, ?, ?>,
 	V extends Serializable,
 	P extends ValueType<P>,
 	H extends ValueHolder<V, P, H>,
-	D extends AttributeModelMap<A, V, P, H, T, E, D>	
+	D extends AttributeModelMap<A, V, P, H, T, E, B, D>	
 	>
-	implements AttributeModelMap<A, V, P, H, T, E, D> {
+	implements AttributeModelMap<A, V, P, H, T, E, B, D> {
 	 
 			
 	public DefaultAttributeModelMap() {		
@@ -75,7 +77,7 @@ public abstract class DefaultAttributeModelMap<
 	
 	@Override
 	public <
-		K extends com.appspot.relaxe.ent.value.Attribute<A,E,V,P,H,K>
+		K extends com.appspot.relaxe.ent.value.Attribute<A,E,B,V,P,H,K>
 	> 
 	MutableValueModel<H> attr(final K k) throws EntityRuntimeException {
 		if (k == null) {
@@ -86,12 +88,12 @@ public abstract class DefaultAttributeModelMap<
 		MutableValueModel<H> m = mm.get(k.name());
 		
 		if (m == null) {
-			H h = k.get(getTarget());
+			H h = k.get(getTarget().as());
 			MutableValueModel<H> nm = createValueModel(k, h);
 									
 			nm.addChangeHandler(new ChangeListener<H>() {				
 				@Override
-				public void changed(H from, H to) {
+				public void changed(H from, H to) {					
 					getTarget().set(k, to);
 				}
 			});
@@ -104,12 +106,12 @@ public abstract class DefaultAttributeModelMap<
 	}
 
 	public <		 
-		K extends Attribute<A, E, V, P, H, K>
+		K extends Attribute<A, E, B, V, P, H, K>
 	> 
 	MutableValueModel<H> createValueModel(K k, H initialValue) {
 		MutableValueModel<H> nm = new DefaultMutableValueModel<H>(initialValue);
 		return nm;
 	}
 	
-	public abstract E getTarget();
+	public abstract B getTarget();
 }

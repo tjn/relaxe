@@ -32,8 +32,8 @@ public interface AttributeWriterFactory {
 	 */
 	<
 		A extends AttributeName,
-		E extends Entity<A, ?, ?, E, ?, ?, M>,
-		M extends EntityMetaData<A, ?, ?, E, ?, ?, M>
+		B extends MutableEntity<A, ?, ?, ?, B, ?, ?, M>,
+		M extends EntityMetaData<A, ?, ?, ?, B, ?, ?, M>
 	>
-	AttributeWriter<A, E> createWriter(M em, ColumnResolver cr, int index);
+	AttributeWriter<A, B> createWriter(M em, ColumnResolver cr, int index);
 }

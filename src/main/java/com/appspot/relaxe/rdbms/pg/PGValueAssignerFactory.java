@@ -29,9 +29,9 @@ import com.appspot.relaxe.DefaultValueAssignerFactory;
 import com.appspot.relaxe.ParameterAssignment;
 import com.appspot.relaxe.env.pg.PGTextArrayHolder;
 import com.appspot.relaxe.env.pg.PGTextArrayType;
+import com.appspot.relaxe.env.pg.PGTextType;
 import com.appspot.relaxe.meta.DataType;
 import com.appspot.relaxe.types.ValueType;
-import com.appspot.relaxe.types.VarcharType;
 import com.appspot.relaxe.value.StringArray;
 import com.appspot.relaxe.value.ValueHolder;
 
@@ -55,7 +55,7 @@ public class PGValueAssignerFactory
 	}		
 	
 	private static class PGTextArrayAssignment
-		extends ArrayAssignment<String, VarcharType, StringArray, PGTextArrayType, PGTextArrayHolder> {
+		extends ArrayAssignment<String, PGTextType, StringArray, PGTextArrayType, PGTextArrayHolder> {
 		
 		public PGTextArrayAssignment(PGTextArrayHolder value) {
 			super(value);

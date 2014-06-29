@@ -25,7 +25,43 @@ package com.appspot.relaxe.ent.value;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.value.DoubleHolder;
 
-public interface HasDouble<A extends AttributeName, E extends HasDouble<A, E>> {
-	DoubleHolder getDouble(DoubleAttribute<A, E> key);
-	void setDouble(DoubleAttribute<A, E> key, DoubleHolder newValue);
+public interface HasDouble<
+	A extends AttributeName,
+	R extends HasDouble.Read<A, R, W>,
+	W extends HasDouble.Write<A, R, W>
+> {	
+	R asRead();	
+	W asWrite();	
+	
+	public interface Read<
+		A extends AttributeName,
+		R extends HasDouble.Read<A, R, W>,
+		W extends HasDouble.Write<A, R, W>
+	>
+		extends HasDouble<A, R, W> {
+		/**
+		 * Returns the value by the key or <code>null</code> if the value is not currently present.
+		 * 
+		 * @param key
+		 * @return The value corresponding the key.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		DoubleHolder getDouble(DoubleAttribute<A, R, W> key);		
+	}
+	
+	public interface Write<
+		A extends AttributeName,
+		R extends HasDouble.Read<A, R, W>,
+		W extends HasDouble.Write<A, R, W>
+	> extends HasDouble<A, R, W> {
+	
+		/**
+		 * Sets the value by the key.
+		 * 
+		 * @param key
+		 * @param newValue May be null.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		void setDouble(DoubleAttribute<A, R, W> key, DoubleHolder newValue);
+	}
 }

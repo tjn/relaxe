@@ -1,6 +1,6 @@
 
 		@Override
-		public void register({{attribute-key-type-canonical-name}}<Attribute, {{table-interface}}> key) {
+		public void register({{attribute-key-type-canonical-name}}<{{table-interface}}.Attribute, {{table-interface}}, {{table-interface}}.Mutable> key) {
 			if (key == null) {
 				throw new NullPointerException();
 			}
@@ -10,7 +10,7 @@
 		}
 				
 		@Override
-		public {{attribute-key-type-canonical-name}}<Attribute, {{table-interface}}> get{{attribute-key-type-simple-name}}(Attribute a) {
+		public {{attribute-key-type-canonical-name}}<{{table-interface}}.Attribute, {{table-interface}}, {{table-interface}}.Mutable> get{{attribute-key-type-simple-name}}({{table-interface}}.Attribute a) {
 			if (a == null) {
 				return null;
 			}

@@ -27,10 +27,11 @@ import com.appspot.relaxe.types.CharType;
 import com.appspot.relaxe.value.CharHolder;
 
 public class CharAccessor<
-	A extends AttributeName,	
-	E extends HasChar<A, E> & HasString<A, E>
+	A extends AttributeName,
+	R extends HasChar.Read<A, R, RW> & HasString.Read<A, R, RW>,
+	RW extends HasChar.Read<A, R, RW> & HasChar.Write<A, R, RW> & HasString.Write<A, R, RW>
 >
-	extends AbstractAttributeAccessor<A, E, String, CharType, CharHolder, CharAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, R, RW, String, CharType, CharHolder, CharAttribute<A, R, RW>> {
 
 	/**
 	 *
@@ -44,12 +45,17 @@ public class CharAccessor<
 	private CharAccessor() {
 	}
 
-	public CharAccessor(E target, CharAttribute<A, E> k) {
+	public CharAccessor(RW target, CharAttribute<A, R, RW> k) {
 		super(target, k);
 	}
 
 	@Override
 	public void setHolder(CharHolder newHolder) {
 		getTarget().setChar(key(), newHolder);
+	}
+	
+	@Override
+	public CharHolder getHolder() {
+		return getTarget().getChar(key());
 	}
 }

@@ -23,10 +23,9 @@
 package com.appspot.relaxe.env.pg;
 
 import com.appspot.relaxe.types.ArrayType;
-import com.appspot.relaxe.types.VarcharType;
 
 public class PGTextArrayType
-	extends ArrayType<PGTextArrayType, VarcharType> {
+	extends ArrayType<PGTextArrayType, PGTextType> {
 
 	
 	public static final PGTextArrayType TYPE = new PGTextArrayType();
@@ -37,8 +36,8 @@ public class PGTextArrayType
 	private static final long serialVersionUID = 7152862866657378339L;
 
 	@Override
-	public VarcharType getElementType() {
-		return VarcharType.TYPE;
+	public PGTextType getElementType() {
+		return PGTextType.TYPE;
 	}
 	
 	@Override

@@ -27,9 +27,30 @@ import com.appspot.relaxe.value.CharHolder;
 
 public interface HasChar<
 	A extends AttributeName,
-	E extends HasChar<A, E> & HasString<A, E>
+	R extends HasChar.Read<A, R, W> & HasString.Read<A, R, W>,
+	W extends HasChar.Write<A, R, W> & HasString.Write<A, R, W>
 >
 {	
-	CharHolder getChar(CharAttribute<A, E> key);
-	void setChar(CharAttribute<A, E> key, CharHolder newValue);	
+	R asRead();	
+	W asWrite();
+	
+	interface Read<
+		A extends AttributeName,
+		R extends HasChar.Read<A, R, W> & HasString.Read<A, R, W>,
+		W extends HasChar.Write<A, R, W> & HasString.Write<A, R, W>
+	> extends HasChar<A, R, W> {
+	
+		CharHolder getChar(CharAttribute<A, R, W> key);
+		
+	}
+
+	interface Write<
+		A extends AttributeName,
+		R extends HasChar.Read<A, R, W> & HasString.Read<A, R, W>,
+		W extends HasChar.Write<A, R, W> & HasString.Write<A, R, W>
+	> 
+		extends HasChar<A, R, W> {
+		
+		void setChar(CharAttribute<A, R, W> key, CharHolder newValue);		
+	}
 }

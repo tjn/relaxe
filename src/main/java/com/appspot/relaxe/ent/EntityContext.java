@@ -29,7 +29,7 @@ import com.appspot.relaxe.meta.Catalog;
 
 public interface EntityContext {
 		 
-	EntityMetaData<?,?,?,?,?,?,?> getMetaData(BaseTable table);
+	EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> getMetaData(BaseTable table);
 	
 	/** 
 	 * Returns the catalog this context is bound to or <code>null</code> 

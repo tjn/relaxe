@@ -28,20 +28,42 @@ import com.appspot.relaxe.value.StringHolder;
 
 public interface HasString<
 	A extends AttributeName,
-	E extends HasString<A, E>> {
-
-	<
-		T extends ValueType<T>, 
-		H extends StringHolder<T, H>,
-		K extends StringAttribute<A, E, T, H, K>
-	>	
-	H getString(K key);
+	R extends HasString.Read<A, R, W>,
+	W extends HasString.Write<A, R, W>
+> {
 	
-	<
-		T extends ValueType<T>, 
-		H extends StringHolder<T, H>,
-		K extends StringAttribute<A, E, T, H, K>
-	>
-	void setString(K key, H newValue);
+	R asRead();	
+	W asWrite();
+	
+	interface Read<
+		A extends AttributeName,
+		R extends HasString.Read<A, R, W>,
+		W extends HasString.Write<A, R, W>
+	> extends HasString<A,R,W> {
+	
+		<
+			T extends ValueType<T>, 
+			H extends StringHolder<T, H>,
+			K extends StringAttribute<A, R, W, T, H, K>
+		> 
+		H getString(K key);
+		
+	}
+
+	interface Write<
+		A extends AttributeName,
+		R extends HasString.Read<A, R, W>,
+		W extends HasString.Write<A, R, W>
+	> {
+		<
+			T extends ValueType<T>, 
+			H extends StringHolder<T, H>,
+			K extends StringAttribute<A, R, W, T, H, K>
+		>
+		void setString(K key, H newValue);		
+	}
+
+	
+	
 
 }

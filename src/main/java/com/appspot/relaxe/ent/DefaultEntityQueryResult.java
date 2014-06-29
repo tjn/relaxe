@@ -29,15 +29,16 @@ import com.appspot.relaxe.value.ReferenceHolder;
 public class DefaultEntityQueryResult<
 	A extends AttributeName,
 	R extends Reference,	
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+	RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
 >
-	extends AbstractResponse<EntityQuery<A, R, T, E, H, F, M, RE>>
-	implements EntityQueryResult<A, R, T, E, H, F, M, RE> {
+	extends AbstractResponse<EntityQuery<A, R, T, E, B, H, F, M, RE>>
+	implements EntityQueryResult<A, R, T, E, B, H, F, M, RE> {
 	
 	/**
 	 * 
@@ -50,7 +51,7 @@ public class DefaultEntityQueryResult<
 		super();
 	}
 
-	public DefaultEntityQueryResult(EntityQuery<A, R, T, E, H, F, M, RE> request, DataObjectQueryResult<EntityDataObject<E>> content) {
+	public DefaultEntityQueryResult(EntityQuery<A, R, T, E, B, H, F, M, RE> request, DataObjectQueryResult<EntityDataObject<E>> content) {
 		super(request);
 		this.content = content;
 		this.content.getContent().size();

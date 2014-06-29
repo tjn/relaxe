@@ -24,9 +24,12 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 
-public interface HasTimestampAttribute<A extends AttributeName, E extends HasTimestamp<A, E>> {
-
-	TimestampAttribute<A, E> getTimestampAttribute(A a);
-
-	void register(TimestampAttribute<A, E> key);
+public interface HasTimestampAttribute<
+	A extends AttributeName,
+	E extends HasTimestamp.Read<A, E, B>,	
+	B extends HasTimestamp.Write<A, E, B>
+	>	{
+	
+	TimestampAttribute<A, E, B> getTimestampAttribute(A a);	
+	void register(TimestampAttribute<A, E, B> key);
 }

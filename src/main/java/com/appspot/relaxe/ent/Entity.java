@@ -40,22 +40,22 @@ import com.appspot.relaxe.value.ValueHolder;
 public interface Entity<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>
 >
 	extends
-	HasString<A, E>,
-	Serializable
+		HasString.Read<A, E, B>, Serializable
 {
 
 	<
 		S extends Serializable,
 		P extends ValueType<P>,
 		PH extends ValueHolder<S, P, PH>,
-		K extends Attribute<A, E, S, P, PH, K>
+		K extends Attribute<A, E, B, S, P, PH, K>
 	>
 	PH get(K k)
 		throws EntityRuntimeException;
@@ -63,36 +63,19 @@ public interface Entity<
 	<
 		RA extends AttributeName,
 		RR extends Reference,
-		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
-		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
-		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
-		RF extends EntityFactory<RE, RH, RM, RF>,
-		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
-		K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>
+		RT extends ReferenceType<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RB extends MutableEntity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,		
+		RF extends EntityFactory<RE, RB, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>,
+		K extends EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, K>
 	>
-	RH getRef(EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K> k);
+	RH getRef(EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, K> k);
 
-	<
-		S extends Serializable,
-		P extends ValueType<P>,
-		RH extends ValueHolder<S, P, RH>,
-		K extends Attribute<A, E, S, P, RH, K>
-	>
-	void set(K k, RH newValue);
 
-	public Entity<?, ?, ?, ?, ?, ?, ?> getRef(R k);
+	public Entity<?, ?, ?, ?, ?, ?, ?, ?> getRef(R k);
 
-	<
-		RA extends AttributeName,
-		RR extends Reference,
-		RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
-		RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
-		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
-		RF extends EntityFactory<RE, RH, RM, RF>,
-		RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,		
-		K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>
-	>
-	void setRef(EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K> k, RH newValue);
 
 	ValueHolder<?, ?, ?> value(A attribute) throws EntityRuntimeException;
 	
@@ -159,61 +142,22 @@ public interface Entity<
 	public <
 		P extends ValueType<P>,
 		SH extends StringHolder<P, SH>,		
-		K extends StringAttribute<A, E, P, SH, K>
+		K extends StringAttribute<A, E, B, P, SH, K>
 	>
-	SH getString(K k) throws EntityRuntimeException;
-
+	SH getString(K k);
 	
-	@Override
-	public <
-		P extends ValueType<P>,
-		SH extends StringHolder<P, SH>,
-		K extends StringAttribute<A, E, P, SH, K>
-	>
-	void setString(K k, SH s) throws EntityRuntimeException;
-
-	public <
-		P extends ValueType<P>,
-		SH extends StringHolder<P, SH>,
-		K extends StringAttribute<A, E, P, SH, K>
-	>
-	void setString(K k, String s) throws EntityRuntimeException;
 
 	public E self();
 	public E copy();
 
-	boolean isIdentified() throws EntityRuntimeException;
+	boolean isIdentified();
 	
-		
-//	E identity();
-
-
 	/**
 	 * Set of the attributes currently present within this entity.
 	 * @return
 	 */
 	Set<A> attributes();
 
-	/**
-	 * Replaces the current value of the attribute addressed by key with null-valued holder
-	 * @param <VV>
-	 * @param <VT>
-	 * @param <VH>
-	 * @param <K>
-	 * @param key
-	 */
-	public <
-		VV extends Serializable,
-		VT extends ValueType<VT>,
-		VH extends ValueHolder<VV, VT, VH>,
-		K extends Attribute<A, E, VV, VT, VH, K>
-	>
-	void remove(K key);
-
-	/**
-	 * * Resets the specified attributes.
-	 */
-	void reset(Iterable<A> attributes);
 
 	/**
 	 * Returns true if and only if this entity has currently the value holder set for the attribute addressed by <code>key</code>.
@@ -228,7 +172,7 @@ public interface Entity<
 		VV extends Serializable,
 		VT extends ValueType<VT>,
 		VH extends ValueHolder<VV, VT, VH>,
-		K extends Attribute<A, E, VV, VT, VH, K>
+		K extends Attribute<A, E, B, VV, VT, VH, K>
 	>
 	boolean has(K key);
 
@@ -245,8 +189,16 @@ public interface Entity<
 		VV extends Serializable,
 		VT extends ValueType<VT>,
 		VH extends ValueHolder<VV, VT, VH>,
-		K extends Attribute<A, E, VV, VT, VH, K>
+		K extends Attribute<A, E, B, VV, VT, VH, K>
 	>
 	boolean match(K key, E another);
-
+		
+	boolean isMutable();
+	
+	B asMutable();	
+	B toMutable();
+	
+	E asImmutable();
+	E toImmutable();
+	E toImmutable(Operation.Context ctx);
 }

@@ -119,10 +119,40 @@ public class SourceGenerator {
 		LITERAL_TABLE_ENUM,
 
 		/**
-		 * Pattern which is replaced with the simple name of the hook class in
+		 * Pattern which is replaced with the simple name of the entity implementation container class in
 		 * template files.
 		 */
 		TABLE_IMPL_CLASS,
+		
+		/** 
+		 * Pattern which is replaced with the simple name of the immutable entity implementation class in
+		 * template files.
+		 */
+		IMMUTABLE_ENTITY_IMPL_CLASS,
+		
+		/** 
+		 * Pattern which is replaced with the simple name of the immutable entity implementation class in
+		 * template files.
+		 */
+		IMMUTABLE_ENTITY_IMPL_NO_ARG_CONSTRUCTOR_BODY,
+		
+		/** 
+		 * Pattern which is replaced with the body of the copy constructor of the immutable entity implementation class in
+		 * template files.
+		 */
+		IMMUTABLE_ENTITY_IMPL_COPY_CONSTRUCTOR_BODY,		
+				 		
+		/**
+		 * Pattern which is replaced with the simple name of the mutable entity implementation class in
+		 * template files.
+		 */
+		MUTABLE_ENTITY_IMPL_CLASS,
+
+		/** 
+		 * Pattern which is replaced with the reference assignment blocks
+		 */
+		REFERENCE_ASSIGNMENT_LIST,
+		
 		/**
 		 * Pattern which is replaced with the simple name of the hook class in
 		 * template files.
@@ -137,9 +167,11 @@ public class SourceGenerator {
 //		 */
 //		ACCESSOR_LIST,
 		
-		ENTITY_ATTRIBUTE_ACCESSOR_SIGNATURE_LIST,
+		ENTITY_ATTRIBUTE_READ_ACCESSOR_SIGNATURE_LIST,
+		ENTITY_ATTRIBUTE_READ_WRITE_ACCESSOR_SIGNATURE_LIST,
 		
-		ENTITY_ATTRIBUTE_ACCESSOR_LIST,
+		ENTITY_ATTRIBUTE_READ_ACCESSOR_LIST,
+		ENTITY_ATTRIBUTE_READ_WRITE_ACCESSOR_LIST,
 
 		/**
 		 * static attribute key declarations in interface
@@ -178,12 +210,23 @@ public class SourceGenerator {
 		/*
 		 * Implements ... list for table interface.
 		 */
-		REFERENCE_LIST,
+		HAS_REFERENCE_READ_LIST,
+		
+		/*
+		 * Implements ... list for table interface.
+		 */
+		HAS_REFERENCE_WRITE_LIST,		
 
 		/*
 		 * Implements ... list for table interface.
 		 */
-		ATTRIBUTE_CONTAINER_INTERFACE_LIST,
+		READABLE_ATTRIBUTE_CONTAINER_INTERFACE_LIST,
+		
+		/*
+		 * Implements ... list for table interface.
+		 */
+		WRITABLE_ATTRIBUTE_CONTAINER_INTERFACE_LIST,
+		
 
 		/*
 		 * Implements ... list for table interface.
@@ -191,9 +234,15 @@ public class SourceGenerator {
 		ATTRIBUTE_KEY_CONTAINER_INTERFACE_LIST,
 
 		/*
-		 * Implements ... list for table interface.
+		 * 
 		 */
-		ATTRIBUTE_CONTAINER_IMPLEMENTATION,
+		ATTRIBUTE_CONTAINER_IMPLEMENTATION_READ,
+		
+		/*
+		 * 
+		 */
+		ATTRIBUTE_CONTAINER_IMPLEMENTATION_READ_WRITE,
+		
 
 		/*
 		 * Implements ... list for table interface.
@@ -202,7 +251,9 @@ public class SourceGenerator {
 
 		ATTRIBUTES_METHOD_STATEMENT_LIST,
 
-		REFERENCE_MAP_LIST,
+		REFERENCE_MAP_LIST_READ,
+		
+		REFERENCE_MAP_LIST_READ_WRITE,
 		/**
 		 * Pattern which is replaced with the simple name of the catalog context
 		 * class in template files.
@@ -457,7 +508,7 @@ public class SourceGenerator {
 			count++;
 		}
 
-		if (info.getContainerType() == null) {
+		if (info.getReadableContainerType() == null) {
 			errorList.add("no container type");
 			count++;
 		}
@@ -779,11 +830,12 @@ public class SourceGenerator {
 			final JavaType intf = tm.entityType(t, Part.INTERFACE);
 			final JavaType at = tm.entityType(t, Part.ABSTRACT);
 			final JavaType hp = tm.entityType(t, Part.HOOK);
-			final JavaType impl = tm.entityType(t, Part.IMPLEMENTATION);
-			final JavaType te = tm.entityType(t, Part.LITERAL_TABLE_ENUM);
+			final JavaType ii = tm.entityType(t, Part.IMPLEMENTATION);			
+//			final JavaType te = tm.entityType(t, Part.LITERAL_TABLE_ENUM);
 			final JavaType ref = tm.entityType(t, Part.HAS);
+			final JavaType mdi = tm.entityType(t, Part.METADATA_IMPLEMENTATION);
 
-			if (intf == null || impl == null) {
+			if (intf == null) {
 				continue;
 			} else {
 				// final Schema schema = t.getSchema();
@@ -803,37 +855,42 @@ public class SourceGenerator {
 					write(root, ref, source, generated, gm);
 				}
 
-				if (at != null) {
-					CharSequence source = generateAbstract(t, at, tm);
-					File root = getSourceDir(s, Part.ABSTRACT);
-					write(root, at, source, generated, gm);
-				}
+//				if (at != null) {
+//					CharSequence source = generateAbstract(t, at, tm);
+//					File root = getSourceDir(s, Part.ABSTRACT);
+//					write(root, at, source, generated, gm);
+//				}
 
-				if (te != null) {
-					CharSequence source = generateTableEnum(t, te,
-							Tag.LITERAL_TABLE_ENUM, tm);
-					File root = getSourceDir(s, Part.LITERAL_TABLE_ENUM);
-					write(root, te, source, generated, gm);
-				}
+//				if (te != null) {
+//					CharSequence source = generateTableEnum(t, te,
+//							Tag.LITERAL_TABLE_ENUM, tm);
+//					File root = getSourceDir(s, Part.LITERAL_TABLE_ENUM);
+//					write(root, te, source, generated, gm);
+//				}
 
-				if (hp != null) {
-					CharSequence source = generateHook(t, hp, tm);
-
-					if (source != null) {
-						File root = getSourceDir(s, Part.HOOK);
-						File sourceFile = getSourceFile(root, hp);
-
-						if (!sourceFile.exists()) {
-							write(root, hp, source, generated, gm);
-						}
-					}
-				}
+//				if (hp != null) {
+//					CharSequence source = generateHook(t, hp, tm);
+//
+//					if (source != null) {
+//						File root = getSourceDir(s, Part.HOOK);
+//						File sourceFile = getSourceFile(root, hp);
+//
+//						if (!sourceFile.exists()) {
+//							write(root, hp, source, generated, gm);
+//						}
+//					}
+//				}
 
 				{
-					CharSequence source = generateImplementation(cat, t, impl,
-							tm, tym);
+					CharSequence source = generateImplementation(cat, t, ii, tm, tym);
 					File root = getSourceDir(s, Part.IMPLEMENTATION);
-					write(root, impl, source, generated, gm);
+					write(root, ii, source, generated, gm);
+				}
+				
+				{
+					CharSequence source = generateMetaDataImplementation(cat, t, mdi, tm, tym);
+					File root = getSourceDir(s, Part.METADATA_IMPLEMENTATION);
+					write(root, mdi, source, generated, gm);
 				}
 
 				TypeInfo info = new TypeInfo();
@@ -841,7 +898,8 @@ public class SourceGenerator {
 				info.put(Part.INTERFACE, intf);
 				info.put(Part.ABSTRACT, at);
 				info.put(Part.HOOK, hp);
-				info.put(Part.IMPLEMENTATION, impl);
+				info.put(Part.IMPLEMENTATION, ii);				
+				info.put(Part.METADATA_IMPLEMENTATION, mdi);
 
 				types.add(info);
 			}
@@ -899,8 +957,6 @@ public class SourceGenerator {
 	private CharSequence generateHasRef(BaseTable t, JavaType ref,
 			JavaType intf, TableMapper tm) throws IOException {
 		String src = getTemplateFor(Part.HAS);
-		// src = replaceAll(src, Tag.TABLE_INTERFACE_REF,
-		// ref.getUnqualifiedName());
 		src = replacePackageAndImports(src, intf);
 		src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
 		return src;
@@ -910,11 +966,11 @@ public class SourceGenerator {
 		return getSourceDir(part);
 	}
 
-	private File getSourceFile(File root, JavaType type) throws IOException {
-		File pd = packageDir(type.getPackageName());
-		pd = (pd == null) ? root : new File(root, pd.getPath());
-		return getSourceFile(pd, type.getUnqualifiedName());
-	}
+//	private File getSourceFile(File root, JavaType type) throws IOException {
+//		File pd = packageDir(type.getPackageName());
+//		pd = (pd == null) ? root : new File(root, pd.getPath());
+//		return getSourceFile(pd, type.getUnqualifiedName());
+//	}
 
 	private void writeIfGenerated(File root, JavaType type,
 			CharSequence source, Properties dest, Map<File, String> files)
@@ -1015,9 +1071,14 @@ public class SourceGenerator {
 		
 		
 		{
-			String code = entityAttributeAccessorList(cat, t, tm, tym, false);
-			src = replaceAllWithComment(src, Tag.ENTITY_ATTRIBUTE_ACCESSOR_SIGNATURE_LIST, code);
+			String code = entityAttributeAccessorList(cat, t, tm, tym, false, false);
+			src = replaceAllWithComment(src, Tag.ENTITY_ATTRIBUTE_READ_ACCESSOR_SIGNATURE_LIST, code);
 		}		
+		
+		{
+			String code = entityAttributeAccessorList(cat, t, tm, tym, false, true);
+			src = replaceAllWithComment(src, Tag.ENTITY_ATTRIBUTE_READ_WRITE_ACCESSOR_SIGNATURE_LIST, code);
+		}				
 		
 		
 
@@ -1079,21 +1140,28 @@ public class SourceGenerator {
 		}
 
 		{
-			String code = referenceList(t, tm);
-			src = replaceAll(src, Tag.REFERENCE_LIST, code);
+			String code = referenceList(t, tm, "Read");
+			src = replaceAll(src, Tag.HAS_REFERENCE_READ_LIST, code);
+		}
+		
+		{
+			String code = referenceList(t, tm, "Write");
+			src = replaceAll(src, Tag.HAS_REFERENCE_WRITE_LIST, code);
 		}
 
 		{
-			String code = attributeContainerInterfaceList(cat, t, tm, tym);
-			logger().debug(
-					"generateInterface: attributeContainerInterfaceList: "
-							+ code);
-			logger().debug(
-					"generateInterface: tag: "
-							+ Tag.ATTRIBUTE_CONTAINER_INTERFACE_LIST.getTag());
-
-			src = replaceAll(src, Tag.ATTRIBUTE_CONTAINER_INTERFACE_LIST, code);
+			String code = attributeContainerInterfaceList(cat, t, tm, tym, true);
+			logger().debug("generateInterface: attributeContainerInterfaceList: {}", code);
+			logger().debug("generateInterface: tag: ", Tag.READABLE_ATTRIBUTE_CONTAINER_INTERFACE_LIST.getTag());
+			src = replaceAll(src, Tag.READABLE_ATTRIBUTE_CONTAINER_INTERFACE_LIST, code);
 		}
+		
+		{
+			String code = attributeContainerInterfaceList(cat, t, tm, tym, false);
+			logger().debug("attributeContainerInterfaceList: {}", code);
+			logger().debug("generateInterface: tag: ", Tag.READABLE_ATTRIBUTE_CONTAINER_INTERFACE_LIST.getTag());
+			src = replaceAll(src, Tag.WRITABLE_ATTRIBUTE_CONTAINER_INTERFACE_LIST, code);
+		}		
 
 		{
 			String code = attributeKeyContainerInterfaceList(cat, t, tm, tym);
@@ -1114,11 +1182,11 @@ public class SourceGenerator {
 		StringBuilder buf = new StringBuilder();
 
 		for (ForeignKey fk : fks) {
-			// SAMPLE: private EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?>
+			// SAMPLE: private EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?>
 			// languageQueryElement;
 
 			line(buf, "private ", EntityQueryElement.class.getCanonicalName(),
-					"<?, ?, ?, ?, ?, ?, ?, ?> ",
+					"<?, ?, ?, ?, ?, ?, ?, ?, ?> ",
 					queryElementVariableName(fk), ";");
 		}
 
@@ -1148,7 +1216,7 @@ public class SourceGenerator {
 			for (int p = 0; p < ac; p++) {
 				String delim = (p < (ac - 1)) ? "," : "";
 				line(buf, Attribute.class.getCanonicalName(), 
-						"<", attr, ", ", intf, ", ?, ?, ?, ?> a", Integer.toString(p + 1), delim);
+						"<", attr, ", ", intf, ", ?, ?, ?, ?, ?> a", Integer.toString(p + 1), delim);
 			}
 						
 			line(buf, ") {");			
@@ -1365,16 +1433,14 @@ public class SourceGenerator {
 
 		StringBuilder buf = new StringBuilder();
 
-		JavaType itf = tm.entityType(t, Part.INTERFACE);
-
 		JavaType type = tm.entityType(ref, Part.INTERFACE);
-
 		String qn = type.getQualifiedName();
 		
-		line(buf, "public ", qn, ".QueryElement getQueryElement(", qn,
-				".Key<Attribute, Reference, Type, ", itf.getUnqualifiedName(),
-				", Holder, Factory, MetaData> key) {");
-
+		line(buf, "public ", qn, ".QueryElement getQueryElement(", qn, ".Key<");
+		buf.append(referenceKeyTypeArgs(tm, t));
+		line(buf, "> key) {");
+		
+		
 		line(buf, "if (key == null) {");
 		line(buf, "throw new java.lang.NullPointerException(\"key\");");
 		line(buf, "}");
@@ -1454,7 +1520,7 @@ public class SourceGenerator {
 	 * @return
 	 */
 
-	private String referenceList(BaseTable t, TableMapper tm) {
+	private String referenceList(BaseTable t, TableMapper tm, String suffix) {
 		StringBuilder buf = new StringBuilder();
 
 		Set<BaseTable> rs = referencedTables(t);
@@ -1465,6 +1531,8 @@ public class SourceGenerator {
 			buf.append(", ");
 			JavaType e = tm.entityType(rt, Part.HAS);
 			buf.append(e.getQualifiedName());
+			buf.append(".");
+			buf.append(suffix);
 			buf.append("<");
 			buf.append(args);
 			buf.append(">");
@@ -1484,7 +1552,7 @@ public class SourceGenerator {
 	 */
 
 	private String attributeContainerInterfaceList(Catalog cat, BaseTable t,
-			TableMapper tm, AttributeTypeMap tym) {
+			TableMapper tm, AttributeTypeMap tym, boolean read) {
 		StringBuilder buf = new StringBuilder();
 
 		Set<Class<?>> implemented = new LinkedHashSet<Class<?>>();
@@ -1495,17 +1563,21 @@ public class SourceGenerator {
 			AttributeDescriptor ai = tym.getAttributeDescriptor(c.getDataType());
 
 			if (ai != null) {
-				Class<?> ct = ai.getContainerType();
-
-				if (ct != null) {
-					implemented.add(ct);
-				} else {
-					columnName(t, c);
-					logger().error(
-							columnName(
-									new StringBuilder(
-											"no container type for attribute for column: "),
-									t, c));
+				{
+					Class<?> ct = read ? 
+							ai.getReadableContainerType() : 
+							ai.getWritableContainerType(); 
+	
+					if (ct != null) {
+						implemented.add(ct);
+					} else {
+						columnName(t, c);
+						logger().error(
+								columnName(
+										new StringBuilder(
+												"no container type for attribute for column: "),
+										t, c));
+					}
 				}
 			}
 		}
@@ -1521,6 +1593,9 @@ public class SourceGenerator {
 			buf.append(getAttributeType());
 			buf.append(",");
 			buf.append(et.getUnqualifiedName());
+			buf.append(",");
+			buf.append(et.getUnqualifiedName());
+			buf.append(".Mutable");
 			buf.append(">\n");
 		}
 
@@ -1575,6 +1650,9 @@ public class SourceGenerator {
 			buf.append(getAttributeType());
 			buf.append(",");
 			buf.append(et.getUnqualifiedName());
+			buf.append(",");
+			buf.append(et.getUnqualifiedName());
+			buf.append(".Mutable");
 			buf.append(">\n");
 		}
 
@@ -1592,7 +1670,7 @@ public class SourceGenerator {
 	 */
 
 	private String attributeContainerImplementation(Catalog cat, BaseTable t,
-			TableMapper tam, AttributeTypeMap tym) {
+			TableMapper tam, AttributeTypeMap tym, boolean rw) {
 		StringBuilder buf = new StringBuilder();
 
 		Map<Class<?>, List<Column>> attributeTypeMap = new HashMap<Class<?>, List<Column>>();
@@ -1621,8 +1699,7 @@ public class SourceGenerator {
 
 		for (Class<?> kt : attributeTypeMap.keySet()) {
 			List<Column> attributes = attributeTypeMap.get(kt);
-			formatAttributeHolderAccessors(cat, kt, t, attributes, tam, tym,
-					buf);
+			formatAttributeHolderAccessors(cat, kt, t, attributes, tam, tym, buf, rw);
 		}
 
 		String code = buf.toString();
@@ -1631,7 +1708,7 @@ public class SourceGenerator {
 
 	private void formatAttributeHolderAccessors(Catalog cat, Class<?> kt,
 			BaseTable table, List<Column> columns, TableMapper tam,
-			AttributeTypeMap tym, StringBuilder buf) {
+			AttributeTypeMap tym, StringBuilder buf, boolean rw) {
 
 		// Sample output: "private IntegerHolder a = null;"
 		// Sample output: "private IntegerHolder b = null;, etc..."
@@ -1667,6 +1744,9 @@ public class SourceGenerator {
 
 		// tym.getAttributeInfo(table, attributes.get(index));
 		JavaType itf = tam.entityType(table, Part.INTERFACE);
+		
+		String q = itf.getQualifiedName();
+		
 
 		// all the attributes are expected to have same type, infer type by the
 		// first:
@@ -1677,8 +1757,8 @@ public class SourceGenerator {
 		n = removeSuffix(n, "Attribute");
 
 		Class<?> ht = ai.getHolderType();
-
-		{
+		
+		if (rw) {			
 			final String methodName = "set" + n;
 			final String newValueVariable = "newValue";
 
@@ -1687,9 +1767,11 @@ public class SourceGenerator {
 			buf.append("(");
 			buf.append(kt.getCanonicalName());
 			buf.append("<");
-			buf.append(getAttributeType());
+			buf.append(q).append(".").append(getAttributeType());
 			buf.append(", ");
-			buf.append(itf.getQualifiedName());
+			buf.append(q);
+			buf.append(", ");
+			buf.append(q).append(".Mutable");
 			buf.append(">");
 			buf.append(" key, ");
 			buf.append(ht.getCanonicalName());
@@ -1698,7 +1780,7 @@ public class SourceGenerator {
 			buf.append(") {\n\n");
 
 			buf.append("\n");
-			appendThrowNpe(buf, itf.getQualifiedName(), methodName, "key");
+			appendThrowNpe(buf, q, methodName, "key");
 			buf.append("\n\n");
 
 			buf.append("switch (key.name()) {\n");
@@ -1731,10 +1813,12 @@ public class SourceGenerator {
 			buf.append(methodName);
 			buf.append("(");
 			buf.append(kt.getCanonicalName());
-			buf.append("<");
-			buf.append(getAttributeType());
+			buf.append("<");			
+			buf.append(q).append(".").append(getAttributeType());
 			buf.append(", ");
-			buf.append(itf.getQualifiedName());
+			buf.append(q);
+			buf.append(", ");
+			buf.append(q).append(".Mutable");
 			buf.append(">");
 			buf.append(" key");
 			buf.append(") {\n\n");
@@ -2097,17 +2181,221 @@ public class SourceGenerator {
 		String src = getTemplateFor(Part.IMPLEMENTATION);
 
 		JavaType intf = tam.entityType(t, Part.INTERFACE);
-		JavaType base = tam.entityType(t, Part.HOOK);
-
-		if (base == null) {
-			base = tam.entityType(t, Part.ABSTRACT);
-		}
-
+				
+		
 		String lt = tableEnumeratedName(tam, t);
 
 		List<String> il = new ArrayList<String>();
 		addImport(impl, intf, il);
-		addImport(impl, base, il);
+				
+		src = replacePackageAndImports(src, impl, il);
+		
+//		{
+//			src = t.foreignKeys().isEmpty() ? replaceAllWithComment(src,
+//					Tag.FOREIGN_KEY_IMPLEMENTATION, "") : readAndReplace(src,
+//					Tag.FOREIGN_KEY_IMPLEMENTATION, false);
+//		}
+//		
+//
+//		tag = Tag.BASE_TABLE_COLUMN_VARIABLE_LIST;
+//		src = replaceAll(src, tag,
+//				generateBaseTableColumnVariableList(t, tag, tam));
+//
+//		src = replaceAll(src, Tag.POPULATE_COLUMN_MAP_BLOCK,
+//				generatePopulateColumnMapBlock(t, tam));
+//		src = replaceAll(src, Tag.CREATE_GET_BASE_TABLE_BODY,
+//				generateGetBaseTableBody(t, tam));
+//		src = replaceAll(src, Tag.GET_ENVIRONMENT_BODY,
+//				generateGetEnvironmentBody(t, tam));		
+//		src = replaceAll(src, Tag.CREATE_PRIMARY_KEY_BODY,
+//				generateCreatePrimaryKeyBody(t, tam));
+//		src = replaceAll(src, Tag.CREATE_FOREIGN_KEY_MAP_BODY,
+//				generateCreateForeignKeyMapBody(t, tam));
+//
+		
+		boolean qualify = hasAmbiguousSimpleNamesForReferenceKeys(t, tam);
+
+//		{
+//			String code = contentAccessors(cat, t, tam, tym, true);
+//			src = replaceAll(src, Tag.ACCESSOR_LIST, code);
+//		}
+
+//		{
+//			String code = referenceKeyClassList(t, tam, qualify);
+//			logger().debug(
+//					"generateImplementation: referenceKeyClassList=" + code);
+//			src = replaceAll(src, Tag.REFERENCE_KEY_CLASS_LIST, code);
+//		}
+
+//		{
+//			String code = attributeKeyMapList(cat, t, tam, tym);
+//			logger().debug("generateImplementation: code=" + code);
+//			src = replaceAll(src, Tag.ATTRIBUTE_KEY_MAP_LIST, code);
+//		}
+		
+		{
+			String code = entityConstructorBody(cat, t, tam, tym, false);
+			src = replaceAllWithComment(src, Tag.IMMUTABLE_ENTITY_IMPL_NO_ARG_CONSTRUCTOR_BODY, code);
+		}								
+		
+		{
+			String code = entityConstructorBody(cat, t, tam, tym, true);
+			src = replaceAllWithComment(src, Tag.IMMUTABLE_ENTITY_IMPL_COPY_CONSTRUCTOR_BODY, code);
+		}						
+		{
+			String code = referenceAssignmentList(cat, t, tam, tym, qualify);
+			src = replaceAllWithComment(src, Tag.REFERENCE_ASSIGNMENT_LIST, code);
+		}						
+
+		
+		{
+			String code = entityAttributeAccessorList(cat, t, tam, tym, true, false);
+			src = replaceAllWithComment(src, Tag.ENTITY_ATTRIBUTE_READ_ACCESSOR_LIST, code);
+		}
+		
+		{
+			String code = entityAttributeAccessorList(cat, t, tam, tym, true, true);
+			src = replaceAllWithComment(src, Tag.ENTITY_ATTRIBUTE_READ_WRITE_ACCESSOR_LIST, code);
+		}						
+
+		{
+			String code = referenceKeyMapList(t, tam, qualify);
+			logger().debug("generateImplementation: code=" + code);
+			src = replaceAll(src, Tag.REFERENCE_KEY_MAP_LIST, code);
+		}
+
+		{
+			String code = builderLinkerInit(t, tam, qualify);
+			logger().debug("builderLinkerInit: code=" + code);
+			src = replaceAllWithComment(src, Tag.BUILDER_LINKER_INIT, code);
+		}
+
+		{
+			String code = generateCreateIdentityMapMethod(t, tam, tym);
+			logger().debug("generateCreateIdentityMapMethod: code=" + code);
+			src = replaceAll(src, Tag.CREATE_IDENTITY_MAP_METHOD, code);
+		}
+
+		{
+			String code = referenceMapList(t, tam, qualify, false);
+			logger().debug("generateImplementation: code=" + code);
+			src = replaceAll(src, Tag.REFERENCE_MAP_LIST_READ, code);
+		}
+		
+		{
+			String code = referenceMapList(t, tam, qualify, true);
+			logger().debug("generateImplementation: code=" + code);
+			src = replaceAll(src, Tag.REFERENCE_MAP_LIST_READ_WRITE, code);
+		}		
+
+		{
+			String code = metaDataInitialization(cat, t, tam, tym, qualify);
+			src = replaceAll(src, Tag.META_DATA_INITIALIZATION, code);
+		}
+
+		{
+			String code = attributeContainerImplementation(cat, t, tam, tym, false);
+			src = replaceAll(src, Tag.ATTRIBUTE_CONTAINER_IMPLEMENTATION_READ, code);
+		}
+		
+		{
+			String code = attributeContainerImplementation(cat, t, tam, tym, true);
+			src = replaceAll(src, Tag.ATTRIBUTE_CONTAINER_IMPLEMENTATION_READ_WRITE, code);
+		}
+
+		{
+			String code = attributeKeyContainerImplementation(cat, t, tam, tym);
+			src = replaceAll(src, Tag.ATTRIBUTE_KEY_CONTAINER_IMPLEMENTATION,
+					code);
+		}
+
+		{
+			String code = attributesMethodStatementList(cat, t, tam, tym);
+			src = replaceAll(src, Tag.ATTRIBUTES_METHOD_STATEMENT_LIST, code);
+		}
+
+		{
+			String code = valueVariableList(cat, t, tam, tym);
+			src = replaceAll(src, Tag.VALUE_VARIABLE_LIST, code);
+		}
+
+		{
+			String code = valueAccessorList(cat, t, tam, tym, true);
+			logger().debug("generateImplementation: code=" + code);
+			src = replaceAll(src, Tag.VALUE_ACCESSOR_LIST, code);
+		}
+
+		src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
+		src = replaceAll(src, Tag.TABLE_IMPL_CLASS, impl.getUnqualifiedName());		
+		src = replaceAll(src, Tag.IMMUTABLE_ENTITY_IMPL_CLASS, impl.getUnqualifiedName());
+		src = replaceAll(src, Tag.MUTABLE_ENTITY_IMPL_CLASS, mutableImplementationSimpleName(intf));
+		
+
+		src = replaceAll(src, Tag.LITERAL_CATALOG_NAME, tam
+				.literalContextType().getQualifiedName());
+
+		Environment te = getTargetEnvironment(cat.getEnvironment());
+		src = replaceAll(src, Tag.ENVIRONMENT_EXPRESSION,
+				generateEnvironmentExpression(te));
+
+		src = replaceAll(src, Tag.LITERAL_TABLE_ENUM, lt);
+
+		return src;
+	}	
+
+	private String referenceAssignmentList(Catalog cat, BaseTable t, TableMapper tam, AttributeTypeMap tym, boolean qualify) {
+
+		StringBuilder buf = new StringBuilder();		
+		
+		for (ForeignKey fk : t.foreignKeys().values()) {
+			String c = formatReferenceAssignment(fk, tam, qualify);
+			buf.append(c);			
+		}
+		
+		return buf.toString();
+	}
+
+	private String entityConstructorBody(Catalog cat, BaseTable t, TableMapper tam, AttributeTypeMap tym, boolean copyConstructor) {
+
+		StringBuilder buf = new StringBuilder();
+		
+		List<Column> cols = getAttributeColumnList(cat, t, tym);
+
+		for (Column c : cols) {
+			AttributeDescriptor a = tym.getAttributeDescriptor(c.getDataType());
+
+			if (a == null) {
+				continue;
+			}
+
+			Class<?> vt = a.getValueType();
+			Class<?> ht = a.getHolderType();
+
+			if (vt != null && ht != null) {				
+				final String n = variableName(c.getColumnName().getContent());
+								
+				if (copyConstructor) {					
+					line(buf, "this.", n, " = src.", n, ";");
+				}
+				else {
+					line(buf, "this.", n, " = null;");										
+				}
+			}
+		}
+		
+		return buf.toString();		
+	}
+
+	private CharSequence generateMetaDataImplementation(Catalog cat, BaseTable t,
+			JavaType impl, TableMapper tam, AttributeTypeMap tym) throws IOException {
+
+		String src = getTemplateFor(Part.METADATA_IMPLEMENTATION);
+
+		JavaType intf = tam.entityType(t, Part.INTERFACE);
+		JavaType eimp = tam.entityType(t, Part.IMPLEMENTATION);
+		
+		List<String> il = new ArrayList<String>();
+		addImport(impl, intf, il);
 
 		Tag tag = null;
 
@@ -2137,11 +2425,6 @@ public class SourceGenerator {
 
 		boolean qualify = hasAmbiguousSimpleNamesForReferenceKeys(t, tam);
 
-//		{
-//			String code = contentAccessors(cat, t, tam, tym, true);
-//			src = replaceAll(src, Tag.ACCESSOR_LIST, code);
-//		}
-
 		{
 			String code = referenceKeyClassList(t, tam, qualify);
 			logger().debug(
@@ -2155,11 +2438,6 @@ public class SourceGenerator {
 			src = replaceAll(src, Tag.ATTRIBUTE_KEY_MAP_LIST, code);
 		}
 		
-		{
-			String code = entityAttributeAccessorList(cat, t, tam, tym, true);
-			src = replaceAllWithComment(src, Tag.ENTITY_ATTRIBUTE_ACCESSOR_LIST, code);
-		}				
-
 		{
 			String code = referenceKeyMapList(t, tam, qualify);
 			logger().debug("generateImplementation: code=" + code);
@@ -2178,20 +2456,15 @@ public class SourceGenerator {
 			src = replaceAll(src, Tag.CREATE_IDENTITY_MAP_METHOD, code);
 		}
 
-		{
-			String code = referenceMapList(t, tam, qualify);
-			logger().debug("generateImplementation: code=" + code);
-			src = replaceAll(src, Tag.REFERENCE_MAP_LIST, code);
-		}
+//		{
+//			String code = referenceMapList(t, tam, qualify);
+//			logger().debug("generateImplementation: code=" + code);
+//			src = replaceAll(src, Tag.REFERENCE_MAP_LIST, code);
+//		}
 
 		{
 			String code = metaDataInitialization(cat, t, tam, tym, qualify);
 			src = replaceAll(src, Tag.META_DATA_INITIALIZATION, code);
-		}
-
-		{
-			String code = attributeContainerImplementation(cat, t, tam, tym);
-			src = replaceAll(src, Tag.ATTRIBUTE_CONTAINER_IMPLEMENTATION, code);
 		}
 
 		{
@@ -2205,32 +2478,21 @@ public class SourceGenerator {
 			src = replaceAll(src, Tag.ATTRIBUTES_METHOD_STATEMENT_LIST, code);
 		}
 
-		{
-			String code = valueVariableList(cat, t, tam, tym);
-			src = replaceAll(src, Tag.VALUE_VARIABLE_LIST, code);
-		}
-
-		{
-			String code = valueAccessorList(cat, t, tam, tym, true);
-			logger().debug("generateImplementation: code=" + code);
-			src = replaceAll(src, Tag.VALUE_ACCESSOR_LIST, code);
-		}
-
 		src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
-		src = replaceAll(src, Tag.TABLE_IMPL_CLASS, impl.getUnqualifiedName());
-		src = replaceAll(src, Tag.TABLE_IMPL_BASE, base.getUnqualifiedName());
-
-		src = replaceAll(src, Tag.LITERAL_CATALOG_NAME, tam
-				.literalContextType().getQualifiedName());
+		src = replaceAll(src, Tag.TABLE_IMPL_CLASS, eimp.getUnqualifiedName());		
+		src = replaceAll(src, Tag.IMMUTABLE_ENTITY_IMPL_CLASS, eimp.getUnqualifiedName());
+		src = replaceAll(src, Tag.MUTABLE_ENTITY_IMPL_CLASS, mutableImplementationSimpleName(intf));
 
 		Environment te = getTargetEnvironment(cat.getEnvironment());
 		src = replaceAll(src, Tag.ENVIRONMENT_EXPRESSION,
 				generateEnvironmentExpression(te));
-
-		src = replaceAll(src, Tag.LITERAL_TABLE_ENUM, lt);
-
+		
 		return src;
 	}
+
+	private String mutableImplementationSimpleName(JavaType intf) {				
+		return "Mutable" + intf.getUnqualifiedName() + "Impl";
+	}	
 
 	private String generateGetEnvironmentBody(BaseTable t, TableMapper tam) {
 
@@ -2710,12 +2972,14 @@ public class SourceGenerator {
 		StringBuilder buf = new StringBuilder();
 
 		Collection<ForeignKey> fks = table.foreignKeys().values();
+		
+		JavaType intf = tm.entityType(table, Part.INTERFACE);
+		
 
 		if (!fks.isEmpty()) {
-			line(buf, "MetaData m = getMetaData();");
-			line(buf,
-					"java.util.List<Linker> ll = new java.util.ArrayList<Linker>();",
-					2);
+			qualified(buf, intf.getQualifiedName(), "MetaData").append(" m = getMetaData();");			
+			
+			line(buf, "java.util.List<Linker> ll = new java.util.ArrayList<Linker>();", 2);
 
 			for (ForeignKey fk : fks) {
 				String c = formatBuilderLinkerInit(fk, tm);
@@ -2757,39 +3021,32 @@ public class SourceGenerator {
 
 				if (aim != null) {
 					JavaType intf = tam.entityType(t, Part.INTERFACE);
-
+					
+					String q = intf.getQualifiedName();
+					
+					
 					String kv = keyConstantVariable(t, col, tam);
 
 					buf.append("@Override\n");
 					buf.append("public ");
 					buf.append(EntityIdentityMap.class.getCanonicalName());
 					buf.append("<");
-					buf.append(getAttributeType());
+					qualified(buf, q, getAttributeType());
 					buf.append(", ");
-					buf.append(getReferenceType());
-					buf.append(", Type, ");
-					buf.append(intf.getUnqualifiedName());
+					qualified(buf, q, getReferenceType());
 					buf.append(", ");
-					buf.append(intf.getUnqualifiedName());
-					buf.append(".Holder");
+					qualified(buf, q, "Type");
 					buf.append(", ");
-					buf.append(intf.getUnqualifiedName());
-					buf.append(".MetaData");
+					buf.append(q);
+					buf.append(", ");
+					qualified(buf, q, "Holder");
+					buf.append(", ");
+					qualified(buf, q, "MetaData");										
 					buf.append("> createIdentityMap() {\n");
 					buf.append("return new ");
 					buf.append(aim.getCanonicalName());
 					buf.append("<");
-					buf.append(getAttributeType());
-					buf.append(", ");
-					buf.append(getReferenceType());
-					buf.append(", Type, ");
-					buf.append(intf.getUnqualifiedName());
-					buf.append(", ");
-					buf.append(intf.getUnqualifiedName());
-					buf.append(".Holder");
-					buf.append(", ");
-					buf.append(intf.getUnqualifiedName());
-					buf.append(".MetaData");
+					entityTypeArgs(buf, q, true, false);
 					buf.append(">(");
 					buf.append(intf.getUnqualifiedName());
 					buf.append(".");
@@ -2803,14 +3060,13 @@ public class SourceGenerator {
 		return buf.toString();
 	}
 
-	private String referenceMapList(BaseTable t, TableMapper tm, boolean qualify) {
+	private String referenceMapList(BaseTable t, TableMapper tm, boolean qualify, boolean rw) {
 		StringBuilder buf = new StringBuilder();
 
 		Map<BaseTable, JavaType> map = referenced(t, tm);
 
 		for (Entry<BaseTable, JavaType> e : map.entrySet()) {
-			String c = formatReferenceValueMap(t, e.getKey(), e.getValue(), tm,
-					qualify);
+			String c = formatReferenceValueMap(t, e.getKey(), e.getValue(), tm, qualify, rw);
 			buf.append(c);
 		}
 
@@ -2818,7 +3074,7 @@ public class SourceGenerator {
 	}
 
 	private String formatReferenceValueMap(BaseTable t, BaseTable referenced,
-			JavaType target, TableMapper tm, boolean qualify) {
+			JavaType target, TableMapper tm, boolean qualify, boolean rw) {
 
 		// private Map<Reference, Organization.Holder> om = new
 		// HashMap<Reference, Organization.Holder>();
@@ -2871,19 +3127,22 @@ public class SourceGenerator {
 		buf.append(vm);
 		buf.append(".get(key);\n");
 		buf.append("}\n\n");
-
-		buf.append("@Override\npublic void ");
-		buf.append("set");
-		buf.append(target.getUnqualifiedName());
-		buf.append("(");
-		buf.append(kt);
-		buf.append(" key, ");
-		buf.append(target.getQualifiedName());
-		buf.append(".Holder newValue) {\n");
-		buf.append("\tthis.");
-		buf.append(vm);
-		buf.append(".put(key, newValue);\n");
-		buf.append("}\n\n");
+		
+		
+		if (rw) {
+			buf.append("@Override\npublic void ");
+			buf.append("set");
+			buf.append(target.getUnqualifiedName());
+			buf.append("(");
+			buf.append(kt);
+			buf.append(" key, ");
+			buf.append(target.getQualifiedName());
+			buf.append(".Holder newValue) {\n");
+			buf.append("\tthis.");
+			buf.append(vm);
+			buf.append(".put(key, newValue);\n");
+			buf.append("}\n\n");
+		}
 
 		return buf.toString();
 	}
@@ -3030,11 +3289,13 @@ public class SourceGenerator {
 		buf.append("private ");
 		buf.append(n);
 		buf.append("(");
-		buf.append(getReferenceType());
+				
+		qualified(buf, src.getQualifiedName(), getReferenceType());
+				
 		buf.append(" name) {\n");
-		buf.append("super(");
-		buf.append(src.getUnqualifiedName());
-		buf.append(".Type.TYPE, ");
+		buf.append("super(");		
+		qualified(buf, src.getQualifiedName(), "Type.TYPE");		
+		buf.append(", ");
 		buf.append("name);");
 		buf.append("}\n\n");
 
@@ -3042,7 +3303,7 @@ public class SourceGenerator {
 		buf.append("public ");
 		buf.append(target.getQualifiedName());
 		buf.append(".Holder get(");
-		buf.append(src.getUnqualifiedName());
+		buf.append(src.getQualifiedName());
 		buf.append(" e) {\n");
 		buf.append("return e.get");
 		buf.append(target.getUnqualifiedName());
@@ -3058,8 +3319,8 @@ public class SourceGenerator {
 
 		buf.append("@Override\n");
 		buf.append("public void ");
-		buf.append("set(");
-		buf.append(src.getUnqualifiedName());
+		buf.append("set(");		
+		qualified(buf, src.getQualifiedName(), "Mutable");		
 		buf.append(" e, ");
 		buf.append(target.getQualifiedName());
 		buf.append(".Holder newValue");
@@ -3087,42 +3348,50 @@ public class SourceGenerator {
 
 		JavaType source = tm.entityType(referencing, Part.INTERFACE);
 		JavaType target = tm.entityType(referenced, Part.INTERFACE);
+		
+		final String q = source.getUnqualifiedName();
 
 		nb.append(target.getQualifiedName());
 		nb.append(".");
 		nb.append("Key<");
-		nb.append(source.getUnqualifiedName());
-		nb.append(".");
-		nb.append(getAttributeType());
-		nb.append(", ");
-
-		nb.append(source.getUnqualifiedName());
-		nb.append(".");
-		nb.append(getReferenceType());
-		nb.append(", ");
-
-		nb.append(source.getUnqualifiedName());
-		nb.append(".Type, ");
-
-		nb.append(source.getUnqualifiedName());
-		nb.append(", ");
-
-		nb.append(source.getUnqualifiedName());
-		nb.append(".");
-		nb.append("Holder");
-		nb.append(", ");
-
-		nb.append(source.getUnqualifiedName());
-		nb.append(".");
-		nb.append("Factory");
-		nb.append(", ");
-
-		nb.append(source.getUnqualifiedName());
-		nb.append(".MetaData");
-
+		entityTypeArgs(nb, q);
 		nb.append(">");
 
 		return nb.toString();
+	}
+
+	private void entityTypeArgs(StringBuilder nb, String q, boolean mutable, boolean factory) {		
+		qualified(nb, q, getAttributeType());
+		nb.append(", ");
+		qualified(nb, q, getReferenceType());
+		nb.append(", ");
+		qualified(nb, q, "Type");
+		nb.append(", ");
+		nb.append(q);
+		
+		if (mutable) {
+			nb.append(", ");		
+			qualified(nb, q, "Mutable");
+		}
+		
+		nb.append(", ");
+		qualified(nb, q, "Holder");		
+		
+		if (factory) {
+			nb.append(", ");
+			qualified(nb, q, "Factory");
+		}
+		
+		nb.append(", ");
+		qualified(nb, q, "MetaData");
+	}
+	
+	private void entityTypeArgs(StringBuilder nb, String q) {		
+		entityTypeArgs(nb, q, true, true);
+	}	
+
+	private StringBuilder qualified(StringBuilder nb, String qualifier, String unqualified) {
+		return nb.append(qualifier).append(".").append(unqualified);
 	}
 
 	private void appendSchemaPrefix(SchemaElement element, StringBuilder nb) {
@@ -3234,47 +3503,24 @@ public class SourceGenerator {
 
 	private String keyTypeArgs(TableMapper tm, BaseTable t, boolean reference) {
 		JavaType intf = tm.entityType(t, Part.INTERFACE);
+				
+		String q = intf.getUnqualifiedName();
+		
 		StringBuilder buf = new StringBuilder();
-		buf.append(reference ? getReferenceType() : getAttributeType());
+		buf.append(q).append(".").append(reference ? getReferenceType() : getAttributeType());
 		buf.append(", ");
-		buf.append(intf.getUnqualifiedName());
+		buf.append(q);
+		buf.append(", ");
+		buf.append(q).append(".Mutable");
+		
 		return buf.toString();
 	}
 
 	private String referenceKeyTypeArgs(TableMapper tm, BaseTable t) {
 		JavaType intf = tm.entityType(t, Part.INTERFACE);
 		StringBuilder buf = new StringBuilder();
-
-		String q = intf.getUnqualifiedName();
-
-		buf.append(q);
-		buf.append(".");
-		buf.append(getAttributeType());
-		buf.append(", ");
-
-		buf.append(q);
-		buf.append(".");
-		buf.append(getReferenceType());
-		buf.append(", ");
-
-		buf.append(q);
-		buf.append(".");
-		buf.append("Type");
-		buf.append(", ");
-
-		buf.append(q);
-		buf.append(", ");
-
-		buf.append(q);
-		buf.append(".Holder");
-		buf.append(", ");
-
-		buf.append(q);
-		buf.append(".Factory");
-		buf.append(", ");
-
-		buf.append(q);
-		buf.append(".MetaData");
+		String q = intf.getQualifiedName();		
+		entityTypeArgs(buf, q);		
 
 		return buf.toString();
 	}
@@ -3372,6 +3618,9 @@ public class SourceGenerator {
 			TableMapper tm, AttributeTypeMap tym) {
 		List<Column> acl = getAttributeColumnList(cat, t, tym);
 		StringBuilder content = new StringBuilder();
+		
+		JavaType intf = tm.entityType(t, Part.INTERFACE);
+		String q = intf.getQualifiedName();
 
 		for (Column c : acl) {
 			AttributeDescriptor a = tym.getAttributeDescriptor(c.getDataType());
@@ -3387,7 +3636,9 @@ public class SourceGenerator {
 						"no key type for column " + c.getUnqualifiedName());
 			} else {
 				content.append(kt.getCanonicalName());
-				content.append(".get(this, Attribute.");
+				content.append(".get(this, ");
+				content.append(q);
+				content.append(".Attribute.");
 				content.append(attr(c));
 				content.append(");\n");
 			}
@@ -3569,8 +3820,10 @@ public class SourceGenerator {
 		String referenceName = referenceName(fk);
 
 		JavaType tt = tm.entityType(fk.getReferenced(), Part.INTERFACE);
-		JavaType rt = tm.entityType(fk.getReferencing(), Part.INTERFACE);
-		JavaType it = tm.entityType(fk.getReferencing(), Part.IMPLEMENTATION);
+		
+		JavaType src = tm.entityType(fk.getReferencing(), Part.INTERFACE);
+		
+		JavaType mdi = tm.entityType(fk.getReferencing(), Part.METADATA_IMPLEMENTATION);
 
 		StringBuilder buf = new StringBuilder();
 
@@ -3579,46 +3832,15 @@ public class SourceGenerator {
 		buf.append(tt.getQualifiedName());
 		buf.append(".Key");
 		buf.append("<");
-		buf.append(rt.getUnqualifiedName());
-		buf.append(".");
-		buf.append(getAttributeType());
-		buf.append(",");
-
-		buf.append(rt.getUnqualifiedName());
-		buf.append(".");
-		buf.append(getReferenceType());
-		buf.append(", ");
-
-		buf.append(it.getUnqualifiedName());
-		buf.append(".");
-		buf.append("Type, ");
-
-		buf.append(rt.getUnqualifiedName());
-		buf.append(", ");
-
-		buf.append(rt.getUnqualifiedName());
-		buf.append(".");
-		buf.append("Holder");
-		buf.append(", ");
-
-		buf.append(rt.getUnqualifiedName());
-		buf.append(".");
-		buf.append("Factory");
-		buf.append(", ");
-
-		buf.append(rt.getUnqualifiedName());
-		buf.append(".MetaData");
-
+		buf.append(referenceKeyTypeArgs(tm, fk.getReferencing()));
 		buf.append("> ");
 		buf.append(referenceName);
 		buf.append(" = ");
-		buf.append(it.getQualifiedName());
-		buf.append(".");
-		buf.append(rt.getUnqualifiedName());
-		buf.append("MetaData.getInstance().get");
+		buf.append(mdi.getQualifiedName());		
+		buf.append(".getInstance().get");
 		buf.append(tt.getUnqualifiedName());
 		buf.append("Key(");
-		buf.append(getReferenceType());
+		qualified(buf, src.getQualifiedName(), getReferenceType());		
 		buf.append(".");
 		buf.append(referenceName);
 		buf.append(");\n");
@@ -3630,7 +3852,7 @@ public class SourceGenerator {
 			int occurences, TableMapper tm) {
 		StringBuilder buf = new StringBuilder();
 
-		// JavaType intf = tm.entityType(t, Part.INTERFACE);
+		JavaType intf = tm.entityType(t, Part.INTERFACE);
 
 		// goal:
 		// private Map<Attribute, IntegerKey<Attribute, Person>> integerKeyMap =
@@ -3638,8 +3860,9 @@ public class SourceGenerator {
 
 		String ktargs = keyTypeArgs(tm, t, false);
 
-		buf.append("private java.util.Map<");
-		buf.append("Attribute");
+		buf.append("private java.util.Map<");		
+		buf.append(intf.getQualifiedName());
+		buf.append(".Attribute");
 		buf.append(", ");
 		buf.append(keyType.getCanonicalName());
 		buf.append("<");
@@ -3647,7 +3870,8 @@ public class SourceGenerator {
 		buf.append(">> ");
 		buf.append(getKeyMapVariable(keyType));
 		buf.append(" = new java.util.HashMap<");
-		buf.append("Attribute");
+		buf.append(intf.getQualifiedName());
+		buf.append(".Attribute");
 		buf.append(", ");
 		buf.append(keyType.getCanonicalName());
 		buf.append("<");
@@ -3658,7 +3882,8 @@ public class SourceGenerator {
 
 		// buf.append("@Override\n");
 		buf.append("protected java.util.Map<");
-		buf.append("Attribute");
+		buf.append(intf.getQualifiedName());
+		buf.append(".Attribute");
 		buf.append(", ");
 		buf.append(keyType.getCanonicalName());
 		buf.append("<");
@@ -3730,7 +3955,7 @@ public class SourceGenerator {
 		String ta = referenceKeyTypeArgs(tm, t);
 
 		buf.append("private java.util.Map<");
-		buf.append(intf.getUnqualifiedName());
+		buf.append(intf.getQualifiedName());
 		buf.append(".");
 		buf.append(getReferenceType());
 		buf.append(", ");
@@ -3738,7 +3963,7 @@ public class SourceGenerator {
 		buf.append("> ");
 		buf.append(rkv);
 		buf.append(" = new java.util.HashMap<");
-		buf.append(intf.getUnqualifiedName());
+		buf.append(intf.getQualifiedName());
 		buf.append(".");
 		buf.append(getReferenceType());
 		buf.append(", ");
@@ -3753,6 +3978,8 @@ public class SourceGenerator {
 		buf.append(" get");
 		buf.append(rkimp);
 		buf.append("( ");
+		buf.append(intf.getQualifiedName());
+		buf.append(".");
 		buf.append(getReferenceType());
 		buf.append(" ref) {\n");
 		buf.append("if (ref == null) {\n");
@@ -3765,6 +3992,62 @@ public class SourceGenerator {
 
 		return buf.toString();
 	}
+	
+	private String formatReferenceAssignment(ForeignKey key, TableMapper tm, boolean qualify) {
+		StringBuilder buf = new StringBuilder();
+		
+		BaseTable t = key.getReferencing();
+		BaseTable r = key.getReferenced();
+		
+		JavaType intf = tm.entityType(t, Part.INTERFACE);		
+		JavaType target = tm.entityType(key.getReferenced(), Part.INTERFACE);		
+		String ktn = referenceKeyReferenceTypeName(t, r, tm, qualify);
+		
+		
+//		SAMPLE OUTPUT
+//		{
+//    	Language.Holder lh = me.getLanguage(Film.LANGUAGE);
+//    	
+//    	if (lh != null) {
+//    		 if (lh.isNull()) {
+//    			 ne.languageMap.put(Film.LANGUAGE, lh);	 
+//    		 }
+//    		 else {
+//    			 Language value = lh.value();    			 
+//    			 ne.languageMap.put(Film.LANGUAGE, value.toImmutable(ctx));
+//    		 }    		 
+//    	}
+//		}
+		
+		final String tqn = target.getQualifiedName();
+		
+		String mvar = referenceValueMapVariable(r, target, qualify);		
+		
+		line(buf, "{");
+		line(buf, ktn, " key = ");
+		line(buf, intf.getQualifiedName(), ".", referenceName(key), ";");
+		
+		line(buf, tqn, ".Holder holder = me.get", target.getUnqualifiedName(), "(key);");
+		
+		line(buf, "if (holder != null) {");
+		line(buf, "if (holder.isNull()) {");		
+		line(buf, "ne.", mvar, ".put(key, holder);");
+		line(buf, "} else {");
+		line(buf, tqn, " se = holder.value();");
+		line(buf, tqn, " result = se.toImmutable(ctx);");
+		line(buf, tqn, ".Holder nref = result.ref();");
+		line(buf, "ne.", mvar, ".put(key, nref);");
+		
+		// ne.languageMap.put(key, ref);
+		
+		line(buf, "}");
+		line(buf, "}");
+		line(buf, "}");
+		
+		return buf.toString();
+
+	}
+		
 
 	private String formatBuilderLinkerInit(ForeignKey fk, TableMapper tm)
 			throws IOException {
@@ -3823,9 +4106,7 @@ public class SourceGenerator {
 			return "";
 		}
 
-		JavaType intf = tm.entityType(t, Part.INTERFACE);
-
-		JavaType impl = tm.entityType(t, Part.IMPLEMENTATION);
+		JavaType mdi = tm.entityType(t, Part.METADATA_IMPLEMENTATION);
 
 		String keyTypeName = null;
 
@@ -3846,10 +4127,8 @@ public class SourceGenerator {
 		buf.append("> ");
 		buf.append(keyConstantVariable(t, c, tm));
 		buf.append(" = ");
-		buf.append(impl.getQualifiedName());
-		buf.append(".");
-		buf.append(intf.getUnqualifiedName());
-		buf.append("MetaData.getInstance().get");
+		buf.append(mdi.getQualifiedName());
+		buf.append(".getInstance().get");
 		buf.append(keyTypeName);
 		buf.append("(");
 		buf.append("Attribute");
@@ -3891,7 +4170,7 @@ public class SourceGenerator {
 		return columnEnumeratedName(t, c, EnumSet.of(nq), tm);
 	}
 	
-	private String entityAttributeAccessorList(Catalog cat, BaseTable t, TableMapper tam, AttributeTypeMap tym, boolean impl) {
+	private String entityAttributeAccessorList(Catalog cat, BaseTable t, TableMapper tam, AttributeTypeMap tym, boolean impl, boolean rw) {
 		
 		StringBuilder buf = new StringBuilder();
 		
@@ -3908,7 +4187,7 @@ public class SourceGenerator {
 			Class<?> ht = a.getHolderType();
 
 			if (vt != null && ht != null) {
-				String code = formatEntityAttributeAccessor(t, c, a, tam, tym, impl);
+				String code = formatEntityAttributeAccessor(t, c, a, tam, tym, impl, rw);
 				buf.append(code);
 			}
 		}
@@ -3916,7 +4195,7 @@ public class SourceGenerator {
 		return buf.toString();
 	}
 
-	private String formatEntityAttributeAccessor(Table table, Column c, AttributeDescriptor info, TableMapper tam, AttributeTypeMap tym, boolean impl) {
+	private String formatEntityAttributeAccessor(Table table, Column c, AttributeDescriptor info, TableMapper tam, AttributeTypeMap tym, boolean impl, boolean rw) {
 		// final String attributeName = attr(c);
 		Class<?> valueType = info.getValueType();
 		Class<?> holderType = info.getHolderType();
@@ -3989,43 +4268,47 @@ public class SourceGenerator {
 //			@Override
 //		    public void setFilmId(java.lang.Integer newValue) {
 //		    	setInteger(FILM_ID, IntegerHolder.valueOf(newValue));    	
-//		    }					
+//		    }
 			
-			if (vom != null) {
+			
+			
+			if (rw) {			
+				if (vom != null) {
+					if (impl) {
+						line(nb, "@Override");
+					}			
+					
+					line(nb, "public void set", n, "(", type, " newValue)");
+					
+					if (!impl) {
+						line(nb, ";", 1);
+					} else {
+						line(nb, " {", 1);
+						line(nb, "set", typeName, "(", intf.getQualifiedName(), ".", attr(c), ", ", htname, ".valueOf(newValue));");				
+						line(nb, "}", 2);
+					}
+				}
+	
+	//			sample:
+	//		    @Override
+	//		    public void setFilmId(IntegerHolder newValue) {
+	//		    	setInteger(FILM_ID, newValue);    	
+	//		    }    		
+				
 				if (impl) {
 					line(nb, "@Override");
 				}			
 				
-				line(nb, "public void set", n, "(", type, " newValue)");
+				line(nb, "public void set", n, "(", htname, " newValue)");
 				
 				if (!impl) {
 					line(nb, ";", 1);
 				} else {
 					line(nb, " {", 1);
-					line(nb, "set", typeName, "(", intf.getQualifiedName(), ".", attr(c), ", ", htname, ".valueOf(newValue));");				
+					line(nb, "set", typeName, "(", intf.getQualifiedName(), ".", attr(c), ", newValue);");				
 					line(nb, "}", 2);
 				}
 			}
-
-//			sample:
-//		    @Override
-//		    public void setFilmId(IntegerHolder newValue) {
-//		    	setInteger(FILM_ID, newValue);    	
-//		    }    		
-			
-			if (impl) {
-				line(nb, "@Override");
-			}			
-			
-			line(nb, "public void set", n, "(", htname, " newValue)");
-			
-			if (!impl) {
-				line(nb, ";", 1);
-			} else {
-				line(nb, " {", 1);
-				line(nb, "set", typeName, "(", intf.getQualifiedName(), ".", attr(c), ", newValue);");				
-				line(nb, "}", 2);
-			}			
 		}
 
 		return nb.toString();

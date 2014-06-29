@@ -31,7 +31,8 @@ public interface AttributeDescriptor {
 	Class<?> getAccessorType();
 	Class<?> getValueType();
 	Class<?> getIdentityMapType();	
-	Class<?> getContainerType();
+	Class<?> getReadableContainerType();
+	Class<?> getWritableContainerType();
 	Class<?> getContainerMetaType();
 	
 	ValueType<?> getPrimitiveType();	

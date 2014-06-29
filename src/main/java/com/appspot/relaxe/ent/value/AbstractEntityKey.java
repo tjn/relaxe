@@ -26,6 +26,7 @@ import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.types.ReferenceType;
 import com.appspot.relaxe.value.ReferenceHolder;
@@ -33,21 +34,23 @@ import com.appspot.relaxe.value.ReferenceHolder;
 public abstract class AbstractEntityKey<	
 	A extends AttributeName,
 	R extends Reference,	
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>,
 	RA extends AttributeName,
 	RR extends Reference,	
-	RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
-	RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+	RT extends ReferenceType<RA, RR, RT, RE, RB, RH, RF, RM>,
+	RE extends Entity<RA, RR, RT, RE, RB, RH, RF, RM>,
+	RB extends MutableEntity<RA, RR, RT, RE, RB, RH, RF, RM>,
 	RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
-	RF extends EntityFactory<RE, RH, RM, RF>,
-	RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,
-	K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>
+	RF extends EntityFactory<RE, RB, RH, RM, RF>,
+	RM extends EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>,
+	K extends EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, K>
 >
-	implements EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K> {
+	implements EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, K> {
 	
 	/**
 	 * 
@@ -66,7 +69,7 @@ public abstract class AbstractEntityKey<
 	public abstract RH get(E e);
 	
 	@Override
-	public abstract void set(E e, RH newValue);
+	public abstract void set(B e, RH newValue);
 	
 //	@Override
 //	public void set(E e, H newValue) {		
@@ -74,7 +77,7 @@ public abstract class AbstractEntityKey<
 //	}
 		
 	@Override
-	public void set(E e, RE newValue) {
+	public void set(B e, RE newValue) {
 		e.setRef(self(), newHolder(newValue));
 	}
 
@@ -128,11 +131,12 @@ public abstract class AbstractEntityKey<
 		
 		// Since getClass().equals(o.getClass()) implies t.type().getSqlType() == type().getSqlType()
 		// we only need to check the name:		
-		AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> t = (AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?>) o;								
+		AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> t = 
+				(AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?>) o;								
 		return nameEquals(t);
 	}
 	
-	private boolean nameEquals(AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> pk) {		
+	private boolean nameEquals(AbstractEntityKey<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?> pk) {		
 		return name().equals(pk.name());
 	}
 //	
@@ -156,13 +160,13 @@ public abstract class AbstractEntityKey<
 	public abstract RT type();
 	
 	@Override
-	public void copy(E src, E dest) {
+	public void copy(E src, B dest) {
 		K k = self();
 		dest.setRef(k, src.getRef(k));
 	};
 	
 	@Override
-	public void reset(E dest) {
+	public void reset(B dest) {
 		dest.setRef(self(), newHolder(null));
 	}
 

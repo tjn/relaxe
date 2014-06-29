@@ -26,13 +26,31 @@ import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.value.HasString;
 
 public interface HasPGText<
-	A extends AttributeName, 
-	E extends HasPGText<A, E> & HasString<A, E>
-> {
-
-	void setPGText(PGTextAttribute<A, E> k, PGTextHolder newValue);
+	A extends AttributeName,
+	R extends HasPGText.Read<A, R, W> & HasString.Read<A, R, W>,
+	W extends HasPGText.Write<A, R, W> & HasString.Write<A, R, W>
+>
+{	
+	R asRead();	
+	W asWrite();
 	
-	PGTextHolder getPGText(PGTextAttribute<A, E> k);
+	interface Read<
+		A extends AttributeName,
+		R extends HasPGText.Read<A, R, W> & HasString.Read<A, R, W>,
+		W extends HasPGText.Write<A, R, W> & HasString.Write<A, R, W>
+	> extends HasPGText<A, R, W> {
 	
-
+		PGTextHolder getPGText(PGTextAttribute<A, R, W> key);
+		
+	}
+	
+	interface Write<
+		A extends AttributeName,
+		R extends HasPGText.Read<A, R, W> & HasString.Read<A, R, W>,
+		W extends HasPGText.Write<A, R, W> & HasString.Write<A, R, W>
+	> 
+		extends HasPGText<A, R, W> {
+		
+		void setPGText(PGTextAttribute<A, R, W> key, PGTextHolder newValue);		
+	}
 }

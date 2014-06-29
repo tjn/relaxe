@@ -25,6 +25,7 @@ package com.appspot.relaxe.ent.im;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.HasLong;
 import com.appspot.relaxe.ent.value.LongAttribute;
@@ -36,14 +37,15 @@ import com.appspot.relaxe.value.ReferenceHolder;
 public class LongIdentityMap<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, ?, M>,
-	E extends Entity<A, R, T, E, H, ?, M> & HasLong<A, E>,
+	T extends ReferenceType<A, R, T, E, B, H, ?, M>,
+	E extends Entity<A, R, T, E, B, H, ?, M> & HasLong.Read<A, E, B>,
+	B extends MutableEntity<A, R, T, E, B, H, ?, M> & HasLong.Write<A, E, B>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	M extends EntityMetaData<A, R, T, E, H, ?, M>
+	M extends EntityMetaData<A, R, T, E, B, H, ?, M>
 	>
-	extends AbstractKeyIdentityMap<A, R, T, E, H, M, Long, LongType, LongHolder, LongAttribute<A, E>>
+	extends AbstractKeyIdentityMap<A, R, T, E, B, H, M, Long, LongType, LongHolder, LongAttribute<A, E, B>>
 {		
-	public LongIdentityMap(LongAttribute<A, E> key) {
+	public LongIdentityMap(LongAttribute<A, E, B> key) {
 		super(key);
 	}
 }

@@ -41,10 +41,10 @@ import com.appspot.relaxe.types.ReferenceType;
 public abstract class ReferenceHolder<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, V, H, ?, M>,
-	V extends Entity<A, R, T, V, H, ?, M>,
+	T extends ReferenceType<A, R, T, V, ?, H, ?, M>,
+	V extends Entity<A, R, T, V, ?, H, ?, M>,
 	H extends ReferenceHolder<A, R, T, V, H, M>,
-	M extends EntityMetaData<A, R, T, V, H, ?, M>
+	M extends EntityMetaData<A, R, T, V, ?, H, ?, M>
 >
 	extends AbstractHolder<V, T, H> {
 
@@ -66,16 +66,5 @@ public abstract class ReferenceHolder<
 	@Override
 	public V value() {
 		return this.value;
-	}
-	
-		
-//	public boolean identityEquals(H h) {
-//		if (h == null) {
-//			throw new NullPointerException("h");
-//		}
-//		
-//		if (this.isNull()) {
-//			return h.isNull();
-//		}
-//	}
+	}	
 }

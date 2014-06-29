@@ -27,6 +27,7 @@ import java.io.Serializable;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityRuntimeException;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.model.ValueModel;
 import com.appspot.relaxe.types.ReferenceType;
@@ -39,15 +40,16 @@ public interface AttributeModelMap<
 	V extends Serializable,
 	P extends ValueType<P>,
 	H extends ValueHolder<V, P, H>,
-	T extends ReferenceType<A, ?, T, E, ?, ?, ?>,
-	E extends Entity<A, ?, T, E, ?, ?, ?>,
-	D extends AttributeModelMap<A, V, P, H, T, E, D>
+	T extends ReferenceType<A, ?, T, E, B, ?, ?, ?>,
+	E extends Entity<A, ?, T, E, B, ?, ?, ?>,
+	B extends MutableEntity<A, ?, T, E, B, ?, ?, ?>,
+	D extends AttributeModelMap<A, V, P, H, T, E, B, D>
 >	
 {	
 	D self();
 	
 	<			
-		K extends Attribute<A, E, V, P, H, K>
+		K extends Attribute<A, E, B, V, P, H, K>
 	>	
 	ValueModel<H> attr(K k) throws EntityRuntimeException;		
 }

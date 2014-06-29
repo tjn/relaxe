@@ -22,8 +22,7 @@
  */
 package com.appspot.relaxe.ent;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.Serializable;
 import java.util.Set;
 
 import com.appspot.relaxe.ent.value.EntityKey;
@@ -43,13 +42,14 @@ import com.appspot.relaxe.value.ValueHolder;
 public abstract class AbstractEntity<
 	A extends AttributeName,
 	R extends Reference, 
-	T extends ReferenceType<A, R, T, E, H, F, M>,	
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,	
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>, 
-	M extends EntityMetaData<A, R, T, E, H, F, M>
+	F extends EntityFactory<E, B, H, M, F>, 
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>
 > 
-	implements Entity<A, R, T, E, H, F, M>
+	implements Entity<A, R, T, E, B, H, F, M>
 {
 	/**
 	 * 
@@ -68,7 +68,7 @@ public abstract class AbstractEntity<
 		A a = m.getAttribute(column);
 		
 		if (a != null) {				
-			Attribute<A, E, ?, ?, ?, ?> k = m.getKey(a);
+			Attribute<A, E, ?, ?, ?, ?, ?> k = m.getKey(a);
 					
 			if (k != null) {
 				return k.get(self());			
@@ -83,7 +83,7 @@ public abstract class AbstractEntity<
 			return null;
 		}
 	
-		Entity<?, ?, ?, ?, ?, ?, ?> ref = null;
+		Entity<?, ?, ?, ?, ?, ?, ?, ?> ref = null;
 		R r = null;
 		
 		for (R ri : rs) {						
@@ -185,7 +185,7 @@ public abstract class AbstractEntity<
 		}
 				
 		for (A a : as) {
-			Attribute<A, E, ?, ?, ?, ?> key = meta.getKey(a);
+			Attribute<A, E, ?, ?, ?, ?, ?> key = meta.getKey(a);
 			
 			if (key == null) {
 				buf.append("<no key for attribute: ");
@@ -217,7 +217,7 @@ public abstract class AbstractEntity<
 		
 		for (R r : rs) {
 			try {
-				EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);
+				EntityKey<A, R, T, E, B, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);
 				ReferenceHolder<?, ?, ?, ?, ?, ?> rh = k.get(self());
 				
 				if (rh != null) {
@@ -259,21 +259,23 @@ public abstract class AbstractEntity<
 	}
 	
 	@Override
-	public void reset(Iterable<A> as) {		
-		M meta = getMetaData();
-		
-		for (A a : as) {
-			Attribute<A, E, ?, ?, ?, ?> pk = meta.getKey(a);
-			pk.reset(self());
-		}		
-	}
-
+	public <
+		VV extends Serializable, 
+		VT extends com.appspot.relaxe.types.ValueType<VT>, 
+		VH extends com.appspot.relaxe.value.ValueHolder<VV, VT, VH>, 
+		K extends Attribute<A, E, B, VV, VT, VH, K>
+	> 
+	boolean has(K key) {
+		VH vh = key.get(self());		
+		return (vh != null);
+	}	
+	
 	@Override
 	public <
 		VV extends java.io.Serializable, 
 		VT extends com.appspot.relaxe.types.ValueType<VT>, 
 		VH extends com.appspot.relaxe.value.ValueHolder<VV, VT, VH>, 
-		K extends com.appspot.relaxe.ent.value.Attribute<A, E, VV, VT, VH, K>
+		K extends com.appspot.relaxe.ent.value.Attribute<A, E, B, VV, VT, VH, K>
 	> 
 	boolean match(K key, E another) {
 		VH a = get(key);
@@ -295,31 +297,40 @@ public abstract class AbstractEntity<
 	public <
 		P extends ValueType<P>,
 		SH extends StringHolder<P, SH>,
-		K extends StringAttribute<A, E, P, SH, K>
+		K extends StringAttribute<A, E, B, P, SH, K>
 	>
 	SH getString(K k) {
 		SH sh = get(k.self());
 		return sh;
 	}
+		
 	
 	@Override
-	public <
-		P extends ValueType<P>,
-		SH extends StringHolder<P, SH>,
-		K extends StringAttribute<A, E, P, SH, K>
-	>
-	void setString(K k, SH s) {		
-		set(k.self(), s);
+	public E copy() {
+		M meta = getMetaData();
+		F ef = meta.getFactory();				
+		E src = self(); 
+		B dest = ef.newEntity();
+		
+		for (A a : meta.attributes()) {
+			Attribute<A, E, B, ?, ?, ?, ?> pk = meta.getKey(a);
+			pk.copy(src, dest);
+		}
+		
+		for (R r : meta.relationships()) {
+			EntityKey<A, R, T, E, B, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
+			ek.copy(src, dest);			
+		}
+		
+		return dest.asImmutable();				
 	}
 	
+
 	@Override
-	public <
-		P extends ValueType<P>,
-		SH extends StringHolder<P, SH>,
-		K extends StringAttribute<A, E, P, SH, K>
-	>
-	void setString(K k, String s) {		
-		set(k.self(), k.newHolder(s));
+	public com.appspot.relaxe.value.ValueHolder<?,?,?> value(A attribute) {
+		Attribute<A, E, ?, ?, ?, ?, ?> key = getMetaData().getKey(attribute);
+		return key.get(self());
 	}	
+		
 }
  

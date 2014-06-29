@@ -27,24 +27,42 @@ import com.appspot.relaxe.value.LongVarBinaryHolder;
 
 public interface HasLongVarBinary<
 	A extends AttributeName,
-	E extends HasLongVarBinary<A, E>
->	
-{
-	/**
-	 * Returns the value by the key or <code>null</code> if the value is not currently present.
-	 * 
-	 * @param key
-	 * @return The value corresponding the key.
-	 * @throws NullPointerException If <code>key</code> is <code>null</code>.
-	 */
-	LongVarBinaryHolder getLongVarBinary(LongVarBinaryAttribute<A, E> key);
+	R extends HasLongVarBinary.Read<A, R, W>,
+	W extends HasLongVarBinary.Write<A, R, W>
+>
+{	
+	R asRead();	
+	W asWrite();	
 	
-	/**
-	 * Sets the value by the key.
-	 * 
-	 * @param key
-	 * @param newValue May be null.
-	 * @throws NullPointerException If <code>key</code> is <code>null</code>.
-	 */
-	void setLongVarBinary(LongVarBinaryAttribute<A, E> key, LongVarBinaryHolder newValue);	
+	public interface Read<
+		A extends AttributeName,
+		R extends HasLongVarBinary.Read<A, R, W>,
+		W extends HasLongVarBinary.Write<A, R, W>
+	>
+		extends HasLongVarBinary<A, R, W> {
+		/**
+		 * Returns the value by the key or <code>null</code> if the value is not currently present.
+		 * 
+		 * @param key
+		 * @return The value corresponding the key.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		LongVarBinaryHolder getLongVarBinary(LongVarBinaryAttribute<A, R, W> key);		
+	}
+	
+	public interface Write<
+		A extends AttributeName,
+		R extends HasLongVarBinary.Read<A, R, W>,
+		W extends HasLongVarBinary.Write<A, R, W>
+	> extends HasLongVarBinary<A, R, W> {
+	
+		/**
+		 * Sets the value by the key.
+		 * 
+		 * @param key
+		 * @param newValue May be null.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		void setLongVarBinary(LongVarBinaryAttribute<A, R, W> key, LongVarBinaryHolder newValue);
+	}
 }

@@ -28,16 +28,12 @@ package com.appspot.relaxe.rdbms.mariadb;
 import java.sql.ResultSetMetaData;
 
 import com.appspot.relaxe.ValueExtractorFactory;
-import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.ColumnResolver;
 import com.appspot.relaxe.ent.ConstantColumnResolver;
-import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
-import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.rdbms.DefaultGeneratedKeyHandler;
-import com.appspot.relaxe.types.ReferenceType;
 
 
 public final class MariaDBGeneratedKeyHandler 
@@ -49,12 +45,8 @@ public final class MariaDBGeneratedKeyHandler
 
 	@Override
 	protected 
-	<
-		A extends AttributeName,
-		R extends Reference,
-		T extends ReferenceType<A, R, T, E, ?, ?, M>,
-		E extends Entity<A, R, T, E, ?, ?, M>,
-		M extends EntityMetaData<A, R, T, E, ?, ?, M>
+	<		
+		M extends EntityMetaData<?, ?, ?, ?, ?, ?, ?, M>
 	>
 	ColumnResolver createColumnResolver(ResultSetMetaData meta, M em)
 		throws RuntimeException {

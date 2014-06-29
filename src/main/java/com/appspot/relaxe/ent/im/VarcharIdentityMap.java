@@ -25,6 +25,7 @@ package com.appspot.relaxe.ent.im;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.HasVarchar;
 import com.appspot.relaxe.ent.value.VarcharAttribute;
@@ -36,14 +37,15 @@ import com.appspot.relaxe.value.VarcharHolder;
 public class VarcharIdentityMap<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, ?, M>,
-	E extends Entity<A, R, T, E, H, ?, M> & HasVarchar<A, E>,
+	T extends ReferenceType<A, R, T, E, B, H, ?, M>,
+	E extends Entity<A, R, T, E, B, H, ?, M> & HasVarchar.Read<A, E, B>,
+	B extends MutableEntity<A, R, T, E, B, H, ?, M> & HasVarchar.Write<A, E, B>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	M extends EntityMetaData<A, R, T, E, H, ?, M>
+	M extends EntityMetaData<A, R, T, E, B, H, ?, M>
 >
-	extends AbstractKeyIdentityMap<A, R, T, E, H, M, String, VarcharType, VarcharHolder, VarcharAttribute<A, E>>
+	extends AbstractKeyIdentityMap<A, R, T, E, B, H, M, String, VarcharType, VarcharHolder, VarcharAttribute<A, E, B>>
 {		
-	public VarcharIdentityMap(VarcharAttribute<A, E> key) {
+	public VarcharIdentityMap(VarcharAttribute<A, E, B> key) {
 		super(key);
 	}
 }

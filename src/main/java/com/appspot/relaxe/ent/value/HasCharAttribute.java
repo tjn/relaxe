@@ -26,9 +26,10 @@ import com.appspot.relaxe.ent.AttributeName;
 
 public interface HasCharAttribute<
 	A extends AttributeName,
-	E extends HasChar<A, E> & HasString<A, E>	
+	E extends HasChar.Read<A, E, W> & HasString.Read<A, E, W>,
+	W extends HasChar.Write<A, E, W> & HasString.Write<A, E, W>
 >	{
 
-	CharAttribute<A, E> getCharAttribute(A a);	
-	void register(CharAttribute<A, E> key);
+	CharAttribute<A, E, W> getCharAttribute(A a);	
+	void register(CharAttribute<A, E, W> key);
 }

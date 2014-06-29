@@ -52,6 +52,7 @@ import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQuery;
 import com.appspot.relaxe.ent.EntityQueryElement;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.HasInteger;
 import com.appspot.relaxe.ent.value.IntegerAttribute;
@@ -352,22 +353,23 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	protected <
 		A extends AttributeName, 
 		R extends com.appspot.relaxe.ent.Reference, 
-		T extends ReferenceType<A, R, T, E, H, F, M>, 
-		E extends Entity<A, R, T, E, H, F, M>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M>
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	>
-	PersistenceManager<A, R, T, E, H, F, M> create(E e) {
-		PersistenceManager<A, R, T, E, H, F, M> pm = new PersistenceManager<A, R, T, E, H, F, M>(e, getPersistenceContext(), null);
+	PersistenceManager<A, R, T, E, B, H, F, M> create(E e) {
+		PersistenceManager<A, R, T, E, B, H, F, M> pm = new PersistenceManager<A, R, T, E, B, H, F, M>(e, getPersistenceContext(), null);
 		return pm;
 	}
 	
 	public <
-		T extends ReferenceType<?, ?, T, E, ?, ?, ?>,
-		E extends Entity<?, ?, T, E, ?, ?, ?>
+		T extends ReferenceType<?, ?, T, ?, B, ?, ?, ?>,
+		B extends MutableEntity<?, ?, T, ?, B, ?, ?, ?>
 	> 
-	E newEntity(T type) {
+	B newEntity(T type) {
 		return type.getMetaData().getFactory().newEntity();
 	}
 	
@@ -402,15 +404,16 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	protected <
 		A extends AttributeName, 
 		R extends com.appspot.relaxe.ent.Reference, 
-		T extends ReferenceType<A, R, T, E, H, F, M>, 
-		E extends Entity<A, R, T, E, H, F, M>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M>,
-	    RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+	    RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
 	>
-	QueryExpression toQueryExpression(EntityQuery<A, R, T, E, H, F, M, RE> qo) {
-		EntityQueryExpressionBuilder<A, R, T, E, H, F, M, RE> eqb = new EntityQueryExpressionBuilder<A, R, T, E, H, F, M, RE>(qo);
+	QueryExpression toQueryExpression(EntityQuery<A, R, T, E, B, H, F, M, RE> qo) {
+		EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, RE> eqb = new EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, RE>(qo);
 		return eqb.getQueryExpression();
 	}
 	
@@ -445,14 +448,15 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	protected <
 		A extends AttributeName,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M> & HasInteger.Read<A, E, B>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M> & HasInteger.Write<A, E, B>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
 		C extends Collection<Integer>
 	>
-	C ints(List<E> src, C dest, IntegerAttribute<A, E> key) throws Exception {
+	C ints(List<E> src, C dest, IntegerAttribute<A, E, B> key) throws Exception {
 		for (E e : src) {						
 			IntegerHolder h = e.getInteger(key);
 			dest.add(h.value());
@@ -464,87 +468,92 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	 public <
 		A extends AttributeName,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M> & HasInteger.Read<A, E, B>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M> & HasInteger.Write<A, E, B>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	>
-	List<E> range(T type, IntegerAttribute<A, E> key, int count) throws Exception {
+	List<E> range(T type, IntegerAttribute<A, E, B> key, int count) throws Exception {
 		 return range(type, new ArrayList<E>(), key, count);		
 	}
 	
 	public <
 		A extends AttributeName,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M> & HasInteger.Read<A, E, B>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M> & HasInteger.Write<A, E, B>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
 		C extends Collection<E>
 	>
-	C range(T type, C dest, IntegerAttribute<A, E> key, int count) throws Exception {
+	C range(T type, C dest, IntegerAttribute<A, E, B> key, int count) throws Exception {
 		return range(type, dest, key, 1, count + 1);		
 	}
 	
 	protected <
 		A extends AttributeName,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M> & HasInteger.Read<A, E, B>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M> & HasInteger.Write<A, E, B>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>,
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
 		C extends Collection<E>
 	>
-	C range(T type, C dest, IntegerAttribute<A, E> key, int from, int to) throws Exception {
+	C range(T type, C dest, IntegerAttribute<A, E, B> key, int from, int to) throws Exception {
 		F ef = type.getMetaData().getFactory();
 		
 		for (int i = from; i < to; i++) {
-			E e = ef.newEntity();
+			B e = ef.newEntity();
 			e.set(key, IntegerHolder.valueOf(i));
-			dest.add(e);
+			dest.add(e.as());
 		}
 		
 		return dest;
 	}
 	
 	protected <
-	A extends AttributeName,
-	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
-	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>
->
-void range(T type, Collection<E> dest, IntegerAttribute<A, E> key1, int count1, IntegerAttribute<A, E> key2, int count2) throws Exception {
-	F ef = type.getMetaData().getFactory();
-	
-	for (int i = 0; i < count1; i++) {
-		for (int j = 0; i < count2; j++) {
-			E e = ef.newEntity();
-			e.set(key1, IntegerHolder.valueOf(i));
-			e.set(key2, IntegerHolder.valueOf(j));
-			dest.add(e);
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M> & HasInteger.Read<A, E, B>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M> & HasInteger.Write<A, E, B>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>
+	>
+	void range(T type, Collection<E> dest, IntegerAttribute<A, E, B> key1, int count1, IntegerAttribute<A, E, B> key2, int count2) throws Exception {
+		F ef = type.getMetaData().getFactory();
+		
+		for (int i = 0; i < count1; i++) {
+			for (int j = 0; i < count2; j++) {
+				B e = ef.newEntity();
+				e.set(key1, IntegerHolder.valueOf(i));
+				e.set(key2, IntegerHolder.valueOf(j));
+				dest.add(e.toImmutable());
+			}
 		}
+		
 	}
-	
-}
-	
+		
 	
 	protected <
 		A extends AttributeName,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M> & HasInteger.Read<A, E, B>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M> & HasInteger.Write<A, E, B>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>,
-		QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+		QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
 	>	
-	void assertResultEquals(EntityQuery<A, R, T, E, H, F, M, QE> q, IntegerAttribute<A, E> key, String query, boolean ordered) throws Exception {
+	void assertResultEquals(EntityQuery<A, R, T, E, B, H, F, M, QE> q, IntegerAttribute<A, E, B> key, String query, boolean ordered) throws Exception {
 		DataAccessSession das = newSession();
 		EntitySession es = das.asEntitySession();
 		
@@ -561,27 +570,29 @@ void range(T type, Collection<E> dest, IntegerAttribute<A, E> key1, int count1, 
 	protected <
 		A extends AttributeName,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M> & HasInteger.Read<A, E, B>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M> & HasInteger.Write<A, E, B>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>,
-		QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+		QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
 	>	
-	void assertSetEquals(EntityQuery<A, R, T, E, H, F, M, QE> q, IntegerAttribute<A, E> key, String query) throws Exception {
+	void assertSetEquals(EntityQuery<A, R, T, E, B, H, F, M, QE> q, IntegerAttribute<A, E, B> key, String query) throws Exception {
 		assertResultEquals(q, key, query, false);
 	}			
 	
 	protected <
 		A extends AttributeName,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M> & HasInteger.Read<A, E, B>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M> & HasInteger.Write<A, E, B>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	>	
-	void assertListEquals(List<E> src, IntegerAttribute<A, E> key, String query) throws Exception {
+	void assertListEquals(List<E> src, IntegerAttribute<A, E, B> key, String query) throws Exception {
 		
 		List<Integer> expected = new ArrayList<Integer>();		
 		ints(query, expected, 1);
@@ -596,13 +607,14 @@ void range(T type, Collection<E> dest, IntegerAttribute<A, E> key1, int count1, 
 	protected <
 		A extends AttributeName,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M> & HasInteger<A, E>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M> & HasInteger.Read<A, E, B>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M> & HasInteger.Write<A, E, B>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	>	
-	void assertSetEquals(List<E> src, IntegerAttribute<A, E> key, String query) throws Exception {
+	void assertSetEquals(List<E> src, IntegerAttribute<A, E, B> key, String query) throws Exception {
 		
 		Set<Integer> expected = new TreeSet<Integer>();		
 		ints(query, expected, 1);

@@ -47,7 +47,7 @@ import com.appspot.relaxe.HasTestContext;
 import com.appspot.relaxe.QueryHelper;
 import com.appspot.relaxe.SimpleTestContext;
 import com.appspot.relaxe.TestContext;
-import com.appspot.relaxe.ent.Entity;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Catalog;
 import com.appspot.relaxe.meta.Column;
@@ -441,10 +441,10 @@ public abstract class DBMetaTestCase<I extends Implementation<I>>
 	}
 
 	public <
-		T extends ReferenceType<?, ?, T, E, ?, ?, ?>,
-		E extends Entity<?, ?, T, E, ?, ?, ?>
+		T extends ReferenceType<?, ?, T, ?, B, ?, ?, ?>,
+		B extends MutableEntity<?, ?, T, ?, B, ?, ?, ?>
 	> 
-	E newEntity(T type) {
+	B newEntity(T type) {
 		return type.getMetaData().getFactory().newEntity();
 	}			
 }

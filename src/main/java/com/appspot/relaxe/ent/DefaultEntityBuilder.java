@@ -45,20 +45,21 @@ import com.appspot.relaxe.value.ValueHolder;
 public abstract class DefaultEntityBuilder<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>
 >
-	implements EntityBuilder<E, H> {
+	implements EntityBuilder<E, B, H> {
 	
 //	private static Logger logger = LoggerFactory.getLogger(DefaultEntityBuilder.class);
 
 	private TableReference tableRef = null;
 	
-	private List<AttributeWriter<A, E>> primaryKeyWriterList = new ArrayList<AttributeWriter<A, E>>();
-	private List<AttributeWriter<A, E>> attributeWriterList = new ArrayList<AttributeWriter<A, E>>();
+	private List<AttributeWriter<A, B>> primaryKeyWriterList = new ArrayList<AttributeWriter<A, B>>();
+	private List<AttributeWriter<A, B>> attributeWriterList = new ArrayList<AttributeWriter<A, B>>();
 			
 	private EntityIdentityMap<A, R, T, E, H, M> identityMap;
 
@@ -104,7 +105,7 @@ public abstract class DefaultEntityBuilder<
 		int pkws = this.primaryKeyWriterList.size();
 		
 		if (pkws > 0) {		
-			for (AttributeWriter<A, E> w : this.primaryKeyWriterList) {					
+			for (AttributeWriter<A, B> w : this.primaryKeyWriterList) {					
 				ValueHolder<?, ?, ?> h = src.get(w.getIndex());
 				
 				if (h == null || h.isNull()) {
@@ -114,7 +115,7 @@ public abstract class DefaultEntityBuilder<
 			}
 		}
 		
-		E ne = getMetaData().getFactory().newEntity();
+		B ne = getMetaData().getFactory().newEntity();
 		
 //		logger().debug("read: " + ne);
 		
@@ -123,7 +124,7 @@ public abstract class DefaultEntityBuilder<
 //		if (pkws > 0) 
 		{		
 			copy(src, ne, this.primaryKeyWriterList);		
-			eh = identityMap.get(ne);
+			eh = identityMap.get(ne.as());
 			
 			if (eh != null) {
 				if (eh.value() == ne) {
@@ -153,10 +154,10 @@ public abstract class DefaultEntityBuilder<
 	 * @return Number of values which were nulls according to copied {@link ValueHolder}
 	 * @see {@link AbstractValueHolder#isNull()} 
 	 */
-	private int copy(DataObject src, E dest, List<AttributeWriter<A, E>> wl) {
+	private int copy(DataObject src, B dest, List<AttributeWriter<A, B>> wl) {
 		int n = 0;
 		
-		for (AttributeWriter<A, E> w : wl) {
+		for (AttributeWriter<A, B> w : wl) {
 			if (w == null) {
 				throw new NullPointerException("attribute writer was null");
 			}
@@ -233,15 +234,15 @@ public abstract class DefaultEntityBuilder<
 			return;
 		}
 		
-		Attribute<A, E, ?, ?, ?, ?> pk = m.getKey(attribute);
+		Attribute<A, E, B, ?, ?, ?, ?> pk = m.getKey(attribute);
 		
 		if (pk == null) {
 			return;
 		}
 		
-		AttributeWriter<A, E> w = createWriter(pk.self(), index);
+		AttributeWriter<A, B> w = createWriter(pk.self(), index);
 		
-		List<AttributeWriter<A, E>> wl = 
+		List<AttributeWriter<A, B>> wl = 
 			pktbl.isPrimaryKeyColumn(resolved) ? this.primaryKeyWriterList : this.attributeWriterList;
 
 				
@@ -253,12 +254,12 @@ public abstract class DefaultEntityBuilder<
 		V extends Serializable,
 		P extends ValueType<P>,
 		VH extends ValueHolder<V, P, VH>,	
-		VK extends Attribute<A, E, V, P, VH, VK>
+		VK extends Attribute<A, E, B, V, P, VH, VK>
 	>
-	AttributeWriter<A, E> createWriter(final Attribute<A, E, V, P, VH, VK> key, final int index) {
-		return new AttributeWriter<A, E>() {
+	AttributeWriter<A, B> createWriter(final Attribute<A, E, B, V, P, VH, VK> key, final int index) {
+		return new AttributeWriter<A, B>() {
 			@Override
-			public ValueHolder<?, ?, ?> write(DataObject src, E dest)
+			public ValueHolder<?, ?, ?> write(DataObject src, B dest)
 					throws EntityRuntimeException {
 				
 				ValueHolder<?, ?, ?> h = src.get(index);

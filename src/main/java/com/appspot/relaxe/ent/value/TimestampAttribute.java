@@ -27,63 +27,66 @@ import java.util.Date;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.types.TimestampType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.TimestampHolder;
 import com.appspot.relaxe.value.ValueHolder;
 
 
-public final class TimestampAttribute<	
+public final class TimestampAttribute<
 	A extends AttributeName,
-	E extends HasTimestamp<A, E>
->
-	extends AbstractAttribute<A, E, Date, TimestampType, TimestampHolder, TimestampAttribute<A, E>>
-{
+	E extends HasTimestamp.Read<A, E, B>,
+	B extends HasTimestamp.Write<A, E, B>
+	>
+	extends AbstractAttribute<A, E, B, Date, TimestampType, TimestampHolder, TimestampAttribute<A, E, B>>	
+	{	
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 7215861304511882107L;
-
+	private static final long serialVersionUID = 3465654564903987460L;
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */	
 	private TimestampAttribute() {
 	}
-
-	private TimestampAttribute(HasTimestampAttribute<A, E> meta, A name) {
-		super(name);
-		meta.register(this);
+	
+	private TimestampAttribute(A name) {
+		super(name);		
 	}
 	
 	public static <
 		X extends AttributeName,
-		T extends HasTimestamp<X, T>
+		T extends HasTimestamp.Read<X, T, S>,
+		S extends HasTimestamp.Write<X, T, S>
 	>
-	TimestampAttribute<X, T> get(HasTimestampAttribute<X, T> meta, X a) {
-		TimestampAttribute<X, T> k = meta.getTimestampAttribute(a);
+	TimestampAttribute<X, T, S> get(HasTimestampAttribute<X, T, S> meta, X a) {
+		TimestampAttribute<X, T, S> k = meta.getTimestampAttribute(a);
 		
-		if (k == null) {						
-			if (TimestampType.TYPE.equals(a.type())) {
-				k = new TimestampAttribute<X, T>(meta, a);
-			}			
+		if (k == null) {
+			ValueType<?> t = a.type();
+			
+			if (t != null && TimestampType.TYPE.equals(t)) {
+				k = new TimestampAttribute<X, T, S>(a);
+				meta.register(k);
+			}
 		}
 				
 		return k;
 	}
-
+		
 	@Override
 	public TimestampType type() {
 		return TimestampType.TYPE;
 	}
-
+	
 	@Override
-	public void set(E e, TimestampHolder newValue) 
-		throws EntityRuntimeException {
+	public void set(B e, TimestampHolder newValue) {
 		e.setTimestamp(this, newValue);
 	}
 	
 	@Override
-	public TimestampHolder get(E e) 
-		throws EntityRuntimeException {
-		return e.getTimestamp(this);
+	public TimestampHolder get(E e) {
+		return e.getTimestamp(self());
 	}
 	
 	@Override
@@ -91,20 +94,23 @@ public final class TimestampAttribute<
 		return TimestampHolder.valueOf(newValue);
 	}
 	
+	@Override
+	public void copy(E src, B dest) {
+		dest.setTimestamp(this, src.getTimestamp(this));
+	}
 	
 	@Override
-	public void copy(E src, E dest) 
-		throws EntityRuntimeException {		
-		dest.setTimestamp(this, src.getTimestamp(this));		
-	}
-
-	@Override
-	public TimestampAttribute<A, E> self() {
+	public TimestampAttribute<A, E, B> self() {
 		return this;
 	}
-
+	
 	@Override
-	public TimestampHolder as(ValueHolder<?, ?, ?> holder) {
-		return TimestampHolder.of(holder);
+	public void reset(B dest) throws EntityRuntimeException {
+		dest.setTimestamp(this, TimestampHolder.NULL_HOLDER);
+	}
+		
+	@Override
+	public TimestampHolder as(ValueHolder<?, ?, ?> unknown) {
+		return unknown.asTimestampHolder();
 	}
 }

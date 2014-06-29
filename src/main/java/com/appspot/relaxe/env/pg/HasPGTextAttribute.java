@@ -27,9 +27,11 @@ import com.appspot.relaxe.ent.value.HasString;
 
 public interface HasPGTextAttribute<
 	A extends AttributeName,
-	E extends HasPGText<A, E> & HasString<A, E>
-> {
+	E extends HasPGText.Read<A, E, W> & HasString.Read<A, E, W>,
+	W extends HasPGText.Write<A, E, W> & HasString.Write<A, E, W>
+>	{
 
-	PGTextAttribute<A, E> getPGTextAttribute(A a);	
-	void register(PGTextAttribute<A, E> key);
+	PGTextAttribute<A, E, W> getPGTextAttribute(A a);	
+	void register(PGTextAttribute<A, E, W> key);
 }
+

@@ -31,38 +31,40 @@ import com.appspot.relaxe.value.ValueHolder;
 
 public final class LongVarBinaryAttribute<
 	A extends AttributeName,
-	E extends HasLongVarBinary<A, E>
+	E extends HasLongVarBinary.Read<A, E, B>,
+	B extends HasLongVarBinary.Write<A, E, B>
 >
-	extends AbstractAttribute<A, E, LongVarBinary, LongVarBinaryType, LongVarBinaryHolder, LongVarBinaryAttribute<A, E>>	
+	extends AbstractAttribute<A, E, B, LongVarBinary, LongVarBinaryType, LongVarBinaryHolder, LongVarBinaryAttribute<A, E, B>>	
 {	
 	/**
-	 * 
+	 *
 	 */
-	private static final long serialVersionUID = -9081341365015015217L;
-
+	private static final long serialVersionUID = 3465654564903987460L;
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */	
 	private LongVarBinaryAttribute() {
 	}
-
-	private LongVarBinaryAttribute(HasLongVarBinaryAttribute<A, E> meta, A name) {
-		super(name);
-		meta.register(this);
+	
+	private LongVarBinaryAttribute(A name) {
+		super(name);		
 	}
 	
 	public static <
 		X extends AttributeName,
-		T extends HasLongVarBinary<X, T>
+		T extends HasLongVarBinary.Read<X, T, S>,
+		S extends HasLongVarBinary.Write<X, T, S>
 	>
-	LongVarBinaryAttribute<X, T> get(HasLongVarBinaryAttribute<X, T> meta, X a) {
-		LongVarBinaryAttribute<X, T> k = meta.getLongVarBinaryAttribute(a);
+	LongVarBinaryAttribute<X, T, S> get(HasLongVarBinaryAttribute<X, T, S> meta, X a) {
+		LongVarBinaryAttribute<X, T, S> k = meta.getLongVarBinaryAttribute(a);
 		
 		if (k == null) {
 			ValueType<?> t = a.type();
 			
 			if (t != null && LongVarBinaryType.TYPE.equals(t)) {
-				k = new LongVarBinaryAttribute<X, T>(meta, a);
+				k = new LongVarBinaryAttribute<X, T, S>(a);
+				meta.register(k);
 			}
 		}
 				
@@ -75,7 +77,7 @@ public final class LongVarBinaryAttribute<
 	}
 	
 	@Override
-	public void set(E e, LongVarBinaryHolder newValue) {
+	public void set(B e, LongVarBinaryHolder newValue) {
 		e.setLongVarBinary(this, newValue);
 	}
 	
@@ -88,19 +90,19 @@ public final class LongVarBinaryAttribute<
 	public LongVarBinaryHolder newHolder(LongVarBinary newValue) {
 		return LongVarBinaryHolder.valueOf(newValue);
 	}
-
+	
 	@Override
-	public void copy(E src, E dest) {
+	public void copy(E src, B dest) {
 		dest.setLongVarBinary(this, src.getLongVarBinary(this));
 	}
-
+	
 	@Override
-	public LongVarBinaryAttribute<A, E> self() {
+	public LongVarBinaryAttribute<A, E, B> self() {
 		return this;
 	}
-
+	
 	@Override
-	public void reset(E dest) throws EntityRuntimeException {
+	public void reset(B dest) throws EntityRuntimeException {
 		dest.setLongVarBinary(this, LongVarBinaryHolder.NULL_HOLDER);
 	}
 		

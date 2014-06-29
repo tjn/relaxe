@@ -25,27 +25,27 @@ package com.appspot.relaxe.ent.value;
 import java.io.Serializable;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.ValueHolder;
 
 
 public abstract class AbstractAttributeAccessor<
 	A extends AttributeName,
-	E,
+	R,
+	W,
 	S extends Serializable,
 	P extends ValueType<P>,
 	H extends ValueHolder<S, P, H>,	
-	K extends Attribute<A, E, S, P, H, K>
+	K extends Attribute<A, R, W, S, P, H, K>
 	>
-	implements AttributeAccessor<A, E, S, P, H, K>
+	implements AttributeAccessor<A, R, W, S, P, H, K>
 {
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 7060596100410117898L;
 	
-	private E target;
+	private W target;
 	private K key;
 
 	/**
@@ -54,7 +54,7 @@ public abstract class AbstractAttributeAccessor<
 	protected AbstractAttributeAccessor() {
 	}
 
-	public AbstractAttributeAccessor(E target, K key) {
+	public AbstractAttributeAccessor(W target, K key) {
 		super();
 
 		if (target == null) {
@@ -78,35 +78,28 @@ public abstract class AbstractAttributeAccessor<
 		return this.key;
 	}
 
-//	public abstract void setHolder(H newHolder);
-	
-	public void setHolder(H newHolder) {
+	public void setHolder(H newHolder) {		
 		key().set(getTarget(), newHolder);
 	}
 
 	@Override
-	public H getHolder() 
-		throws EntityRuntimeException {		
-		return this.key().get(getTarget());				
-	}
+	public abstract H getHolder();
 
-	public void set(S newValue) 
-		throws EntityRuntimeException {
+	public void set(S newValue) {
 		setHolder(this.key.newHolder(newValue));
 	}
 		
 	@Override
-	public S get() 
-		throws EntityRuntimeException {
+	public S get() {
 		H h = getHolder();
 		return (h == null) ? null : h.value();
 	}
 
-	public E getTarget() {
+	public W getTarget() {
 		return target;
 	}
 
-	protected void setTarget(E target) {
+	protected void setTarget(W target) {
 		if (target == null) {
 			throw new NullPointerException("target");
 		}

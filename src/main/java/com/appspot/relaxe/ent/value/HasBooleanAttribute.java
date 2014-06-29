@@ -26,9 +26,10 @@ import com.appspot.relaxe.ent.AttributeName;
 
 public interface HasBooleanAttribute<
 	A extends AttributeName,
-	E extends HasBoolean<A, E>	
+	R extends HasBoolean.Read<A, R, W>,
+	W extends HasBoolean.Write<A, R, W>
 >	{
 
-	BooleanAttribute<A, E> getBooleanAttribute(A a);	
-	void register(BooleanAttribute<A, E> key);
+	BooleanAttribute<A, R, W> getBooleanAttribute(A a);	
+	void register(BooleanAttribute<A, R, W> key);
 }

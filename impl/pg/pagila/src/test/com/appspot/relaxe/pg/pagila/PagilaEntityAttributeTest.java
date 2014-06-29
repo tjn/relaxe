@@ -30,7 +30,7 @@ public class PagilaEntityAttributeTest
 	extends AbstractPagilaTestCase {
 		
 	public void testAttributes() {		
-		Film fo = Film.Type.TYPE.getMetaData().getFactory().newEntity();
+		Film.Mutable fo = Film.Type.TYPE.getMetaData().getFactory().newEntity();
 		
 		{
 			assertNull(fo.getFilmId());

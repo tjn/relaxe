@@ -23,30 +23,35 @@
 package com.appspot.relaxe.env.pg;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.value.AbstractAttributeAccessor;
 import com.appspot.relaxe.value.StringArray;
 
 
 public class PGTextArrayAccessor<
 	A extends AttributeName,
-	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasPGTextArray<A, E>
+	R extends HasPGTextArray.Read<A, R, RW>,
+	RW extends HasPGTextArray.Read<A, R, RW> & HasPGTextArray.Write<A, R, RW>
 >
-	extends AbstractAttributeAccessor<A, E, StringArray, PGTextArrayType, PGTextArrayHolder, PGTextArrayAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, R, RW, StringArray, PGTextArrayType, PGTextArrayHolder, PGTextArrayAttribute<A, R, RW>> {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = -2731889274638406123L;
-
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
 	private PGTextArrayAccessor() {
 	}
-
-	public PGTextArrayAccessor(E target, PGTextArrayAttribute<A, E> k) {
+	
+	public PGTextArrayAccessor(RW target, PGTextArrayAttribute<A, R, RW> k) {
 		super(target, k);
+	}
+	
+	@Override
+	public PGTextArrayHolder getHolder() {
+		return getTarget().getPGTextArray(key());
 	}
 }

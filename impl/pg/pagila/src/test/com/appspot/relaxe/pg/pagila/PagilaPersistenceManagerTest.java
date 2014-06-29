@@ -57,11 +57,11 @@ public class PagilaPersistenceManagerTest
 	    
 	    // PublicFactory pf = new PublicFactoryImpl(); 
 	    
-	    Actor a = newEntity(Actor.Type.TYPE);	            
+	    Actor.Mutable a = newEntity(Actor.Type.TYPE);	            
 	    a.setFirstName("Dana");
 	    a.setLastName("Brooks");
 	
-	    PersistenceManager<Actor.Attribute, Reference, Type, Actor, Holder, Factory, MetaData> pm = create(a);
+	    PersistenceManager<Actor.Attribute, Reference, Type, Actor, Actor.Mutable, Holder, Factory, MetaData> pm = create(a.as());
 	    
 	    pm.merge(c);
 	    c.commit();        
@@ -81,23 +81,23 @@ public class PagilaPersistenceManagerTest
 	    Connection c = getConnection();
 	    assertFalse(c.getAutoCommit());
 	    
-	    final Actor a = newEntity(Actor.Type.TYPE);	            
+	    final Actor.Mutable a = newEntity(Actor.Type.TYPE);	            
 	    a.setFirstName("Dana");
 	    a.setLastName("Brooks");
 	
-	    Film f = newEntity(Film.Type.TYPE);	    
+	    Film.Mutable f = newEntity(Film.Type.TYPE);	    
 	    f.setTitle("New Film");
 	    	    
-	    Language lang = newEntity(Language.Type.TYPE);
+	    Language.Mutable lang = newEntity(Language.Type.TYPE);
 	    lang.setName("English");	    	    
 	    f.setLanguage(Film.LANGUAGE, lang.ref());
 	    
-	    FilmActor filmActor = newEntity(FilmActor.Type.TYPE);
+	    FilmActor.Mutable filmActor = newEntity(FilmActor.Type.TYPE);
 	    
 	    filmActor.setActor(FilmActor.ACTOR, a.ref());
 	    filmActor.setFilm(FilmActor.FILM, f.ref());
 	    	    	    
-	    merge(filmActor, getPersistenceContext(), c);
+	    merge(filmActor.as(), getPersistenceContext(), c);
 	    c.commit();    
 	    
 	    assertTrue(filmActor.isIdentified());
@@ -106,16 +106,13 @@ public class PagilaPersistenceManagerTest
 	    
 	    assertTrue(a.isIdentified());
 	    
-	    Actor sa = sync(a, getPersistenceContext(), c);
+	    Actor sa = sync(a.as(), getPersistenceContext(), c);
 	    assertNotNull(sa);
 	    Set<Attribute> ma = sa.getMetaData().attributes();
 	    assertEquals(ma, sa.attributes());
-	    
-	    
+	    	    
 	    delete(a);
 	    c.commit();
-	    
-	    
 	    
 	    
 	    assertTrue(f.isIdentified());
@@ -170,12 +167,12 @@ public class PagilaPersistenceManagerTest
 	    
 	    assertFalse(c.getAutoCommit());
 	    
-	    final Actor a = newEntity(Actor.Type.TYPE);
+	    final Actor.Mutable a = newEntity(Actor.Type.TYPE);
 	    Integer id = Integer.valueOf(1);
 	    a.setActorId(id);	    
 	    assertEquals(a.attributes().size(), 1);
 	    
-	    Actor sr = sync(a, pc, c);
+	    Actor sr = sync(a.as(), pc, c);
 	    assertNotSame(a, sr);
 	    
 	    assertEquals(Actor.Attribute.values().length, sr.attributes().size());	    	    
@@ -189,11 +186,11 @@ public class PagilaPersistenceManagerTest
 	    PersistenceContext<PGImplementation> pc = getPersistenceContext();
 	    assertFalse(c.getAutoCommit());
 	    
-	    final Actor a = newEntity(Actor.Type.TYPE);	            
+	    final Actor.Mutable a = newEntity(Actor.Type.TYPE);	            
 	    a.setFirstName("Dana");
 	    a.setLastName("Brooks");
 	    
-	    final Actor ma = merge(a, pc, c);
+	    final Actor ma = merge(a.as(), pc, c);
 	    
 	    Integer aid = ma.getActorId().value();
 	    assertNotNull(aid);
@@ -207,11 +204,11 @@ public class PagilaPersistenceManagerTest
 		}
 	    
 	    	    
-	    Actor pa = newEntity(Actor.Type.TYPE);
+	    Actor.Mutable pa = newEntity(Actor.Type.TYPE);
 	    pa.setActorId(aid);	    
 	    assertEquals(pa.attributes().size(), 1);
 	    
-	    Actor sr = sync(pa, pc, c);	        	        	    
+	    Actor sr = sync(pa.as(), pc, c);	        	        	    
 	    assertEquals(sr.attributes(), expected);
 	    	    
 	}	

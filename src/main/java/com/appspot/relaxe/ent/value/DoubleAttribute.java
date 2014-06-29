@@ -29,81 +29,85 @@ import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.DoubleHolder;
 import com.appspot.relaxe.value.ValueHolder;
 
-public final class DoubleAttribute<	
-	A extends AttributeName,	
-	E extends HasDouble<A, E>
->
-	extends AbstractAttribute<A, E, Double, DoubleType, DoubleHolder, DoubleAttribute<A, E>>
-{
+public final class DoubleAttribute<
+	A extends AttributeName,
+	E extends HasDouble.Read<A, E, B>,
+	B extends HasDouble.Write<A, E, B>
+	>
+	extends AbstractAttribute<A, E, B, Double, DoubleType, DoubleHolder, DoubleAttribute<A, E, B>>	
+	{	
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 1065150474303051699L;
-
+	private static final long serialVersionUID = 3465654564903987460L;
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */	
 	private DoubleAttribute() {
 	}
-
-	private DoubleAttribute(HasDoubleAttribute<A, E> meta, A name) {
-		super(name);
-		meta.register(this);
+	
+	private DoubleAttribute(A name) {
+		super(name);		
 	}
 	
 	public static <
 		X extends AttributeName,
-		T extends HasDouble<X, T>
+		T extends HasDouble.Read<X, T, S>,
+		S extends HasDouble.Write<X, T, S>
 	>
-	DoubleAttribute<X, T> get(HasDoubleAttribute<X, T> meta, X a) {
-		DoubleAttribute<X, T> k = meta.getDoubleAttribute(a);
+	DoubleAttribute<X, T, S> get(HasDoubleAttribute<X, T, S> meta, X a) {
+		DoubleAttribute<X, T, S> k = meta.getDoubleAttribute(a);
 		
 		if (k == null) {
 			ValueType<?> t = a.type();
 			
-			if (DoubleType.TYPE.equals(t)) {
-				k = new DoubleAttribute<X, T>(meta, a);
-			}			
+			if (t != null && DoubleType.TYPE.equals(t)) {
+				k = new DoubleAttribute<X, T, S>(a);
+				meta.register(k);
+			}
 		}
 				
 		return k;
 	}
-
+		
 	@Override
 	public DoubleType type() {
 		return DoubleType.TYPE;
 	}
-
+	
 	@Override
-	public void set(E e, DoubleHolder newValue) 
-		throws EntityRuntimeException {
+	public void set(B e, DoubleHolder newValue) {
 		e.setDouble(this, newValue);
 	}
 	
 	@Override
-	public DoubleHolder get(E e) 
-		throws EntityRuntimeException {
-		return e.getDouble(this);
+	public DoubleHolder get(E e) {
+		return e.getDouble(self());
 	}
-
+	
 	@Override
 	public DoubleHolder newHolder(Double newValue) {
 		return DoubleHolder.valueOf(newValue);
 	}
 	
 	@Override
-	public void copy(E src, E dest) 
-		throws EntityRuntimeException {
+	public void copy(E src, B dest) {
 		dest.setDouble(this, src.getDouble(this));
 	}
 	
 	@Override
-	public DoubleAttribute<A, E> self() {
+	public DoubleAttribute<A, E, B> self() {
 		return this;
 	}
 	
 	@Override
-	public DoubleHolder as(ValueHolder<?, ?, ?> holder) {
-		return DoubleHolder.of(holder);
+	public void reset(B dest) throws EntityRuntimeException {
+		dest.setDouble(this, DoubleHolder.NULL_HOLDER);
+	}
+		
+	@Override
+	public DoubleHolder as(ValueHolder<?, ?, ?> unknown) {
+		return unknown.asDoubleHolder();
 	}
 }

@@ -9,6 +9,7 @@ public abstract class {{table-abstract-class}}
         {{table-interface}}.Reference,        
         {{table-interface}}.Type,
         {{table-interface}},		
+        {{table-interface}}.Mutable,
         {{table-interface}}.Holder,        
         {{table-interface}}.Factory,
         {{table-interface}}.MetaData

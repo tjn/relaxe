@@ -124,8 +124,8 @@ public class PagilaEntityQuerySample {
 
 	private static  <
 		A extends AttributeName,	
-		E extends Entity<A, ?, ?, E, ?, ?, M>,		
-		M extends EntityMetaData<A, ?, ?, E, ?, ?, M>
+		E extends Entity<A, ?, ?, E, ?, ?, ?, M>,		
+		M extends EntityMetaData<A, ?, ?, E, ?, ?, ?, M>
 	>
 	void dumpEntity(E e) {
 		M meta = e.getMetaData();
@@ -133,7 +133,7 @@ public class PagilaEntityQuerySample {
 		System.out.println(": {");
 		
 		for (A a : meta.attributes()) {
-			Attribute<A, E, ?, ?, ?, ?> key = meta.getKey(a);
+			Attribute<A, E, ?, ?, ?, ?, ?> key = meta.getKey(a);
 			dump(e, key.self());
 		}
 		
@@ -143,13 +143,13 @@ public class PagilaEntityQuerySample {
 	
 	private static <
 		A extends AttributeName,	
-		E extends Entity<A, ?, ?, E, ?, ?, ?>,
+		E extends Entity<A, ?, ?, E, ?, ?, ?, ?>,
 		V extends Serializable,
 		P extends ValueType<P>,
 		H extends ValueHolder<V, P, H>,	
-		K extends Attribute<A, E, V, P, H, K>
+		K extends Attribute<A, E, ?, V, P, H, K>
 	>
-	void dump(Entity<A, ?, ?, E, ?, ?, ?> entity, Attribute<A, E, V, P, H, K> key) {		
+	void dump(Entity<A, ?, ?, E, ?, ?, ?, ?> entity, Attribute<A, E, ?, V, P, H, K> key) {		
 		H holder = key.get(entity.self());
 				
 		if (holder == null) {

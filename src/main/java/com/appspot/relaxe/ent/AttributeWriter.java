@@ -25,10 +25,10 @@ package com.appspot.relaxe.ent;
 import com.appspot.relaxe.value.ValueHolder;
 
 public interface AttributeWriter<
-	A extends AttributeName, E 
+	A extends AttributeName, B 
 > {
 	
 	public int getIndex();
-	public ValueHolder<?, ?, ?> write(DataObject src, E dest) throws EntityRuntimeException;
+	public ValueHolder<?, ?, ?> write(DataObject src, B dest) throws EntityRuntimeException;
 
 }

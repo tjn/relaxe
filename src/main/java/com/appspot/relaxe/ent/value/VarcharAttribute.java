@@ -29,42 +29,47 @@ import com.appspot.relaxe.value.ValueHolder;
 import com.appspot.relaxe.value.VarcharHolder;
 
 public final class VarcharAttribute<
-	A extends AttributeName,
-	E extends HasVarchar<A, E> & HasString<A, E>
->
-	extends StringAttribute<A, E, VarcharType, VarcharHolder, VarcharAttribute<A, E>>
+	A extends AttributeName,	
+	E extends HasVarchar.Read<A, E, W> & HasString.Read<A, E, W>,
+	W extends HasVarchar.Write<A, E, W> & HasString.Write<A, E, W>
+	>
+	extends StringAttribute<A, E, W, VarcharType, VarcharHolder, VarcharAttribute<A, E, W>>
 {
+	
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = 128524051109455630L;
+	private static final long serialVersionUID = -8770210326767927586L;
 
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */	
 	private VarcharAttribute() {
 	}
-
-	private VarcharAttribute(HasVarcharAttribute<A, E> meta, A name) {
+	
+	private VarcharAttribute(A name) {
 		super(name);
-		meta.register(this);
-	}
+		
+	}	
 	
 	public static <
 		X extends AttributeName,
-		T extends HasVarchar<X, T> & HasString<X, T>
+		T extends HasVarchar.Read<X, T, S> & HasString.Read<X, T, S>,
+		S extends HasVarchar.Write<X, T, S> & HasString.Write<X, T, S>
 	>
-	VarcharAttribute<X, T> get(HasVarcharAttribute<X, T> meta, X a) {
-		VarcharAttribute<X, T> k = meta.getVarcharAttribute(a);
+	VarcharAttribute<X, T, S> get(HasVarcharAttribute<X, T, S> meta, X a) {
+		VarcharAttribute<X, T, S> k = meta.getVarcharAttribute(a);
 		
-		if (k == null) {						
+		if (k == null) {
 			if (VarcharType.TYPE.equals(a.type())) {
-				k = new VarcharAttribute<X, T>(meta, a);
-			}			
+				k = new VarcharAttribute<X, T, S>(a);
+				meta.register(k);
+			}
 		}
 				
 		return k;
 	}
+	
 	
 	@Override
 	public VarcharType type() {
@@ -72,13 +77,12 @@ public final class VarcharAttribute<
 	}
 	
 	@Override
-	public void set(E e, VarcharHolder newValue) 
-		throws EntityRuntimeException {
-		e.setVarchar(this, newValue);
+	public void set(W e, VarcharHolder newValue) {
+		 e.setVarchar(this, newValue);
 	}
 	
 	@Override
-	public VarcharHolder get(E e) 
+	public VarcharHolder get(E e)
 		throws EntityRuntimeException {
 		return e.getVarchar(this);
 	}
@@ -87,15 +91,14 @@ public final class VarcharAttribute<
 	public VarcharHolder newHolder(String newValue) {
 		return VarcharHolder.valueOf(newValue);
 	}
-
+	
 	@Override
-	public void copy(E src, E dest) 
-		throws EntityRuntimeException {
-		dest.setVarchar(this, src.getVarchar(this));		
+	public void copy(E src, W dest) {
+		dest.setVarchar(this, src.getVarchar(this));
 	}
 	
 	@Override
-	public VarcharAttribute<A, E> self() {
+	public VarcharAttribute<A, E, W> self() {	
 		return this;
 	}
 	

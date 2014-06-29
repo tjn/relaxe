@@ -29,16 +29,17 @@ import com.appspot.relaxe.ent.value.StringAttribute;
 import com.appspot.relaxe.value.ValueHolder;
 
 
-public class PGTextAttribute<
-	A extends AttributeName,
-	E extends HasPGText<A, E> & HasString<A, E>	
+public final class PGTextAttribute<
+	A extends AttributeName,	
+	E extends HasPGText.Read<A, E, W> & HasString.Read<A, E, W>,
+	W extends HasPGText.Write<A, E, W> & HasString.Write<A, E, W>
 >
-	extends StringAttribute<A, E, PGTextType, PGTextHolder, PGTextAttribute<A, E>>
-{	
+	extends StringAttribute<A, E, W, PGTextType, PGTextHolder, PGTextAttribute<A, E, W>>
+{
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 3465654564903987460L;
+	private static final long serialVersionUID = 1117929153888182121L;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -46,69 +47,63 @@ public class PGTextAttribute<
 	private PGTextAttribute() {
 	}
 	
-	private PGTextAttribute(HasPGTextAttribute<A, E> meta, A name) {
+	private PGTextAttribute(A name) {
 		super(name);
-		meta.register(this);
-	}
+		
+	}	
 	
 	public static <
 		X extends AttributeName,
-		T extends HasPGText<X, T> & HasString<X, T>
+		T extends HasPGText.Read<X, T, S> & HasString.Read<X, T, S>,
+		S extends HasPGText.Write<X, T, S> & HasString.Write<X, T, S>
 	>
-	PGTextAttribute<X, T> get(HasPGTextAttribute<X, T> meta, X a) {
-		PGTextAttribute<X, T> k = meta.getPGTextAttribute(a);
+	PGTextAttribute<X, T, S> get(HasPGTextAttribute<X, T, S> meta, X a) {
+		PGTextAttribute<X, T, S> k = meta.getPGTextAttribute(a);
 		
-		if (k == null) {						
+		if (k == null) {
 			if (PGTextType.TYPE.equals(a.type())) {
-				k = new PGTextAttribute<X, T>(meta, a);
-			}			
+				k = new PGTextAttribute<X, T, S>(a);
+				meta.register(k);
+			}
 		}
 				
 		return k;
 	}
-
-
-			
+	
+	
 	@Override
 	public PGTextType type() {
 		return PGTextType.TYPE;
 	}
 	
 	@Override
-	public void set(E e, PGTextHolder newValue) 
-		throws EntityRuntimeException {
-		e.setPGText(this, newValue);
+	public void set(W e, PGTextHolder newValue) {
+		 e.setPGText(this, newValue);
 	}
 	
 	@Override
-	public PGTextHolder get(E e) 
+	public PGTextHolder get(E e)
 		throws EntityRuntimeException {
 		return e.getPGText(this);
 	}
 	
-		
-//	@Override
-//	public PGTextHolder newHolder(PGText newValue) {
-//		return PGTextHolder.valueOf(newValue);
-//	}
-
-	@Override
-	public void copy(E src, E dest) {
-		dest.setPGText(this, src.getPGText(this));
-	}
-
-	@Override
-	public PGTextAttribute<A, E> self() {
-		return this;
-	}
-
-	@Override
-	public PGTextHolder as(ValueHolder<?, ?, ?> holder) {
-		return PGTextHolder.of(holder);
-	}
-
 	@Override
 	public PGTextHolder newHolder(String newValue) {
 		return PGTextHolder.valueOf(newValue);
+	}
+	
+	@Override
+	public void copy(E src, W dest) {
+		dest.setPGText(this, src.getPGText(this));
+	}
+	
+	@Override
+	public PGTextAttribute<A, E, W> self() {	
+		return this;
+	}
+	
+	@Override
+	public PGTextHolder as(ValueHolder<?, ?, ?> holder) {
+		return PGTextHolder.of(holder);
 	}
 }

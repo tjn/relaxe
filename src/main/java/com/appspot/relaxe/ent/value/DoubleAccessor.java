@@ -28,23 +28,29 @@ import com.appspot.relaxe.value.DoubleHolder;
 
 public class DoubleAccessor<
 	A extends AttributeName,
-	E extends HasDouble<A, E>
+	R extends HasDouble.Read<A, R, RW>,
+	RW extends HasDouble.Read<A, R, RW> & HasDouble.Write<A, R, RW>
 >
-	extends AbstractAttributeAccessor<A, E, Double, DoubleType, DoubleHolder, DoubleAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, R, RW, Double, DoubleType, DoubleHolder, DoubleAttribute<A, R, RW>> {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -5737849327578345205L;
-
+	private static final long serialVersionUID = -2731889274638406123L;
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
 	private DoubleAccessor() {
 	}
-
-	public DoubleAccessor(E target, DoubleAttribute<A, E> k) {
+	
+	public DoubleAccessor(RW target, DoubleAttribute<A, R, RW> k) {
 		super(target, k);
+	}
+	
+	@Override
+	public DoubleHolder getHolder() {
+		return getTarget().getDouble(key());
 	}
 }

@@ -71,16 +71,16 @@ public class PagilaEntitySessionSample {
 				EntitySession es = das.asEntitySession();															
 	
 				// Creates in-memory entity - DB is not touched yet: 
-				Film film = es.newEntity(Film.Type.TYPE);
-				
-				dumpEntity(film);				
+				Film.Mutable fm = es.newEntity(Film.Type.TYPE);
+												
+				dumpEntity(fm);				
 								
-				film.set(Film.TITLE, VarcharHolder.valueOf("Terminator"));
+				fm.set(Film.TITLE, VarcharHolder.valueOf("Terminator"));
 				
-				dumpEntity(film);
+				dumpEntity(fm);
 				
 				// equivalent to:
-				film.setString(Film.TITLE, "Terminator");
+				fm.setString(Film.TITLE, "Terminator");
 				
 				// The following won't compile, because 
 				// the types of attribute and value do not match:
@@ -92,7 +92,7 @@ public class PagilaEntitySessionSample {
 				
 								
 				// Entities are sparse: getters return holders, not wrapped values.
-				StringHolder<?, ?> holder = film.getTitle();
+				StringHolder<?, ?> holder = fm.getTitle();
 				
 				boolean valueNotPresent = (holder == null);
 				System.out.println("value not present ? " + valueNotPresent);
@@ -105,9 +105,9 @@ public class PagilaEntitySessionSample {
 												
 							
 	//			Entities can manipulated via bean-like interface as well:				
-				film.setTitle("Terminator II");
+				fm.setTitle("Terminator II");
 											
-				dumpEntity(film);
+				dumpEntity(fm);
 							
 				Language.QueryElement qe = new Language.QueryElement(
 						Language.LANGUAGE_ID,
@@ -142,13 +142,13 @@ public class PagilaEntitySessionSample {
 				
 				dumpEntity(language);
 				
-				film.setLanguage(Film.LANGUAGE, language.ref());
+				fm.setLanguage(Film.LANGUAGE, language.ref());
 																															
-				film = es.merge(film);
+				Film film = es.merge(fm.as());
 												
 				System.out.println("merged.");
 								
-				film.setLength(Integer.valueOf(120));
+				fm.setLength(Integer.valueOf(120));
 								
 				dumpEntity(film);				
 								
@@ -170,16 +170,16 @@ public class PagilaEntitySessionSample {
 
 	private static  <
 		A extends AttributeName,	
-		E extends Entity<A, ?, ?, E, ?, ?, M>,		
-		M extends EntityMetaData<A, ?, ?, E, ?, ?, M>
+		E extends Entity<A, ?, ?, E, ?, ?, ?, M>,		
+		M extends EntityMetaData<A, ?, ?, E, ?, ?, ?, M>
 	>
-	void dumpEntity(E e) {
+	void dumpEntity(Entity<A, ?, ?, E, ?, ?, ?, M> e) {
 		M meta = e.getMetaData();
 						
-		System.out.println(": {");
+		System.out.println("Entity : {");
 		
 		for (A a : meta.attributes()) {
-			Attribute<A, E, ?, ?, ?, ?> key = meta.getKey(a);
+			Attribute<A, E, ?, ?, ?, ?, ?> key = meta.getKey(a);
 			dump(e, key.self());
 		}
 		
@@ -189,13 +189,13 @@ public class PagilaEntitySessionSample {
 	
 	private static <
 		A extends AttributeName,	
-		E extends Entity<A, ?, ?, E, ?, ?, ?>,
+		E extends Entity<A, ?, ?, E, ?, ?, ?, ?>,
 		V extends Serializable,
 		P extends ValueType<P>,
 		H extends ValueHolder<V, P, H>,	
-		K extends Attribute<A, E, V, P, H, K>
+		K extends Attribute<A, E, ?, V, P, H, K>
 	>
-	void dump(Entity<A, ?, ?, E, ?, ?, ?> entity, Attribute<A, E, V, P, H, K> key) {		
+	void dump(Entity<A, ?, ?, E, ?, ?, ?, ?> entity, Attribute<A, E, ?, V, P, H, K> key) {		
 		H holder = key.get(entity.self());
 				
 		if (holder == null) {

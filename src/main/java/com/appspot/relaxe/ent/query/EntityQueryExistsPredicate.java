@@ -30,6 +30,7 @@ import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQuery;
 import com.appspot.relaxe.ent.EntityQueryContext;
 import com.appspot.relaxe.ent.EntityQueryElement;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.expr.Predicate;
 import com.appspot.relaxe.expr.QueryExpression;
@@ -45,12 +46,12 @@ public class EntityQueryExistsPredicate
 	 */
 	private static final long serialVersionUID = -9214275181479579908L;
 	
-	private EntityQuery<?, ?, ?, ?, ?, ?, ?, ?> inner;
+	private EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> inner;
 	
 	protected EntityQueryExistsPredicate() {
 	}
 			
-	public EntityQueryExistsPredicate(EntityQuery<?, ?, ?, ?, ?, ?, ?, ?> inner) {
+	public EntityQueryExistsPredicate(EntityQuery<?, ?, ?, ?, ?, ?, ?, ?, ?> inner) {
 		super();		
 		this.inner = inner;
 	}
@@ -65,16 +66,17 @@ public class EntityQueryExistsPredicate
 	<
 		A extends AttributeName,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>,
-		RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+		RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
 	>	
-	QueryExpression eval(EntityQueryContext ctx, EntityQuery<A, R, T, E, H, F, M, RE> query) {
-		EntityQueryExpressionBuilder<A, R, T, E, H, F, M, RE> qb = 
-				new EntityQueryExpressionBuilder<A, R, T, E, H, F, M, RE>(ctx, query);		
+	QueryExpression eval(EntityQueryContext ctx, EntityQuery<A, R, T, E, B, H, F, M, RE> query) {
+		EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, RE> qb = 
+				new EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, RE>(ctx, query);		
 		QueryExpression qe = qb.getQueryExpression();		
 		return qe;
 	}

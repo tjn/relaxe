@@ -38,6 +38,7 @@ import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.ColumnResolver;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.expr.InsertStatement;
@@ -57,11 +58,12 @@ public abstract class AbstractGeneratedKeyHandler
 	public <
 		A extends AttributeName,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, ?, ?, M>,
-		E extends Entity<A, R, T, E, ?, ?, M>,
-		M extends EntityMetaData<A, R, T, E, ?, ?, M>
+		T extends ReferenceType<A, R, T, E, B, ?, ?, M>,
+		E extends Entity<A, R, T, E, B, ?, ?, M>,
+		B extends MutableEntity<A, R, T, E, B, ?, ?, M>,
+		M extends EntityMetaData<A, R, T, E, B, ?, ?, M>
 	>
-	void processGeneratedKeys(InsertStatement ins, E target, Statement qs) throws SQLException {		
+	void processGeneratedKeys(InsertStatement ins, B target, Statement qs) throws SQLException {		
 		logger().debug("processGeneratedKeys - enter");
 		
 		ResultSet rs = qs.getGeneratedKeys();
@@ -97,7 +99,7 @@ public abstract class AbstractGeneratedKeyHandler
 				A a = em.getAttribute(ac);
 				
 				if (a != null) {
-					Attribute<A, E, ?, ?, ?, ?> k = em.getKey(a);
+					Attribute<A, E, B, ?, ?, ?, ?> k = em.getKey(a);
 					logger().debug("a => k: " + (a) + " => " + k);
 					
 					// ValueExtractor<?, ?, ?> ve = vef.createExtractor(rsmd, i);
@@ -115,11 +117,7 @@ public abstract class AbstractGeneratedKeyHandler
 
 	protected 
 	<
-		A extends AttributeName,
-		R extends Reference,
-		T extends ReferenceType<A, R, T, E, ?, ?, M>,
-		E extends Entity<A, R, T, E, ?, ?, M>,
-		M extends EntityMetaData<A, R, T, E, ?, ?, M>
+		M extends EntityMetaData<?, ?, ?, ?, ?, ?, ?, M>
 	>
 	ColumnResolver createColumnResolver(ResultSetMetaData meta, M em) {
 		return new ResultSetColumnResolver(em.getBaseTable(), meta);		
@@ -129,14 +127,15 @@ public abstract class AbstractGeneratedKeyHandler
 
 
 	protected <
-		A extends AttributeName,
-		E extends Entity<?, ?, ?, ?, ?, ?, ?>,
+		A extends AttributeName,		
+		E extends Entity<A, ?, ?, E, B, ?, ?, ?>,
+		B extends MutableEntity<A, ?, ?, E, B, ?, ?, ?>,
 		V extends Serializable,
 		P extends ValueType<P>,
 		VH extends ValueHolder<V, P, VH>,	
-		VK extends Attribute<A, E, V, P, VH, VK>
+		VK extends Attribute<A, E, B, V, P, VH, VK>
 	>
-	void write(final Attribute<A, E, V, P, VH, VK> key, final ValueExtractor<?, ?, ?> ve, ResultSet src, E dest) throws SQLException {
+	void write(final Attribute<A, E, B, V, P, VH, VK> key, final ValueExtractor<?, ?, ?> ve, ResultSet src, B dest) throws SQLException {
 		ValueHolder<?, ?, ?> v = ve.extract(src);
 		VH vh = key.as(v);			
 		key.set(dest, vh);

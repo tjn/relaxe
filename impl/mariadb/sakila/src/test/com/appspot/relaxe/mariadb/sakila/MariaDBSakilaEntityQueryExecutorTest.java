@@ -37,6 +37,7 @@ import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityQueryResult;
 import com.appspot.relaxe.ent.FetchOptions;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.expr.QueryExpression;
@@ -69,7 +70,8 @@ public class MariaDBSakilaEntityQueryExecutorTest
 				Film.Reference, 
 				Film.Type, 
 				Film, 
-				Film.Holder, 
+				Film.Mutable, 
+				Film.Holder,
 				Film.Factory, 
 				Film.MetaData,				
 				Film.QueryElement				
@@ -78,7 +80,7 @@ public class MariaDBSakilaEntityQueryExecutorTest
 			
 			// Query q = template.newQuery(limit, offset);
 						
-			EntityQueryResult<Film.Attribute, Film.Reference, Film.Type, Film, Film.Holder, Film.Factory, Film.MetaData, Film.QueryElement> er = qe.execute(query, opts, c);
+			EntityQueryResult<Film.Attribute, Film.Reference, Film.Type, Film, Film.Mutable, Film.Holder, Film.Factory, Film.MetaData, Film.QueryElement> er = qe.execute(query, opts, c);
 			assertNotNull(er);
 			
 			DataObjectQueryResult<EntityDataObject<Film>> qr = er.getContent(); 
@@ -109,15 +111,16 @@ public class MariaDBSakilaEntityQueryExecutorTest
 	public <
 		A extends AttributeName,
 		R extends Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, H, F, M>,
-		QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+		QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
 	>
-	EntityQueryExecutor<A, R, T, E, H, F, M, QE> createExecutor(M meta, PersistenceContext<?> persistenceContext) {
-		return new EntityQueryExecutor<A, R, T, E, H, F, M, QE>(persistenceContext, getIdentityContext());
+	EntityQueryExecutor<A, R, T, E, B, H, F, M, QE> createExecutor(M meta, PersistenceContext<?> persistenceContext) {
+		return new EntityQueryExecutor<A, R, T, E, B, H, F, M, QE>(persistenceContext, getIdentityContext());
 	}
 	
 	
@@ -473,7 +476,7 @@ public class MariaDBSakilaEntityQueryExecutorTest
 			
 			assertSame(oh, lh);
 		
-			Entity<?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.LANGUAGE_ORIGINAL.name());
+			Entity<?, ?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.LANGUAGE_ORIGINAL.name());
 			assertNotNull(e);	
 		}
 	}
@@ -520,7 +523,7 @@ public class MariaDBSakilaEntityQueryExecutorTest
 			
 			assertSame(oh, lh);
 		
-			Entity<?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.LANGUAGE_ORIGINAL.name());
+			Entity<?, ?, ?, ?, ?, ?, ?, ?> e = film.getRef(Film.LANGUAGE_ORIGINAL.name());
 			assertNotNull(e);			
 		}
 	}

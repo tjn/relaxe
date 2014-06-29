@@ -26,9 +26,10 @@ import com.appspot.relaxe.ent.AttributeName;
 
 public interface HasVarcharArrayAttribute<
 	A extends AttributeName,
-	E extends HasVarcharArray<A, E>	
->	{
-
-	VarcharArrayAttribute<A, E> getVarcharArrayAttribute(A a);	
-	void register(VarcharArrayAttribute<A, E> key);
+	R extends HasVarcharArray.Read<A, R, W>,	
+	W extends HasVarcharArray.Write<A, R, W>
+> {
+	
+	VarcharArrayAttribute<A, R, W> getVarcharArrayAttribute(A a);	
+	void register(VarcharArrayAttribute<A, R, W> key);
 }

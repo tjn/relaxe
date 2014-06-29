@@ -26,8 +26,44 @@ package com.appspot.relaxe.ent.value;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.value.TimestampHolder;
 
-public interface HasTimestamp<A extends AttributeName, E extends HasTimestamp<A, E>> {
-	TimestampHolder getTimestamp(TimestampAttribute<A, E> key);
-
-	void setTimestamp(TimestampAttribute<A, E> key, TimestampHolder newValue);
+public interface HasTimestamp<
+	A extends AttributeName,
+	R extends HasTimestamp.Read<A, R, W>,
+	W extends HasTimestamp.Write<A, R, W>
+	>
+	{	
+	R asRead();	
+	W asWrite();	
+	
+	public interface Read<
+		A extends AttributeName,
+		R extends HasTimestamp.Read<A, R, W>,
+		W extends HasTimestamp.Write<A, R, W>
+	>
+		extends HasTimestamp<A, R, W> {
+		/**
+		 * Returns the value by the key or <code>null</code> if the value is not currently present.
+		 * 
+		 * @param key
+		 * @return The value corresponding the key.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		TimestampHolder getTimestamp(TimestampAttribute<A, R, W> key);		
+	}
+	
+	public interface Write<
+		A extends AttributeName,
+		R extends HasTimestamp.Read<A, R, W>,
+		W extends HasTimestamp.Write<A, R, W>
+	> extends HasTimestamp<A, R, W> {
+	
+		/**
+		 * Sets the value by the key.
+		 * 
+		 * @param key
+		 * @param newValue May be null.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		void setTimestamp(TimestampAttribute<A, R, W> key, TimestampHolder newValue);
+	}
 }

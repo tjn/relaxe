@@ -27,9 +27,42 @@ import com.appspot.relaxe.value.VarcharArrayHolder;
 
 public interface HasVarcharArray<
 	A extends AttributeName,
-	E extends HasVarcharArray<A, E>
->	
+	R extends HasVarcharArray.Read<A, R, W>,
+	W extends HasVarcharArray.Write<A, R, W>
+>
 {	
-	VarcharArrayHolder getVarcharArray(VarcharArrayAttribute<A, E> key);
-	void setVarcharArray(VarcharArrayAttribute<A, E> key, VarcharArrayHolder newValue);	
+	R asRead();	
+	W asWrite();	
+	
+	public interface Read<
+		A extends AttributeName,
+		R extends HasVarcharArray.Read<A, R, W>,
+		W extends HasVarcharArray.Write<A, R, W>
+	>
+		extends HasVarcharArray<A, R, W> {
+		/**
+		 * Returns the value by the key or <code>null</code> if the value is not currently present.
+		 * 
+		 * @param key
+		 * @return The value corresponding the key.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		VarcharArrayHolder getVarcharArray(VarcharArrayAttribute<A, R, W> key);		
+	}
+	
+	public interface Write<
+		A extends AttributeName,
+		R extends HasVarcharArray.Read<A, R, W>,
+		W extends HasVarcharArray.Write<A, R, W>
+	> extends HasVarcharArray<A, R, W> {
+	
+		/**
+		 * Sets the value by the key.
+		 * 
+		 * @param key
+		 * @param newValue May be null.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		void setVarcharArray(VarcharArrayAttribute<A, R, W> key, VarcharArrayHolder newValue);
+	}
 }

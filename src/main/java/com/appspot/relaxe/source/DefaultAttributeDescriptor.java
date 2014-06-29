@@ -37,7 +37,8 @@ public class DefaultAttributeDescriptor
 	private Class<?> attributeType;
 	private Class<?> accessorType;
 	private Class<?> identityMapType;
-	private Class<?> containerType;
+	private Class<?> readableContainerType;
+	private Class<?> writableContainerType;
 	private Class<?> containerMetaType;
 	
 	private ValueType<?> primitiveType;
@@ -113,12 +114,21 @@ public class DefaultAttributeDescriptor
 	}
 
 	@Override
-	public Class<?> getContainerType() {
-		return containerType;
+	public Class<?> getReadableContainerType() {
+		return readableContainerType;
 	}
+	
+	@Override
+	public Class<?> getWritableContainerType() {
+		return writableContainerType;
+	}	
 
-	public void setContainerType(Class<?> containerType) {
-		this.containerType = containerType;
+	public void setReadableContainerType(Class<?> containerType) {
+		this.readableContainerType = containerType;
+	}
+	
+	public void setWritableContainerType(Class<?> containerType) {
+		this.writableContainerType = containerType;
 	}
 
 	@Override

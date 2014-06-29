@@ -4,28 +4,27 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/tools"/>
-	<classpathentry kind="src" path="impl/hsqldb/common"/>
-	<classpathentry kind="src" path="impl/mariadb/common"/>
-	<classpathentry kind="src" path="impl/mariadb/sakila/src/main"/>
-	<classpathentry kind="src" path="impl/mysql/common"/>
-	<classpathentry kind="src" path="impl/mysql/sakila/src/main"/>
-	<classpathentry kind="src" path="impl/pg/common"/>
-	<classpathentry kind="src" path="impl/pg/pagila/src/main"/>
-	<classpathentry kind="src" path="build/impl/pg/pagila/src/gen"/>
-	<classpathentry kind="src" path="impl/pg/pagila/src/test"/>
-	<classpathentry kind="src" path="impl/mysql/sakila/src/test"/>
-	<classpathentry kind="src" path="build/impl/mysql/sakila/src/gen"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="build/impl/hsqldb/pagila/src/gen"/>
 	<classpathentry kind="src" path="build/impl/mariadb/sakila/src/gen"/>
-	<classpathentry excluding="gen/" kind="src" path="build/impl/hsqldb/pagila/src"/>
+	<classpathentry kind="src" path="build/impl/mysql/sakila/src/gen"/>
+	<classpathentry kind="src" path="build/impl/pg/pagila/src/gen"/>
+	<classpathentry kind="src" path="impl/hsqldb/common"/>
 	<classpathentry kind="src" path="impl/hsqldb/pagila/src/main"/>
-	<classpathentry kind="src" path="impl/mariadb/sakila/src/test"/>
-	<classpathentry kind="src" path="src/samples/java"/>
-	<classpathentry kind="src" path="src/common/pagila"/>
 	<classpathentry kind="src" path="impl/hsqldb/pagila/src/test"/>
-	<classpathentry kind="src" path="src/common/sakila"/>
+	<classpathentry kind="src" path="impl/mariadb/common"/>
+	<classpathentry kind="src" path="impl/mariadb/sakila/src/main"/>
+	<classpathentry kind="src" path="impl/mariadb/sakila/src/test"/>
+	<classpathentry kind="src" path="impl/mysql/common"/>
+	<classpathentry kind="src" path="impl/mysql/sakila/src/main"/>
+	<classpathentry kind="src" path="impl/mysql/sakila/src/test"/>
+	<classpathentry kind="src" path="impl/pg/common"/>
 	<classpathentry kind="src" path="impl/pg/pagila/hsqldb"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="impl/pg/pagila/src/main"/>
+	<classpathentry kind="src" path="impl/pg/pagila/src/test"/>
+	<classpathentry kind="src" path="src/common/pagila"/>
+	<classpathentry kind="src" path="src/common/sakila"/>
+	<classpathentry kind="src" path="src/samples/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache CSV"/>
 	<classpathentry kind="lib" path="lib/jdbc/mysql-connector-java/mysql-connector-java-5.1.27.jar"/>

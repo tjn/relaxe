@@ -23,15 +23,15 @@
 package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.value.IntegerHolder;
 
 public class IntegerAccessor<
 	A extends AttributeName,
-	E extends Entity<?, ?, ?, ?, ?, ?, ?> & HasInteger<A, E>
+	R extends HasInteger.Read<A, R, RW>,
+	RW extends HasInteger.Read<A, R, RW> & HasInteger.Write<A, R, RW>
 >
-	extends AbstractAttributeAccessor<A, E, Integer, IntegerType, IntegerHolder, IntegerAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, R, RW, Integer, IntegerType, IntegerHolder, IntegerAttribute<A, R, RW>> {
 
 	/**
 	 *
@@ -45,7 +45,12 @@ public class IntegerAccessor<
 	private IntegerAccessor() {
 	}
 
-	public IntegerAccessor(E target, IntegerAttribute<A, E> k) {
+	public IntegerAccessor(RW target, IntegerAttribute<A, R, RW> k) {
 		super(target, k);
+	}
+
+	@Override
+	public IntegerHolder getHolder() {
+		return getTarget().getInteger(key());
 	}
 }

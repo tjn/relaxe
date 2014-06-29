@@ -28,12 +28,13 @@ import com.appspot.relaxe.value.ValueHolder;
 
 public abstract class StringAttribute<
 	A extends AttributeName,
-	E extends HasString<A, E>,	
+	R extends HasString.Read<A, R, W>,	
+	W extends HasString.Write<A, R, W>,
 	P extends ValueType<P>,
 	H extends ValueHolder<String, P, H>,
-	K extends Attribute<A, E, String, P, H, K>
+	K extends Attribute<A, R, W, String, P, H, K>
 	>
-	extends AbstractAttribute<A, E, String, P, H, K>
+	extends AbstractAttribute<A, R, W, String, P, H, K>
 {
 	/**
 	 *

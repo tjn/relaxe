@@ -27,24 +27,42 @@ import com.appspot.relaxe.value.IntegerHolder;
 
 public interface HasInteger<
 	A extends AttributeName,
-	E extends HasInteger<A, E>
->	
-{
-	/**
-	 * Returns the value by the key or <code>null</code> if the value is not currently present.
-	 * 
-	 * @param key
-	 * @return The value corresponding the key.
-	 * @throws NullPointerException If <code>key</code> is <code>null</code>.
-	 */
-	IntegerHolder getInteger(IntegerAttribute<A, E> key);
+	R extends HasInteger.Read<A, R, W>,
+	W extends HasInteger.Write<A, R, W>
+>
+{	
+	R asRead();	
+	W asWrite();	
 	
-	/**
-	 * Sets the value by the key.
-	 * 
-	 * @param key
-	 * @param newValue May be null.
-	 * @throws NullPointerException If <code>key</code> is <code>null</code>.
-	 */
-	void setInteger(IntegerAttribute<A, E> key, IntegerHolder newValue);	
+	public interface Read<
+		A extends AttributeName,
+		R extends HasInteger.Read<A, R, W>,
+		W extends HasInteger.Write<A, R, W>
+	>
+		extends HasInteger<A, R, W> {
+		/**
+		 * Returns the value by the key or <code>null</code> if the value is not currently present.
+		 * 
+		 * @param key
+		 * @return The value corresponding the key.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		IntegerHolder getInteger(IntegerAttribute<A, R, W> key);		
+	}
+	
+	public interface Write<
+		A extends AttributeName,
+		R extends HasInteger.Read<A, R, W>,
+		W extends HasInteger.Write<A, R, W>
+	> extends HasInteger<A, R, W> {
+	
+		/**
+		 * Sets the value by the key.
+		 * 
+		 * @param key
+		 * @param newValue May be null.
+		 * @throws NullPointerException If <code>key</code> is <code>null</code>.
+		 */
+		void setInteger(IntegerAttribute<A, R, W> key, IntegerHolder newValue);
+	}
 }

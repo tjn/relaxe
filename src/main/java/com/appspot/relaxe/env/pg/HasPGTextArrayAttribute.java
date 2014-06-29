@@ -26,9 +26,9 @@ import com.appspot.relaxe.ent.AttributeName;
 
 public interface HasPGTextArrayAttribute<
 	A extends AttributeName,
-	E extends HasPGTextArray<A, E>	
->	{
-
-	PGTextArrayAttribute<A, E> getPGTextArrayAttribute(A a);	
-	void register(PGTextArrayAttribute<A, E> key);
+	R extends HasPGTextArray.Read<A, R, W>,	
+	W extends HasPGTextArray.Write<A, R, W>
+> {
+	PGTextArrayAttribute<A, R, W> getPGTextArrayAttribute(A a);	
+	void register(PGTextArrayAttribute<A, R, W> key);
 }

@@ -32,22 +32,24 @@ import com.appspot.relaxe.value.ValueHolder;
 
 public interface Attribute<
 	A extends AttributeName,	
-	E,
+	R,
+	W,
 	V extends Serializable,
 	P extends ValueType<P>,
 	H extends ValueHolder<V, P, H>,	
-	K extends Attribute<A, E, V, P, H, K>
+	K extends Attribute<A, R, W, V, P, H, K>
 >
-	extends Key<E, P, K>, Serializable
+	extends Key<R, W, P, K>, Serializable
 {
 	@Override
 	P type();
 	A name();
 	H newHolder(V newValue);
-	H get(E e) throws EntityRuntimeException;
-	void set(E e, H newValue) throws EntityRuntimeException;	
+	H get(R e) throws EntityRuntimeException;
+	void set(W e, H newValue) throws EntityRuntimeException;
+	
 	@Override
-	void copy(E src, E dest) throws EntityRuntimeException;
+	void copy(R src, W dest) throws EntityRuntimeException;
 	
 	
 	/**
@@ -56,7 +58,7 @@ public interface Attribute<
 	 * @param dest
 	 */
 	@Override
-	void reset(E dest) throws EntityRuntimeException;
+	void reset(W dest) throws EntityRuntimeException;
 		
 	@Override
 	K self();

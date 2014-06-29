@@ -27,9 +27,30 @@ import com.appspot.relaxe.value.VarcharHolder;
 
 public interface HasVarchar<
 	A extends AttributeName,
-	E extends HasVarchar<A, E> & HasString<A, E>
->
-{	
-	VarcharHolder getVarchar(VarcharAttribute<A, E> key);
-	void setVarchar(VarcharAttribute<A, E> key, VarcharHolder newValue);	
+	R extends HasVarchar.Read<A, R, W> & HasString.Read<A, R, W>,
+	W extends HasVarchar.Write<A, R, W> & HasString.Write<A, R, W>
+	>
+	{	
+	R asRead();	
+	W asWrite();
+	
+	interface Read<
+		A extends AttributeName,
+		R extends HasVarchar.Read<A, R, W> & HasString.Read<A, R, W>,
+		W extends HasVarchar.Write<A, R, W> & HasString.Write<A, R, W>
+	> extends HasVarchar<A, R, W> {
+	
+		VarcharHolder getVarchar(VarcharAttribute<A, R, W> key);
+		
+	}
+	
+	interface Write<
+		A extends AttributeName,
+		R extends HasVarchar.Read<A, R, W> & HasString.Read<A, R, W>,
+		W extends HasVarchar.Write<A, R, W> & HasString.Write<A, R, W>
+	> 
+		extends HasVarchar<A, R, W> {
+		
+		void setVarchar(VarcharAttribute<A, R, W> key, VarcharHolder newValue);		
+	}
 }

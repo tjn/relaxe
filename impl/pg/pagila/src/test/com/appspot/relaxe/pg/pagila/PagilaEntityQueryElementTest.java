@@ -54,24 +54,24 @@ public class PagilaEntityQueryElementTest
 		Language.QueryElement qe = qb.getQueryElement(Film.LANGUAGE);
 		assertSame(le, qe);
 		
-		final EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> rle = qb.getQueryElement(Film.LANGUAGE);
+		final EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> rle = qb.getQueryElement(Film.LANGUAGE);
 		assertNotNull(rle);		
 		assertTrue(rle == le);
 		
 		final Language.QueryElement ole = lb.newQueryElement();
 		
 		qb.setQueryElement(Film.ORIGINAL_LANGUAGE, ole);
-		EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> r2 = qb.getQueryElement(Film.ORIGINAL_LANGUAGE);
+		EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> r2 = qb.getQueryElement(Film.ORIGINAL_LANGUAGE);
 		assertNotNull(r2);
 		assertTrue(r2 == ole);
 		
 		Film.QueryElement fqe = qb.newQueryElement();
 		
-		EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> s1 = fqe.getQueryElement(Film.LANGUAGE);
+		EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> s1 = fqe.getQueryElement(Film.LANGUAGE);
 		assertNotNull(s1);
 		assertTrue(s1 == rle);
 		
-		EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> s2 = fqe.getQueryElement(Film.ORIGINAL_LANGUAGE);
+		EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> s2 = fqe.getQueryElement(Film.ORIGINAL_LANGUAGE);
 		assertNotNull(s2);
 		assertTrue(s2 == ole);
 		

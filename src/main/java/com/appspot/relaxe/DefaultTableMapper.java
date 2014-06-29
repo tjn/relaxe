@@ -98,6 +98,10 @@ public class DefaultTableMapper
             return name + "Impl";
         }
         
+        if (p == Part.METADATA_IMPLEMENTATION) {
+            return name + "MetaData";
+        }                
+        
         return name;
     }
     
@@ -172,192 +176,12 @@ public class DefaultTableMapper
 		setContextPackage(contextPackage);
 	}
 	
-	    
-//    public AttributeInfo getAttributeInfo(Table table, Column c) { 
-//    	
-//    	// logger().is
-//    	
-//    	
-//        DefaultAttributeInfo a = new DefaultAttributeInfo(table, c);
-//        
-//        int type = c.getDataType().getDataType();                
-//
-//        switch (type) {
-//        case Types.CHAR:
-//        	a.setAttributeType(String.class);
-//        	a.setHolderType(CharHolder.class);
-//        	a.setKeyType(CharKey.class);
-//        	a.setAccessorType(CharAccessor.class);
-//        	a.setPrimitiveType(CharType.TYPE);        	
-//        case Types.VARCHAR:
-//        	a.setAttributeType(String.class);
-//        	a.setHolderType(VarcharHolder.class);
-//        	a.setKeyType(VarcharKey.class);
-//        	a.setAccessorType(VarcharAccessor.class);
-//        	a.setPrimitiveType(VarcharType.TYPE);        	
-//        	a.setIdentityMapType(VarcharIdentityMap.class);
-//            break;            	
-//        case Types.LONGNVARCHAR:
-//        	break;        	
-//        case Types.SMALLINT:        	
-//        case Types.INTEGER:
-//        case Types.TINYINT:
-//        	a.setAttributeType(Integer.class);
-//        	a.setHolderType(IntegerHolder.class);
-//        	a.setKeyType(IntegerKey.class);
-//        	a.setAccessorType(IntegerAccessor.class);
-//        	a.setPrimitiveType(IntegerType.TYPE);
-//        	a.setIdentityMapType(IntegerIdentityMap.class);
-//            break;
-//        case Types.BIGINT:                        
-//        case Types.BIT:
-//                       
-//        case Types.REAL:
-//            break;
-//        case Types.FLOAT:                
-//        case Types.DOUBLE:
-//        	a.setAttributeType(Double.class);
-//        	a.setHolderType(DoubleHolder.class);
-//        	a.setKeyType(DoubleKey.class);
-//        	a.setAccessorType(DoubleAccessor.class);
-//        	a.setPrimitiveType(DoubleType.TYPE);
-//            break;
-//        case Types.DECIMAL:
-//        case Types.NUMERIC:
-//        	a.setAttributeType(Decimal.class);
-//        	a.setHolderType(DecimalHolder.class);
-//        	a.setKeyType(DecimalKey.class);
-//        	a.setAccessorType(DecimalAccessor.class);
-//        	a.setPrimitiveType(DecimalType.TYPE);
-//            break;        	
-//        case Types.DATE:            
-//        	a.setAttributeType(SQLDateType.class);
-//        	a.setHolderType(DateHolder.class);
-//        	a.setKeyType(DateKey.class);
-//        	a.setAccessorType(DateAccessor.class);
-//        	a.setPrimitiveType(DateType.TYPE);
-//            break;
-//            
-//        case Types.TIME:            
-//        	a.setAttributeType(SQLDateType.class);
-//        	a.setHolderType(TimeHolder.class);
-//        	a.setKeyType(TimeKey.class);
-//        	a.setAccessorType(TimeAccessor.class);
-//        	a.setPrimitiveType(TimeType.TYPE);
-//            break;
-//            
-//        case Types.TIMESTAMP:
-//        	a.setAttributeType(SQLDateType.class);
-//        	a.setHolderType(TimestampHolder.class);
-//        	a.setKeyType(TimestampKey.class);
-//        	a.setAccessorType(TimestampAccessor.class);
-//        	a.setPrimitiveType(TimestampType.TYPE);
-//            break;
-//            
-//        case Types.DISTINCT:
-//	        {
-//	        	String tn = c.getDataType().getTypeName();
-//	        	
-//	        	if (tn.equals("interval_ym")) {        	
-//		        	a.setAttributeType(Interval.YearMonth.class);
-//		        	a.setHolderType(IntervalHolder.YearMonth.class);
-//		        	a.setKeyType(IntervalKey.YearMonth.class);
-//		        	a.setAccessorType(IntervalAccessor.YearMonth.class);
-//		        	a.setPrimitiveType(IntervalType.YearMonth.TYPE);
-//	        	}
-//	        }
-//         	
-//        	break;
-//            
-//        case Types.OTHER:
-//	        {
-//	        	String tn = c.getDataType().getTypeName();
-//	        	
-//	        	if (tn.equals("interval")) {        	
-//		        	a.setAttributeType(Interval.DayTime.class);
-//		        	a.setHolderType(IntervalHolder.DayTime.class);
-//		        	a.setKeyType(IntervalKey.DayTime.class);
-//		        	a.setAccessorType(IntervalAccessor.DayTime.class);
-//		        	a.setPrimitiveType(IntervalType.DayTime.TYPE);
-//	        	}
-//	        }
-//        	break;
-//            
-//        default:                
-//            break;
-//    }
-//
-//    	
-//    	return a;
-//    }
-
-    	
-
-//    @Override
-//    public Class<?> getAttributeHolderType(Table table, Column c) {
-//        int type = c.getDataType().getDataType();
-//        Class<?> jtype = null;
-//                        
-//        switch (type) {
-//            case Types.CHAR:
-//            	jtype = CharHolder.class;
-//            case Types.VARCHAR:
-//                jtype = VarcharHolder.class; 
-//                break;            	
-//            case Types.LONGNVARCHAR:
-//            	break;
-//            case Types.INTEGER:            
-//                jtype = IntegerHolder.class;
-//                break;
-//            case Types.TINYINT:            
-//                break;
-//            case Types.BIGINT:                        
-//            case Types.BIT:
-//                           
-//            case Types.REAL:
-//                break;
-//            case Types.FLOAT:                
-//            case Types.DOUBLE:
-//            	jtype = DoubleHolder.class;                
-//                break;                
-//            case Types.NUMERIC:                
-//                break;
-//            case Types.DATE:            
-//                jtype = DateHolder.class;
-//                break;
-//            case Types.TIMESTAMP:
-//                jtype = TimestampHolder.class;
-//                break;                
-//                
-//            default:                
-//                break;
-//        }
-//                
-//        return jtype;
-//    }
 
     @Override
     public JavaType entityType(Table table, Part part) {
         // TODO: cache JavaType's keyed by table+part
         return createEntityTypeMap(table).get(part);        
     }
-
-//    @Override
-//    public File getSourceDir(BaseTable table, Part part) {
-//        return getSourceDirMap().get(part);
-//    }
-
-//    public void setSourceDir(Part part, File sourceDir) {
-//        getSourceDirMap().put(part, sourceDir);
-//    }
-//
-//    private EnumMap<Part, File> getSourceDirMap() {
-//        if (sourceDirMap == null) {
-//            sourceDirMap = new EnumMap<Part, File>(Part.class);            
-//        }
-//
-//        return sourceDirMap;
-//    }
 
     @Override
     public JavaType factoryType(Schema schema, Part part) {        
@@ -381,53 +205,6 @@ public class DefaultTableMapper
         return new JavaType(p, "CatalogContext");
     }
 
-//	@Override
-//	public Class<?> getAttributeType(Table table, Column c) {
-//        int type = c.getDataType().getDataType();        
-//        boolean nn = c.isDefinitelyNotNullable();
-//
-//        Class<?> jtype = null;
-//                        
-//        switch (type) {
-//            case Types.CHAR:
-//            case Types.VARCHAR:            	
-//            case Types.LONGNVARCHAR:
-//                jtype = String.class; 
-//                break;                 
-//            case Types.INTEGER:            
-//                jtype = Integer.class;
-//                break;
-//            case Types.TINYINT:            
-//                jtype = Short.class;
-//                break;
-//            case Types.BIGINT:
-////                jtype = BigInteger.class;
-//            	// not supported yet
-//            	break;
-//            case Types.BIT:
-//                jtype = Boolean.class;            
-//            case Types.REAL:
-//                jtype = Float.class;
-//                break;
-//            case Types.FLOAT:                
-//            case Types.DOUBLE:
-//                jtype = Double.class;
-//                break;                
-//            case Types.NUMERIC:
-//                jtype = BigDecimal.class;
-//                break;
-//            case Types.DATE:                
-//            case Types.TIMESTAMP:
-//                jtype = SQLDateType.class;
-//                break;                
-//            default:            	
-////                jtype = Object.class;
-//            	// generally not supported yet
-//                break;
-//        }
-//                
-//        return jtype;	
-//    }
 
 	public String getContextPackage() {
 		if (contextPackage == null) {
@@ -451,18 +228,6 @@ public class DefaultTableMapper
         return new JavaType(p, "LiteralCatalog");
 	}
 
-//	@Override
-//	public Class<?> getAttributeKeyType(Table table, Column c) {
-//		// TODO:
-//		return IntegerKey.class;
-//	}
-//
-//	@Override
-//	public Class<?> getAttributeValueType(Table table, Column c) {
-//		// TODO
-//		return IntegerValue.class;
-//	}
-	
 	@Override
 	public String toJavaIdentifier(CharSequence identifier) {
 		

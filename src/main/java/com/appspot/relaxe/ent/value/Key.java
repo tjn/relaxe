@@ -29,15 +29,16 @@ import com.appspot.relaxe.types.Type;
 
 
 public interface Key<
-	E,
+	R,
+	W,
 	V extends Type<V>,	
-	K extends Key<E, V, K>
+	K extends Key<R, W, V, K>
 >
 	extends Serializable
 {
 	V type();
 	
-	void copy(E src, E dest)
+	void copy(R src, W dest)
 		throws EntityRuntimeException;
 	
 	/**
@@ -45,7 +46,7 @@ public interface Key<
 	 * 
 	 * @param dest
 	 */
-	void reset(E dest)
+	void reset(W dest)
 		throws EntityRuntimeException;
 	
 	K self();

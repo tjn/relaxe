@@ -29,6 +29,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,11 +37,15 @@ import com.appspot.relaxe.QueryHelper;
 import com.appspot.relaxe.ValueExtractor;
 import com.appspot.relaxe.ValueExtractorFactory;
 import com.appspot.relaxe.ent.AttributeName;
+import com.appspot.relaxe.ent.Entity;
+import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.expr.SchemaElementName;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
+import com.appspot.relaxe.types.ReferenceType;
 
 
 public class TriggerGeneratedKeyHandler 
@@ -71,13 +76,14 @@ public class TriggerGeneratedKeyHandler
 	
 	@Override
 	public <
-		A extends AttributeName, 
-		R extends Reference, 
-		T extends com.appspot.relaxe.types.ReferenceType<A,R,T,E,?,?,M>, 
-		E extends com.appspot.relaxe.ent.Entity<A,R,T,E,?,?,M>, 
-		M extends com.appspot.relaxe.ent.EntityMetaData<A,R,T,E,?,?,M>
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, B, ?, ?, M>,
+		E extends Entity<A, R, T, E, B, ?, ?, M>,
+		B extends MutableEntity<A, R, T, E, B, ?, ?, M>,
+		M extends EntityMetaData<A, R, T, E, B, ?, ?, M>
 	> 
-	void processGeneratedKeys(com.appspot.relaxe.expr.InsertStatement ins, final E target, final Statement statement) 
+	void processGeneratedKeys(com.appspot.relaxe.expr.InsertStatement ins, final B target, final Statement statement) 
 		throws java.sql.SQLException {
 		
 		logger().debug("processGeneratedKeys - enter");
@@ -122,7 +128,7 @@ public class TriggerGeneratedKeyHandler
 				String col = keys.getString(nc);
 				Column column = t.getColumnMap().get(col);
 				A a = meta.getAttribute(column);			
-				Attribute<A, E, ?, ?, ?, ?> key = meta.getKey(a);
+				Attribute<A, E, B, ?, ?, ?, ?> key = meta.getKey(a);
 				ValueExtractor<?, ?, ?> ve = vef.createExtractor(column.getDataType(), vc);									
 				write(key.self(), ve, keys, target);			
 			}

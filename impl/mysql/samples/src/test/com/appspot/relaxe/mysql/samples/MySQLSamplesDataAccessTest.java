@@ -38,10 +38,6 @@ import com.appspot.relaxe.ent.query.EntityQueryPredicates;
 import com.appspot.relaxe.rdbms.PersistenceContext;
 import com.appspot.relaxe.rdbms.mysql.MySQLImplementation;
 import com.appspot.relaxe.rdbms.mysql.MySQLPersistenceContext;
-import com.appspot.relaxe.gen.mysql.samples.ent.samples.Game;
-import com.appspot.relaxe.gen.mysql.samples.ent.samples.Match;
-import com.appspot.relaxe.gen.mysql.samples.ent.samples.Player;
-import com.appspot.relaxe.gen.mysql.samples.ent.samples.UserAccount;
 import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.EntitySession;
 

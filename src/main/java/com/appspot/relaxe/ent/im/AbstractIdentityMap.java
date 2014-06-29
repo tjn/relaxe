@@ -37,10 +37,10 @@ import com.appspot.relaxe.value.ReferenceHolder;
 public abstract class AbstractIdentityMap<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, ?, M>,
-	E extends Entity<A, R, T, E, H, ?, M>,
+	T extends ReferenceType<A, R, T, E, ?, H, ?, M>,
+	E extends Entity<A, R, T, E, ?, H, ?, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	M extends EntityMetaData<A, R, T, E, H, ?, M>,
+	M extends EntityMetaData<A, R, T, E, ?, H, ?, M>,
 	K
 >
 	implements EntityIdentityMap<A, R, T, E, H, M> {
@@ -48,8 +48,7 @@ public abstract class AbstractIdentityMap<
 	private Map<K, E> entityMap;
 	
 	@Override
-	public H get(E e) 
-		throws EntityRuntimeException {
+	public H get(E e) {
 		
 		if (e == null) {
 			throw new NullPointerException("e");

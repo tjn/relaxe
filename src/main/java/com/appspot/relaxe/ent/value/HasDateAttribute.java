@@ -26,9 +26,9 @@ import com.appspot.relaxe.ent.AttributeName;
 
 public interface HasDateAttribute<
 	A extends AttributeName,
-	E extends HasDate<A, E>	
->	{
-
-	DateAttribute<A, E> getDateAttribute(A a);	
-	void register(DateAttribute<A, E> key);
+	E extends HasDate.Read<A, E, B>,	
+	B extends HasDate.Write<A, E, B>
+> {
+	DateAttribute<A, E, B> getDateAttribute(A a);	
+	void register(DateAttribute<A, E, B> key);
 }

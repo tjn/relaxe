@@ -25,6 +25,7 @@ public interface Tuple<E extends Serializable>
 	 * @param t
 	 * @return
 	 */		
+	@Override
 	boolean equals(Object t);
 	
 	/**
@@ -33,5 +34,6 @@ public interface Tuple<E extends Serializable>
 	 * @param t
 	 * @return
 	 */	
+	@Override
 	int hashCode();	
 }

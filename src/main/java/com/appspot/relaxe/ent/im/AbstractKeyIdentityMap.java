@@ -27,7 +27,7 @@ import java.io.Serializable;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityMetaData;
-import com.appspot.relaxe.ent.EntityRuntimeException;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.types.ReferenceType;
@@ -39,16 +39,17 @@ import com.appspot.relaxe.value.ValueHolder;
 public class AbstractKeyIdentityMap<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, RH, ?, M>,
-	E extends Entity<A, R, T, E, RH, ?, M>,
-	RH extends ReferenceHolder<A, R, T, E, RH, M>,
-	M extends EntityMetaData<A, R, T, E, RH, ?, M>,
+	T extends ReferenceType<A, R, T, E, B, H, ?, M>,
+	E extends Entity<A, R, T, E, B, H, ?, M>,
+	B extends MutableEntity<A, R, T, E, B, H, ?, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	M extends EntityMetaData<A, R, T, E, B, H, ?, M>,
 	V extends Serializable,
 	P extends ValueType<P>,
-	H extends ValueHolder<V, P, H>,	
-	K extends Attribute<A, E, V, P, H, K>
+	X extends ValueHolder<V, P, X>,	
+	K extends Attribute<A, E, ?, V, P, X, K>
 >
-	extends AbstractIdentityMap<A, R, T, E, RH, M, V>
+	extends AbstractIdentityMap<A, R, T, E, H, M, V>
 {
 	private K key;
 	
@@ -63,9 +64,8 @@ public class AbstractKeyIdentityMap<
 	}
 	
 	@Override
-	protected V getIdentityKey(E src) 
-		throws EntityRuntimeException {
-		H h = src.get(this.key);
+	protected V getIdentityKey(E src) {
+		X h = key.get(src);		
 		return (h == null) ? null : h.value();
 	}
 }

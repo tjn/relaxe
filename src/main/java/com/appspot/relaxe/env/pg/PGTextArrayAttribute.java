@@ -25,86 +25,70 @@ package com.appspot.relaxe.env.pg;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.value.AbstractArrayAttribute;
-import com.appspot.relaxe.types.ArrayType;
-import com.appspot.relaxe.types.VarcharType;
 import com.appspot.relaxe.value.StringArray;
 import com.appspot.relaxe.value.ValueHolder;
 
-
 public class PGTextArrayAttribute<
 	A extends AttributeName,
-	E extends HasPGTextArray<A, E>	
+	R extends HasPGTextArray.Read<A, R, W>,
+	W extends HasPGTextArray.Write<A, R, W>
 >
-	extends AbstractArrayAttribute<A, E, String, StringArray, VarcharType, PGTextArrayType, PGTextArrayHolder, PGTextArrayAttribute<A, E>>
-{	
+	extends AbstractArrayAttribute<A, R, W, String, StringArray, PGTextType, PGTextArrayType, PGTextArrayHolder, PGTextArrayAttribute<A, R, W>>
+{
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 3465654564903987460L;
+	private static final long serialVersionUID = 128524051109455630L;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */	
-	private PGTextArrayAttribute() {
+	protected PGTextArrayAttribute() {
 	}
-	
-	private PGTextArrayAttribute(HasPGTextArrayAttribute<A, E> meta, A name) {
-		super(name);
-		meta.register(this);
-	}
-	
-	public static <
-		X extends AttributeName,
-		T extends HasPGTextArray<X, T>
-	>
-	PGTextArrayAttribute<X, T> get(HasPGTextArrayAttribute<X, T> meta, X a) {
-		PGTextArrayAttribute<X, T> k = meta.getPGTextArrayAttribute(a);
 		
-		if (k == null) {
-			ArrayType<?, ?> t = a.type().asArrayType();
-			
-			if (t != null && PGTextArrayType.TYPE.equals(a.type())) {
-				k = new PGTextArrayAttribute<X, T>(meta, a);
-			}			
-		}
-				
-		return k;
-	}	
-
-			
+	private PGTextArrayAttribute(A name) {
+		super(name);
+	}
+	
+	@Override
+	public PGTextArrayAttribute<A, R, W> self() {
+		return this;
+	}
+	
 	@Override
 	public PGTextArrayType type() {
 		return PGTextArrayType.TYPE;
 	}
-	
-	@Override
-	public void set(E e, PGTextArrayHolder newValue) 
-		throws EntityRuntimeException {
-		e.setPGTextArray(this, newValue);
+		
+	public static <
+		X extends AttributeName,
+		T extends HasPGTextArray.Read<X, T, S>,
+		S extends HasPGTextArray.Write<X, T, S>
+	>
+	PGTextArrayAttribute<X, T, S> get(HasPGTextArrayAttribute<X, T, S> meta, X a) {
+		PGTextArrayAttribute<X, T, S> k = meta.getPGTextArrayAttribute(a);
+		
+		if (k == null) {						
+			if (PGTextArrayType.TYPE.equals(a.type())) {
+				k = new PGTextArrayAttribute<X, T, S>(a);
+				meta.register(k);
+			}			
+		}
+				
+		return k;
 	}
 	
 	@Override
-	public PGTextArrayHolder get(E e) 
-		throws EntityRuntimeException {
+	public PGTextArrayHolder get(R e) throws EntityRuntimeException {
 		return e.getPGTextArray(this);
 	}
 	
-		
-//	@Override
-//	public PGTextArrayHolder newHolder(PGTextArray newValue) {
-//		return PGTextArrayHolder.valueOf(newValue);
-//	}
-
 	@Override
-	public void copy(E src, E dest) {
-		dest.setPGTextArray(this, src.getPGTextArray(this));
+	public void set(W e, PGTextArrayHolder newValue)
+			throws EntityRuntimeException {
+		e.setPGTextArray(this, newValue);
 	}
-
-	@Override
-	public PGTextArrayAttribute<A, E> self() {
-		return this;
-	}
-
+	
 	@Override
 	public PGTextArrayHolder as(ValueHolder<?, ?, ?> holder) {
 		return PGTextArrayHolder.of(holder);
@@ -115,3 +99,4 @@ public class PGTextArrayAttribute<
 		return PGTextArrayHolder.valueOf(newValue);
 	}
 }
+

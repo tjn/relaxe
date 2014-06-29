@@ -32,62 +32,61 @@ import com.appspot.relaxe.value.DateHolder;
 import com.appspot.relaxe.value.ValueHolder;
 
 
-public final class DateAttribute<	
-	A extends AttributeName,	
-	E extends HasDate<A, E>
+public final class DateAttribute<
+	A extends AttributeName,
+	E extends HasDate.Read<A, E, B>,
+	B extends HasDate.Write<A, E, B>
 >
-	extends AbstractAttribute<A, E, Date, DateType, DateHolder, DateAttribute<A, E>>
-{
+	extends AbstractAttribute<A, E, B, Date, DateType, DateHolder, DateAttribute<A, E, B>>	
+{	
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -8003688473297829554L;
-
+	private static final long serialVersionUID = 3465654564903987460L;
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */	
 	private DateAttribute() {
 	}
-
-	private DateAttribute(HasDateAttribute<A, E> meta, A name) {
-		super(name);
-		meta.register(this);
+	
+	private DateAttribute(A name) {
+		super(name);		
 	}
 	
 	public static <
 		X extends AttributeName,
-		T extends HasDate<X, T>
+		T extends HasDate.Read<X, T, S>,
+		S extends HasDate.Write<X, T, S>
 	>
-	DateAttribute<X, T> get(HasDateAttribute<X, T> meta, X a) {
-		DateAttribute<X, T> k = meta.getDateAttribute(a);
+	DateAttribute<X, T, S> get(HasDateAttribute<X, T, S> meta, X a) {
+		DateAttribute<X, T, S> k = meta.getDateAttribute(a);
 		
 		if (k == null) {
 			ValueType<?> t = a.type();
 			
 			if (t != null && DateType.TYPE.equals(t)) {
-				k = new DateAttribute<X, T>(meta, a);
+				k = new DateAttribute<X, T, S>(a);
+				meta.register(k);
 			}
 		}
 				
 		return k;
 	}
-
-	
+		
 	@Override
 	public DateType type() {
 		return DateType.TYPE;
 	}
-
+	
 	@Override
-	public void set(E e, DateHolder newValue) 
-		throws EntityRuntimeException {
+	public void set(B e, DateHolder newValue) {
 		e.setDate(this, newValue);
 	}
 	
 	@Override
-	public DateHolder get(E e) 
-		throws EntityRuntimeException {
-		return e.getDate(this);
+	public DateHolder get(E e) {
+		return e.getDate(self());
 	}
 	
 	@Override
@@ -96,18 +95,22 @@ public final class DateAttribute<
 	}
 	
 	@Override
-	public void copy(E src, E dest)
-		throws EntityRuntimeException {
+	public void copy(E src, B dest) {
 		dest.setDate(this, src.getDate(this));
-	}
-
-	@Override
-	public DateAttribute<A, E> self() {
-		return this;		
 	}
 	
 	@Override
-	public DateHolder as(ValueHolder<?, ?, ?> holder) {
-		return DateHolder.as(holder);
+	public DateAttribute<A, E, B> self() {
+		return this;
+	}
+	
+	@Override
+	public void reset(B dest) throws EntityRuntimeException {
+		dest.setDate(this, DateHolder.NULL_HOLDER);
+	}
+		
+	@Override
+	public DateHolder as(ValueHolder<?, ?, ?> unknown) {
+		return unknown.asDateHolder();
 	}
 }

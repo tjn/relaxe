@@ -41,6 +41,7 @@ import com.appspot.relaxe.ent.EntityQueryContext;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityQueryElementTag;
 import com.appspot.relaxe.ent.EntityRuntimeException;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
 import com.appspot.relaxe.ent.query.EntityQuerySortKey;
@@ -66,20 +67,21 @@ import com.appspot.relaxe.value.ReferenceHolder;
 public class EntityQueryExpressionBuilder<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	RE extends EntityQueryElement<A, R, T, E, H, F, M, RE>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+	RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
 >
 	implements EntityQueryContext {
 	
-	private EntityQuery<A, R, T, E, H, F, M, RE> query;		
+	private EntityQuery<A, R, T, E, B, H, F, M, RE> query;		
 	private QueryExpression result;
 	private LinkedHashMap<Integer, TableReference> originMap;
 	
-	private Map<EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?>, TableReference> tableReferenceMap;
+	private Map<EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?>, TableReference> tableReferenceMap;
 	private Map<EntityQueryElementTag, Entry> entryMap;
 	private Map<JoinKey, TableReference> referenceMap;
 		
@@ -101,11 +103,11 @@ public class EntityQueryExpressionBuilder<
 		}
 	}	
 	
-	public EntityQueryExpressionBuilder(EntityQuery<A, R, T, E, H, F, M, RE> query) {
+	public EntityQueryExpressionBuilder(EntityQuery<A, R, T, E, B, H, F, M, RE> query) {
 		this(null, query);
 		
 	}
-	public EntityQueryExpressionBuilder(EntityQueryContext parent, EntityQuery<A, R, T, E, H, F, M, RE> query) {
+	public EntityQueryExpressionBuilder(EntityQueryContext parent, EntityQuery<A, R, T, E, B, H, F, M, RE> query) {
 		super();
 		this.parent = parent;
 		this.query = query;
@@ -130,7 +132,7 @@ public class EntityQueryExpressionBuilder<
 	}
 	
 	@Override
-	public EntityQuery<A, R, T, E, H, F, M, RE> getQuery() {
+	public EntityQuery<A, R, T, E, B, H, F, M, RE> getQuery() {
 		return query;
 	}
 
@@ -164,7 +166,7 @@ public class EntityQueryExpressionBuilder<
 	private void addAttributes(Select.Builder selectBuilder) {
 		int cc = 0;
 		
-		for (Map.Entry<EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?>, TableReference> e : this.tableReferenceMap.entrySet()) {
+		for (Map.Entry<EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?>, TableReference> e : this.tableReferenceMap.entrySet()) {
 			int nc = addAttributes(e.getKey(), e.getValue(), selectBuilder, cc);
 			cc += nc;
 		}
@@ -195,7 +197,7 @@ public class EntityQueryExpressionBuilder<
 		
 		pl = append(pl, query.predicates());
 
-		for (EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> e : tableReferenceMap.keySet()) {
+		for (EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> e : tableReferenceMap.keySet()) {
 			pl = append(pl, e.predicates());
 		}
 		
@@ -243,7 +245,7 @@ public class EntityQueryExpressionBuilder<
 	}
 
 	private void populateTableReferenceMap() {
-		this.tableReferenceMap = new LinkedHashMap<EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?>, TableReference>();
+		this.tableReferenceMap = new LinkedHashMap<EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?>, TableReference>();
 		this.entryMap = new HashMap<EntityQueryElementTag, Entry>();
 		
 		RE root = this.query.getRootElement();		
@@ -264,15 +266,16 @@ public class EntityQueryExpressionBuilder<
 	private <
 		XA extends AttributeName,
 		XR extends Reference,
-		XT extends ReferenceType<XA, XR, XT, XE, XH, XF, XM>,
-		XE extends Entity<XA, XR, XT, XE, XH, XF, XM>,
+		XT extends ReferenceType<XA, XR, XT, XE, XB, XH, XF, XM>,
+		XE extends Entity<XA, XR, XT, XE, XB, XH, XF, XM>,
+		XB extends MutableEntity<XA, XR, XT, XE, XB, XH, XF, XM>,
 		XH extends ReferenceHolder<XA, XR, XT, XE, XH, XM>,
-		XF extends EntityFactory<XE, XH, XM, XF>,
-		XM extends EntityMetaData<XA, XR, XT, XE, XH, XF, XM>,
-		XRE extends EntityQueryElement<XA, XR, XT, XE, XH, XF, XM, XRE>
+		XF extends EntityFactory<XE, XB, XH, XM, XF>,
+		XM extends EntityMetaData<XA, XR, XT, XE, XB, XH, XF, XM>,
+		XRE extends EntityQueryElement<XA, XR, XT, XE, XB, XH, XF, XM, XRE>
 	>	
-	TableReference populateTableReferenceMap(EntityQueryElement<XA, XR, XT, XE, XH, XF, XM, XRE> element) {
-		Map<EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?>, TableReference> rm = this.tableReferenceMap;
+	TableReference populateTableReferenceMap(EntityQueryElement<XA, XR, XT, XE, XB, XH, XF, XM, XRE> element) {
+		Map<EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?>, TableReference> rm = this.tableReferenceMap;
 					
 		TableReference tref = rm.get(element);
 		
@@ -287,8 +290,8 @@ public class EntityQueryExpressionBuilder<
 		Set<XR> rs = meta.relationships();
 		
 		for (XR xref : rs) {
-			EntityKey<XA, XR, XT, XE, XH, XF, XM, ?, ?, ?, ?, ?, ?, ?, ?> key = meta.getEntityKey(xref);
-			EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> ce = element.getQueryElement(key);
+			EntityKey<XA, XR, XT, XE, XB, XH, XF, XM, ?, ?, ?, ?, ?, ?, ?, ?, ?> key = meta.getEntityKey(xref);
+			EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> ce = element.getQueryElement(key);
 			
 			if (ce != null) {
 				TableReference rr = populateTableReferenceMap(ce);
@@ -314,14 +317,15 @@ public class EntityQueryExpressionBuilder<
 	private <
 		XA extends AttributeName,
 		XR extends Reference,
-		XT extends ReferenceType<XA, XR, XT, XE, XH, XF, XM>,
-		XE extends Entity<XA, XR, XT, XE, XH, XF, XM>,
+		XT extends ReferenceType<XA, XR, XT, XE, XB, XH, XF, XM>,
+		XE extends Entity<XA, XR, XT, XE, XB, XH, XF, XM>,
+		XB extends MutableEntity<XA, XR, XT, XE, XB, XH, XF, XM>,
 		XH extends ReferenceHolder<XA, XR, XT, XE, XH, XM>,
-		XF extends EntityFactory<XE, XH, XM, XF>,
-		XM extends EntityMetaData<XA, XR, XT, XE, XH, XF, XM>,
-		XRE extends EntityQueryElement<XA, XR, XT, XE, XH, XF, XM, XRE>
+		XF extends EntityFactory<XE, XB, XH, XM, XF>,
+		XM extends EntityMetaData<XA, XR, XT, XE, XB, XH, XF, XM>,
+		XRE extends EntityQueryElement<XA, XR, XT, XE, XB, XH, XF, XM, XRE>
 	>	
-	int addAttributes(EntityQueryElement<XA, XR, XT, XE, XH, XF, XM, XRE> element, TableReference tref, Select.Builder selectBuilder, final int column) {
+	int addAttributes(EntityQueryElement<XA, XR, XT, XE, XB, XH, XF, XM, XRE> element, TableReference tref, Select.Builder selectBuilder, final int column) {
 				
 		int added = 0;
 		
@@ -424,16 +428,17 @@ public class EntityQueryExpressionBuilder<
 	<
 		MA extends AttributeName,
 		MR extends Reference,
-		MT extends ReferenceType<MA, MR, MT, ME, MH, MF, MM>,
-		ME extends Entity<MA, MR, MT, ME, MH, MF, MM>,
+		MT extends ReferenceType<MA, MR, MT, ME, MB, MH, MF, MM>,
+		ME extends Entity<MA, MR, MT, ME, MB, MH, MF, MM>,
+		MB extends MutableEntity<MA, MR, MT, ME, MB, MH, MF, MM>,
 		MH extends ReferenceHolder<MA, MR, MT, ME, MH, MM>,		
-		MF extends EntityFactory<ME, MH, MM, MF>,		
-		MM extends EntityMetaData<MA, MR, MT, ME, MH, MF, MM>,		
-		MX extends EntityQueryElement<MA, MR, MT, ME, MH, MF, MM, MX>
+		MF extends EntityFactory<ME, MB, MH, MM, MF>,		
+		MM extends EntityMetaData<MA, MR, MT, ME, MB, MH, MF, MM>,		
+		MX extends EntityQueryElement<MA, MR, MT, ME, MB, MH, MF, MM, MX>
 	>
 	AbstractTableReference createTableReference(
-			EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> parent,
-			EntityQueryElement<MA, MR, MT, ME, MH, MF, MM, MX> element, 
+			EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> parent,
+			EntityQueryElement<MA, MR, MT, ME, MB, MH, MF, MM, MX> element, 
 			AbstractTableReference qref, 
 			ForeignKey fk, 
 			TableReference referencing,
@@ -556,15 +561,16 @@ public class EntityQueryExpressionBuilder<
 	private	<
 		KA extends AttributeName,
 		KR extends Reference,
-		KT extends ReferenceType<KA, KR, KT, KE, KH, KF, KM>,
-		KE extends Entity<KA, KR, KT, KE, KH, KF, KM>,
+		KT extends ReferenceType<KA, KR, KT, KE, KB, KH, KF, KM>,
+		KE extends Entity<KA, KR, KT, KE, KB, KH, KF, KM>,
+		KB extends MutableEntity<KA, KR, KT, KE, KB, KH, KF, KM>,
 		KH extends ReferenceHolder<KA, KR, KT, KE, KH, KM>,
-		KF extends EntityFactory<KE, KH, KM, KF>,
-		KM extends EntityMetaData<KA, KR, KT, KE, KH, KF, KM>,		
-		KX extends EntityQueryElement<KA, KR, KT, KE, KH, KF, KM, KX>
+		KF extends EntityFactory<KE, KB, KH, KM, KF>,
+		KM extends EntityMetaData<KA, KR, KT, KE, KB, KH, KF, KM>,		
+		KX extends EntityQueryElement<KA, KR, KT, KE, KB, KH, KF, KM, KX>
 	>
 	AbstractTableReference processReferences(
-			EntityQueryElement<KA, KR, KT, KE, KH, KF, KM, KX> template, 
+			EntityQueryElement<KA, KR, KT, KE, KB, KH, KF, KM, KX> template, 
 			AbstractTableReference qref, 
 			TableReference tref,			 
 			Map<EntityQueryElementTag, TableReference> visited)
@@ -576,8 +582,8 @@ public class EntityQueryExpressionBuilder<
 		Set<KR> rs = meta.relationships();
 		
 		for (KR kr : rs) {
-			EntityKey<KA, KR, KT, KE, KH, KF, KM, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(kr);
-			EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> t = template.getQueryElement(ek);
+			EntityKey<KA, KR, KT, KE, KB, KH, KF, KM, ?, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(kr);
+			EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> t = template.getQueryElement(ek);
 						
 	//		logger().debug("ref-template for: " + ek + " => " + t);
 			
@@ -651,11 +657,11 @@ public class EntityQueryExpressionBuilder<
 	 * @return
 	 */
 	protected <
-		QE extends EntityQueryElement<?, ?, ?, ?, ?, ?, ?, QE>
+		QE extends EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, QE>
 	>	
 	AbstractTableReference join(
 			AbstractTableReference lhs, TableReference rhs, 
-			EntityQueryElement<?, ?, ?, ?, ?, ?, ?, QE> element, TableReference referencing, 
+			EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, QE> element, TableReference referencing, 
 			List<CompoundJoinCondition.Component> jcl) {		
 		
 				

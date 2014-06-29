@@ -28,18 +28,21 @@ public interface HasIntervalAttribute	{
 		
 	interface YearMonth<
 		A extends AttributeName,
-		E extends HasInterval.YearMonth<A, E>	
+		R extends HasYearMonthInterval.Read<A, R, W>,
+		W extends HasYearMonthInterval.Write<A, R, W>
+	
 	> {
-		IntervalAttribute.YearMonth<A, E> getYearMonthIntervalAttribute(A a);	
-		void register(IntervalAttribute.YearMonth<A, E> key);		
+		IntervalAttribute.YearMonth<A, R, W> getYearMonthIntervalAttribute(A a);	
+		void register(IntervalAttribute.YearMonth<A, R, W> key);		
 	}
 
 	interface DayTime<
 		A extends AttributeName,
-		E extends HasInterval.DayTime<A, E>	
+		R extends HasDayTimeInterval.Read<A, R, W>,
+		W extends HasDayTimeInterval.Write<A, R, W>
+	
 	> {
-		IntervalAttribute.DayTime<A, E> getDayTimeIntervalAttribute(A a);	
-		void register(IntervalAttribute.DayTime<A, E> key);		
+		IntervalAttribute.DayTime<A, R, W> getDayTimeIntervalAttribute(A a);	
+		void register(IntervalAttribute.DayTime<A, R, W> key);		
 	}
-
 }

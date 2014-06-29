@@ -24,15 +24,16 @@ package com.appspot.relaxe.mysql.samples;
 
 import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.ent.AttributeName;
-import com.appspot.relaxe.ent.Content;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.MutableEntity;
+import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.rdbms.PersistenceContext;
 import com.appspot.relaxe.rdbms.mysql.MySQLImplementation;
 import com.appspot.relaxe.mysql.AbstractMySQLTestCase;
-import com.appspot.relaxe.rpc.ReferenceHolder;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 
 public class MySQLSamplesTriggerTest
@@ -50,17 +51,17 @@ public class MySQLSamplesTriggerTest
 	
 	@Override
 	protected <
-		A extends Attribute, 
-		R extends com.appspot.relaxe.ent.Reference, 
-		T extends ReferenceType<A, R, T, E, H, F, M, C>, 
-		E extends Entity<?, ?, ?, ?, ?, ?, ?>,
-		H extends ReferenceHolder<A, R, T, E, H, M, C>,
-		F extends EntityFactory<E, H, M, F, C>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M, C>,
-		C extends Content
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	>
-	PersistenceManager<A, R, T, E, H, F, M, C> create(E e) {
-		PersistenceManager<A, R, T, E, H, F, M, C> pm = new PersistenceManager<A, R, T, E, H, F, M, C>(e, getPersistenceContext(), null);
+	PersistenceManager<A, R, T, E, B, H, F, M> create(E e) {
+		PersistenceManager<A, R, T, E, B, H, F, M> pm = new PersistenceManager<A, R, T, E, B, H, F, M>(e, getPersistenceContext(), null);
 		return pm;
 	}
 }

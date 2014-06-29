@@ -49,14 +49,15 @@ import com.appspot.relaxe.value.ValueHolder;
 public abstract class DefaultEntityQueryElement<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+	QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
 > 
-	implements EntityQueryElement<A, R, T, E, H, F, M, QE>	
+	implements EntityQueryElement<A, R, T, E, B, H, F, M, QE>	
 {
 
 	/**
@@ -83,14 +84,14 @@ public abstract class DefaultEntityQueryElement<
 		
 
 	@Override
-	public abstract EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(EntityKey<A, R, T, E,H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k);
+	public abstract EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(EntityKey<A, R, T, E, B, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?, ?> k);
 		
 	
 //	public abstract static class DefaultBuilder<
 //		A extends com.appspot.relaxe.ent.Attribute,
 //		R extends com.appspot.relaxe.ent.Reference,
 //		T extends ReferenceType<A, R, T, E, H, F, M>,
-//		E extends Entity<A, R, T, E, H, F, M>,
+//		E extends Entity<A, R, T, E, B, H, F, M>,
 //		H extends ReferenceHolder<A, R, T, E, H, M>,
 //		F extends EntityFactory<E, H, M, F>,		
 //		M extends EntityMetaData<A, R, T, E, H, F, M>,
@@ -117,7 +118,7 @@ public abstract class DefaultEntityQueryElement<
 	
 	@Override
 	public <
-		K extends Attribute<A, E, ?, ?, ?, K>
+		K extends Attribute<A, E, ?, ?, ?, ?, K>
 	> 
 	EntityQueryPredicate newEquals(K key, EntityQueryValue rhs) {
 		EntityQueryAttributeValueReference<A, QE> lhs = new EntityQueryAttributeValueReference<A, QE>(self(), key.name());
@@ -129,7 +130,7 @@ public abstract class DefaultEntityQueryElement<
 		XV extends Serializable, 
 		XT extends ValueType<XT>, 
 		XH extends ValueHolder<XV, XT, XH>, 
-		K extends Attribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, ?, XV, XT, XH, K>
 	> 
 	EntityQueryPredicate newNull(K key) {
 		EntityQueryAttributeValueReference<A, QE> ref = new EntityQueryAttributeValueReference<A, QE>(self(), key.name());
@@ -142,7 +143,7 @@ public abstract class DefaultEntityQueryElement<
 		XV extends Serializable, 
 		XT extends ValueType<XT>, 
 		XH extends ValueHolder<XV, XT, XH>, 
-		K extends Attribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, ?, XV, XT, XH, K>
 	> 
 	EntityQueryPredicate newNotNull(K key) {
 		EntityQueryAttributeValueReference<A, QE> ref = new EntityQueryAttributeValueReference<A, QE>(self(), key.name());
@@ -182,7 +183,7 @@ public abstract class DefaultEntityQueryElement<
 		XV extends Serializable, 
 		XT extends ValueType<XT>, 
 		XH extends ValueHolder<XV, XT, XH>, 
-		K extends Attribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, ?, XV, XT, XH, K>
 	> 
 	EntityQueryPredicate newEquals(K key, XH rhs) {
 		return newPredicate(key, Comparison.Op.EQ, rhs);
@@ -193,7 +194,7 @@ public abstract class DefaultEntityQueryElement<
 		XV extends Serializable, 
 		XT extends ValueType<XT>, 
 		XH extends ValueHolder<XV, XT, XH>, 
-		K extends Attribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, ?, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newPredicate(K key, Op op, XH value) {				
 		M meta = getMetaData();
@@ -208,7 +209,7 @@ public abstract class DefaultEntityQueryElement<
 		XV extends Serializable, 
 		XT extends ValueType<XT>, 
 		XH extends ValueHolder<XV, XT, XH>, 
-		K extends Attribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, ?, XV, XT, XH, K>
 	> 
 	EntityQueryPredicate newEquals(K key, XV value) {				
 		return newEquals(key, key.newHolder(value));
@@ -217,7 +218,7 @@ public abstract class DefaultEntityQueryElement<
 	
 	@Override
 	public <
-		K extends Attribute<A, E, ?, ?, ?, K>
+		K extends Attribute<A, E, ?, ?, ?, ?, K>
 	>
 	EntityQueryPredicate newPredicate(K key, Comparison.Op op, EntityQueryValue rhs) {		
 		EntityQueryAttributeValueReference<A, QE> lhs = new EntityQueryAttributeValueReference<A, QE>(self(), key.name());		
@@ -229,7 +230,7 @@ public abstract class DefaultEntityQueryElement<
 		XV extends Serializable, 
 		XT extends ValueType<XT>, 
 		XH extends ValueHolder<XV, XT, XH>, 
-		K extends Attribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, ?, XV, XT, XH, K>
 	> 
 	EntityQuerySortKey newSortKey(K key, boolean ascending) {		
 		return ascending ? 
@@ -245,7 +246,7 @@ public abstract class DefaultEntityQueryElement<
 		XV extends Serializable, 
 		XT extends ValueType<XT>, 
 		XH extends ValueHolder<XV, XT, XH>, 
-		K extends Attribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, ?, XV, XT, XH, K>
 	> 
 	EntityQueryValue value(K key) {
 		return new EntityQueryAttributeValueReference<A, QE>(self(), key.name());

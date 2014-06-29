@@ -25,12 +25,13 @@ package com.appspot.relaxe.ent;
 import com.appspot.relaxe.value.ReferenceHolder;
 
 public interface EntityFactory<
-	E extends Entity<?, ?, ?, E, H, F, M>,
+	E extends Entity<?, ?, ?, E, B, H, F, M>,
+	B extends MutableEntity<?, ?, ?, E, B, H, F, M>,
 	H extends ReferenceHolder<?, ?, ?, E, H, M>,
-	M extends EntityMetaData<?, ?, ?, E, H, F, M>,
-	F extends EntityFactory<E, H, M, F>
+	M extends EntityMetaData<?, ?, ?, E, B, H, F, M>,
+	F extends EntityFactory<E, B, H, M, F>
 > {
-	E newEntity();
+	B newEntity();
 	H newHolder(E value);
 	M getMetaData();
 	F self();

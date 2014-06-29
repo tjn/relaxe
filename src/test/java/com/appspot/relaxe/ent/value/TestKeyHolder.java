@@ -41,18 +41,19 @@ import com.appspot.relaxe.value.LongHolder;
 
 
 public class TestKeyHolder
-	implements HasInteger<TestKeyHolder.Attribute, TestKeyHolder>, HasLong<TestKeyHolder.Attribute, TestKeyHolder> {
+	implements 
+		HasInteger.Read<TestKeyHolder.Attribute, TestKeyHolder, TestKeyHolder>, 
+		HasInteger.Write<TestKeyHolder.Attribute, TestKeyHolder, TestKeyHolder>,
+		HasLong.Read<TestKeyHolder.Attribute, TestKeyHolder, TestKeyHolder>, 
+		HasLong.Write<TestKeyHolder.Attribute, TestKeyHolder, TestKeyHolder> {
 
-	
-	
-	
 	
 
 	<
 		S extends Serializable,
 		P extends AbstractValueType<P>,
 		PH extends AbstractValueHolder<S, P, PH>,
-		K extends com.appspot.relaxe.ent.value.Attribute<TestKeyHolder.Attribute, TestKeyHolder, S, P, PH, K>
+		K extends com.appspot.relaxe.ent.value.Attribute<TestKeyHolder.Attribute, TestKeyHolder, TestKeyHolder, S, P, PH, K>
 	>
 	PH get(K k) {
 		PH ph = k.get(this);
@@ -99,7 +100,7 @@ public class TestKeyHolder
 	}
 
 	@Override
-	public IntegerHolder getInteger(IntegerAttribute<Attribute, TestKeyHolder> key) {
+	public IntegerHolder getInteger(IntegerAttribute<Attribute, TestKeyHolder, TestKeyHolder> key) {
 		switch (key.name()) {
 		case A1:
 			return a1;
@@ -113,7 +114,7 @@ public class TestKeyHolder
 	}
 
 	@Override
-	public void setInteger(IntegerAttribute<Attribute, TestKeyHolder> key, IntegerHolder newValue) {
+	public void setInteger(IntegerAttribute<Attribute, TestKeyHolder, TestKeyHolder> key, IntegerHolder newValue) {
 		switch (key.name()) {
 		case A1:
 			a1 = newValue;
@@ -129,12 +130,12 @@ public class TestKeyHolder
 		
 
 	@Override
-	public LongHolder getLong(LongAttribute<Attribute, TestKeyHolder> key) {
+	public LongHolder getLong(LongAttribute<Attribute, TestKeyHolder, TestKeyHolder> key) {
 		return longHolderMap.get(key.name());		
 	}
 
 	@Override
-	public void setLong(LongAttribute<Attribute, TestKeyHolder> key,
+	public void setLong(LongAttribute<Attribute, TestKeyHolder, TestKeyHolder> key,
 			LongHolder newValue) {
 		longHolderMap.put(key.name(), newValue);		
 	}
@@ -143,13 +144,14 @@ public class TestKeyHolder
 	public static void main(String[] args) {
 		TestKeyHolder e = new TestKeyHolder();
 		
-		HasIntegerAttribute<Attribute, TestKeyHolder> meta = new HasIntegerAttribute<TestKeyHolder.Attribute, TestKeyHolder>() {
+		HasIntegerAttribute<Attribute, TestKeyHolder, TestKeyHolder> meta = 
+				new HasIntegerAttribute<TestKeyHolder.Attribute, TestKeyHolder, TestKeyHolder>() {
 
-			private IntegerAttribute<Attribute, TestKeyHolder> a1k = null;
-			private IntegerAttribute<Attribute, TestKeyHolder> a2k = null;
+			private IntegerAttribute<Attribute, TestKeyHolder, TestKeyHolder> a1k = null;
+			private IntegerAttribute<Attribute, TestKeyHolder, TestKeyHolder> a2k = null;
 			
 			@Override
-			public IntegerAttribute<Attribute, TestKeyHolder> getIntegerAttribute(TestKeyHolder.Attribute a) {
+			public IntegerAttribute<Attribute, TestKeyHolder, TestKeyHolder> getIntegerAttribute(TestKeyHolder.Attribute a) {
 				switch (a) {
 				case A1:
 					return a1k;
@@ -163,7 +165,7 @@ public class TestKeyHolder
 			}
 
 			@Override
-			public void register(IntegerAttribute<Attribute, TestKeyHolder> key) {
+			public void register(IntegerAttribute<Attribute, TestKeyHolder, TestKeyHolder> key) {
 				switch (key.name()) {
 				case A1:
 					a1k = key;
@@ -177,9 +179,18 @@ public class TestKeyHolder
 			}
 		};
 		
-		IntegerAttribute<TestKeyHolder.Attribute, TestKeyHolder> a1k = IntegerAttribute.get(meta, TestKeyHolder.Attribute.A1);
-			
+		IntegerAttribute<TestKeyHolder.Attribute, TestKeyHolder, TestKeyHolder> a1k = IntegerAttribute.get(meta, TestKeyHolder.Attribute.A1);			
 		IntegerHolder h = e.get(a1k);		
 		
+	}
+
+	@Override
+	public TestKeyHolder asRead() {	
+		return null;
+	}
+
+	@Override
+	public TestKeyHolder asWrite() {
+		return null;
 	}
 }

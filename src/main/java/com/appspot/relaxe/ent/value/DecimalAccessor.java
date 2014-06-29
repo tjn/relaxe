@@ -28,24 +28,30 @@ import com.appspot.relaxe.value.Decimal;
 import com.appspot.relaxe.value.DecimalHolder;
 
 public class DecimalAccessor<
-	A extends AttributeName,		
-	E extends HasDecimal<A, E>
+	A extends AttributeName,
+	R extends HasDecimal.Read<A, R, RW>,
+	RW extends HasDecimal.Read<A, R, RW> & HasDecimal.Write<A, R, RW>
 >
-	extends AbstractAttributeAccessor<A, E, Decimal, DecimalType, DecimalHolder, DecimalAttribute<A, E>> {
+	extends AbstractAttributeAccessor<A, R, RW, Decimal, DecimalType, DecimalHolder, DecimalAttribute<A, R, RW>> {
 
 	/**
-	 * 
+	 *
 	 */
-	private static final long serialVersionUID = -1855077165248914678L;
-
+	private static final long serialVersionUID = -2731889274638406123L;
+	
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
 	@SuppressWarnings("unused")
 	private DecimalAccessor() {
 	}
-
-	public DecimalAccessor(E target, DecimalAttribute<A, E> k) {
+	
+	public DecimalAccessor(RW target, DecimalAttribute<A, R, RW> k) {
 		super(target, k);
+	}
+	
+	@Override
+	public DecimalHolder getHolder() {
+		return getTarget().getDecimal(key());
 	}
 }

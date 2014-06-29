@@ -28,15 +28,15 @@ import com.appspot.relaxe.meta.Table;
 public interface TableMapper {
 	
 	enum Part {
-		INTERFACE,		
+		INTERFACE,
 		LITERAL_TABLE_ENUM,
 		ABSTRACT,		
 		HOOK,		
-		IMPLEMENTATION,
+		IMPLEMENTATION,		
 		HAS,
 		HAS_KEY,
 		FACTORY,
-		METADATA
+		METADATA_IMPLEMENTATION
 	}
 	
 		

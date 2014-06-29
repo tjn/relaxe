@@ -34,14 +34,15 @@ import com.appspot.relaxe.value.ArrayValue;
 public abstract class AbstractArrayAttribute<
 	A extends AttributeName,
 	E,
+	W,
 	O extends Serializable,
 	V extends ArrayValue<O>,
 	C extends ValueType<C>,
 	P extends ArrayType<P, C>,	 
 	H extends ArrayHolder<O, V, C, P, H>,
-	K extends AbstractArrayAttribute<A, E, O, V, C, P, H, K>
+	K extends AbstractArrayAttribute<A, E, W, O, V, C, P, H, K>
 	>
-	extends AbstractAttribute<A, E, V, P, H, K>
+	extends AbstractAttribute<A, E, W, V, P, H, K>
 {
 	/**
 	 *

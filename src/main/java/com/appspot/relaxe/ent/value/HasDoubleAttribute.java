@@ -24,8 +24,11 @@ package com.appspot.relaxe.ent.value;
 
 import com.appspot.relaxe.ent.AttributeName;
 
-public interface HasDoubleAttribute<A extends AttributeName, E extends HasDouble<A, E>> {
-
-	DoubleAttribute<A, E> getDoubleAttribute(A a);
-	void register(DoubleAttribute<A, E> key);
+public interface HasDoubleAttribute<
+	A extends AttributeName,
+	E extends HasDouble.Read<A, E, B>,	
+	B extends HasDouble.Write<A, E, B>
+> {
+	DoubleAttribute<A, E, B> getDoubleAttribute(A a);	
+	void register(DoubleAttribute<A, E, B> key);
 }

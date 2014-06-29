@@ -40,12 +40,13 @@ import com.appspot.relaxe.value.ValueHolder;
 public interface EntityQueryElement<
 	A extends com.appspot.relaxe.ent.AttributeName,
 	R extends com.appspot.relaxe.ent.Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,		
-	M extends EntityMetaData<A, R, T, E, H, F, M>,
-	QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
+	F extends EntityFactory<E, B, H, M, F>,		
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+	QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
 >
 	extends Request, EntityQueryElementTag
 {	
@@ -61,7 +62,7 @@ public interface EntityQueryElement<
 		
 	Collection<EntityQueryPredicate> predicates();
 		
-	public EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k);
+	public EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(EntityKey<A, R, T, E, B, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?, ?> k);
 	
 	
 	QE self();
@@ -70,27 +71,29 @@ public interface EntityQueryElement<
 	public interface Builder<
 		A extends com.appspot.relaxe.ent.AttributeName,
 		R extends com.appspot.relaxe.ent.Reference,
-		T extends ReferenceType<A, R, T, E, H, F, M>,
-		E extends Entity<A, R, T, E, H, F, M>,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, H, M, F>,		
-		M extends EntityMetaData<A, R, T, E, H, F, M>,
-		QE extends EntityQueryElement<A, R, T, E, H, F, M, QE>
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+		QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
 	> {
 		
-		EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> k);
+		EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(EntityKey<A, R, T, E, B, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?, ?> k);
 		
 		public 
 		<			
 			RA extends com.appspot.relaxe.ent.AttributeName,
 			RR extends com.appspot.relaxe.ent.Reference,	
-			RT extends ReferenceType<RA, RR, RT, RE, RH, RF, RM>,
-			RE extends Entity<RA, RR, RT, RE, RH, RF, RM>,
+			RT extends ReferenceType<RA, RR, RT, RE, RB, RH, RF, RM>,
+			RE extends Entity<RA, RR, RT, RE, RB, RH, RF, RM>,
+			RB extends MutableEntity<RA, RR, RT, RE, RB, RH, RF, RM>,
 			RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
-			RF extends EntityFactory<RE, RH, RM, RF>,
-			RM extends EntityMetaData<RA, RR, RT, RE, RH, RF, RM>,			
-			RQ extends EntityQueryElement<RA, RR, RT, RE, RH, RF, RM, RQ>,
-			K extends EntityKey<A, R, T, E, H, F, M, RA, RR, RT, RE, RH, RF, RM, K>	
+			RF extends EntityFactory<RE, RB, RH, RM, RF>,
+			RM extends EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>,			
+			RQ extends EntityQueryElement<RA, RR, RT, RE, RB, RH, RF, RM, RQ>,
+			K extends EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, K>	
 		>
 		void setQueryElement(K key, RQ queryElement);
 						
@@ -99,8 +102,8 @@ public interface EntityQueryElement<
 		void add(A attribute);		
 		void remove(A attribute);
 		
-		void add(com.appspot.relaxe.ent.value.Attribute<A, E, ?, ?, ?, ?> key);
-		void remove(com.appspot.relaxe.ent.value.Attribute<A, E, ?, ?, ?, ?> key);
+		void add(com.appspot.relaxe.ent.value.Attribute<A, E, ?, ?, ?, ?, ?> key);
+		void remove(com.appspot.relaxe.ent.value.Attribute<A, E, ?, ?, ?, ?, ?> key);
 		
 		void removeAll(Collection<A> attribute);
 						
@@ -116,7 +119,7 @@ public interface EntityQueryElement<
 //	public TableReference getOrigin(int column)
 //		throws EntityException;
 //	
-//	public EntityMetaData<?, ?, ?, ?, ?, ?, ?> getMetaData(TableReference tr)
+//	public EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> getMetaData(TableReference tr)
 //		throws EntityException;
 	
 //	@Override
@@ -130,7 +133,7 @@ public interface EntityQueryElement<
 		XV extends Serializable, 
 		XT extends ValueType<XT>, 
 		XH extends ValueHolder<XV, XT, XH>, 
-		K extends Attribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, ?, XV, XT, XH, K>
 	> 
 	EntityQueryValue value(K key);
 	
@@ -141,7 +144,7 @@ public interface EntityQueryElement<
 		XV extends Serializable,
 		XT extends ValueType<XT>,
 		XH extends ValueHolder<XV, XT, XH>,	
-		K extends Attribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, ?, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newNull(K key);
 	
@@ -149,12 +152,12 @@ public interface EntityQueryElement<
 		XV extends Serializable,
 		XT extends ValueType<XT>,
 		XH extends ValueHolder<XV, XT, XH>,	
-		K extends Attribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, ?, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newNotNull(K key);
 	
 	<
-		K extends Attribute<A, E, ?, ?, ?, K>
+		K extends Attribute<A, E, ?, ?, ?, ?, K>
 	>
 	EntityQueryPredicate newEquals(K key, EntityQueryValue value);
 	
@@ -162,7 +165,7 @@ public interface EntityQueryElement<
 		XV extends Serializable,
 		XT extends ValueType<XT>,
 		XH extends ValueHolder<XV, XT, XH>,	
-		K extends Attribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, ?, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newEquals(K key, XH value);
 	
@@ -170,12 +173,12 @@ public interface EntityQueryElement<
 		XV extends Serializable,
 		XT extends ValueType<XT>,
 		XH extends ValueHolder<XV, XT, XH>,	
-		K extends Attribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, ?, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newEquals(K key, XV value);
 	
 	<
-		K extends Attribute<A, E, ?, ?, ?, K>
+		K extends Attribute<A, E, ?, ?, ?, ?, K>
 	>
 	EntityQueryPredicate newPredicate(K key, Comparison.Op op, EntityQueryValue value);
 	
@@ -183,7 +186,7 @@ public interface EntityQueryElement<
 		XV extends Serializable,
 		XT extends ValueType<XT>,
 		XH extends ValueHolder<XV, XT, XH>,	
-		K extends Attribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, ?, XV, XT, XH, K>
 	>
 	EntityQueryPredicate newPredicate(K key, Comparison.Op op, XH value);
 
@@ -191,7 +194,7 @@ public interface EntityQueryElement<
 		XV extends Serializable,
 		XT extends ValueType<XT>,
 		XH extends ValueHolder<XV, XT, XH>,	
-		K extends Attribute<A, E, XV, XT, XH, K>
+		K extends Attribute<A, E, ?, XV, XT, XH, K>
 	>
 	EntityQuerySortKey newSortKey(K key, boolean ascending);
 

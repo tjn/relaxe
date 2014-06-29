@@ -26,9 +26,10 @@ import com.appspot.relaxe.ent.AttributeName;
 
 public interface HasMPAARatingAttribute<
 	A extends AttributeName,
-	E extends HasMPAARating<A, E>	
->	{
+	R extends HasMPAARating.Read<A, R, W>,	
+	W extends HasMPAARating.Write<A, R, W>
+> {
 
-	MPAARatingKey<A, E> getMPAARatingKey(A a);	
-	void register(MPAARatingKey<A, E> key);
+	MPAARatingAttribute<A, R, W> getMPAARatingAttribute(A a);	
+	void register(MPAARatingAttribute<A, R, W> key);
 }

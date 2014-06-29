@@ -22,13 +22,12 @@
  */
 package com.appspot.relaxe.env.pg;
 
-import com.appspot.relaxe.types.VarcharType;
 import com.appspot.relaxe.value.ArrayValue;
 import com.appspot.relaxe.value.StringArrayHolder;
 import com.appspot.relaxe.value.ValueHolder;
 
 public class PGTextArrayHolder
-	extends StringArrayHolder<VarcharType, PGTextArrayType, PGTextArrayHolder> {
+	extends StringArrayHolder<PGTextType, PGTextArrayType, PGTextArrayHolder> {
 
 	/**
 	 * 

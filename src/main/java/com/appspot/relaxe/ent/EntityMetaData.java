@@ -38,11 +38,12 @@ import com.appspot.relaxe.value.ReferenceHolder;
 public interface EntityMetaData<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, H, F, M>,	
-	E extends Entity<A, R, T, E, H, F, M>,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
 	H extends ReferenceHolder<A, R, T, E, H, M>,
-	F extends EntityFactory<E, H, M, F>,	 
-	M extends EntityMetaData<A, R, T, E, H, F, M>
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>
 > 		 
 {
 
@@ -56,7 +57,7 @@ public interface EntityMetaData<
 
 	F getFactory();
 	
-	EntityBuilder<E, H> newBuilder(TableReference referencing, ForeignKey referencedBy, TableReference tableRef, EntityBuildContext ctx, UnificationContext unificationContext)
+	EntityBuilder<E, B, H> newBuilder(TableReference referencing, ForeignKey referencedBy, TableReference tableRef, EntityBuildContext ctx, UnificationContext unificationContext)
 		throws EntityException;
 	
 	EntityIdentityMap<A, R, T, E, H, M> getIdentityMap(UnificationContext ctx);
@@ -70,11 +71,10 @@ public interface EntityMetaData<
 
 	Column getColumn(A a);
 	A getAttribute(Column c);
-		
 	
-	Attribute<A, E, ?, ?, ?, ?> getKey(A a);
+	Attribute<A, E, B, ?, ?, ?, ?> getKey(A a);
 		
-	EntityKey<A, R, T, E, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?> getEntityKey(R ref);
+	EntityKey<A, R, T, E, B, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?, ?> getEntityKey(R ref);
 
 	ForeignKey getForeignKey(R r);
 

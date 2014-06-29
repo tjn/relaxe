@@ -29,6 +29,7 @@ import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityException;
 import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.expr.InsertStatement;
 import com.appspot.relaxe.types.ReferenceType;
@@ -50,13 +51,14 @@ public interface GeneratedKeyHandler {
 	 * @throws SQLException
 	 * @throws EntityException
 	 */	
-	<
-	    A extends AttributeName,
-	    R extends Reference,
-	    T extends ReferenceType<A, R, T, E, ?, ?, M>,
-	    E extends Entity<A, R, T, E, ?, ?, M>,
-		M extends EntityMetaData<A, R, T, E, ?, ?, M>
+	public <
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, B, ?, ?, M>,
+		E extends Entity<A, R, T, E, B, ?, ?, M>,
+		B extends MutableEntity<A, R, T, E, B, ?, ?, M>,
+		M extends EntityMetaData<A, R, T, E, B, ?, ?, M>
 	>
-	void processGeneratedKeys(InsertStatement insert, E target, Statement qs)
+	void processGeneratedKeys(InsertStatement insert, B target, Statement qs)
 		throws SQLException, EntityException;
 }
