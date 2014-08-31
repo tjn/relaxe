@@ -23,14 +23,14 @@
 package com.appspot.relaxe.pg.pagila;
 
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
-import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Language;
 import com.appspot.relaxe.value.IntegerHolder;
 
 public class PagilaEntityAttributeTest
-	extends AbstractPagilaTestCase {
+	extends AbstractPagilaEntityTestCase {
 		
 	public void testAttributes() {		
-		Film.Mutable fo = Film.Type.TYPE.getMetaData().getFactory().newEntity();
+		Film.Mutable fo = newFilm();
 		
 		{
 			assertNull(fo.getFilmId());
@@ -75,5 +75,41 @@ public class PagilaEntityAttributeTest
 			fo.setFilmId((IntegerHolder) null);
 			assertNull(fo.getInteger(Film.FILM_ID));			
 		}
+	}
+	
+	public void testReferences() {
+		Film.Mutable fo = newEntity(Film.Type.TYPE);
+		
+		{
+			assertNull(fo.getLanguage(Film.LANGUAGE));
+			
+			fo.setLanguage((Language) null);
+			Language.Holder h = fo.getLanguage();		
+			assertNotNull(h);
+			assertTrue(h.isNull());
+			
+			assertSame(h, fo.getLanguage(Film.LANGUAGE));
+			
+		}
+		
+		{
+			Language lang = newEntity(Language.Type.TYPE);
+			fo.setLanguage(lang);
+			Language.Holder h = fo.getLanguage();
+			assertNotNull(h);
+			assertFalse(h.isNull());
+		}
+		
+		{
+			Language lang = newEntity(Language.Type.TYPE);
+			fo.setLanguage(lang);
+			Language.Holder h = fo.getLanguage();
+			assertNotNull(h);
+			assertFalse(h.isNull());
+			
+			assertSame(h, fo.getLanguage(Film.LANGUAGE));			
+		}	
+		
+				
 	}
 }

@@ -55,8 +55,9 @@ public interface {{table-interface}}
 	        {{table-interface}}.MetaData
 	    > {{has-reference-write-list}} {{writable-attribute-container-interface-list}} {
 	    
-	    {{entity-attribute-read-write-accessor-signature-list}}	
-	
+	    {{entity-attribute-read-write-accessor-signature-list}}
+	    
+	    {{reference-container-read-write}}
 	}
 	
 	
@@ -390,6 +391,8 @@ public interface {{table-interface}}
 		}
 		
 	{{entity-attribute-read-accessor-signature-list}}
+	
+	{{reference-container-read}}
 
 } 
 

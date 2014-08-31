@@ -26,16 +26,20 @@ import java.util.Collections;
 import java.util.Map;
 
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
 
 
 public class EntitySnapshotDiff <
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, ?, ?, ?, M>,
-	E extends Entity<A, R, T, E, ?, ?, ?, M>,
-	M extends EntityMetaData<A, R, T, E, ?, ?, ?, M>
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>
 >
-	extends AbstractEntityDiff<A, R, T, E, M>
+	extends AbstractEntityDiff<A, R, T, E, B, H, F, M>
 {
 	private Map<A, Change> attributes = null;
 	private Map<R, Change> references = null;

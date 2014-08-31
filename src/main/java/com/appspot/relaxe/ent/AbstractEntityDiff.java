@@ -25,16 +25,21 @@ package com.appspot.relaxe.ent;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
 import com.appspot.relaxe.value.ValueHolder;
 
 
 public abstract class AbstractEntityDiff<
 	A extends AttributeName,
 	R extends Reference,
-	T extends ReferenceType<A, R, T, E, ?, ?, ?, M>,
-	E extends Entity<A, R, T, E, ?, ?, ?, M>,
-	M extends EntityMetaData<A, R, T, E, ?, ?, ?, M>
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>
 >
 	implements EntityDiff<A, R, T, E>
 {
@@ -133,6 +138,7 @@ public abstract class AbstractEntityDiff<
 		for (R r : meta.relationships()) {
 			Entity<?, ?, ?, ?, ?, ?, ?, ?> o = original.ref(r).value();
 			Entity<?, ?, ?, ?, ?, ?, ?, ?> m = modified.ref(r).value();
+			
 
 			if ((o == null && m == null) || (o == m)) {
 				continue;
@@ -147,22 +153,63 @@ public abstract class AbstractEntityDiff<
 				cm.put(r, Change.DELETION);
 				continue;
 			}
-
-			if (o != m && primaryKeyDiffers(o, m)) {
+			
+			EntityKey<A, R, T, E, B, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
+									
+			if (o != m && primaryKeyDiffers(ek, original, modified)) {
 				cm.put(r, Change.MODIFICATION);
-				continue;
-			}
+				continue;				
+			}			
 		}
 
 		return cm;
 	}
+	
+	
+	
+	private 
+	<
+		KA extends AttributeName,		
+		KR extends Reference,
+		KT extends ReferenceType<KA, KR, KT, KE, KB, KH, KF, KM>,
+		KE extends Entity<KA, KR, KT, KE, KB, KH, KF, KM>,
+		KB extends MutableEntity<KA, KR, KT, KE, KB, KH, KF, KM>,
+		KH extends ReferenceHolder<KA, KR, KT, KE, KH, KM>,
+		KF extends EntityFactory<KE, KB, KH, KM, KF>,
+		KM extends EntityMetaData<KA, KR, KT, KE, KB, KH, KF, KM>,
+		RA extends AttributeName,
+		RR extends Reference,	
+		RT extends ReferenceType<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RB extends MutableEntity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RB, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>	
+	>	
+	boolean primaryKeyDiffers(EntityKey<KA, KR, KT, KE, KB, KH, KF, KM, RA, RR, RT, RE, RB, RH, RF, RM, ?> key, KE a, KE b) {
+								
+		RH ra = key.get(a);
+		RH rb = key.get(b);
+		
+		if (ra == null || rb == null) {
+			return (ra != rb);
+		}		
+		
+		return primaryKeyDiffers(ra.value(), rb.value());		
+	}
+	
+	
+	
 
 	private
-	<P extends Entity<?, ?, ?, ?, ?, ?, ?, ?>>
+	<
+		P extends Entity<?, ?, ?, P, ?, ?, ?, ?>		
+	>
 	boolean primaryKeyDiffers(P o, P m) throws EntityRuntimeException {
-		Tuple<ValueHolder<?,?,?>> a = o.getPrimaryKey();
-		Tuple<ValueHolder<?,?,?>> b = m.getPrimaryKey();
-
+				
+		P a = o.toPrimaryKey();
+		P b = m.toPrimaryKey();
+		
 		if (a == null || b == null) {
 			return a != b;
 		}

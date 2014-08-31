@@ -48,7 +48,6 @@ import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityQueryResult;
 import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
-import com.appspot.relaxe.ent.Tuple;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.expr.AbstractRowValueConstructor;
@@ -150,8 +149,7 @@ public class PersistenceManager<
     private E target;    
     private PersistenceContext<?> persistenceContext = null;
     private UnificationContext unificationContext;
-
-    // private static Logger logger = JavaLogger.getLogger(PersistenceManager.class);
+    
     private static Logger logger = SLF4JLogger.getLogger(PersistenceManager.class);
     
     private MergeMode mergeMode;        
@@ -173,24 +171,18 @@ public class PersistenceManager<
     public InsertStatement createInsertStatement() throws EntityException {
         E pe = getTarget();
         
-        logger().debug("createInsertStatement: pe=" + pe);        
-    	// ValueRow newRow = new ValueRow();
-//    	List<ValuesListElement> values = new ArrayList<ValuesListElement>();
+//        logger().debug("createInsertStatement: pe=" + pe);        
     	List<RowValueConstructorElement> values = new ArrayList<RowValueConstructorElement>();
 
     	final M meta = pe.getMetaData();
     	BaseTable t = meta.getBaseTable();
     	
-//    	Set<Column> pks = meta.getPKDefinition();
-    	// Collection<Column> pks = meta.getBaseTable().getPrimaryKey().getColumnMap().values();
     	Set<Identifier> pks = meta.getBaseTable().getPrimaryKey().getColumnMap().keySet();
     	    	
-    	// ElementList<Identifier> names = new ElementList<Identifier>();
     	List<Identifier> names = new ArrayList<Identifier>();
-    	
 
     	for (A a : meta.attributes()) {
-    		logger().debug("createInsertStatement: a=" + a);
+//    		logger().debug("createInsertStatement: a=" + a);
     		
     		Column col = meta.getColumn(a);
     		ValueHolder<?, ?, ?> holder = pe.value(a);
@@ -214,14 +206,10 @@ public class PersistenceManager<
     			continue;    			
     		}
     		    		
-//    		ValuesListElement elem = createValuesListElement(col, holder);
-    		RowValueConstructorElement elem = createRowValueConstructorElement(col, holder);
-    		
+    		RowValueConstructorElement elem = createRowValueConstructorElement(col, holder);    		
     		values.add(elem);
     		names.add(col.getColumnName());
     	}
-
-//    	M m = target.getMetaData();
 
     	for (R r : meta.relationships()) {
             ForeignKey fk = meta.getForeignKey(r);
@@ -254,12 +242,7 @@ public class PersistenceManager<
             }
         }
     	
-    	
-    	// ValueRow newRow = new ValueRow(values);
-    	
     	RowValueConstructor rvc = AbstractRowValueConstructor.of(ElementList.newElementList(values));
-    	
-    	logger().debug("createInsertStatement: has-names=" + (!names.isEmpty()));
     	
     	return new InsertStatement(t, ElementList.newElementList(names), rvc);    	
     }
@@ -303,7 +286,6 @@ public class PersistenceManager<
    	
     	Predicate pkp = getPKPredicate(tref, pe);
 
-    	// ElementList<Assignment> assignments = new ElementList<Assignment>();
     	List<Assignment> al = new ArrayList<Assignment>();
 
     	for (A a : meta.attributes()) {
@@ -353,14 +335,14 @@ public class PersistenceManager<
     >    
     void processKey(EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, RK> key, Map<Column, Assignment> am) {
     	
-    	logger().debug("processKey - enter: " + key.name());
+//    	logger().debug("processKey - enter: " + key.name());
     	
     	final E e = getTarget();
     	final M m = e.getMetaData();
     	    	
     	RH rh = e.getRef(key.self());
     	
-    	logger().debug("rh: " + rh);
+//    	logger().debug("rh: " + rh);
     	
     	if (rh == null) {
     		return;
@@ -369,7 +351,7 @@ public class PersistenceManager<
 		ForeignKey fk = m.getForeignKey(key.name());			
 
 		if (rh.isNull()) {
-			logger().debug("null ref: " + rh);
+//			logger().debug("null ref: " + rh);
 			
 			for (Column c : fk.getColumnMap().values()) {
 		      	if (!am.containsKey(c)) {
@@ -380,7 +362,7 @@ public class PersistenceManager<
 		  else {
 			  RE re = rh.value();
 			  
-			  logger().debug("ref: " + re);
+//			  logger().debug("ref: " + re);
 //			  logger().debug("fk-cols: " + fk.columns().size());
 			  
 		      for (Column ce : fk.getColumnMap().values()) {
@@ -393,20 +375,6 @@ public class PersistenceManager<
 			  		ValueExpression vp = createValueExpression(ce, ph.self());    		
 				    am.put(ce, new Assignment(ce.getColumnName(), vp));
 			  	}                    
-			  
-			  
-//		      for (Map.Entry<Column, Column> ce : fk.columns().entrySet()) {
-//		          Column fc = ce.getValue();		          		          
-//		          AbstractPrimitiveHolder<?, ?, ?> ph = re.get(fc);
-//		          
-//		          logger().debug("rc: " + fc + " => " + ph);
-//		          
-//		          Column column = ce.getKey();
-//		          
-//		          if (ph != null) {    		    		    		
-//			  		ValueParameter<?, ?> vp = createParameter(column, ph.self());    		
-//				    am.put(column, new Assignment(column.getColumnName(), vp));
-//			  	}                    
 		     }
 		  }
 	}
@@ -420,13 +388,13 @@ public class PersistenceManager<
     		
     		try {
     			String qs = ds.generate();
-    			logger().debug("qs: " + qs);
+//    			logger().debug("qs: " + qs);
     			ps = c.prepareStatement(qs);
-    			logger().debug("ps sh: " + System.identityHashCode(ps));
+//    			logger().debug("ps sh: " + System.identityHashCode(ps));
     			ds.traverse(null, createAssignmentVisitor(ps));
     			int deleted = ps.executeUpdate();
     		    			
-    			logger().debug("deleted: " + deleted);
+//    			logger().debug("deleted: " + deleted);
     		}
     		catch (SQLException e) {
     			logger().error(e.getMessage(), e);
@@ -454,37 +422,24 @@ public class PersistenceManager<
 		ResultSet rs = null;
 
 		try {
-			logger().debug("insert: qs=" + qs);
-			
-			logger().debug("JDBC-driver :" + c.getMetaData().getDriverName());
-			logger().debug("JDBC-driver-maj:" + c.getMetaData().getDriverMajorVersion());
-			logger().debug("JDBC-driver-min:" + c.getMetaData().getDriverMinorVersion());
-			logger().debug("JDBC-support-get-gen:" + c.getMetaData().supportsGetGeneratedKeys());
+//			logger().debug("insert: qs=" + qs);			
+//			logger().debug("JDBC-driver :" + c.getMetaData().getDriverName());
+//			logger().debug("JDBC-driver-maj:" + c.getMetaData().getDriverMajorVersion());
+//			logger().debug("JDBC-driver-min:" + c.getMetaData().getDriverMinorVersion());
+//			logger().debug("JDBC-support-get-gen:" + c.getMetaData().supportsGetGeneratedKeys());
 
 			ps = c.prepareStatement(qs, Statement.RETURN_GENERATED_KEYS);
-//			logger().debug("ps: " + ps);
-			logger().debug("ps sh: " + System.identityHashCode(ps));
+//			logger().debug("ps sh: " + System.identityHashCode(ps));
 			q.traverse(null, createAssignmentVisitor(ps));
 
-			logger().debug("q: " + qs);
-			logger().debug("ps: " + ps.toString());
+//			logger().debug("q: " + qs);
+//			logger().debug("ps: " + ps.toString());
 			
 			int ins = ps.executeUpdate();
-			logger().debug("inserted: " + ins);
+//			logger().debug("inserted: " + ins);
 			
 			GeneratedKeyHandler kh = getKeyHandler();
 			kh.processGeneratedKeys(q, dest, ps);
-
-//			rs = ps.getGeneratedKeys();
-//
-////			logger().debug(buf.toString());
-//			
-//			if (rs.next()) {
-//				GeneratedKeyHandler kh = getKeyHandler();
-//				kh.processGeneratedKeys(q, pe, rs);
-//			}
-			
-//				logger().debug(buf.toString());
 		}
 		catch (SQLException e) {
 			logger().error(e.getMessage(), e);
@@ -496,7 +451,7 @@ public class PersistenceManager<
 		}
 	}
     
-    private E sync(EntityQueryElement<A, R, T, E, B, H, F, M, PMElement> qe, Connection c) 
+    private E load(EntityQueryElement<A, R, T, E, B, H, F, M, PMElement> qe, Connection c) 
 		throws EntityException, SQLException, QueryException  {
     	E stored = null;
 
@@ -510,24 +465,17 @@ public class PersistenceManager<
 				
 		E e = getTarget();
 				
-		// Map<Column, ValueHolder<?, ?, ?>> vm = e.getPrimaryKey();
-		Tuple<ValueHolder<?, ?, ?>> t = e.getPrimaryKey();
+		E pk = e.toPrimaryKey();
 		ColumnMap cm = e.getMetaData().getBaseTable().getPrimaryKey().getColumnMap();
 		
-		for (int i = 0; i < t.size(); i++) {
+		int size = cm.size(); 
+		
+		for (int i = 0; i < size; i++) {
 			Column col = cm.get(i);
-			ValueHolder<?, ?, ?> val = t.get(i);
+			ValueHolder<?, ?, ?> val = pk.get(col);			
 			ValueExpression ve = createValueExpression(col, val);
 			builder.addPredicate(col.getColumnName(), Comparison.Op.EQ, ve);
 		}
-		
-//		for (Map.Entry<Column, ValueHolder<?, ?, ?>> me : vm.entrySet()) {
-//			Column col = me.getKey();
-//			ValueHolder<?, ?, ?> val = me.getValue();			
-//			ValueExpression ve = createValueExpression(col, val);
-//			builder.addPredicate(col.getColumnName(), Comparison.Op.EQ, ve);			
-//		}		
-		
 		
 		EntityQuery<A, R, T, E, B, H, F, M, PMElement> query = builder.newQuery();
 		
@@ -542,6 +490,14 @@ public class PersistenceManager<
     }
     
     
+    /**
+     * 
+     * @param c
+     * @return
+     * @throws EntityException
+     * @throws SQLException
+     * @throws QueryException
+     */    
     public E sync(Connection c)
     	throws EntityException, SQLException, QueryException  {
 
@@ -549,7 +505,7 @@ public class PersistenceManager<
 
     	if (getTarget().isIdentified()) {
     		PMElement eq = new PMElement(getTarget().getMetaData());
-    		stored = sync(eq, c);    		
+    		stored = load(eq, c);    		
     	}
     	
     	return stored;
@@ -567,7 +523,7 @@ public class PersistenceManager<
     	E stored = null;
 
     	if (getTarget().isIdentified()) {
-    		stored = sync(qe, c);    		
+    		stored = load(qe, c);    		
     	}
     	
     	logger().debug("merge: stored=" + stored);    	

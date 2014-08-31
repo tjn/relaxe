@@ -230,7 +230,7 @@
 			<impl.compile.gen implementation="pg" driver-artifact="postgresql" target="pagila" />		
 	</target>
 		
-	<target name="compile.test.gen.pg.pagila" depends="compile.gen.pg.pagila" description="Compiles the test for classes generated for PostgreSQL/Pagila">
+	<target name="compile.test.gen.pg.pagila" depends="compile.gen.pg.pagila" description="Compiles the tests for classes generated for PostgreSQL/Pagila">
 			<impl.compile.test.gen implementation="pg" driver-artifact="postgresql" target="pagila" />		
 	</target>
 	
@@ -254,8 +254,8 @@
 			type-mapper="com.appspot.relaxe.hsqldb.pagila.HSQLDBPagilaTypeMapper"
 		/>		
 	</target>
-	
-	
+		
+	<target name="ga" depends="generate-and-compile-all" description="Alias for 'generate-and-compile-all'"/>
 	
 	<target name="generate-and-compile-all" 
 			depends="			    
@@ -264,6 +264,13 @@
 				compile.gen.mariadb.sakila,
 				generate.hsqldb.pagila" 	
 			description="Generates and compiles the sources for all the implementations" />
+	
+	<target name="compile-all-tests-for-generated" 
+			depends="			    
+				compile.test.gen.pg.pagila,
+				compile.test.gen.mysql.sakila,
+				compile.test.gen.mariadb.sakila"
+			description="Compiles the sources for all the test for all generated classes" />	
 	
 	
 	<!-- no tests yet for hsqldb -->

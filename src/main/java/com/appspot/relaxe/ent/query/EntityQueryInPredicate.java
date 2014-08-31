@@ -38,8 +38,8 @@ import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityQueryElementTag;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.MutableEntity;
+import com.appspot.relaxe.ent.Operation;
 import com.appspot.relaxe.ent.Reference;
-import com.appspot.relaxe.ent.Tuple;
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.expr.AbstractRowValueConstructor;
 import com.appspot.relaxe.expr.ColumnReference;
@@ -95,7 +95,7 @@ public abstract class EntityQueryInPredicate
 			
 		private QE left;
 		private K key; 
-		private Collection<Tuple<ValueHolder<?, ?, ?>>> keys;
+		private Collection<RE> keys;
 		
 		/**
 		 * No-argument constructor for GWT Serialization
@@ -156,7 +156,7 @@ public abstract class EntityQueryInPredicate
 			
 		private QE left;
 		private K key; 
-		private Collection<Tuple<ValueHolder<?, ?, ?>>> keys;
+		private Collection<RE> keys;
 		
 		/**
 		 * No-argument constructor for GWT Serialization
@@ -186,43 +186,50 @@ public abstract class EntityQueryInPredicate
 			return newPredicate(ctx, left, key, this.keys);
 		}			
 		
-		Collection<Tuple<ValueHolder<?, ?, ?>>> getForeignKeys(K key, Collection<E> entities) {
+		Collection<RE> getForeignKeys(K key, Collection<E> entities) {
 			if (entities == null) {
 				throw new NullPointerException("entities");
 			}
 			
 			if (entities.isEmpty()) {
 				throw new IllegalArgumentException("'entities' must not be empty here");
-			}		
-			
-//			List<Tuple<ValueHolder<?, ?, ?>>> kl = new ArrayList<Tuple<ValueHolder<?, ?, ?>>>(entities.size()); 
-			Set<Tuple<ValueHolder<?, ?, ?>>> kl = new HashSet<Tuple<ValueHolder<?, ?, ?>>>(entities.size());
-								
-			for (E e : entities) {
-				RH rh = key.get(e);
-				RE re = (rh == null) ? null : rh.value();
-				
-				if (re == null) {
-					continue;
-				}
-				
-				Tuple<ValueHolder<?, ?, ?>> pk = re.getPrimaryKey();
-				
-				if (pk == null) {
-					throw new EntityRuntimeException("primary key required", re);
-				}
-				
-				kl.add(pk);
 			}
 			
-			return kl;
-		}		
+			
+			Operation op = new Operation();
+			
+			try {
+				Set<RE> kl = new HashSet<RE>(entities.size());
+				
+				for (E e : entities) {
+					RH rh = key.get(e);
+					RE re = (rh == null) ? null : rh.value();
+					
+					if (re == null) {
+						continue;
+					}
+					
+					RE pk = re.toPrimaryKey(op.getContext());
+					
+					if (pk == null) {
+						throw new EntityRuntimeException("primary key required", re);
+					}
+					
+					kl.add(pk);
+				}
+				
+				return kl;
+			}
+			finally {
+				op.finish();
+			}
+		}	
 	}
 	
 	<
 		E extends Entity<?, ?, ?, E, ?, ?, ?, ?>
 	> 
-	List<Tuple<ValueHolder<?, ?, ?>>> getPrimaryKeys(Collection<E> entities) {
+	List<E> getPrimaryKeys(Collection<E> entities) {
 		if (entities == null) {
 			throw new NullPointerException("entities");
 		}
@@ -231,16 +238,24 @@ public abstract class EntityQueryInPredicate
 			throw new IllegalArgumentException("'entities' must not be empty here");
 		}		
 		
-		List<Tuple<ValueHolder<?, ?, ?>>> kl = new ArrayList<Tuple<ValueHolder<?, ?, ?>>>(entities.size()); 
-							
-		for (E e : entities) {
-			Tuple<ValueHolder<?, ?, ?>> pk = e.getPrimaryKey();
-			
-			if (pk == null) {
-				throw new EntityRuntimeException("primary key required", e);
+		List<E> kl = new ArrayList<E>(entities.size());
+		
+		
+		Operation op = new Operation();
+		
+		try {							
+			for (E e : entities) {
+				E pk = e.toPrimaryKey(op.getContext());
+				
+				if (pk == null) {
+					throw new EntityRuntimeException("primary key required", e);
+				}
+				
+				kl.add(pk);
 			}
-			
-			kl.add(pk);
+		}
+		finally {
+			op.finish();
 		}
 		
 		return kl;
@@ -291,7 +306,7 @@ public abstract class EntityQueryInPredicate
 		RM extends EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>,
 		K extends EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, K>
 	> 
-	Predicate newPredicate(EntityQueryContext ctx, EntityQueryElementTag left, K key, Collection<Tuple<ValueHolder<?, ?, ?>>> pks) {
+	Predicate newPredicate(EntityQueryContext ctx, EntityQueryElementTag left, K key, Collection<RE> pks) {
 		TableReference lref = ctx.getTableRef(left);
 		
 		ForeignKey fk = key.getSource().getForeignKey(key.name());
@@ -318,13 +333,13 @@ public abstract class EntityQueryInPredicate
 		List<RowValueConstructor> rows = new ArrayList<RowValueConstructor>();
 		List<RowValueConstructorElement> values = new ArrayList<RowValueConstructorElement>();
 						
-		for (Tuple<ValueHolder<?, ?, ?>> t : pks) {
+		for (RE t : pks) {
 			values.clear();			
 			
 			int i = 0;
 			
 			for (Column rc : rclist) {				
-				ValueHolder<?, ?, ?> vh = t.get(indexes[i]);								
+				ValueHolder<?, ?, ?> vh = t.get(rc);								
 				RowValueConstructorElement e = newRowValueConstructorElement(rc, vh);				
 				values.add(e);
 				i++;

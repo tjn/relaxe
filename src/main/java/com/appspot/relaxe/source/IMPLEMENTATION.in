@@ -21,8 +21,8 @@ public class {{table-impl-class}}
 	    implements {{table-interface}}
 {
 
-
     private {{table-interface}}.Holder holder;
+    private {{table-impl-class}}.PrimaryKeyEntity primaryKey;
     
     @Override
     public {{table-interface}} asImmutable() {
@@ -41,6 +41,8 @@ public class {{table-impl-class}}
     
 
 	{{attribute-container-implementation-read}}
+	
+	{{reference-container-implementation-read}}
         
 	/**
 	 * 
@@ -147,9 +149,10 @@ public class {{table-impl-class}}
 	    
 	    private transient java.util.Map<com.appspot.relaxe.ent.Operation.Context, {{immutable-entity-impl-class}}> immutationContextMap;
 	    
-	    private java.util.Map<Operation.Context, {{immutable-entity-impl-class}}> getImmutationContextMap() {
+	    private java.util.Map<Operation.Context, {{immutable-entity-impl-class}}> getImmutationContextMap(com.appspot.relaxe.ent.Operation.Context ctx) {
 			if (immutationContextMap == null) {
-				immutationContextMap = new java.util.HashMap<com.appspot.relaxe.ent.Operation.Context, {{immutable-entity-impl-class}}>(2);				
+				immutationContextMap = new java.util.HashMap<com.appspot.relaxe.ent.Operation.Context, {{immutable-entity-impl-class}}>(2);
+				ctx.register(this);				
 			}
 			
 			return immutationContextMap;
@@ -172,7 +175,7 @@ public class {{table-impl-class}}
 	    }
 	    
 	    private void put(Operation.Context ctx, {{immutable-entity-impl-class}} associated) {
-	    	getImmutationContextMap().put(ctx, associated);	    	
+	    	getImmutationContextMap(ctx).put(ctx, associated);	    	
 	    }	    
 	    
 	    @Override
@@ -233,7 +236,6 @@ public class {{table-impl-class}}
 			return holder;		
 		}
 		
-		
 		/**	
 	    	public VarcharAccessor<Attribute, Person> lastName() {
 		    	if (this.lastName == null) {
@@ -243,7 +245,6 @@ public class {{table-impl-class}}
 		    	return this.lastName;
 		    }	
 		*/
-		
 		
 		@Override
 		public java.util.Set<{{table-interface}}.Attribute> attributes() {
@@ -262,8 +263,122 @@ public class {{table-impl-class}}
 	    
 		{{entity-attribute-read-write-accessor-list}}
 		
-		{{attribute-container-implementation-read-write}}		
+		{{attribute-container-implementation-read-write}}
 		
+		{{reference-container-implementation-read-write}}
+		
+		@Override
+		public {{table-interface}} toPrimaryKey(com.appspot.relaxe.ent.Operation.Context ctx) {
+			return {{table-impl-class}}.PrimaryKeyEntity.of(this, ctx);	
+		}
+		
+	}
+	
+	
+	public static class PrimaryKeyEntity
+		extends com.appspot.relaxe.ent.DefaultImmutableEntity<
+		    {{table-interface}}.Attribute,
+		    {{table-interface}}.Reference,        
+		    {{table-interface}}.Type,
+		    {{table-interface}},		
+		    {{table-interface}}.Mutable,
+		    {{table-interface}}.Holder,        
+		    {{table-interface}}.Factory,
+		    {{table-interface}}.MetaData
+		>		
+		implements {{table-interface}} {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;		
+		
+		{{primary-key-entity-variables}}
+		
+		{{primary-key-entity-reference-container-implementation}}
+				
+		private PrimaryKeyEntity() {				
+			{{primary-key-entity-no-arg-constructor-body}}	
+		}
+		
+		private PrimaryKeyEntity({{table-interface}} src, com.appspot.relaxe.ent.Operation.Context ctx) {
+			{{primary-key-entity-constructor-body}}
+		}
+		
+		
+		
+		@Override
+		public {{table-interface}} toPrimaryKey() {
+			return this;
+		}
+		
+		
+		@Override
+		public {{table-interface}} toPrimaryKey(com.appspot.relaxe.ent.Operation.Context ctx) {
+			return this;
+		}
+				
+		
+		@Override
+		public {{table-interface}} asImmutable() {
+			return this;
+		}
+		
+		@Override
+		public {{table-interface}} asRead() {
+			return this;
+		}
+		
+		@Override
+		public {{table-interface}}.Mutable asWrite() {
+			return null;
+		}
+				
+		@Override
+		public {{table-interface}} self() {
+			return this;
+		}
+		
+		@Override
+		public {{table-interface}}.Holder ref() {
+			return {{table-interface}}.Holder.valueOf(self());
+		}
+		
+		@Override
+		public java.util.Set<{{table-interface}}.Attribute> attributes() {
+			return {{table-impl-class}}.PrimaryKeyEntity.attributes;
+		}
+		
+		@Override
+		public {{table-interface}}.MetaData getMetaData() {
+			return {{table-interface}}MetaData.getInstance();
+		}
+		
+		{{primary-key-entity-attribute-set}}
+						
+		{{primary-key-entity-attribute-accessor-list}}
+		
+		{{primary-key-entity-reference-map-list}}
+		
+		
+		
+		private static {{table-impl-class}}.PrimaryKeyEntity of({{table-interface}} src, com.appspot.relaxe.ent.Operation.Context ctx) {
+			{{primary-key-entity-of-method-body}}		
+		}
+		
+		
+		
+	}
+	
+	@Override
+	public {{table-interface}} toPrimaryKey(com.appspot.relaxe.ent.Operation.Context ctx) {		
+		if (this.primaryKey != null) {
+			return this.primaryKey;
+		}
+	
+		this.primaryKey = {{table-impl-class}}.PrimaryKeyEntity.of(this, ctx);
+		 
+		return this.primaryKey;
 	}
 	    
 } 

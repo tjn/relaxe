@@ -30,15 +30,9 @@ import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.SimpleUnificationContext;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor.Attribute;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Language;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor.Factory;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor.Holder;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor.MetaData;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor.Reference;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor.Type;
 import com.appspot.relaxe.pg.pagila.PagilaPersistenceContext;
 import com.appspot.relaxe.rdbms.PersistenceContext;
 import com.appspot.relaxe.rdbms.pg.PGImplementation;
@@ -61,7 +55,7 @@ public class PagilaPersistenceManagerTest
 	    a.setFirstName("Dana");
 	    a.setLastName("Brooks");
 	
-	    PersistenceManager<Actor.Attribute, Reference, Type, Actor, Actor.Mutable, Holder, Factory, MetaData> pm = create(a.as());
+	    PersistenceManager<Actor.Attribute, Actor.Reference, Actor.Type, Actor, Actor.Mutable, Actor.Holder, Actor.Factory, Actor.MetaData> pm = create(a.as());
 	    
 	    pm.merge(c);
 	    c.commit();        
@@ -108,7 +102,7 @@ public class PagilaPersistenceManagerTest
 	    
 	    Actor sa = sync(a.as(), getPersistenceContext(), c);
 	    assertNotNull(sa);
-	    Set<Attribute> ma = sa.getMetaData().attributes();
+	    Set<Actor.Attribute> ma = sa.getMetaData().attributes();
 	    assertEquals(ma, sa.attributes());
 	    	    
 	    delete(a);
@@ -195,7 +189,7 @@ public class PagilaPersistenceManagerTest
 	    Integer aid = ma.getActorId().value();
 	    assertNotNull(aid);
 	        	
-	    Set<Attribute> expected = ma.getMetaData().attributes();
+	    Set<Actor.Attribute> expected = ma.getMetaData().attributes();
 	    assertEquals(ma.attributes(), expected);
 	    
 	    for (Actor.Attribute aa : Actor.Attribute.values()) {

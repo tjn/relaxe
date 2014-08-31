@@ -112,18 +112,31 @@ public interface Entity<
 	
 	
 	/**
-	 * Returns a tuple which contains the values of primary key columns or <code>null</code> if the value of any column of the primary key is absent or <code>null</code>. 
+	 * Returns an immutable entity contains the values of primary key columns or <code>null</code> if the value of any column of the primary key is absent or <code>null</code>. 
 	 * 
 	 * The value of a primary key column <code>null</code> is absent or <code>null</code> if the following is true: 
 	 * <code>
 	 * get(c) == null || get(c).isNull()  
 	 * </code>
 	 * 
-	 * The order of the tuple elements corresponds the order columns than primary key columns.
+	 * @return
+	 */	
+	E toPrimaryKey();
+	
+	
+	/**
+	 * Returns an immutable entity contains the values of primary key columns or <code>null</code> if the value of any column of the primary key is absent or <code>null</code>. 
+	 * 
+	 * The value of a primary key column <code>null</code> is absent or <code>null</code> if the following is true: 
+	 * <code>
+	 * get(c) == null || get(c).isNull()  
+	 * </code>
 	 * 
 	 * @return
-	 */
-	Tuple<ValueHolder<?, ?, ?>> getPrimaryKey();
+	 */		
+	E toPrimaryKey(com.appspot.relaxe.ent.Operation.Context ctx);
+	
+	
 
 	/**
 	 * Returns the meta-data object which describes the structure of this object.

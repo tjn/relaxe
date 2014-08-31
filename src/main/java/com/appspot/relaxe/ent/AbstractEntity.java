@@ -29,9 +29,7 @@ import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.ent.value.StringAttribute;
 import com.appspot.relaxe.meta.Column;
-import com.appspot.relaxe.meta.ColumnMap;
 import com.appspot.relaxe.meta.ForeignKey;
-import com.appspot.relaxe.meta.PrimaryKey;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.types.ReferenceType;
 import com.appspot.relaxe.value.ReferenceHolder;
@@ -117,46 +115,6 @@ public abstract class AbstractEntity<
 	@Override
 	public abstract E self();
 	
-	@Override
-	public Tuple<ValueHolder<?,?,?>> getPrimaryKey() {
-		PrimaryKey pk = getMetaData().getBaseTable().getPrimaryKey();
-		
-		if (pk == null) {
-			return null;
-		}
-		
-//		Map<Column, ValueHolder<?,?,?>> vm = new HashMap<Column, ValueHolder<?,?,?>>(2);
-		
-		ColumnMap cm = pk.getColumnMap();
-		
-		int size = cm.size();
-		ValueHolder<?,?,?>[] ha = new ValueHolder<?,?,?>[size];
-		
-		for (int i = 0; i < size; i++) {
-			Column pkcol = cm.get(i);
-			ValueHolder<?,?,?> v = get(pkcol);
-			
-			if ((v == null) || v.isNull()) {
-				return null;
-			}
-			
-			ha[i] = v;
-		}		
-		
-		return Tuples.of(ha);
-//				
-//		for (Column pkcol : pk.getColumnMap().values()) {
-//			ValueHolder<?,?,?> v = get(pkcol);
-//			
-//			if ((v == null) || v.isNull()) {
-//				return null;
-//			}
-//			
-//			vm.put(pkcol, v);
-//		}
-//		
-//		return vm;
-	}
 	
 	@Override
 	public T type() {
@@ -254,8 +212,10 @@ public abstract class AbstractEntity<
 	 * @throws EntityRuntimeException 
 	 */	
 	@Override
-	public boolean isIdentified() {
-		return getPrimaryKey() != null;
+	public boolean isIdentified() {		
+		// TODO: Implement in generated classes.
+		// In mutable subclasses toPrimaryKey may cause undesirable object instantiations  
+		return (toPrimaryKey() != null);
 	}
 	
 	@Override

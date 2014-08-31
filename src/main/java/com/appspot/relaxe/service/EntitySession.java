@@ -136,12 +136,17 @@ public interface EntitySession {
 			throws EntityException;
 	
 	/**
-	 * 
+	 * Flushes the entity cache. 
 	 */
 	void flush();
 	
 
-
+	/**
+	 * Instantiates a new mutable entity of <code>type</code>.
+	 * 
+	 * @param type
+	 * @return
+	 */
 	public <		
 		A extends AttributeName,
 		R extends Reference,

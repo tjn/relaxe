@@ -119,5 +119,22 @@ public abstract class DefaultEntity<
 		EntityKey<A, R, T, E, B, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = getMetaData().getEntityKey(ref);
 		ReferenceHolder<?, ?, ?, ?, ?, ?> rh = getRef(k.self());
 		return rh;
-	}	
+	}
+	
+	
+	@Override
+	public E toPrimaryKey() {
+		Operation op = new Operation();
+			
+		try {
+			return toPrimaryKey(op.getContext());				
+		}
+		finally {
+			op.finish();
+		}
+	}
+	
+	@Override
+	public abstract E toPrimaryKey(Operation.Context op);
+	
 }

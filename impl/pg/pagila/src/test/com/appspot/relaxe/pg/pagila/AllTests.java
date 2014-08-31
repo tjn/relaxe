@@ -33,6 +33,7 @@ public class AllTests {
 		suite.addTestSuite(PagilaAlterTableAddForeignKeyTest.class);
 		suite.addTestSuite(PagilaAlterTableAddPrimaryKeyTest.class);
 		suite.addTestSuite(PagilaEntityAttributeTest.class);
+		suite.addTestSuite(PagilaEntityPrimaryKeyTest.class);
 		suite.addTestSuite(PagilaCreateTableTest.class);
 		suite.addTestSuite(PagilaDataAccessSessionTest.class);
 		suite.addTestSuite(PagilaDefaultEntityQueryTest.class);
@@ -43,6 +44,8 @@ public class AllTests {
 		suite.addTestSuite(PagilaStatementExecutorTest.class);
 		suite.addTestSuite(PagilaUnificationContextTest.class);
 		suite.addTestSuite(PagilaEntityQueryPredicateTest.class);
+//		suite.addTestSuite(PagilaEntityToImmutableTest.class);
+		
 		//$JUnit-END$
 		return suite;
 	}

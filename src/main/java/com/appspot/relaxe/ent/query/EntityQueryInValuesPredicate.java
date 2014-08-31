@@ -35,8 +35,8 @@ import com.appspot.relaxe.ent.EntityQueryContext;
 import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.MutableEntity;
+import com.appspot.relaxe.ent.Operation;
 import com.appspot.relaxe.ent.Reference;
-import com.appspot.relaxe.ent.Tuple;
 import com.appspot.relaxe.expr.AbstractRowValueConstructor;
 import com.appspot.relaxe.expr.ColumnReference;
 import com.appspot.relaxe.expr.ElementList;
@@ -73,7 +73,7 @@ public class EntityQueryInValuesPredicate<
 	private static final long serialVersionUID = -9214275181479579908L;
 		
 	private QE left;	 
-	private List<Tuple<ValueHolder<?, ?, ?>>> right;
+	private List<E> right;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -99,16 +99,23 @@ public class EntityQueryInValuesPredicate<
 			throw new IllegalArgumentException("'entities' must not be empty here");
 		}
 		
-		List<Tuple<ValueHolder<?, ?, ?>>> kl = new ArrayList<Tuple<ValueHolder<?, ?, ?>>>(entities.size()); 
-							
-		for (E e : entities) {
-			Tuple<ValueHolder<?, ?, ?>> pk = e.getPrimaryKey();
-			
-			if (pk == null) {
-				throw new EntityRuntimeException("primary key required", e);
+		List<E> kl = new ArrayList<E>(entities.size());
+		
+		Operation op = new Operation();
+		
+		try {							
+			for (E e : entities) {
+				E pk = e.toPrimaryKey(op.getContext());
+				
+				if (pk == null) {
+					throw new EntityRuntimeException("primary key required", e);
+				}
+				
+				kl.add(pk);
 			}
-			
-			kl.add(pk);
+		}
+		finally {
+			op.finish();
 		}
 		
 		this.right = kl;
@@ -129,22 +136,24 @@ public class EntityQueryInValuesPredicate<
 		
 		// ColumnMap pkcm = key.getTarget().getBaseTable().getPrimaryKey().getColumnMap();
 		
-		List<RowValueConstructorElement> lhs = new ArrayList<RowValueConstructorElement>(cc);		
+		List<RowValueConstructorElement> lhs = new ArrayList<RowValueConstructorElement>(cc);
 				
 		for (int i = 0; i < cc; i++) {
-			lhs.add(new ColumnReference(lref, cm.get(i)));									
+			Column col = cm.get(i);
+			lhs.add(new ColumnReference(lref, col));			
 		}		
 				
 		final RowValueConstructor rvc = AbstractRowValueConstructor.of(lhs);				
 		List<RowValueConstructor> rows = new ArrayList<RowValueConstructor>();
 		List<RowValueConstructorElement> values = new ArrayList<RowValueConstructorElement>();
 						
-		for (Tuple<ValueHolder<?, ?, ?>> t : this.right) {
+		for (E t : this.right) {
 			values.clear();			
 			
 			for (int i = 0; i < cc; i++) {
-				ValueHolder<?, ?, ?> vh = t.get(i);
-				RowValueConstructorElement e = newRowValueConstructorElement(cm.get(i), vh);				
+				Column col = cm.get(i);
+				ValueHolder<?, ?, ?> vh = t.get(col);
+				RowValueConstructorElement e = newRowValueConstructorElement(col, vh);				
 				values.add(e);
 				i++;									
 			}

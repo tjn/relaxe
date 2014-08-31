@@ -38,35 +38,21 @@ import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Category;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Attribute;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Factory;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Holder;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.MetaData;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.QueryElement;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Reference;
-import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor.Type;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmCategory;
-import com.appspot.relaxe.meta.impl.pg.PGTestCase;
-import com.appspot.relaxe.rdbms.Implementation;
 import com.appspot.relaxe.rdbms.PersistenceContext;
-import com.appspot.relaxe.rdbms.pg.PGCatalogFactory;
 import com.appspot.relaxe.rdbms.pg.PGImplementation;
 
 
 public class PagilaDefaultEntityQueryTest 
-	extends PGTestCase {
+	extends AbstractPagilaEntityTestCase {
 	
-    @Override
-	public PGCatalogFactory factory() {   	
-    	return new PGCatalogFactory(implementation().getEnvironment());
-    }
         
     public void testQuery1() throws Exception {
-    	Connection c = getConnection();
-    	assertNotNull(c);
-    	logger().debug(c.getMetaData().getURL());
     	
-    	PersistenceContext<PGImplementation> pc = getPersistenceContext();    	    	    	
+    	PersistenceContext<PGImplementation> pc = getPersistenceContext();
+    	
+    	Connection c = newConnection();
+    	    	
     	    	
     	FilmActor.QueryElement.Builder qeb = new FilmActor.QueryElement.Builder();
     	
@@ -74,7 +60,7 @@ public class PagilaDefaultEntityQueryTest
     	
     	FilmActor.Query faq = new FilmActor.Query(fae);
     	    	
-    	EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, FilmActor.Mutable, Holder, Factory, MetaData, QueryElement> qxb = newQueryExpressionBuilder(faq);    	
+    	EntityQueryExpressionBuilder<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Mutable, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement> qxb = newQueryExpressionBuilder(faq);    	
     	    	
     	logger().debug("testQuery1: qxb: {}" + qxb);
     	
@@ -128,20 +114,21 @@ public class PagilaDefaultEntityQueryTest
 		}
     }
 
-	protected EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, FilmActor.Mutable, Holder, Factory, MetaData, QueryElement> newQueryExpressionBuilder(
+	protected EntityQueryExpressionBuilder<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Mutable, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement> newQueryExpressionBuilder(
 			FilmActor.Query faq) {
-		EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, FilmActor.Mutable, Holder, Factory, MetaData, QueryElement> qeb = new EntityQueryExpressionBuilder<>(faq);
+		EntityQueryExpressionBuilder<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Mutable, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement> qeb = new EntityQueryExpressionBuilder<>(faq);
 		return qeb;
 	}
     
     
     public void testQuery2() throws Exception {
-    	Connection c = getConnection();
+    	Connection c = newConnection();
     	assertNotNull(c);
     	logger().debug(c.getMetaData().getURL());
+    	    	    	
     	
-    	Implementation<?> imp = implementation();
-    	    	
+    	PersistenceContext<PGImplementation> pc = getCurrent().getPersistenceContext();
+    	    	    	
     	Film film = newEntity(Film.Type.TYPE);
     	
     	Category.Mutable category = newEntity(Category.Type.TYPE);
@@ -161,7 +148,7 @@ public class PagilaDefaultEntityQueryTest
     	    	    	
     	FilmActor.Query qo = new FilmActor.Query(faq);
     	
-    	EntityQueryExpressionBuilder<Attribute, Reference, Type, FilmActor, FilmActor.Mutable, Holder, Factory, MetaData, QueryElement> qxb = 
+    	EntityQueryExpressionBuilder<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Mutable, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement> qxb = 
     			newQueryExpressionBuilder(qo);
     	
     	String qs = qxb.getQueryExpression().generate();
@@ -170,7 +157,7 @@ public class PagilaDefaultEntityQueryTest
     	    	
     	Statement st = c.createStatement();
     	UnificationContext ic = new SimpleUnificationContext();
-    	ValueExtractorFactory vef = imp.getValueExtractorFactory();
+    	ValueExtractorFactory vef = pc.getValueExtractorFactory();
     	    	    	    	
     	EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Mutable, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement> eb
     		= new EntityReader<FilmActor.Attribute, FilmActor.Reference, FilmActor.Type, FilmActor, FilmActor.Mutable, FilmActor.Holder, FilmActor.Factory, FilmActor.MetaData, FilmActor.QueryElement>(vef, qxb, ic);
