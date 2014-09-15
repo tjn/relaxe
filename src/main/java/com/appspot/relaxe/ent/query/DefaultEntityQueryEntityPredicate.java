@@ -20,49 +20,48 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.expr.op;
+package com.appspot.relaxe.ent.query;
 
-import com.appspot.relaxe.expr.CompoundElement;
-import com.appspot.relaxe.expr.ElementVisitor;
-import com.appspot.relaxe.expr.Expression;
+import com.appspot.relaxe.ent.EntityQueryContext;
 import com.appspot.relaxe.expr.Predicate;
 import com.appspot.relaxe.expr.RowValueConstructor;
-import com.appspot.relaxe.expr.SQLKeyword;
-import com.appspot.relaxe.expr.ValueExpression;
-import com.appspot.relaxe.expr.VisitContext;
+import com.appspot.relaxe.expr.op.Comparison;
 
-public class IsNotNull
-	extends CompoundElement
-	implements Predicate {
+public class DefaultEntityQueryEntityPredicate
+	implements EntityQueryPredicate {
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3352484016217751225L;
-
-	/**
-	 * No-argument constructor for GWT Serialization
-	 */
-	protected IsNotNull() {
+	private static final long serialVersionUID = -9214275181479579908L;
+	
+	private Comparison.Op op;
+	private EntityReference<?, ?, ?, ?, ?, ?, ?, ?> left;	
+	private EntityReference<?, ?, ?, ?, ?, ?, ?, ?>  right;
+	
+	public DefaultEntityQueryEntityPredicate(
+			EntityReference<?, ?, ?, ?, ?, ?, ?, ?> left,
+			EntityReference<?, ?, ?, ?, ?, ?, ?, ?> right) {
+		this(Comparison.Op.EQ, left, right);
 	}
 	
-	private Expression expression;	
-	
-	public IsNotNull(ValueExpression e) {
-		this.expression = e;
+	public DefaultEntityQueryEntityPredicate(Comparison.Op op, 
+			EntityReference<?, ?, ?, ?, ?, ?, ?, ?>  left,
+			EntityReference<?, ?, ?, ?, ?, ?, ?, ?>  right) {
+		super();
+		this.op = op;
+		this.left = left;
+		this.right = right;
 	}
-	
-	public IsNotNull(RowValueConstructor e) {
-		this.expression = e;
-	}	
 
 	@Override
-	protected void traverseContent(VisitContext vc, ElementVisitor v) {
-		vc = v.start(vc, this);					
-		expression.traverse(vc, v);
-		SQLKeyword.IS.traverse(vc, v);
-		SQLKeyword.NOT.traverse(vc, v);
-		SQLKeyword.NULL.traverse(vc, v);
-		v.end(this);
-	}	
+	public Predicate predicate(EntityQueryContext ctx) {
+		
+		
+		RowValueConstructor a = left.expression(ctx);
+		RowValueConstructor b = right.expression(ctx);
+		
+		return op.newComparison(a, b);	
+	}
+	
 }

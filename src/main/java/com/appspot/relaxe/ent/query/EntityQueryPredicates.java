@@ -33,9 +33,11 @@ import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.EntityKey;
+import com.appspot.relaxe.expr.AbstractRowValueConstructor;
 import com.appspot.relaxe.expr.Predicate;
 import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.expr.op.AndPredicate;
+import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.expr.op.NotPredicate;
 import com.appspot.relaxe.expr.op.OrPredicate;
 import com.appspot.relaxe.expr.op.ParenthesizedPredicate;
@@ -378,6 +380,20 @@ public class EntityQueryPredicates {
 		return new EntityQueryPredicates.And(a, b);
 	}
 	
+	public static EntityQueryPredicate newAnd(EntityQueryPredicate a, EntityQueryPredicate ... rest) {
+		if (rest == null || rest.length == 0) {
+			return a;
+		}
+		
+		EntityQueryPredicate out = a;
+		
+		for (EntityQueryPredicate p : rest) {
+			out = newAnd(out, p);
+		}
+		
+		return out;
+	}
+	
 	public static EntityQueryPredicate newOr(EntityQueryPredicate a, EntityQueryPredicate b) {
 		if (a == null) {
 			return b;
@@ -390,6 +406,20 @@ public class EntityQueryPredicates {
 		return new EntityQueryPredicates.Or(a, b);
 	}
 	
+	public static EntityQueryPredicate newOr(EntityQueryPredicate a, EntityQueryPredicate ... rest) {
+		if (rest == null || rest.length == 0) {
+			return a;
+		}
+		
+		EntityQueryPredicate out = a;
+		
+		for (EntityQueryPredicate p : rest) {
+			out = newOr(out, p);
+		}
+		
+		return out;
+	}	
+	
 	
 	public static EntityQueryPredicate newIsNull(EntityQueryValue v) {
 		return new EntityQueryPredicates.IsNull(v);
@@ -398,6 +428,56 @@ public class EntityQueryPredicates {
 	public static EntityQueryPredicate newNotNull(EntityQueryValue v) {
 		return new EntityQueryPredicates.IsNotNull(v);
 	}	
+
+	public static EntityQueryPredicate newIsNull(EntityReference<?, ?, ?, ?, ?, ?, ?, ?> v) {
+//		AbstractRowValueConstructor.		
+//		return new EntityQueryPredicates.IsNull(v);
+		return null;
+	}	
 	
+
+	
+	public static <
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>
+	> 
+	EntityQueryPredicate newEquals(EntityReference<A, R, T, E, B, H, F, M> lhs, EntityReference<A, R, T, E, B, H, F, M> rhs) {
+		return newComparison(Comparison.Op.EQ, lhs, rhs); 
+	}
+	
+	
+	public static <
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>
+	> 
+	EntityQueryPredicate newEquals(EntityReference<A, R, T, E, B, H, F, M> lhs, E rhs) {		
+		return newComparison(Comparison.Op.EQ, lhs, new EntityValue<A, R, T, E, B, H, F, M>(rhs)); 
+	}
+	
+	public static <
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>
+	> 
+	EntityQueryPredicate newComparison(Comparison.Op operator, EntityReference<A, R, T, E, B, H, F, M> lhs, EntityReference<A, R, T, E, B, H, F, M> rhs) {		
+		return new DefaultEntityQueryEntityPredicate(operator, lhs, rhs);		
+	}	
 	
 }

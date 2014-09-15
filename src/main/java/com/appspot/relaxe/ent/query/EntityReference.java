@@ -20,49 +20,32 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.expr.op;
+package com.appspot.relaxe.ent.query;
 
-import com.appspot.relaxe.expr.CompoundElement;
-import com.appspot.relaxe.expr.ElementVisitor;
-import com.appspot.relaxe.expr.Expression;
-import com.appspot.relaxe.expr.Predicate;
+import java.io.Serializable;
+
+import com.appspot.relaxe.ent.AttributeName;
+import com.appspot.relaxe.ent.Entity;
+import com.appspot.relaxe.ent.EntityFactory;
+import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.EntityQueryContext;
+import com.appspot.relaxe.ent.MutableEntity;
+import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.expr.RowValueConstructor;
-import com.appspot.relaxe.expr.SQLKeyword;
-import com.appspot.relaxe.expr.ValueExpression;
-import com.appspot.relaxe.expr.VisitContext;
+import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.value.ReferenceHolder;
 
-public class IsNotNull
-	extends CompoundElement
-	implements Predicate {
+public interface EntityReference<
+	A extends AttributeName,
+	R extends Reference,
+	T extends ReferenceType<A, R, T, E, B, H, F, M>,
+	E extends Entity<A, R, T, E, B, H, F, M>,
+	B extends MutableEntity<A, R, T, E, B, H, F, M>,
+	H extends ReferenceHolder<A, R, T, E, H, M>,
+	F extends EntityFactory<E, B, H, M, F>,
+	M extends EntityMetaData<A, R, T, E, B, H, F, M>
+> extends Serializable {
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3352484016217751225L;
-
-	/**
-	 * No-argument constructor for GWT Serialization
-	 */
-	protected IsNotNull() {
-	}
+	RowValueConstructor expression(EntityQueryContext c);
 	
-	private Expression expression;	
-	
-	public IsNotNull(ValueExpression e) {
-		this.expression = e;
-	}
-	
-	public IsNotNull(RowValueConstructor e) {
-		this.expression = e;
-	}	
-
-	@Override
-	protected void traverseContent(VisitContext vc, ElementVisitor v) {
-		vc = v.start(vc, this);					
-		expression.traverse(vc, v);
-		SQLKeyword.IS.traverse(vc, v);
-		SQLKeyword.NOT.traverse(vc, v);
-		SQLKeyword.NULL.traverse(vc, v);
-		v.end(this);
-	}	
 }

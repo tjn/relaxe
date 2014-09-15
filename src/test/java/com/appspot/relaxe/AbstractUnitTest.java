@@ -626,4 +626,10 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		
 		assertEquals(expected, actual);
 	}
+	
+	public void testHello() throws Exception {
+		Connection c = newConnection();
+		logger().info("hello, {}", c.getMetaData().getURL());
+		c.close();
+	}
 }

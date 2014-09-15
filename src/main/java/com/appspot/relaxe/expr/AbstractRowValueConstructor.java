@@ -22,7 +22,12 @@
  */
 package com.appspot.relaxe.expr;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import com.appspot.relaxe.meta.Column;
+import com.appspot.relaxe.meta.ColumnMap;
 
 public abstract class AbstractRowValueConstructor<E extends Element>
 	extends CompoundElement implements RowValueConstructor {
@@ -74,7 +79,35 @@ public abstract class AbstractRowValueConstructor<E extends Element>
 	
 	public static RowValueConstructor of(QueryExpression queryExpression) {
 		return new SubqueryRowValueConstructor(queryExpression); 
+	}
+	
+	public static RowValueConstructor of(TableReference tref, ColumnMap columnMap) {
+		
+		int cc = columnMap.size();
+		
+		ElementList<ColumnReference> el = null;
+		
+		if (cc == 1) {			
+			Column col = columnMap.get(0);			
+			el = ElementList.newElementList(new ColumnReference(tref, col));
+		}
+		else {
+			List<ColumnReference> cl = new ArrayList<ColumnReference>(cc);
+			
+			for (int i = 0; i < cc; i++) {
+				Column col = columnMap.get(i);				
+				cl.add(new ColumnReference(tref, col));
+			}
+			
+			el = ElementList.newElementList(cl);			
+		}
+				
+		RowValueConstructor rvc = of(el);
+		
+		return rvc;		
 	}		
+
+	
 	
 	public static class ElementRowValueConstructor
 		extends AbstractRowValueConstructor<RowValueConstructorElement> {
@@ -157,4 +190,8 @@ public abstract class AbstractRowValueConstructor<E extends Element>
 			super(content);
 		}
 	}
+	
+	
+	
+
 }

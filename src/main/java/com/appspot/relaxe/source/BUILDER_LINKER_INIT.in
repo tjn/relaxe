@@ -1,16 +1,16 @@
 
 {	
 	final {{referenced-table-interface-qualified}}.Key<
-		{{table-interface}}.Attribute, 
-		{{table-interface}}.Reference, 
-		{{table-interface}}.Type, 
-		{{table-interface}}, 
-		{{table-interface}}.Mutable,
-		{{table-interface}}.Holder,
-		{{table-interface}}.Factory,
-		{{table-interface}}.MetaData
+		{{table-interface-qualified-name}}.Attribute, 
+		{{table-interface-qualified-name}}.Reference, 
+		{{table-interface-qualified-name}}.Type, 
+		{{table-interface-qualified-name}}, 
+		{{table-interface-qualified-name}}.Mutable,
+		{{table-interface-qualified-name}}.Holder,
+		{{table-interface-qualified-name}}.Factory,
+		{{table-interface-qualified-name}}.MetaData
 	>
-	pk = {{table-interface}}.{{reference-key-variable}};			
+	pk = {{table-interface-qualified-name}}.{{reference-key-variable}};			
 				
 	com.appspot.relaxe.meta.ForeignKey fk = m.getForeignKey(pk.name());				
 	com.appspot.relaxe.expr.TableReference tref = ctx.getQueryContext().getReferenced(tableRef, fk);
@@ -21,7 +21,7 @@
 
 		ll.add(new Linker() {							
 			@Override
-			public void link(com.appspot.relaxe.ent.DataObject src, {{table-interface}}.Holder dest) {
+			public void link(com.appspot.relaxe.ent.DataObject src, {{table-interface-qualified-name}}.Holder dest) {
 				if (dest != null && (!dest.isNull())) {
 					{{referenced-table-interface-qualified}}.Holder np = nb.read(src);								
 					pk.set(dest.value().asMutable(), np);

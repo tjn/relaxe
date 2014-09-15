@@ -14,6 +14,6 @@ public interface {{has-key-interface}}<
 	M extends com.appspot.relaxe.ent.EntityMetaData<A, R, T, E, B, H, F, M> & {{has-key-interface}}<A, R, T, E, B, H, F, M>
 	>
 {
-	public {{table-interface}}.Key<A, R, T, E, B, H, F, M> get{{table-interface}}Key(R ref);
+	public {{table-interface-qualified-name}}.Key<A, R, T, E, B, H, F, M> get{{table-interface}}Key(R ref);
 }
 	

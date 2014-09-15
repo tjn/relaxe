@@ -27,14 +27,18 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.appspot.relaxe.ent.query.DefaultEntityQueryEntityPredicate;
+import com.appspot.relaxe.ent.query.QueryElementEntityReference;
 import com.appspot.relaxe.ent.query.DefaultEntityQueryPredicate;
 import com.appspot.relaxe.ent.query.EntityQueryAttributeValueReference;
+import com.appspot.relaxe.ent.query.EntityReference;
 import com.appspot.relaxe.ent.query.EntityQueryExpressionSortKey;
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
 import com.appspot.relaxe.ent.query.EntityQueryPredicates;
 import com.appspot.relaxe.ent.query.EntityQuerySortKey;
 import com.appspot.relaxe.ent.query.EntityQueryValueExpression;
 import com.appspot.relaxe.ent.query.EntityQueryValue;
+import com.appspot.relaxe.ent.query.ReferencedEntity;
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.expr.ImmutableValueParameter;
@@ -124,6 +128,44 @@ public abstract class DefaultEntityQueryElement<
 		EntityQueryAttributeValueReference<A, QE> lhs = new EntityQueryAttributeValueReference<A, QE>(self(), key.name());
 		return new DefaultEntityQueryPredicate(Comparison.Op.EQ, lhs, rhs);
 	}
+	
+	
+	@Override
+	public <	
+		RA extends AttributeName,
+		RR extends Reference,	
+		RT extends ReferenceType<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RB extends MutableEntity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RB, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>,	
+		K extends EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, K>
+	> 
+	EntityQueryPredicate newEquals(K key, EntityReference<RA, RR, RT, RE, RB, RH, RF, RM> rhs) {
+		EntityReference<RA, RR, RT, RE, RB, RH, RF, RM> lhs = ref(key);
+		return new DefaultEntityQueryEntityPredicate(Comparison.Op.EQ, lhs, rhs);		
+	}
+	
+	
+//	@Override
+//	public <	
+//		RA extends AttributeName,
+//		RR extends Reference,	
+//		RT extends ReferenceType<RA, RR, RT, RE, RB, RH, RF, RM>,
+//		RE extends Entity<RA, RR, RT, RE, RB, RH, RF, RM>,
+//		RB extends MutableEntity<RA, RR, RT, RE, RB, RH, RF, RM>,
+//		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+//		RF extends EntityFactory<RE, RB, RH, RM, RF>,
+//		RM extends EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>,	
+//		K extends EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, K>
+//	> 
+//	EntityQueryPredicate newEquals(K left, K right) {
+//		EntityReference<RA, RR, RT, RE, RB, RH, RF, RM> lhs = ref(left);
+//		EntityReference<RA, RR, RT, RE, RB, RH, RF, RM> rhs = ref(right);
+//		return new DefaultEntityQueryEntityPredicate(Comparison.Op.EQ, lhs, rhs);		
+//	}	
+	
 	
 	@Override
 	public <
@@ -260,5 +302,31 @@ public abstract class DefaultEntityQueryElement<
 //	public Logger logger() {
 //		return DefaultLogger.getLogger();
 //	}
+	
+	
+	public <	
+		RA extends AttributeName,
+		RR extends Reference,	
+		RT extends ReferenceType<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RB extends MutableEntity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RB, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>,	
+		K extends EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, K>
+	> 
+	EntityReference<RA, RR, RT, RE, RB, RH, RF, RM> ref(K key) {
+		EntityReference<RA, RR, RT, RE, RB, RH, RF, RM> ref = ReferencedEntity.of(this, key.self());
+		return ref;
+	}
+	
+	public <
+		K extends EntityKey<A, R, T, E, B, H, F, M, A, R, T, E, B, H, F, M, K>
+	> 
+	EntityQueryPredicate self(K key) {
+		EntityReference<A, R, T, E, B, H, F, M> lhs = QueryElementEntityReference.of(this);
+		EntityReference<A, R, T, E, B, H, F, M> rhs = ReferencedEntity.of(this, key.self());		
+		return EntityQueryPredicates.newEquals(lhs, rhs);
+	}
 }
 

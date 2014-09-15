@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 
+import com.appspot.relaxe.ent.query.EntityReference;
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
 import com.appspot.relaxe.ent.query.EntityQuerySortKey;
 import com.appspot.relaxe.ent.query.EntityQueryValue;
@@ -199,6 +200,35 @@ public interface EntityQueryElement<
 	EntityQuerySortKey newSortKey(K key, boolean ascending);
 
 
-			
+	
+	public <	
+		RA extends AttributeName,
+		RR extends Reference,	
+		RT extends ReferenceType<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RB extends MutableEntity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RB, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>,	
+		K extends EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, K>
+	> 
+	EntityQueryPredicate newEquals(K key, EntityReference<RA, RR, RT, RE, RB, RH, RF, RM> rhs);	
+
+	
+	public <	
+		RA extends AttributeName,
+		RR extends Reference,	
+		RT extends ReferenceType<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RB extends MutableEntity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RB, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>,	
+		K extends EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, K>
+	> 
+	EntityReference<RA, RR, RT, RE, RB, RH, RF, RM> ref(K key);
+	
+	
+
 	
 }

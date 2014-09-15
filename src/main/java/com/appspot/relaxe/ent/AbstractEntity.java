@@ -23,6 +23,8 @@
 package com.appspot.relaxe.ent;
 
 import java.io.Serializable;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import com.appspot.relaxe.ent.value.EntityKey;
@@ -124,14 +126,33 @@ public abstract class AbstractEntity<
 	@Override
 	public final String toString() {
 		StringBuffer buf = new StringBuffer();
+		Map<Object, Integer> cm = new IdentityHashMap<Object, Integer>();
+		traverse(buf, this, cm);		
+		return buf.toString();
+	}
+		
+	
+	private void traverse(StringBuffer buf, Entity<?, ?, ?, ?, ?, ?, ?, ?> e, Map<Object, Integer> traversed) {		
+		Integer no = traversed.get(e);
+				
+		if (no != null) {
+			buf.append("(#");
+			buf.append(no);
+			buf.append(")");
+			return;
+		}
+		
+		no = Integer.valueOf(traversed.size() + 1);		
+		traversed.put(e, no);
 		
 		M meta = getMetaData();
 		
-		buf.append("{");
-		
-		buf.append(super.toString());
+		buf.append("#");
+		buf.append(no);
 		buf.append(":");
-		
+		buf.append(super.toString());
+		buf.append(":{");
+				
 		if (meta == null) {
 			throw new NullPointerException("getMetaData()");
 		}
@@ -141,9 +162,14 @@ public abstract class AbstractEntity<
 		if (as == null) {
 			throw new NullPointerException("getMetaData().attributes()");
 		}
+		
+		int ord = 0;
+		int ac = as.size();
 				
 		for (A a : as) {
 			Attribute<A, E, ?, ?, ?, ?, ?> key = meta.getKey(a);
+			
+			ord++;
 			
 			if (key == null) {
 				buf.append("<no key for attribute: ");
@@ -151,60 +177,49 @@ public abstract class AbstractEntity<
 				buf.append(">");
 				continue;
 			}					
-			
-			ValueHolder<?, ?, ?> v = null;
+						
+			buf.append("@:");
 			buf.append(key.name());
 			buf.append("=");
+			buf.append("{");			
+			ValueHolder<?, ?, ?> v = key.get(self());
+			buf.append(v);
+			buf.append("}");
 			
-			try {
-				v = key.get(self());
-				buf.append(v);
+			if (ord < ac) {
+				buf.append(",");
 			}
-			catch (EntityRuntimeException e) {
-				buf.append("[ERROR: ");
-				buf.append(e.getMessage());
-				buf.append("]");
-			}
-			
-			buf.append("\n");
 		}
+		
+		buf.append(",");
 		
 		Set<R> rs = meta.relationships();
 		
 		int rc = 0;
 		
 		for (R r : rs) {
-			try {
-				EntityKey<A, R, T, E, B, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);
-				ReferenceHolder<?, ?, ?, ?, ?, ?> rh = k.get(self());
+			EntityKey<A, R, T, E, B, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?, ?> k = meta.getEntityKey(r);
+			ReferenceHolder<?, ?, ?, ?, ?, ?> rh = k.get(self());
+			
+			if (rh != null) {
+				rc++;
+				buf.append(r);
+				buf.append("=");
 				
-				if (rh != null) {
-					rc++;
-					buf.append(r);
-					buf.append("=");
-					
-					if (rh.isNull()) {
-						buf.append(rh.toString());
-					}
-					else {
-						buf.append(rh.value());
-					}
+				if (rh.isNull()) {
+					buf.append(rh.toString());
+				}
+				else {
+					traverse(buf, rh.value(), traversed);
 				}
 			}
-			catch (EntityRuntimeException e) {
-				buf.append("[ERROR: ");
-				buf.append(e.getMessage());
-				buf.append("]");
-			}
 			
-			buf.append("\n");
+			buf.append(",");
 		}
 		
 		buf.append("\n");
 		buf.append("ref-count: " + rc);
 		buf.append("}");
-		
-		return buf.toString();
 	}
 
 	/**

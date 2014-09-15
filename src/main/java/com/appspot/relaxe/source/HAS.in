@@ -20,7 +20,7 @@ public interface Has{{table-interface}} {
 		M extends com.appspot.relaxe.ent.EntityMetaData<A, R, T, E, B, H, F, M> & Has{{table-interface}}Key<A, R, T, E, B, H, F, M>
 		>
 	{
-		public {{table-interface}}.Holder get{{table-interface}}({{table-interface}}.Key<A, R, T, E, B, H, F, M> key);
+		public {{table-interface-qualified-name}}.Holder get{{table-interface}}({{table-interface-qualified-name}}.Key<A, R, T, E, B, H, F, M> key);
 		
 	}
 
@@ -35,6 +35,6 @@ public interface Has{{table-interface}} {
 		M extends com.appspot.relaxe.ent.EntityMetaData<A, R, T, E, B, H, F, M> & Has{{table-interface}}Key<A, R, T, E, B, H, F, M>
 	>
 	{
-		public void set{{table-interface}}({{table-interface}}.Key<A, R, T, E, B, H, F, M> key, {{table-interface}}.Holder newHolder);	
+		public void set{{table-interface}}({{table-interface-qualified-name}}.Key<A, R, T, E, B, H, F, M> key, {{table-interface-qualified-name}}.Holder newHolder);	
 	}
 }

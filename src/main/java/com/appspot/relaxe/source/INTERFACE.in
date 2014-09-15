@@ -1,58 +1,55 @@
 package {{package-name}};
 
-import com.appspot.relaxe.ent.DataObject;
-import com.appspot.relaxe.ent.Entity;
-import com.appspot.relaxe.ent.MutableEntity;
-import com.appspot.relaxe.ent.EntityBuildContext;
-import com.appspot.relaxe.ent.EntityBuilder;
-import com.appspot.relaxe.ent.EntityMetaData;
-import com.appspot.relaxe.ent.EntityFactory;
-import com.appspot.relaxe.ent.value.AbstractEntityKey;
-import com.appspot.relaxe.expr.TableReference;
-import com.appspot.relaxe.meta.ForeignKey;
 import com.appspot.relaxe.types.*;
-import com.appspot.relaxe.value.ReferenceHolder;
 
 public interface {{table-interface}}
     extends com.appspot.relaxe.ent.Entity<
-        {{table-interface}}.Attribute,
-        {{table-interface}}.Reference,        
-        {{table-interface}}.Type,
-        {{table-interface}},
-        {{table-interface}}.Mutable,
-        {{table-interface}}.Holder,		
-        {{table-interface}}.Factory,
-        {{table-interface}}.MetaData
+        {{table-interface-qualified-name}}.Attribute,
+        {{table-interface-qualified-name}}.Reference,        
+        {{table-interface-qualified-name}}.Type,
+        {{table-interface-qualified-name}},
+        {{table-interface-qualified-name}}.Mutable,
+        {{table-interface-qualified-name}}.Holder,		
+        {{table-interface-qualified-name}}.Factory,
+        {{table-interface-qualified-name}}.MetaData
     > {{has-reference-read-list}} {{readable-attribute-container-interface-list}} {
     
-	class Type extends ReferenceType<Attribute, Reference, Type, {{table-interface}}, Mutable, Holder, Factory, MetaData> {
+	class Type extends com.appspot.relaxe.types.ReferenceType<
+		{{table-interface-qualified-name}}.Attribute, 
+		{{table-interface-qualified-name}}.Reference, 
+		{{table-interface-qualified-name}}.Type,
+		{{table-interface-qualified-name}}, 
+		{{table-interface-qualified-name}}.Mutable, 
+		{{table-interface-qualified-name}}.Holder, 
+		{{table-interface-qualified-name}}.Factory, 
+		{{table-interface-qualified-name}}.MetaData> {
 		private static final long serialVersionUID = 1L;
 		
 		@Override
-		public MetaData getMetaData() {		
-			return {{table-interface}}MetaData.getInstance();
+		public {{table-interface-qualified-name}}.MetaData getMetaData() {		
+			return {{table-interface-qualified-name}}MetaData.getInstance();
 		}
 		
 		@Override
-		public Type self() {
+		public {{table-interface-qualified-name}}.Type self() {
 			return this;
 		}
 		
-		public static final Type TYPE = new Type();
+		public static final {{table-interface-qualified-name}}.Type TYPE = new {{table-interface-qualified-name}}.Type();
 	}
 	
 	
 	
 	public interface Mutable
-		extends  {{table-interface}}, com.appspot.relaxe.ent.MutableEntity<
-	        {{table-interface}}.Attribute,
-	        {{table-interface}}.Reference,        
-	        {{table-interface}}.Type,
-	        {{table-interface}},
-	        {{table-interface}}.Mutable,
-	        {{table-interface}}.Holder,		
-	        {{table-interface}}.Factory,
-	        {{table-interface}}.MetaData
+		extends {{table-interface-qualified-name}}, com.appspot.relaxe.ent.MutableEntity<
+	        {{table-interface-qualified-name}}.Attribute,
+	        {{table-interface-qualified-name}}.Reference,        
+	        {{table-interface-qualified-name}}.Type,
+	        {{table-interface-qualified-name}},
+	        {{table-interface-qualified-name}}.Mutable,
+	        {{table-interface-qualified-name}}.Holder,		
+	        {{table-interface-qualified-name}}.Factory,
+	        {{table-interface-qualified-name}}.MetaData
 	    > {{has-reference-write-list}} {{writable-attribute-container-interface-list}} {
 	    
 	    {{entity-attribute-read-write-accessor-signature-list}}
@@ -62,66 +59,83 @@ public interface {{table-interface}}
 	
 	
 	public static class Holder
-		extends ReferenceHolder<Attribute, Reference, Type, {{table-interface}}, Holder, MetaData> {
+		extends com.appspot.relaxe.value.ReferenceHolder<
+			{{table-interface-qualified-name}}.Attribute, 
+			{{table-interface-qualified-name}}.Reference, 
+			{{table-interface-qualified-name}}.Type, 
+			{{table-interface-qualified-name}}, 
+			{{table-interface-qualified-name}}.Holder, 
+			{{table-interface-qualified-name}}.MetaData> {
 		
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;		
-		public static final Holder NULL = new Holder();
+		public static final {{table-interface-qualified-name}}.Holder NULL = new {{table-interface-qualified-name}}.Holder();
 		
 		private Holder() {			
 		}
 
-		public Holder({{table-interface}} value) {
+		public Holder({{table-interface-qualified-name}} value) {
 			super(value);
 		}
 	
 		@Override
-		public Type getType() {
-			return {{table-interface}}.Type.TYPE;
+		public {{table-interface-qualified-name}}.Type getType() {
+			return {{table-interface-qualified-name}}.Type.TYPE;
 		}
 		
-		public static {{table-interface}}.Holder valueOf({{table-interface}} value) {
-			return (value == null) ? {{table-interface}}.Holder.NULL : new {{table-interface}}.Holder(value);
+		public static {{table-interface-qualified-name}}.Holder valueOf({{table-interface-qualified-name}} value) {
+			return (value == null) ? {{table-interface-qualified-name}}.Holder.NULL : new {{table-interface-qualified-name}}.Holder(value);
 		}
 		
 		@Override
-		public Holder self() {
+		public {{table-interface-qualified-name}}.Holder self() {
 			return this;
 		}
 	}
 	
 	interface Factory
-		extends com.appspot.relaxe.ent.EntityFactory<{{table-interface}}, Mutable, Holder, MetaData, Factory> {
+		extends com.appspot.relaxe.ent.EntityFactory<{{table-interface-qualified-name}}, Mutable, Holder, MetaData, Factory> {
 		
 	}
 			
 	interface MetaData
-		extends com.appspot.relaxe.ent.EntityMetaData<Attribute, Reference, Type, {{table-interface}}, Mutable, Holder, Factory, MetaData>		
+		extends com.appspot.relaxe.ent.EntityMetaData<
+			{{table-interface-qualified-name}}.Attribute, 
+			{{table-interface-qualified-name}}.Reference, 
+			{{table-interface-qualified-name}}.Type, 
+			{{table-interface-qualified-name}}, 
+			{{table-interface-qualified-name}}.Mutable, 
+			{{table-interface-qualified-name}}.Holder, 
+			{{table-interface-qualified-name}}.Factory, 
+			{{table-interface-qualified-name}}.MetaData>		
 		{{implemented-has-key-list}} {{attribute-key-container-interface-list}}
 	{		
 		@Override
-		public Builder newBuilder(TableReference referencing, ForeignKey referencedBy, TableReference tableRef, EntityBuildContext ctx, com.appspot.relaxe.ent.UnificationContext unificationContext)
+		public {{table-interface-qualified-name}}.Builder newBuilder(com.appspot.relaxe.expr.TableReference referencing, com.appspot.relaxe.meta.ForeignKey referencedBy, com.appspot.relaxe.expr.TableReference tableRef, com.appspot.relaxe.ent.EntityBuildContext ctx, com.appspot.relaxe.ent.UnificationContext unificationContext)
 			throws com.appspot.relaxe.ent.EntityException;
 	}
 		
-	interface Builder extends EntityBuilder<{{table-interface}}, {{table-interface}}.Mutable, {{table-interface}}.Holder> {
-		{{table-interface}}.Holder read(DataObject src);	
+	interface Builder extends com.appspot.relaxe.ent.EntityBuilder<
+		{{table-interface-qualified-name}}, 
+		{{table-interface-qualified-name}}.Mutable, 
+		{{table-interface-qualified-name}}.Holder> {
+		{{table-interface-qualified-name}}.Holder read(com.appspot.relaxe.ent.DataObject src);	
 	}
 
 	
 	public static abstract class Key<
 		A extends com.appspot.relaxe.ent.AttributeName,
 		R extends com.appspot.relaxe.ent.Reference,	
-		T extends ReferenceType<A, R, T, E, B, H, F, M>,
-		E extends Entity<A, R, T, E, B, H, F, M> & Has{{table-interface}}.Read<A, R, T, E, B, H, F, M>,
-		B extends MutableEntity<A, R, T, E, B, H, F, M> & Has{{table-interface}}.Write<A, R, T, E, B, H, F, M>,
-		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, B, H, M, F>,
-		M extends EntityMetaData<A, R, T, E, B, H, F, M> & Has{{table-interface}}Key<A, R, T, E, B, H, F, M>
+		T extends com.appspot.relaxe.types.ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends com.appspot.relaxe.ent.Entity<A, R, T, E, B, H, F, M> & Has{{table-interface}}.Read<A, R, T, E, B, H, F, M>,
+		B extends com.appspot.relaxe.ent.MutableEntity<A, R, T, E, B, H, F, M> & Has{{table-interface}}.Write<A, R, T, E, B, H, F, M>,
+		H extends com.appspot.relaxe.value.ReferenceHolder<A, R, T, E, H, M>,
+		F extends com.appspot.relaxe.ent.EntityFactory<E, B, H, M, F>,
+		M extends com.appspot.relaxe.ent.EntityMetaData<A, R, T, E, B, H, F, M> & Has{{table-interface}}Key<A, R, T, E, B, H, F, M>
 	>
-		extends AbstractEntityKey<A, R, T, E, B, H, F, M, {{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Type, {{table-interface}}, {{table-interface}}.Mutable, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Key<A, R, T, E, B, H, F, M>> {
+		extends com.appspot.relaxe.ent.value.AbstractEntityKey<A, R, T, E, B, H, F, M, {{table-interface}}.Attribute, {{table-interface}}.Reference, {{table-interface}}.Type, {{table-interface}}, {{table-interface}}.Mutable, {{table-interface}}.Holder, {{table-interface}}.Factory, {{table-interface}}.MetaData, {{table-interface}}.Key<A, R, T, E, B, H, F, M>> {
 
 		private static final long serialVersionUID = 1L;
 		
@@ -136,30 +150,30 @@ public interface {{table-interface}}
 		}		
 
 		@Override
-		public {{table-interface}}.Holder newHolder({{table-interface}} o) {
-			return {{table-interface}}.Holder.valueOf(o);
+		public {{table-interface-qualified-name}}.Holder newHolder({{table-interface-qualified-name}} o) {
+			return {{table-interface-qualified-name}}.Holder.valueOf(o);
 		}
 		
 		@Override
-		public {{table-interface}}.MetaData getTarget() {		
-			return {{table-interface}}MetaData.getInstance();
+		public {{table-interface-qualified-name}}.MetaData getTarget() {		
+			return {{table-interface-qualified-name}}MetaData.getInstance();
 		}
 		
-		public void set(B e, {{table-interface}}.Holder newValue) {
+		public void set(B e, {{table-interface-qualified-name}}.Holder newValue) {
 			e.set{{table-interface}}(this, newValue);			
 		}
 		
-		public {{table-interface}}.Holder get(E e) {
+		public {{table-interface-qualified-name}}.Holder get(E e) {
 			return e.get{{table-interface}}(this);			
 		}		
 
 		@Override
-		public {{table-interface}}.Type type() {
-			return {{table-interface}}.Type.TYPE;
+		public {{table-interface-qualified-name}}.Type type() {
+			return {{table-interface-qualified-name}}.Type.TYPE;
 		}
 		
 		@Override
-		public {{table-interface}}.Key<A, R, T, E, B, H, F, M> self() {		
+		public {{table-interface-qualified-name}}.Key<A, R, T, E, B, H, F, M> self() {		
 			return this;
 		}
 	}
@@ -176,9 +190,17 @@ public interface {{table-interface}}
 
 		public static class QueryElement
 			extends com.appspot.relaxe.ent.DefaultEntityQueryElement<
-				Attribute, Reference, Type, {{table-interface}}, Mutable, Holder, Factory, MetaData, QueryElement> {
+				{{table-interface-qualified-name}}.Attribute, 
+				{{table-interface-qualified-name}}.Reference, 
+				{{table-interface-qualified-name}}.Type, 
+				{{table-interface-qualified-name}}, 
+				{{table-interface-qualified-name}}.Mutable, 
+				{{table-interface-qualified-name}}.Holder, 
+				{{table-interface-qualified-name}}.Factory, 
+				{{table-interface-qualified-name}}.MetaData, 
+				QueryElement> {
 		
-			private java.util.Set<Attribute> attributes;
+			private java.util.Set<{{table-interface-qualified-name}}.Attribute> attributes;
 			
 			{{query-element-variable-list}}
 		
@@ -191,7 +213,7 @@ public interface {{table-interface}}
 				// {{query-element-default-constructor-body}}								
 			}
 			
-			public QueryElement(java.util.Collection<Attribute> attributes) {
+			public QueryElement(java.util.Collection<{{table-interface-qualified-name}}.Attribute> attributes) {
 				if (attributes != null && (!attributes.isEmpty())) {
 					this.attributes = new java.util.TreeSet<Attribute>(attributes);
 				}
@@ -204,8 +226,8 @@ public interface {{table-interface}}
 			}
 			
 			@Override
-			public MetaData getMetaData() {
-				return {{table-interface}}.Type.TYPE.getMetaData();
+			public {{table-interface-qualified-name}}.MetaData getMetaData() {
+				return {{table-interface-qualified-name}}.Type.TYPE.getMetaData();
 			}
 
 			@Override
@@ -214,7 +236,7 @@ public interface {{table-interface}}
 			}
 
 			@Override
-			public java.util.Set<Attribute> attributes() {
+			public java.util.Set<{{table-interface-qualified-name}}.Attribute> attributes() {
 				if (attributes == null) {
 					return java.util.Collections.emptySet();
 				}
@@ -224,7 +246,15 @@ public interface {{table-interface}}
 			
 			@Override
 			public com.appspot.relaxe.ent.EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(
-					com.appspot.relaxe.ent.value.EntityKey<Attribute, Reference, Type, {{table-interface}}, Mutable, Holder, Factory, MetaData, ?, ?, ?, ?, ?, ?, ?, ?, ?> key) {
+					com.appspot.relaxe.ent.value.EntityKey<
+					{{table-interface-qualified-name}}.Attribute, 
+					{{table-interface-qualified-name}}.Reference, 
+					{{table-interface-qualified-name}}.Type, 
+					{{table-interface-qualified-name}}, 
+					{{table-interface-qualified-name}}.Mutable, 
+					{{table-interface-qualified-name}}.Holder, 
+					{{table-interface-qualified-name}}.Factory, 
+					{{table-interface-qualified-name}}.MetaData, ?, ?, ?, ?, ?, ?, ?, ?, ?> key) {
 				// {{query-element-getter-body}}
 			}
 			
@@ -234,18 +264,18 @@ public interface {{table-interface}}
 			
 			public static class Builder 
 				implements com.appspot.relaxe.ent.EntityQueryElement.Builder<
-					Attribute, 
-					Reference, 
-					Type, 
-					{{table-interface}},
-					Mutable, 
-					Holder, 
-					Factory, 
-					MetaData,
-					QueryElement
+					{{table-interface-qualified-name}}.Attribute, 
+					{{table-interface-qualified-name}}.Reference, 
+					{{table-interface-qualified-name}}.Type, 
+					{{table-interface-qualified-name}},
+					{{table-interface-qualified-name}}.Mutable, 
+					{{table-interface-qualified-name}}.Holder, 
+					{{table-interface-qualified-name}}.Factory, 
+					{{table-interface-qualified-name}}.MetaData,
+					{{table-interface-qualified-name}}.QueryElement
 				> {
 				
-				private java.util.Set<{{table-interface}}.Attribute> attributes;
+				private java.util.Set<{{table-interface-qualified-name}}.Attribute> attributes;
 								
 				// {{query-element-variable-list}}
 			
@@ -256,7 +286,15 @@ public interface {{table-interface}}
 				
 				@Override
 				public com.appspot.relaxe.ent.EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?> getQueryElement(
-						com.appspot.relaxe.ent.value.EntityKey<Attribute, Reference, Type, {{table-interface}}, Mutable, Holder, Factory, MetaData, ?, ?, ?, ?, ?, ?, ?, ?, ?> key) {											
+						com.appspot.relaxe.ent.value.EntityKey<
+							{{table-interface-qualified-name}}.Attribute, 
+							{{table-interface-qualified-name}}.Reference, 
+							{{table-interface-qualified-name}}.Type, 
+							{{table-interface-qualified-name}}, 
+							{{table-interface-qualified-name}}.Mutable, 
+							{{table-interface-qualified-name}}.Holder, 
+							{{table-interface-qualified-name}}.Factory, 
+							{{table-interface-qualified-name}}.MetaData, ?, ?, ?, ?, ?, ?, ?, ?, ?> key) {											
 					// {{query-element-getter-body}}
 				}
 				
@@ -266,22 +304,22 @@ public interface {{table-interface}}
 				public <
 					RA extends com.appspot.relaxe.ent.AttributeName, 
 					RR extends com.appspot.relaxe.ent.Reference, 
-					RT extends ReferenceType<RA, RR, RT, RE, RB, RH, RF, RM>, 
-					RE extends Entity<RA, RR, RT, RE, RB, RH, RF, RM>, 
-					RB extends MutableEntity<RA, RR, RT, RE, RB, RH, RF, RM>,
-					RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>, 
-					RF extends EntityFactory<RE, RB, RH, RM, RF>, 
-					RM extends EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>,
+					RT extends com.appspot.relaxe.types.ReferenceType<RA, RR, RT, RE, RB, RH, RF, RM>, 
+					RE extends com.appspot.relaxe.ent.Entity<RA, RR, RT, RE, RB, RH, RF, RM>, 
+					RB extends com.appspot.relaxe.ent.MutableEntity<RA, RR, RT, RE, RB, RH, RF, RM>,
+					RH extends com.appspot.relaxe.value.ReferenceHolder<RA, RR, RT, RE, RH, RM>, 
+					RF extends com.appspot.relaxe.ent.EntityFactory<RE, RB, RH, RM, RF>, 
+					RM extends com.appspot.relaxe.ent.EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>,
 					RQ extends com.appspot.relaxe.ent.EntityQueryElement<RA, RR, RT, RE, RB, RH, RF, RM, RQ>, 
 					K extends com.appspot.relaxe.ent.value.EntityKey<
-						{{table-interface}}.Attribute, 
-						{{table-interface}}.Reference, 
-						{{table-interface}}.Type, 
-						{{table-interface}}, 
-						{{table-interface}}.Mutable,
-						{{table-interface}}.Holder, 
-						{{table-interface}}.Factory, 
-						{{table-interface}}.MetaData,
+						{{table-interface-qualified-name}}.Attribute, 
+						{{table-interface-qualified-name}}.Reference, 
+						{{table-interface-qualified-name}}.Type, 
+						{{table-interface-qualified-name}}, 
+						{{table-interface-qualified-name}}.Mutable,
+						{{table-interface-qualified-name}}.Holder, 
+						{{table-interface-qualified-name}}.Factory, 
+						{{table-interface-qualified-name}}.MetaData,
 						RA, RR, RT, RE, RB, RH, RF, RM, K
 					>
 				> 
@@ -291,14 +329,14 @@ public interface {{table-interface}}
 				
 				@Override
 				public void addAllAttributes() {					
-					attributeSet().addAll({{table-interface}}.Type.TYPE.getMetaData().attributes());										
+					attributeSet().addAll({{table-interface-qualified-name}}.Type.TYPE.getMetaData().attributes());										
 				}
 				
-				public void add(com.appspot.relaxe.ent.value.Attribute<{{table-interface}}.Attribute, {{table-interface}}, ?, ?, ?, ?, ?> key) {
+				public void add(com.appspot.relaxe.ent.value.Attribute<{{table-interface-qualified-name}}.Attribute, {{table-interface-qualified-name}}, ?, ?, ?, ?, ?> key) {
 					add(key.name());
 				}
 				
-				public void add(Attribute attribute) {
+				public void add({{table-interface-qualified-name}}.Attribute attribute) {
 					if (attribute == null) {
 						throw new NullPointerException("attribute");
 					}
@@ -307,23 +345,23 @@ public interface {{table-interface}}
 				}
 				
 				@Override
-				public void remove(Attribute attribute) {
+				public void remove({{table-interface-qualified-name}}.Attribute attribute) {
 					attributeSet().remove(attribute);									
 				}
 				
 				@Override
-				public void remove(com.appspot.relaxe.ent.value.Attribute<{{table-interface}}.Attribute, {{table-interface}}, ?, ?, ?, ?, ?> key) {
+				public void remove(com.appspot.relaxe.ent.value.Attribute<{{table-interface-qualified-name}}.Attribute, {{table-interface-qualified-name}}, ?, ?, ?, ?, ?> key) {
 					remove(key.name());
 				}
 				
 				@Override
-				public void removeAll(java.util.Collection<Attribute> attributes) {					
+				public void removeAll(java.util.Collection<{{table-interface-qualified-name}}.Attribute> attributes) {					
 					attributeSet().removeAll(attributes);									
 				}
 				
-				private java.util.Set<{{table-interface}}.Attribute> attributeSet() {
+				private java.util.Set<{{table-interface-qualified-name}}.Attribute> attributeSet() {
 					if (this.attributes == null) {
-						this.attributes = new java.util.TreeSet<{{table-interface}}.Attribute>();
+						this.attributes = new java.util.TreeSet<{{table-interface-qualified-name}}.Attribute>();
 					}
 					
 					return this.attributes;
@@ -343,7 +381,15 @@ public interface {{table-interface}}
 				
 		public static class Query
 			extends com.appspot.relaxe.ent.DefaultEntityQuery<
-				Attribute, Reference, Type, {{table-interface}}, Mutable, Holder, Factory, MetaData, QueryElement
+				{{table-interface-qualified-name}}.Attribute,
+				{{table-interface-qualified-name}}.Reference,
+				{{table-interface-qualified-name}}.Type,
+				{{table-interface-qualified-name}},
+				{{table-interface-qualified-name}}.Mutable,
+				{{table-interface-qualified-name}}.Holder,
+				{{table-interface-qualified-name}}.Factory,
+				{{table-interface-qualified-name}}.MetaData,
+				{{table-interface-qualified-name}}.QueryElement
 			> 
 		{
 			/**
@@ -358,7 +404,7 @@ public interface {{table-interface}}
 			private Query() {	
 			}
 			
-			public Query(java.util.Collection<Attribute> attributes) {
+			public Query(java.util.Collection<{{table-interface-qualified-name}}.Attribute> attributes) {
 				this(new QueryElement(attributes));
 			}
 			
@@ -377,15 +423,24 @@ public interface {{table-interface}}
 			}
 			
 			public static class Builder
-				extends com.appspot.relaxe.ent.DefaultEntityQuery.Builder<Attribute, Reference, Type, {{table-interface}}, Mutable, Holder, Factory, MetaData, QueryElement> {
+				extends com.appspot.relaxe.ent.DefaultEntityQuery.Builder<
+					{{table-interface-qualified-name}}.Attribute, 
+					{{table-interface-qualified-name}}.Reference, 
+					{{table-interface-qualified-name}}.Type, 
+					{{table-interface-qualified-name}}, 
+					{{table-interface-qualified-name}}.Mutable, 
+					{{table-interface-qualified-name}}.Holder, 
+					{{table-interface-qualified-name}}.Factory, 
+					{{table-interface-qualified-name}}.MetaData, 
+					{{table-interface-qualified-name}}.QueryElement> {
 
 				public Builder(QueryElement root) {
 					super(root);
 				}
 				
 				@Override
-				public {{table-interface}}.Query newQuery() {
-					return new {{table-interface}}.Query(getRootElement(), getPredicates(), getSortKeys());
+				public {{table-interface-qualified-name}}.Query newQuery() {
+					return new {{table-interface-qualified-name}}.Query(getRootElement(), getPredicates(), getSortKeys());
 				}
 			}
 		}

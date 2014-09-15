@@ -23,6 +23,7 @@
 package com.appspot.relaxe.expr.op;
 
 import com.appspot.relaxe.expr.Predicate;
+import com.appspot.relaxe.expr.RowValueConstructor;
 import com.appspot.relaxe.expr.Symbol;
 import com.appspot.relaxe.expr.ValueExpression;
 
@@ -55,6 +56,10 @@ public class Comparison
 		public Comparison newComparison(ValueExpression a, ValueExpression b) {
 			return new Comparison(this, a, b);
 		}
+		
+		public Comparison newComparison(RowValueConstructor a, RowValueConstructor b) {
+			return new Comparison(this, a, b);
+		}
 	}
 	
 	/**
@@ -65,7 +70,11 @@ public class Comparison
 	
 	private Comparison(Op op, ValueExpression a, ValueExpression b) {
 		super(op.symbol, a, b);	
-	}	
+	}
+	
+	private Comparison(Op op, RowValueConstructor a, RowValueConstructor b) {
+		super(op.symbol, a, b);	
+	}		
 	
 	public static Comparison eq(ValueExpression a, ValueExpression b) {
 		return new Comparison(Op.EQ, a, b);
@@ -77,5 +86,9 @@ public class Comparison
 	
 	public static Comparison gt(ValueExpression a, ValueExpression b) {
 		return new Comparison(Op.GT, a, b);
+	}
+	
+	public static Comparison eq(RowValueConstructor a, RowValueConstructor b) {
+		return new Comparison(Op.EQ, a, b);
 	}
 }

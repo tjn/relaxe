@@ -93,7 +93,9 @@ public class SourceGenerator {
 		 * Pattern which is replaced with the simple name of the table interface
 		 * in template files.
 		 */
-		TABLE_INTERFACE, HAS_KEY_INTERFACE, HAS_INTERFACE,
+		TABLE_INTERFACE, 
+		TABLE_INTERFACE_QUALIFIED_NAME,
+		HAS_KEY_INTERFACE, HAS_INTERFACE,
 
 		REFERENCED_TABLE_INTERFACE_QUALIFIED, TABLE_INTERFACE_REF,
 		/**
@@ -660,6 +662,7 @@ public class SourceGenerator {
 		src = replaceAll(src, Tag.HAS_KEY_INTERFACE, hki.getUnqualifiedName());
 		src = replaceAll(src, Tag.HAS_INTERFACE, hp.getUnqualifiedName());
 		src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
+		src = replaceAll(src, Tag.TABLE_INTERFACE_QUALIFIED_NAME, intf.getQualifiedName());
 
 //		logger().info("generateHasKeyInterface: src 2=" + src);
 
@@ -1005,6 +1008,7 @@ public class SourceGenerator {
 		String src = getTemplateFor(Part.HAS);
 		src = replacePackageAndImports(src, intf);
 		src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
+		src = replaceAll(src, Tag.TABLE_INTERFACE_QUALIFIED_NAME, intf.getQualifiedName());
 		return src;
 	}
 
@@ -1071,6 +1075,7 @@ public class SourceGenerator {
 		src = replacePackageAndImports(src, mt);
 
 		src = replaceAll(src, Tag.TABLE_INTERFACE, mt.getUnqualifiedName());
+		src = replaceAll(src, Tag.TABLE_INTERFACE_QUALIFIED_NAME, mt.getQualifiedName());
 
 		{
 			logger().debug(
@@ -1109,12 +1114,6 @@ public class SourceGenerator {
 			String hkl = implementedHasKeyList(t, tm);
 			src = replaceAll(src, Tag.IMPLEMENTED_HAS_KEY_LIST, hkl);
 		}
-
-		// {
-		// String type = createEnumType(getEnumTemplate(), "Query", queries(t));
-		// src = replaceAll(src, "{{query-name-type}}", type);
-		// }
-		
 		
 		{
 			String code = entityAttributeAccessorList(cat, t, tm, tym, false, false, false);
@@ -1126,8 +1125,6 @@ public class SourceGenerator {
 			src = replaceAllWithComment(src, Tag.ENTITY_ATTRIBUTE_READ_WRITE_ACCESSOR_SIGNATURE_LIST, code);
 		}				
 		
-		
-
 		{
 			String code = contentAccessors(cat, t, tm, tym, false);
 			src = replaceAll(src, "{{abstract-accessor-list}}", code);
@@ -1145,8 +1142,7 @@ public class SourceGenerator {
 
 		{
 			String code = queryElementGetterBody(cat, t, tm, tym);
-			src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_GETTER_BODY,
-					code);
+			src = replaceAllWithComment(src, Tag.QUERY_ELEMENT_GETTER_BODY, code);
 		}
 
 		{
@@ -1230,7 +1226,7 @@ public class SourceGenerator {
 	}
 
 	private String queryElementVariableList(Catalog cat, BaseTable t, TableMapper tm, AttributeTypeMap tym) {
-		Collection<ForeignKey> fks = t.foreignKeys().values();
+		Collection<ForeignKey> fks = foreignKeysReferencingToPrimaryKey(t.foreignKeys().values());
 
 		if (fks.isEmpty()) {
 			return "";
@@ -1294,7 +1290,7 @@ public class SourceGenerator {
 	}
 
 	private String queryElementGetterBody(Catalog cat, BaseTable t, TableMapper tm, AttributeTypeMap tym) {
-		Collection<ForeignKey> fks = t.foreignKeys().values();
+		Collection<ForeignKey> fks = foreignKeysReferencingToPrimaryKey(t.foreignKeys().values());		
 
 		StringBuilder buf = new StringBuilder();
 
@@ -1327,7 +1323,7 @@ public class SourceGenerator {
 	}
 
 	private String queryElementSetterBody(Catalog cat, BaseTable t, TableMapper tm, AttributeTypeMap tym) {
-		Collection<ForeignKey> fks = t.foreignKeys().values();
+		Collection<ForeignKey> fks = foreignKeysReferencingToPrimaryKey(t.foreignKeys().values());
 
 		StringBuilder buf = new StringBuilder();
 
@@ -1358,7 +1354,7 @@ public class SourceGenerator {
 
 	private String queryElementAssignmentList(Catalog cat, BaseTable t,
 			TableMapper tm, AttributeTypeMap tym) {
-		Collection<ForeignKey> fks = t.foreignKeys().values();
+		Collection<ForeignKey> fks = foreignKeysReferencingToPrimaryKey(t.foreignKeys().values());
 
 		if (fks.isEmpty()) {
 			return "";
@@ -1432,8 +1428,10 @@ public class SourceGenerator {
 			pkkeys = new TreeMap<String, ForeignKey>();
 
 			// Map<Identifier, ForeignKey> fkmap = foreignKeyColumnMap(cat, t);
+			
+			Collection<ForeignKey> fks = foreignKeysReferencingToPrimaryKey(t.foreignKeys().values());
 
-			for (ForeignKey fk : t.foreignKeys().values()) {
+			for (ForeignKey fk : fks) {
 				for (Column fkcol : fk.getColumnMap().values()) {
 					if (pkcm.contains(fkcol.getUnqualifiedName())) {
 						pkkeys.put(fk.getQualifiedName(), fk);
@@ -1465,7 +1463,7 @@ public class SourceGenerator {
 
 	private String perTypeQueryElementGetterList(Catalog cat, BaseTable t, TableMapper tm, AttributeTypeMap tym) {
 
-		Collection<ForeignKey> fks = t.foreignKeys().values();
+		Collection<ForeignKey> fks = foreignKeysReferencingToPrimaryKey(t.foreignKeys().values());
 
 		if (fks.isEmpty()) {
 			return "";
@@ -1540,10 +1538,10 @@ public class SourceGenerator {
 	}
 
 	private String implementedHasKeyList(BaseTable t, TableMapper tm) {
-		SchemaElementMap<ForeignKey> fkm = t.foreignKeys();
+		Collection<ForeignKey> fks = foreignKeysReferencingToPrimaryKey(t.foreignKeys().values());		
 		Set<BaseTable> ts = new HashSet<BaseTable>();
 
-		for (ForeignKey k : fkm.values()) {
+		for (ForeignKey k : fks) {
 			ts.add(k.getReferenced());
 		}
 
@@ -1927,8 +1925,7 @@ public class SourceGenerator {
 	private String referenceContainerImplementation(Catalog cat, BaseTable t, TableMapper tam, boolean intf, boolean pk, boolean rw) {
 		StringBuilder buf = new StringBuilder();
 									
-//		Collection<ForeignKey> keys = pk ? primaryKeyForeignKeys(t).values() : t.foreignKeys().values();  
-		Collection<ForeignKey> keys = t.foreignKeys().values();
+		Collection<ForeignKey> keys = foreignKeysReferencingToPrimaryKey(t.foreignKeys().values());
 								
 		for (ForeignKey fk : keys) {				
 			String s = referenceHolderAccessor(cat, fk, tam, intf, pk, rw);
@@ -2123,6 +2120,7 @@ public class SourceGenerator {
 					kt.getCanonicalName());
 			s = replaceAll(s, Tag.ATTRIBUTE_KEY_TYPE_SIMPLE_NAME, kn);
 			s = replaceAll(s, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
+			s = replaceAll(s, Tag.TABLE_INTERFACE_QUALIFIED_NAME, intf.getQualifiedName());
 			buf.append(s);
 		}
 
@@ -2332,6 +2330,7 @@ public class SourceGenerator {
 
 		src = replaceAll(src, Tag.TABLE_ABSTRACT_CLASS, mt.getUnqualifiedName());
 		src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
+		src = replaceAll(src, Tag.TABLE_INTERFACE_QUALIFIED_NAME, intf.getQualifiedName());
 
 		return src;
 	}
@@ -2591,6 +2590,7 @@ public class SourceGenerator {
 		}		
 
 		src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
+		src = replaceAll(src, Tag.TABLE_INTERFACE_QUALIFIED_NAME, intf.getQualifiedName());
 		src = replaceAll(src, Tag.TABLE_IMPL_CLASS, impl.getUnqualifiedName());		
 		src = replaceAll(src, Tag.IMMUTABLE_ENTITY_IMPL_CLASS, impl.getUnqualifiedName());
 		src = replaceAll(src, Tag.MUTABLE_ENTITY_IMPL_CLASS, mutableImplementationSimpleName(intf));
@@ -2643,7 +2643,8 @@ public class SourceGenerator {
 //			return null;				
 //		}		
 		
-		Collection<ForeignKey> pkfks = primaryKeyForeignKeys(t).values();
+		Collection<ForeignKey> pkfks = primaryKeyForeignKeys(t).values();		
+		pkfks = foreignKeysReferencingToPrimaryKey(primaryKeyForeignKeys(t).values());
 		
 		for (ForeignKey fk : pkfks) {
 			BaseTable rt = fk.getReferenced();
@@ -2701,9 +2702,8 @@ public class SourceGenerator {
 			return Collections.emptyList();
 		}
 		
-		List<Column> pkcols = new LinkedList<Column>();
-		
-		Collection<ForeignKey> fks = t.foreignKeys().values();		
+		List<Column> pkcols = new LinkedList<Column>();		
+		Collection<ForeignKey> fks = foreignKeysReferencingToPrimaryKey(t.foreignKeys().values());
 				
 		ColumnMap cm = pk.getColumnMap();
 		
@@ -2737,6 +2737,18 @@ public class SourceGenerator {
 		
 		return pkcols;
 	}
+
+	protected Collection<ForeignKey> foreignKeysReferencingToPrimaryKey(Collection<ForeignKey> fks) {
+		List<ForeignKey> tmp = new ArrayList<ForeignKey>();
+		
+		for (ForeignKey fk : fks) {
+			if (referencesToPrimaryKey(fk)) {
+				tmp.add(fk);
+			}
+		}
+		
+		return tmp;
+	}
 	
 	private Map<Identifier, ForeignKey> primaryKeyForeignKeys(BaseTable t) {
 		PrimaryKey pk = t.getPrimaryKey();
@@ -2750,7 +2762,7 @@ public class SourceGenerator {
 		Comparator<Identifier> cmp = ir.comparator();
 		
 		Map<Identifier, ForeignKey> result = new TreeMap<Identifier, ForeignKey>(cmp);		
-		Collection<ForeignKey> fks = t.foreignKeys().values();		
+		Collection<ForeignKey> fks = t.foreignKeys().values();
 				
 		ColumnMap cm = pk.getColumnMap();
 		
@@ -2809,7 +2821,7 @@ public class SourceGenerator {
 				
 				for (Column c : attrs) {
 					String n = attr(c);				
-					line(buf, "java.util.Collections.singleton(", q, ".", getAttributeType(), ".", n, ")");
+					line(buf, q, ".", getAttributeType(), ".", n);
 					
 					if ((i + 1) < attrs.size()) {
 						buf.append(", ");
@@ -2861,6 +2873,8 @@ public class SourceGenerator {
 		
 		Collection<ForeignKey> keys =  primaryKeyForeignKeys(t).values();
 		
+		keys = foreignKeysReferencingToPrimaryKey(keys);		
+		
 		if (noArgConstructor) {
 			for (ForeignKey fk : keys) {			
 				final String n = variable(fk);
@@ -2893,7 +2907,9 @@ public class SourceGenerator {
 
 		StringBuilder buf = new StringBuilder();		
 		
-		for (ForeignKey fk : t.foreignKeys().values()) {
+		Collection<ForeignKey> fks = foreignKeysReferencingToPrimaryKey(t.foreignKeys().values());
+		
+		for (ForeignKey fk : fks) {
 			String c = formatReferenceAssignment(fk, tam, qualify);
 			buf.append(c);			
 		}
@@ -3025,6 +3041,7 @@ public class SourceGenerator {
 		}
 
 		src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
+		src = replaceAll(src, Tag.TABLE_INTERFACE_QUALIFIED_NAME, intf.getQualifiedName());
 		src = replaceAll(src, Tag.TABLE_IMPL_CLASS, eimp.getUnqualifiedName());		
 		src = replaceAll(src, Tag.IMMUTABLE_ENTITY_IMPL_CLASS, eimp.getUnqualifiedName());
 		src = replaceAll(src, Tag.MUTABLE_ENTITY_IMPL_CLASS, mutableImplementationSimpleName(intf));
@@ -3533,7 +3550,7 @@ public class SourceGenerator {
 			boolean qualify) throws IOException {
 		StringBuilder buf = new StringBuilder();
 
-		Collection<ForeignKey> fks = table.foreignKeys().values();
+		Collection<ForeignKey> fks = foreignKeysReferencingToPrimaryKey(table.foreignKeys().values());
 		
 		JavaType intf = tm.entityType(table, Part.INTERFACE);
 		
@@ -3653,7 +3670,7 @@ public class SourceGenerator {
 
 		JavaType ti = tm.entityType(referenced, Part.INTERFACE);
 				
-		Collection<ForeignKey> keys = pk ? primaryKeyForeignKeys(t).values() : t.foreignKeys().values();
+		Collection<ForeignKey> keys = foreignKeysReferencingToPrimaryKey(pk ? primaryKeyForeignKeys(t).values() : t.foreignKeys().values());
 				
 		Collection<ForeignKey> mks = new ArrayList<ForeignKey>();
 		
@@ -3749,8 +3766,10 @@ public class SourceGenerator {
 		boolean ambiguous = false;
 
 		Map<String, String> names = new HashMap<String, String>();
+		
+		Collection<ForeignKey> fks = foreignKeysReferencingToPrimaryKey(table.foreignKeys().values());
 
-		for (ForeignKey k : table.foreignKeys().values()) {
+		for (ForeignKey k : fks) {
 			BaseTable referenced = k.getReferenced();
 			JavaType t = tm.entityType(referenced, Part.INTERFACE);
 
@@ -3776,8 +3795,10 @@ public class SourceGenerator {
 
 	private Set<BaseTable> referencedTables(BaseTable table) {
 		Set<BaseTable> rs = new HashSet<BaseTable>();
+		
+		Collection<ForeignKey> keys = foreignKeysReferencingToPrimaryKey(table.foreignKeys().values());
 
-		for (ForeignKey k : table.foreignKeys().values()) {
+		for (ForeignKey k : keys) {
 			BaseTable referenced = k.getReferenced();
 			rs.add(referenced);
 		}
@@ -3786,11 +3807,57 @@ public class SourceGenerator {
 	}
 	
 	
+	/**
+	 * Returns @code{true} if foreign key references to the primary key using same column order.
+	 * 
+	 * @param fk
+	 * 
+	 * @return
+	 * @throws NullPointerException If @code{fk} is @code{null}      
+	 */
+	public boolean referencesToPrimaryKey(ForeignKey fk) {
+		BaseTable rt = fk.getReferenced();
+				
+		PrimaryKey pk = rt.getPrimaryKey();
+		
+		if (pk == null) {
+			return false;
+		}
+		
+		ColumnMap fkm = fk.getColumnMap();
+		ColumnMap pkm = pk.getColumnMap();
+		
+		int size = fkm.size();
+		
+		if (pkm.size() != size) {
+			return false;
+		}
+		
+		
+		IdentifierRules ir = fk.getEnvironment().getIdentifierRules();
+		Comparator<Identifier> ncmp = ir.comparator();
+		
+		for (int i = 0; i < size; i++) {
+			Column fkcol = fkm.get(i);
+			Column a = fk.getReferenced(fkcol);
+			Column b = pkm.get(i);
+						
+			if (ncmp.compare(a.getColumnName(), b.getColumnName()) != 0) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	
 
 	private Map<BaseTable, JavaType> referenced(BaseTable table, TableMapper tm) {
 		Map<BaseTable, JavaType> map = new HashMap<BaseTable, JavaType>();
+		
+		Collection<ForeignKey> keys = foreignKeysReferencingToPrimaryKey(table.foreignKeys().values());
 
-		for (ForeignKey k : table.foreignKeys().values()) {
+		for (ForeignKey k : keys) {
 			BaseTable referenced = k.getReferenced();
 
 			if (!map.containsKey(referenced)) {
@@ -3944,7 +4011,7 @@ public class SourceGenerator {
 		JavaType source = tm.entityType(referencing, Part.INTERFACE);
 		JavaType target = tm.entityType(referenced, Part.INTERFACE);
 		
-		final String q = source.getUnqualifiedName();
+		final String q = source.getQualifiedName();
 
 		nb.append(target.getQualifiedName());
 		nb.append(".");
@@ -4084,7 +4151,7 @@ public class SourceGenerator {
 	private String keyTypeArgs(TableMapper tm, BaseTable t, boolean reference) {
 		JavaType intf = tm.entityType(t, Part.INTERFACE);
 				
-		String q = intf.getUnqualifiedName();
+		String q = intf.getQualifiedName();
 		
 		StringBuilder buf = new StringBuilder();
 		buf.append(q).append(".").append(reference ? getReferenceType() : getAttributeType());
@@ -4356,8 +4423,10 @@ public class SourceGenerator {
 
 	private String referenceKeyList(BaseTable t, TableMapper tm) {
 		StringBuilder content = new StringBuilder();
+		
+		Collection<ForeignKey> keys = foreignKeysReferencingToPrimaryKey(t.foreignKeys().values());
 
-		for (ForeignKey fk : t.foreignKeys().values()) {
+		for (ForeignKey fk : keys) {
 			String r = formatReferenceKey(fk, tm);
 
 			if (r == null || r.equals("")) {
@@ -4383,8 +4452,10 @@ public class SourceGenerator {
 		// }
 
 		JavaType jt = tm.entityType(t, Part.INTERFACE);
+		
+		Collection<ForeignKey> keys = foreignKeysReferencingToPrimaryKey(t.foreignKeys().values());
 
-		for (ForeignKey fk : t.foreignKeys().values()) {
+		for (ForeignKey fk : keys) {
 			content.append("{\n");
 
 			BaseTable r = fk.getReferenced();
@@ -4681,6 +4752,7 @@ public class SourceGenerator {
 		String src = getTemplateForBuilderLinkerInit();
 
 		src = replaceAll(src, Tag.TABLE_INTERFACE, intf.getUnqualifiedName());
+		src = replaceAll(src, Tag.TABLE_INTERFACE_QUALIFIED_NAME, intf.getQualifiedName());
 		src = replaceAll(src, Tag.REFERENCED_TABLE_INTERFACE_QUALIFIED,
 				ritf.getQualifiedName());
 
@@ -5197,8 +5269,10 @@ public class SourceGenerator {
 
 	private void refs(BaseTable t, StringBuilder content, TableMapper tm) {
 		// List<String> elements = new ArrayList<String>();
+		
+		Collection<ForeignKey> keys = foreignKeysReferencingToPrimaryKey(t.foreignKeys().values());
 
-		for (ForeignKey fk : t.foreignKeys().values()) {
+		for (ForeignKey fk : keys) {
 			String r = formatReferenceConstant(fk, tm);
 
 			if (r == null || r.equals("")) {
@@ -5289,14 +5363,15 @@ public class SourceGenerator {
 			BaseTable t) {
 		Comparator<Identifier> icmp = cat.getEnvironment().getIdentifierRules()
 				.comparator();
-		Map<Identifier, ForeignKey> cm = new TreeMap<Identifier, ForeignKey>(
-				icmp);
+		Map<Identifier, ForeignKey> cm = new TreeMap<Identifier, ForeignKey>(icmp);
 
 		logger().debug("table: " + t.getQualifiedName());
 
 		for (ForeignKey fk : t.foreignKeys().values()) {
-			for (Column c : fk.getColumnMap().values()) {
-				cm.put(c.getUnqualifiedName(), fk);
+			if (referencesToPrimaryKey(fk)) {
+				for (Column c : fk.getColumnMap().values()) {
+					cm.put(c.getUnqualifiedName(), fk);
+				}
 			}
 		}
 

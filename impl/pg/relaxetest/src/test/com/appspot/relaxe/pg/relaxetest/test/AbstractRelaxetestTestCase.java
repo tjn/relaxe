@@ -1,3 +1,4 @@
+package com.appspot.relaxe.pg.relaxetest.test;
 /*
  * This file is part of Relaxe.
  * Copyright (c) 2014 Topi Nieminen
@@ -20,10 +21,19 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe.expr;
 
 
-public interface RowValueConstructor
-	extends Expression {
+import com.appspot.relaxe.pg.AbstractPGTestCase;
+
+public abstract class AbstractRelaxetestTestCase
+	extends AbstractPGTestCase {
+
+	@Override
+	public String getDatabase() {
+		return "relaxetest";
+	}
+	
+	
+
 
 }

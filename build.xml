@@ -238,6 +238,26 @@
 			<impl.test implementation="pg" driver-artifact="postgresql" target="pagila" />		
 	</target>
 	
+	<target name="compile.pg.relaxetest" depends="compile-tests" description="Compiles the sources for PostgreSQL/relaxetest">
+		<impl.compile implementation="pg" target="relaxetest" driver-artifact="postgresql" />		
+	</target>
+	
+	<target name="compile.gen.pg.relaxetest" depends="generate.pg.relaxetest" description="Compiles the sources generated for PostgreSQL/relaxetest">
+		<impl.compile.gen implementation="pg" target="relaxetest" driver-artifact="postgresql" />		
+	</target>	
+	
+	<target name="generate.pg.relaxetest" depends="compile.pg.relaxetest, patch.pg.relaxetest" description="Generates the sources for PG/relaxetest">
+		<generate 
+			implementation="pg"
+			driver-artifact="postgresql"
+			target="relaxetest"
+			jdbc.url="jdbc:postgresql:relaxetest"
+			env="com.appspot.relaxe.rdbms.pg.PGImplementation" 
+			environment-implementation="com.appspot.relaxe.env.pg.PGEnvironment" 
+			type-mapper="com.appspot.relaxe.DefaultTypeMapper"
+		/>		
+	</target>	
+	
 	<target name="compile.hsqldb.pagila" depends="compile-tests" description="Compiles the sources for HSQLDB/Pagila">
 		<impl.compile implementation="hsqldb" target="pagila" driver-artifact="hsqldb" />		
 	</target>
@@ -273,13 +293,14 @@
 			description="Compiles the sources for all the test for all generated classes" />	
 	
 	
-	<!-- no tests yet for hsqldb -->
+	<!-- no tests yet for hsqldb & relaxetest -->
 	<target name="test" 
 		depends="
 		    compile-samples,
 			test.gen.pg.pagila,
+		    compile.gen.pg.relaxetest,
 			test.gen.mysql.sakila,
-			test.gen.mariadb.sakila,
+			test.gen.mariadb.sakila,		
 			generate.hsqldb.pagila, 
 		    test.hsqldb.copy-data"
 		description="Generates sources, compiles and runs the tests for all implementations" />
@@ -448,8 +469,14 @@
 			<arg value="com.appspot.relaxe.Relaxe"/>
 		</java>
 	</target>
-
 	
+	<target name="patch.pg.relaxetest" depends="compile" description="Runs autopatches for pg.relaxetest">
+		<patch.run implementation="pg" driver-artifact="postgresql" target="relaxetest" />
+  	</target>
+	
+	<target name="patch.info.pg.relaxetest" depends="compile" description="Runs autopatches for pg.relaxetest">
+		<patch.info implementation="pg" driver-artifact="postgresql" target="relaxetest" />
+  	</target>	
 	
 	<target name="download.databases" depends="download.sakila, download.pagila" />	
 	
@@ -545,7 +572,9 @@
 			<mkdir dir="@{destdir}" />
 			
 			<!-- There might not be any per-implementation src dir--> 
-			<mkdir dir="@{impl.src.dir}" />
+			<mkdir dir="@{impl.src.dir}" />			
+			<mkdir dir="@{target.src.dir}" />			
+			
 				
 			<javac 
 					classpathref="@{implementation}.@{target}.cp" 
@@ -761,7 +790,57 @@
 				<compilerarg value="-Xlint"/>
 			</javac>			
 	   </sequential>
-	</macrodef>	
+	</macrodef>
 	
-
+	
+	<macrodef name="patch.run" description="Runs the autopatch against the specified impl/target">
+		<attribute name="implementation" />
+		<attribute name="driver-artifact" />				
+		<attribute name="target" />
+				
+		<sequential>
+			<path id="@{implementation}.patch.cp">
+				<path refid="runtime.cp" />
+				<pathelement location="${build.dir}" />				
+				<fileset dir="lib/jdbc/@{driver-artifact}" >
+					<include name="*.jar" />			
+				</fileset>
+			</path>
+			
+		    <java		    	
+		        fork="true"
+		        failonerror="true" 
+		        classname="com.tacitknowledge.util.migration.jdbc.StandaloneMigrationLauncher">
+		      <classpath refid="@{implementation}.patch.cp"/>
+		      <sysproperty key="migration.systemname" value="@{implementation}.@{target}"/>
+		  	  <sysproperty key="log4j.debug" value="true"/>	   
+		    </java>			
+	   </sequential>
+	</macrodef>
+	
+	
+	<macrodef name="patch.info" description="Runs the autopatch against the specified impl/target">
+		<attribute name="implementation" />
+		<attribute name="driver-artifact" />				
+		<attribute name="target" />
+				
+		<sequential>
+			<path id="@{implementation}.patch.cp">
+				<path refid="runtime.cp" />
+				<pathelement location="${build.dir}" />				
+				<fileset dir="lib/jdbc/@{driver-artifact}" >
+					<include name="*.jar" />			
+				</fileset>
+			</path>
+			
+		    <java		    	
+		        fork="true"
+		        failonerror="true" 
+		        classname="com.tacitknowledge.util.migration.jdbc.MigrationInformation">
+		      <classpath refid="@{implementation}.patch.cp"/>
+		      <sysproperty key="migration.systemname" value="@{implementation}.@{target}"/>
+		  	  <sysproperty key="log4j.debug" value="true"/>	   
+		    </java>			
+	   </sequential>		
+	</macrodef>
 </project>
