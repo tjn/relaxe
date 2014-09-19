@@ -1787,11 +1787,10 @@ public class SourceGenerator {
 
 			String n = valueVariableName(table, ac);
 
-			buf.append("private ");
-			
-			if (pkcols) {
-				buf.append("final ");	
-			}
+			buf.append("private ");			
+//			NOTE: 
+//			Using 'final' modifier for attributes of primary key entities would make them more like strictly immutable, 
+//			but since GWT does not serialize those we can't (maybe there could be a generation option).			
 			
 			buf.append(ht.getCanonicalName());
 			buf.append(" ");
@@ -1968,7 +1967,8 @@ public class SourceGenerator {
 				line(buf, "}");				
 			}
 			else {
-				line(buf, "private ", pk ? "final " : "", ht, " ", var, ";");		
+				// GWT serialization prevents using 'final' for pk 
+				line(buf, "private ", ht, " ", var, ";");		
 				
 				line(buf, "public ", ht, " ", getter, "() {");
 				line(buf, "return ", var, ";");
