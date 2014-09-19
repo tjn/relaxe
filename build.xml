@@ -22,8 +22,8 @@
 	<property name="samples.src.dir" location="src/samples/java"/>
 	<property name="samples.build.dir" location="${build.root.dir}/classes/samples"/>
 		
-	<property name="output.jar" location="${build.root.dir}/relaxe.jar"/>
-	<property name="src.output.jar" location="${build.root.dir}/relaxe-sources.jar"/>
+	<property name="output.jar" location="${build.root.dir}/relaxe-${relaxe.revision}.jar"/>
+	<property name="src.output.jar" location="${build.root.dir}/relaxe-sources-${relaxe.revision}.jar"/>
 	
  	<property name="jdbc-config.dir" location="config"/>
 	
