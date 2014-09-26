@@ -117,6 +117,26 @@ public class EntityValue<
 	public RowValueConstructor expression(EntityQueryContext c) {						
 		return value;
 	}
+	
+	
+	
+	public static <
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>
+	>
+	EntityValue<A, R, T, E, B, H, F, M> of(E value) {
+		if (value == null) {
+			throw new NullPointerException("value");
+		}		
+		
+		return new EntityValue<A, R, T, E, B, H, F, M>(value);		
+	}
 
 	/**
 	 * TODO: merge with similar code in PersistenceManager

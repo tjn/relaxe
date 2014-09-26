@@ -33,7 +33,6 @@ import com.appspot.relaxe.ent.EntityQueryElement;
 import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.value.EntityKey;
-import com.appspot.relaxe.expr.AbstractRowValueConstructor;
 import com.appspot.relaxe.expr.Predicate;
 import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.expr.op.AndPredicate;

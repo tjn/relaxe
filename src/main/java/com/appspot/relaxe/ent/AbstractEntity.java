@@ -296,8 +296,16 @@ public abstract class AbstractEntity<
 			EntityKey<A, R, T, E, B, H, F, M, ?, ?, ?, ?, ?, ?, ?, ?, ?> ek = meta.getEntityKey(r);
 			ek.copy(src, dest);			
 		}
+				
+		Operation op = new Operation();
 		
-		return dest.asImmutable();				
+		try {		
+			E ie = dest.toImmutable(op.getContext());		
+			return ie;
+		}
+		finally {
+			op.finish();
+		}
 	}
 	
 

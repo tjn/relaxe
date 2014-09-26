@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.appspot.relaxe.ent.query.DefaultEntityQueryEntityPredicate;
+import com.appspot.relaxe.ent.query.EntityValue;
 import com.appspot.relaxe.ent.query.QueryElementEntityReference;
 import com.appspot.relaxe.ent.query.DefaultEntityQueryPredicate;
 import com.appspot.relaxe.ent.query.EntityQueryAttributeValueReference;
@@ -145,6 +146,23 @@ public abstract class DefaultEntityQueryElement<
 	EntityQueryPredicate newEquals(K key, EntityReference<RA, RR, RT, RE, RB, RH, RF, RM> rhs) {
 		EntityReference<RA, RR, RT, RE, RB, RH, RF, RM> lhs = ref(key);
 		return new DefaultEntityQueryEntityPredicate(Comparison.Op.EQ, lhs, rhs);		
+	}
+	
+	@Override
+	public <	
+		RA extends AttributeName,
+		RR extends Reference,	
+		RT extends ReferenceType<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RE extends Entity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RB extends MutableEntity<RA, RR, RT, RE, RB, RH, RF, RM>,
+		RH extends ReferenceHolder<RA, RR, RT, RE, RH, RM>,
+		RF extends EntityFactory<RE, RB, RH, RM, RF>,
+		RM extends EntityMetaData<RA, RR, RT, RE, RB, RH, RF, RM>,	
+		K extends EntityKey<A, R, T, E, B, H, F, M, RA, RR, RT, RE, RB, RH, RF, RM, K>
+	> 
+	EntityQueryPredicate newEquals(K key, Entity<RA, RR, RT, RE, RB, RH, RF, RM> rhs) {		
+		EntityReference<RA, RR, RT, RE, RB, RH, RF, RM> lhs = ref(key);
+		return new DefaultEntityQueryEntityPredicate(Comparison.Op.EQ, lhs, EntityValue.of(rhs.self()));
 	}
 	
 	
@@ -304,6 +322,7 @@ public abstract class DefaultEntityQueryElement<
 //	}
 	
 	
+	@Override
 	public <	
 		RA extends AttributeName,
 		RR extends Reference,	

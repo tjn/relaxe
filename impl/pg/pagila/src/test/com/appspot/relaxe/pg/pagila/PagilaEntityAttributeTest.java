@@ -108,8 +108,41 @@ public class PagilaEntityAttributeTest
 			assertFalse(h.isNull());
 			
 			assertSame(h, fo.getLanguage(Film.LANGUAGE));			
-		}	
+		}		
+	}
+	
+	
+	public void testCopy() {
+		Film.Mutable fm = newEntity(Film.Type.TYPE);
 		
+		fm.setFilmId(Integer.valueOf(1));
+		fm.setTitle("Informat-n!");
+		
+		Language.Mutable lm = newEntity(Language.Type.TYPE);
+		
+		lm.setLanguageId(2);		
+		lm.setName("English");
+		
+		Language lang = lm.toPrimaryKey();
+		
+		fm.setLanguage(lang);
+		fm.setOriginalLanguage(lang);
+		
+		Film fc1 = fm.copy();	
+		assertNotNull(fc1);
+		assertNotSame(fm, fc1);		
+//		assertEquals(fm, fc1);
 				
+		Film fi = fm.toImmutable();
+//		assertEquals(fm, fi);
+//		assertEquals(fc1, fi);
+		
+		Film fc2 = fi.copy();
+		assertNotNull(fc2);
+//		assertNotSame(fi, fc2);
+//		assertEquals(fc2, fi);
+//		assertEquals(fc2, fm);
+		
+		
 	}
 }

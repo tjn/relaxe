@@ -22,37 +22,33 @@
  */
 package com.appspot.relaxe.pg.pagila;
 
-import java.sql.Connection;
 import java.util.List;
 
-import com.appspot.relaxe.EntityQueryExecutor;
 import com.appspot.relaxe.EntityQueryExpressionBuilder;
 import com.appspot.relaxe.SimpleUnificationContext;
-import com.appspot.relaxe.ent.DataObject;
-import com.appspot.relaxe.ent.DataObjectQueryResult;
+import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityDataObject;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
+import com.appspot.relaxe.ent.EntityQuery;
 import com.appspot.relaxe.ent.EntityQueryElement;
-import com.appspot.relaxe.ent.EntityQueryResult;
 import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.ent.MutableEntity;
+import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.ent.query.EntityQueryExistsPredicate;
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
 import com.appspot.relaxe.ent.query.EntityQueryPredicates;
 import com.appspot.relaxe.ent.query.EntityQueryValue;
 import com.appspot.relaxe.expr.QueryExpression;
-import com.appspot.relaxe.expr.ValueExpression;
+import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film.Query;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Language;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 import com.appspot.relaxe.query.QueryResult;
-import com.appspot.relaxe.rdbms.PersistenceContext;
-import com.appspot.relaxe.rdbms.pg.PGImplementation;
 import com.appspot.relaxe.types.ReferenceType;
 import com.appspot.relaxe.value.IntegerHolder;
 import com.appspot.relaxe.value.ReferenceHolder;
@@ -62,86 +58,104 @@ public class PagilaEntityQueryExecutorTest
 
 //	private QueryResult<EntityDataObject<Film>> execute(Film.QueryElement root) throws Exception {
 //		return execute(root, null);		
-//	}	
-	
-	private QueryResult<EntityDataObject<Film>> execute(Film.QueryElement root, FetchOptions opts) throws Exception {
-		return execute(new Film.Query(root), opts);		
-	}
-	
-	private QueryResult<EntityDataObject<Film>> execute(Film.Query query, FetchOptions opts) throws Exception {
-		PersistenceContext<PGImplementation> pc = getPersistenceContext();
-		
-		Connection c = newConnection();
-				
-		try {
-			EntityQueryExecutor<
-				Film.Attribute, 
-				Film.Reference, 
-				Film.Type, 
-				Film, 
-				Film.Mutable,
-				Film.Holder, 
-				Film.Factory, 
-				Film.MetaData,				
-				Film.QueryElement
-			> qe = createExecutor(Film.Type.TYPE.getMetaData(), pc);
-			
-			
-			EntityQueryResult<Film.Attribute, Film.Reference, Film.Type, Film, Film.Mutable, Film.Holder, Film.Factory, Film.MetaData, Film.QueryElement> er = qe.execute(query, opts, c);
-			assertNotNull(er);
-			
-			DataObjectQueryResult<EntityDataObject<Film>> qr = er.getContent(); 
-			// QueryResult<EntityDataObject<Film>> qr = qe.execute(q, true, c);
-			assertNotNull(qr);
-			
-			DataObject.MetaData meta = qr.getMeta();
-			assertNotNull(meta);
-			
-			int cc = meta.getColumnCount();
-			assertTrue(cc > 0);
-			
-			for (int i = 0; i < cc; i++) {
-				ValueExpression ve = meta.expr(i);
-				assertNotNull(ve);
-			}
-			
-			
-			return qr;			
-		}
-		finally {
-			if (c != null) {
-				c.close();
-			}
-		}
-	}
-
-//	private Connection newConnection(Implementation imp) throws Exception {
-//		Properties cfg = new Properties();
-//		cfg.setProperty("user", "test");
-//		cfg.setProperty("password", "test");
-//		
-//		String url = imp.createJdbcUrl("relaxe_test");
-//		Class.forName(imp.defaultDriverClassName());
-//		Connection c = DriverManager.getConnection(url, cfg);
-//		return c;
 //	}
-		
-
-	public <
-		A extends com.appspot.relaxe.ent.AttributeName,
-		R extends com.appspot.relaxe.ent.Reference,
+	
+	public 
+	<
+		A extends AttributeName,
+		R extends Reference,
 		T extends ReferenceType<A, R, T, E, B, H, F, M>,
 		E extends Entity<A, R, T, E, B, H, F, M>,
 		B extends MutableEntity<A, R, T, E, B, H, F, M>,
 		H extends ReferenceHolder<A, R, T, E, H, M>,
-		F extends EntityFactory<E, B, H, M, F>,		
+		F extends EntityFactory<E, B, H, M, F>,
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
-		QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
+		RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
 	>
-	EntityQueryExecutor<A, R, T, E, B, H, F, M, QE> createExecutor(M meta, PersistenceContext<?> persistenceContext) {
-		return new EntityQueryExecutor<A, R, T, E, B, H, F, M, QE>(persistenceContext, getIdentityContext());
+	QueryResult<EntityDataObject<E>> execute(EntityQuery<A, R, T, E, B, H, F, M, RE> query, FetchOptions opts) throws Exception {	
+		return super.execute(query, opts, getPersistenceContext(), getIdentityContext());
 	}
 	
+	private QueryResult<EntityDataObject<Film>> execute(Film.QueryElement root, FetchOptions opts) throws Exception {				
+		return execute(new Film.Query(root), opts, getPersistenceContext(), getIdentityContext());		
+	}
+
+//	public 
+//	<
+//		A extends AttributeName,
+//		R extends Reference,
+//		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+//		E extends Entity<A, R, T, E, B, H, F, M>,
+//		B extends MutableEntity<A, R, T, E, B, H, F, M>,
+//		H extends ReferenceHolder<A, R, T, E, H, M>,
+//		F extends EntityFactory<E, B, H, M, F>,
+//		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+//		RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
+//	>
+//	QueryResult<EntityDataObject<E>> execute(EntityQuery<A, R, T, E, B, H, F, M, RE> query, FetchOptions opts, PersistenceContext<?> pc) throws Exception {
+//		Connection c = newConnection();
+//				
+//		try {
+//			M qm = query.getRootElement().getMetaData();
+//			EntityQueryExecutor<A, R, T, E, B, H, F, M, RE> qe = createExecutor(qm, pc);
+//			
+//			
+//			EntityQueryResult<A, R, T, E, B, H, F, M, RE> er = qe.execute(query, opts, c);
+//			assertNotNull(er);
+//			
+//			DataObjectQueryResult<EntityDataObject<E>> qr = er.getContent(); 
+//			assertNotNull(qr);
+//			
+//			DataObject.MetaData meta = qr.getMeta();
+//			assertNotNull(meta);
+//			
+//			int cc = meta.getColumnCount();
+//			assertTrue(cc > 0);
+//			
+//			for (int i = 0; i < cc; i++) {
+//				ValueExpression ve = meta.expr(i);
+//				assertNotNull(ve);
+//			}
+//			
+//			
+//			return qr;			
+//		}
+//		finally {
+//			if (c != null) {
+//				c.close();
+//			}
+//		}
+//	}	
+//	
+//	
+//
+////	private Connection newConnection(Implementation imp) throws Exception {
+////		Properties cfg = new Properties();
+////		cfg.setProperty("user", "test");
+////		cfg.setProperty("password", "test");
+////		
+////		String url = imp.createJdbcUrl("relaxe_test");
+////		Class.forName(imp.defaultDriverClassName());
+////		Connection c = DriverManager.getConnection(url, cfg);
+////		return c;
+////	}
+//		
+//
+//	public <
+//		A extends com.appspot.relaxe.ent.AttributeName,
+//		R extends com.appspot.relaxe.ent.Reference,
+//		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+//		E extends Entity<A, R, T, E, B, H, F, M>,
+//		B extends MutableEntity<A, R, T, E, B, H, F, M>,
+//		H extends ReferenceHolder<A, R, T, E, H, M>,
+//		F extends EntityFactory<E, B, H, M, F>,		
+//		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+//		QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
+//	>
+//	EntityQueryExecutor<A, R, T, E, B, H, F, M, QE> createExecutor(M meta, PersistenceContext<?> persistenceContext) {
+//		return new EntityQueryExecutor<A, R, T, E, B, H, F, M, QE>(persistenceContext, getIdentityContext());
+//	}
+//	
 	
 	public void testExecute3() throws Exception {		
 		Film.QueryElement.Builder hrq = new Film.QueryElement.Builder(); 
@@ -639,5 +653,41 @@ public class PagilaEntityQueryExecutorTest
 		assertSetEquals(fq, Film.FILM_ID, 
 				"SELECT film_id FROM film f WHERE 1 = 0");
 	}
+		
+	
+	public void testEntityPredicate() throws Exception {
+		{
+			Actor.Mutable ma = newEntity(Actor.Type.TYPE);		
+			ma.setActorId(Integer.valueOf(1));
+			
+			FilmActor.QueryElement qe = new FilmActor.QueryElement();
+			EntityQueryPredicate qp = qe.newEquals(FilmActor.ACTOR, ma);
+					
+			FilmActor.Query qo = new FilmActor.Query(qe, qp);
+			assertNotNull(qo.predicates());
+			assertFalse(qo.predicates().isEmpty());
+				
+							
+			QueryResult<EntityDataObject<FilmActor>> qr = execute(qo, null);
+			assertNotNull(qr);
+			assertEquals(19, qr.size());
+		}
+		
+		{
+			Film.Mutable mf = newEntity(Film.Type.TYPE);		
+			mf.setFilmId(Integer.valueOf(1));
+			
+			FilmActor.QueryElement qe = new FilmActor.QueryElement();
+			EntityQueryPredicate qp = qe.newEquals(FilmActor.FILM, mf);
+					
+			FilmActor.Query qo = new FilmActor.Query(qe, qp);
+			assertNotNull(qo.predicates());
+			assertFalse(qo.predicates().isEmpty());
+											
+			QueryResult<EntityDataObject<FilmActor>> qr = execute(qo, null);
+			assertNotNull(qr);
+			assertEquals(10, qr.size());
+		}		
+	}	
 
 }

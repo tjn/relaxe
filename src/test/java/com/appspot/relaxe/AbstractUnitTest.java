@@ -47,17 +47,25 @@ import com.appspot.relaxe.SLF4JLogger;
 import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.QueryHelper;
 import com.appspot.relaxe.ent.AttributeName;
+import com.appspot.relaxe.ent.DataObject;
+import com.appspot.relaxe.ent.DataObjectQueryResult;
 import com.appspot.relaxe.ent.Entity;
+import com.appspot.relaxe.ent.EntityDataObject;
 import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.EntityQuery;
 import com.appspot.relaxe.ent.EntityQueryElement;
+import com.appspot.relaxe.ent.EntityQueryResult;
+import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
+import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.ent.value.HasInteger;
 import com.appspot.relaxe.ent.value.IntegerAttribute;
 import com.appspot.relaxe.expr.QueryExpression;
+import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.log.DefaultLogger;
+import com.appspot.relaxe.query.QueryResult;
 import com.appspot.relaxe.rdbms.ConnectionManager;
 import com.appspot.relaxe.rdbms.DefaultConnectionManager;
 import com.appspot.relaxe.rdbms.DefaultDataAccessContext;
@@ -632,4 +640,84 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		logger().info("hello, {}", c.getMetaData().getURL());
 		c.close();
 	}
+	
+
+	public 
+	<
+		A extends AttributeName,
+		R extends Reference,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+		RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
+	>
+	QueryResult<EntityDataObject<E>> execute(EntityQuery<A, R, T, E, B, H, F, M, RE> query, FetchOptions opts, PersistenceContext<?> pc, UnificationContext uctx) throws Exception {
+		Connection c = newConnection();
+				
+		try {
+			M qm = query.getRootElement().getMetaData();
+			EntityQueryExecutor<A, R, T, E, B, H, F, M, RE> qe = createExecutor(qm, pc, uctx);
+						
+			EntityQueryResult<A, R, T, E, B, H, F, M, RE> er = qe.execute(query, opts, c);
+			assertNotNull(er);
+			
+			DataObjectQueryResult<EntityDataObject<E>> qr = er.getContent(); 
+			assertNotNull(qr);
+			
+			DataObject.MetaData meta = qr.getMeta();
+			assertNotNull(meta);
+			
+			int cc = meta.getColumnCount();
+			assertTrue(cc > 0);
+			
+			for (int i = 0; i < cc; i++) {
+				ValueExpression ve = meta.expr(i);
+				assertNotNull(ve);
+			}
+			
+			
+			return qr;			
+		}
+		finally {
+			if (c != null) {
+				c.close();
+			}
+		}
+	}	
+	
+	
+
+//	private Connection newConnection(Implementation imp) throws Exception {
+//		Properties cfg = new Properties();
+//		cfg.setProperty("user", "test");
+//		cfg.setProperty("password", "test");
+//		
+//		String url = imp.createJdbcUrl("relaxe_test");
+//		Class.forName(imp.defaultDriverClassName());
+//		Connection c = DriverManager.getConnection(url, cfg);
+//		return c;
+//	}
+		
+
+	public <
+		A extends com.appspot.relaxe.ent.AttributeName,
+		R extends com.appspot.relaxe.ent.Reference,
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, B, H, M, F>,		
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
+		QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
+	>
+	EntityQueryExecutor<A, R, T, E, B, H, F, M, QE> createExecutor(M meta, PersistenceContext<?> pctx, UnificationContext uctx) {
+		return new EntityQueryExecutor<A, R, T, E, B, H, F, M, QE>(pctx, uctx);
+	}
+	
+
+	
+	
 }
