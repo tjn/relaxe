@@ -42,8 +42,7 @@ public abstract class AbstractPager<
 	private Integer index = null;
 	private R currentPage;
 		
-	private Map<Registration, PagerEventHandler<G>> handlerMap;
-	
+	private Map<Registration, PagerEventHandler<G>> handlerMap;	
 	
 	private final PagerEvent<G> INDEX = new PagerEvent<G>(self(), Flags.INDEX);  
 	private final PagerEvent<G> LOAD_STATE = new PagerEvent<G>(self(), Flags.LOAD_STATE);
@@ -173,7 +172,7 @@ public abstract class AbstractPager<
 			@Override
 			public void receive(R result) {
 				if(!isCanceled()) {				
-					received(result, nextIndex);
+					received(result, nextIndex, false);
 				}
 			}
 		};
@@ -383,12 +382,13 @@ public abstract class AbstractPager<
 		this.index = index;
 	}
 	
-	private void received(R result, int nextIndex) {
+	private void received(R result, int nextIndex, boolean force) {
 		List<E> content = result.getContent();
+		
+		this.lastError = null;
 				
-		if (content.isEmpty()) {
-			fireEvent(null, EOF);
-			this.lastError = null;	
+		if (content.isEmpty() && (!force)) {
+			fireEvent(null, EOF);				
 		}
 		else {
 			int cs = content.size();
@@ -399,8 +399,6 @@ public abstract class AbstractPager<
 					
 			setIndex((nextIndex < 0) ? null : Integer.valueOf(nextIndex));		
 			setCurrentPage(result);
-					
-			this.lastError = null;
 			fireEvent(null, ALL);
 		}
 	}
@@ -419,11 +417,15 @@ public abstract class AbstractPager<
 	
 	
 	public void set(R result) {
+		if (result == null) {
+			throw new NullPointerException("result");
+		}
+		
 		if (this.receiver != null) {
 			this.receiver.cancel();
-		}		
+		}	
 		
-		received(result, 0);		
+		received(result, 0, true);		
 	}
 		
 	@Override
