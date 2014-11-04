@@ -28,8 +28,10 @@ import com.appspot.relaxe.value.BooleanHolder;
 import com.appspot.relaxe.value.CharHolder;
 import com.appspot.relaxe.value.DateHolder;
 import com.appspot.relaxe.value.DecimalHolder;
+import com.appspot.relaxe.value.DoubleHolder;
 import com.appspot.relaxe.value.IntegerHolder;
 import com.appspot.relaxe.value.IntervalHolder;
+import com.appspot.relaxe.value.LongHolder;
 import com.appspot.relaxe.value.LongVarBinaryHolder;
 import com.appspot.relaxe.value.StringHolder;
 import com.appspot.relaxe.value.TimeHolder;
@@ -52,6 +54,9 @@ public class DefaultValueAssignerFactory
 			case ValueType.INTEGER:	 
 				pa = createIntegerAssignment(ph.asIntegerHolder());
 				break;
+			case ValueType.BIGINT:	 
+				pa = createLongAssignment(ph.asLongHolder());
+				break;				
 			case ValueType.CHAR:	
 				pa = createCharAssignment(ph.asCharHolder());
 				break;
@@ -92,6 +97,11 @@ public class DefaultValueAssignerFactory
 				pa = (h == null) ? null : createBooleanAssignment(h);
 				break;
 			}
+			case ValueType.FLOAT:
+				break;
+			case ValueType.DOUBLE:
+				pa = createDoubleAssignment(ph.asDoubleHolder());
+				break;
 			case ValueType.OTHER:
 				if ("interval_dt".equals(columnType.getTypeName())) {				
 					pa = createIntervalAssignment((IntervalHolder.DayTime) ph);
@@ -165,9 +175,9 @@ public class DefaultValueAssignerFactory
 //		return new DistinctAssignment(h);
 //	}
 
-//	protected ParameterAssignment createDoubleAssignment(DoubleHolder h) {
-//		return new DoubleAssignment(h);
-//	}
+	protected ParameterAssignment createDoubleAssignment(DoubleHolder h) {
+		return new DoubleAssignment(h);
+	}
 
 //	protected ParameterAssignment createFloatAssignment(FloatHolder h) {
 //		return new FloatAssignment(h);
@@ -268,4 +278,8 @@ public class DefaultValueAssignerFactory
 	protected ParameterAssignment createVarcharAssignment(VarcharHolder h) {
 		return new VarcharAssignment(h);
 	}
+	
+	protected ParameterAssignment createLongAssignment(LongHolder h) {
+		return new LongAssignment(h);
+	}	
 }
