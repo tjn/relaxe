@@ -101,9 +101,7 @@ public abstract class AbstractAction
 		Boolean e = enablement().get();
 		return (e != null) && e.booleanValue();
 	}
-
-	
-	@Override
+		
 	public ValueModel<String> displayName() {
 		return this.displayName;
 	}

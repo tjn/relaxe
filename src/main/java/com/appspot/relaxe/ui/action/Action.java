@@ -23,14 +23,11 @@
 package com.appspot.relaxe.ui.action;
 
 import com.appspot.relaxe.model.ValueModel;
-import com.appspot.relaxe.ui.HasDisplayName;
 import com.appspot.relaxe.ui.HasEnablement;
 
 public interface Action
-	extends HasDisplayName, HasEnablement {
+	extends HasEnablement {
 	
-	@Override
-	ValueModel<String> displayName();
 	@Override
 	ValueModel<Boolean> enablement();
 	
