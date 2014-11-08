@@ -22,9 +22,12 @@
  */
 package com.appspot.relaxe.expr.op;
 
+import com.appspot.relaxe.expr.Keyword;
 import com.appspot.relaxe.expr.Predicate;
 import com.appspot.relaxe.expr.RowValueConstructor;
+import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.Symbol;
+import com.appspot.relaxe.expr.Token;
 import com.appspot.relaxe.expr.ValueExpression;
 
 public class Comparison
@@ -42,15 +45,20 @@ public class Comparison
 		GE(Symbol.GREATER_OR_EQUAL),
 		LT(Symbol.LESS_THAN),
 		GT(Symbol.GREATER_THAN),
+		LIKE(SQLKeyword.LIKE),
 		;
 				
-		private Symbol symbol;
+		private Token symbol;
 		
 		private Op() {			
 		}
 		
 		private Op(Symbol symbol) {
 			this.symbol = symbol;			
+		}
+		
+		private Op(Keyword keyword) {
+			this.symbol = keyword;			
 		}
 		
 		public Comparison newComparison(ValueExpression a, ValueExpression b) {
@@ -87,8 +95,13 @@ public class Comparison
 	public static Comparison gt(ValueExpression a, ValueExpression b) {
 		return new Comparison(Op.GT, a, b);
 	}
+
+	public static Comparison like(ValueExpression a, ValueExpression b) {
+		return new Comparison(Op.LIKE, a, b);
+	}
 	
 	public static Comparison eq(RowValueConstructor a, RowValueConstructor b) {
 		return new Comparison(Op.EQ, a, b);
 	}
+		
 }
