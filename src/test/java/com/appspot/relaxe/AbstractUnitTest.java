@@ -561,7 +561,7 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
 		QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
 	>	
-	void assertResultEquals(EntityQuery<A, R, T, E, B, H, F, M, QE> q, IntegerAttribute<A, E, B> key, String query, boolean ordered) throws Exception {
+	List<E> assertResultEquals(EntityQuery<A, R, T, E, B, H, F, M, QE> q, IntegerAttribute<A, E, B> key, String query, boolean ordered) throws Exception {
 		DataAccessSession das = newSession();
 		EntitySession es = das.asEntitySession();
 		
@@ -573,6 +573,8 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		else {
 			assertSetEquals(actual, key, query);
 		}
+		
+		return actual;
 	}
 	
 	protected <
@@ -586,8 +588,8 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>,
 		QE extends EntityQueryElement<A, R, T, E, B, H, F, M, QE>
 	>	
-	void assertSetEquals(EntityQuery<A, R, T, E, B, H, F, M, QE> q, IntegerAttribute<A, E, B> key, String query) throws Exception {
-		assertResultEquals(q, key, query, false);
+	List<E> assertSetEquals(EntityQuery<A, R, T, E, B, H, F, M, QE> q, IntegerAttribute<A, E, B> key, String query) throws Exception {
+		return assertResultEquals(q, key, query, false);
 	}			
 	
 	protected <

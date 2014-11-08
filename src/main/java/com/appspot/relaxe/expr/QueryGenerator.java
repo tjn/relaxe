@@ -78,15 +78,20 @@ public class QueryGenerator
 		String ts = next.getTerminalSymbol();
 		
 		if (ts != null) {
+			if (ts.equals("?") && previous != null && previous.isOrdinary()) {
+				buffer.append(" ");
+			}
+		
 			buffer.append(ts);
-		}			
-	
-				
+		}
+					
 		this.previous = next;
 		
 		return null;
 	}
 
+
+	
 	
 	@Override
 	public VisitContext start(VisitContext vc, SQLKeyword e) {
@@ -99,7 +104,6 @@ public class QueryGenerator
 	
 	@Override
 	public VisitContext start(VisitContext vc, Identifier e) {		
-		// For MySQL: which
 		
 		if (previous != null && previous.isOrdinary()) {		
 			buffer.append(' ');

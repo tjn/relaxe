@@ -30,12 +30,14 @@ import java.util.TreeSet;
 import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
 import com.appspot.relaxe.ent.query.EntityQueryPredicates;
+import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.FilmActor;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
 import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.EntitySession;
+import com.appspot.relaxe.value.VarcharHolder;
 
 public class PagilaEntityQueryPredicateTest 
 	extends AbstractPagilaTestCase {
@@ -174,5 +176,35 @@ public class PagilaEntityQueryPredicateTest
 		}
 		
 		return fas;
-	}		
+	}	
+
+	public void testLike1() throws Exception {
+		Film.Query.Builder qb = new Film.Query.Builder(new Film.QueryElement(Film.FILM_ID, Film.TITLE));
+		Film.QueryElement re = qb.getRootElement();		
+		EntityQueryPredicate tp = re.newPredicate(Film.TITLE, Comparison.Op.LIKE, VarcharHolder.valueOf("T%"));				
+		qb.addPredicate(tp);				
+		List<Film> results = assertSetEquals(qb.newQuery(), Film.FILM_ID, "SELECT film_id FROM film WHERE title LIKE 'T%'");		
+		assertFalse("No test data available", results.isEmpty());		
+	}
+	
+	public void testLike2() throws Exception {
+		Film.Query.Builder qb = new Film.Query.Builder(new Film.QueryElement());
+		Film.QueryElement re = qb.getRootElement();		
+		EntityQueryPredicate tp = re.newPredicate(Film.TITLE, Comparison.Op.LIKE, VarcharHolder.valueOf("%TAPE%"));				
+		qb.addPredicate(tp);				
+		List<Film> results = assertSetEquals(qb.newQuery(), Film.FILM_ID, "SELECT film_id FROM film WHERE title LIKE '%TAPE%'");
+		assertFalse("No test data available", results.isEmpty());
+	}
+	
+	public void testLike3() throws Exception {
+		Film.Query.Builder qb = new Film.Query.Builder(new Film.QueryElement());
+		Film.QueryElement re = qb.getRootElement();		
+		EntityQueryPredicate tp = re.newPredicate(Film.TITLE, Comparison.Op.LIKE, VarcharHolder.valueOf("ANNIE IDENTITY"));				
+		qb.addPredicate(tp);				
+		List<Film> results = assertSetEquals(qb.newQuery(), Film.FILM_ID, "SELECT film_id FROM film WHERE title LIKE 'ANNIE IDENTITY'");
+		assertFalse("No test data available", results.isEmpty());
+	}	
+	
+	
+
 }
