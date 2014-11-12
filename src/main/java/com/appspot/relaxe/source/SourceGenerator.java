@@ -1490,7 +1490,7 @@ public class SourceGenerator {
 
 		JavaType type = tm.entityType(ref, Part.INTERFACE);
 		String qn = type.getQualifiedName();
-		
+				
 		line(buf, "public ", qn, ".QueryElement getQueryElement(", qn, ".Key<");
 		buf.append(referenceKeyTypeArgs(tm, t));
 		line(buf, "> key) {");
@@ -1822,7 +1822,8 @@ public class SourceGenerator {
 		if (rw) {			
 			final String methodName = "set" + n;
 			final String newValueVariable = "newValue";
-
+			
+			buf.append("@Override\n");
 			buf.append("public void ");
 			buf.append(methodName);
 			buf.append("(");
@@ -1868,6 +1869,7 @@ public class SourceGenerator {
 		{
 			final String methodName = "get" + n;
 
+			buf.append("@Override\n");
 			buf.append("public ");
 			buf.append(ht.getCanonicalName());
 			buf.append(" ");
@@ -1950,6 +1952,9 @@ public class SourceGenerator {
 		final String setter = setter(fk);
 		
 		if (intf) {
+			if (rw) {
+				line(buf, "@Override");
+			}
 			
 			line(buf, "public ", ht, " ", getter, "();");
 			
@@ -1962,6 +1967,7 @@ public class SourceGenerator {
 			boolean overlapping = overlapsWithPrimaryKey(fk);
 						
 			if (pk && (!overlapping)) {
+				line(buf, "@Override");
 				line(buf, "public ", ht, " ", getter, "() {");
 				line(buf, "return null;");
 				line(buf, "}");				
@@ -1970,15 +1976,18 @@ public class SourceGenerator {
 				// GWT serialization prevents using 'final' for pk 
 				line(buf, "private ", ht, " ", var, ";");		
 				
+				line(buf, "@Override");
 				line(buf, "public ", ht, " ", getter, "() {");
 				line(buf, "return ", var, ";");
 				line(buf, "}");		
 				
 				if (rw) {
+					line(buf, "@Override");
 					line(buf, "public void ", setter, "(", ht, " ", var, ") {");
 					line(buf, "this.", var, " = ", var + ";");
 					line(buf, "}");
 											
+					line(buf, "@Override");
 					line(buf, "public void ", setter, "(", t.getQualifiedName(), " ", var, ") {");
 					line(buf, "this.", var, " = ", ht, ".valueOf(", var, "); ");
 					line(buf, "}");
@@ -2235,7 +2244,7 @@ public class SourceGenerator {
 		if (!impl) {
 			src = signature + ";";
 		} else {
-			src = "public " + signature + " { " + "return "
+			src = "@Override\npublic " + signature + " { " + "return "
 					+ itf.getQualifiedName()
 					+ ".Type.TYPE.getMetaData().getFactory().newInstance(); "
 					+ "} ";
@@ -4898,7 +4907,7 @@ public class SourceGenerator {
 		
 		String getter = accessorMethodName(tym, c, false);
 		
-		if (impl) {
+		if (impl || rw) {
 			line(nb, "@Override");
 		}
 		

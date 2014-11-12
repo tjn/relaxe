@@ -121,6 +121,8 @@ public interface {{table-interface}}
 		{{table-interface-qualified-name}}, 
 		{{table-interface-qualified-name}}.Mutable, 
 		{{table-interface-qualified-name}}.Holder> {
+
+		@Override
 		{{table-interface-qualified-name}}.Holder read(com.appspot.relaxe.ent.DataObject src);	
 	}
 

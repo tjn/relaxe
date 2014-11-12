@@ -20,6 +20,7 @@ enum {{attribute-type}} implements com.appspot.relaxe.ent.AttributeName {
         return (identifier == null) ? name() : identifier;
     }
 
+	@Override
     public com.appspot.relaxe.types.ValueType<?> type() {
     	return this.type;
     }    

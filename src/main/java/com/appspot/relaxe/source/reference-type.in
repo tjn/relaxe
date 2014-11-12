@@ -17,6 +17,7 @@ enum {{reference-type}} implements com.appspot.relaxe.ent.Reference {
         return (identifier == null) ? name() : identifier;
     }
     
+    @Override
     public ReferenceType<?, ?, ?, ?, ?, ?, ?, ?> type() {
     	return null;
     }
