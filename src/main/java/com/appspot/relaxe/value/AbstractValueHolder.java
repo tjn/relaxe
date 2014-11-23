@@ -151,5 +151,12 @@ public abstract class AbstractValueHolder<
 	public IntervalHolder.YearMonth asYearMonthIntervalHolder() {
 		return null;
 	}
+	
+
+	
+	 
+	
+	
+	
 
 }

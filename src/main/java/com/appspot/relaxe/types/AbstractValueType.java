@@ -95,7 +95,53 @@ public abstract class AbstractValueType<
 		public SerializableType self() {
 			return this;
 		}
+		
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == this) {
+				return true;
+			}
+			
+			if (!(obj instanceof SerializableType)) {
+				return false;
+			}
+			
+			SerializableType t = (SerializableType) obj;		
+									
+			if (this.sqlType != t.getSqlType()) {
+				return false;
+			}
+			
+			if (this.name == null) {
+				return (t.getName() == null);
+			}
+			
+			return this.name.equals(t.getName());
+		}
 	}
+	
+	
+	protected boolean contentEquals(T type) {
+		if (getSqlType() != type.getSqlType()) {
+			return false;
+		}
+		
+		String n1 = getName();
+		String n2 = type.getName();
+		
+		return (n1 == null) ? (n2 == null) : n1.equals(n2);
+	}
+	
+	
+	
+	@Override
+	public int hashCode() {
+		int t = getSqlType();
+		String n = getName();		
+		return t ^ ((n == null) ? 0 : n.hashCode());
+	}
+	
 	
 	public static final class NullHolder<H>
 		extends AbstractValueHolder<Serializable, SerializableType, NullHolder<H>>
@@ -149,7 +195,7 @@ public abstract class AbstractValueType<
 			super();
 			this.type = new SerializableType(sqlType, null);
 		}
-
+				
 		@Override
 		public int getSqlType() {	
 			return type.getSqlType();
@@ -204,6 +250,25 @@ public abstract class AbstractValueType<
 		@Override
 		public NullHolder<H> self() {
 			return this;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == this) {
+				return true;
+			}
+			
+			if (!(obj instanceof NullHolder)) {
+				return false;
+			}
+					
+			NullHolder<?> nh = (NullHolder<?>) obj;			
+			return this.type.equals(nh.getType());			
+		}
+		
+		@Override
+		public int hashCode() {
+			return this.type.hashCode();
 		}
 	}
 		
@@ -417,4 +482,6 @@ public abstract class AbstractValueType<
 	public OtherType<?> asOtherType() {
 		return null;
 	}
+	
+	
 }

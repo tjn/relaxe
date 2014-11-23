@@ -84,5 +84,19 @@ public class BooleanHolder
 	public static BooleanHolder as(AbstractValueHolder<?, ?, ?> holder) {
 		return holder.asBooleanHolder();
 	}
-
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof BooleanHolder)) {
+			return false;
+		}
+		
+		BooleanHolder h = (BooleanHolder) obj;		
+		
+		return contentEquals(h);		
+	}
 }

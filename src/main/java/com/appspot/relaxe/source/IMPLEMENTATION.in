@@ -23,6 +23,7 @@ public class {{table-impl-class}}
 
     private {{table-interface}}.Holder holder;
     private {{table-impl-class}}.PrimaryKeyEntity primaryKey;
+    private transient java.util.Set<{{table-interface}}.Attribute> attributes = null;
     
     @Override
     public {{table-interface}} asImmutable() {
@@ -109,12 +110,16 @@ public class {{table-impl-class}}
 	
 	
 	@Override
-	public java.util.Set<Attribute> attributes() {
-		java.util.Set<Attribute> attrs = java.util.EnumSet.noneOf(Attribute.class);
-	
-		{{attributes-method-statement-list}}
+	public java.util.Set<{{table-interface}}.Attribute> attributes() {	    
+	    if (this.attributes == null) {
+			java.util.Set<Attribute> attrs = java.util.EnumSet.noneOf(Attribute.class);
+		
+			{{attributes-method-statement-list}}
 			
-		return java.util.Collections.unmodifiableSet(attrs);
+			this.attributes = java.util.Collections.unmodifiableSet(attrs);
+		}
+			
+		return this.attributes;
 	}
 	
 	
@@ -272,6 +277,66 @@ public class {{table-impl-class}}
 			return {{table-impl-class}}.PrimaryKeyEntity.of(this, ctx);	
 		}
 		
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			
+			if (!(obj instanceof {{table-interface}})) {
+				return false;
+			}
+			
+			if (!isIdentified()) {
+				return false;
+			}
+			
+			{{table-interface}} e = ({{table-interface}}) obj;
+			
+			return contentEquals(e);		
+		}
+			
+		@Override
+		public boolean identityEquals({{table-interface}} other) {	
+			if (other == this) {
+				return true;
+			}
+			
+			if (other == null) {
+				return false;
+			}
+			
+			if (!isIdentified()) {
+				return false;
+			}	
+		
+			{{identity-equals-body}}
+			
+			return true;
+		}
+		
+		@Override
+		public boolean contentEquals({{table-interface}} other) {
+			if (other == this) {
+				return true;
+			}
+			
+			if (other == null) {
+				return false;
+			}
+			
+			{{content-equals-body}}
+			
+			return true;	
+		}
+		
+		@Override
+		public boolean isIdentified() {		
+			{{is-identified-body}}					
+			return true;
+		}
+					
+		
 	}
 	
 	
@@ -366,8 +431,64 @@ public class {{table-impl-class}}
 			{{primary-key-entity-of-method-body}}		
 		}
 		
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			
+			if (!(obj instanceof {{table-interface}})) {
+				return false;
+			}
+			
+			if (!isIdentified()) {
+				return false;
+			}
+			
+			{{table-interface}} e = ({{table-interface}}) obj;
+			
+			return contentEquals(e);		
+		}
 		
+		@Override
+		public boolean identityEquals({{table-interface}} other) {	
+			if (other == this) {
+				return true;
+			}
+			
+			if (other == null) {
+				return false;
+			}	
+			
+			if (!isIdentified()) {
+				return false;
+			}
 		
+			{{identity-equals-body}}
+			
+			return true;
+		}
+		
+		@Override
+		public boolean contentEquals({{table-interface}} other) {
+			if (other == this) {
+				return true;
+			}
+			
+			if (other == null) {
+				return false;
+			}
+			
+			{{content-equals-body}}
+			
+			return true;	
+		}	
+		
+		@Override
+		public boolean isIdentified() {
+			return true;
+		}			
 	}
 	
 	@Override
@@ -380,6 +501,72 @@ public class {{table-impl-class}}
 		 
 		return this.primaryKey;
 	}
-	    
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof {{table-interface}})) {
+			return false;
+		}
+		
+		if (!isIdentified()) {
+			return false;
+		}
+		
+		{{table-interface}} e = ({{table-interface}}) obj;
+		
+		return contentEquals(e);		
+	}
+	
+
+	@Override
+	public boolean identityEquals({{table-interface}} other) {	
+		if (other == this) {
+			return true;
+		}
+		
+		if (other == null) {
+			return false;
+		}	
+		
+		if (!isIdentified()) {
+			return false;
+		}
+	
+		{{identity-equals-body}}
+		
+		return true;
+	}
+	
+	@Override
+	public boolean contentEquals({{table-interface}} other) {
+		if (other == this) {
+			return true;
+		}
+		
+		if (other == null) {
+			return false;
+		}
+		
+		{{content-equals-body}}
+		
+		return true;	
+	}
+	
+	@Override
+	public boolean isIdentified() {
+		if (this.primaryKey != null) {
+			return true;
+		}
+	
+		{{is-identified-body}}
+							
+		return true;
+	}			
+	
 } 
 

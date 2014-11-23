@@ -84,4 +84,20 @@ public class DecimalHolder
 	public static DecimalHolder of(ValueHolder<?, ?, ?> holder) {
 		return holder.asDecimalHolder();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof DecimalHolder)) {
+			return false;
+		}
+		
+		DecimalHolder h = (DecimalHolder) obj;		
+		
+		return contentEquals(h);		
+	}
+	
 }

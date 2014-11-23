@@ -78,4 +78,20 @@ public class DateHolder
 	public static DateHolder as(ValueHolder<?, ?, ?> holder) {
 		return holder.asDateHolder();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof DateHolder)) {
+			return false;
+		}
+		
+		DateHolder h = (DateHolder) obj;		
+		
+		return contentEquals(h);		
+	}
+	
 }

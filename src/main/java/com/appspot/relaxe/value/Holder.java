@@ -36,5 +36,5 @@ public interface Holder<
 	T getType();
 	boolean isNull();
 	
-	boolean contentEquals(Holder<?, ?, ?> another);
+	boolean contentEquals(H another);
 }

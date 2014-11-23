@@ -76,6 +76,22 @@ public abstract class IntervalHolder<V extends Interval<?>, T extends ValueType<
 		public static IntervalHolder.YearMonth of(AbstractValueHolder<?, ?, ?> holder) {
 			return holder.asYearMonthIntervalHolder();
 		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			
+			if (!(obj instanceof IntervalHolder.YearMonth)) {
+				return false;
+			}
+			
+			IntervalHolder.YearMonth h = (IntervalHolder.YearMonth) obj;		
+			
+			return contentEquals(h);		
+		}
+		
 	}
 	
 	
@@ -119,6 +135,22 @@ public abstract class IntervalHolder<V extends Interval<?>, T extends ValueType<
 		public DayTime self() {
 			return this;
 		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			
+			if (!(obj instanceof IntervalHolder.DayTime)) {
+				return false;
+			}
+			
+			IntervalHolder.DayTime h = (IntervalHolder.DayTime) obj;		
+			
+			return contentEquals(h);		
+		}
+		
 	}	
 	
 	/**

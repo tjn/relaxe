@@ -91,4 +91,20 @@ public class LongVarBinaryHolder
 	public static LongVarBinaryHolder as(AbstractValueHolder<?, ?, ?> holder) {
 		return holder.asLongVarBinaryHolder();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof LongVarBinaryHolder)) {
+			return false;
+		}
+		
+		LongVarBinaryHolder h = (LongVarBinaryHolder) obj;		
+		
+		return contentEquals(h);		
+	}
+	
 }

@@ -214,4 +214,18 @@ public interface Entity<
 	E asImmutable();
 	E toImmutable();
 	E toImmutable(Operation.Context ctx);
+	
+	/**
+	 * 
+	 * @param obj
+	 * @return
+	 */	
+	boolean equals(Object obj);
+	
+	
+	boolean identityEquals(E other);
+		
+	
+	boolean contentEquals(E other);
+
 }

@@ -198,7 +198,23 @@ public class SourceGenerator {
 		PRIMARY_KEY_ENTITY_METHODS,
 		
 		
-		PRIMARY_KEY_ENTITY_ATTRIBUTE_SET,						
+		PRIMARY_KEY_ENTITY_ATTRIBUTE_SET,
+		
+		/**
+		 * Pattern which is replaced with the body generated for identityEquals -method 
+		 */
+		IDENTITY_EQUALS_BODY,		
+		/**
+		 * Pattern which is replaced with the body generated for contentEquals -method 
+		 */
+		CONTENT_EQUALS_BODY,
+		
+		/**
+		 * Pattern which is replaced with the body generated for isIdentified -method 
+		 */
+		IS_IDENTIFIED_BODY,		
+
+		
 		INIT_COLUMN_ENUM_LIST,
 //		/**
 //		 * TODO: which accessors
@@ -1959,7 +1975,8 @@ public class SourceGenerator {
 			line(buf, "public ", ht, " ", getter, "();");
 			
 			if (rw) {				
-				line(buf, "public void ", setter, "(", ht, " ", var, ");");				
+				line(buf, "public void ", setter, "(", ht, " ", var, ");");
+
 				line(buf, "public void ", setter, "(", t.getQualifiedName(), " ", var, ");");
 			}
 		}
@@ -2578,6 +2595,26 @@ public class SourceGenerator {
 			String code = entityAttributeAccessorList(cat, t, tam, tym, true, true, false);
 			src = replaceAllWithComment(src, Tag.PRIMARY_KEY_ENTITY_ATTRIBUTE_ACCESSOR_LIST, code);
 		}
+		
+		
+		{
+			String code = identityEqualsBody(cat, t, tam, tym);
+			src = replaceAll(src, Tag.IDENTITY_EQUALS_BODY, code);
+		}		
+
+		{
+			String code = contentEqualsBody(cat, t, tam, tym);
+			src = replaceAll(src, Tag.CONTENT_EQUALS_BODY, code);
+		}
+		
+		{
+			String code = isIdentifiedBody(cat, t, tam, tym);
+			src = replaceAll(src, Tag.IS_IDENTIFIED_BODY, code);
+		}
+
+		
+				
+
 
 	
 //		{	
@@ -2617,6 +2654,266 @@ public class SourceGenerator {
 		return src;
 	}	
 	
+	private String isIdentifiedBody(Catalog cat, BaseTable t, TableMapper tam, AttributeTypeMap tym) {
+		StringBuilder buf = new StringBuilder();
+		
+		Comparator<Identifier> cmp = t.getEnvironment().getIdentifierRules().comparator();		
+		Map<Identifier, List<ForeignKey>> fkmap = new TreeMap<Identifier, List<ForeignKey>>(cmp);
+		List<Column> cols = groupPrimaryKeyColumns(t, fkmap);
+		
+		for (Column c : cols) {
+			AttributeDescriptor a = tym.getAttributeDescriptor(c.getDataType());
+
+			if (a == null) {
+				continue;
+			}
+
+			Class<?> vt = a.getValueType();
+			Class<?> ht = a.getHolderType();
+
+			if (vt != null && ht != null) {
+
+//				SAMPLE
+//		    	{
+//			    	IntegerHolder h = getFilmId();
+//			    	Integer v = (h == null) ? null : h.value();
+//			    	
+//			    	if (v == null) {
+//			    		return false;
+//			    	}
+//		    	}
+
+								
+				String ge = attributeGetter(c, tym);
+				
+				line(buf, "{");
+				
+				line(buf, ht.getCanonicalName(), " h = ", ge, "();");
+				line(buf, vt.getCanonicalName(), " v = (h == null) ? null : h.value();");
+				line(buf, "if (v == null) {");
+				line(buf, "return false;");
+				line(buf, "}");
+				
+				line(buf, "}", 2);				
+			}
+		}		
+		
+		Collection<ForeignKey> keys =  primaryKeyForeignKeys(t).values();
+		
+		keys = foreignKeysReferencingToPrimaryKey(keys);		
+		
+		{
+			for (ForeignKey fk : keys) {
+				// SAMPLE CODE:				
+//		    	{
+//			    	com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor.Holder a = getActor();
+//			    	Actor v = (a == null) ? null : a.value();
+//			    	
+//			    	if (v == null || (!v.isIdentified())) {
+//			    		return false;
+//			    	}
+//		    	}
+				
+				JavaType rt = tam.entityType(fk.getReferenced(), Part.INTERFACE);
+				
+				String hx = entityHolderExpression(null, fk, tam);
+				
+				line(buf, "{");
+				
+				line(buf, rt.getQualifiedName(), ".Holder h = ", hx, ";");
+				line(buf, rt.getQualifiedName(), " v = (h == null) ? null : h.value();");
+				
+				line(buf, "if (v == null || (!v.isIdentified())) {");
+				line(buf, "return false;");				
+				line(buf, "}");
+				
+				line(buf, "}");
+			}			
+		}		
+		
+		return buf.toString();		
+	}
+
+	private String contentEqualsBody(Catalog cat, BaseTable t, TableMapper tam, AttributeTypeMap tym) {
+		StringBuilder buf = new StringBuilder();
+		
+//		Comparator<Identifier> cmp = t.getEnvironment().getIdentifierRules().comparator();		
+//		Map<Identifier, List<ForeignKey>> fkmap = new TreeMap<Identifier, List<ForeignKey>>(cmp);
+		List<Column> cols = getAttributeColumnList(cat, t, tym);
+
+		
+		for (Column c : cols) {
+			AttributeDescriptor a = tym.getAttributeDescriptor(c.getDataType());
+
+			if (a == null) {
+				continue;
+			}
+
+			Class<?> vt = a.getValueType();
+			Class<?> ht = a.getHolderType();
+
+			if (vt != null && ht != null) {
+				
+				
+//				SAMPLE
+//				{
+//					IntegerHolder h = other.getFilmId();
+//					
+//					if (this.filmId == null) {
+//						if (h != null) {
+//							return false;
+//						}
+//					}
+//
+//					if (h == null) {								
+//						return false;
+//					}
+//					
+//					Integer a = this.filmId.value();
+//					Integer b = h.value();
+//					
+//					if (a == null) {
+//						if (b != null) {
+//							return false;
+//						}
+//					}
+//
+//					if ((!a.equals(b))) {
+//						return false;					
+//					}
+//				}
+				String ge = attributeGetter(c, tym);
+				
+				line(buf, "if (!equal(this.", ge, "(), other.", ge, "())) {");
+				line(buf, "  return false;");
+				line(buf, "}", 2);
+			}
+		}		
+		
+
+		Collection<ForeignKey> keys = t.foreignKeys().values();
+		
+		keys = foreignKeysReferencingToPrimaryKey(keys);
+		
+		for (ForeignKey fk : keys) {
+			// sample code:
+			
+//			{	
+//				Language.Holder ht = this.getLanguage();
+//				Language.Holder ho = other.getLanguage();
+//				
+//				if (ht == null) {
+//					if (ho != null) {
+//						return false;	
+//					}								
+//				}
+//				else {
+//					Language vt = ht.value();
+//					Language vo = (ho == null) ? null : ho.value();
+//														
+//					if (vt == null) {
+//						if (vo != null) {
+//							return false;
+//						}
+//					}
+//					else {
+//						if (!vt.identityEquals(vo)) {
+//							return false;
+//						}
+//					}
+//				}
+//			}
+//			
+			String hx = entityHolderExpression(null, fk, tam);
+			
+			line(buf, "  if (!referencesEqual(this.", hx, ", other.", hx, ")) {");
+			line(buf, "	   return false;");				
+			line(buf, "  }");						
+		}			
+		
+		return buf.toString();
+	}
+
+	private String identityEqualsBody(Catalog cat, BaseTable t, TableMapper tam, AttributeTypeMap tym) {
+		StringBuilder buf = new StringBuilder();
+		
+		Comparator<Identifier> cmp = t.getEnvironment().getIdentifierRules().comparator();		
+		Map<Identifier, List<ForeignKey>> fkmap = new TreeMap<Identifier, List<ForeignKey>>(cmp);
+		List<Column> cols = groupPrimaryKeyColumns(t, fkmap);
+		
+		for (Column c : cols) {
+			AttributeDescriptor a = tym.getAttributeDescriptor(c.getDataType());
+
+			if (a == null) {
+				continue;
+			}
+
+			Class<?> vt = a.getValueType();
+			Class<?> ht = a.getHolderType();
+
+			if (vt != null && ht != null) {
+
+//				SAMPLE
+//				if (!equal(this.filmId, other.getFilmId())) {
+//					return false;
+//				}			
+				
+				
+				String ge = attributeGetter(c, tym);
+								
+				line(buf, "if (!equal(this.", ge, "(), other.", ge, "())) {");
+				line(buf, "  return false;");
+				line(buf, "}", 2);				
+			}
+		}		
+		
+		Collection<ForeignKey> keys =  primaryKeyForeignKeys(t).values();
+		
+		keys = foreignKeysReferencingToPrimaryKey(keys);		
+		
+		{
+			for (ForeignKey fk : keys) {
+				// sample code:
+				
+//				{		
+//					if (this.language == null || this.language.isNull()) {
+//						return false;
+//					}
+//					
+//					Language.Holder h = other.getLanguage();
+//					
+//					if (h == null || h.isNull()) {
+//						return false;
+//					}
+//							
+//					if (!language.value().identityEquals(h.value())) {
+//						return false;
+//					}
+//				}
+				
+				JavaType rt = tam.entityType(fk.getReferenced(), Part.INTERFACE);
+				
+				String hx = entityHolderExpression(null, fk, tam);
+				
+				line(buf, "{");
+				
+				line(buf, rt.getQualifiedName(), ".Holder h = other.", hx, ";");
+				
+				line(buf, "if (h == null || h.isNull()) {");
+				line(buf, "return false;");				
+				line(buf, "}");
+				
+				line(buf, "if (!this.", hx, ".value().identityEquals(h.value())) {");
+				line(buf, "return false;");				
+				line(buf, "}");				
+				
+				line(buf, "}");
+			}			
+		}		
+		
+		return buf.toString();
+	}
+
 	private String primaryKeyEntityOfMethodBody(Catalog cat, BaseTable t, TableMapper tam, AttributeTypeMap tym) {
 		
 		Comparator<Identifier> cmp = cat.getEnvironment().getIdentifierRules().comparator();
@@ -4217,6 +4514,7 @@ public class SourceGenerator {
 		String ke = keyConstantExpression(t, c, intf, tm);
 
 		if (impl) {
+			buf.append("@Override\n");
 			buf.append("public ");
 		}
 
@@ -4650,7 +4948,8 @@ public class SourceGenerator {
 		buf.append(", ");
 		buf.append(rki);
 		buf.append(">();\n\n");
-
+		
+		buf.append("@Override\n");
 		buf.append("public ");
 		buf.append(target.getQualifiedName());
 		buf.append(".Key<");

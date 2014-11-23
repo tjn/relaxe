@@ -33,6 +33,7 @@ public class AllTests {
 		suite.addTestSuite(PagilaAlterTableAddForeignKeyTest.class);
 		suite.addTestSuite(PagilaAlterTableAddPrimaryKeyTest.class);
 		suite.addTestSuite(PagilaEntityAttributeTest.class);
+		suite.addTestSuite(PagilaEntityEqualsTest.class);
 		suite.addTestSuite(PagilaEntityPrimaryKeyTest.class);
 		suite.addTestSuite(PagilaCreateTableTest.class);
 		suite.addTestSuite(PagilaDataAccessSessionTest.class);

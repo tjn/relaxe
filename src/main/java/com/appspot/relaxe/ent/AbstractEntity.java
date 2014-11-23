@@ -227,11 +227,7 @@ public abstract class AbstractEntity<
 	 * @throws EntityRuntimeException 
 	 */	
 	@Override
-	public boolean isIdentified() {		
-		// TODO: Implement in generated classes.
-		// In mutable subclasses toPrimaryKey may cause undesirable object instantiations  
-		return (toPrimaryKey() != null);
-	}
+	public abstract boolean isIdentified();
 	
 	@Override
 	public <
@@ -313,7 +309,9 @@ public abstract class AbstractEntity<
 	public com.appspot.relaxe.value.ValueHolder<?,?,?> value(A attribute) {
 		Attribute<A, E, ?, ?, ?, ?, ?> key = getMetaData().getKey(attribute);
 		return key.get(self());
-	}	
+	}
+	
+	 
 		
 }
  

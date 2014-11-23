@@ -55,4 +55,19 @@ public class CharYearMonthHolder
 	public CharYearMonthHolder self() {
 		return this;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof CharYearMonthHolder)) {
+			return false;
+		}
+		
+		CharYearMonthHolder h = (CharYearMonthHolder) obj;		
+		
+		return contentEquals(h);		
+	}	
 }

@@ -68,4 +68,20 @@ public class HSQLDBTextArrayHolder
 		HSQLDBTextArrayHolder mh = (HSQLDBTextArrayHolder) h;	
 		return mh;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof HSQLDBTextArrayHolder)) {
+			return false;
+		}
+		
+		HSQLDBTextArrayHolder h = (HSQLDBTextArrayHolder) obj;		
+		
+		return contentEquals(h);		
+	}
+	
 }

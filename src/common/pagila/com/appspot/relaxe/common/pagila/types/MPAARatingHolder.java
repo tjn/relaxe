@@ -95,4 +95,19 @@ public class MPAARatingHolder
 		MPAARatingHolder mh = (MPAARatingHolder) h;	
 		return mh;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof MPAARatingHolder)) {
+			return false;
+		}
+		
+		MPAARatingHolder h = (MPAARatingHolder) obj;		
+		
+		return contentEquals(h);		
+	}	
 }

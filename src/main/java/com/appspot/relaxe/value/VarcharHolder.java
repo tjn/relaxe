@@ -80,4 +80,19 @@ public class VarcharHolder
 	public static VarcharHolder of(ValueHolder<?, ?, ?> holder) {
 		return holder.asVarcharHolder();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof VarcharHolder)) {
+			return false;
+		}
+		
+		VarcharHolder h = (VarcharHolder) obj;		
+		
+		return contentEquals(h);		
+	}	
 }

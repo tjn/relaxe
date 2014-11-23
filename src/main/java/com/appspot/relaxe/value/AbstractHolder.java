@@ -58,40 +58,15 @@ public abstract class AbstractHolder<
 	 * @return
 	 */
 	@Override
-	public boolean contentEquals(Holder<?, ?, ?> holder) {
-		if (holder == this) {
-			return true;
-		}
-		
+	public boolean contentEquals(H holder) {
 		V a = value();
-		Object b = holder.value();
-					
-		
-		boolean result = 
-				(a == null) ? 
-				(b == null) : 
-				(b == null) ? false : a.equals(b);
-				
-		return result;
+		V b = holder.value();		
+		return (a == null) ? (b == null) : a.equals(b);
 	}
 	
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		
-		if (obj == null) {
-			return false;
-		}
-		
-		if (!getClass().equals(obj.getClass())) {
-			return false; 
-		}
-	
-		return contentEquals((AbstractHolder<?, ?, ?>) obj);
-	}
+	public abstract boolean equals(Object obj);
 		 
 	
 	@Override

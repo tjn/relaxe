@@ -117,7 +117,7 @@ public abstract class AbstractEntityDiff<
 			}
 
 			try {
-				if (!o.contentEquals(m)) {
+				if (!o.equals(m)) {
 					cm.put(a, Change.MODIFICATION);
 				}
 			}

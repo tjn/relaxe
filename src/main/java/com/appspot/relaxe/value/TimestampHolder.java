@@ -87,4 +87,19 @@ public class TimestampHolder
 	public static TimestampHolder currentTimestamp() {
 		return new TimestampHolder(new Date());
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof TimestampHolder)) {
+			return false;
+		}
+		
+		TimestampHolder h = (TimestampHolder) obj;		
+		
+		return contentEquals(h);		
+	}	
 }

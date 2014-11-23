@@ -87,4 +87,19 @@ public class DoubleHolder
 	public static DoubleHolder of(ValueHolder<?, ?, ?> holder) {
 		return holder.asDoubleHolder();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof DoubleHolder)) {
+			return false;
+		}
+		
+		DoubleHolder h = (DoubleHolder) obj;		
+		
+		return contentEquals(h);		
+	}	
 }

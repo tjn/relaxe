@@ -93,6 +93,31 @@ public interface {{table-interface}}
 		public {{table-interface-qualified-name}}.Holder self() {
 			return this;
 		}
+		
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			
+			if (!(obj instanceof {{table-interface-qualified-name}}.Holder)) {
+				return false;
+			}
+			
+			{{table-interface-qualified-name}}.Holder h = ({{table-interface-qualified-name}}.Holder) obj;
+			
+			{{table-interface-qualified-name}} a = value();
+			{{table-interface-qualified-name}} b = h.value();
+
+			return (a == b);
+		}
+		
+		@Override
+		public int hashCode() {
+			{{table-interface-qualified-name}} v = value();		
+			return (v == null) ? "{{table-interface-qualified-name}}".hashCode() : System.identityHashCode(v);
+		}		
 	}
 	
 	interface Factory
@@ -161,10 +186,12 @@ public interface {{table-interface}}
 			return {{table-interface-qualified-name}}MetaData.getInstance();
 		}
 		
+		@Override
 		public void set(B e, {{table-interface-qualified-name}}.Holder newValue) {
 			e.set{{table-interface}}(this, newValue);			
 		}
 		
+		@Override
 		public {{table-interface-qualified-name}}.Holder get(E e) {
 			return e.get{{table-interface}}(this);			
 		}		
@@ -223,6 +250,7 @@ public interface {{table-interface}}
 			
 			{{query-element-constructor-list}}
 			
+			@Override
 			public QueryElement self() {
 				return this;
 			}
@@ -334,10 +362,12 @@ public interface {{table-interface}}
 					attributeSet().addAll({{table-interface-qualified-name}}.Type.TYPE.getMetaData().attributes());										
 				}
 				
+				@Override
 				public void add(com.appspot.relaxe.ent.value.Attribute<{{table-interface-qualified-name}}.Attribute, {{table-interface-qualified-name}}, ?, ?, ?, ?, ?> key) {
 					add(key.name());
 				}
 				
+				@Override
 				public void add({{table-interface-qualified-name}}.Attribute attribute) {
 					if (attribute == null) {
 						throw new NullPointerException("attribute");
@@ -450,6 +480,9 @@ public interface {{table-interface}}
 	{{entity-attribute-read-accessor-signature-list}}
 	
 	{{reference-container-read}}
+	
+	
+	
 
 } 
 

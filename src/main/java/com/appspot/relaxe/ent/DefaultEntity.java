@@ -26,8 +26,12 @@ import java.io.Serializable;
 import java.util.Set;
 
 import com.appspot.relaxe.ent.value.EntityKey;
+import com.appspot.relaxe.meta.Column;
+import com.appspot.relaxe.meta.ColumnMap;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.ReferenceHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 /**
@@ -136,5 +140,112 @@ public abstract class DefaultEntity<
 	
 	@Override
 	public abstract E toPrimaryKey(Operation.Context op);
+
 	
+	
+	@Override
+	public int hashCode() {
+		
+		if (!isIdentified()) {
+			return System.identityHashCode(this);
+		}		
+		
+		int h = type().hashCode();
+				
+		ColumnMap cm = getMetaData().getBaseTable().getColumnMap();
+		
+		int cs = cm.size();
+		
+		for (int i = 0; i < cs; i++) {
+			Column col = cm.get(i);
+			ValueHolder<?, ?, ?> a = get(col);		
+			
+			if (a != null) {
+				h ^= a.hashCode();
+			}			
+		}
+		
+		return h;
+	}
+
+
+	public <
+		V extends Serializable, 
+		VT extends ValueType<VT>, 
+		VH extends ValueHolder<V, VT, VH>
+	> 
+	boolean equal(VH h1, VH h2) {
+		if (h1 == null) {
+			return (h2 == null);
+		}
+		
+		V v1 = h1.value();
+		V v2 = (h2 == null) ? null : h2.value();
+		
+		if (v1 == null) {
+			return (v2 == null);
+		}
+		
+		return v1.equals(v2);
+	}
+	
+	
+	public <
+		XA extends AttributeName,
+		XR extends Reference,
+		XT extends ReferenceType<XA, XR, XT, XV, ?, XH, ?, XM>,
+		XV extends Entity<XA, XR, XT, XV, ?, XH, ?, XM>,
+		XH extends ReferenceHolder<XA, XR, XT, XV, XH, XM>,
+		XM extends EntityMetaData<XA, XR, XT, XV, ?, XH, ?, XM>
+	> 
+	boolean referencesEqual(XH h1, XH h2) {
+		if (h1 == null) {
+			return (h2 == null);
+		}
+		
+		if (h2 == null) {
+			return false;
+		}
+		
+		XV v1 = h1.value();
+		XV v2 = h2.value();
+		
+		if (v1 == null) {
+			return (v2 == null);
+		}
+		
+		return v1.identityEquals(v2);
+	}
+	
+		
+			
+//		if (other == null) {
+//			throw new NullPointerException();
+//		}		
+//		
+//		M meta = getMetaData();
+//		
+//		ColumnMap cm = getMetaData().getBaseTable().getColumnMap();
+//		
+//		int cs = cm.size();
+//		
+//		for (int i = 0; i < cs; i++) {
+//			Column col = cm.get(i);
+//			ValueHolder<?, ?, ?> a = get(col);
+//			ValueHolder<?, ?, ?> b = other.get(col);
+//			
+//			if (a == null) {
+//				if (b != null) {
+//					return false;
+//				}
+//			}
+//			else {
+//				if (!a.equals(b)) {
+//					return false;
+//				}
+//			}			
+//		}
+//		
+//		return true;		
+//	}
 }

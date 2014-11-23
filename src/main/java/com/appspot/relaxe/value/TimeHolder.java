@@ -82,4 +82,19 @@ public class TimeHolder
 	public static TimeHolder of(ValueHolder<?, ?, ?> holder) {
 		return holder.asTimeHolder();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof TimeHolder)) {
+			return false;
+		}
+		
+		TimeHolder h = (TimeHolder) obj;		
+		
+		return contentEquals(h);		
+	}	
 }

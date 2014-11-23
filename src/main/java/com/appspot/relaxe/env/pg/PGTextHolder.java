@@ -74,4 +74,19 @@ public class PGTextHolder
 		PGTextHolder h = (PGTextHolder) s;	
 		return h;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof PGTextHolder)) {
+			return false;
+		}
+		
+		PGTextHolder h = (PGTextHolder) obj;		
+		
+		return contentEquals(h);		
+	}	
 }

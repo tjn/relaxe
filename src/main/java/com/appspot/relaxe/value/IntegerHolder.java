@@ -107,5 +107,19 @@ public class IntegerHolder
 	public static IntegerHolder as(ValueHolder<?, ?, ?> holder) {
 		return holder.asIntegerHolder();
 	}
-
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof IntegerHolder)) {
+			return false;
+		}
+		
+		IntegerHolder h = (IntegerHolder) obj;		
+		
+		return contentEquals(h);		
+	}
 }

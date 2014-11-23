@@ -89,4 +89,19 @@ public class LongHolder
 	public static LongHolder of(ValueHolder<?, ?, ?> holder) {
 		return holder.asLongHolder();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof LongHolder)) {
+			return false;
+		}
+		
+		LongHolder h = (LongHolder) obj;		
+		
+		return contentEquals(h);		
+	}	
 }

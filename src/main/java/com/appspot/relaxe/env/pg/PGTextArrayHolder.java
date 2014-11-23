@@ -66,7 +66,21 @@ public class PGTextArrayHolder
 		Object h = holder.self();
 		PGTextArrayHolder mh = (PGTextArrayHolder) h;	
 		return mh;
+	}	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof PGTextArrayHolder)) {
+			return false;
+		}
+		
+		PGTextArrayHolder h = (PGTextArrayHolder) obj;		
+		
+		return contentEquals(h);		
 	}
 	
-	 
 }

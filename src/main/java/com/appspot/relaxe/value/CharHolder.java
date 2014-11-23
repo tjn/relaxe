@@ -79,4 +79,18 @@ public class CharHolder
 		return holder.asCharHolder();
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof CharHolder)) {
+			return false;
+		}
+		
+		CharHolder h = (CharHolder) obj;		
+		
+		return contentEquals(h);		
+	}
 }

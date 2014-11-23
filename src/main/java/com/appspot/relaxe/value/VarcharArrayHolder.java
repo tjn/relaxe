@@ -64,4 +64,18 @@ public class VarcharArrayHolder
 		return VarcharArrayType.TYPE;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!(obj instanceof VarcharArrayHolder)) {
+			return false;
+		}
+		
+		VarcharArrayHolder h = (VarcharArrayHolder) obj;		
+		
+		return contentEquals(h);		
+	}
 }
