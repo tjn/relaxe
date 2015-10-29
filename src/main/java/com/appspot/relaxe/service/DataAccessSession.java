@@ -26,15 +26,7 @@ import com.appspot.relaxe.meta.DataTypeMap;
 
 
 public interface DataAccessSession {
-	void commit()
-		throws DataAccessException;
 
-	void rollback()
-		throws DataAccessException;
-	
-	void close()
-		throws DataAccessException;	
-	
 	EntitySession asEntitySession();
 	QuerySession asQuerySession();
 	StatementSession asStatementSession();

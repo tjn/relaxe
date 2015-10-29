@@ -66,7 +66,12 @@ public class AbstractIdentifierRules
 		
 		validate(s);
 		Identifier oi = newOrdinaryIdentifier(s);		
-		return (oi == null) ? newDelimitedIdentifier(s) : oi;		
+		return (oi == null) ? newDelimitedIdentifier(fold(s)) : oi;		
+	}
+
+	private String fold(String s) {
+		Folding folding = getFolding();
+		return (folding == null) ? s : folding.apply(s);
 	}
 
 	private final OrdinaryIdentifier newOrdinaryIdentifier(String s)

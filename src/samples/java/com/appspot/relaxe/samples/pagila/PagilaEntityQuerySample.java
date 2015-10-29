@@ -35,8 +35,8 @@ import com.appspot.relaxe.ent.value.Attribute;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Film;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Language;
 import com.appspot.relaxe.pg.pagila.PagilaPersistenceContext;
+import com.appspot.relaxe.service.ClosableDataAccessSession;
 import com.appspot.relaxe.service.DataAccessContext;
-import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.EntitySession;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.ValueHolder;
@@ -48,7 +48,7 @@ public class PagilaEntityQuerySample {
 
 	public static void main(String[] args) {
 		
-		DataAccessSession das = null;
+		ClosableDataAccessSession das = null;
 		
 		try {
 			try {

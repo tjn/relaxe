@@ -51,7 +51,7 @@ public interface EntitySession {
 		F extends EntityFactory<E, B, H, M, F>,
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	>
-	E merge(E e) throws EntityException;
+	E merge(Entity<A, R, T, E, B, H, F, M> e) throws EntityException;
 	
 	<
 		A extends AttributeName,
@@ -63,7 +63,7 @@ public interface EntitySession {
 		F extends EntityFactory<E, B, H, M, F>,
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	>
-	E insert(E e)
+	E insert(Entity<A, R, T, E, B, H, F, M> e)
 		throws EntityException;
 	
 	
@@ -77,7 +77,7 @@ public interface EntitySession {
 		F extends EntityFactory<E, B, H, M, F>,
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	>
-	E update(E e)
+	E update(Entity<A, R, T, E, B, H, F, M> e)
 		throws EntityException;	
 	
 	<
@@ -90,7 +90,7 @@ public interface EntitySession {
 		F extends EntityFactory<E, B, H, M, F>,
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	>
-	void delete(E e)
+	void delete(Entity<A, R, T, E, B, H, F, M> e)
 		throws EntityException;
 
 	
@@ -104,7 +104,7 @@ public interface EntitySession {
 		F extends EntityFactory<E, B, H, M, F>,
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	>
-	E load(E e) throws EntityException;	
+	E load(Entity<A, R, T, E, B, H, F, M> e) throws EntityException;	
 	
 	public <
 		A extends AttributeName,

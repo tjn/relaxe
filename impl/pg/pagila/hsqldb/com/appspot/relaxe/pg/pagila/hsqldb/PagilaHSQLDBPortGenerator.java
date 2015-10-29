@@ -59,6 +59,7 @@ import com.appspot.relaxe.rdbms.DefaultResolver;
 import com.appspot.relaxe.rdbms.DriverManagerConnectionFactory;
 import com.appspot.relaxe.rdbms.Implementation;
 import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.service.ClosableDataAccessSession;
 import com.appspot.relaxe.service.DataAccessContext;
 import com.appspot.relaxe.service.DataAccessException;
 import com.appspot.relaxe.service.DataAccessSession;
@@ -272,7 +273,7 @@ public class PagilaHSQLDBPortGenerator
 		PersistenceContext<?> destctx = this.destinationPersistenceContext;		
 		DataAccessContext hctx = destctx.newDataAccessContext(getDestinationJdbcUrl(), getDestinationJdbcConfig());
 										
-		DataAccessSession ddas = hctx.newSession();				
+		ClosableDataAccessSession ddas = hctx.newSession();				
 		StatementSession ss = ddas.asStatementSession();		
 								
 		Receiver receiver = new Receiver() {			

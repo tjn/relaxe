@@ -62,9 +62,12 @@ import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.ent.value.HasInteger;
 import com.appspot.relaxe.ent.value.IntegerAttribute;
+import com.appspot.relaxe.expr.DeleteStatement;
 import com.appspot.relaxe.expr.QueryExpression;
+import com.appspot.relaxe.expr.TableReference;
 import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.log.DefaultLogger;
+import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.query.QueryResult;
 import com.appspot.relaxe.rdbms.ConnectionManager;
 import com.appspot.relaxe.rdbms.DefaultConnectionManager;
@@ -72,10 +75,13 @@ import com.appspot.relaxe.rdbms.DefaultDataAccessContext;
 import com.appspot.relaxe.rdbms.DriverManagerConnectionFactory;
 import com.appspot.relaxe.rdbms.Implementation;
 import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.service.ClosableDataAccessSession;
 import com.appspot.relaxe.service.DataAccessContext;
 import com.appspot.relaxe.service.DataAccessException;
 import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.EntitySession;
+import com.appspot.relaxe.service.StatementSession;
+import com.appspot.relaxe.service.UpdateReceiver;
 import com.appspot.relaxe.types.AbstractValueType;
 import com.appspot.relaxe.types.ReferenceType;
 import com.appspot.relaxe.value.IntegerHolder;
@@ -402,10 +408,10 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		return dctx;
 	}
 	
-	protected DataAccessSession newSession() throws IOException, DataAccessException {	
+	protected ClosableDataAccessSession newSession() throws IOException, DataAccessException {	
 		ConnectionManager cm = newConnectionManager();
 		DataAccessContext ctx = newDataAccessContext(cm);		
-		DataAccessSession das = ctx.newSession();
+		ClosableDataAccessSession das = ctx.newSession();
 		return das;
 	}
 	
@@ -636,8 +642,9 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		
 		assertEquals(expected, actual);
 	}
+
 	
-	public void testHello() throws Exception {
+	public void _testHello() throws Exception {
 		Connection c = newConnection();
 		logger().info("hello, {}", c.getMetaData().getURL());
 		c.close();
@@ -720,6 +727,33 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	}
 	
 
+
+	public int deleteAll(BaseTable table) throws IOException, DataAccessException {
+		
+		TableReference tref = new TableReference(table);
+				
+		DataAccessSession das = newSession();		
+		StatementSession ss = das.asStatementSession();
+		DeleteStatement ds = new DeleteStatement(tref, null);
+		
+		UpdateCounter uc = new UpdateCounter();
+		ss.executeUpdate(ds, uc);
+		return uc.getUpdateCount();
+	}
 	
 	
+	private static class UpdateCounter 
+		implements UpdateReceiver {
+		
+		public int updateCount = 0;
+		
+		public int getUpdateCount() {
+			return updateCount;
+		}
+
+		@Override
+		public void updated(com.appspot.relaxe.expr.Statement statement, int updateCount) {
+			this.updateCount += updateCount;			
+		}
+	}	
 }

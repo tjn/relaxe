@@ -24,7 +24,7 @@ package com.appspot.relaxe.service;
 
 public interface DataAccessContext {
 	
-	DataAccessSession newSession()
+	ClosableDataAccessSession newSession()
 		throws DataAccessException;
 
 	

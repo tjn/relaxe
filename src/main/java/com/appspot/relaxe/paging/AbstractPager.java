@@ -30,88 +30,88 @@ import java.util.Map;
 import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.model.Registration;
 
+public abstract class AbstractPager<Q, E extends Serializable, R extends Page<E>, G extends Pager<Q, E, R, G>>
+		implements Pager<Q, E, R, G> {
 
-public abstract class AbstractPager<
-	Q,	
-	E extends Serializable,
-	R extends Page<E>,	
-	G extends Pager<Q, E, R, G>
->
-	implements Pager<Q, E, R, G> {
-	
 	private Integer index = null;
 	private R currentPage;
-		
-	private Map<Registration, PagerEventHandler<G>> handlerMap;	
-	
-	private final PagerEvent<G> INDEX = new PagerEvent<G>(self(), Flags.INDEX);  
-	private final PagerEvent<G> LOAD_STATE = new PagerEvent<G>(self(), Flags.LOAD_STATE);
-	private final PagerEvent<G> LOAD_FAILURE = new PagerEvent<G>(self(), Flags.LOAD_STATE, Flags.LOAD_FAILURE);
-	private final PagerEvent<G> ALL = new PagerEvent<G>(self(), Flags.INDEX, Flags.PAGE, Flags.LOAD_STATE);
+
+	private Map<Registration, PagerEventHandler<G>> handlerMap;
+
+	private final PagerEvent<G> INDEX = new PagerEvent<G>(self(), Flags.INDEX);
+	private final PagerEvent<G> LOAD_STATE = new PagerEvent<G>(self(),
+			Flags.LOAD_STATE);
+	private final PagerEvent<G> LOAD_FAILURE = new PagerEvent<G>(self(),
+			Flags.LOAD_STATE, Flags.LOAD_FAILURE);
+	private final PagerEvent<G> ALL = new PagerEvent<G>(self(), Flags.INDEX,
+			Flags.PAGE, Flags.LOAD_STATE);
 	private final PagerEvent<G> EOF = new PagerEvent<G>(self(), Flags.EOF);
-		
-	private int pageSize;	
+
+	private int pageSize;
 	private Q query;
-		
+
 	private Fetcher<Q, R, PageReceiver<R>> fetcher;
-	
+
 	private FetchResultReceiver receiver = null;
-		
-	private final PageReceiver<Throwable> errorReceiver = new PageReceiver<Throwable>() {		
+
+	private final PageReceiver<Throwable> errorReceiver = new PageReceiver<Throwable>() {
 		@Override
 		public void receive(Throwable result) {
 			if (receiver != null && receiver.isCanceled()) {
 				return;
 			}
-			
-			lastError = result;			
+
+			lastError = result;
 			fireEvent(null, LOAD_FAILURE);
 		}
 	};
-		
+
 	private Throwable lastError;
-		
+
 	private List<E> getContent() {
 		return (currentPage == null) ? null : currentPage.getContent();
 	}
-	
+
 	@Override
-	public Integer index() {		 		
+	public Integer index() {
 		return this.index;
 	}
-		
+
 	@Override
 	public E get() {
-		Integer x = index(); 		
+		Integer x = index();
 		return (x == null) ? null : getContent().get(x.intValue());
 	}
-	
-//	@Override
-//	public boolean hasPreviousPage() {
-//		return (offset() > 0);
-//	}
-	
-	public AbstractPager(Fetcher<Q, R, PageReceiver<R>> fetcher, int pageSize, R currentPage) {
+
+	// @Override
+	// public boolean hasPreviousPage() {
+	// return (offset() > 0);
+	// }
+
+	public AbstractPager(Fetcher<Q, R, PageReceiver<R>> fetcher, int pageSize,
+			R currentPage) {
 		this(fetcher, pageSize, currentPage, -1);
 	}
-	
-	public AbstractPager(Fetcher<Q, R, PageReceiver<R>> fetcher, int pageSize, R currentPage, int index) {
-		super();		
+
+	public AbstractPager(Fetcher<Q, R, PageReceiver<R>> fetcher, int pageSize,
+			R currentPage, int index) {
+		super();
 		setFetcher(fetcher);
-		
+
 		if (pageSize < 1) {
 			throw new IllegalArgumentException("invalid pageSize: " + pageSize);
 		}
-		
+
 		this.pageSize = pageSize;
 		this.currentPage = currentPage;
-		
+
 		select(index);
 	}
-	
-	public AbstractPager(Fetcher<Q, R, PageReceiver<R>> fetcher, int pageSize, Q query, R currentPage) {
+
+	public AbstractPager(Fetcher<Q, R, PageReceiver<R>> fetcher, int pageSize,
+			Q query, R currentPage) {
 		this(fetcher, pageSize, currentPage, -1);
-		setQuery(query);		
+		setQuery(query);
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public abstract class AbstractPager<
 		Integer x = index();
 		return x != null && x.intValue() == 0;
 	}
-		
+
 	@Override
 	public boolean isLastElement() {
 		Integer x = index();
@@ -133,116 +133,113 @@ public abstract class AbstractPager<
 		}
 
 		Integer cx = index();
-		
+
 		if (cx == null) {
 			return false;
 		}
-		
+
 		int nx = cx.intValue() + 1;
 		int size = getContent().size();
-		
+
 		if (nx < size) {
 			setIndex(Integer.valueOf(nx));
 			fireEvent(INDEX);
-		}
-		else {
+		} else {
 			loadNext(0);
 		}
-		
+
 		return true;
 	}
 
 	private void loadNext(int nextIndex) {
 		R cp = this.getCurrentPage();
 		int ps = getPageSize();
-		long no = (cp == null) ? 0 : cp.offset() + ps;   
-		
-		load(no, ps, nextIndex);		
+		long no = (cp == null) ? 0 : cp.offset() + ps;
+
+		load(no, ps, nextIndex);
 	}
-		
+
 	private void loadPrevious(int nextIndex) {
 		R cp = this.getCurrentPage();
 		int ps = getPageSize();
 		long no = (cp == null) ? 0 : cp.offset() - ps;
-		load(no, ps, nextIndex);		
+		load(no, ps, nextIndex);
 	}
 
 	private void load(long no, int ps, final int nextIndex) {
 		FetchResultReceiver r = new FetchResultReceiver() {
 			@Override
 			public void receive(R result) {
-				if(!isCanceled()) {				
+				if (!isCanceled()) {
 					received(result, nextIndex, false);
 				}
 			}
 		};
-		
+
 		fireEvent(r, LOAD_STATE);
-		
+
 		FetchOptions opts = new FetchOptions(ps, no);
 		getFetcher().fetch(getQuery(), opts, r, errorReceiver);
 	}
-	
+
 	private void fireEvent(FetchResultReceiver newReceiver, PagerEvent<G> event) {
 		this.receiver = newReceiver;
-		fireEvent(event);		
+		fireEvent(event);
 	}
-	
+
 	private void fireEvent(PagerEvent<G> event) {
 		if (this.handlerMap == null || this.handlerMap.isEmpty()) {
 			return;
 		}
-		
+
 		for (PagerEventHandler<G> h : handlerMap.values()) {
 			h.handleEvent(event);
-		}		
+		}
 	}
-	
 
 	@Override
-	public boolean previous() {		
+	public boolean previous() {
 		if (isLoading()) {
 			return false;
 		}
 
 		Integer cx = index();
-		
+
 		if (cx == null) {
 			return false;
 		}
-		
+
 		int nx = cx.intValue() - 1;
-				
+
 		if (nx >= 0) {
 			setIndex(Integer.valueOf(nx));
 			fireEvent(INDEX);
-		}
-		else {
+		} else {
 			if (offset() == 0) {
 				return false;
-			}			
-			
-			loadPrevious(getPageSize() - 1);			
+			}
+
+			loadPrevious(getPageSize() - 1);
 		}
-		
+
 		return true;
 	}
 
 	@Override
-	public Registration addPagerEventHandler(final PagerEventHandler<G> handler) {				
-		Registration r = new Registration() {			
+	public Registration addPagerEventHandler(final PagerEventHandler<G> handler) {
+		Registration r = new Registration() {
 			@Override
 			public void remove() {
 				getHandlerMap().remove(this);
 			}
-						
-//			public void renew() {
-//				getHandlerMap().put(this, handler);
-//			}
+
+			// public void renew() {
+			// getHandlerMap().put(this, handler);
+			// }
 		};
-		
+
 		getHandlerMap().put(r, handler);
-		
+
 		return r;
 	}
 
@@ -251,8 +248,8 @@ public abstract class AbstractPager<
 		if (isLoading()) {
 			return false;
 		}
-		
-		load(0, getPageSize(), 0);		
+
+		load(0, getPageSize(), 0);
 		return true;
 	}
 
@@ -270,17 +267,17 @@ public abstract class AbstractPager<
 	public Pager.State getState() {
 		return (this.receiver == null) ? State.IDLE : State.LOADING;
 	}
-	
+
 	@Override
 	public boolean refresh() {
 		if (isLoading()) {
 			return false;
 		}
-		
+
 		Integer cx = index();
-		int nx = (cx == null) ? 0 : cx.intValue();		
+		int nx = (cx == null) ? 0 : cx.intValue();
 		load(offset(), getPageSize(), nx);
-						
+
 		return true;
 	}
 
@@ -294,11 +291,11 @@ public abstract class AbstractPager<
 		if (isLoading()) {
 			return false;
 		}
-		
+
 		Integer cx = index();
 		int nx = (cx == null) ? 0 : cx.intValue();
-		
-		loadNext(nx);					
+
+		loadNext(nx);
 		return true;
 	}
 
@@ -307,64 +304,62 @@ public abstract class AbstractPager<
 		if (isLoading()) {
 			return false;
 		}
-		
+
 		if (offset() == 0) {
 			return false;
-		}			
-			
+		}
+
 		Integer cx = index();
 		int nx = (cx == null) ? 0 : cx.intValue();
-		
-		loadPrevious(nx);						
+
+		loadPrevious(nx);
 		return true;
 	}
-	
-	
+
 	@Override
 	public boolean fetch(int page, int index) {
 		if (isLoading()) {
 			return false;
 		}
-		
-		long off = page * getPageSize();		
+
+		long off = page * getPageSize();
 		load(off, getPageSize(), index);
-		
-		return true;		
+
+		return true;
 	}
-	
+
 	@Override
 	public boolean select(int index) {
 		if (index < 0) {
 			return false;
 		}
-		
+
 		List<E> cl = getContent();
-		
+
 		if (cl == null || cl.isEmpty() || index >= cl.size()) {
 			return false;
 		}
-		
+
 		Integer cx = index();
-		
+
 		if (cx != null && cx.intValue() == index) {
 			return false;
 		}
-		
+
 		setIndex(Integer.valueOf(index));
 		fireEvent(INDEX);
-		
+
 		return true;
 	}
 
-
 	private Map<Registration, PagerEventHandler<G>> getHandlerMap() {
 		if (handlerMap == null) {
-			handlerMap = new HashMap<Registration, PagerEventHandler<G>>();			
+			handlerMap = new HashMap<Registration, PagerEventHandler<G>>();
 		}
 
 		return handlerMap;
 	}
-	
+
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
 	}
@@ -373,67 +368,64 @@ public abstract class AbstractPager<
 		// return (this.receiver == State.LOADING);
 		return (this.receiver != null);
 	}
-	
+
 	private void setCurrentPage(R currentPage) {
 		this.currentPage = currentPage;
 	}
-	
+
 	private void setIndex(Integer index) {
 		this.index = index;
 	}
-	
+
 	private void received(R result, int nextIndex, boolean force) {
 		List<E> content = result.getContent();
-		
+
 		this.lastError = null;
-				
+
 		if (content.isEmpty() && (!force)) {
-			fireEvent(null, EOF);				
-		}
-		else {
+			fireEvent(null, EOF);
+		} else {
 			int cs = content.size();
-			
+
 			if (nextIndex >= cs) {
 				nextIndex = cs - 1;
 			}
-					
-			setIndex((nextIndex < 0) ? null : Integer.valueOf(nextIndex));		
+
+			setIndex((nextIndex < 0) ? null : Integer.valueOf(nextIndex));
 			setCurrentPage(result);
 			fireEvent(null, ALL);
 		}
 	}
-	
-	
+
 	public boolean cancel() {
 		if (this.receiver == null) {
 			return false;
 		}
-		
+
 		this.receiver.cancel();
 		fireEvent(null, LOAD_STATE);
-		
-		return true;		
+
+		return true;
 	}
-	
-	
+
 	public void set(R result) {
 		if (result == null) {
 			throw new NullPointerException("result");
 		}
-		
+
 		if (this.receiver != null) {
 			this.receiver.cancel();
-		}	
-		
-		received(result, 0, true);		
+		}
+
+		received(result, 0, true);
 	}
-		
+
 	@Override
 	public long offset() {
-		R cp = getCurrentPage();		
+		R cp = getCurrentPage();
 		return (cp == null) ? 0 : cp.offset();
 	}
-	
+
 	public Throwable getLastError() {
 		return lastError;
 	}
@@ -442,11 +434,11 @@ public abstract class AbstractPager<
 		return fetcher;
 	}
 
-	public void setFetcher(Fetcher<Q, R, PageReceiver<R>> fetcher) {		
+	public void setFetcher(Fetcher<Q, R, PageReceiver<R>> fetcher) {
 		if (fetcher == null) {
 			throw new NullPointerException("fetcher");
 		}
-		
+
 		this.fetcher = fetcher;
 	}
 
@@ -460,22 +452,20 @@ public abstract class AbstractPager<
 		if (query == null) {
 			throw new NullPointerException("query");
 		}
-		
+
 		this.query = query;
 	}
-	
-	private abstract class FetchResultReceiver 
-		implements PageReceiver<R> {
-		
+
+	private abstract class FetchResultReceiver implements PageReceiver<R> {
+
 		private boolean canceled;
-		
-		
+
 		public boolean isCanceled() {
 			return canceled;
 		}
-		
+
 		public void cancel() {
-			this.canceled = true;			
-		}		
+			this.canceled = true;
+		}
 	}
 }

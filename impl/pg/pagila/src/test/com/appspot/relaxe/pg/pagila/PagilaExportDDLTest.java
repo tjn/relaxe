@@ -67,9 +67,9 @@ import com.appspot.relaxe.rdbms.hsqldb.HSQLDBFileImplementation;
 import com.appspot.relaxe.rdbms.hsqldb.HSQLDBImplementation;
 import com.appspot.relaxe.rdbms.hsqldb.HSQLDBPersistenceContext;
 import com.appspot.relaxe.rdbms.pg.PGImplementation;
+import com.appspot.relaxe.service.ClosableDataAccessSession;
 import com.appspot.relaxe.service.DataAccessContext;
 import com.appspot.relaxe.service.DataAccessException;
-import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.Receiver;
 import com.appspot.relaxe.service.ReceiverAdapter;
 import com.appspot.relaxe.service.StatementSession;
@@ -175,7 +175,7 @@ public class PagilaExportDDLTest
 		PersistenceContext<HSQLDBImplementation> pc = hpc;
 		DataAccessContext hctx = new DefaultDataAccessContext<HSQLDBImplementation>(pc, url, null);
 										
-		DataAccessSession das = hctx.newSession();				
+		ClosableDataAccessSession das = hctx.newSession();				
 		StatementSession ss = das.asStatementSession();
 								
 		// QueryProcessor qp = new QueryProcessorAdapter();

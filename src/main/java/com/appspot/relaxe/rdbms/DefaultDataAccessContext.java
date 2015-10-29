@@ -26,9 +26,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import com.appspot.relaxe.service.ClosableDataAccessSession;
 import com.appspot.relaxe.service.DataAccessContext;
 import com.appspot.relaxe.service.DataAccessException;
-import com.appspot.relaxe.service.DataAccessSession;
 
 
 public class DefaultDataAccessContext<I extends Implementation<I>>
@@ -77,7 +77,7 @@ public class DefaultDataAccessContext<I extends Implementation<I>>
 	}
 	
 	@Override
-	public DataAccessSession newSession() throws DataAccessException {
+	public ClosableDataAccessSession newSession() throws DataAccessException {
 		try {
 			final Connection c = connectionManager.reserve();
 			

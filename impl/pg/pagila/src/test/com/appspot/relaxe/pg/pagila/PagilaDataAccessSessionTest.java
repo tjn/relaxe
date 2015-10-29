@@ -35,6 +35,7 @@ import com.appspot.relaxe.gen.pg.pagila.ent.pub.Language;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.paging.ResultPage;
 import com.appspot.relaxe.pg.pagila.test.AbstractPagilaTestCase;
+import com.appspot.relaxe.service.ClosableDataAccessSession;
 import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.EntitySession;
 
@@ -44,7 +45,7 @@ public class PagilaDataAccessSessionTest
 	public void testLoad() throws Exception {		
 		logger().debug("testLoad - enter");
 		
-		DataAccessSession das = newSession();
+		ClosableDataAccessSession das = newSession();
 		
 		assertNotNull(das);
 		

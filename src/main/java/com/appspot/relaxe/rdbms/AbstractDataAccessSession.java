@@ -56,8 +56,8 @@ import com.appspot.relaxe.expr.SelectStatement;
 import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.ddl.SQLSchemaStatement;
 import com.appspot.relaxe.query.QueryException;
+import com.appspot.relaxe.service.ClosableDataAccessSession;
 import com.appspot.relaxe.service.DataAccessException;
-import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.EntitySession;
 import com.appspot.relaxe.service.QueryResultReceiver;
 import com.appspot.relaxe.service.QuerySession;
@@ -69,7 +69,7 @@ import com.appspot.relaxe.value.ReferenceHolder;
 
 
 public abstract class AbstractDataAccessSession<I extends Implementation<I>>
-	implements DataAccessSession, EntitySession, QuerySession, StatementSession, StatementExecutionSession {
+	implements ClosableDataAccessSession, EntitySession, QuerySession, StatementSession, StatementExecutionSession {
 	
 	private Connection connection;
 	
@@ -94,8 +94,8 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		F extends EntityFactory<E, B, H, M, F>, 
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	> 
-	void delete(E e) throws EntityException {						
-		PersistenceManager<A,R,T,E,B,H,F,M> pm = new PersistenceManager<A,R,T,E,B,H,F,M>(e, getPersistenceContext(), getUnificationContext());
+	void delete(Entity<A, R, T, E, B, H, F, M> e) throws EntityException {						
+		PersistenceManager<A,R,T,E,B,H,F,M> pm = new PersistenceManager<A,R,T,E,B,H,F,M>(e.self(), getPersistenceContext(), getUnificationContext());
 		pm.delete(getConnection());
 	}
 	
@@ -118,10 +118,10 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		F extends EntityFactory<E, B, H, M, F>,
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	> 
-	E insert(E e) throws EntityException {
-		PersistenceManager<A,R,T,E,B,H,F,M> pm = new PersistenceManager<A,R,T,E,B,H,F,M>(e, getPersistenceContext(), getUnificationContext());
+	E insert(Entity<A, R, T, E, B, H, F, M> e) throws EntityException {
+		PersistenceManager<A,R,T,E,B,H,F,M> pm = new PersistenceManager<A,R,T,E,B,H,F,M>(e.self(), getPersistenceContext(), getUnificationContext());
 		pm.insert(getConnection());
-		return e;
+		return e.self();
 	}
 	
 	
@@ -136,10 +136,10 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		F extends EntityFactory<E, B, H, M, F>,
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	> 
-	E load(E e) throws EntityException {
+	E load(Entity<A, R, T, E, B, H, F, M> e) throws EntityException {
 		try {
 			PersistenceManager<A,R,T,E,B,H,F,M> pm = 
-					new PersistenceManager<A,R,T,E,B,H,F,M>(e, getPersistenceContext(), getUnificationContext());
+					new PersistenceManager<A,R,T,E,B,H,F,M>(e.self(), getPersistenceContext(), getUnificationContext());
 			E result = pm.sync(getConnection());
 			return result;
 		} 
@@ -162,11 +162,11 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		F extends EntityFactory<E, B, H, M, F>,
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	> 
-	E merge(E e) throws EntityException {
+	E merge(Entity<A, R, T, E, B, H, F, M> e) throws EntityException {
 		try {		
-			PersistenceManager<A,R,T,E,B,H,F,M> pm = new PersistenceManager<A,R,T,E,B,H,F,M>(e, getPersistenceContext(), getUnificationContext());
+			PersistenceManager<A,R,T,E,B,H,F,M> pm = new PersistenceManager<A,R,T,E,B,H,F,M>(e.self(), getPersistenceContext(), getUnificationContext());
 			pm.merge(getConnection());		
-			return e;
+			return e.self();
 		}
 		catch (SQLException se) {
 			throw new EntityException(se.getMessage());
@@ -187,10 +187,10 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		F extends EntityFactory<E, B, H, M, F>,
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	> 
-	E update(E e) throws EntityException {
-		PersistenceManager<A,R,T,E,B,H,F,M> pm = new PersistenceManager<A,R,T,E,B,H,F,M>(e, getPersistenceContext(), getUnificationContext());
+	E update(Entity<A, R, T, E, B, H, F, M> e) throws EntityException {
+		PersistenceManager<A,R,T,E,B,H,F,M> pm = new PersistenceManager<A,R,T,E,B,H,F,M>(e.self(), getPersistenceContext(), getUnificationContext());
 		pm.update(getConnection());		
-		return e;
+		return e.self();
 	}
 	
 	protected void closing()
@@ -201,6 +201,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		throws DataAccessException {		
 	}
 	
+	@Override
 	public boolean isClosed() {
 		return (this.connection == null);
 	}

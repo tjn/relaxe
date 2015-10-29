@@ -23,9 +23,9 @@
 package com.appspot.relaxe.rdbms;
 
 import com.appspot.relaxe.log.Logger;
+import com.appspot.relaxe.service.ClosableDataAccessSession;
 import com.appspot.relaxe.service.DataAccessContext;
 import com.appspot.relaxe.service.DataAccessException;
-import com.appspot.relaxe.service.DataAccessSession;
 
 public class LoggingDataAccessContext
 	implements DataAccessContext {
@@ -40,9 +40,9 @@ public class LoggingDataAccessContext
 	}
 
 	@Override
-	public DataAccessSession newSession() throws DataAccessException {
+	public ClosableDataAccessSession newSession() throws DataAccessException {
 		long start = System.currentTimeMillis();
-		DataAccessSession das = inner.newSession();
+		ClosableDataAccessSession das = inner.newSession();
 		long elapsed = System.currentTimeMillis() - start;
 		
 		logger.debug("newSession(): " + elapsed + "ms"); 

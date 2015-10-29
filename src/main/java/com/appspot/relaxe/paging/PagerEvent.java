@@ -52,4 +52,12 @@ public class PagerEvent<
 		return (flags != null) && flags.contains(flag);
 	}
 	
+	public int getCount() {
+		return this.flags == null ? 0 : flags.size(); 
+	}
+	
+	public boolean has(Pager.Flags flag) {
+		return (flags != null) && flags.contains(flag);
+	}
+	
 }

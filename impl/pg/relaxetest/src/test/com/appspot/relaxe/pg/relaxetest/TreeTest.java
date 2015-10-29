@@ -27,6 +27,7 @@ import java.util.List;
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
 import com.appspot.relaxe.gen.pg.relaxetest.ent.pub.Tree;
 import com.appspot.relaxe.pg.relaxetest.test.AbstractRelaxetestTestCase;
+import com.appspot.relaxe.service.ClosableDataAccessSession;
 import com.appspot.relaxe.service.DataAccessSession;
 import com.appspot.relaxe.service.EntitySession;
 
@@ -45,7 +46,7 @@ public class TreeTest
 	}
 	
 	public void testTreeEntity() throws Exception {
-		DataAccessSession das = newSession();
+		ClosableDataAccessSession das = newSession();
 		testTreeEntity(das);
 		das.commit();
 		das.close();
@@ -97,7 +98,7 @@ public class TreeTest
 	
 	public void testQuery() throws Exception {
 		
-		DataAccessSession das = newSession();		
+		ClosableDataAccessSession das = newSession();		
 		EntitySession es = das.asEntitySession();
 		
 		testTreeEntity(das);

@@ -220,6 +220,7 @@ public interface Entity<
 	 * @param obj
 	 * @return
 	 */	
+	@Override
 	boolean equals(Object obj);
 	
 	
