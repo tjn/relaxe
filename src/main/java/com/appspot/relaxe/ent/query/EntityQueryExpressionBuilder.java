@@ -20,7 +20,7 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe;
+package com.appspot.relaxe.ent.query;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,8 +43,6 @@ import com.appspot.relaxe.ent.EntityQueryElementTag;
 import com.appspot.relaxe.ent.EntityRuntimeException;
 import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
-import com.appspot.relaxe.ent.query.EntityQueryPredicate;
-import com.appspot.relaxe.ent.query.EntityQuerySortKey;
 import com.appspot.relaxe.ent.value.EntityKey;
 import com.appspot.relaxe.expr.AbstractTableReference;
 import com.appspot.relaxe.expr.ColumnReference;

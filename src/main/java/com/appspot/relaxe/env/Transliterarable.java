@@ -20,7 +20,7 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-package com.appspot.relaxe;
+package com.appspot.relaxe.env;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -46,6 +46,7 @@ import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
+import com.appspot.relaxe.ent.query.EntityQueryExpressionBuilder;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.SelectStatement;
 import com.appspot.relaxe.query.Query;

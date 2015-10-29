@@ -22,7 +22,6 @@
  */
 package com.appspot.relaxe.ent.query;
 
-import com.appspot.relaxe.EntityQueryExpressionBuilder;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityFactory;

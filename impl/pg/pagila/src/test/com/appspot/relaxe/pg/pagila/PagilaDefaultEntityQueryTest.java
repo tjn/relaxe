@@ -25,13 +25,13 @@ package com.appspot.relaxe.pg.pagila;
 import java.sql.Connection;
 import java.sql.Statement;
 
-import com.appspot.relaxe.EntityQueryExpressionBuilder;
 import com.appspot.relaxe.EntityReader;
 import com.appspot.relaxe.SimpleUnificationContext;
 import com.appspot.relaxe.StatementExecutor;
 import com.appspot.relaxe.ValueExtractorFactory;
 import com.appspot.relaxe.ent.EntityDataObject;
 import com.appspot.relaxe.ent.UnificationContext;
+import com.appspot.relaxe.ent.query.EntityQueryExpressionBuilder;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.SelectStatement;
 import com.appspot.relaxe.gen.pg.pagila.ent.pub.Actor;

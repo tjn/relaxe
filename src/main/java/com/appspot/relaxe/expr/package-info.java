@@ -20,7 +20,7 @@
  * of this program must display Appropriate Legal Notices, as required under
  * Section 5 of the GNU Affero General Public License.
  */
-@com.appspot.relaxe.Transliterarable
+@com.appspot.relaxe.env.Transliterarable
 package com.appspot.relaxe.expr;
 
 /**

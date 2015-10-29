@@ -24,7 +24,6 @@ package com.appspot.relaxe.pg.pagila;
 
 import java.util.List;
 
-import com.appspot.relaxe.EntityQueryExpressionBuilder;
 import com.appspot.relaxe.SimpleUnificationContext;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
@@ -38,6 +37,7 @@ import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.ent.query.EntityQueryExistsPredicate;
+import com.appspot.relaxe.ent.query.EntityQueryExpressionBuilder;
 import com.appspot.relaxe.ent.query.EntityQueryPredicate;
 import com.appspot.relaxe.ent.query.EntityQueryPredicates;
 import com.appspot.relaxe.ent.query.EntityQueryValue;
