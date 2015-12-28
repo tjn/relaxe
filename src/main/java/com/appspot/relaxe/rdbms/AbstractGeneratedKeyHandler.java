@@ -96,6 +96,12 @@ public abstract class AbstractGeneratedKeyHandler
 																											
 			for (int i = 1; i <= cc; i++) {
 				Column ac = cr.getColumn(i);
+				
+				if (ac == null) {
+					// There may be columns which are added after entity code generation:  
+					continue;
+				}
+								
 				A a = em.getAttribute(ac);
 				
 				if (a != null) {
