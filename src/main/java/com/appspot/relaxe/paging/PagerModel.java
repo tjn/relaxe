@@ -22,22 +22,20 @@
  */
 package com.appspot.relaxe.paging;
 
-import com.appspot.relaxe.ui.action.Action;
-
 public interface PagerModel 	{
 	
-	Action getFirstPageAction();
+	PagerAction getFirstPageAction();
 
-	Action getPreviousPageAction();
+	PagerAction getPreviousPageAction();
 
-	Action getNextAction();
+	PagerAction getNextAction();
 
-	Action getPreviousAction();
+	PagerAction getPreviousAction();
 
-	Action getNextPageAction();
+	PagerAction getNextPageAction();
 	
-	Action getLastPageAction();
+	PagerAction getLastPageAction();
 	
-	Action getRefreshAction();
+	PagerAction getRefreshAction();
 
 }

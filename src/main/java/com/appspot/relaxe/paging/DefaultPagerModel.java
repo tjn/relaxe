@@ -25,8 +25,7 @@ package com.appspot.relaxe.paging;
 import java.util.List;
 
 import com.appspot.relaxe.model.MutableBooleanModel;
-import com.appspot.relaxe.ui.action.AbstractAction;
-import com.appspot.relaxe.ui.action.Action;
+import com.appspot.relaxe.model.ValueModel;
 
 public class DefaultPagerModel<
 	P extends Page<?>,
@@ -35,25 +34,25 @@ public class DefaultPagerModel<
 		
 	private G pager;
 	
-	private Action firstPageAction;
+	private PagerAction firstPageAction;
 	private MutableBooleanModel firstPage;	
 
-	private Action lastPageAction;
+	private PagerAction lastPageAction;
 	private MutableBooleanModel lastPage;
 	
-	private Action refreshAction;
+	private PagerAction refreshAction;
 	private MutableBooleanModel refresh;
 
-	private Action previousPageAction;
+	private PagerAction previousPageAction;
 	private MutableBooleanModel previousPage;
 	
-	private Action previousAction;
+	private PagerAction previousAction;
 	private MutableBooleanModel previous;
 	
-	private Action nextAction;
+	private PagerAction nextAction;
 	private MutableBooleanModel next;
 	
-	private Action nextPageAction;
+	private PagerAction nextPageAction;
 	private MutableBooleanModel nextPage;
 		
 	public DefaultPagerModel(G pager) {
@@ -105,13 +104,43 @@ public class DefaultPagerModel<
 		this.next.set(idle && hasNextOrNextPage);
 		this.nextPage.set(idle && mayHaveNextPage);
 	}
+	
+	private abstract class ImmutablePagerAction
+		implements PagerAction {
+	
+		private ValueModel<Boolean> enabled;
+		
+		public ImmutablePagerAction(ValueModel<Boolean> enabled) {
+			super();
+			this.enabled = enabled;
+		}
+
+		@Override
+		public boolean execute() {
+			boolean enabled = isEnabled();
+			
+			if (enabled) {
+				run();
+			}
+			return enabled;
+		}
+		
+		protected abstract void run();
+
+		@Override
+		public boolean isEnabled() {
+			return this.enabled.get().booleanValue();
+		}
+	
+	}
+
 
 	@Override
-	public Action getNextAction() {
+	public PagerAction getNextAction() {
 		if (this.nextAction == null) {
-			this.nextAction = new AbstractAction(this.next.asImmutable(), ">") {
+			this.nextAction = new ImmutablePagerAction(this.next) {
 				@Override
-				protected void run() {
+				public void run() {
 					getPager().next();
 				}
 			};			
@@ -121,11 +150,11 @@ public class DefaultPagerModel<
 	}
 	
 	@Override
-	public Action getPreviousAction() {
+	public PagerAction getPreviousAction() {
 		if (this.previousAction == null) {
-			this.previousAction = new AbstractAction(this.previous.asImmutable(), "<") {
+			this.previousAction = new ImmutablePagerAction(this.previous) {
 				@Override
-				protected void run() {
+				public void run() {
 					getPager().previous();
 				}
 			};			
@@ -135,13 +164,14 @@ public class DefaultPagerModel<
 	}
 
 	@Override
-	public Action getNextPageAction() {
+	public PagerAction getNextPageAction() {
 		if (this.nextPageAction == null) {
-			this.nextPageAction = new AbstractAction(this.nextPage.asImmutable(), ">>") {
+			this.nextPageAction = new ImmutablePagerAction(this.nextPage) {
 				@Override
-				protected void run() {
+				public void run() {
 					getPager().nextPage();
 				}
+				
 			};			
 		}
 		
@@ -149,11 +179,11 @@ public class DefaultPagerModel<
 	}
 
 	@Override
-	public Action getPreviousPageAction() {
+	public PagerAction getPreviousPageAction() {
 		if (this.previousPageAction == null) {
-			this.previousPageAction = new AbstractAction(this.previousPage.asImmutable(), "<<") {
+			this.previousPageAction = new ImmutablePagerAction(this.previousPage) {
 				@Override
-				protected void run() {
+				public void run() {
 					getPager().previousPage();
 				}
 			};			
@@ -163,13 +193,24 @@ public class DefaultPagerModel<
 	}
 
 	@Override
-	public Action getFirstPageAction() {
+	public PagerAction getFirstPageAction() {
 		if (this.firstPageAction == null) {
-			this.firstPageAction = new AbstractAction(this.firstPage.asImmutable(), "|<") {
+			this.firstPageAction = new PagerAction() {
 				@Override
-				protected void run() {
-					getPager().firstPage();
+				public boolean execute() {
+					boolean enabled = isEnabled();
+					
+					if (enabled) {
+						getPager().firstPage();
+					}
+					
+					return enabled;
 				}
+				@Override
+				public boolean isEnabled() {
+					return firstPage.get().booleanValue();
+				}
+				
 			};			
 		}
 		
@@ -177,11 +218,11 @@ public class DefaultPagerModel<
 	}
 
 	@Override
-	public Action getLastPageAction() {
+	public PagerAction getLastPageAction() {
 		if (this.lastPageAction == null) {
-			this.lastPageAction = new AbstractAction(this.lastPage.asImmutable(), "|<") {
+			this.lastPageAction = new ImmutablePagerAction(this.lastPage) {
 				@Override
-				protected void run() {
+				public void run() {
 					getPager().lastPage();
 				}
 			};			
@@ -191,16 +232,19 @@ public class DefaultPagerModel<
 	}
 
 	@Override
-	public Action getRefreshAction() {
+	public PagerAction getRefreshAction() {
 		if (this.refreshAction == null) {
-			this.refreshAction = new AbstractAction(this.refresh.asImmutable(), "<>") {
+			this.refreshAction = new ImmutablePagerAction(this.refresh) {
 				@Override
-				protected void run() {
+				public void run() {
 					getPager().refresh();
 				}
 			};			
 		}
 		
 		return this.refreshAction;
-	}	
+	}
+	
+	
+	
 }

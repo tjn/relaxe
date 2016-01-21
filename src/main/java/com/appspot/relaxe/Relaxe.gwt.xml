@@ -14,8 +14,7 @@
 	<source path="paging" />
 	<source path="query" />
 	<source path="rpc" />
-	<source path="types" />
-	<source path="ui" />	
+	<source path="types" />		
 	<source path="service" />	
 	<source path="value" />
 	<!--<source path="test" />-->
