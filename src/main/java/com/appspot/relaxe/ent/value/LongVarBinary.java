@@ -87,7 +87,7 @@ public class LongVarBinary
 		public LongVarBinary newLongVarBinary() {
 			int r = remaining();
 			
-			byte[] dest = (r > 0) ? this.content : new byte[this.content.length - r];
+			byte[] dest = (r > 0) ? new byte[this.content.length - r] : this.content;
 			
 			if (r > 0) {
 				System.arraycopy(this.content, 0, dest, 0, dest.length);				
