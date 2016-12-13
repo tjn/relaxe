@@ -280,6 +280,7 @@
 	<target name="generate-and-compile-all" 
 			depends="			    
 				compile.gen.pg.pagila,
+				compile.gen.pg.relaxetest,
 				compile.gen.mysql.sakila,
 				compile.gen.mariadb.sakila,
 				generate.hsqldb.pagila" 	
