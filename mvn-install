@@ -1,0 +1,39 @@
+#!/bin/sh
+
+if [ -z "$RELAXE_VERSION" ]
+then
+  echo updating relaxe version...
+  . ./update-version.sh
+fi
+
+if [ -z "$RELAXE_VERSION" ]
+then
+  echo "Relaxe version is not set"
+  exit 1
+fi
+
+
+
+
+JAR_FILE="build/relaxe-$RELAXE_VERSION.jar"
+
+if [ ! -f "$JAR_FILE" ]
+then
+  echo "Could not find jar file to install: $JAR_FILE"
+  exit 2
+fi
+
+SRC_FILE="build/relaxe-sources-$RELAXE_VERSION.jar"
+
+if [ ! -f "$SRC_FILE" ]
+then
+  echo "Could not find source jar file to install: $SRC_FILE"
+  exit 3
+fi
+
+# build/relaxe-sources-0.2.0-18-g471498d.jar
+# build/relaxe-0.2.0-18-g471498d.jar
+
+mvn install:install-file -Dfile=$JAR_FILE -DpomFile=pom.xml -Dversion=$RELAXE_VERSION
+mvn install:install-file -Dfile=$SRC_FILE -DpomFile=pom.xml -Dversion=$RELAXE_VERSION -Dclassifier=sources
+                         
