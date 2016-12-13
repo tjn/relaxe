@@ -30,10 +30,12 @@ public class FetchOptions
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5894929494069252288L;
+	private static final long serialVersionUID = -1881575370251414370L;
+	
 	private long offset;	
 	private Integer count;
-	private boolean fetchCardinality;
+	private boolean cardinality;
+	private OffsetUnit offsetUnit;
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -41,40 +43,49 @@ public class FetchOptions
 	protected FetchOptions() {
 	}
 	
-	public FetchOptions(int count, long offset) {
-		this(Integer.valueOf(count), offset);
+	public FetchOptions(int limit, long offset) {
+		this(Integer.valueOf(limit), offset);
 	}
 	
 	/**
 	 * Negative offset is interpreted as an offset counting from the end.
 	 * 
-	 * @param pageSize
+	 * @param limit
 	 * @param offset
 	 */	
-	public FetchOptions(Integer pageSize, long offset) {
-		this(pageSize, offset, true);
+	public FetchOptions(Integer limit, long offset) {
+		this(limit, offset, null, true);
 	}
 	
 	public FetchOptions(int count, boolean cardinality) {
-		this(Integer.valueOf(count), 0, cardinality);
+		this(Integer.valueOf(count), 0, null, cardinality);
 	}
 	
-	public FetchOptions(Integer count, long offset, boolean cardinality) {
-		super();
+	public FetchOptions(Integer count, long offset, OffsetUnit ou) {
+		this(count, offset, ou, true);
+	}
+	
+	private FetchOptions(Integer count, long offset, OffsetUnit ou, boolean cardinality) {
+		super();		
+		this.offsetUnit = (ou == null) ? OffsetUnit.ELEMENT : ou;
 		this.offset = offset;
 		this.count = count;				
-		this.fetchCardinality = cardinality;
+		this.cardinality = cardinality;
 	}
 
 	public long getOffset() {
 		return this.offset;
 	}
 		
-	public Integer getCount() {
+	public Integer getLimit() {
 		return count;
 	}
 	
-	public boolean getCardinality() {
-		return fetchCardinality;		
+	public boolean isCardinality() {
+		return cardinality;		
+	}
+	
+	public OffsetUnit getOffsetUnit() {
+		return offsetUnit;
 	}
 }

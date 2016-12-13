@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObjectQueryResult;
 import com.appspot.relaxe.ent.FetchOptions;
+import com.appspot.relaxe.ent.OffsetUnit;
 import com.appspot.relaxe.expr.CountFunction;
 import com.appspot.relaxe.expr.DefaultTableExpression;
 import com.appspot.relaxe.expr.From;
@@ -107,12 +108,12 @@ public class QueryExecutor {
 	
 		if (opts != null) {
 			oo = opts.getOffset();
-			pageSize = opts.getCount();			
+			pageSize = opts.getLimit();			
 		}
 				
 		logger().debug("execute: oo={}", oo);
 				
-		if ((opts != null && opts.getCardinality()) || oo < 0) {			
+		if ((opts != null && opts.isCardinality()) || oo < 0) {			
 			SelectStatement cs = createCountQuery(qs);
 			DataObject result = sx.fetchFirst(cs, c);
 			
@@ -125,23 +126,12 @@ public class QueryExecutor {
 		
 		Limit limit = (pageSize == null) ? null : new Limit(pageSize.intValue());
 		
-		long op = oo;
+		OffsetUnit ou = (opts == null) ? null : opts.getOffsetUnit();
+		ou = (ou == null) ? OffsetUnit.ELEMENT : ou;
 		
-		if (oo < 0) {
-			op = available.longValue();
-						
-			if (pageSize != null) {
-				long ps = pageSize.longValue();
-				long pp = op % ps;
-				
-				if (pp == 0) {
-					op -= ps;
-				}
-				else {
-					op -= pp;
-				}
-			}			
-		}
+		long op = calculateOffset(oo, available, pageSize, ou);
+		
+		logger().debug("execute: oo: {}, op: {}", oo, op);
 		
 		// TODO: do something with this
 		OrderBy ob = qe.getOrderBy();
@@ -154,6 +144,54 @@ public class QueryExecutor {
 		qs = new SelectStatement(qe.getTableExpr(), ob, limit, offset);
 				
 		return new SliceStatement(qs, available, op);
+	}
+	
+	/**
+	 * 
+	 * @param offset
+	 * @param available Required if <code>offset &lt; 0</code>
+	 * @param pageSize  Required if <code>ou == {@value OffsetUnit#PAGE}</code>. Must not be negative. 
+	 * @param unit Must not be <code>null</code>
+	 * @return
+	 */
+	long calculateOffset(long offset, Long available, Integer pageSize, OffsetUnit unit) {				
+		if (offset == 0) {
+			return 0;
+		}
+		
+		long op = 0;
+		
+		if (offset >= 0) {
+			if (unit == OffsetUnit.PAGE) {
+				op = offset * pageSize.intValue();
+			}
+			
+			if (unit == OffsetUnit.ELEMENT) {
+				op = offset;
+			}
+		}
+		else {
+			final long a = (available == null) ? 0 : available.longValue();
+			
+			if (unit == OffsetUnit.ELEMENT) {
+				long off = (a + offset);
+				op = (off < 0) ? 0 : off;	
+			}
+			
+			if (unit == OffsetUnit.PAGE) {				
+				int ps = pageSize.intValue();
+				
+				boolean lpf = ((a % ps) == 0);
+				long po = offset + (lpf ? 0 : 1);
+				
+				long px = (a / ps) + po;
+								
+				px = (px < 0) ? 0 : px;																
+				op = (px * ps);								
+			}			
+		}
+		
+		return op;
 	}
 	
 	public static class SliceStatement {

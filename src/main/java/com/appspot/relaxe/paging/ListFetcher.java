@@ -49,7 +49,7 @@ public class ListFetcher<E extends Serializable>
 				
 		int size = this.content.size();
 		int o = (int) opts.getOffset();
-		Integer count = opts.getCount();
+		Integer count = opts.getLimit();
 		
 		int c = (count == null) ? size - o : count.intValue();
 		
