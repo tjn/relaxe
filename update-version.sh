@@ -2,7 +2,11 @@
 
 if git describe HEAD 2> /dev/null
 then
-  echo relaxe.revision=$(git describe HEAD) > version.properties
+  export RELAXE_VERSION=$(git describe HEAD)
+  
 else
-  echo relaxe.revision=$(git log -n1 --pretty=format:'[%H %d]') > version.properties
+  export RELAXE_VERSION=$(git log -n1 --pretty=format:'[%H %d]')
 fi
+
+echo relaxe.revision=$RELAXE_VERSION > version.properties
+# echo relaxe.revision=$(git describe HEAD) > version.properties
