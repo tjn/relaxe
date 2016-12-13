@@ -26,9 +26,9 @@ public class ConstantBooleanModel
 	extends DefaultConstantValueModel<Boolean>
 	implements BooleanModel
 {
-	public static final BooleanModel NULL = new ConstantBooleanModel(null);
-	public static final BooleanModel TRUE = new ConstantBooleanModel(true);  
-	public static final BooleanModel FALSE = new ConstantBooleanModel(false);
+	public static final ConstantBooleanModel NULL = new ConstantBooleanModel(null);
+	public static final ConstantBooleanModel TRUE = new ConstantBooleanModel(true);  
+	public static final ConstantBooleanModel FALSE = new ConstantBooleanModel(false);
 	
 	/**
 	 * No-argument constructor for GWT Serialization
@@ -48,5 +48,9 @@ public class ConstantBooleanModel
 	@Override
 	public MutableBooleanModel asMutable() {
 		return null;
+	}
+	
+	public static ConstantBooleanModel of(boolean value) {
+		return value ? ConstantBooleanModel.TRUE : ConstantBooleanModel.FALSE;				
 	}
 }
