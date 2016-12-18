@@ -30,6 +30,5 @@ public interface DataAccessSession {
 	EntitySession asEntitySession();
 	QuerySession asQuerySession();
 	StatementSession asStatementSession();
-	
 	DataTypeMap getDataTypeMap();
 }

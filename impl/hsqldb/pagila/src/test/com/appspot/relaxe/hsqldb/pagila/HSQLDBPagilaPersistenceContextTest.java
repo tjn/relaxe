@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe.hsqldb.pagila;
 
+import com.appspot.relaxe.AssignContext;
 import com.appspot.relaxe.ParameterAssignment;
 import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.env.pg.PGTextArrayHolder;
@@ -43,9 +44,11 @@ public class HSQLDBPagilaPersistenceContextTest extends TestCase {
 		
 		PGTextArrayHolder ah = PGTextArrayHolder.valueOf(a);
 		
-		DataType type = new DataTypeImpl(ah.getSqlType(), ah.getType().getName()); 
+		DataType type = new DataTypeImpl(ah.getSqlType(), ah.getType().getName());
+		
+		AssignContext actx = null;
 				
-		ParameterAssignment pa = vf.create(ah, type);
+		ParameterAssignment pa = vf.create(ah, type, actx);
 		assertNotNull(pa);
 		
 	}

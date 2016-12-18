@@ -25,9 +25,13 @@
  */
 package com.appspot.relaxe;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +43,8 @@ import com.appspot.relaxe.expr.VisitException;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.ValueHolder;
 
-public class AssignmentVisitor extends ElementVisitorAdapter {
+public class AssignmentVisitor extends ElementVisitorAdapter
+	implements AssignContext {
 	private PreparedStatement preparedStatement;
 	private int ordinal;
 	
@@ -47,11 +52,15 @@ public class AssignmentVisitor extends ElementVisitorAdapter {
 	
 	private ValueAssignerFactory assignerFactory;
 	
-//	public AssignmentVisitor(PreparedStatement ps) {
-//		this(new DefaultValueAssignerFactory(), ps);
-//	}
-
+	private Map<InputStreamKey, InputStream> inputMap;
+	private Map<InputStreamKey, Long> inputLengthMap;
+	
+	
 	public AssignmentVisitor(ValueAssignerFactory assignerFactory, PreparedStatement ps) {
+		this(assignerFactory, ps, null); 
+	}
+
+	public AssignmentVisitor(ValueAssignerFactory assignerFactory, PreparedStatement ps, Map<InputStreamKey, InputStream> inputMap) {
 		super();
 		
 		if (assignerFactory == null) {
@@ -65,6 +74,7 @@ public class AssignmentVisitor extends ElementVisitorAdapter {
 		this.assignerFactory = assignerFactory;		
 		this.preparedStatement = ps;
 		this.ordinal = 1;
+		this.inputMap = inputMap;
 	}	
 
 	@Override
@@ -79,13 +89,16 @@ public class AssignmentVisitor extends ElementVisitorAdapter {
 		catch (SQLException e) {				
 			throw new VisitException(e.getMessage(), e);
 		}
+		catch (IOException e) {				
+			throw new VisitException(e.getMessage(), e);
+		}
 		
 		return vc;
 	}
 	
 	
 	
-	private	
+	protected	
 	<		
 		V extends Serializable,
 		T extends ValueType<T>, 
@@ -93,11 +106,11 @@ public class AssignmentVisitor extends ElementVisitorAdapter {
 	>	
 	void	
 	assign(int ord, Parameter<V, T, H> param) 
-		throws SQLException {
+		throws SQLException, IOException {
 		
 		H h = param.getValue();
-		ParameterAssignment a = assignerFactory.create(h, param.getColumnType());
-
+		ParameterAssignment a = assignerFactory.create(h, param.getColumnType(), this);
+		
 		if (a == null) {
 			throw new NullPointerException("no assignment for parameter[" + ord + "] of type " + h.getType() + ": " + h + " with assigner factory: " + assignerFactory);
 		}
@@ -114,5 +127,29 @@ public class AssignmentVisitor extends ElementVisitorAdapter {
 	    this.ordinal = 1;
 	    this.preparedStatement.clearParameters();
 	}
+
+	@Override
+	public InputStream getInputStream(InputStreamKey key) {
+		return (this.inputMap == null) ? null : this.inputMap.get(key);
+	}
 	
+	
+	private Map<InputStreamKey, Long> getInputLengthMap() {
+		if (inputLengthMap == null) {
+			inputLengthMap = new HashMap<InputStreamKey, Long>();			
+		}
+
+		return inputLengthMap;
+	}
+	
+	@Override
+	public void setLength(InputStreamKey key, long length) {
+		getInputLengthMap().put(key, Long.valueOf(length));
+	}
+	
+	@Override
+	public long getLength(InputStreamKey key) {
+		Long len = (this.inputLengthMap == null) ? null : this.inputLengthMap.get(key);
+		return (len == null) ? -1 : len.longValue();
+	}
 }

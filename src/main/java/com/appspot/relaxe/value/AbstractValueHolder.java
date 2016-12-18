@@ -24,6 +24,7 @@ package com.appspot.relaxe.value;
 
 import java.io.Serializable;
 
+import com.appspot.relaxe.InputStreamKeyHolder;
 import com.appspot.relaxe.types.AbstractValueType;
 import com.appspot.relaxe.types.ValueType;
 
@@ -152,11 +153,8 @@ public abstract class AbstractValueHolder<
 		return null;
 	}
 	
-
-	
-	 
-	
-	
-	
-
+	@Override
+	public InputStreamKeyHolder asInputStreamKeyHolder() {
+		return null;
+	}
 }

@@ -278,10 +278,10 @@ public class PersistenceManager<
         
         if (!pe.isIdentified()) {
         	return null;
-        }
-        
+        }        
 
     	final M meta = pe.getMetaData();
+    	
     	TableReference tref = new TableReference(meta.getBaseTable());
    	
     	Predicate pkp = getPKPredicate(tref, pe);
@@ -668,7 +668,7 @@ public class PersistenceManager<
     private Predicate getPKPredicate(TableReference tref, E pe)
             throws EntityException {
 
-        EntityMetaData<A, R, T, E, B, ?, ?, ?> meta = pe.getMetaData();
+        EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> meta = pe.getMetaData();
         Collection<Column> pkcols = meta.getBaseTable().getPrimaryKey().getColumnMap().values();
 
         if (pkcols.isEmpty()) {

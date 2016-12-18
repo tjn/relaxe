@@ -22,52 +22,26 @@
  */
 package com.appspot.relaxe;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.sql.PreparedStatement;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
 
-import com.appspot.relaxe.types.ValueType;
-import com.appspot.relaxe.value.ValueHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
+import com.appspot.relaxe.meta.DataType;
 
-public abstract class AbstractParameterAssignment<
-	V extends Serializable, 
-	T extends ValueType<T>, 
-	H extends ValueHolder<V, T, H>
->
-	implements ParameterAssignment {	
-	private H holder;
-	
-	public AbstractParameterAssignment(H holder) {
-		super();
-		
-		if (holder == null) {
-			throw new NullPointerException("holder");
-		}
-		
-		this.holder = holder;
-	}
-	
-	protected H holder() {
-		return holder;
-	}
+
+public class DefaultBlobExtractorFactory implements BlobExtractorFactory {
+
+	private static Logger logger = LoggerFactory.getLogger(DefaultBlobExtractorFactory.class);
 
 	@Override
-	public void assign(PreparedStatement ps, int ordinal) 
-		throws SQLException, IOException {
-								
-		V v = holder.value();
-						
-		if (v == null) {
-			ps.setNull(ordinal, holder.getSqlType());
-		}
-		else {
-			assign(ps, ordinal, v);
-		}
+	public BlobExtractor createBlobExtractor(int col) {
+		return new DefaultBlobExtractor(col);
 	}
 	
-	public abstract void assign(PreparedStatement ps, int ordinal, V newValue)
-		throws SQLException, IOException;
 }
+
+

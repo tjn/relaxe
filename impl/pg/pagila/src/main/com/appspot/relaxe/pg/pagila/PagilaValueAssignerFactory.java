@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe.pg.pagila;
 
+import com.appspot.relaxe.AssignContext;
 import com.appspot.relaxe.EnumAssignment;
 import com.appspot.relaxe.ParameterAssignment;
 import com.appspot.relaxe.common.pagila.types.MPAARating;
@@ -36,8 +37,8 @@ public class PagilaValueAssignerFactory
 	extends PGValueAssignerFactory {
 
 	@Override
-	public <T extends ValueType<T>, H extends ValueHolder<?, T, H>> ParameterAssignment create(H holder, DataType columnType) {
-		ParameterAssignment pa = super.create(holder, columnType);
+	public <T extends ValueType<T>, H extends ValueHolder<?, T, H>> ParameterAssignment create(H holder, DataType columnType, AssignContext assignContext) {
+		ParameterAssignment pa = super.create(holder, columnType, assignContext);
 		
 		if (pa == null) {			
 			String n = columnType.getTypeName();

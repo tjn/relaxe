@@ -22,15 +22,32 @@
  */
 package com.appspot.relaxe.rdbms;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import com.appspot.relaxe.AssignmentVisitor;
+import com.appspot.relaxe.BlobAssignment;
+import com.appspot.relaxe.BlobExtractor;
+import com.appspot.relaxe.BlobInputParameter;
 import com.appspot.relaxe.EntityQueryExecutor;
+import com.appspot.relaxe.InputStreamKey;
+import com.appspot.relaxe.InputStreamKeyHolder;
 import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.QueryExecutor;
 import com.appspot.relaxe.StatementExecutor;
+import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObjectQueryResult;
@@ -50,12 +67,35 @@ import com.appspot.relaxe.exec.QueryProcessor;
 import com.appspot.relaxe.exec.QueryProcessorAdapter;
 import com.appspot.relaxe.exec.ResultSetProcessor;
 import com.appspot.relaxe.exec.UpdateProcessor;
+import com.appspot.relaxe.expr.Assignment;
+import com.appspot.relaxe.expr.ColumnReference;
+import com.appspot.relaxe.expr.Element;
+import com.appspot.relaxe.expr.ElementList;
+import com.appspot.relaxe.expr.ElementVisitor;
+import com.appspot.relaxe.expr.From;
+import com.appspot.relaxe.expr.Identifier;
+import com.appspot.relaxe.expr.ImmutableValueParameter;
+import com.appspot.relaxe.expr.Parameter;
+import com.appspot.relaxe.expr.Predicate;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.SQLDataChangeStatement;
+import com.appspot.relaxe.expr.Select;
 import com.appspot.relaxe.expr.SelectStatement;
 import com.appspot.relaxe.expr.Statement;
+import com.appspot.relaxe.expr.TableReference;
+import com.appspot.relaxe.expr.UpdateStatement;
+import com.appspot.relaxe.expr.ValueExpression;
+import com.appspot.relaxe.expr.VisitContext;
+import com.appspot.relaxe.expr.Where;
 import com.appspot.relaxe.expr.ddl.SQLSchemaStatement;
+import com.appspot.relaxe.expr.op.AndPredicate;
+import com.appspot.relaxe.expr.op.Comparison;
+import com.appspot.relaxe.meta.Column;
+import com.appspot.relaxe.query.Query;
 import com.appspot.relaxe.query.QueryException;
+import com.appspot.relaxe.query.QueryTime;
+import com.appspot.relaxe.service.BinaryAttributeReader;
+import com.appspot.relaxe.service.BinaryAttributeWriter;
 import com.appspot.relaxe.service.ClosableDataAccessSession;
 import com.appspot.relaxe.service.DataAccessException;
 import com.appspot.relaxe.service.EntitySession;
@@ -65,11 +105,14 @@ import com.appspot.relaxe.service.Receiver;
 import com.appspot.relaxe.service.StatementSession;
 import com.appspot.relaxe.service.UpdateReceiver;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.ReferenceHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 public abstract class AbstractDataAccessSession<I extends Implementation<I>>
-	implements ClosableDataAccessSession, EntitySession, QuerySession, StatementSession, StatementExecutionSession {
+	implements ClosableDataAccessSession, EntitySession, QuerySession, StatementSession, StatementExecutionSession, 
+	BinaryAttributeReader {
 	
 	private Connection connection;
 	
@@ -192,6 +235,10 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		pm.update(getConnection());		
 		return e.self();
 	}
+	
+	
+	
+	
 	
 	protected void closing()
 		throws DataAccessException {		
@@ -323,6 +370,14 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		return this;
 	}
 	
+	public BinaryAttributeReader asBinaryAttributeReader() {	
+		return this;
+	}
+
+	public BinaryAttributeWriter asBinaryAttributeWriter() {	
+		return this;
+	}
+
 	@Override
 	public <
 		A extends AttributeName, 
@@ -472,6 +527,33 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	}	
 	
 	
+	private static final class BlobExtractorAdapter extends QueryProcessorAdapter {
+		private final OutputStream out;
+		private final BlobExtractor be;
+		
+		private long nread;
+
+		private BlobExtractorAdapter(OutputStream out, BlobExtractor be) {
+			this.out = out;
+			this.be = be;
+		}
+
+		@Override
+		public void process(ResultSet rs, long ordinal) throws QueryException, SQLException {
+			try {
+				nread = 0;
+				this.nread = be.extract(rs, out);
+			}
+			catch (IOException e) {
+				throw new QueryException(e.getMessage(), e);
+			}					
+		}
+		
+		public long getBytesRead() {
+			return nread;
+		}
+	}
+
 	private static class UpdateCount
 		implements UpdateProcessor {
 		
@@ -497,5 +579,167 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 			this.receiver.updated(this.statement, count);			
 		}
 	}
+	
+	
+	@Override
+	public <
+		A extends AttributeName, 
+		R extends Reference, 
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>
+	> 
+	long read(Entity<A, R, T, E, B, H, F, M> e, A attribute, final OutputStream out) throws EntityException {
+		
+		if (out == null) {
+			throw new NullPointerException("out");
+		}
+		
+		final M meta = e.getMetaData();
+    	
+    	TableReference tref = new TableReference(meta.getBaseTable());
+    	
+    	getPersistenceContext().getValueExtractorFactory();
+   	
+    	Predicate pkp = getPKPredicate(tref, e);
+    	
+    	Column col = meta.getColumn(attribute);
+    	
+    	    	
+		StatementExecutor sx = new StatementExecutor(getPersistenceContext());
+				
+		ValueExpression cr = new ColumnReference(tref, col);						
+		Select s = new Select(cr);
+		From f = new From(tref);
+		Where w = new Where(pkp);
+								
+		SelectStatement ss = new SelectStatement(s, f, w);
+		
+		final BlobExtractor be = getPersistenceContext().getBlobExtractorFactory().createBlobExtractor(1);
+		BlobExtractorAdapter bea = new BlobExtractorAdapter(out, be);
+		
+		try {
+			sx.executeSelect(ss, this.connection, bea);
+		}
+		catch (SQLException se) {
+			throw new EntityException(se.getMessage(), se);
+		} 
+		catch (QueryException qe) {
+			throw new EntityException(qe.getMessage(), qe);
+		}
+		
+		return bea.getBytesRead();
+	}
+
+	@Override
+	public <
+		A extends AttributeName, 
+		R extends Reference, 
+		T extends ReferenceType<A, R, T, E, B, H, F, M>,
+		E extends Entity<A, R, T, E, B, H, F, M>,
+		B extends MutableEntity<A, R, T, E, B, H, F, M>,
+		H extends ReferenceHolder<A, R, T, E, H, M>,
+		F extends EntityFactory<E, B, H, M, F>,
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>
+	> 
+	long write(Entity<A, R, T, E, B, H, F, M> e, A attribute, final InputStream in) throws EntityException {
+		
+		if (in == null) {
+			throw new NullPointerException("in");
+		}
+		
+		final M meta = e.getMetaData();
+    	
+    	TableReference tref = new TableReference(meta.getBaseTable());
+    	
+    	getPersistenceContext().getValueExtractorFactory();
+   	
+    	Predicate pkp = getPKPredicate(tref, e);
+    	
+    	Column col = meta.getColumn(attribute);
+    	
+    	final PersistenceContext<I> pc = getPersistenceContext();
+    	
+    	final InputStreamKey ik = new InputStreamKey();
+    	
+    	final BlobInputParameter bin = new BlobInputParameter(col, ik);
+    	
+    	Assignment a = new Assignment(col.getColumnName(), bin);
+    	
+    	ElementList<Assignment> assignmentClause = ElementList.newElementList(a);
+    	    	    	    	
+		StatementExecutor sx = new StatementExecutor(pc) {
+			@Override
+			protected void preprocess(Statement statement, final PreparedStatement ps) {
+				Map<InputStreamKey, InputStream> ism = Collections.singletonMap(ik, in);
+				AssignmentVisitor av = new AssignmentVisitor(pc.getValueAssignerFactory(), ps, ism);				
+				statement.traverse(null, av);
+			}			
+		};
+				
+		UpdateStatement us = new UpdateStatement(tref, assignmentClause, pkp);
+		
+		try {
+			sx.executeUpdate(us, getConnection());
+		}
+		catch (SQLException se) {
+			throw new EntityException(se.getMessage(), se);
+		} 
+		catch (QueryException qe) {
+			throw new EntityException(qe.getMessage(), qe);
+		}
+		
+		return 0; // TODO : real count
+	}
+
+	private Predicate getPKPredicate(TableReference tref, Entity<?, ?, ?, ?, ?, ?, ?, ?> pe)
+            throws EntityException {
+
+        EntityMetaData<?, ?, ?, ?, ?, ?, ?, ?> meta = pe.getMetaData();
+        Collection<Column> pkcols = meta.getBaseTable().getPrimaryKey().getColumnMap().values();
+
+        if (pkcols.isEmpty()) {
+            throw new EntityException("no pk-columns available for entity type " + pe.type());
+        }
+
+        Predicate p = null;
+
+        for (Column col : pkcols) {
+            ValueHolder<?, ?, ?> o = pe.get(col);
+
+            // to successfully create a pk predicate
+            // every component must be set:
+            if (o == null) {
+                return null;
+            }
+
+            ColumnReference cr = new ColumnReference(tref, col);
+            ValueExpression param = createValueExpression(col, o.self());
+            p = AndPredicate.newAnd(p, eq(cr, param));
+        }
+
+        return p;
+    }
+
+    private Predicate eq(ValueExpression a, ValueExpression b) {
+    	return Comparison.eq(a, b);        
+    }
+
+	private	ValueExpression createValueExpression(Column col, ValueHolder<?, ?, ?> holder) {				
+		return newValueExpression(col, holder.self());
+	}
+
+	private <
+		V extends Serializable,
+		P extends ValueType<P>, 
+		PH extends ValueHolder<V, P, PH>
+	>
+	ValueExpression newValueExpression(Column col, ValueHolder<V, P, PH> holder) {				
+		return new ImmutableValueParameter<V, P, PH>(col, holder.self());
+	}
+	 
 	
 }

@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.appspot.relaxe.ArrayAssignment;
+import com.appspot.relaxe.AssignContext;
 import com.appspot.relaxe.ParameterAssignment;
 import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.common.pagila.types.YearType;
@@ -161,9 +162,9 @@ public class HSQLDBPagilaPersistenceContext
 		}
 
 		@Override
-		public <T extends ValueType<T>, H extends ValueHolder<?, T, H>> ParameterAssignment create(H ph, DataType type) {
+		public <T extends ValueType<T>, H extends ValueHolder<?, T, H>> ParameterAssignment create(H ph, DataType type, AssignContext actx) {
 			
-			ParameterAssignment pa = defaultFactory.create(ph, type);
+			ParameterAssignment pa = defaultFactory.create(ph, type, actx);
 			
 			if (pa == null) {				
 				if (ph.getSqlType() == ValueType.ARRAY) {

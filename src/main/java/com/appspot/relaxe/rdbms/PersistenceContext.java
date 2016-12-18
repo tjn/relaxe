@@ -24,6 +24,7 @@ package com.appspot.relaxe.rdbms;
 
 import java.util.Properties;
 
+import com.appspot.relaxe.BlobExtractorFactory;
 import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.ValueExtractorFactory;
 import com.appspot.relaxe.meta.DataTypeMap;
@@ -37,5 +38,7 @@ public interface PersistenceContext<I extends Implementation<I>> {
 	ValueAssignerFactory getValueAssignerFactory();
 	DataAccessContext newDataAccessContext(String jdbcURL, Properties jdbcConfig);
 	DataTypeMap getDataTypeMap();
+	
+	BlobExtractorFactory getBlobExtractorFactory();
 
 }

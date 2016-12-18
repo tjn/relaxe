@@ -24,6 +24,8 @@ package com.appspot.relaxe.rdbms;
 
 import java.util.Properties;
 
+import com.appspot.relaxe.BlobExtractorFactory;
+import com.appspot.relaxe.DefaultBlobExtractorFactory;
 import com.appspot.relaxe.DefaultValueAssignerFactory;
 import com.appspot.relaxe.DefaultValueExtractorFactory;
 import com.appspot.relaxe.ValueAssignerFactory;
@@ -34,6 +36,7 @@ public abstract class DefaultImplementation<I extends Implementation<I>>
 
 	private ValueExtractorFactory valueExtractorFactory; 
 	private ValueAssignerFactory valueAssignerFactory;	
+	private BlobExtractorFactory blobExtractorFactory;
 	
 	@Override
 	public abstract CatalogFactory catalogFactory();
@@ -49,6 +52,20 @@ public abstract class DefaultImplementation<I extends Implementation<I>>
 	
 	protected ValueExtractorFactory createValueExtractorFactory() {
 		return new DefaultValueExtractorFactory();
+	}
+	
+	@Override
+	public BlobExtractorFactory getBlobExtractorFactory() {
+		if (blobExtractorFactory == null) {
+			blobExtractorFactory = createBlobExtractorFactory();
+			
+		}
+
+		return blobExtractorFactory;
+	}
+	
+	protected BlobExtractorFactory createBlobExtractorFactory() {
+		return new DefaultBlobExtractorFactory();
 	}
 	
 	@Override

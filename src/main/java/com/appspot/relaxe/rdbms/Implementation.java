@@ -24,6 +24,7 @@ package com.appspot.relaxe.rdbms;
 
 import java.util.Properties;
 
+import com.appspot.relaxe.BlobExtractorFactory;
 import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.ValueExtractorFactory;
 import com.appspot.relaxe.env.SerializableEnvironment;
@@ -47,6 +48,7 @@ public interface Implementation<I extends Implementation<I>> {
 	
 	ValueExtractorFactory getValueExtractorFactory();			
 	ValueAssignerFactory getValueAssignerFactory();
+	BlobExtractorFactory getBlobExtractorFactory();
 	
 	String createJdbcUrl(String database);
 	String createJdbcUrl(String host, String database);

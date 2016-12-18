@@ -24,6 +24,7 @@ package com.appspot.relaxe.value;
 
 import java.io.Serializable;
 
+import com.appspot.relaxe.InputStreamKeyHolder;
 import com.appspot.relaxe.types.ValueType;
 
 public interface ValueHolder<
@@ -76,4 +77,6 @@ public interface ValueHolder<
 	IntervalHolder.DayTime asDayTimeIntervalHolder();
 	
 	IntervalHolder.YearMonth asYearMonthIntervalHolder();
+	
+	InputStreamKeyHolder asInputStreamKeyHolder();
 }

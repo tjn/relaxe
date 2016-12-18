@@ -33,5 +33,5 @@ public interface ValueAssignerFactory {
 		T extends ValueType<T>, 
 		H extends ValueHolder<?, T, H>
 	>
-	ParameterAssignment create(H holder, DataType columnType);
+	ParameterAssignment create(H holder, DataType columnType, AssignContext actx);
 }

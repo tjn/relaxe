@@ -57,6 +57,19 @@ public abstract class AbstractParameter<
 	 */
 	protected AbstractParameter() {
 	}
+	
+	public AbstractParameter(Identifier columnName, DataType type) {
+		if (columnName == null) {
+			throw new NullPointerException("columnName");
+		}
+		
+		if (type == null) {
+			throw new NullPointerException("type");
+		}
+		
+		this.columnName = columnName;
+		this.columnType = type;
+	}
 		
 	public AbstractParameter(Column column) {
 		this.columnName = column.getColumnName();

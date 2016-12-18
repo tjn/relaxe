@@ -24,6 +24,7 @@ package com.appspot.relaxe.rdbms;
 
 import java.util.Properties;
 
+import com.appspot.relaxe.BlobExtractorFactory;
 import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.ValueExtractorFactory;
 import com.appspot.relaxe.meta.DataTypeMap;
@@ -61,6 +62,11 @@ public abstract class DefaultPersistenceContext<I extends Implementation<I>>
 	@Override
 	public ValueExtractorFactory getValueExtractorFactory() {
 		return getImplementation().getValueExtractorFactory();		
+	}
+	
+	@Override
+	public BlobExtractorFactory getBlobExtractorFactory() {
+		return getImplementation().getBlobExtractorFactory();
 	}
 
 	@Override

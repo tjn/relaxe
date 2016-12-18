@@ -44,7 +44,7 @@ public class DefaultValueAssignerFactory
 		
 		
 	@Override
-	public <T extends ValueType<T>, H extends ValueHolder<?, T, H>> ParameterAssignment create(H holder, DataType columnType) {
+	public <T extends ValueType<T>, H extends ValueHolder<?, T, H>> ParameterAssignment create(H holder, DataType columnType, AssignContext assignContext) {
 		ParameterAssignment pa = null;
 				
 		ValueHolder<?, ?, ?> ph = holder;
@@ -56,6 +56,9 @@ public class DefaultValueAssignerFactory
 				break;
 			case ValueType.BIGINT:	 
 				pa = createLongAssignment(ph.asLongHolder());
+				break;				
+			case ValueType.BLOB:	 
+				pa = createBlobAssignment(ph.asInputStreamKeyHolder(), assignContext);
 				break;				
 			case ValueType.CHAR:	
 				pa = createCharAssignment(ph.asCharHolder());
@@ -117,6 +120,10 @@ public class DefaultValueAssignerFactory
 		return pa;
 	}
 	
+	private ParameterAssignment createBlobAssignment(InputStreamKeyHolder holder, AssignContext ac) {
+		return new BlobAssignment(holder, ac);
+	}
+
 	protected ParameterAssignment createBooleanAssignment(BooleanHolder h) {
 		return new BooleanAssignment(h);
 	}

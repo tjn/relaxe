@@ -25,6 +25,7 @@ package com.appspot.relaxe.rdbms.pg;
 import java.sql.Array;
 
 import com.appspot.relaxe.ArrayAssignment;
+import com.appspot.relaxe.AssignContext;
 import com.appspot.relaxe.DefaultValueAssignerFactory;
 import com.appspot.relaxe.ParameterAssignment;
 import com.appspot.relaxe.env.pg.PGTextArrayHolder;
@@ -39,8 +40,8 @@ public class PGValueAssignerFactory
 	extends DefaultValueAssignerFactory {
 
 	@Override
-	public <T extends ValueType<T>, H extends ValueHolder<?, T, H>> ParameterAssignment create(H holder, DataType columnType) {
-		ParameterAssignment pa = super.create(holder, columnType);
+	public <T extends ValueType<T>, H extends ValueHolder<?, T, H>> ParameterAssignment create(H holder, DataType columnType, AssignContext assignContext) {
+		ParameterAssignment pa = super.create(holder, columnType, assignContext);
 		
 		if (pa == null) {			
 			String n = columnType.getTypeName();

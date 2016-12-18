@@ -87,8 +87,7 @@ public class StatementExecutor {
 		
 		ps = c.prepareStatement(qs, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		
-		AssignmentVisitor av = new AssignmentVisitor(valueAssignerFactory, ps);
-		statement.traverse(null, av);
+		preprocess(statement, ps);
 											
 		ResultSet rs = null;
 		
@@ -111,6 +110,11 @@ public class StatementExecutor {
 		}
 		
 		return qt;		
+	}
+
+	protected void preprocess(Statement statement, PreparedStatement ps) {
+		AssignmentVisitor av = new AssignmentVisitor(valueAssignerFactory, ps);
+		statement.traverse(null, av);
 	}	
 	
 	
@@ -144,8 +148,7 @@ public class StatementExecutor {
 				ps = c.prepareStatement(qs);
 			}
 			
-			AssignmentVisitor av = new AssignmentVisitor(valueAssignerFactory, ps);
-			statement.traverse(null, av);
+			preprocess(statement, ps);
 												
 			    
 		    // org.postgresql.util.PSQLException: Can't use query methods that take a query string on a PreparedStatement.			    
@@ -240,8 +243,7 @@ public class StatementExecutor {
 			
 			PreparedStatement ps = c.prepareCall(qs);
 						
-			AssignmentVisitor av = new AssignmentVisitor(valueAssignerFactory, ps);
-			statement.traverse(null, av);
+			preprocess(statement, ps);
 			
 			int uc = -1;
 			
