@@ -49,11 +49,17 @@ public class StatementExecutor {
 			
 	private ValueAssignerFactory valueAssignerFactory = null; 
 	private ValueExtractorFactory valueExtractorFactory = null;
+	private int fetchSize;
 	
 	public StatementExecutor(PersistenceContext<?> persistenceContext) {
+		this(persistenceContext, 0);
+	}
+	
+	public StatementExecutor(PersistenceContext<?> persistenceContext, int fetchSize) {
 		super();
+		this.fetchSize = fetchSize;
 		this.valueAssignerFactory = persistenceContext.getValueAssignerFactory();
-		this.valueExtractorFactory = persistenceContext.getValueExtractorFactory();
+		this.valueExtractorFactory = persistenceContext.getValueExtractorFactory();		
 	}
 
 	public DataObject fetchFirst(SelectStatement statement, Connection c) throws SQLException, QueryException {
@@ -87,6 +93,8 @@ public class StatementExecutor {
 		
 		ps = c.prepareStatement(qs, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		
+		ps.setFetchSize(this.fetchSize);
+						
 		preprocess(statement, ps);
 											
 		ResultSet rs = null;
