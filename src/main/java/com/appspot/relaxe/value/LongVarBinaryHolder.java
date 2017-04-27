@@ -49,6 +49,17 @@ public class LongVarBinaryHolder
 		return new LongVarBinaryHolder(v);		
 	}
 	
+	public static LongVarBinaryHolder valueOf(byte[] v) {
+		if (v == null) {
+			return NULL_HOLDER;
+		}
+		
+		LongVarBinary bv = new LongVarBinary.Builder(v).newLongVarBinary();		
+		return new LongVarBinaryHolder(bv);		
+	}
+	
+
+	
 	public LongVarBinaryHolder(LongVarBinary value) {
 		this.value = value;
 	}

@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -45,7 +46,7 @@ import com.appspot.relaxe.value.ValueHolder;
 public abstract class StatementExecutorTest<I extends Implementation<I>> 
 	extends DBMetaTestCase<I> {	
 	
-	public void testFetch(Table table) throws SQLException, QueryException, EntityException, ClassNotFoundException {
+	public void testFetch(Table table) throws SQLException, QueryException, EntityException, IOException, ClassNotFoundException {
 		TestContext<I> tc = getTestContext(null);		
 		Connection c = getConnection();
 				

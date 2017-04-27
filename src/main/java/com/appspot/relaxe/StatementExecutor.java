@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -62,10 +63,10 @@ public class StatementExecutor {
 		this.valueExtractorFactory = persistenceContext.getValueExtractorFactory();		
 	}
 
-	public DataObject fetchFirst(SelectStatement statement, Connection c) throws SQLException, QueryException {
+	public DataObject fetchFirst(SelectStatement statement, Connection c) throws SQLException, QueryException, IOException {
 		MutableDataObjectProcessor p = new MutableDataObjectProcessor(valueExtractorFactory, statement) {
 			@Override
-			public void process(ResultSet rs, long ordinal) throws QueryException {			
+			public void process(ResultSet rs, long ordinal) throws QueryException, SQLException, IOException {			
 				super.process(rs, ordinal);
 			}
 		};
@@ -75,7 +76,7 @@ public class StatementExecutor {
 	}
 	
 	public QueryTime executeSelect(Statement statement, Connection c, ResultSetProcessor rp)
-			throws SQLException, QueryException {
+			throws SQLException, QueryException, IOException {
 
 	    QueryTime qt = null;
 	    
@@ -84,8 +85,10 @@ public class StatementExecutor {
 		String qs = statement.generate();
 		long elapsed = System.currentTimeMillis() - start;
 		
-		logger().info("statement.generate(): {} ms", elapsed);
-		logger().info("statement: {}", qs);
+		if (logger.isInfoEnabled()) {
+			logger.info("statement.generate(): {} ms", elapsed);
+			logger.info("statement: {}", qs);
+		}
 		
 		rp.prepare();
 		
@@ -94,7 +97,7 @@ public class StatementExecutor {
 		ps = c.prepareStatement(qs, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		
 		ps.setFetchSize(this.fetchSize);
-						
+								
 		preprocess(statement, ps);
 											
 		ResultSet rs = null;
@@ -106,7 +109,9 @@ public class StatementExecutor {
 			
 			final long f = System.currentTimeMillis();
 			
-			logger().info("ps.executeQuery(): {}ms : {}", (f - s), ps.toString());
+			if (logger.isInfoEnabled()) {
+				logger.info("ps.executeQuery(): {}ms : {}", (f - s), ps.toString());
+			}
 			
 			apply(rp, rs);
 			
@@ -142,9 +147,10 @@ public class StatementExecutor {
 			String qs = statement.generate();
 			long elapsed = System.currentTimeMillis() - start;
 			
-			logger().info("generate(): " + elapsed + "ms");
-			
-			logger().info("execute: qs=" + qs);
+			if (logger.isInfoEnabled()) {
+				logger.info("generate(): {} ms", elapsed);			
+				logger.info("execute: qs={}", qs);
+			}
 			
 			PreparedStatement ps = null;
 			Name name = statement.getName();
@@ -165,8 +171,8 @@ public class StatementExecutor {
 			final long s = System.currentTimeMillis();
 			int updated = ps.executeUpdate();
 			final long u = System.currentTimeMillis();
-			
-			logger().info("executeUpdate(): " + (u - s) + "ms");
+						
+			logger.info("executeUpdate(): {}ms", (u - s));
 			
 			qt = new QueryTime(u - s);				
 				
@@ -213,7 +219,7 @@ public class StatementExecutor {
 	}
 	
 	public QueryTime execute(Statement statement, Connection c, QueryProcessor qp)
-		throws SQLException, QueryException {
+		throws SQLException, QueryException, IOException {
 		
 		QueryTime qt = null;
 				
@@ -240,7 +246,7 @@ public class StatementExecutor {
 	}
 
 	private QueryTime executeCall(Statement statement, Connection c, QueryProcessor qp) 
-		throws SQLException, QueryException {
+		throws QueryException, SQLException, IOException {
 	    
 		QueryTime qt = null;
 	    	    
@@ -293,7 +299,7 @@ public class StatementExecutor {
 	}
 
 	public void apply(ResultSetProcessor qp, ResultSet rs) 
-			throws QueryException, SQLException {
+			throws QueryException, SQLException, IOException {
 		
 		try {		
 			qp.startResultSet(rs.getMetaData());
@@ -318,12 +324,8 @@ public class StatementExecutor {
 				rs.close();
 			}
 			catch (SQLException e) {
-				logger().warn(e.getMessage());
+				logger.warn(e.getMessage());
 			}
 		}
-	}
-	
-	public static Logger logger() {
-		return StatementExecutor.logger;
-	}
+	}	
 }

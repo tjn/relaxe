@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe.exec;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -32,14 +33,14 @@ public interface ResultSetProcessor
 	extends ResultProcessor
 {
 	public void process(ResultSet rs, long ordinal) 
-		throws QueryException, SQLException;
+		throws QueryException, SQLException, IOException;
 	
 	public void abort(Exception e)
-		throws QueryException, SQLException;
+		throws QueryException, SQLException, IOException;
 	
 	public void startResultSet(ResultSetMetaData m) 
-		throws QueryException, SQLException;
+		throws QueryException, SQLException, IOException;
 	
 	public void endResultSet()
-		throws QueryException, SQLException;
+		throws QueryException, SQLException, IOException;
 }

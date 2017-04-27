@@ -24,6 +24,7 @@ package com.appspot.relaxe;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -63,12 +64,17 @@ import com.appspot.relaxe.ent.UnificationContext;
 import com.appspot.relaxe.ent.query.EntityQueryExpressionBuilder;
 import com.appspot.relaxe.ent.value.HasInteger;
 import com.appspot.relaxe.ent.value.IntegerAttribute;
+import com.appspot.relaxe.expr.ColumnReference;
 import com.appspot.relaxe.expr.DeleteStatement;
+import com.appspot.relaxe.expr.ImmutableValueParameter;
+import com.appspot.relaxe.expr.Predicate;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.TableReference;
 import com.appspot.relaxe.expr.ValueExpression;
+import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.log.DefaultLogger;
 import com.appspot.relaxe.meta.BaseTable;
+import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.query.QueryResult;
 import com.appspot.relaxe.rdbms.ConnectionManager;
 import com.appspot.relaxe.rdbms.DefaultConnectionManager;
@@ -85,8 +91,10 @@ import com.appspot.relaxe.service.StatementSession;
 import com.appspot.relaxe.service.UpdateReceiver;
 import com.appspot.relaxe.types.AbstractValueType;
 import com.appspot.relaxe.types.ReferenceType;
+import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.IntegerHolder;
 import com.appspot.relaxe.value.ReferenceHolder;
+import com.appspot.relaxe.value.ValueHolder;
 
 
 public abstract class AbstractUnitTest<I extends Implementation<I>>
@@ -728,14 +736,15 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	}
 	
 
-
-	public int deleteAll(BaseTable table) throws IOException, DataAccessException {
-		
+	public int deleteAll(DataAccessSession das, BaseTable table) throws IOException, DataAccessException {
 		TableReference tref = new TableReference(table);
+		return delete(das, tref, null);
+	}
+
+	public int delete(DataAccessSession das, TableReference tref, Predicate p) throws IOException, DataAccessException {
 				
-		DataAccessSession das = newSession();		
 		StatementSession ss = das.asStatementSession();
-		DeleteStatement ds = new DeleteStatement(tref, null);
+		DeleteStatement ds = new DeleteStatement(tref, p);
 		
 		UpdateCounter uc = new UpdateCounter();
 		ss.executeUpdate(ds, uc);
@@ -743,6 +752,19 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	}
 	
 	
+	protected <A extends AttributeName, R extends Reference, T extends ReferenceType<A, R, T, E, B, H, F, M>, E extends Entity<A, R, T, E, B, H, F, M>, B extends MutableEntity<A, R, T, E, B, H, F, M>, H extends ReferenceHolder<A, R, T, E, H, M>, F extends EntityFactory<E, B, H, M, F>, M extends EntityMetaData<A, R, T, E, B, H, F, M>, V extends Serializable, VT extends ValueType<VT>, VH extends ValueHolder<V, VT, VH>> void delete(
+			DataAccessSession das, T type, A attribute, VH vh) throws IOException, DataAccessException {
+				
+				M md = type.getMetaData();
+				BaseTable table = md.getBaseTable();									
+				TableReference tref = new TableReference(table);
+				Column col = md.getColumn(attribute);			
+				ImmutableValueParameter<?, ? ,?> vp = new ImmutableValueParameter<V, VT, VH>(col, vh);												
+				Predicate p = Comparison.eq(new ColumnReference(tref, col), vp);			
+				delete(das, tref, p);
+			}
+
+
 	private static class UpdateCounter 
 		implements UpdateReceiver {
 		

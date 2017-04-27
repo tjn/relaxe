@@ -175,11 +175,19 @@ public class DefaultValueExtractorFactory implements ValueExtractorFactory {
 	public IntervalExtractor.YearMonth createYearMonthIntervalExtractor(int col) {
 		return new SQLIntervalExtractor.YearMonth(col);
 	}
+	
+
+	@Override
+	public ByteArrayExtractor createByteArrayExtractor(int col) {
+		return new ByteArrayExtractor(col);
+	}
 
 	private static Logger logger() {
 		return DefaultValueExtractorFactory.logger;
 	}
 
+
+	
 
 //		<V extends Serializable, P extends AbstractPrimitiveType<P>, H extends AbstractPrimitiveHolder<V, P>>
 //		ValueExtractor<V, P, H> createExtractor2(ResultSetMetaData meta, int col, P type) 

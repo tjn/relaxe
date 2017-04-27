@@ -1,7 +1,5 @@
 package com.appspot.relaxe;
 
-import java.io.InputStream;
-
 public interface AssignContext
 	extends InputStreamSource {
 		

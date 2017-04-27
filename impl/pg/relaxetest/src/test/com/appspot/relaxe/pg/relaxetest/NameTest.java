@@ -84,11 +84,15 @@ public class NameTest
 	
 	
 	public void testInsert() throws IOException, DataAccessException, EntityException {
-		deleteAll(Subobjref.Type.TYPE.getMetaData().getBaseTable());
-		deleteAll(Subobj.Type.TYPE.getMetaData().getBaseTable());
-		deleteAll(Obj.Type.TYPE.getMetaData().getBaseTable());
 		
-		ClosableDataAccessSession das = newSession();		
+		
+		ClosableDataAccessSession das = newSession();
+		
+		deleteAll(das, Subobjref.Type.TYPE.getMetaData().getBaseTable());
+		deleteAll(das, Subobj.Type.TYPE.getMetaData().getBaseTable());
+		deleteAll(das, Obj.Type.TYPE.getMetaData().getBaseTable());
+		
+		das.commit();
 		
 		EntitySession es = das.asEntitySession();
 				

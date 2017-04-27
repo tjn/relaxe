@@ -1,8 +1,6 @@
 package com.appspot.relaxe.service;
 
 import java.io.InputStream;
-import java.io.OutputStream;
-
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityException;

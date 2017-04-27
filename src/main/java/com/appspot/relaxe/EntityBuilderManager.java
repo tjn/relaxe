@@ -22,6 +22,8 @@
  */
 package com.appspot.relaxe;
 
+import java.io.IOException;
+
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.Entity;
 import com.appspot.relaxe.ent.EntityBuildContext;
@@ -93,7 +95,8 @@ public class EntityBuilderManager<
 	}
 	
 	@Override
-	protected void put(MutableEntityDataObject<E> o) {
+	protected void put(MutableEntityDataObject<E> o)
+		throws QueryException, IOException {
 		H result = rootBuilder.read(o);
 		o.setRoot(result.value());
 		process(o);
@@ -108,7 +111,8 @@ public class EntityBuilderManager<
 	 *  
 	 * @param e
 	 */
-	protected void process(EntityDataObject<E> e) {		
+	protected void process(EntityDataObject<E> e)
+		throws QueryException, IOException {		
 	}
 
 	@Override

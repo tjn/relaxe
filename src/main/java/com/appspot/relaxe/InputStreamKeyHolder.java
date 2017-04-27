@@ -1,12 +1,8 @@
 package com.appspot.relaxe;
 
-import java.io.InputStream;
-
 import com.appspot.relaxe.types.BlobType;
-import com.appspot.relaxe.types.IntegerType;
 import com.appspot.relaxe.types.ValueType;
 import com.appspot.relaxe.value.AbstractValueHolder;
-import com.appspot.relaxe.value.IntegerHolder;
 
 public class InputStreamKeyHolder
 	extends AbstractValueHolder<InputStreamKey, BlobType, InputStreamKeyHolder>{

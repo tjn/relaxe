@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -64,7 +65,8 @@ public class QueryExecutor {
 		this.persistenceContext = persistenceContext;
 	}
 	
-	public DataObjectQueryResult<DataObject> execute(QueryExpression qe, FetchOptions opts, Connection c) throws QueryException, SQLException {
+	public DataObjectQueryResult<DataObject> execute(QueryExpression qe, FetchOptions opts, Connection c) 
+		throws QueryException, SQLException, IOException {
 		
 		PersistenceContext<?> pc = getPersistenceContext();
 		
@@ -90,7 +92,7 @@ public class QueryExecutor {
 	
 
 	public SliceStatement createStatement(QueryExpression qe, FetchOptions opts, Connection c) 
-		throws QueryException, SQLException {
+		throws QueryException, SQLException, IOException {
 		
 		PersistenceContext<?> pc = getPersistenceContext();	
 		StatementExecutor sx = new StatementExecutor(pc);

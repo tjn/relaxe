@@ -22,6 +22,8 @@
  */
 package com.appspot.relaxe.rdbms;
 
+import java.io.IOException;
+
 import com.appspot.relaxe.exec.QueryProcessor;
 import com.appspot.relaxe.exec.ResultSetProcessor;
 import com.appspot.relaxe.exec.UpdateProcessor;
@@ -33,10 +35,10 @@ import com.appspot.relaxe.query.QueryException;
 public interface StatementExecutionSession {
 
 	void execute(Statement statement, QueryProcessor qp)
-			throws QueryException;
+			throws QueryException, IOException;
 	
 	void executeSelect(SelectStatement statement, ResultSetProcessor qp)
-			throws QueryException;	
+			throws QueryException, IOException;	
 	
 	void executeUpdate(SQLDataChangeStatement statement, UpdateProcessor qp)
 			throws QueryException;

@@ -24,6 +24,7 @@ package com.appspot.relaxe.exec;
 
 
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -48,13 +49,13 @@ public class QueryFilter
 
 	@Override
 	public void abort(Exception e) 
-		throws QueryException, SQLException {
+		throws QueryException, SQLException, IOException {
 		this.inner.abort(e);
 	}
 
 
 	@Override
-	public void endResultSet() throws QueryException, SQLException {
+	public void endResultSet() throws QueryException, SQLException, IOException {
 		this.inner.endResultSet();		
 	}
 
@@ -73,13 +74,13 @@ public class QueryFilter
 
 
 	@Override
-	public void process(ResultSet rs, long ordinal) throws QueryException, SQLException {
+	public void process(ResultSet rs, long ordinal) throws QueryException, SQLException, IOException {
 		this.inner.process(rs, ordinal);		
 	}
 
 
 	@Override
-	public void startResultSet(ResultSetMetaData m) throws QueryException, SQLException {
+	public void startResultSet(ResultSetMetaData m) throws QueryException, SQLException, IOException {
 		this.inner.startResultSet(m);
 		
 	}

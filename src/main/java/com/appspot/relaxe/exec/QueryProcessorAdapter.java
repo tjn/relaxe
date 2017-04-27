@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe.exec;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -42,7 +43,7 @@ public class QueryProcessorAdapter
 
 	@Override
 	public void process(ResultSet rs, long ordinal)
-			throws QueryException, SQLException {
+		throws QueryException, SQLException, IOException {
 	}
 
 	@Override
@@ -61,7 +62,7 @@ public class QueryProcessorAdapter
 
 	@Override
 	public void startResultSet(ResultSetMetaData m) 
-			throws QueryException, SQLException {
+			throws QueryException, SQLException, IOException {
 	}
 
 	@Override

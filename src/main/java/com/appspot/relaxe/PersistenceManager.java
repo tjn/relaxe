@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -458,7 +459,6 @@ public class PersistenceManager<
 		EntityQueryExecutor<A, R, T, E, B, H, F, M, PMElement> ee = 
 				new EntityQueryExecutor<A, R, T, E, B, H, F, M, PMElement>(getPersistenceContext(), getUnificationContext());
 		
-		
 		PMElement pe = qe.self();    		
 		
 		EntityQuery.Builder<A, R, T, E, B, H, F, M, PMElement> builder = new DefaultEntityQuery.Builder<A, R, T, E, B, H, F, M, PMElement>(pe);
@@ -479,14 +479,19 @@ public class PersistenceManager<
 		
 		EntityQuery<A, R, T, E, B, H, F, M, PMElement> query = builder.newQuery();
 		
-		EntityQueryResult<A, R, T, E, B, H, F, M, PMElement> er = ee.execute(query, null, c);
-		QueryResult<EntityDataObject<E>> qr = er.getContent();    		
-		List<? extends EntityDataObject<E>> cl = qr.getContent();
-		logger().debug("merge: cl.size()=" + cl.size());
-		
-		stored = cl.isEmpty() ? null : cl.get(0).getRoot(); 
-    	
-    	return stored;
+		try {		
+			EntityQueryResult<A, R, T, E, B, H, F, M, PMElement> er = ee.execute(query, null, c);
+			QueryResult<EntityDataObject<E>> qr = er.getContent();    		
+			List<? extends EntityDataObject<E>> cl = qr.getContent();
+			logger().debug("merge: cl.size()=" + cl.size());
+			
+			stored = cl.isEmpty() ? null : cl.get(0).getRoot(); 
+	    	
+	    	return stored;
+		}
+		catch (IOException ioe) {			
+			throw new EntityException(ioe.getMessage(), ioe);
+		}
     }
     
     

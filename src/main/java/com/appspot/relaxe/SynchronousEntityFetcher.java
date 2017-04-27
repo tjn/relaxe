@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -76,6 +77,9 @@ public class SynchronousEntityFetcher<
 		catch (QueryException e) {
 			errorReceiver.receive(e);
 		} 
+		catch (IOException e) {
+			errorReceiver.receive(e);
+		}
 		catch (EntityException e) {
 			errorReceiver.receive(e);
 		}

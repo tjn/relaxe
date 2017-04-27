@@ -25,6 +25,7 @@ package com.appspot.relaxe.ent.query;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -85,6 +86,8 @@ public class EntityQueryExpressionBuilder<
 		
 	private EntityQueryContext parent;
 	
+	private List<EntityQueryColumn<?, ?, ?, ?, ?, ?, ?, ?, ?>> columnList;
+	
 	private static final class Entry {				
 		private Map<ForeignKey, TableReference> referenceMap;
 		
@@ -99,7 +102,7 @@ public class EntityQueryExpressionBuilder<
 
 			return referenceMap;
 		}
-	}	
+	}
 	
 	public EntityQueryExpressionBuilder(EntityQuery<A, R, T, E, B, H, F, M, RE> query) {
 		this(null, query);
@@ -163,6 +166,8 @@ public class EntityQueryExpressionBuilder<
 
 	private void addAttributes(Select.Builder selectBuilder) {
 		int cc = 0;
+		
+		this.columnList = new ArrayList<EntityQueryColumn<?, ?, ?, ?, ?, ?, ?, ?, ?>>();
 		
 		for (Map.Entry<EntityQueryElement<?, ?, ?, ?, ?, ?, ?, ?, ?>, TableReference> e : this.tableReferenceMap.entrySet()) {
 			int nc = addAttributes(e.getKey(), e.getValue(), selectBuilder, cc);
@@ -342,8 +347,11 @@ public class EntityQueryExpressionBuilder<
 				Column col = meta.getColumn(xa);
 				ColumnReference cref = new ColumnReference(tref, col);
 				added++;
+				
+				int ordinal = column + added;
+				this.columnList.add(new EntityQueryColumn<XA, XR, XT, XE, XB, XH, XF, XM, XRE>(element.self(), xa, ordinal));
 								
-				om.put(Integer.valueOf(column + added), tref);
+				om.put(Integer.valueOf(ordinal), tref);
 				selectBuilder.add(cref);
 			}
 		}
@@ -373,6 +381,37 @@ public class EntityQueryExpressionBuilder<
 		}
 		
 		return tref;
+	}
+	
+	public<
+		XA extends AttributeName,
+		XR extends Reference,
+		XT extends ReferenceType<XA, XR, XT, XE, XB, XH, XF, XM>,
+		XE extends Entity<XA, XR, XT, XE, XB, XH, XF, XM>,
+		XB extends MutableEntity<XA, XR, XT, XE, XB, XH, XF, XM>,
+		XH extends ReferenceHolder<XA, XR, XT, XE, XH, XM>,
+		XF extends EntityFactory<XE, XB, XH, XM, XF>,
+		XM extends EntityMetaData<XA, XR, XT, XE, XB, XH, XF, XM>,
+		XRE extends EntityQueryElement<XA, XR, XT, XE, XB, XH, XF, XM, XRE>
+	>
+	int findColumn(XRE element, XA attribute) {
+		if (this.columnList == null) {
+			build(false);
+		}
+		
+		int result = -1;
+		int colno = 1;
+						
+		for (EntityQueryColumn<?, ?, ?, ?, ?, ?, ?, ?, ?> qc : this.columnList) {
+			if (qc.getQueryElement().equals(element) && qc.getAttribute().equals(attribute)) {
+				result = colno;
+				break;
+			}
+			
+			colno++;
+		}
+		
+		return result;
 	}
 
 	@Override
@@ -598,9 +637,16 @@ public class EntityQueryExpressionBuilder<
 	
 		// logger().debug("processReferences - exit");
 		
-		return qref;
-	
+		return qref;	
 	}	
+	
+	public List<EntityQueryColumn<?, ?, ?, ?, ?, ?, ?, ?, ?>> getColumnList() {
+		if (this.columnList == null) {
+			build(false);
+		}
+
+		return Collections.unmodifiableList(this.columnList);
+	}
 
 	private static class JoinKey
 		implements Serializable {

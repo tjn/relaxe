@@ -1,5 +1,6 @@
 package com.appspot.relaxe.service;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 import com.appspot.relaxe.ent.AttributeName;
@@ -25,6 +26,6 @@ public interface BinaryAttributeReader {
 		F extends EntityFactory<E, B, H, M, F>,
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	>
-	long read(Entity<A, R, T, E, B, H, F, M> e, A attribute, OutputStream out) throws EntityException;
+	long read(Entity<A, R, T, E, B, H, F, M> e, A attribute, OutputStream out) throws EntityException, IOException;
 
 }

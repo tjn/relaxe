@@ -33,7 +33,6 @@ import com.appspot.relaxe.meta.Table;
 import com.appspot.relaxe.query.DataObjectQuery;
 import com.appspot.relaxe.query.QueryTime;
 import com.appspot.relaxe.rdbms.Implementation;
-import com.appspot.relaxe.rdbms.PersistenceContext;
 
 public abstract class AbstractQueryExecutorTest<I extends Implementation<I>>
 

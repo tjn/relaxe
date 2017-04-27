@@ -29,7 +29,6 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,16 +37,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.appspot.relaxe.AssignmentVisitor;
-import com.appspot.relaxe.BlobAssignment;
+import com.appspot.relaxe.BinaryAttributeQueryExecutor;
 import com.appspot.relaxe.BlobExtractor;
 import com.appspot.relaxe.BlobInputParameter;
 import com.appspot.relaxe.EntityQueryExecutor;
 import com.appspot.relaxe.InputStreamKey;
-import com.appspot.relaxe.InputStreamKeyHolder;
 import com.appspot.relaxe.PersistenceManager;
 import com.appspot.relaxe.QueryExecutor;
 import com.appspot.relaxe.StatementExecutor;
-import com.appspot.relaxe.ValueAssignerFactory;
 import com.appspot.relaxe.ent.AttributeName;
 import com.appspot.relaxe.ent.DataObject;
 import com.appspot.relaxe.ent.DataObjectQueryResult;
@@ -63,19 +60,18 @@ import com.appspot.relaxe.ent.FetchOptions;
 import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
 import com.appspot.relaxe.ent.UnificationContext;
+import com.appspot.relaxe.ent.value.LongVarBinaryAttribute;
+import com.appspot.relaxe.ent.value.HasLongVarBinary.Read;
+import com.appspot.relaxe.ent.value.HasLongVarBinary.Write;
 import com.appspot.relaxe.exec.QueryProcessor;
 import com.appspot.relaxe.exec.QueryProcessorAdapter;
 import com.appspot.relaxe.exec.ResultSetProcessor;
 import com.appspot.relaxe.exec.UpdateProcessor;
 import com.appspot.relaxe.expr.Assignment;
 import com.appspot.relaxe.expr.ColumnReference;
-import com.appspot.relaxe.expr.Element;
 import com.appspot.relaxe.expr.ElementList;
-import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.From;
-import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.ImmutableValueParameter;
-import com.appspot.relaxe.expr.Parameter;
 import com.appspot.relaxe.expr.Predicate;
 import com.appspot.relaxe.expr.QueryExpression;
 import com.appspot.relaxe.expr.SQLDataChangeStatement;
@@ -85,15 +81,12 @@ import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.TableReference;
 import com.appspot.relaxe.expr.UpdateStatement;
 import com.appspot.relaxe.expr.ValueExpression;
-import com.appspot.relaxe.expr.VisitContext;
 import com.appspot.relaxe.expr.Where;
 import com.appspot.relaxe.expr.ddl.SQLSchemaStatement;
 import com.appspot.relaxe.expr.op.AndPredicate;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.meta.Column;
-import com.appspot.relaxe.query.Query;
 import com.appspot.relaxe.query.QueryException;
-import com.appspot.relaxe.query.QueryTime;
 import com.appspot.relaxe.service.BinaryAttributeReader;
 import com.appspot.relaxe.service.BinaryAttributeWriter;
 import com.appspot.relaxe.service.ClosableDataAccessSession;
@@ -320,7 +313,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
 	> 
 	EntityQueryResult<A, R, T, E, B, H, F, M, RE> query(EntityQuery<A, R, T, E, B, H, F, M, RE> query, FetchOptions opts)
-			throws EntityException {
+		throws EntityException {
 		
 		try {
 			EntityQueryExecutor<A, R, T, E, B, H, F, M, RE> ee = 
@@ -334,7 +327,11 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		} 
 		catch (QueryException e) {
 			throw new EntityException(e.getMessage(), e);
-		}		
+		}
+		catch (IOException e) {
+			throw new EntityException(e.getMessage());
+		} 
+
 	}
 
 	@Override
@@ -347,6 +344,9 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		}
 		catch (SQLException e) {
 			throw new QueryException(e.getMessage(), e);
+		}
+		catch (IOException e) {
+			throw new QueryException(e.getMessage());
 		}
 	}
 	
@@ -429,7 +429,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		
 	@Override
 	public void executeSelect(SelectStatement statement, ResultSetProcessor qp)
-			throws QueryException {
+			throws QueryException, IOException {
 		try {
 			StatementExecutor se = new StatementExecutor(getPersistenceContext());
 			se.executeSelect(statement, getConnection(), qp);
@@ -441,7 +441,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	
 	@Override
 	public void execute(Statement statement, QueryProcessor qp)
-			throws QueryException {
+			throws QueryException, IOException {
 		try {
 			StatementExecutor se = new StatementExecutor(getPersistenceContext());
 			se.execute(statement, getConnection(), qp);
@@ -471,6 +471,9 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 				execute(statement, qp);
 			}
 			catch (QueryException e) {
+				throw new DataAccessException(e.getMessage());
+			}
+			catch (IOException e) {
 				throw new DataAccessException(e.getMessage());
 			}
 		}		
@@ -527,6 +530,32 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 	}	
 	
 	
+	private static final class ByteArrayWriter extends QueryProcessorAdapter {
+		private final OutputStream out;
+		private final int column;
+		
+		private long count;
+
+		private ByteArrayWriter(OutputStream out, int column) {
+			this.out = out;
+			this.column = column;
+		}
+
+		@Override
+		public void process(ResultSet rs, long ordinal) throws QueryException, SQLException, IOException {	
+			byte[] bytes = rs.getBytes(column);
+			
+			if (bytes != null && bytes.length > 0) {						
+				out.write(bytes);				
+				this.count += bytes.length; 
+			}					
+		}
+		
+		public long getCount() {
+			return count;
+		}
+	}
+
 	private static final class BlobExtractorAdapter extends QueryProcessorAdapter {
 		private final OutputStream out;
 		private final BlobExtractor be;
@@ -592,7 +621,7 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		F extends EntityFactory<E, B, H, M, F>,
 		M extends EntityMetaData<A, R, T, E, B, H, F, M>
 	> 
-	long read(Entity<A, R, T, E, B, H, F, M> e, A attribute, final OutputStream out) throws EntityException {
+	long read(Entity<A, R, T, E, B, H, F, M> e, A attribute, final OutputStream out) throws EntityException, IOException {
 		
 		if (out == null) {
 			throw new NullPointerException("out");
@@ -693,6 +722,55 @@ public abstract class AbstractDataAccessSession<I extends Implementation<I>>
 		}
 		
 		return 0; // TODO : real count
+	}
+	
+	
+	@Override
+	public long read(SelectStatement ss, final int column, final OutputStream out) throws QueryException, IOException {
+	
+		final PersistenceContext<I> pc = getPersistenceContext();
+		
+		StatementExecutor se = new StatementExecutor(pc, 1);
+		
+		ByteArrayWriter baw = new ByteArrayWriter(out, column);
+		
+		try {			
+			se.executeSelect(ss, getConnection(), baw);
+		}
+		catch (SQLException e) {
+			throw new QueryException(e.getMessage(), e);
+		}
+		
+		return baw.getCount();
+	}
+	
+	@Override
+	public <
+		A extends AttributeName, 
+		R extends Reference, T extends ReferenceType<A, R, T, E, B, H, F, M>, 
+		E extends Entity<A, R, T, E, B, H, F, M> & Read<A, E, B>, 
+		B extends MutableEntity<A, R, T, E, B, H, F, M> & Write<A, E, B>, 
+		H extends ReferenceHolder<A, R, T, E, H, M>, F extends EntityFactory<E, B, H, M, F>, 
+		M extends EntityMetaData<A, R, T, E, B, H, F, M>, 
+		RE extends EntityQueryElement<A, R, T, E, B, H, F, M, RE>
+	> 
+	long read(EntityQuery<A, R, T, E, B, H, F, M, RE> query, LongVarBinaryAttribute<A, E, B> attr, final OutputStream out)
+			throws QueryException, IOException {
+		
+		try {			
+			BinaryAttributeQueryExecutor<A, R, T, E, B, H, F, M, RE> ee =
+					new BinaryAttributeQueryExecutor<A, R, T, E, B, H, F, M, RE>(getPersistenceContext(), getUnificationContext());
+					
+			long nread = ee.readAll(query, attr, out, getConnection());
+			
+			return nread;
+		}
+		catch (SQLException e) {
+			throw new QueryException(e.getMessage());
+		}
+		catch (EntityException e) {
+			throw new QueryException(e.getMessage());
+		}
 	}
 
 	private Predicate getPKPredicate(TableReference tref, Entity<?, ?, ?, ?, ?, ?, ?, ?> pe)

@@ -22,6 +22,7 @@
  */
 package com.appspot.relaxe;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class EntityQueryExecutor<
 	}
 
 	public EntityQueryResult<A, R, T, E, B, H, F, M, RE> execute(EntityQuery<A, R, T, E, B, H, F, M, RE> query, FetchOptions opts, Connection c) 
-		throws SQLException, QueryException, EntityException {
+		throws SQLException, QueryException, EntityException, IOException {
 		
 		logger().debug("execute: query: " + query);
 		
@@ -93,7 +94,8 @@ public class EntityQueryExecutor<
 		logger().debug("execute: create reader...");
 		
 		EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, RE> eqb = newBuilder(query);
-		QueryExpression qe = eqb.getQueryExpression();		
+		
+		QueryExpression qe = newQueryExpression(eqb);		
 		
 		EntityReader<?, ?, ?, ?, ?, ?, ?, ?, ?> eb = 
 				new EntityReader<A, R, T, E, B, H, F, M, RE>(pc.getValueExtractorFactory(), eqb, content, this.unificationContext);
@@ -121,6 +123,17 @@ public class EntityQueryExecutor<
 		return eqres;
 	}
 	
+	public QueryExpression newQueryExpression(EntityQuery<A, R, T, E, B, H, F, M, RE> query) throws QueryException, EntityException {	
+		EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, RE> eqb = newBuilder(query);
+		return eqb.getQueryExpression();
+		
+	}
+
+	protected QueryExpression newQueryExpression(EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, RE> eqb) {
+		QueryExpression qe = eqb.getQueryExpression();
+		return qe;
+	}
+	
 	
 	public EntityQueryExpressionBuilder<A, R, T, E, B, H, F, M, RE> newBuilder(EntityQuery<A, R, T, E, B, H, F, M, RE> query) 
 			throws QueryException, EntityException {
@@ -129,6 +142,12 @@ public class EntityQueryExecutor<
 				
 		return xb;
 	}
+	
+	
+	
+	
+	
+	
 
 //	private SelectStatement createCountQuery(SelectStatement qs) {
 //		TableExpression te = qs.getTableExpr();			
@@ -253,7 +272,7 @@ public class EntityQueryExecutor<
 		}
 	}
 	
-	private QueryExecutor getExecutor() {
+	protected QueryExecutor getExecutor() {
 		return executor;
 	}
 	

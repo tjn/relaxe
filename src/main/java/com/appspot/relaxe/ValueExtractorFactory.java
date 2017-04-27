@@ -53,4 +53,6 @@ public interface ValueExtractorFactory {
 	
 	IntervalExtractor.YearMonth createYearMonthIntervalExtractor(int col);
 	IntervalExtractor.DayTime createDayTimeIntervalExtractor(int col);
+	
+	ByteArrayExtractor createByteArrayExtractor(int col);
 }

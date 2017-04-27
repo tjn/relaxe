@@ -22,15 +22,8 @@
  */
 package com.appspot.relaxe;
 
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Types;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
-import com.appspot.relaxe.meta.DataType;
 
 
 public class DefaultBlobExtractorFactory implements BlobExtractorFactory {

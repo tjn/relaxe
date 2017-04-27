@@ -23,6 +23,7 @@
 package com.appspot.relaxe.meta.impl.pg;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -43,7 +44,7 @@ public class PGCatalogFactoryTest
 //	private PGImplementation implementation = new PGImplementation();
 
     public void testGetCatalogNameFromSchemas() 
-        throws SQLException, QueryException {
+        throws QueryException, SQLException, IOException {
         assertNotNull(getEnvironmentContext());
                 
         DatabaseMetaData meta = meta();                

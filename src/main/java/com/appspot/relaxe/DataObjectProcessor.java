@@ -25,6 +25,7 @@
  */
 package com.appspot.relaxe;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -62,7 +63,7 @@ public abstract class DataObjectProcessor<O extends MutableDataObject>
 
 	
 	@Override
-	public void startResultSet(ResultSetMetaData m) throws QueryException, SQLException {
+	public void startResultSet(ResultSetMetaData m) throws QueryException, SQLException, IOException {
 		ValueExtractorFactory vef = this.valueExtractorFactory;
 		
 		int cc = m.getColumnCount();
@@ -90,13 +91,13 @@ public abstract class DataObjectProcessor<O extends MutableDataObject>
 	}
 			
 	@Override
-	public void process(ResultSet rs, long ordinal) throws QueryException {
+	public void process(ResultSet rs, long ordinal) throws QueryException, SQLException, IOException {
 		
 		
 		ValueExtractor<?, ?, ?> ve = null;
 		
 		try {
-			O o = get();			
+			O o = get();
 			
 			int count = this.extractors.length;
 			
@@ -126,7 +127,8 @@ public abstract class DataObjectProcessor<O extends MutableDataObject>
 		}
 	}
 
-	protected void put(O o) {
+	protected void put(O o)
+		throws QueryException, IOException {
 	}
 	
 	protected abstract O get();
