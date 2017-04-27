@@ -29,6 +29,7 @@ import com.appspot.relaxe.env.mysql.MySQLSyntax;
 import com.appspot.relaxe.expr.SQLSyntax;
 import com.appspot.relaxe.rdbms.CatalogFactory;
 import com.appspot.relaxe.rdbms.DefaultImplementation;
+import com.appspot.relaxe.rdbms.PersistenceContext;
 
 /**
  * @author Administrator
@@ -96,7 +97,11 @@ public class MySQLImplementation
 		
 		return cfg;
 	}
-	
+
+	@Override
+	public PersistenceContext<MySQLImplementation> newDefaultPersistenceContext() {
+		return new MySQLPersistenceContext(this);
+	}
 	
 	
 }

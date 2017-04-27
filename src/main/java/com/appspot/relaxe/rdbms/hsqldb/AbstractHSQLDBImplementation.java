@@ -28,6 +28,9 @@ import com.appspot.relaxe.env.hsqldb.HSQLDBSyntax;
 import com.appspot.relaxe.expr.SQLSyntax;
 import com.appspot.relaxe.rdbms.CatalogFactory;
 import com.appspot.relaxe.rdbms.DefaultImplementation;
+import com.appspot.relaxe.rdbms.PersistenceContext;
+import com.appspot.relaxe.rdbms.pg.PGImplementation;
+import com.appspot.relaxe.rdbms.pg.PGPersistenceContext;
 
 public abstract class AbstractHSQLDBImplementation
 	extends DefaultImplementation<HSQLDBImplementation>
@@ -126,5 +129,11 @@ public abstract class AbstractHSQLDBImplementation
 		
 		return null;
 	}
+	
+	@Override
+	public PersistenceContext<HSQLDBImplementation> newDefaultPersistenceContext() {
+		return new HSQLDBPersistenceContext(this);
+	}
+
 	
 }

@@ -22,33 +22,23 @@
  */
 package com.appspot.relaxe.feature;
 
-import java.util.Collections;
-import java.util.Set;
+import com.appspot.relaxe.expr.ddl.types.SQLTimestampType;
+import com.appspot.relaxe.meta.DataTypeMap;
 
-public class MetaDataFeature implements Feature {
-
-    @Override
-    public Set<Dependency> dependencies() {
-        return Collections.emptySet();
+public class Audit
+    extends AbstractFeature {
+	
+    public Audit() {
+        super(Audit.class, 0, 1);
     }
 
     @Override
-    public SQLGenerator getSQLGenerator() {
-        return null;
+    public String getName() {
+        return "Audit";
     }
 
     @Override
-    public int getVersionMajor() {
-        return 0;
+    public SQLGenerator getSQLGenerator(boolean revert) {
+        return revert ? null : new ColumnGenerator("created_at", SQLTimestampType.get());
     }
-
-    @Override
-    public int getVersionMinor() {
-        return 1;
-    }
-
-    @Override
-    public String getName() {        
-        return "EntityMetaData feature";
-    }
-}
+ }

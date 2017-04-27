@@ -37,6 +37,7 @@ import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.rdbms.CatalogFactory;
 import com.appspot.relaxe.rdbms.DefaultResolver;
 import com.appspot.relaxe.rdbms.Implementation;
+import com.appspot.relaxe.rdbms.PersistenceContext;
 import com.appspot.relaxe.cli.Parameter;
 import com.appspot.relaxe.cli.CommandLine;
 import com.appspot.relaxe.cli.Option;
@@ -60,6 +61,13 @@ public abstract class CatalogTool {
             "Fully qualified name of the class which implements '" + 
             Implementation.class.getName() + "'. " +
            "Implementation must have a no-arg public constructor.");
+
+    
+    public static final Option OPTION_PERSISTENCE_CONTEXT = 
+            new SimpleOption("persistence-context-type", "p", new Parameter(false),
+                "Fully qualified name of the class which implements '" + 
+                PersistenceContext.class.getName() + "'. " +
+               "Implementation must have a no-arg public constructor.");
     
     public static final Option OPTION_JDBC_URL = 
         new SimpleOption("jdbc-url", "u", new Parameter(false));
@@ -78,7 +86,8 @@ public abstract class CatalogTool {
     private Catalog catalog;
     private boolean verbose;
         
-    private Implementation<?> implementation;
+    // private Implementation<?> implementation;
+    private PersistenceContext<?> persistenceContext;
     
     private String jdbcURL;
     private Properties jdbcConfig;
@@ -200,19 +209,50 @@ public abstract class CatalogTool {
             setVerbose(cl.has(OPTION_VERBOSE));                        
             
             String jdbcURL = cl.value(require(cl, OPTION_JDBC_URL));
-            String environmentTypeName = cl.value(OPTION_ENV);
             
-            Implementation<?> env = null;
+            String pctype = cl.value(OPTION_PERSISTENCE_CONTEXT);
+            String impltype = cl.value(OPTION_ENV);
+                        
+            PersistenceContext<?> pctx = null;
             
-            if (environmentTypeName != null) {
-                Class<?> environmentType = Class.forName(environmentTypeName);
-                env = (Implementation<?>) environmentType.newInstance();                
+            if (pctype != null) {                
+                Class<?> ctxtype = Class.forName(pctype);
+                pctx = (PersistenceContext<?>) ctxtype.newInstance();                
             }
+            
+            Implementation<?> env = (pctx == null) ? null : pctx.getImplementation();
+            
+            if (env == null) {                        	            	            
+	            if (impltype != null) {
+	                Class<?> environmentType = Class.forName(impltype);
+	                env = (Implementation<?>) environmentType.newInstance();                
+	            }
+            }
+            
+            
+            if (env == null) {
+            	DefaultResolver ir = new DefaultResolver();
+           	 	env = ir.resolve(jdbcURL);
+
+	            if (env == null) {
+	                throw new ToolConfigurationException(
+	                        "Implementation is not set and " +
+	                        "can not be determined from jdbc-url: " + jdbcURL);
+	            }
+            }
+            
+            
+
+            
+            
 
             String jdbcDriverConfigPath = cl.value(require(cl, OPTION_JDBC_CONFIG));            
             Properties jdbcConfig = IOHelper.doLoad(jdbcDriverConfigPath);
             
-            init(jdbcURL, jdbcConfig, env);
+                        
+            pctx = (pctx == null) ? env.newDefaultPersistenceContext() : pctx;            
+            
+            init(jdbcURL, jdbcConfig, pctx);
             
         }
         catch (ClassNotFoundException e) {
@@ -233,7 +273,7 @@ public abstract class CatalogTool {
         }
      }
     
-     public void init(String jdbcURL, Properties jdbcConfig, Implementation<?> impl)
+     public void init(String jdbcURL, Properties jdbcConfig, PersistenceContext<?> pctx)
          throws ToolConfigurationException, ToolException {
 
          try {
@@ -244,17 +284,11 @@ public abstract class CatalogTool {
              if (jdbcConfig == null) {
                 throw new NullPointerException("'jdbcConfig' must not be null");
              }
+             
+             if (pctx == null) {
+				throw new NullPointerException("pctx");
+			}
                                        
-             if (impl == null) {
-            	 DefaultResolver ir = new DefaultResolver();
-            	 impl = ir.resolve(jdbcURL);
-
-                 if (impl == null) {
-                     throw new ToolConfigurationException(
-                             "Implementation is not set and " +
-                             "can not be determined from jdbc-url: " + jdbcURL);
-                 }  
-
 //            	 
 //                 if (jdbcURL.toLowerCase().startsWith("jdbc:postgresql:")) {
 //                     implementationTypeName = PGImplementation.class.getName();
@@ -273,11 +307,13 @@ public abstract class CatalogTool {
 //                 Class<?> implementationType = Class.forName(implementationTypeName);
 //                 Object io = implementationType.newInstance();                 
 //                 impl = (Implementation<?>) io;               
-             }
+//             }
              
              setJdbcURL(jdbcURL);
              setJdbcConfig(jdbcConfig);
-             setImplementation(impl);             
+             setPersistenceContext(pctx);
+             
+             Implementation<?> impl = pctx.getImplementation();
                                                   
              Class.forName(impl.defaultDriverClassName());  
              Connection c = createConnection();
@@ -385,17 +421,21 @@ public abstract class CatalogTool {
         Connection c = DriverManager.getConnection(jdbcURL, jdbcConfig);
         return c;
     }
-
+    
     public Implementation<?> getImplementation() {
-        return implementation;
+    	return getPersistenceContext().getImplementation();
     }
 
-    public void setImplementation(Implementation<?> environment) {
-    	if (environment == null) {
+    public PersistenceContext<?> getPersistenceContext() {
+        return this.persistenceContext;
+    }
+
+    public void setPersistenceContext(PersistenceContext<?> persistenceContext) {
+    	if (persistenceContext == null) {
 			throw new NullPointerException();
 		}
     	
-        this.implementation = environment;
+        this.persistenceContext = persistenceContext;
     }
     
 

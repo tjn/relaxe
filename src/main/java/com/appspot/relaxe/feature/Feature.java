@@ -31,8 +31,11 @@ public interface Feature {
     int getVersionMajor();
     int getVersionMinor();
     
-    Set<Dependency> dependencies();    
-    SQLGenerator getSQLGenerator(); 
+    Set<Dependency> dependencies();   
     
-    // SourceGenerator getSourceGenerator();
+    SQLGenerator getSQLGenerator(boolean revert); 
+    
+        
+   
+
 }

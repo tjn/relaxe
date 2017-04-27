@@ -58,6 +58,8 @@ public interface Implementation<I extends Implementation<I>> {
 	
 	I self();
 	
+	PersistenceContext<I> newDefaultPersistenceContext();
+	
 	/**
 	 * Returns the JDBC driver properties to be used with this implementation.
 	 * 

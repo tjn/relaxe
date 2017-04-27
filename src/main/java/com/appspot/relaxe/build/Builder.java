@@ -47,10 +47,12 @@ import com.appspot.relaxe.feature.SQLGenerationException;
 import com.appspot.relaxe.map.TableMapper;
 import com.appspot.relaxe.map.AttributeTypeMap;
 import com.appspot.relaxe.meta.Catalog;
+import com.appspot.relaxe.meta.DataTypeMap;
 import com.appspot.relaxe.meta.Schema;
 import com.appspot.relaxe.query.QueryException;
 import com.appspot.relaxe.rdbms.CatalogFactory;
 import com.appspot.relaxe.rdbms.Implementation;
+import com.appspot.relaxe.rdbms.PersistenceContext;
 import com.appspot.relaxe.source.SourceGenerator;
 import com.appspot.relaxe.tools.CatalogTool;
 import com.appspot.relaxe.tools.ToolConfigurationException;
@@ -275,14 +277,20 @@ public class Builder
         
         try {        
             Connection c = getConnection();
-//            Catalog cat = getCatalog();            
             
-//            Environment env = cat.getEnvironment();            
-            Implementation<?> impl = getImplementation();
+            PersistenceContext<?> pc = getPersistenceContext();
+            Implementation<?> impl = pc.getImplementation();
+            
+            DataTypeMap tm = pc.getDataTypeMap();
+            
             
             c.setAutoCommit(false);        
-            CatalogFactory cf = impl.catalogFactory();          
-            getFeatures().installAll(c, cf, false);         
+            CatalogFactory cf = impl.catalogFactory();        
+            
+            
+            
+            
+            getFeatures().installAll(c, cf, pc, false);         
             
             Catalog cat = cf.create(c);
             
@@ -313,10 +321,6 @@ public class Builder
             logger().error(e.getMessage(), e);
             throw new ToolException(e);
         }
-        catch (Throwable e) {
-            logger().error(e.getMessage(), e);
-            throw new ToolException(e.getMessage(), e);
-        }        
         finally {
             
         }
@@ -391,7 +395,7 @@ public class Builder
     }
     
     private void generateSources(Catalog cat, File sourceRoot)
-            throws QueryException, IOException {
+            throws QueryException, IOException, ToolException {
     	
     	
         TableMapper tm = getTableMapper();       
@@ -401,7 +405,7 @@ public class Builder
         
         if (gen.check(cat, getTypeMapper(), details) > 0) {
         	logger().error(details.toString());        	
-        	throw new RuntimeException("Generation failed: " + details);        
+        	throw new ToolException("Generation failed: " + details);        
         }    	
     	
         final File sourceList = getSourceList(sourceRoot);            

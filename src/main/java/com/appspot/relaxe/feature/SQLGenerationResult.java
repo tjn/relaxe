@@ -33,14 +33,16 @@ public class SQLGenerationResult {
 
     private List<Statement> statementList;    
     
+    private List<String> warningList = new ArrayList<String>();
+    
     public void add(Statement s) {
         getStatementList().add(s);        
     }
-        
-    public List<Statement> changes() {
-        return Collections.unmodifiableList(getStatementList());
+    
+    public void add(String warning) {
+        this.warningList.add(warning);
     }
-
+        
     private List<Statement> getStatementList() {
         if (statementList == null) {
             statementList = new ArrayList<Statement>();            
@@ -56,5 +58,9 @@ public class SQLGenerationResult {
         
         return Collections.unmodifiableList(statementList);        
     }
+    
+    public List<String> getWarningList() {
+		return warningList;
+	}
     
 }

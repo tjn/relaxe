@@ -29,6 +29,7 @@ import com.appspot.relaxe.env.pg.PGSyntax;
 import com.appspot.relaxe.expr.SQLSyntax;
 import com.appspot.relaxe.rdbms.CatalogFactory;
 import com.appspot.relaxe.rdbms.DefaultImplementation;
+import com.appspot.relaxe.rdbms.PersistenceContext;
 
 public class PGImplementation
 	extends DefaultImplementation<PGImplementation> {
@@ -114,5 +115,10 @@ public class PGImplementation
 	@Override
 	public PGImplementation self() {
 		return this;
+	}
+	
+	@Override
+	public PersistenceContext<PGImplementation> newDefaultPersistenceContext() {
+		return new PGPersistenceContext(this);
 	}
 }

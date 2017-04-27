@@ -29,6 +29,7 @@ import com.appspot.relaxe.env.mariadb.MariaDBSyntax;
 import com.appspot.relaxe.expr.SQLSyntax;
 import com.appspot.relaxe.rdbms.CatalogFactory;
 import com.appspot.relaxe.rdbms.DefaultImplementation;
+import com.appspot.relaxe.rdbms.PersistenceContext;
 
 /**
  * @author Administrator
@@ -96,7 +97,11 @@ public class MariaDBImplementation
 		
 		return cfg;
 	}
-	
+
+	@Override
+	public PersistenceContext<MariaDBImplementation> newDefaultPersistenceContext() {
+		return new MariaDBPersistenceContext(this);
+	}
 	
 	
 }
