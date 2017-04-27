@@ -29,6 +29,7 @@ import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SQLKeyword;
 import com.appspot.relaxe.expr.SchemaElementName;
+import com.appspot.relaxe.expr.SchemaName;
 import com.appspot.relaxe.expr.Statement;
 import com.appspot.relaxe.expr.VisitContext;
 import com.appspot.relaxe.expr.ddl.types.SQLDataType;
@@ -55,7 +56,7 @@ public class CreateDomain
 	}
 	
 	public CreateDomain(Identifier domainName, SQLDataType baseType) {
-		this(new SchemaElementName(null, domainName), baseType);
+		this(new SchemaElementName((SchemaName) null, domainName), baseType);
 	}
 	
 	public CreateDomain(SchemaElementName domainName, SQLDataType baseType) {

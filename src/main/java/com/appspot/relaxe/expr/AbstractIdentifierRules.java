@@ -142,7 +142,7 @@ public class AbstractIdentifierRules
 		
 		switch (tokens.length) {
 		case 1:
-			return new SchemaElementName(null, toIdentifier(tokens[0]));
+			return new SchemaElementName((SchemaName) null, toIdentifier(tokens[0]));
 		case 2:
 			return new SchemaElementName(null, toIdentifier(tokens[0]), toIdentifier(tokens[1]));
 		case 3:

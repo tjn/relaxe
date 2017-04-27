@@ -50,6 +50,10 @@ public final class SchemaName
 		this(relative ? null : schema.getCatalogName(), schema.getUnqualifiedName());		
 	}
 	
+	public SchemaName(Identifier schemaName) {
+		this(null, schemaName);		
+	}
+	
 	public SchemaName(Identifier catalogName, Identifier schemaName) {
 		super();
 		

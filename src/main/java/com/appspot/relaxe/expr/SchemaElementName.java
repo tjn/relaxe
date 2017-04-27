@@ -43,6 +43,10 @@ public final class SchemaElementName
 	protected SchemaElementName() {
 	}
 	
+	public SchemaElementName(Identifier schemaName, Identifier elementName) {
+		this(null, schemaName, elementName);		
+	}
+	
 	public SchemaElementName(Identifier schemaName, SchemaElement e) {
 		this(null, schemaName, e);		
 	}
