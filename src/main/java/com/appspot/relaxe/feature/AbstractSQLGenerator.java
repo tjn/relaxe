@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.appspot.relaxe.env.Environment;
+import com.appspot.relaxe.expr.ElementList;
 import com.appspot.relaxe.expr.Identifier;
+import com.appspot.relaxe.expr.SchemaElementName;
+import com.appspot.relaxe.expr.ddl.BaseTableElement;
 import com.appspot.relaxe.expr.ddl.ColumnDataType;
 import com.appspot.relaxe.expr.ddl.ColumnDefinition;
+import com.appspot.relaxe.expr.ddl.CreateTable;
 import com.appspot.relaxe.expr.ddl.DropSchema;
 import com.appspot.relaxe.expr.ddl.DropTable;
 import com.appspot.relaxe.expr.ddl.types.SQLIntType;
@@ -66,6 +70,12 @@ public abstract class AbstractSQLGenerator
 
 	protected ColumnDefinition newColumn(Environment env, String name, ColumnDataType dataType) {
 		return new ColumnDefinition(toIdentifier(env, name), dataType);
+	}
+
+	protected CreateTable newCreateTable(SchemaElementName name, List<BaseTableElement> elements) {
+		ElementList<BaseTableElement> elementList = ElementList.newElementList(elements);				
+		CreateTable ct = new CreateTable(name, elementList);
+		return ct;
 	}
 
 }
