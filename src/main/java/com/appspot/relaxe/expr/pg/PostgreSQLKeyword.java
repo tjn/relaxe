@@ -40,6 +40,7 @@ public enum PostgreSQLKeyword
        </code>
      */
     RETURNING,
+    SERIAL
     ;
     
 
