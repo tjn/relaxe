@@ -39,7 +39,7 @@ public class JavaType {
 	protected JavaType() {	    
 	}
 	
-    protected void setName(String packageName, String unqualifiedName) {
+    private void setName(String packageName, String unqualifiedName) {
         this.packageName = packageName;									
 		this.unqualifiedName = unqualifiedName;
 		

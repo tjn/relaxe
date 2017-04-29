@@ -29,10 +29,11 @@ public interface TableMapper {
 	
 	enum Part {
 		INTERFACE,
+		TYPE,
 		LITERAL_TABLE_ENUM,
 		ABSTRACT,		
 		HOOK,		
-		IMPLEMENTATION,		
+		IMPLEMENTATION,
 		HAS,
 		HAS_KEY,
 		FACTORY,

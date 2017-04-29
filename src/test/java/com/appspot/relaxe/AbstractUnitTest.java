@@ -73,6 +73,7 @@ import com.appspot.relaxe.expr.TableReference;
 import com.appspot.relaxe.expr.ValueExpression;
 import com.appspot.relaxe.expr.op.Comparison;
 import com.appspot.relaxe.log.DefaultLogger;
+import com.appspot.relaxe.map.TableMapper;
 import com.appspot.relaxe.meta.BaseTable;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.query.QueryResult;
@@ -114,6 +115,21 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 	}
 		
 	protected abstract String implementationTag();
+	
+	public TableMapper getDefaultTableMapper(String database) {
+		return new DefaultTableMapper(getDefaultRootPackage(database), getDefaultCatalogContextPackage(database));		
+	}
+
+	public String getDefaultRootPackage(String database) {
+		String itag = implementationTag();				
+		return "com.appspot.relaxe.gen." + itag + "."  + database + ".ent";        
+	}
+
+	public String getDefaultCatalogContextPackage(String database) {
+		String itag = implementationTag();		
+		return "com.appspot.relaxe.gen." + itag + "."  + database + ".genctx";        
+	}
+
 		
 	
 	@Override

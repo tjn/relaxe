@@ -28,6 +28,7 @@ import com.appspot.relaxe.ent.EntityFactory;
 import com.appspot.relaxe.ent.EntityMetaData;
 import com.appspot.relaxe.ent.MutableEntity;
 import com.appspot.relaxe.ent.Reference;
+import com.appspot.relaxe.map.TableMapper;
 import com.appspot.relaxe.meta.Column;
 import com.appspot.relaxe.pg.AbstractPGTestCase;
 import com.appspot.relaxe.pg.pagila.PagilaPersistenceContext;
@@ -48,6 +49,10 @@ public abstract class AbstractPagilaTestCase
 	@Override
 	public String getDatabase() {
 		return "pagila";
+	}
+		
+	public TableMapper getDefaultTableMapper() {
+		return getDefaultTableMapper(getDatabase());
 	}
 
 

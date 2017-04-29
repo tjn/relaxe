@@ -14,7 +14,7 @@ public interface {{table-interface}}
         {{table-interface-qualified-name}}.MetaData
     > {{has-reference-read-list}} {{readable-attribute-container-interface-list}} {
     
-	class Type extends com.appspot.relaxe.types.ReferenceType<
+	final class Type extends com.appspot.relaxe.types.ReferenceType<
 		{{table-interface-qualified-name}}.Attribute, 
 		{{table-interface-qualified-name}}.Reference, 
 		{{table-interface-qualified-name}}.Type,
@@ -35,7 +35,8 @@ public interface {{table-interface}}
 			return this;
 		}
 		
-		public static final {{table-interface-qualified-name}}.Type TYPE = new {{table-interface-qualified-name}}.Type();
+		public static final {{table-interface-qualified-name}}.Type TYPE = new {{table-interface-qualified-name}}.Type();		
+				
 	}
 	
 	

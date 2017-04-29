@@ -56,4 +56,20 @@ public abstract class ReferenceType<
 	
 	@Override
 	public abstract T self();
+	
+	
+	@Override
+	public final boolean equals(Object obj) {
+		if (obj == null || obj == this) {
+			return (obj == this);
+		}
+		
+		return getClass().equals(obj.getClass());		
+	}
+	
+	@Override
+	public final int hashCode() {
+		return getClass().hashCode();
+	}
+	
 }

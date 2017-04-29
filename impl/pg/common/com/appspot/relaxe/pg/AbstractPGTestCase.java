@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 import com.appspot.relaxe.AbstractUnitTest;
+import com.appspot.relaxe.DefaultTableMapper;
+import com.appspot.relaxe.map.TableMapper;
 import com.appspot.relaxe.rdbms.PersistenceContext;
 import com.appspot.relaxe.rdbms.pg.PGImplementation;
 import com.appspot.relaxe.rdbms.pg.PGPersistenceContext;

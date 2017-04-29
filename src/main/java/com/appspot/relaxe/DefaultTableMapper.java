@@ -74,6 +74,11 @@ public class DefaultTableMapper
     }
     
     protected String getClassName(Table t, Part p, String name) {
+    	
+        if (p == Part.TYPE) {
+            return name + "$Type";
+        }
+        
         if (p == Part.ABSTRACT) {
             return "Abstract" + name;
         }
