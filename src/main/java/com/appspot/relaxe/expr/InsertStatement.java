@@ -34,16 +34,13 @@ public class InsertStatement
 	 */
 	private static final long serialVersionUID = 1598811041382537945L;
 
-	private Table target;
 	private ElementList<Identifier> columnNameList;
 	private TableExpression source;
 	private SchemaElementName tableName;
 	
+	
+	
 	public int getTargetColumnCount() {
-		if (columnNameList == null) {
-			return getTarget().getColumnMap().size();
-		}
-		
 		return columnNameList.size();
 	}
 	
@@ -53,10 +50,6 @@ public class InsertStatement
 	protected InsertStatement() {
 	}
 	
-//	public InsertStatement(Table target, ElementList<Identifier> columnNameList) {
-//	    this(target, columnNameList, null);	    
-//	}
-
 	private InsertStatement(Table target, ElementList<Identifier> columnNameList) {
 		super(Name.INSERT);
 		
@@ -64,7 +57,7 @@ public class InsertStatement
 			throw new NullPointerException("'target' must not be null");
 		}
 		
-		this.target = target;		
+		this.tableName = target.getName().withoutCatalog();		
 		this.columnNameList = columnNameList;
 	}
 	
@@ -106,9 +99,8 @@ public class InsertStatement
 	public void traverseContent(VisitContext vc, ElementVisitor v) {		
 		SQLKeyword.INSERT.traverse(vc, v);
 		SQLKeyword.INTO.traverse(vc, v);
-		
-						
-		getTableName().traverse(vc, v);
+								
+		this.tableName.traverse(vc, v);
 		
 		ElementList<Identifier> cl = getColumnNameList();
 		
@@ -121,24 +113,12 @@ public class InsertStatement
 		this.source.traverse(vc, v);
 	}
 
-	public Table getTarget() {
-		return target;
-	}
-
 	public TableExpression getSource() {
 		return source;
 	}
 	
-//	void add(ValueRow r) {
-//		getValues().add(r);
-//	}
-		
-	protected SchemaElementName getTableName() {
-		if (tableName == null) {
-			tableName = this.target.getName().withoutCatalog();
-		}
-
-		return tableName;
+	public SchemaElementName getTableName() {
+		return this.tableName;
 	}
 	
 	protected ElementList<Identifier> getColumnNameList() {
