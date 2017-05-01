@@ -24,6 +24,9 @@ public interface {{table-interface}}
 		{{table-interface-qualified-name}}.Factory, 
 		{{table-interface-qualified-name}}.MetaData> {
 		private static final long serialVersionUID = 1L;
+				
+		public Type() {
+		}		
 		
 		@Override
 		public {{table-interface-qualified-name}}.MetaData getMetaData() {		
