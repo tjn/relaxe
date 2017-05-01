@@ -70,15 +70,30 @@ public class DefaultTestContext<I extends Implementation<I>>
 	@Override
 	public Catalog getCatalog() throws SQLException, QueryException, ClassNotFoundException {
 		if (catalog == null) {
-			Connection c = newConnection();
-			I imp = getPersistenceContext().getImplementation();			
-			CatalogFactory cf = imp.catalogFactory();
-			this.catalog = cf.create(c);
-			c.close();
-			
+			this.catalog = newCatalog();						
 		}
 		
 		return this.catalog;
+	}
+	
+	@Override
+	public Catalog newCatalog() throws SQLException, ClassNotFoundException, QueryException {
+		Connection c = newConnection();
+		
+		try {
+			return newCatalog(c);
+		}
+		finally {
+			c.close();	 
+		}
+	}
+
+	@Override
+	public Catalog newCatalog(Connection c) throws SQLException, ClassNotFoundException, QueryException {		
+		I imp = getPersistenceContext().getImplementation();			
+		CatalogFactory cf = imp.catalogFactory();
+		Catalog catalog = cf.create(c);
+		return catalog;
 	}
 
 	@Override

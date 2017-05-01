@@ -43,6 +43,7 @@ import com.appspot.relaxe.env.Environment;
 import com.appspot.relaxe.env.IdentifierRules;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.feature.Features;
+import com.appspot.relaxe.feature.MetaData;
 import com.appspot.relaxe.feature.SQLGenerationException;
 import com.appspot.relaxe.map.TableMapper;
 import com.appspot.relaxe.map.AttributeTypeMap;
@@ -281,13 +282,16 @@ public class Builder
             PersistenceContext<?> pc = getPersistenceContext();
             Implementation<?> impl = pc.getImplementation();
             
-            DataTypeMap tm = pc.getDataTypeMap();
+//            DataTypeMap tm = pc.getDataTypeMap();
             
             
             c.setAutoCommit(false);        
-            CatalogFactory cf = impl.catalogFactory();        
             
-            
+            CatalogFactory cf = impl.catalogFactory();
+                                                
+//            MetaData md = new MetaData(getTableMapper());
+//                                    
+//            getFeatures().addFeature(md);
             
             
             getFeatures().installAll(c, cf, pc, false);         

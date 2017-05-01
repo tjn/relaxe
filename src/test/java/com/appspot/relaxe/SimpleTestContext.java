@@ -197,4 +197,14 @@ public class SimpleTestContext<I extends Implementation<I>>
 	public Properties getJdbcConfig() {
 		return (Properties) this.driverConfig.clone();
 	}
+	
+	@Override
+	public Catalog newCatalog() throws SQLException, QueryException, ClassNotFoundException {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public Catalog newCatalog(Connection c) throws SQLException, ClassNotFoundException, QueryException {
+		throw new UnsupportedOperationException();
+	}
 }

@@ -36,7 +36,10 @@ public interface TestContext<I extends Implementation<I>> {
 
     public PersistenceContext<I> getPersistenceContext();    
     public Connection newConnection() throws SQLException, ClassNotFoundException;    
-    public Catalog getCatalog() throws SQLException, QueryException, ClassNotFoundException;
+    public Catalog getCatalog() throws SQLException, QueryException, ClassNotFoundException;    
     public String getJdbcURL();
 	public Properties getJdbcConfig();
+	
+	public Catalog newCatalog() throws SQLException, QueryException, ClassNotFoundException;
+	Catalog newCatalog(Connection c) throws SQLException, ClassNotFoundException, QueryException;
 }

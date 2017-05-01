@@ -375,11 +375,14 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 		
 		try {		
 			c = newConnection();		
+			c.setAutoCommit(false);
 			st = c.createStatement();		
 			
 			logger().debug("executing: " + q);
-			int u = st.executeUpdate(q);
+			int u = st.executeUpdate(q);						
 			logger().debug("executed: " + u);
+			c.commit();
+			logger().debug("committed.");
 			return u;
 		}
 		finally {
@@ -387,6 +390,38 @@ public abstract class AbstractUnitTest<I extends Implementation<I>>
 			c = QueryHelper.doClose(c);
 		}
 	}
+	
+	protected int executeAll(Iterable<String> statements) throws Exception {
+				
+		Connection c = newConnection();
+		
+		Statement st = null;
+		
+		try {			
+			c.setAutoCommit(false);
+			
+			st = c.createStatement();
+			
+			int n = 0;
+			
+			for (String ss : statements) {			
+				logger().debug("executing: " + ss);
+				int u = st.executeUpdate(ss);						
+				logger().debug("executed: " + u);
+				n++;
+			}
+			
+			c.commit();
+			
+			logger().debug("committed.");
+			
+			return n;
+		}
+		finally {
+			st = QueryHelper.doClose(st);
+			c = QueryHelper.doClose(c);
+		}
+	}	
 	
 	
 	protected <
