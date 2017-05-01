@@ -23,6 +23,9 @@
 package com.appspot.relaxe.expr.ddl;
 
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.appspot.relaxe.expr.ElementVisitor;
 import com.appspot.relaxe.expr.Identifier;
 import com.appspot.relaxe.expr.SQLKeyword;
@@ -39,12 +42,14 @@ public class AlterTableAddForeignKey
 	 * 
 	 */
 	private static final long serialVersionUID = 3990587941677143525L;
-	private ForeignKey foreignKey;
 	
 	private SchemaElementName referencing;
 	private SchemaElementName referenced;
 	
-	
+	private Identifier constraintName;
+	private Identifier[] columnNameList;
+	private Identifier[] referencedColumnList;
+			
 	/**
 	 * No-argument constructor for GWT Serialization
 	 */
@@ -63,57 +68,96 @@ public class AlterTableAddForeignKey
 		}
 		
 		this.referencing = foreignKey.getReferencing().getName(relative);
-		this.referenced = foreignKey.getReferenced().getName(relative);		
-		this.foreignKey = foreignKey;		
+		this.referenced = foreignKey.getReferenced().getName(relative);
+		this.constraintName = foreignKey.getUnqualifiedName();
+		
+		ColumnMap cm = foreignKey.getColumnMap();
+		final int cc = cm.size();
+
+		Identifier[] nms = new Identifier[cc];
+		Identifier[] rns = new Identifier[cc];
+		
+		for (int i = 0; i < cc; i++) {			
+			Column col = cm.get(i);
+			Identifier nm = col.getColumnName();
+			Identifier rf = foreignKey.getReferencedColumnName(nm);
+			
+			nms[i] = nm;
+			rns[i] = rf;
+			i++;
+		}
+		
+		this.columnNameList = nms;
+		this.referencedColumnList = rns;
+	}
+	
+	
+	public AlterTableAddForeignKey(SchemaElementName referencing, SchemaElementName referenced, Identifier constraintName, Map<Identifier, Identifier> columnNameMap) {
+		super(Name.ALTER_TABLE);
+
+		if (constraintName == null) {
+			throw new NullPointerException("constraintName");
+		}
+		
+		if (columnNameMap == null || columnNameMap.isEmpty()) {
+			throw new IllegalArgumentException("columnNameMap");
+		}
+				
+		this.referencing = referencing;
+		this.referenced = referenced;		
+		this.constraintName = constraintName;
+		
+		
+		final int cc = columnNameMap.size();
+
+		Identifier[] nms = new Identifier[cc];
+		Identifier[] rns = new Identifier[cc];
+		
+		int i = 0;
+		
+		for (Map.Entry<Identifier, Identifier> me : columnNameMap.entrySet()) {
+			nms[i] = me.getKey();
+			rns[i] = me.getValue();
+			i++;
+		}
+		
+		this.columnNameList = nms;
+		this.referencedColumnList = rns;
 	}
 	
 	@Override
 	public void traverseContent(VisitContext vc, ElementVisitor v) {
 		
-		ForeignKey fk = this.foreignKey;
 		
 		SQLKeyword.ALTER.traverse(vc, v);		
 		SQLKeyword.TABLE.traverse(vc, v);
 		
 		this.referencing.traverse(vc, v);
-		
-		ColumnMap cm = fk.getColumnMap();
-				
+						
 		SQLKeyword.ADD.traverse(vc, v);
 		SQLKeyword.CONSTRAINT.traverse(vc, v);
-		fk.getUnqualifiedName().traverse(vc, v);
+		this.constraintName.traverse(vc, v);
 		SQLKeyword.FOREIGN.traverse(vc, v);
 		SQLKeyword.KEY.traverse(vc, v);
 		Symbol.PAREN_LEFT.traverse(vc, v);
 		
-		int cc = cm.size();
-		Identifier[] rca = new Identifier[cc];
-		
-		for (int i = 0; i < cc; i++) {
-			Column col = cm.get(i);
-			rca[i] = fk.getReferenced(col).getUnqualifiedName();
-			
-			col.getColumnName().traverse(vc, v);
-			
-			if ((i + 1) < cc) {
-				Symbol.COMMA.traverse(vc, v);
-			}
-		}		
+		traverseNameList(this.columnNameList, vc, v);
 		
 		Symbol.PAREN_RIGHT.traverse(vc, v);
 		SQLKeyword.REFERENCES.traverse(vc, v);
 		this.referenced.traverse(vc, v);
-		Symbol.PAREN_LEFT.traverse(vc, v);
-		
-		for (int i = 0; i < rca.length; i++) {
-			Identifier col = rca[i];
-			col.traverse(vc, v);
+		Symbol.PAREN_LEFT.traverse(vc, v);		
+		traverseNameList(this.referencedColumnList, vc, v);		
+		Symbol.PAREN_RIGHT.traverse(vc, v);		
+	}
+
+	private void traverseNameList(Identifier[] names, VisitContext vc, ElementVisitor v) {
+		for (int i = 0; i < names.length; i++) {
+			names[i].traverse(vc, v);
 			
-			if ((i + 1) < cc) {
+			if ((i + 1) < names.length) {
 				Symbol.COMMA.traverse(vc, v);
 			}
-		}		
-		
-		Symbol.PAREN_RIGHT.traverse(vc, v);		
+		}
 	}
 }
