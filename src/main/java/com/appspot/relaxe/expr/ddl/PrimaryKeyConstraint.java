@@ -23,6 +23,7 @@
 package com.appspot.relaxe.expr.ddl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.appspot.relaxe.expr.CompoundElement;
@@ -53,6 +54,11 @@ public class PrimaryKeyConstraint
 	 */
 	@SuppressWarnings("unused")
 	private PrimaryKeyConstraint() {
+	}
+	
+	public PrimaryKeyConstraint(Identifier constraintName, Identifier column) {
+		this.constraintName = constraintName;		
+		this.columnList = ElementList.newElementList(column);
 	}
 	
 	public PrimaryKeyConstraint(Identifier constraintName, List<Identifier> columnList) {
